@@ -21,4 +21,13 @@ class MinqCopy {
 
   static const String notificationPrePromptBody =
       'Enable reminders to get a gentle nudge at the moments you select. You can change or disable them anytime from Settings.';
+
+  static const String notificationPermissionBannerTitle =
+      'Enable reminders to stay on track';
+  static const String notificationPermissionBannerBody =
+      'Notification access is currently off. Turn it on to receive up to three timely nudges per day.';
+
+  static const String timeDriftBannerTitle = 'Check your device clock';
+  static const String timeDriftBannerBody =
+      'We detected a large difference between your device time and trusted servers. Fixing the clock keeps streaks and reminders accurate.';
 }

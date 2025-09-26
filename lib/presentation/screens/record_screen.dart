@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/data/services/photo_storage_service.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -280,15 +281,49 @@ class _RecordForm extends ConsumerWidget {
           icon: Icons.photo_camera_outlined,
           isPrimary: true,
           onTap: () async {
-            final log = QuestLog()
-              ..uid = ref.read(uidProvider) ?? ''
-              ..questId = questId
-              ..ts = DateTime.now().toUtc()
-              ..proofType = ProofType.photo
-              ..proofValue = 'path/to/photo.jpg' // Placeholder
-              ..synced = false;
-            await ref.read(questLogRepositoryProvider).addLog(log);
-            context.go('/celebration');
+            final messenger = ScaffoldMessenger.of(context);
+            final uid = ref.read(uidProvider);
+            if (uid == null || uid.isEmpty) {
+              messenger.showSnackBar(
+                const SnackBar(content: Text('Unable to record without a signed-in user.')),
+              );
+              onSimulate(RecordErrorType.permissionDenied);
+              return;
+            }
+            try {
+              final result = await ref
+                  .read(photoStorageServiceProvider)
+                  .captureAndSanitize(ownerUid: uid, questId: questId);
+              if (!result.hasFile) {
+                messenger.showSnackBar(
+                  const SnackBar(content: Text('Photo capture cancelled.')),
+                );
+                return;
+              }
+
+              final log = QuestLog()
+                ..uid = uid
+                ..questId = questId
+                ..ts = DateTime.now().toUtc()
+                ..proofType = ProofType.photo
+                ..proofValue = result.path
+                ..synced = false;
+              await ref.read(questLogRepositoryProvider).addLog(log);
+              onSimulate(RecordErrorType.none);
+              // ignore: use_build_context_synchronously
+              context.go('/celebration');
+            } on PhotoCaptureException catch (error) {
+              switch (error.reason) {
+                case PhotoCaptureFailure.permissionDenied:
+                  onSimulate(RecordErrorType.permissionDenied);
+                  break;
+                case PhotoCaptureFailure.cameraFailure:
+                  onSimulate(RecordErrorType.cameraFailure);
+                  break;
+              }
+            } catch (_) {
+              onSimulate(RecordErrorType.cameraFailure);
+            }
           },
         ),
         _ProofButton(
