@@ -1,8 +1,11 @@
-﻿import 'dart:async';
+import 'dart:async';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:minq/data/repositories/auth_repository.dart';
 import 'package:minq/data/repositories/pair_repository.dart';
@@ -12,7 +15,9 @@ import 'package:minq/data/repositories/user_repository.dart';
 import 'package:minq/data/services/firestore_sync_service.dart';
 import 'package:minq/data/services/isar_service.dart';
 import 'package:minq/data/services/notification_service.dart';
+import 'package:minq/data/services/photo_storage_service.dart';
 import 'package:minq/data/services/remote_config_service.dart';
+import 'package:minq/data/services/time_consistency_service.dart';
 import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/log/quest_log.dart';
@@ -21,6 +26,26 @@ import 'package:minq/domain/user/user.dart' as minq_user;
 final notificationServiceProvider = Provider<NotificationService>(
   (ref) => NotificationService(),
 );
+
+final notificationPermissionProvider = StateProvider<bool>((ref) => false);
+final timeDriftDetectedProvider = StateProvider<bool>((ref) => false);
+
+final notificationTapStreamProvider = StreamProvider<String>((ref) async* {
+  final notifications = ref.watch(notificationServiceProvider);
+  final initialPayload = await notifications.takeInitialPayload();
+  if (initialPayload != null && initialPayload.isNotEmpty) {
+    yield initialPayload;
+  }
+  yield* notifications.notificationTapStream;
+});
+
+final timeConsistencyServiceProvider =
+    Provider<TimeConsistencyService>((ref) => TimeConsistencyService());
+
+final imagePickerProvider = Provider<ImagePicker>((ref) => ImagePicker());
+final photoStorageServiceProvider = Provider<PhotoStorageService>((ref) {
+  return PhotoStorageService(imagePicker: ref.watch(imagePickerProvider));
+});
 
 final firebaseAvailabilityProvider = Provider<bool>((_) => true);
 
@@ -114,6 +139,7 @@ final firestoreSyncServiceProvider = Provider<FirestoreSyncService?>((ref) {
 final appStartupProvider = FutureProvider<void>((ref) async {
   final notifications = ref.read(notificationServiceProvider);
   final permissionGranted = await notifications.init();
+  ref.read(notificationPermissionProvider.notifier).state = permissionGranted;
 
   await ref.watch(isarProvider.future);
   await ref.read(questRepositoryProvider).seedInitialQuests();
@@ -184,30 +210,60 @@ final appStartupProvider = FutureProvider<void>((ref) async {
     }
   }
 
+  final reminderTimes = List<String>.from(localUser.notificationTimes);
+  final recurringTimes = reminderTimes.take(2).toList();
+  final auxiliaryTime = reminderTimes.length > 2 ? reminderTimes[2] : null;
+
   if (permissionGranted) {
-    final reminderTimes = List<String>.from(localUser.notificationTimes);
-    final recurringTimes = reminderTimes.take(2).toList();
+    await notifications.ensureTimezoneConsistency(
+      fallbackRecurring: recurringTimes,
+      fallbackAuxiliary: auxiliaryTime,
+    );
     if (recurringTimes.isNotEmpty) {
       await notifications.scheduleRecurringReminders(recurringTimes);
     }
 
-    if (reminderTimes.length > 2) {
+    if (auxiliaryTime != null) {
       final hasCompleted = await ref
           .read(questLogRepositoryProvider)
           .hasCompletedDailyGoal(localUser.uid);
       if (hasCompleted) {
         await notifications.cancelAuxiliaryReminder();
       } else {
-        await notifications.scheduleAuxiliaryReminder(reminderTimes[2]);
+        await notifications.scheduleAuxiliaryReminder(auxiliaryTime);
       }
     } else {
       await notifications.cancelAuxiliaryReminder();
     }
+    await notifications.resumeFromTimeDrift();
+  }
+  if (!permissionGranted) {
+    await notifications.ensureTimezoneConsistency(
+      fallbackRecurring: const <String>[],
+      fallbackAuxiliary: null,
+    );
+    await notifications.cancelAll();
+  }
+
+  try {
+    final timeConsistent =
+        await ref.read(timeConsistencyServiceProvider).isDeviceTimeConsistent();
+    final hasDrift = !timeConsistent;
+    ref.read(timeDriftDetectedProvider.notifier).state = hasDrift;
+    if (hasDrift) {
+      await notifications.suspendForTimeDrift();
+    }
+  } on SocketException catch (error) {
+    debugPrint('Time consistency probe failed: $error');
   }
 
   final syncService = ref.read(firestoreSyncServiceProvider);
   if (syncService != null) {
-    await syncService.syncQuestLogs(firebaseUser.uid);
+    try {
+      await syncService.syncQuestLogs(firebaseUser.uid);
+    } on FirebaseException catch (error) {
+      debugPrint('Quest log sync failed: ${error.code}');
+    }
   }
 
   await ref.read(featureFlagsProvider.notifier).ensureLoaded();
@@ -229,6 +285,11 @@ final localUserProvider = FutureProvider<minq_user.User?>((ref) async {
     error: (_, __) => Future.value(null),
     loading: () => Future.value(null),
   );
+});
+
+final uidProvider = Provider<String?>((ref) {
+  final authState = ref.watch(authStateChangesProvider);
+  return authState.value?.uid;
 });
 
 final pairAssignmentStreamProvider =

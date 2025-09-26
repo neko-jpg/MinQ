@@ -1,18 +1,24 @@
-﻿import 'dart:async';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
-  NotificationService();
+  NotificationService({String storageFileName = 'notification_state.json'})
+      : _storageFileName = storageFileName;
 
   static const List<String> defaultReminderTimes = ['07:30', '18:30', '21:30'];
   static const int _recurringNotificationBaseId = 200;
   static const int _auxiliaryNotificationId = 300;
   static const int _snoozeNotificationId = 400;
   static const String _recordRoutePayload = '/record';
+  static const Duration _minimumGap = Duration(minutes: 10);
 
   static const String snoozeActionId_10m = 'snooze_10m';
   static const String snoozeActionId_1h = 'snooze_1h';
@@ -22,9 +28,12 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
   final StreamController<String> _tapController =
       StreamController<String>.broadcast();
+  final String _storageFileName;
 
   bool _initialized = false;
   String? _initialPayload;
+  _NotificationState _state = const _NotificationState();
+  bool _stateLoaded = false;
 
   bool get _supportsLocalNotifications => !kIsWeb;
 
@@ -43,6 +52,7 @@ class NotificationService {
 
     if (!_initialized) {
       tz.initializeTimeZones();
+      await _loadState();
       final launchDetails = await _plugin.getNotificationAppLaunchDetails();
       _initialPayload = launchDetails?.notificationResponse?.payload;
 
@@ -69,6 +79,9 @@ class NotificationService {
       _initialized = true;
     }
     final granted = await requestPermission();
+    if (!granted) {
+      await cancelAll();
+    }
     return granted;
   }
 
@@ -113,9 +126,12 @@ class NotificationService {
       return;
     }
 
+    await _loadState();
+    final normalizedTimes = _normalizeTimes(times);
+
     await _cancelRecurringReminders();
-    for (var index = 0; index < times.length; index++) {
-      final parsed = _parseTime(times[index]);
+    for (var index = 0; index < normalizedTimes.length; index++) {
+      final parsed = _parseTime(normalizedTimes[index]);
       if (parsed == null) continue;
 
       await _plugin.zonedSchedule(
@@ -142,6 +158,13 @@ class NotificationService {
         payload: _recordRoutePayload,
       );
     }
+
+    _state = _state.copyWith(
+      timezoneName: tz.local.name,
+      recurringReminderTimes: normalizedTimes,
+      suspended: false,
+    );
+    await _persistState();
   }
 
   Future<void> scheduleAuxiliaryReminder(String time) async {
@@ -169,6 +192,14 @@ class NotificationService {
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       payload: _recordRoutePayload,
     );
+
+    await _loadState();
+    _state = _state.copyWith(
+      timezoneName: tz.local.name,
+      auxiliaryReminderTime: time,
+      suspended: false,
+    );
+    await _persistState();
   }
 
   Future<void> _handleSnooze(String actionId, String? payload) async {
@@ -214,6 +245,9 @@ class NotificationService {
     }
 
     await _plugin.cancel(_auxiliaryNotificationId);
+    await _loadState();
+    _state = _state.copyWith(auxiliaryReminderTime: null);
+    await _persistState();
   }
 
   Future<void> cancelAll() async {
@@ -224,6 +258,69 @@ class NotificationService {
     await _plugin.cancelAll();
   }
 
+  Future<void> suspendForTimeDrift() async {
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+    await cancelAll();
+    await _loadState();
+    _state = _state.copyWith(suspended: true);
+    await _persistState();
+  }
+
+  Future<void> resumeFromTimeDrift() async {
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+    await _loadState();
+    if (!_state.suspended) {
+      return;
+    }
+
+    final recurring = _state.recurringReminderTimes;
+    if (recurring.isNotEmpty) {
+      await scheduleRecurringReminders(recurring);
+    }
+    final auxiliary = _state.auxiliaryReminderTime;
+    if (auxiliary != null && auxiliary.isNotEmpty) {
+      await scheduleAuxiliaryReminder(auxiliary);
+    }
+    _state = _state.copyWith(suspended: false);
+    await _persistState();
+  }
+
+  Future<void> ensureTimezoneConsistency({
+    List<String>? fallbackRecurring,
+    String? fallbackAuxiliary,
+  }) async {
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+    await _loadState();
+    final currentTimezone = tz.local.name;
+    final storedTimezone = _state.timezoneName;
+    if (storedTimezone == null) {
+      _state = _state.copyWith(timezoneName: currentTimezone);
+      await _persistState();
+      return;
+    }
+
+    if (storedTimezone != currentTimezone) {
+      final recurring = _state.recurringReminderTimes.isNotEmpty
+          ? _state.recurringReminderTimes
+          : (fallbackRecurring ?? const <String>[]);
+      final auxiliary =
+          _state.auxiliaryReminderTime ?? fallbackAuxiliary;
+
+      if (recurring.isNotEmpty) {
+        await scheduleRecurringReminders(recurring);
+      }
+      if (auxiliary != null && auxiliary.isNotEmpty) {
+        await scheduleAuxiliaryReminder(auxiliary);
+      }
+    }
+  }
+
   Future<void> _cancelRecurringReminders() async {
     if (!_supportsLocalNotifications) {
       return;
@@ -232,6 +329,24 @@ class NotificationService {
     for (var index = 0; index < 3; index++) {
       await _plugin.cancel(_recurringNotificationBaseId + index);
     }
+  }
+
+  List<String> _normalizeTimes(List<String> times) {
+    final sanitized = <_ReminderTime>[];
+    for (final time in times) {
+      final parsed = _parseTime(time);
+      if (parsed == null) continue;
+      final totalMinutes = parsed.$1 * 60 + parsed.$2;
+      final hasConflict = sanitized.any((existing) =>
+          (existing.totalMinutes - totalMinutes).abs() <=
+          _minimumGap.inMinutes);
+      if (hasConflict) {
+        continue;
+      }
+      sanitized.add(_ReminderTime(totalMinutes: totalMinutes));
+    }
+    sanitized.sort((a, b) => a.totalMinutes.compareTo(b.totalMinutes));
+    return sanitized.map((entry) => entry.formatted).toList(growable: false);
   }
 
   (int, int)? _parseTime(String time) {
@@ -286,5 +401,98 @@ class NotificationService {
         return 'ミニQuestを続けて、PairにHigh-fiveを送りましょう。';
     }
   }
+
+  Future<void> _loadState() async {
+    if (_stateLoaded || !_supportsLocalNotifications) {
+      return;
+    }
+    try {
+      final directory = await getApplicationSupportDirectory();
+      final file = File(p.join(directory.path, _storageFileName));
+      if (await file.exists()) {
+        final contents = await file.readAsString();
+        final jsonMap = jsonDecode(contents) as Map<String, dynamic>;
+        _state = _NotificationState.fromJson(jsonMap);
+      }
+    } catch (error) {
+      debugPrint('Failed to load notification state: $error');
+    }
+    _stateLoaded = true;
+  }
+
+  Future<void> _persistState() async {
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+    try {
+      final directory = await getApplicationSupportDirectory();
+      final file = File(p.join(directory.path, _storageFileName));
+      await file.create(recursive: true);
+      await file.writeAsString(jsonEncode(_state.toJson()));
+    } catch (error) {
+      debugPrint('Failed to persist notification state: $error');
+    }
+  }
 }
 
+class _ReminderTime {
+  _ReminderTime({required this.totalMinutes});
+
+  final int totalMinutes;
+
+  String get formatted {
+    final hour = totalMinutes ~/ 60;
+    final minute = totalMinutes % 60;
+    final hourString = hour.toString().padLeft(2, '0');
+    final minuteString = minute.toString().padLeft(2, '0');
+    return '$hourString:$minuteString';
+  }
+}
+
+class _NotificationState {
+  const _NotificationState({
+    this.timezoneName,
+    this.recurringReminderTimes = const <String>[],
+    this.auxiliaryReminderTime,
+    this.suspended = false,
+  });
+
+  final String? timezoneName;
+  final List<String> recurringReminderTimes;
+  final String? auxiliaryReminderTime;
+  final bool suspended;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'timezone': timezoneName,
+        'recurring': recurringReminderTimes,
+        'auxiliary': auxiliaryReminderTime,
+        'suspended': suspended,
+      };
+
+  _NotificationState copyWith({
+    String? timezoneName,
+    List<String>? recurringReminderTimes,
+    String? auxiliaryReminderTime,
+    bool? suspended,
+  }) {
+    return _NotificationState(
+      timezoneName: timezoneName ?? this.timezoneName,
+      recurringReminderTimes:
+          recurringReminderTimes ?? this.recurringReminderTimes,
+      auxiliaryReminderTime: auxiliaryReminderTime ?? this.auxiliaryReminderTime,
+      suspended: suspended ?? this.suspended,
+    );
+  }
+
+  factory _NotificationState.fromJson(Map<String, dynamic> json) {
+    return _NotificationState(
+      timezoneName: json['timezone'] as String?,
+      recurringReminderTimes: (json['recurring'] as List<dynamic>?)
+              ?.map((dynamic value) => value as String)
+              .toList(growable: false) ??
+          const <String>[],
+      auxiliaryReminderTime: json['auxiliary'] as String?,
+      suspended: json['suspended'] as bool? ?? false,
+    );
+  }
+}

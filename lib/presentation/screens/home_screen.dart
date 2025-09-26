@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -97,6 +99,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _showHelpBanner = true;
   bool _isLoading = true;
   bool _snoozeEnabled = true;
+  bool _dismissedPermissionBanner = false;
+  bool _dismissedTimeBanner = false;
 
   @override
   void initState() {
@@ -149,6 +153,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context)!;
     final hasQuests = _todayQuests.isNotEmpty;
+    final startupState = ref.watch(appStartupProvider);
+    final permissionGranted = ref.watch(notificationPermissionProvider);
+    final hasDrift = ref.watch(timeDriftDetectedProvider);
+
+    final permissionBanner = _buildNotificationPermissionBanner(
+      context,
+      tokens,
+      startupState.isLoading,
+      permissionGranted,
+    );
+    final driftBanner = _buildTimeDriftBanner(
+      context,
+      tokens,
+      startupState.isLoading,
+      hasDrift,
+    );
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -158,6 +178,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             : ListView(
                 padding: EdgeInsets.symmetric(vertical: tokens.spacing(5)),
                 children: <Widget>[
+                  if (permissionBanner != null) permissionBanner,
+                  if (permissionBanner != null && driftBanner != null)
+                    SizedBox(height: tokens.spacing(3)),
+                  if (driftBanner != null) driftBanner,
                   if (_showHelpBanner)
                     Padding(
                       padding:
@@ -295,6 +319,172 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  Widget? _buildNotificationPermissionBanner(
+    BuildContext context,
+    MinqTheme tokens,
+    bool startupLoading,
+    bool permissionGranted,
+  ) {
+    if (startupLoading || permissionGranted || _dismissedPermissionBanner) {
+      return null;
+    }
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(5)),
+      child: Card(
+        elevation: 0,
+        color: tokens.surface,
+        shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+        child: Padding(
+          padding: EdgeInsets.all(tokens.spacing(4)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Icon(Icons.notifications_off_outlined,
+                      color: tokens.brandPrimary),
+                  SizedBox(width: tokens.spacing(3)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          MinqCopy.notificationPermissionBannerTitle,
+                          style: tokens.titleSmall
+                              .copyWith(color: tokens.textPrimary),
+                        ),
+                        SizedBox(height: tokens.spacing(1)),
+                        Text(
+                          MinqCopy.notificationPermissionBannerBody,
+                          style: tokens.bodySmall
+                              .copyWith(color: tokens.textMuted),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: tokens.spacing(3)),
+              Row(
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: _requestNotificationPermission,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: tokens.brandPrimary,
+                      foregroundColor: tokens.surface,
+                    ),
+                    child: const Text('Enable notifications'),
+                  ),
+                  SizedBox(width: tokens.spacing(3)),
+                  TextButton(
+                    onPressed: () =>
+                        setState(() => _dismissedPermissionBanner = true),
+                    child: const Text('Dismiss'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget? _buildTimeDriftBanner(
+    BuildContext context,
+    MinqTheme tokens,
+    bool startupLoading,
+    bool hasDrift,
+  ) {
+    if (startupLoading || !hasDrift || _dismissedTimeBanner) {
+      return null;
+    }
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(5)),
+      child: Card(
+        elevation: 0,
+        color: tokens.surface,
+        shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+        child: Padding(
+          padding: EdgeInsets.all(tokens.spacing(4)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Icon(Icons.schedule_outlined, color: tokens.brandPrimary),
+                  SizedBox(width: tokens.spacing(3)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          MinqCopy.timeDriftBannerTitle,
+                          style: tokens.titleSmall
+                              .copyWith(color: tokens.textPrimary),
+                        ),
+                        SizedBox(height: tokens.spacing(1)),
+                        Text(
+                          MinqCopy.timeDriftBannerBody,
+                          style: tokens.bodySmall
+                              .copyWith(color: tokens.textMuted),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: tokens.spacing(3)),
+              Row(
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {
+                      context.push('/support');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: tokens.brandPrimary,
+                      foregroundColor: tokens.surface,
+                    ),
+                    child: const Text('View fix steps'),
+                  ),
+                  SizedBox(width: tokens.spacing(3)),
+                  TextButton(
+                    onPressed: () => setState(() => _dismissedTimeBanner = true),
+                    child: const Text('Dismiss'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _requestNotificationPermission() async {
+    final granted =
+        await ref.read(notificationServiceProvider).requestPermission();
+    ref.read(notificationPermissionProvider.notifier).state = granted;
+    if (!mounted) {
+      return;
+    }
+    final messenger = ScaffoldMessenger.of(context);
+    if (granted) {
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Notifications enabled.')),
+      );
+      setState(() => _dismissedPermissionBanner = true);
+      ref.invalidate(appStartupProvider);
+      unawaited(ref.read(appStartupProvider.future));
+    } else {
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Permission still disabled.')),
+      );
+    }
+  }
+
   Widget _buildSectionHeader(BuildContext context, String title) {
     final tokens = context.tokens;
 
@@ -306,6 +496,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
+
 }
 
 class _HomeSkeleton extends StatelessWidget {
