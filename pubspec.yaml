@@ -51,6 +51,7 @@ dependencies:
   cloud_firestore: any
   firebase_storage: any
   firebase_messaging: any
+  firebase_remote_config: any
 
   # Utilities
   intl: any

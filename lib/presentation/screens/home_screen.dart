@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/presentation/common/debouncer.dart';
 import 'package:minq/presentation/common/minq_copy.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
@@ -80,23 +83,34 @@ final List<QuestSuggestion> _suggestionPool = <QuestSuggestion>[
   ),
 ];
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _debouncer = Debouncer(milliseconds: 500);
   final List<int> _slotIndices = <int>[0, 1, 2];
   final Set<int> _snoozedSlots = <int>{};
   bool _showHelpBanner = true;
   bool _isLoading = true;
+  bool _snoozeEnabled = true;
 
   @override
   void initState() {
     super.initState();
+    final flags = ref.read(featureFlagsProvider);
+    _snoozeEnabled = flags.homeSuggestionSnoozeEnabled;
+    ref.listen<FeatureFlags>(featureFlagsProvider, (previous, next) {
+      if (previous?.homeSuggestionSnoozeEnabled !=
+          next.homeSuggestionSnoozeEnabled) {
+        setState(() {
+          _snoozeEnabled = next.homeSuggestionSnoozeEnabled;
+        });
+      }
+    });
     Future<void>.delayed(const Duration(milliseconds: 600), () {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -161,10 +175,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: tokens.bodySmall
                                 .copyWith(color: tokens.textPrimary),
                           ),
-                          trailing: IconButton(
-                            icon: Icon(Icons.close, color: tokens.textPrimary),
-                            onPressed: () =>
-                                setState(() => _showHelpBanner = false),
+                          trailing: Semantics(
+                            button: true,
+                            label: AppLocalizations.of(context)!.dismissHelpBanner,
+                            child: IconButton(
+                              tooltip: AppLocalizations.of(context)!
+                                  .dismissHelpBanner,
+                              icon: Icon(Icons.close, color: tokens.textPrimary),
+                              onPressed: () =>
+                                  setState(() => _showHelpBanner = false),
+                            ),
                           ),
                         ),
                       ),
@@ -200,26 +220,37 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                l10n.goodMorning,
-                style: tokens.titleLarge.copyWith(color: tokens.textPrimary),
-              ),
-              SizedBox(height: tokens.spacing(1)),
-              Text(
-                MinqCopy.valuePropositionSubheadline,
-                style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
-              ),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  l10n.goodMorning,
+                  style: tokens.titleLarge.copyWith(color: tokens.textPrimary),
+                ),
+                SizedBox(height: tokens.spacing(1)),
+                Text(
+                  MinqCopy.valuePropositionSubheadline,
+                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                ),
+              ],
+            ),
           ),
-          GestureDetector(
-            onTap: () => context.go('/profile'),
-            child: CircleAvatar(
-              radius: tokens.spacing(6),
-              backgroundImage: const NetworkImage(
-                'https://i.pravatar.cc/150?img=3',
+          SizedBox(width: tokens.spacing(3)),
+          Semantics(
+            label: l10n.openProfile,
+            button: true,
+            child: InkWell(
+              onTap: () => context.go('/profile'),
+              borderRadius: BorderRadius.circular(tokens.spacing(6)),
+              child: Padding(
+                padding: EdgeInsets.all(tokens.spacing(1)),
+                child: CircleAvatar(
+                  radius: tokens.spacing(6),
+                  backgroundImage: const NetworkImage(
+                    'https://i.pravatar.cc/150?img=3',
+                  ),
+                ),
               ),
             ),
           ),
@@ -251,12 +282,12 @@ class _HomeScreenState extends State<HomeScreen> {
             final suggestion = _suggestionFor(slot);
             return _SuggestionCard(
               suggestion: suggestion,
-              slot: slot,
               snoozed: snoozed,
               onSwap: () => _debouncer.run(() => _swapSuggestion(slot)),
               onSnooze: () => _debouncer.run(() => _snoozeSuggestion(slot)),
               onUndoSnooze: () => _undoSnooze(slot),
               l10n: l10n,
+              snoozeEnabled: _snoozeEnabled,
             );
           }),
         ],
@@ -327,21 +358,21 @@ class _HomeSkeleton extends StatelessWidget {
 class _SuggestionCard extends StatelessWidget {
   const _SuggestionCard({
     required this.suggestion,
-    required this.slot,
     required this.snoozed,
     required this.onSwap,
     required this.onSnooze,
     required this.onUndoSnooze,
     required this.l10n,
+    required this.snoozeEnabled,
   });
 
   final QuestSuggestion suggestion;
-  final int slot;
   final bool snoozed;
   final VoidCallback onSwap;
   final VoidCallback onSnooze;
   final VoidCallback onUndoSnooze;
   final AppLocalizations l10n;
+  final bool snoozeEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -415,10 +446,12 @@ class _SuggestionCard extends StatelessWidget {
                           onPressed: onSwap,
                         ),
                         IconButton(
-                          tooltip: l10n.snoozeUntilTomorrow,
+                          tooltip: snoozeEnabled
+                              ? l10n.snoozeUntilTomorrow
+                              : l10n.snoozeTemporarilyDisabled,
                           icon: const Icon(Icons.snooze),
                           color: tokens.textMuted,
-                          onPressed: onSnooze,
+                          onPressed: snoozeEnabled ? onSnooze : null,
                         ),
                       ],
                     ),

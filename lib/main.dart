@@ -75,6 +75,12 @@ class MinQApp extends ConsumerWidget {
         elevation: 0,
       ),
       cardTheme: const CardTheme(surfaceTintColor: Colors.transparent),
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          tapTargetSize: MaterialTapTargetSize.padded,
+          minimumSize: MaterialStatePropertyAll<Size>(Size.square(48)),
+        ),
+      ),
       extensions: <ThemeExtension<dynamic>>[minqLight],
     );
 
@@ -97,6 +103,12 @@ class MinQApp extends ConsumerWidget {
         elevation: 0,
       ),
       cardTheme: const CardTheme(surfaceTintColor: Colors.transparent),
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          tapTargetSize: MaterialTapTargetSize.padded,
+          minimumSize: MaterialStatePropertyAll<Size>(Size.square(48)),
+        ),
+      ),
       extensions: <ThemeExtension<dynamic>>[minqDark],
     );
 
@@ -125,6 +137,17 @@ class MinQApp extends ConsumerWidget {
           Locale('en', ''), // English, no country code
           Locale('ja', ''), // Japanese, no country code
         ],
+        builder: (BuildContext context, Widget? child) {
+          final mediaQuery = MediaQuery.of(context);
+          final clampedScaler = mediaQuery.textScaler.clamp(
+            minScaleFactor: 1.0,
+            maxScaleFactor: 1.3,
+          );
+          return MediaQuery(
+            data: mediaQuery.copyWith(textScaler: clampedScaler),
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
       ),
       _ => const MaterialApp(
         debugShowCheckedModeBanner: false,

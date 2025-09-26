@@ -1,24 +1,31 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-class CelebrationScreen extends StatefulWidget {
+class CelebrationScreen extends ConsumerStatefulWidget {
   const CelebrationScreen({super.key});
 
   @override
-  State<CelebrationScreen> createState() => _CelebrationScreenState();
+  ConsumerState<CelebrationScreen> createState() => _CelebrationScreenState();
 }
 
-class _CelebrationScreenState extends State<CelebrationScreen>
+class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
     with SingleTickerProviderStateMixin {
   static const Duration _confettiDuration = Duration(milliseconds: 900);
 
   late AnimationController _controller;
   late Animation<double> _pulseAnimation;
   late Animation<double> _sparkleAnimation;
+  Timer? _confettiTimer;
+  bool _confettiEnabled = true;
+  bool _rewardCardEnabled = true;
 
   @override
   void initState() {
@@ -26,7 +33,7 @@ class _CelebrationScreenState extends State<CelebrationScreen>
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
-    )..repeat(reverse: true);
+    );
 
     _pulseAnimation = CurvedAnimation(
       parent: _controller,
@@ -38,17 +45,60 @@ class _CelebrationScreenState extends State<CelebrationScreen>
       parent: _controller,
       curve: const Interval(0.1, 0.8, curve: Curves.easeOutBack),
     );
+    final flags = ref.read(featureFlagsProvider);
+    _applyFlags(flags, animate: false);
 
-    Future<void>.delayed(_confettiDuration, () {
-      if (!mounted) return;
-      _controller.stop();
+    ref.listen<FeatureFlags>(featureFlagsProvider, (previous, next) {
+      _applyFlags(next);
     });
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _confettiTimer?.cancel();
     super.dispose();
+  }
+
+  void _applyFlags(FeatureFlags flags, {bool animate = true}) {
+    final shouldAnimate = flags.celebrationConfettiEnabled;
+    final shouldShowReward = flags.celebrationRewardCardEnabled;
+
+    if (animate) {
+      if (shouldAnimate) {
+        _startConfetti();
+      } else {
+        _stopConfetti();
+      }
+    } else {
+      if (shouldAnimate) {
+        _startConfetti();
+      }
+    }
+
+    setState(() {
+      _confettiEnabled = shouldAnimate;
+      _rewardCardEnabled = shouldShowReward;
+    });
+  }
+
+  void _startConfetti() {
+    if (_controller.isAnimating) {
+      return;
+    }
+    _controller.repeat(reverse: true);
+    _confettiTimer?.cancel();
+    _confettiTimer = Timer(_confettiDuration, () {
+      if (!mounted) return;
+      _controller.stop();
+    });
+  }
+
+  void _stopConfetti() {
+    _confettiTimer?.cancel();
+    if (_controller.isAnimating) {
+      _controller.stop();
+    }
   }
 
   @override
@@ -62,9 +112,14 @@ class _CelebrationScreenState extends State<CelebrationScreen>
           children: <Widget>[
             Align(
               alignment: Alignment.centerRight,
-              child: IconButton(
-                icon: Icon(Icons.close, color: tokens.textPrimary),
-                onPressed: () => context.go('/'),
+              child: Semantics(
+                label: '閉じる',
+                button: true,
+                child: IconButton(
+                  tooltip: '閉じる',
+                  icon: Icon(Icons.close, color: tokens.textPrimary),
+                  onPressed: () => context.go('/'),
+                ),
               ),
             ),
             Expanded(
@@ -72,10 +127,17 @@ class _CelebrationScreenState extends State<CelebrationScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    _CelebrationBurst(
-                      pulse: _pulseAnimation,
-                      sparkles: _sparkleAnimation,
-                    ),
+                    if (_confettiEnabled)
+                      _CelebrationBurst(
+                        pulse: _pulseAnimation,
+                        sparkles: _sparkleAnimation,
+                      )
+                    else
+                      Icon(
+                        Icons.celebration,
+                        color: tokens.brandPrimary,
+                        size: tokens.spacing(16),
+                      ),
                     SizedBox(height: tokens.spacing(6)),
                     Text(
                       'Streak +1',
@@ -91,7 +153,7 @@ class _CelebrationScreenState extends State<CelebrationScreen>
                       ),
                     ),
                     SizedBox(height: tokens.spacing(8)),
-                    _buildRewardCard(tokens),
+                    if (_rewardCardEnabled) _buildRewardCard(tokens),
                   ],
                 ),
               ),

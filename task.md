@@ -47,18 +47,18 @@
 
 [x] 読み込み/骨組み: Shimmer/Skeleton導入（Home/Quests/Record/Pair/Stats）
 
-[ ] アクセシビリティ: フォントスケール 1.3× まで崩れない、TalkBack/VoiceOver操作確認
+[x] アクセシビリティ: フォントスケール 1.3× まで崩れない、TalkBack/VoiceOver操作確認
 
 💻 アーキテクチャ/コード品質 P0
 [ ] 状態管理の一貫: 全画面をRiverpodのref.watchへ接続（モック除去）
 
-[ ] ルーティング規約: GoRouterの命名/引数/DeepLink表をConfluence等に固定化
+[x] ルーティング規約: GoRouterの命名/引数/DeepLink表をConfluence等に固定化
 
 [ ] レイヤ分離: UI/UseCase/Repository/DB/Remoteの依存方向をCIでチェック（dep guard）
 
-[ ] Feature Flag: リモート殺しスイッチ（Remote Config）で実験機能を段階公開
+[x] Feature Flag: リモート殺しスイッチ（Remote Config）で実験機能を段階公開
 
-[ ] ロギング規約: log.info/warn/errorの粒度・PII禁止ルール
+[x] ロギング規約: log.info/warn/errorの粒度・PII禁止ルール
 
 💾 データ/同期/オフライン P0
 [ ] Isarスキーマ凍結: v1のMigration手順書（破壊的変更禁止、移行テスト）
@@ -67,7 +67,7 @@
 
 [ ] EXIF/PII対策: 写真保存時にEXIF削除・サムネ圧縮・ファイル名ハッシュ化
 
-[ ] バックアップ方針: ユーザーデータのエクスポート/削除APIとUI（必須：Apple審査）
+[x] バックアップ方針: ユーザーデータのエクスポート/削除APIとUI（必須：Apple審査）
 
 [ ] 時刻一貫性: 端末時刻改変耐性（NTPライク簡易検査 or サーバ基準）
 
@@ -86,7 +86,7 @@
 
 [x] ログ: PII/画像URL/トークンをログ出力禁止、サニタイズ済みメタのみ
 
-[ ] **Data Safety（Play）/Privacy Nutrition（App Store）**の申告原稿作成
+[x] **Data Safety（Play）/Privacy Nutrition（App Store）**の申告原稿作成
 
 [ ] アカウント削除（アプリ内）: ワンタップで申請→即時/一定期間後の削除実行（Apple 5.1.1対応）
 
@@ -122,7 +122,7 @@
 [ ] 回帰セット: リリース前に手動30分のスモーク（主導線7シナリオ）
 
 📈 分析/改善基盤 P0
-[ ] イベント設計: onboarding_complete, quest_started, record_saved, streak_n, pair_matched, notif_open
+[x] イベント設計: onboarding_complete, quest_started, record_saved, streak_n, pair_matched, notif_open
 
 [ ] KPIダッシュボード: D1/D7留存、日次完了率、通知開封率、クラッシュ率
 
