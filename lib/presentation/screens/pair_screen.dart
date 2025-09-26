@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
+import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class PairScreen extends StatefulWidget {
@@ -201,30 +202,8 @@ class _PairedView extends StatelessWidget {
             style: tokens.bodySmall.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing(8)),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: EdgeInsets.all(tokens.spacing(10)),
-              backgroundColor: tokens.brandPrimary,
-              foregroundColor: tokens.surface,
-              elevation: 6,
-              shadowColor: tokens.brandPrimary.withValues(alpha: 0.32),
-            ),
-            onPressed: () {},
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.back_hand_outlined, size: tokens.spacing(15)),
-                SizedBox(height: tokens.spacing(2)),
-                Text(
-                  'High-five',
-                  style: tokens.bodyMedium.copyWith(
-                    color: tokens.surface,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
+          _HighFiveButton(
+            onPressed: () async {},
           ),
           SizedBox(height: tokens.spacing(10)),
           Text(
@@ -279,3 +258,67 @@ class _QuickMessageChip extends StatelessWidget {
     );
   }
 }
+
+class _HighFiveButton extends StatefulWidget {
+  const _HighFiveButton({required this.onPressed});
+
+  final AsyncCallback onPressed;
+
+  @override
+  State<_HighFiveButton> createState() => _HighFiveButtonState();
+}
+
+class _HighFiveButtonState extends State<_HighFiveButton>
+    with AsyncActionState<_HighFiveButton> {
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        shape: const CircleBorder(),
+        padding: EdgeInsets.all(tokens.spacing(10)),
+        minimumSize: Size.square(tokens.spacing(28)),
+        backgroundColor: tokens.brandPrimary,
+        foregroundColor: tokens.surface,
+        elevation: 6,
+        shadowColor: tokens.brandPrimary.withValues(alpha: 0.32),
+      ),
+      onPressed: isProcessing
+          ? null
+          : () => runGuarded(() async {
+                await widget.onPressed();
+              }),
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        child: isProcessing
+            ? SizedBox(
+                key: const ValueKey<String>('progress'),
+                height: tokens.spacing(7),
+                width: tokens.spacing(7),
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  valueColor: AlwaysStoppedAnimation<Color>(tokens.surface),
+                ),
+              )
+            : Column(
+                key: const ValueKey<String>('content'),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.back_hand_outlined, size: tokens.spacing(15)),
+                  SizedBox(height: tokens.spacing(2)),
+                  Text(
+                    'High-five',
+                    style: tokens.bodyMedium.copyWith(
+                      color: tokens.surface,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }

@@ -43,7 +43,7 @@
 
 [x] ダークモード: コントラスト比AA以上、画像/アイコンの反転確認
 
-[ ] タップ領域: 主要ボタン 48×48px 以上、連打時の多重処理を抑止（debounce/lock）
+[x] タップ領域: 主要ボタン 48×48px 以上、連打時の多重処理を抑止（debounce/lock）
 
 [ ] 読み込み/骨組み: Shimmer/Skeleton導入（Home/Quests/Record/Pair/Stats）
 

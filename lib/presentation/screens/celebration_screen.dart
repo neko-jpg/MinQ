@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CelebrationScreen extends StatefulWidget {
@@ -152,19 +153,9 @@ class _CelebrationScreenState extends State<CelebrationScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: tokens.brandPrimary,
-              foregroundColor: tokens.surface,
-              minimumSize: Size(double.infinity, tokens.spacing(14)),
-              shape: RoundedRectangleBorder(
-                borderRadius: tokens.cornerXLarge(),
-              ),
-            ),
-            onPressed: () => context.go('/'),
-            child: Text(
-                                    '次のQuestへ',              style: tokens.titleSmall.copyWith(color: tokens.surface),
-            ),
+          MinqPrimaryButton(
+            label: '次のQuestへ',
+            onPressed: () async => context.go('/'),
           ),
           SizedBox(height: tokens.spacing(3)),
           TextButton(
