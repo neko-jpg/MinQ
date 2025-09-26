@@ -54,14 +54,14 @@
 
 [x] ルーティング規約: GoRouterの命名/引数/DeepLink表をConfluence等に固定化
 
-[ ] レイヤ分離: UI/UseCase/Repository/DB/Remoteの依存方向をCIでチェック（dep guard）
+[x] レイヤ分離: UI/UseCase/Repository/DB/Remoteの依存方向をCIでチェック（dep guard）
 
 [x] Feature Flag: リモート殺しスイッチ（Remote Config）で実験機能を段階公開
 
 [x] ロギング規約: log.info/warn/errorの粒度・PII禁止ルール
 
 💾 データ/同期/オフライン P0
-[ ] Isarスキーマ凍結: v1のMigration手順書（破壊的変更禁止、移行テスト）
+[x] Isarスキーマ凍結: v1のMigration手順書（破壊的変更禁止、移行テスト）
 
 [x] Firestore同期: リトライ/指数バックオフ/衝突（last-write-wins or merge）方針
 
@@ -82,7 +82,7 @@
 
 [x] 端末権限文言: カメラ/通知の許可理由をローカライズ（iOS Info.plist / Android Manifest）
 
-[ ] 通信: 全通信TLS、証跡URLの署名付き短期有効期限
+[x] 通信: 全通信TLS、証跡URLの署名付き短期有効期限
 
 [x] ログ: PII/画像URL/トークンをログ出力禁止、サニタイズ済みメタのみ
 
@@ -113,13 +113,13 @@
 ✅ QA/テスト P0
 [x] テストピラミッド: ユニット（Provider/UseCase）→Widget（Golden）→E2E（integration_test）
 
-[ ] マトリクス実機: iOS 15/16/17、Android 9–14、画面比、暗/明、日英、低速回線
+[x] マトリクス実機: iOS 15/16/17、Android 9–14、画面比、暗/明、日英、低速回線
 
-[ ] 権限系テスト: 拒否/後付与/一時的許諾の分岐網羅
+[x] 権限系テスト: 拒否/後付与/一時的許諾の分岐網羅
 
 [x] 時刻/通知テスト: DST/タイムゾーン跨ぎ、端末時刻変更
 
-[ ] 回帰セット: リリース前に手動30分のスモーク（主導線7シナリオ）
+[x] 回帰セット: リリース前に手動30分のスモーク（主導線7シナリオ）
 
 📈 分析/改善基盤 P0
 [x] イベント設計: onboarding_complete, quest_started, record_saved, streak_n, pair_matched, notif_open
@@ -144,9 +144,9 @@
 [x] バージョニング: SemVer＋ビルド番号の運用表、CHANGELOG
 
 ⚙️ リリース運用/CI P0
-[ ] 署名: Android Keystore保管（複製＋秘密分散）、iOS 証明書/プロビジョニング整備
+[x] 署名: Android Keystore保管（複製＋秘密分散）、iOS 証明書/プロビジョニング整備
 
-[ ] CI/CD: GitHub Actions/Codemagicでlint/test/build/upload（内部テスト/TFへ）
+[x] CI/CD: GitHub Actions/Codemagicでlint/test/build/upload（内部テスト/TFへ）
 
 [x] リリース手順書: ブランチ戦略、タグ、ロールアウト％、ロールバック手順
 
@@ -157,9 +157,9 @@
 🤝 コミュニティ/安全性 P0
 [x] 通報SOP: 受領→初動24h以内→対応→ユーザー連絡の定型
 
-[ ] 不正対策: スパム通報のレート制限、連投画像の類似検知（P1でも可）
+[x] 不正対策: スパム通報のレート制限、連投画像の類似検知（P1でも可）
 
-[ ] ガイドラインUI: 初回ペア成立時に簡易遵守事項を提示（写真の個人情報禁止 等）
+[x] ガイドラインUI: 初回ペア成立時に簡易遵守事項を提示（写真の個人情報禁止 等）
 
 ✨ P1（推奨・MVP後に強化）
 [ ] SIWA（Sign in with Apple）対応の要否整理（iOSでGoogleを出す場合）
