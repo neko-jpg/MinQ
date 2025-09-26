@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/common/minq_skeleton.dart';
+import 'package:minq/data/logging/minq_logger.dart';
+
+enum _PairSafetyAction { report, block, unpair }
 
 class PairScreen extends StatefulWidget {
   const PairScreen({super.key});
@@ -13,13 +17,140 @@ class PairScreen extends StatefulWidget {
 class _PairScreenState extends State<PairScreen> {
   bool _isPaired = false;
   bool _showHelpBanner = true;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    });
+  }
 
   void _findPartner() {
+    MinqLogger.info('pair_find_partner', metadata: const {'origin': 'pair_screen'});
     setState(() => _isPaired = true);
   }
 
   void _unpair() {
+    MinqLogger.warn('pair_unpaired', metadata: const {'origin': 'pair_screen'});
     setState(() => _isPaired = false);
+  }
+
+  Future<void> _handleSafetyAction(_PairSafetyAction action) async {
+    switch (action) {
+      case _PairSafetyAction.report:
+        _showPartnerSafetySheet(
+          title: '通報',
+          description: '不適切な行動やハラスメントを報告すると、専任チームが24時間以内に確認します。',
+          confirmationLabel: '通報を送信',
+          onConfirmed: () {
+            MinqLogger.warn('pair_report_submitted', metadata: const {'category': 'safety'});
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('通報を受け付けました。対応が完了次第お知らせします。')),
+            );
+          },
+        );
+        return;
+      case _PairSafetyAction.block:
+        _showPartnerSafetySheet(
+          title: 'ブロック',
+          description: 'ブロックすると今後このユーザーからの通知やマッチングは停止されます。必要に応じて解除も可能です。',
+          confirmationLabel: 'このユーザーをブロック',
+          onConfirmed: () {
+            MinqLogger.warn('pair_blocked', metadata: const {'category': 'safety'});
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('ユーザーをブロックしました。設定から管理できます。')),
+            );
+          },
+        );
+        return;
+      case _PairSafetyAction.unpair:
+        _showPartnerSafetySheet(
+          title: 'Pairを解除',
+          description: 'Pairを解除すると、進行中のハイタッチ履歴は保存され、次のマッチングが可能になります。',
+          confirmationLabel: 'Pairを解除する',
+          onConfirmed: _unpair,
+        );
+        return;
+    }
+  }
+
+  void _showPartnerSafetySheet({
+    required String title,
+    required String description,
+    required String confirmationLabel,
+    required VoidCallback onConfirmed,
+  }) {
+    final tokens = context.tokens;
+    showModalBottomSheet<void>(
+      context: context,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(
+            tokens.spacing(5),
+            tokens.spacing(5),
+            tokens.spacing(5),
+            MediaQuery.of(context).padding.bottom + tokens.spacing(5),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close, color: tokens.textMuted),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+              SizedBox(height: tokens.spacing(3)),
+              Text(
+                description,
+                style: tokens.bodySmall.copyWith(color: tokens.textSecondary),
+              ),
+              SizedBox(height: tokens.spacing(5)),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  onConfirmed();
+                },
+                icon: Icon(Icons.shield_outlined, color: tokens.surface),
+                label: Text(
+                  confirmationLabel,
+                  style: tokens.bodyMedium.copyWith(
+                    color: tokens.surface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: tokens.brandPrimary,
+                  minimumSize: Size.fromHeight(tokens.spacing(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: tokens.cornerLarge(),
+                  ),
+                ),
+              ),
+              SizedBox(height: tokens.spacing(4)),
+              Text(
+                '緊急の場合はアプリ外の適切な機関にもご連絡ください。',
+                style: tokens.labelSmall.copyWith(color: tokens.textMuted),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -38,49 +169,108 @@ class _PairScreenState extends State<PairScreen> {
         surfaceTintColor: Colors.transparent,
         actions: <Widget>[
           if (_isPaired)
-            IconButton(
+            PopupMenuButton<_PairSafetyAction>(
+              tooltip: 'Pair options',
               icon: Icon(Icons.more_horiz, color: tokens.textPrimary),
-              onPressed: _unpair,
+              onSelected: _handleSafetyAction,
+              itemBuilder: (context) => <PopupMenuEntry<_PairSafetyAction>>[
+                const PopupMenuItem<_PairSafetyAction>(
+                  value: _PairSafetyAction.report,
+                  child: ListTile(
+                    leading: Icon(Icons.flag_outlined),
+                    title: Text('通報する'),
+                  ),
+                ),
+                const PopupMenuItem<_PairSafetyAction>(
+                  value: _PairSafetyAction.block,
+                  child: ListTile(
+                    leading: Icon(Icons.block),
+                    title: Text('ブロックする'),
+                  ),
+                ),
+                const PopupMenuItem<_PairSafetyAction>(
+                  value: _PairSafetyAction.unpair,
+                  child: ListTile(
+                    leading: Icon(Icons.link_off),
+                    title: Text('Pairを解除'),
+                  ),
+                ),
+              ],
             ),
         ],
       ),
-      body: Column(
-        children: <Widget>[
-          if (_showHelpBanner)
-            Card(
-              elevation: 0,
-              margin: EdgeInsets.all(tokens.spacing(5)),
-              color: tokens.brandPrimary.withValues(alpha: 0.1),
-              shape: RoundedRectangleBorder(
-                  borderRadius: tokens.cornerLarge()),
-              child: ListTile(
-                leading: Icon(Icons.info_outline, color: tokens.brandPrimary),
-                title: Text(
-                  _isPaired
-                      ? 'PairとHigh-fiveを送り合ったり、定型メッセージで励まし合おう！'
-                      : '同じ目標を持つ仲間と匿名でPairを組んで、一緒に習慣を続けよう。',
-                  style: tokens.bodySmall
-                      .copyWith(color: tokens.textPrimary),
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.close, color: tokens.textPrimary),
-                  onPressed: () => setState(() => _showHelpBanner = false),
-                ),
-              ),
-            ),
-          Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 400),
-              child: _isPaired
-                  ? const _PairedView(key: ValueKey('paired'))
-                  : _UnpairedView(
-                      key: const ValueKey('unpaired'),
-                      onFindPartner: _findPartner,
+      body: _isLoading
+          ? _PairSkeleton(tokens: tokens)
+          : Column(
+              children: <Widget>[
+                if (_showHelpBanner)
+                  Card(
+                    elevation: 0,
+                    margin: EdgeInsets.all(tokens.spacing(5)),
+                    color: tokens.brandPrimary.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: tokens.cornerLarge()),
+                    child: ListTile(
+                      leading:
+                          Icon(Icons.info_outline, color: tokens.brandPrimary),
+                      title: Text(
+                        _isPaired
+                            ? 'PairとHigh-fiveを送り合ったり、定型メッセージで励まし合おう！'
+                            : '同じ目標を持つ仲間と匿名でPairを組んで、一緒に習慣を続けよう。',
+                        style: tokens.bodySmall
+                            .copyWith(color: tokens.textPrimary),
+                      ),
+                      subtitle: Text(
+                        'メニューからいつでも通報・ブロック・解除ができます。',
+                        style: tokens.labelSmall
+                            .copyWith(color: tokens.textMuted),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.close, color: tokens.textPrimary),
+                        onPressed: () =>
+                            setState(() => _showHelpBanner = false),
+                      ),
                     ),
+                  ),
+                Expanded(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    child: _isPaired
+                        ? const _PairedView(key: ValueKey('paired'))
+                        : _UnpairedView(
+                            key: const ValueKey('unpaired'),
+                            onFindPartner: _findPartner,
+                          ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
+    );
+  }
+}
+
+class _PairSkeleton extends StatelessWidget {
+  const _PairSkeleton({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.all(tokens.spacing(5)),
+      children: <Widget>[
+        MinqSkeleton(
+          height: tokens.spacing(12),
+          borderRadius: tokens.cornerLarge(),
+        ),
+        SizedBox(height: tokens.spacing(5)),
+        MinqSkeleton(
+          height: tokens.spacing(28),
+          borderRadius: tokens.cornerLarge(),
+        ),
+        SizedBox(height: tokens.spacing(4)),
+        const MinqSkeletonList(itemCount: 3, itemHeight: 72),
+      ],
     );
   }
 }

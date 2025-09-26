@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+        <key>NSCameraUsageDescription</key>
+        <string>習慣達成の証跡写真を撮影するためにカメラを利用します / We use the camera to capture proof of your completed quests.</string>
+        <key>NSUserNotificationUsageDescription</key>
+        <string>毎日の習慣リマインダーを届けるために通知を送信します / We send reminders so you can stay on track.</string>
 </dict>
 </plist>

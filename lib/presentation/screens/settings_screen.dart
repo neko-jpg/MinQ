@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/common/policy_documents.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -153,24 +155,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           _SettingsSection(
             title: 'About MinQ',
-            tiles: const <Widget>[
+            tiles: <Widget>[
               _SettingsTile(
-                title: 'Terms of Service',
+                title: 'Terms & Community',
+                subtitle: '13+ policy and respectful conduct',
                 trailing: Icon(
                   Icons.arrow_forward_ios,
-                  size: 16,
-                  color: Colors.grey,
+                  size: tokens.spacing(4),
+                  color: tokens.textMuted,
                 ),
+                onTap: () => context.go('/policy/${PolicyDocumentId.terms.name}'),
               ),
               _SettingsTile(
                 title: 'Privacy Policy',
+                subtitle: 'Data handling & export guidance',
                 trailing: Icon(
                   Icons.arrow_forward_ios,
-                  size: 16,
-                  color: Colors.grey,
+                  size: tokens.spacing(4),
+                  color: tokens.textMuted,
                 ),
+                onTap: () => context.go('/policy/${PolicyDocumentId.privacy.name}'),
               ),
               _SettingsTile(
+                title: 'Safety & Reporting SOP',
+                subtitle: '24h initial response commitment',
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: tokens.spacing(4),
+                  color: tokens.textMuted,
+                ),
+                onTap: () => context.go('/policy/${PolicyDocumentId.community.name}'),
+              ),
+              const _SettingsTile(
                 title: 'App Version',
                 trailing: Text('1.0.0', style: TextStyle(color: Colors.grey)),
               ),
