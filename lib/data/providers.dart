@@ -1,6 +1,7 @@
 ﻿import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:minq/data/repositories/auth_repository.dart';
@@ -11,6 +12,8 @@ import 'package:minq/data/repositories/user_repository.dart';
 import 'package:minq/data/services/firestore_sync_service.dart';
 import 'package:minq/data/services/isar_service.dart';
 import 'package:minq/data/services/notification_service.dart';
+import 'package:minq/data/services/remote_config_service.dart';
+import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/user/user.dart' as minq_user;
@@ -31,6 +34,17 @@ final firestoreProvider = Provider<FirebaseFirestore?>(
       ? FirebaseFirestore.instance
       : null,
 );
+
+final remoteConfigProvider = Provider<FirebaseRemoteConfig?>((ref) {
+  return ref.watch(firebaseAvailabilityProvider)
+      ? FirebaseRemoteConfig.instance
+      : null;
+});
+
+final featureFlagsProvider =
+    StateNotifierProvider<FeatureFlagsNotifier, FeatureFlags>((ref) {
+  return FeatureFlagsNotifier(ref.watch(remoteConfigProvider));
+});
 
 final isarProvider = FutureProvider<Isar>((ref) async {
   final isarService = IsarService();
@@ -195,6 +209,8 @@ final appStartupProvider = FutureProvider<void>((ref) async {
   if (syncService != null) {
     await syncService.syncQuestLogs(firebaseUser.uid);
   }
+
+  await ref.read(featureFlagsProvider.notifier).ensureLoaded();
 });
 
 final authStateChangesProvider = StreamProvider<User?>((ref) {

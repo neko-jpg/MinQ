@@ -11,5 +11,8 @@
   "swapRecommendation": "Swap for another recommendation",
   "snoozeUntilTomorrow": "Snooze until tomorrow",
   "snoozed": "Snoozed",
-  "undo": "Undo"
+  "undo": "Undo",
+  "dismissHelpBanner": "Dismiss tips",
+  "openProfile": "Open profile",
+  "snoozeTemporarilyDisabled": "Snooze temporarily unavailable"
 }

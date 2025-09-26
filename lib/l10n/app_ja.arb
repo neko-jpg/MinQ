@@ -11,5 +11,8 @@
   "swapRecommendation": "別のおすすめに入れ替え",
   "snoozeUntilTomorrow": "明日までスヌーズ",
   "snoozed": "スヌーズ済み",
-  "undo": "元に戻す"
+  "undo": "元に戻す",
+  "dismissHelpBanner": "ヒントを閉じる",
+  "openProfile": "プロフィールを開く",
+  "snoozeTemporarilyDisabled": "スヌーズは一時的に無効です"
 }
