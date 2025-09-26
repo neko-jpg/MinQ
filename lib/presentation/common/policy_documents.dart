@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum PolicyDocumentId { terms, privacy, community }
+enum PolicyDocumentId { terms, privacy, community, licenses }
 
 class PolicyParagraph {
   const PolicyParagraph({required this.ja, required this.en});
@@ -180,6 +180,86 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
       ),
     ],
   ),
+  PolicyDocumentId.licenses: PolicyDocument(
+    id: PolicyDocumentId.licenses,
+    titleJa: 'コンテンツ権利 & ライセンス一覧',
+    titleEn: 'Content Rights & Licensing Overview',
+    lastUpdated: '2024-07-01',
+    sections: <PolicySection>[
+      const PolicySection(
+        titleJa: '1. ビジュアルアセット',
+        titleEn: '1. Visual Assets',
+        paragraphs: <PolicyParagraph>[
+          PolicyParagraph(
+            ja:
+                'アプリアイコンおよびイラストは社内デザインチームによるオリジナル制作物です。第三者提供素材は使用していません。',
+            en:
+                'App icons and illustrations are original works created by the in-house design team. No third-party stock materials are included.',
+          ),
+          PolicyParagraph(
+            ja:
+                'UIの主要フォントには Google Fonts の Noto Sans JP / Inter を採用し、SIL Open Font License 1.1 に基づいて再配布しています。',
+            en:
+                'The primary UI fonts are Noto Sans JP and Inter (Google Fonts) redistributed under the SIL Open Font License 1.1.',
+          ),
+        ],
+      ),
+      const PolicySection(
+        titleJa: '2. アイコン & アニメーション',
+        titleEn: '2. Icons & Animations',
+        paragraphs: <PolicyParagraph>[
+          PolicyParagraph(
+            ja:
+                'アプリ内アイコンは Material Symbols をベースにカスタマイズしています。Material Symbols のライセンス（Apache License 2.0）に従い表記しています。',
+            en:
+                'In-app icons originate from Material Symbols with bespoke adjustments. Attribution follows the Apache License 2.0 terms.',
+          ),
+          PolicyParagraph(
+            ja:
+                'コンフェッティ等のアニメーションは LottieFiles の「Celebration Pack」（CC BY 4.0）を加工し使用しています。出典クレジットをアプリ内に明記しています。',
+            en:
+                'Animations such as confetti leverage the LottieFiles “Celebration Pack” (CC BY 4.0) with modifications. Credits are declared within the app.',
+          ),
+        ],
+      ),
+      const PolicySection(
+        titleJa: '3. 効果音 & BGM',
+        titleEn: '3. Sound Effects & BGM',
+        paragraphs: <PolicyParagraph>[
+          PolicyParagraph(
+            ja:
+                '記録完了時のサウンドは「Soundeffect-lab」より CC0 ライセンスで取得した素材を使用し、改変後にクレジットを掲示しています。',
+            en:
+                'Record completion sounds derive from Soundeffect-lab CC0 assets with post-processing; acknowledgement is displayed in-app.',
+          ),
+          PolicyParagraph(
+            ja:
+                'その他のBGMは Epidemic Sound のサブスクリプション契約に基づき利用しています（トラックIDはリリースノートに記載）。',
+            en:
+                'Ambient BGM uses licensed tracks from Epidemic Sound via subscription; track IDs are documented in release notes.',
+          ),
+        ],
+      ),
+      const PolicySection(
+        titleJa: '4. OSSコンポーネント',
+        titleEn: '4. Open Source Software Components',
+        paragraphs: <PolicyParagraph>[
+          PolicyParagraph(
+            ja:
+                'Flutter, Riverpod, Isar, Firebase などのOSSライブラリは各ライセンス（BSD, MIT, Apache 2.0 等）に従って利用しています。',
+            en:
+                'Flutter, Riverpod, Isar, Firebase and other OSS libraries are used under their respective licenses (BSD, MIT, Apache 2.0, etc.).',
+          ),
+          PolicyParagraph(
+            ja:
+                '依存ライブラリ一覧とライセンス全文はアプリ内「設定 > コンテンツ権利」および GitHub リポジトリの LICENSES.md で公開しています。',
+            en:
+                'Full dependency listings and license texts are available under “Settings → Content Rights” and in the repository’s LICENSES.md.',
+          ),
+        ],
+      ),
+    ],
+  ),
 };
 
 extension PolicyDocumentIdExt on PolicyDocumentId {
@@ -191,6 +271,8 @@ extension PolicyDocumentIdExt on PolicyDocumentId {
         return Icons.verified_user_outlined;
       case PolicyDocumentId.community:
         return Icons.shield_moon_outlined;
+      case PolicyDocumentId.licenses:
+        return Icons.collections_bookmark_outlined;
     }
   }
 }
