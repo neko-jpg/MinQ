@@ -12,6 +12,8 @@ import 'package:minq/presentation/screens/login_screen.dart';
 import 'package:minq/presentation/screens/record_screen.dart';
 import 'package:minq/presentation/screens/celebration_screen.dart';
 import 'package:minq/presentation/screens/profile_screen.dart';
+import 'package:minq/presentation/screens/policy_viewer_screen.dart';
+import 'package:minq/presentation/common/policy_documents.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -44,6 +46,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: '/policy/:id',
+        builder: (context, state) {
+          final rawId = state.pathParameters['id'];
+          final documentId = PolicyDocumentId.values.firstWhere(
+            (PolicyDocumentId value) => value.name == rawId,
+            orElse: () => PolicyDocumentId.terms,
+          );
+          return PolicyViewerScreen(documentId: documentId);
+        },
       ),
       // Main navigation shell
       ShellRoute(

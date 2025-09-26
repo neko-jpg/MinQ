@@ -3,6 +3,7 @@ import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/common/minq_skeleton.dart';
 
 final Map<DateTime, int> _heatmapData = {
   DateTime(2024, 6, 3): 5,
@@ -42,6 +43,17 @@ class StatsScreen extends StatefulWidget {
 
 class _StatsScreenState extends State<StatsScreen> {
   bool _showHelpBanner = true;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,48 +72,50 @@ class _StatsScreenState extends State<StatsScreen> {
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
       ),
-      body:
-          !(hasActivity || hasLogs)
+      body: _isLoading
+          ? _StatsSkeleton(tokens: tokens)
+          : !(hasActivity || hasLogs)
               ? Center(
-                child: MinqEmptyState(
-                  icon: Icons.insights_outlined,
-                  title: 'まだRecordがありません',
-                  message: 'Recordすると、ストリークやヒートマップで成長が見えるようになります。',
-                  actionLabel: '最初のRecordをする',
-                  onAction: () => context.go('/record'),
-                ),
-              )
+                  child: MinqEmptyState(
+                    icon: Icons.insights_outlined,
+                    title: 'まだRecordがありません',
+                    message:
+                        'Recordすると、ストリークやヒートマップで成長が見えるようになります。',
+                    actionLabel: '最初のRecordをする',
+                    onAction: () => context.go('/record'),
+                  ),
+                )
               : ListView(
-                padding: EdgeInsets.all(tokens.spacing(5)),
-                children: <Widget>[
-                  if (_showHelpBanner)
-                    Card(
-                      elevation: 0,
-                      color: tokens.brandPrimary.withValues(alpha: 0.1),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: tokens.cornerLarge()),
-                      child: ListTile(
-                        leading: Icon(Icons.info_outline, color: tokens.brandPrimary),
-                        title: Text(
-                          '毎日のRecordをヒートマップで振り返り、ストリークを伸ばすモチベーションにしよう。',
-                          style: tokens.bodySmall
-                              .copyWith(color: tokens.textPrimary),
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(Icons.close, color: tokens.textPrimary),
-                          onPressed: () =>
-                              setState(() => _showHelpBanner = false),
+                  padding: EdgeInsets.all(tokens.spacing(5)),
+                  children: <Widget>[
+                    if (_showHelpBanner)
+                      Card(
+                        elevation: 0,
+                        color: tokens.brandPrimary.withValues(alpha: 0.1),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: tokens.cornerLarge()),
+                        child: ListTile(
+                          leading: Icon(Icons.info_outline, color: tokens.brandPrimary),
+                          title: Text(
+                            '毎日のRecordをヒートマップで振り返り、ストリークを伸ばすモチベーションにしよう。',
+                            style: tokens.bodySmall
+                                .copyWith(color: tokens.textPrimary),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.close, color: tokens.textPrimary),
+                            onPressed: () =>
+                                setState(() => _showHelpBanner = false),
+                          ),
                         ),
                       ),
-                    ),
-                  if (hasActivity) _buildStreakCounter(tokens),
-                  if (hasActivity) SizedBox(height: tokens.spacing(6)),
-                  if (hasActivity) _buildHeatmapCard(tokens),
-                  if (hasLogs && hasActivity)
-                    SizedBox(height: tokens.spacing(6)),
-                  if (hasLogs) _buildDailyLog(tokens),
-                ],
-              ),
+                    if (hasActivity) _buildStreakCounter(tokens),
+                    if (hasActivity) SizedBox(height: tokens.spacing(6)),
+                    if (hasActivity) _buildHeatmapCard(tokens),
+                    if (hasLogs && hasActivity)
+                      SizedBox(height: tokens.spacing(6)),
+                    if (hasLogs) _buildDailyLog(tokens),
+                  ],
+                ),
     );
   }
 
@@ -248,6 +262,39 @@ class _LogItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _StatsSkeleton extends StatelessWidget {
+  const _StatsSkeleton({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.all(tokens.spacing(5)),
+      children: <Widget>[
+        MinqSkeleton(
+          height: tokens.spacing(12),
+          borderRadius: tokens.cornerLarge(),
+        ),
+        SizedBox(height: tokens.spacing(4)),
+        MinqSkeleton(
+          height: tokens.spacing(24),
+          borderRadius: tokens.cornerLarge(),
+        ),
+        SizedBox(height: tokens.spacing(4)),
+        MinqSkeleton(
+          height: tokens.spacing(30),
+          borderRadius: tokens.cornerLarge(),
+        ),
+        SizedBox(height: tokens.spacing(4)),
+        const MinqSkeletonLine(width: 160, height: 20),
+        SizedBox(height: tokens.spacing(3)),
+        const MinqSkeletonList(itemCount: 3, itemHeight: 64),
+      ],
     );
   }
 }

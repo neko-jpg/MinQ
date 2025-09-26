@@ -1,0 +1,5 @@
+<resources>
+    <string name="default_notification_channel_id">habit_reminders</string>
+    <string name="camera_permission_rationale">撮影した写真で習慣達成を記録するためにカメラを使用します。</string>
+    <string name="notifications_permission_rationale">毎日のリマインダー通知で習慣継続をサポートします。</string>
+</resources>

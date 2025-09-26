@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/common/minq_skeleton.dart';
 
 class _QuestTemplateData {
   const _QuestTemplateData({
@@ -98,6 +99,17 @@ class QuestsScreen extends StatefulWidget {
 
 class _QuestsScreenState extends State<QuestsScreen> {
   bool _showHelpBanner = true;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.delayed(const Duration(milliseconds: 650), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,72 +131,116 @@ class _QuestsScreenState extends State<QuestsScreen> {
             preferredSize: Size.fromHeight(tokens.spacing(12)),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: TabBar(
-                isScrollable: true,
-                indicatorColor: tokens.brandPrimary,
-                labelColor: tokens.brandPrimary,
-                unselectedLabelColor: tokens.textMuted,
-                labelStyle: tokens.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-                unselectedLabelStyle: tokens.bodySmall,
-                tabs:
-                    _categories
-                        .map((String title) => Tab(text: title))
-                        .toList(),
-              ),
+              child: _isLoading
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: tokens.spacing(5),
+                        vertical: tokens.spacing(3),
+                      ),
+                      child: const MinqSkeletonLine(width: 220, height: 24),
+                    )
+                  : TabBar(
+                      isScrollable: true,
+                      indicatorColor: tokens.brandPrimary,
+                      labelColor: tokens.brandPrimary,
+                      unselectedLabelColor: tokens.textMuted,
+                      labelStyle: tokens.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                      unselectedLabelStyle: tokens.bodySmall,
+                      tabs: _categories
+                          .map((String title) => Tab(text: title))
+                          .toList(),
+                    ),
             ),
           ),
         ),
-        body: Column(
-          children: <Widget>[
-            if (_showHelpBanner)
-              Card(
-                elevation: 0,
-                margin: EdgeInsets.all(tokens.spacing(5)),
-                color: tokens.brandPrimary.withValues(alpha: 0.1),
-                shape: RoundedRectangleBorder(
-                    borderRadius: tokens.cornerLarge()),
-                child: ListTile(
-                  leading: Icon(Icons.info_outline, color: tokens.brandPrimary),
-                  title: Text(
-                    'ここから新しいQuestを追加したり、既存のQuestを編集したりできます。',
-                    style: tokens.bodySmall
-                        .copyWith(color: tokens.textPrimary),
+        body: _isLoading
+            ? _QuestsSkeleton(tokens: tokens)
+            : Column(
+                children: <Widget>[
+                  if (_showHelpBanner)
+                    Card(
+                      elevation: 0,
+                      margin: EdgeInsets.all(tokens.spacing(5)),
+                      color: tokens.brandPrimary.withValues(alpha: 0.1),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: tokens.cornerLarge()),
+                      child: ListTile(
+                        leading:
+                            Icon(Icons.info_outline, color: tokens.brandPrimary),
+                        title: Text(
+                          'ここから新しいQuestを追加したり、既存のQuestを編集したりできます。',
+                          style: tokens.bodySmall
+                              .copyWith(color: tokens.textPrimary),
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.close, color: tokens.textPrimary),
+                          onPressed: () =>
+                              setState(() => _showHelpBanner = false),
+                        ),
+                      ),
+                    ),
+                  Expanded(
+                    child: TabBarView(
+                      children:
+                          QuestsScreen._categories.map((String category) {
+                        final templates =
+                            _templatesByCategory[category] ??
+                                const <_QuestTemplateData>[];
+                        return _QuestCategoryList(
+                          category: category,
+                          templates: templates,
+                        );
+                      }).toList(),
+                    ),
                   ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.close, color: tokens.textPrimary),
-                    onPressed: () => setState(() => _showHelpBanner = false),
+                ],
+              ),
+        floatingActionButton: _isLoading
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () {},
+                label: Text(
+                  'Create Custom',
+                  style: tokens.bodyMedium.copyWith(
+                    color: tokens.surface,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                icon: Icon(Icons.add, color: tokens.surface),
+                backgroundColor: tokens.brandPrimary,
               ),
-            Expanded(
-              child: TabBarView(
-                children: QuestsScreen._categories.map((String category) {
-                  final templates = _templatesByCategory[category] ??
-                      const <_QuestTemplateData>[];
-                  return _QuestCategoryList(
-                    category: category,
-                    templates: templates,
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {},
-          label: Text(
-            'Create Custom',
-            style: tokens.bodyMedium.copyWith(
-              color: tokens.surface,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          icon: Icon(Icons.add, color: tokens.surface),
-          backgroundColor: tokens.brandPrimary,
-        ),
       ),
+    );
+  }
+}
+
+class _QuestsSkeleton extends StatelessWidget {
+  const _QuestsSkeleton({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.all(tokens.spacing(5)),
+      children: <Widget>[
+        MinqSkeleton(
+          height: tokens.spacing(12),
+          borderRadius: tokens.cornerLarge(),
+        ),
+        SizedBox(height: tokens.spacing(4)),
+        const MinqSkeletonGrid(
+          crossAxisCount: 2,
+          itemCount: 4,
+          itemAspectRatio: 1.2,
+        ),
+        SizedBox(height: tokens.spacing(5)),
+        const MinqSkeletonLine(width: 200, height: 20),
+        SizedBox(height: tokens.spacing(3)),
+        const MinqSkeletonList(itemCount: 3, itemHeight: 82),
+      ],
     );
   }
 }

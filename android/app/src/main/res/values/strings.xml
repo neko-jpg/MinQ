@@ -1,0 +1,5 @@
+<resources>
+    <string name="default_notification_channel_id">habit_reminders</string>
+    <string name="camera_permission_rationale">We use the camera so you can capture proof photos of completed quests.</string>
+    <string name="notifications_permission_rationale">We send friendly reminders to keep your habits on track.</string>
+</resources>

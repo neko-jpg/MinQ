@@ -6,6 +6,8 @@ import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/common/minq_skeleton.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 
 enum RecordErrorType { none, offline, permissionDenied, cameraFailure }
 
@@ -21,8 +23,25 @@ class RecordScreen extends StatefulWidget {
 class _RecordScreenState extends State<RecordScreen> {
   RecordErrorType _error = RecordErrorType.none;
   bool _showHelpBanner = true;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.delayed(const Duration(milliseconds: 700), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    });
+  }
 
   void _simulateError(RecordErrorType type) {
+    if (type != RecordErrorType.none) {
+      MinqLogger.error(
+        'record_flow_error',
+        metadata: {'type': type.name, 'questId': widget.questId},
+      );
+    }
     setState(() => _error = type);
   }
 
@@ -61,48 +80,92 @@ class _RecordScreenState extends State<RecordScreen> {
           onPressed: () => context.pop(),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          if (_showHelpBanner)
-            Card(
-              elevation: 0,
-              margin: EdgeInsets.all(tokens.spacing(5)),
-              color: tokens.brandPrimary.withValues(alpha: 0.1),
-              shape: RoundedRectangleBorder(
-                  borderRadius: tokens.cornerLarge()),
-              child: ListTile(
-                leading: Icon(Icons.info_outline, color: tokens.brandPrimary),
-                title: Text(
-                  'Questを完了したら、証拠として写真か自己申告を選択してRecordしよう。',
-                  style: tokens.bodySmall
-                      .copyWith(color: tokens.textPrimary),
+      body: _isLoading
+          ? _RecordSkeleton(tokens: tokens)
+          : Column(
+              children: <Widget>[
+                if (_showHelpBanner)
+                  Card(
+                    elevation: 0,
+                    margin: EdgeInsets.all(tokens.spacing(5)),
+                    color: tokens.brandPrimary.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: tokens.cornerLarge()),
+                    child: ListTile(
+                      leading:
+                          Icon(Icons.info_outline, color: tokens.brandPrimary),
+                      title: Text(
+                        'Questを完了したら、証拠として写真か自己申告を選択してRecordしよう。',
+                        style: tokens.bodySmall
+                            .copyWith(color: tokens.textPrimary),
+                      ),
+                      subtitle: Text(
+                        'カメラ許可は証跡撮影のみに使用され、通知許可はリマインダー配信のためだけに使われます。',
+                        style:
+                            tokens.labelSmall.copyWith(color: tokens.textMuted),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.close, color: tokens.textPrimary),
+                        onPressed: () =>
+                            setState(() => _showHelpBanner = false),
+                      ),
+                    ),
+                  ),
+                Expanded(
+                  child: switch (_error) {
+                    RecordErrorType.none => _RecordForm(
+                        questId: widget.questId, onSimulate: _simulateError),
+                    RecordErrorType.offline => _OfflineRecovery(
+                        onRetry: _retryUpload,
+                        onOpenQueue: _openOfflineQueue,
+                      ),
+                    RecordErrorType.permissionDenied => _PermissionRecovery(
+                        onRequest: _requestPermissions,
+                        onOpenSettings: _openSettings,
+                      ),
+                    RecordErrorType.cameraFailure => _CameraRecovery(
+                        onRetry: _retryUpload,
+                        onSwitchMode: () =>
+                            _simulateError(RecordErrorType.none),
+                      ),
+                  },
                 ),
-                trailing: IconButton(
-                  icon: Icon(Icons.close, color: tokens.textPrimary),
-                  onPressed: () => setState(() => _showHelpBanner = false),
-                ),
-              ),
+              ],
             ),
-          Expanded(
-            child: switch (_error) {
-              RecordErrorType.none => _RecordForm(
-                  questId: widget.questId, onSimulate: _simulateError),
-              RecordErrorType.offline => _OfflineRecovery(
-                onRetry: _retryUpload,
-                onOpenQueue: _openOfflineQueue,
-              ),
-              RecordErrorType.permissionDenied => _PermissionRecovery(
-                onRequest: _requestPermissions,
-                onOpenSettings: _openSettings,
-              ),
-              RecordErrorType.cameraFailure => _CameraRecovery(
-                onRetry: _retryUpload,
-                onSwitchMode: () => _simulateError(RecordErrorType.none),
-              ),
-            },
-          ),
-        ],
-      ),
+    );
+  }
+}
+
+class _RecordSkeleton extends StatelessWidget {
+  const _RecordSkeleton({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.all(tokens.spacing(5)),
+      children: <Widget>[
+        MinqSkeleton(
+          height: tokens.spacing(12),
+          borderRadius: tokens.cornerLarge(),
+        ),
+        SizedBox(height: tokens.spacing(5)),
+        const MinqSkeletonLine(width: 140, height: 22),
+        SizedBox(height: tokens.spacing(3)),
+        MinqSkeleton(
+          height: tokens.spacing(18),
+          borderRadius: tokens.cornerLarge(),
+        ),
+        SizedBox(height: tokens.spacing(6)),
+        const MinqSkeletonLine(width: 110, height: 22),
+        SizedBox(height: tokens.spacing(4)),
+        const MinqSkeletonList(itemCount: 2, itemHeight: 56),
+        SizedBox(height: tokens.spacing(5)),
+        const MinqSkeletonLine(width: 200, height: 18),
+        SizedBox(height: tokens.spacing(3)),
+        const MinqSkeletonList(itemCount: 3, itemHeight: 44),
+      ],
     );
   }
 }

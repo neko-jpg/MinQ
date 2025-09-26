@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/common/debouncer.dart';
 import 'package:minq/presentation/common/minq_copy.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
+import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -91,6 +92,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<int> _slotIndices = <int>[0, 1, 2];
   final Set<int> _snoozedSlots = <int>{};
   bool _showHelpBanner = true;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    });
+  }
 
   void _swapSuggestion(int slot) {
     setState(() {
@@ -127,49 +139,55 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: tokens.background,
       body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(vertical: tokens.spacing(5)),
-          children: <Widget>[
-            if (_showHelpBanner)
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: tokens.spacing(5)),
-                child: Card(
-                  elevation: 0,
-                  color: tokens.brandPrimary.withValues(alpha: 0.1),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: tokens.cornerLarge()),
-                  child: ListTile(
-                    leading: Icon(Icons.info_outline, color: tokens.brandPrimary),
-                    title: Text(
-                      '毎日3つのQuestをこなして、PairとHigh-fiveを送り合おう！',
-                      style: tokens.bodySmall
-                          .copyWith(color: tokens.textPrimary),
+        child: _isLoading
+            ? _HomeSkeleton(tokens: tokens)
+            : ListView(
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing(5)),
+                children: <Widget>[
+                  if (_showHelpBanner)
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: tokens.spacing(5)),
+                      child: Card(
+                        elevation: 0,
+                        color: tokens.brandPrimary.withValues(alpha: 0.1),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: tokens.cornerLarge()),
+                        child: ListTile(
+                          leading:
+                              Icon(Icons.info_outline, color: tokens.brandPrimary),
+                          title: Text(
+                            '毎日3つのQuestをこなして、PairとHigh-fiveを送り合おう！',
+                            style: tokens.bodySmall
+                                .copyWith(color: tokens.textPrimary),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.close, color: tokens.textPrimary),
+                            onPressed: () =>
+                                setState(() => _showHelpBanner = false),
+                          ),
+                        ),
+                      ),
                     ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.close, color: tokens.textPrimary),
-                      onPressed: () => setState(() => _showHelpBanner = false),
+                  _buildHeader(context, l10n),
+                  SizedBox(height: tokens.spacing(7)),
+                  _buildRecommendations(context, l10n),
+                  SizedBox(height: tokens.spacing(7)),
+                  _buildSectionHeader(context, l10n.todaysQuests),
+                  SizedBox(height: tokens.spacing(4)),
+                  if (!hasQuests)
+                    MinqEmptyState(
+                      icon: Icons.flag_circle_outlined,
+                      title: l10n.noQuestsToday,
+                      message: l10n.chooseFromTemplate,
+                      actionLabel: l10n.findAQuest,
+                      onAction: () => context.go('/quests'),
                     ),
-                  ),
-                ),
+                  if (hasQuests)
+                    ..._todayQuests
+                        .map((Quest quest) => _QuestCard(quest: quest)),
+                ],
               ),
-            _buildHeader(context, l10n),
-            SizedBox(height: tokens.spacing(7)),
-            _buildRecommendations(context, l10n),
-            SizedBox(height: tokens.spacing(7)),
-            _buildSectionHeader(context, l10n.todaysQuests),
-            SizedBox(height: tokens.spacing(4)),
-            if (!hasQuests)
-              MinqEmptyState(
-                icon: Icons.flag_circle_outlined,
-                title: l10n.noQuestsToday,
-                message: l10n.chooseFromTemplate,
-                actionLabel: l10n.findAQuest,
-                onAction: () => context.go('/quests'),
-              ),
-            if (hasQuests)
-              ..._todayQuests.map((Quest quest) => _QuestCard(quest: quest)),
-          ],
-        ),
       ),
     );
   }
@@ -255,6 +273,53 @@ class _HomeScreenState extends State<HomeScreen> {
         title,
         style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
       ),
+    );
+  }
+}
+
+class _HomeSkeleton extends StatelessWidget {
+  const _HomeSkeleton({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.symmetric(
+        horizontal: tokens.spacing(5),
+        vertical: tokens.spacing(5),
+      ),
+      children: <Widget>[
+        MinqSkeleton(
+          height: tokens.spacing(12),
+          borderRadius: tokens.cornerLarge(),
+        ),
+        SizedBox(height: tokens.spacing(6)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const MinqSkeletonLine(width: 140, height: 24),
+                SizedBox(height: tokens.spacing(2)),
+                const MinqSkeletonLine(width: 200, height: 18),
+              ],
+            ),
+            MinqSkeletonAvatar(size: tokens.spacing(12)),
+          ],
+        ),
+        SizedBox(height: tokens.spacing(7)),
+        const MinqSkeletonLine(width: 180, height: 20),
+        SizedBox(height: tokens.spacing(2.5)),
+        const MinqSkeletonLine(width: 220, height: 14),
+        SizedBox(height: tokens.spacing(4)),
+        const MinqSkeletonList(itemCount: 3, itemHeight: 88),
+        SizedBox(height: tokens.spacing(6)),
+        const MinqSkeletonLine(width: 160, height: 20),
+        SizedBox(height: tokens.spacing(3)),
+        const MinqSkeletonList(itemCount: 3, itemHeight: 96),
+      ],
     );
   }
 }
