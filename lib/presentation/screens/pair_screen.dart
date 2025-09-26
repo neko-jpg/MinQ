@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/common/minq_empty_state.dart';
-import 'package:minq/presentation/common/minq_buttons.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/common/minq_skeleton.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/presentation/common/minq_buttons.dart';
+import 'package:minq/presentation/common/minq_empty_state.dart';
+import 'package:minq/presentation/common/minq_skeleton.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 enum _PairSafetyAction { report, block, unpair }
 
-class PairScreen extends StatefulWidget {
+class PairScreen extends ConsumerStatefulWidget {
   const PairScreen({super.key});
 
   @override
-  State<PairScreen> createState() => _PairScreenState();
+  ConsumerState<PairScreen> createState() => _PairScreenState();
 }
 
-class _PairScreenState extends State<PairScreen> {
+class _PairScreenState extends ConsumerState<PairScreen> {
   bool _isPaired = false;
   bool _showHelpBanner = true;
   bool _isLoading = true;
+  bool _hasSeenGuidelines = false;
+  bool _guidelineStateLoaded = false;
 
   @override
   void initState() {
     super.initState();
+    _loadGuidelineState();
     Future<void>.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -29,9 +34,35 @@ class _PairScreenState extends State<PairScreen> {
     });
   }
 
+  Future<void> _loadGuidelineState() async {
+    final preferences = ref.read(localPreferencesServiceProvider);
+    final seen = await preferences.hasSeenPairGuidelines();
+    if (mounted) {
+      setState(() {
+        _hasSeenGuidelines = seen;
+        _guidelineStateLoaded = true;
+      });
+      if (_isPaired && !seen) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _showGuidelinesSheet();
+          }
+        });
+      }
+    }
+  }
+
   void _findPartner() {
     MinqLogger.info('pair_find_partner', metadata: const {'origin': 'pair_screen'});
     setState(() => _isPaired = true);
+    if (_guidelineStateLoaded && !_hasSeenGuidelines) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        _showGuidelinesSheet();
+      });
+    }
   }
 
   void _unpair() {
@@ -46,12 +77,7 @@ class _PairScreenState extends State<PairScreen> {
           title: '通報',
           description: '不適切な行動やハラスメントを報告すると、専任チームが24時間以内に確認します。',
           confirmationLabel: '通報を送信',
-          onConfirmed: () {
-            MinqLogger.warn('pair_report_submitted', metadata: const {'category': 'safety'});
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('通報を受け付けました。対応が完了次第お知らせします。')),
-            );
-          },
+          onConfirmed: _submitSafetyReport,
         );
         return;
       case _PairSafetyAction.block:
@@ -76,6 +102,113 @@ class _PairScreenState extends State<PairScreen> {
         );
         return;
     }
+  }
+
+  Future<void> _submitSafetyReport() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final preferences = ref.read(localPreferencesServiceProvider);
+    final retryAfter = await preferences.registerReportAttempt();
+    if (retryAfter != null) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            '短時間に複数の通報が送信されました。${_formatDuration(retryAfter)}後に再度お試しください。',
+          ),
+        ),
+      );
+      return;
+    }
+
+    MinqLogger.warn('pair_report_submitted', metadata: const {'category': 'safety'});
+    messenger.showSnackBar(
+      const SnackBar(content: Text('通報を受け付けました。対応が完了次第お知らせします。')),
+    );
+  }
+
+  String _formatDuration(Duration duration) {
+    if (duration.inMinutes >= 1) {
+      final minutes = duration.inMinutes;
+      return '$minutes分';
+    }
+    final seconds = duration.inSeconds.clamp(1, 59);
+    return '$seconds秒';
+  }
+
+  Future<void> _showGuidelinesSheet() async {
+    final tokens = context.tokens;
+    final preferences = ref.read(localPreferencesServiceProvider);
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
+      builder: (context) {
+        final padding = MediaQuery.of(context).padding.bottom;
+        return Padding(
+          padding: EdgeInsets.fromLTRB(
+            tokens.spacing(5),
+            tokens.spacing(5),
+            tokens.spacing(5),
+            padding + tokens.spacing(6),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Icon(Icons.shield_person, color: tokens.brandPrimary),
+                  SizedBox(width: tokens.spacing(3)),
+                  Expanded(
+                    child: Text(
+                      'Pairガイドライン',
+                      style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close, color: tokens.textMuted),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+              SizedBox(height: tokens.spacing(3)),
+              Text(
+                '初めてPairが成立しました！匿名のパートナーと安心して続けるために、次のルールを守りましょう。',
+                style: tokens.bodySmall.copyWith(color: tokens.textSecondary),
+              ),
+              SizedBox(height: tokens.spacing(4)),
+              const _GuidelineList(),
+              SizedBox(height: tokens.spacing(5)),
+              ElevatedButton(
+                onPressed: () async {
+                  await preferences.markPairGuidelinesSeen();
+                  if (mounted) {
+                    setState(() => _hasSeenGuidelines = true);
+                  }
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: tokens.brandPrimary,
+                  foregroundColor: tokens.surface,
+                  minimumSize: Size.fromHeight(tokens.spacing(13)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: tokens.cornerLarge(),
+                  ),
+                ),
+                child: Text(
+                  'ガイドラインを理解した',
+                  style: tokens.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: tokens.surface,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _showPartnerSafetySheet({
@@ -245,6 +378,45 @@ class _PairScreenState extends State<PairScreen> {
                 ),
               ],
             ),
+    );
+  }
+}
+
+class _GuidelineList extends StatelessWidget {
+  const _GuidelineList();
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final guidelines = <(IconData, String)>[
+      (Icons.no_accounts_outlined, '個人情報や連絡先は交換しない'),
+      (Icons.chat_bubble_outline, 'メッセージは敬意と感謝を忘れずに'),
+      (Icons.photo_outlined, '画像共有は記録のみに限定し、不適切な内容は禁止'),
+      (Icons.flag_outlined, '困ったときは通報・ブロックで安全を確保'),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: guidelines
+          .map(
+            (entry) => Padding(
+              padding: EdgeInsets.only(bottom: tokens.spacing(3)),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Icon(entry.$0, color: tokens.brandPrimary),
+                  SizedBox(width: tokens.spacing(3)),
+                  Expanded(
+                    child: Text(
+                      entry.$1,
+                      style: tokens.bodySmall.copyWith(color: tokens.textPrimary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }

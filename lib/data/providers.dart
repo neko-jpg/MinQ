@@ -16,6 +16,7 @@ import 'package:minq/data/services/firestore_sync_service.dart';
 import 'package:minq/data/services/isar_service.dart';
 import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/data/services/photo_storage_service.dart';
+import 'package:minq/data/services/local_preferences_service.dart';
 import 'package:minq/data/services/remote_config_service.dart';
 import 'package:minq/data/services/time_consistency_service.dart';
 import 'package:minq/domain/config/feature_flags.dart';
@@ -46,6 +47,9 @@ final imagePickerProvider = Provider<ImagePicker>((ref) => ImagePicker());
 final photoStorageServiceProvider = Provider<PhotoStorageService>((ref) {
   return PhotoStorageService(imagePicker: ref.watch(imagePickerProvider));
 });
+
+final localPreferencesServiceProvider =
+    Provider<LocalPreferencesService>((_) => LocalPreferencesService());
 
 final firebaseAvailabilityProvider = Provider<bool>((_) => true);
 
