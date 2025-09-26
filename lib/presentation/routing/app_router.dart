@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/screens/shell_screen.dart';
 import 'package:minq/presentation/screens/home_screen.dart';
 import 'package:minq/presentation/screens/stats_screen.dart';
@@ -24,6 +27,12 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/onboarding',
     navigatorKey: _rootNavigatorKey,
+    redirect: (context, state) {
+      unawaited(
+        ref.read(marketingAttributionServiceProvider).captureUri(state.uri),
+      );
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/onboarding',

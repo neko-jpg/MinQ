@@ -10,21 +10,26 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:minq/data/services/image_moderation_service.dart';
+
 class PhotoStorageService {
   PhotoStorageService({
     ImagePicker? imagePicker,
     this.quality = 85,
     Uuid? uuid,
     Future<Directory> Function()? documentsDirectoryBuilder,
+    ImageModerationService? moderationService,
   })  : _imagePicker = imagePicker ?? ImagePicker(),
         _uuid = uuid ?? const Uuid(),
         _documentsDirectoryBuilder =
-            documentsDirectoryBuilder ?? getApplicationDocumentsDirectory;
+            documentsDirectoryBuilder ?? getApplicationDocumentsDirectory,
+        _moderationService = moderationService ?? const ImageModerationService();
 
   final ImagePicker _imagePicker;
   final int quality;
   final Uuid _uuid;
   final Future<Directory> Function() _documentsDirectoryBuilder;
+  final ImageModerationService _moderationService;
 
   Future<PhotoCaptureResult> captureAndSanitize({
     required String ownerUid,
@@ -48,6 +53,7 @@ class PhotoStorageService {
       return PhotoCaptureResult(
         path: sanitized.path,
         bytes: sanitized.bytes,
+        moderationVerdict: sanitized.verdict,
       );
     } on PlatformException catch (error) {
       throw PhotoCaptureException.fromPlatform(error);
@@ -70,6 +76,8 @@ class PhotoStorageService {
       );
     }
 
+    final verdict = _moderationService.evaluate(decoded);
+
     final sanitizedBytes = Uint8List.fromList(
       img.encodeJpg(decoded, quality: quality, progressive: true),
     );
@@ -85,7 +93,11 @@ class PhotoStorageService {
 
     await original.delete();
 
-    return _SanitizedPhoto(path: sanitizedPath, bytes: sanitizedBytes.length);
+    return _SanitizedPhoto(
+      path: sanitizedPath,
+      bytes: sanitizedBytes.length,
+      verdict: verdict,
+    );
   }
 
   Future<Directory> _ensurePhotoDirectory(String ownerUid) async {
@@ -99,12 +111,21 @@ class PhotoStorageService {
 }
 
 class PhotoCaptureResult {
-  const PhotoCaptureResult({required this.path, required this.bytes});
+  const PhotoCaptureResult({
+    required this.path,
+    required this.bytes,
+    required this.moderationVerdict,
+  });
 
   final String path;
   final int bytes;
+  final PhotoModerationVerdict moderationVerdict;
 
-  static PhotoCaptureResult empty() => const PhotoCaptureResult(path: '', bytes: 0);
+  static PhotoCaptureResult empty() => const PhotoCaptureResult(
+        path: '',
+        bytes: 0,
+        moderationVerdict: PhotoModerationVerdict.ok,
+      );
 
   bool get hasFile => path.isNotEmpty;
 }
@@ -130,8 +151,13 @@ class PhotoCaptureException implements Exception {
 }
 
 class _SanitizedPhoto {
-  _SanitizedPhoto({required this.path, required this.bytes});
+  _SanitizedPhoto({
+    required this.path,
+    required this.bytes,
+    required this.verdict,
+  });
 
   final String path;
   final int bytes;
+  final PhotoModerationVerdict verdict;
 }
