@@ -45,6 +45,7 @@ class MinQApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appStartupAsyncValue = ref.watch(appStartupProvider);
     final router = ref.watch(routerProvider);
+    final locale = ref.watch(appLocaleControllerProvider);
 
     ref.listen(notificationTapStreamProvider, (previous, next) {
       next.whenData((route) {
@@ -128,6 +129,7 @@ class MinQApp extends ConsumerWidget {
         theme: lightTheme,
         darkTheme: darkTheme,
         themeMode: ThemeMode.system,
+        locale: locale,
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

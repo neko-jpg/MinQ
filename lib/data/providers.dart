@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -19,6 +20,9 @@ import 'package:minq/data/services/photo_storage_service.dart';
 import 'package:minq/data/services/local_preferences_service.dart';
 import 'package:minq/data/services/remote_config_service.dart';
 import 'package:minq/data/services/time_consistency_service.dart';
+import 'package:minq/data/services/marketing_attribution_service.dart';
+import 'package:minq/data/services/app_locale_controller.dart';
+import 'package:minq/data/services/image_moderation_service.dart';
 import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/log/quest_log.dart';
@@ -45,11 +49,24 @@ final timeConsistencyServiceProvider =
 
 final imagePickerProvider = Provider<ImagePicker>((ref) => ImagePicker());
 final photoStorageServiceProvider = Provider<PhotoStorageService>((ref) {
-  return PhotoStorageService(imagePicker: ref.watch(imagePickerProvider));
+  return PhotoStorageService(
+    imagePicker: ref.watch(imagePickerProvider),
+    moderationService: const ImageModerationService(),
+  );
 });
 
 final localPreferencesServiceProvider =
     Provider<LocalPreferencesService>((_) => LocalPreferencesService());
+
+final marketingAttributionServiceProvider =
+    Provider<MarketingAttributionService>((ref) {
+  return MarketingAttributionService(ref.watch(localPreferencesServiceProvider));
+});
+
+final appLocaleControllerProvider =
+    StateNotifierProvider<AppLocaleController, Locale?>((ref) {
+  return AppLocaleController(ref.watch(localPreferencesServiceProvider));
+});
 
 final firebaseAvailabilityProvider = Provider<bool>((_) => true);
 

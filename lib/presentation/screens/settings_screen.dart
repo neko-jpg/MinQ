@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/common/policy_documents.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _pushNotifications = true;
   bool _dataSync = false;
   bool _showHelpBanner = true;
   bool _deletionRequested = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.microtask(() async {
+      final prefs = ref.read(localPreferencesServiceProvider);
+      final enabled = await prefs.isCloudBackupEnabled();
+      if (!mounted) {
+        return;
+      }
+      setState(() => _dataSync = enabled);
+    });
+  }
 
   Future<void> _showDataExportSheet(BuildContext context) async {
     final tokens = context.tokens;
@@ -145,11 +161,280 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  String _languageLabel(Locale? locale) {
+    if (locale == null) {
+      return 'System default (自動)';
+    }
+    switch (locale.languageCode) {
+      case 'ja':
+        return '日本語';
+      case 'en':
+        return 'English';
+      default:
+        return locale.toLanguageTag();
+    }
+  }
+
+  Future<void> _showLanguageSheet(BuildContext context) async {
+    final tokens = context.tokens;
+    final current = ref.read(appLocaleControllerProvider);
+    final controller = ref.read(appLocaleControllerProvider.notifier);
+
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: tokens.surface,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerExtraLarge()),
+      builder: (BuildContext sheetContext) {
+        final sheetTokens = sheetContext.tokens;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              title: const Text('System default (自動)'),
+              leading: Radio<String>(
+                value: 'system',
+                groupValue: current == null ? 'system' : current.languageCode,
+                onChanged: (value) => Navigator.of(sheetContext).pop(value),
+              ),
+              onTap: () => Navigator.of(sheetContext).pop('system'),
+            ),
+            ListTile(
+              title: const Text('日本語'),
+              leading: Radio<String>(
+                value: 'ja',
+                groupValue: current?.languageCode,
+                onChanged: (value) => Navigator.of(sheetContext).pop(value),
+              ),
+              onTap: () => Navigator.of(sheetContext).pop('ja'),
+            ),
+            ListTile(
+              title: const Text('English'),
+              leading: Radio<String>(
+                value: 'en',
+                groupValue: current?.languageCode,
+                onChanged: (value) => Navigator.of(sheetContext).pop(value),
+              ),
+              onTap: () => Navigator.of(sheetContext).pop('en'),
+            ),
+            SizedBox(height: sheetTokens.spacing(2)),
+          ],
+        );
+      },
+    );
+
+    if (!mounted || selected == null) {
+      return;
+    }
+
+    switch (selected) {
+      case 'system':
+        await controller.setLocale(null);
+        break;
+      case 'ja':
+        await controller.setLocale(const Locale('ja'));
+        break;
+      case 'en':
+        await controller.setLocale(const Locale('en'));
+        break;
+    }
+  }
+
+  Future<void> _onToggleBackup(BuildContext context, bool value) async {
+    setState(() => _dataSync = value);
+    await ref.read(localPreferencesServiceProvider).setCloudBackupEnabled(value);
+    if (!mounted) {
+      return;
+    }
+    if (value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cloud backup enabled. Google Sign-In will attach on next launch.'),
+        ),
+      );
+    }
+  }
+
+  Future<void> _showBackupSheet(BuildContext context) async {
+    final tokens = context.tokens;
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: tokens.surface,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerExtraLarge()),
+      builder: (BuildContext sheetContext) {
+        final sheetTokens = sheetContext.tokens;
+        return Padding(
+          padding: EdgeInsets.all(sheetTokens.spacing(5)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '機種変更ガイド / Device transfer',
+                style: sheetTokens.titleSmall
+                    .copyWith(color: sheetTokens.textPrimary),
+              ),
+              SizedBox(height: sheetTokens.spacing(3)),
+              Text(
+                '1. Cloud backupを有効にしてGoogle連携すると、Isarログが暗号化バックアップされます。\n'
+                '2. 新端末で同じGoogleアカウントにログインすると同期が自動で再開します。\n'
+                '3. 万が一失敗した場合はデータエクスポート申請から手動で復元できます。',
+                style: sheetTokens.bodySmall
+                    .copyWith(color: sheetTokens.textPrimary),
+              ),
+              SizedBox(height: sheetTokens.spacing(3)),
+              Text(
+                'Enable cloud backup under Privacy & Data before switching devices. We encrypt the local Isar snapshot and rehydrate it during first launch.',
+                style: sheetTokens.bodySmall
+                    .copyWith(color: sheetTokens.textMuted),
+              ),
+              SizedBox(height: sheetTokens.spacing(4)),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton(
+                  onPressed: () => Navigator.of(sheetContext).pop(),
+                  child: const Text('OK'),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showDonationSheet(BuildContext context, FeatureFlags flags) async {
+    final tokens = context.tokens;
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: tokens.surface,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerExtraLarge()),
+      builder: (BuildContext sheetContext) {
+        final sheetTokens = sheetContext.tokens;
+        return Padding(
+          padding: EdgeInsets.all(sheetTokens.spacing(5)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Support MinQ',
+                style: sheetTokens.titleSmall
+                    .copyWith(color: sheetTokens.textPrimary),
+              ),
+              SizedBox(height: sheetTokens.spacing(3)),
+              Text(
+                flags.donationExperimentVariant == 'subscription'
+                    ? '月額プラン（¥300/月）で開発とサーバ費を支援できます。いつでも設定から解約できます。'
+                    : 'コーヒー一杯分の寄付（¥500）でサーバ費とデザイナーへの謝礼を賄えます。匿名決済に対応しています。',
+                style: sheetTokens.bodySmall
+                    .copyWith(color: sheetTokens.textPrimary),
+              ),
+              SizedBox(height: sheetTokens.spacing(3)),
+              Text(
+                'Payments are processed via Stripe. A receipt will be emailed instantly and refunds are available within 7 days.',
+                style: sheetTokens.bodySmall
+                    .copyWith(color: sheetTokens.textMuted),
+              ),
+              SizedBox(height: sheetTokens.spacing(4)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(sheetContext).pop(),
+                    child: const Text('Later'),
+                  ),
+                  SizedBox(width: sheetTokens.spacing(2)),
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.of(sheetContext).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('We will send donation instructions via email shortly.'),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      flags.donationExperimentVariant == 'subscription'
+                          ? 'Start free trial'
+                          : 'Donate now',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showAppIconSheet(BuildContext context, FeatureFlags flags) async {
+    final tokens = context.tokens;
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: tokens.surface,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerExtraLarge()),
+      builder: (BuildContext sheetContext) {
+        final sheetTokens = sheetContext.tokens;
+        final variant = flags.appIconVariant;
+        return Padding(
+          padding: EdgeInsets.all(sheetTokens.spacing(5)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'App Icon Experiment',
+                style: sheetTokens.titleSmall
+                    .copyWith(color: sheetTokens.textPrimary),
+              ),
+              SizedBox(height: sheetTokens.spacing(3)),
+              Text(
+                variant == 'bold'
+                    ? 'Bold variant emphasises electric blue background with centred M glyph for improved Play Store CTR.'
+                    : 'Classic variant keeps the white background with subtle gradient halo for consistency with onboarding.',
+                style: sheetTokens.bodySmall
+                    .copyWith(color: sheetTokens.textPrimary),
+              ),
+              SizedBox(height: sheetTokens.spacing(3)),
+              Text(
+                'The chosen icon is applied during the next build pipeline run via Flutter launcher icons.',
+                style: sheetTokens.bodySmall
+                    .copyWith(color: sheetTokens.textMuted),
+              ),
+              SizedBox(height: sheetTokens.spacing(4)),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton(
+                  onPressed: () => Navigator.of(sheetContext).pop(),
+                  child: const Text('Understood'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Color _appIconColor(String variant, MinqTheme tokens) {
+    switch (variant) {
+      case 'bold':
+        return tokens.brandPrimary;
+      case 'night':
+        return Colors.indigo.shade900;
+      default:
+        return Colors.white;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     const hasScheduledReminders = false;
     const hasBlockedUsers = false;
+    final flags = ref.watch(featureFlagsProvider);
+    final locale = ref.watch(appLocaleControllerProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -196,6 +481,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onAction: () {},
               ),
             ),
+          _SettingsSection(
+            title: 'Language & Region',
+            tiles: <Widget>[
+              _SettingsTile(
+                title: 'App Language',
+                subtitle: _languageLabel(locale),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: tokens.spacing(4),
+                  color: tokens.textMuted,
+                ),
+                onTap: () => _showLanguageSheet(context),
+              ),
+            ],
+          ),
           _SettingsSection(
             title: 'General Settings',
             tiles: <Widget>[
@@ -250,9 +550,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 subtitle: 'Keep data synced across devices',
                 trailing: Switch(
                   value: _dataSync,
-                  onChanged: (bool value) => setState(() => _dataSync = value),
+                  onChanged: (bool value) => _onToggleBackup(context, value),
                   activeColor: tokens.brandPrimary,
                 ),
+              ),
+              _SettingsTile(
+                title: 'Device Transfer Guide',
+                subtitle: 'Step-by-step backup & restore',
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: tokens.spacing(4),
+                  color: tokens.textMuted,
+                ),
+                onTap: () => _showBackupSheet(context),
               ),
               _SettingsTile(
                 title: 'Manage Blocked Users',
@@ -369,6 +679,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ],
           ),
+          _SettingsSection(
+            title: 'Growth Experiments',
+            tiles: <Widget>[
+              _ExperimentTile(
+                title: 'Support MinQ',
+                description: flags.donationExperimentVariant == 'subscription'
+                    ? '試験的にサブスクリプションUIを表示しています。1ヶ月無料体験つき。'
+                    : '寄付ボタンを一部ユーザーに表示中です。プロダクト改善に使われます。',
+                actionLabel: flags.donationExperimentVariant == 'control'
+                    ? 'No experiment active'
+                    : (flags.donationExperimentVariant == 'subscription'
+                        ? 'View subscription options'
+                        : 'Open donation sheet'),
+                onAction: flags.donationExperimentVariant == 'control'
+                    ? null
+                    : () => _showDonationSheet(context, flags),
+              ),
+              _AppIconPreviewTile(
+                variant: flags.appIconVariant,
+                color: _appIconColor(flags.appIconVariant, tokens),
+                onTap: () => _showAppIconSheet(context, flags),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -447,6 +781,125 @@ class _SettingsTile extends StatelessWidget {
                 )
                 : null,
         trailing: trailing,
+      ),
+    );
+  }
+}
+
+class _ExperimentTile extends StatelessWidget {
+  const _ExperimentTile({
+    required this.title,
+    required this.description,
+    required this.actionLabel,
+    this.onAction,
+  });
+
+  final String title;
+  final String description;
+  final String actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final enabled = onAction != null;
+
+    return Card(
+      elevation: 0,
+      margin: EdgeInsets.symmetric(vertical: tokens.spacing(1.5)),
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(4)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              title,
+              style: tokens.bodyMedium.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(height: tokens.spacing(2)),
+            Text(
+              description,
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            ),
+            SizedBox(height: tokens.spacing(3)),
+            Align(
+              alignment: Alignment.centerRight,
+              child: FilledButton.tonal(
+                onPressed: enabled ? onAction : null,
+                child: Text(actionLabel),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AppIconPreviewTile extends StatelessWidget {
+  const _AppIconPreviewTile({
+    required this.variant,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String variant;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final foreground = variant == 'bold' || variant == 'night'
+        ? Colors.white
+        : tokens.brandPrimary;
+
+    return Card(
+      elevation: 0,
+      margin: EdgeInsets.symmetric(vertical: tokens.spacing(1.5)),
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: EdgeInsets.all(tokens.spacing(4)),
+        leading: Container(
+          width: tokens.spacing(12),
+          height: tokens.spacing(12),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(tokens.spacing(3)),
+            border: Border.all(color: tokens.brandPrimary.withValues(alpha: 0.2)),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            'M',
+            style: tokens.titleLarge.copyWith(color: foreground),
+          ),
+        ),
+        title: Text(
+          'App Icon Variant',
+          style: tokens.bodyMedium.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        subtitle: Text(
+          switch (variant) {
+            'bold' => 'Bold electric blue icon running in cohort B.',
+            'night' => 'Midnight gradient variant for dark-mode appeal.',
+            _ => 'Classic white backdrop icon served to control cohort.',
+          },
+          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+        ),
+        trailing: Icon(
+          Icons.open_in_new,
+          color: tokens.textMuted,
+        ),
       ),
     );
   }

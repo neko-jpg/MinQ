@@ -46,4 +46,65 @@ void main() {
     );
     expect(allowedAgain, isNull);
   });
+
+  test('preferred locale is persisted and cleared correctly', () async {
+    final service = LocalPreferencesService();
+    expect(await service.getPreferredLocale(), isNull);
+    await service.setPreferredLocale('en');
+    expect(await service.getPreferredLocale(), 'en');
+    await service.setPreferredLocale(null);
+    expect(await service.getPreferredLocale(), isNull);
+  });
+
+  test('cloud backup toggle is stored', () async {
+    final service = LocalPreferencesService();
+    expect(await service.isCloudBackupEnabled(), isFalse);
+    await service.setCloudBackupEnabled(true);
+    expect(await service.isCloudBackupEnabled(), isTrue);
+  });
+
+  test('NPS responses persist score/comment and timestamp', () async {
+    final now = DateTime.utc(2024, 3, 1, 9);
+    final service = LocalPreferencesService(now: () => now);
+    expect(await service.loadNpsResponse(), isNull);
+
+    await service.saveNpsResponse(score: 9, comment: 'Great flow!');
+    final response = await service.loadNpsResponse();
+    expect(response, isNotNull);
+    expect(response!.score, 9);
+    expect(response.comment, 'Great flow!');
+    expect(response.recordedAt, now);
+
+    await service.saveNpsResponse(score: 4, comment: '');
+    final updated = await service.loadNpsResponse();
+    expect(updated!.score, 4);
+    expect(updated.comment, isNull);
+  });
+
+  test('attribution snapshot is stored when UTM parameters exist', () async {
+    final service = LocalPreferencesService();
+    expect(await service.loadAttribution(), isNull);
+
+    await service.saveAttribution(<String, String>{
+      'source': 'newsletter',
+      'medium': 'email',
+      'campaign': 'launch',
+      'content': 'cta',
+      'term': 'habit',
+      'captured_at_epoch':
+          DateTime.utc(2024, 4, 2, 8).millisecondsSinceEpoch.toString(),
+    });
+
+    final snapshot = await service.loadAttribution();
+    expect(snapshot, isNotNull);
+    expect(snapshot!.source, 'newsletter');
+    expect(snapshot.medium, 'email');
+    expect(snapshot.campaign, 'launch');
+    expect(snapshot.content, 'cta');
+    expect(snapshot.term, 'habit');
+    expect(snapshot.capturedAt, DateTime.utc(2024, 4, 2, 8));
+
+    await service.saveAttribution(<String, String>{});
+    expect(await service.loadAttribution(), isNull);
+  });
 }

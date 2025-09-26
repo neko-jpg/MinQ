@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +11,7 @@ import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/data/services/image_moderation_service.dart';
 
 enum RecordErrorType { none, offline, permissionDenied, cameraFailure }
 
@@ -301,6 +304,11 @@ class _RecordForm extends ConsumerWidget {
                 return;
               }
 
+              final proceed = await _handleModerationWarning(context, result);
+              if (!proceed) {
+                return;
+              }
+
               final log = QuestLog()
                 ..uid = uid
                 ..questId = questId
@@ -344,6 +352,63 @@ class _RecordForm extends ConsumerWidget {
       ],
     );
   }
+}
+
+Future<bool> _handleModerationWarning(
+  BuildContext context,
+  PhotoCaptureResult result,
+) async {
+  if (result.moderationVerdict == PhotoModerationVerdict.ok) {
+    return true;
+  }
+
+  final tokens = context.tokens;
+  final message = switch (result.moderationVerdict) {
+    PhotoModerationVerdict.tooDark =>
+        'The captured photo looks very dark. Retake to keep your partner reassured?',
+    PhotoModerationVerdict.tooBright =>
+        'The captured photo is almost entirely bright. Would you like to retake it for clarity?',
+    PhotoModerationVerdict.lowVariance =>
+        'The image appears blurry or blank. Retake to provide clearer proof?',
+    PhotoModerationVerdict.ok => '',
+  };
+
+  final proceed = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return AlertDialog(
+            title: const Text('Check your photo'),
+            content: Text(message),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Retake'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                style: FilledButton.styleFrom(
+                  backgroundColor: tokens.brandPrimary,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Use photo'),
+              ),
+            ],
+          );
+        },
+      ) ??
+      false;
+
+  if (!proceed) {
+    try {
+      final file = File(result.path);
+      if (file.existsSync()) {
+        await file.delete();
+      }
+    } catch (_) {
+      // Ignore cleanup errors.
+    }
+  }
+  return proceed;
 }
 
 class _ProofButton extends StatefulWidget {
