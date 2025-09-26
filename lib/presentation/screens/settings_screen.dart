@@ -15,6 +15,135 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _pushNotifications = true;
   bool _dataSync = false;
   bool _showHelpBanner = true;
+  bool _deletionRequested = false;
+
+  Future<void> _showDataExportSheet(BuildContext context) async {
+    final tokens = context.tokens;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: tokens.surface,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerExtraLarge()),
+      builder: (BuildContext sheetContext) {
+        final sheetTokens = sheetContext.tokens;
+        return Padding(
+          padding: EdgeInsets.all(sheetTokens.spacing(5)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'データエクスポート申請 / Data export request',
+                style: sheetTokens.titleSmall
+                    .copyWith(color: sheetTokens.textPrimary),
+              ),
+              SizedBox(height: sheetTokens.spacing(3)),
+              Text(
+                '設定から申請すると、24時間以内に登録メールアドレスへ暗号化されたダウンロードリンクを送信します。リンクは7日間有効で、パスコードはアプリ内通知で案内します。',
+                style: sheetTokens.bodySmall
+                    .copyWith(color: sheetTokens.textPrimary),
+              ),
+              SizedBox(height: sheetTokens.spacing(3)),
+              Text(
+                'Requesting an export delivers an encrypted download link to your email within 24 hours. The link remains valid for 7 days and the passcode arrives via in-app notification.',
+                style: sheetTokens.bodySmall
+                    .copyWith(color: sheetTokens.textMuted),
+              ),
+              SizedBox(height: sheetTokens.spacing(4)),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton(
+                  onPressed: () => Navigator.of(sheetContext).pop(),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: sheetTokens.brandPrimary,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('OK'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _confirmDeletion(BuildContext context) async {
+    final tokens = context.tokens;
+
+    final bool confirmed = await showModalBottomSheet<bool>(
+          context: context,
+          backgroundColor: tokens.surface,
+          shape:
+              RoundedRectangleBorder(borderRadius: tokens.cornerExtraLarge()),
+          builder: (BuildContext sheetContext) {
+            final sheetTokens = sheetContext.tokens;
+            return Padding(
+              padding: EdgeInsets.all(sheetTokens.spacing(5)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'アカウント削除の最終確認',
+                    style: sheetTokens.titleSmall
+                        .copyWith(color: sheetTokens.textPrimary),
+                  ),
+                  SizedBox(height: sheetTokens.spacing(3)),
+                  Text(
+                    '削除を申請すると、全データは24時間以内にアクセス不能となり、30日以内に完全削除されます。進行中のクエストやペアは即時停止されます。',
+                    style: sheetTokens.bodySmall
+                        .copyWith(color: sheetTokens.textPrimary),
+                  ),
+                  SizedBox(height: sheetTokens.spacing(3)),
+                  Text(
+                    'Requesting deletion disables your account within 24 hours and permanently removes all personal data within 30 days. Active quests and pair connections will pause immediately.',
+                    style: sheetTokens.bodySmall
+                        .copyWith(color: sheetTokens.textMuted),
+                  ),
+                  SizedBox(height: sheetTokens.spacing(5)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.of(sheetContext).pop(false),
+                        child: const Text('キャンセル'),
+                      ),
+                      SizedBox(width: sheetTokens.spacing(2)),
+                      FilledButton.tonal(
+                        onPressed: () =>
+                            Navigator.of(sheetContext).pop(true),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.red.shade100,
+                          foregroundColor: Colors.red.shade700,
+                        ),
+                        child: const Text('削除を申請する'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        ) ??
+        false;
+
+    if (!mounted || !confirmed) {
+      return;
+    }
+
+    setState(() {
+      _deletionRequested = true;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: tokens.brandPrimary,
+        content: const Text(
+          'Deletion request received. You can undo within 24 hours via the email link.',
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,22 +269,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Icons.download_outlined,
                   color: tokens.textMuted,
                 ),
-                onTap: () {},
+                onTap: () => _showDataExportSheet(context),
               ),
-              _SettingsTile(
-                title: 'Delete Account & Data',
-                titleColor: Colors.red.shade600,
-                trailing: Icon(
-                  Icons.delete_outline,
-                  color: Colors.red.shade600,
+              if (_deletionRequested)
+                Card(
+                  elevation: 0,
+                  margin: EdgeInsets.symmetric(
+                    horizontal: tokens.spacing(1),
+                    vertical: tokens.spacing(1),
+                  ),
+                  color: Colors.red.shade50,
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.verified_user_outlined,
+                      color: Colors.red.shade400,
+                    ),
+                    title: Text(
+                      'Deletion scheduled',
+                      style: tokens.bodyMedium.copyWith(
+                        color: Colors.red.shade700,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Your account will be disabled within 24 hours. Cancel anytime via the confirmation email.',
+                      style: tokens.bodySmall
+                          .copyWith(color: Colors.red.shade400),
+                    ),
+                  ),
+                )
+              else
+                _SettingsTile(
+                  title: 'Delete Account & Data',
+                  titleColor: Colors.red.shade600,
+                  trailing: Icon(
+                    Icons.delete_outline,
+                    color: Colors.red.shade600,
+                  ),
+                  onTap: () => _confirmDeletion(context),
                 ),
-                onTap: () {},
-              ),
             ],
           ),
           _SettingsSection(
             title: 'About MinQ',
             tiles: <Widget>[
+              _SettingsTile(
+                title: 'Support & FAQ',
+                subtitle: 'Contact options and troubleshooting',
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: tokens.spacing(4),
+                  color: tokens.textMuted,
+                ),
+                onTap: () => context.go('/support'),
+              ),
               _SettingsTile(
                 title: 'Terms & Community',
                 subtitle: '13+ policy and respectful conduct',
@@ -185,6 +352,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: tokens.textMuted,
                 ),
                 onTap: () => context.go('/policy/${PolicyDocumentId.community.name}'),
+              ),
+              _SettingsTile(
+                title: 'Content Rights & Licenses',
+                subtitle: 'Fonts, illustrations, and OSS credits',
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: tokens.spacing(4),
+                  color: tokens.textMuted,
+                ),
+                onTap: () => context.go('/policy/${PolicyDocumentId.licenses.name}'),
               ),
               const _SettingsTile(
                 title: 'App Version',

@@ -14,6 +14,7 @@ import 'package:minq/presentation/screens/celebration_screen.dart';
 import 'package:minq/presentation/screens/profile_screen.dart';
 import 'package:minq/presentation/screens/policy_viewer_screen.dart';
 import 'package:minq/presentation/common/policy_documents.dart';
+import 'package:minq/presentation/screens/support_screen.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -57,6 +58,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
           return PolicyViewerScreen(documentId: documentId);
         },
+      ),
+      GoRoute(
+        path: '/support',
+        builder: (context, state) => const SupportScreen(),
       ),
       // Main navigation shell
       ShellRoute(
