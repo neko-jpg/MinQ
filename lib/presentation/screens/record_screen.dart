@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
+import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 enum RecordErrorType { none, offline, permissionDenied, cameraFailure }
@@ -243,6 +244,101 @@ class _RecordForm extends ConsumerWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+class _ProofButton extends StatefulWidget {
+  const _ProofButton({
+    required this.text,
+    required this.icon,
+    required this.isPrimary,
+    required this.onTap,
+  });
+
+  final String text;
+  final IconData icon;
+  final bool isPrimary;
+  final AsyncCallback onTap;
+
+  @override
+  State<_ProofButton> createState() => _ProofButtonState();
+}
+
+class _ProofButtonState extends State<_ProofButton>
+    with AsyncActionState<_ProofButton> {
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final Color background =
+        widget.isPrimary ? tokens.brandPrimary : tokens.surface;
+    final Color foreground =
+        widget.isPrimary ? tokens.surface : tokens.textPrimary;
+    final BorderSide borderSide = widget.isPrimary
+        ? BorderSide.none
+        : BorderSide(color: tokens.brandPrimary.withValues(alpha: 0.24));
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: tokens.spacing(18),
+        minWidth: tokens.spacing(18),
+      ),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: background,
+          foregroundColor: foreground,
+          minimumSize: Size(double.infinity, tokens.spacing(18)),
+          padding: EdgeInsets.symmetric(
+            vertical: tokens.spacing(4),
+            horizontal: tokens.spacing(4),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: tokens.cornerLarge(),
+            side: borderSide,
+          ),
+          elevation: widget.isPrimary ? 4 : 0,
+          shadowColor: widget.isPrimary
+              ? tokens.brandPrimary.withValues(alpha: 0.32)
+              : Colors.transparent,
+        ),
+        onPressed: isProcessing
+            ? null
+            : () => runGuarded(() async {
+                  await widget.onTap();
+                }),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          child: isProcessing
+              ? SizedBox(
+                  key: const ValueKey<String>('progress'),
+                  height: tokens.spacing(6),
+                  width: tokens.spacing(6),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    valueColor: AlwaysStoppedAnimation<Color>(foreground),
+                  ),
+                )
+              : Column(
+                  key: const ValueKey<String>('content'),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(widget.icon, size: tokens.spacing(9)),
+                    SizedBox(height: tokens.spacing(3)),
+                    Text(
+                      widget.text,
+                      textAlign: TextAlign.center,
+                      style: tokens.bodyMedium.copyWith(
+                        color: foreground,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+        ),
+      ),
     );
   }
 }
