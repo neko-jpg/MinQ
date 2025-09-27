@@ -119,3 +119,29 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
     return button;
   }
 }
+
+class MinqIconButton extends StatelessWidget {
+  const MinqIconButton({
+    super.key,
+    required this.icon,
+    required this.onTap,
+    this.size = 24.0,
+    this.color,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+  final double size;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return IconButton(
+      icon: Icon(icon, size: size, color: color ?? tokens.textPrimary),
+      onPressed: onTap,
+      splashRadius: size * 0.8,
+      padding: const EdgeInsets.all(12.0),
+    );
+  }
+}

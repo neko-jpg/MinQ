@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MinQ - +3 Minute Challenge</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13b6ec",
+            "secondary": "#ffc700",
+            "background-light": "#f6f8f8",
+            "background-dark": "#101d22",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+    .timer-ring-container {
+      position: relative;
+      width: 280px;
+      height: 280px;
+    }
+    .timer-ring-bg {
+      stroke: #e5e7eb;
+    }
+    .dark .timer-ring-bg {
+      stroke: #374151;
+    }
+    .timer-ring-progress {
+      stroke: #13b6ec;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+      transition: stroke-dashoffset 1s linear;
+    }
+    .timer-ring-split {
+      stroke: #ffc700;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+      transition: stroke-dashoffset 1s linear;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+<div class="flex flex-col h-screen">
+<header class="sticky top-0 z-10 bg-background-light dark:bg-background-dark bg-opacity-80 backdrop-blur-sm">
+<div class="flex items-center p-4">
+<button class="text-slate-800 dark:text-slate-200">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h1 class="text-slate-900 dark:text-white text-lg font-bold flex-1 text-center">+3 Minute Challenge</h1>
+<div class="w-8"></div>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center justify-center p-6 text-center">
+<div class="mb-6">
+<div class="flex items-center justify-center gap-3 bg-white dark:bg-slate-800/50 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined text-green-500">menu_book</span>
+<span class="font-semibold text-slate-700 dark:text-slate-300">Read a book</span>
+</div>
+</div>
+<div class="timer-ring-container mb-8 flex items-center justify-center">
+<svg class="w-full h-full" viewBox="0 0 100 100">
+<circle class="timer-ring-bg" cx="50" cy="50" fill="transparent" r="45" stroke-width="10"></circle>
+<circle class="timer-ring-progress" cx="50" cy="50" fill="transparent" r="45" stroke-dasharray="282.74" stroke-dashoffset="70.685" stroke-width="10"></circle> 
+<circle class="timer-ring-split" cx="50" cy="50" fill="transparent" r="45" stroke-dasharray="282.74" stroke-dashoffset="212.055" stroke-width="10"></circle> 
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-6xl font-bold text-slate-900 dark:text-white">03:00</span>
+<span class="text-lg text-slate-500 dark:text-slate-400">Total time</span>
+</div>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Up for a challenge?</h2>
+<p class="text-slate-600 dark:text-slate-400 max-w-sm mb-10">Extend your 1-minute quest to a 3-minute challenge. Push your limits, just a little!</p>
+<div class="w-full max-w-sm flex flex-col gap-4">
+<button class="w-full bg-primary text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">timer</span>
+<span>Start 3-Min Challenge</span>
+</button>
+<button class="w-full bg-transparent text-slate-600 dark:text-slate-400 font-bold py-4 px-6 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span>No, stick to 1 minute</span>
+</button>
+</div>
+</main>
+</div>
+
+</body></html>

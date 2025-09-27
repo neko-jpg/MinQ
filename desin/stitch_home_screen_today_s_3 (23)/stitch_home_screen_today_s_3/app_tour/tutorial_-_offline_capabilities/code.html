@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MinQ - Report/Block User</title>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13b6ec",
+              "background-light": "#f6f8f8",
+              "background-dark": "#101d22",
+              "danger": "#e53e3e",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-white">
+<div class="flex flex-col h-screen p-6">
+<header class="flex items-center justify-between mb-8">
+<button class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="text-xl font-bold">Report/Block User</h1>
+<div class="w-10"></div>
+</header>
+<main class="flex-grow flex flex-col">
+<div class="flex items-center space-x-4 mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+<div class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl text-gray-500">person</span>
+</div>
+<div>
+<p class="font-bold text-lg">Anonymous Pair</p>
+<p class="text-sm text-gray-500 dark:text-gray-400">Your current quest partner</p>
+</div>
+</div>
+<h2 class="text-lg font-semibold mb-4">Why are you reporting this user?</h2>
+<div class="space-y-4">
+<label class="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow cursor-pointer hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors">
+<input class="form-radio h-5 w-5 text-primary bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-primary dark:focus:ring-offset-background-dark" name="report_reason" type="radio" value="inappropriate"/>
+<span class="ml-4 text-base">Inappropriate behavior or language</span>
+</label>
+<label class="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow cursor-pointer hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors">
+<input class="form-radio h-5 w-5 text-primary bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-primary dark:focus:ring-offset-background-dark" name="report_reason" type="radio" value="spam"/>
+<span class="ml-4 text-base">Spam or unwanted messages</span>
+</label>
+<label class="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow cursor-pointer hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors">
+<input class="form-radio h-5 w-5 text-primary bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-primary dark:focus:ring-offset-background-dark" name="report_reason" type="radio" value="harassment"/>
+<span class="ml-4 text-base">Harassment or bullying</span>
+</label>
+<label class="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow cursor-pointer hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors">
+<input class="form-radio h-5 w-5 text-primary bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-primary dark:focus:ring-offset-background-dark" name="report_reason" type="radio" value="other"/>
+<span class="ml-4 text-base">Other</span>
+</label>
+</div>
+<textarea class="mt-4 w-full p-3 bg-white dark:bg-gray-800 rounded-lg shadow focus:ring-2 focus:ring-primary border-transparent" placeholder="Provide more details (optional)" rows="3"></textarea>
+<div class="flex items-start mt-6 p-4 bg-yellow-100/50 dark:bg-yellow-900/30 rounded-lg">
+<span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400 mr-3 mt-1">info</span>
+<p class="text-sm text-yellow-800 dark:text-yellow-200">Reporting will automatically block this user and end your current pair quest. You will be matched with a new partner.</p>
+</div>
+</main>
+<footer class="mt-auto pt-6">
+<button class="w-full py-4 rounded-lg bg-danger text-white font-bold text-lg flex items-center justify-center gap-2 hover:bg-red-700 transition-colors">
+<span class="material-symbols-outlined">gpp_maybe</span>
+<span>Report and Block User</span>
+</button>
+<button class="w-full py-3 mt-3 text-center text-gray-500 dark:text-gray-400 font-medium">Cancel</button>
+</footer>
+</div>
+
+</body></html>

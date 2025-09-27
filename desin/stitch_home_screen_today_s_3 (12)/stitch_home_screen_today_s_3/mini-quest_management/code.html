@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Plus+Jakarta+Sans:wght@400;500;700;800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<title>MinQ - Welcome</title>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#13b6ec",
+            "background-light": "#f6f8f8",
+            "background-dark": "#101d22",
+            "card-light": "#ffffff",
+            "card-dark": "#1a2a30",
+          },
+          fontFamily: {
+            display: ["Plus Jakarta Sans", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "1rem",
+            lg: "1.5rem",
+            xl: "2rem",
+            full: "9999px",
+          },
+        },
+      },
+    };
+  </script>
+<style>
+    body {
+      min-height: 100dvh;
+      background-color: var(--background-light);
+    }
+    .dark body {
+      background-color: var(--background-dark);
+    }
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 1,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+<div class="flex h-full min-h-dvh w-full flex-col items-center justify-center p-6">
+<main class="flex w-full max-w-sm flex-1 flex-col justify-center">
+<div class="text-center mb-10">
+<span class="material-symbols-outlined text-primary text-6xl">checklist</span>
+<h1 class="text-4xl font-bold text-slate-900 dark:text-white mt-4">MinQ</h1>
+<p class="text-slate-500 dark:text-slate-400 mt-2">Build habits, one mini-quest at a time.</p>
+</div>
+<div class="space-y-3">
+<button class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-card-light px-6 py-3.5 text-slate-700 shadow-sm transition-transform duration-200 ease-in-out hover:scale-[1.02] dark:border-slate-700 dark:bg-card-dark dark:text-slate-300">
+<img alt="Google icon" class="w-6 h-6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDMZJe8pWSaiaOje60CUPyft8UPVC8g-ctooL-1-Q5qpzS6gw7UnMJkLpfCu6Z2RykB72P8C4OyI63FFCCibUQ4dNruZOwJo6nQRK70FEtjBv1rmNzft0Up5nzER6iyp9haRAjN9ZtLg09n9ceJEXfOtbMMo1aV9M7JaG9UMCxTyxgkERg-kStQgm1VM7gU2SmnU5KsE6RV3-mEIPNKnFgdyBitscPShW2dDRJ_KM-O_lBO4mzcjqZaj44uGgTeu86o3dAX4Lidpgx"/>
+<span class="text-lg font-semibold">Continue with Google</span>
+</button>
+<button class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-card-light px-6 py-3.5 text-slate-700 shadow-sm transition-transform duration-200 ease-in-out hover:scale-[1.02] dark:border-slate-700 dark:bg-card-dark dark:text-slate-300">
+<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.01,16.035c-1.374,0-2.581-0.48-3.606-1.442c-0.963-0.899-1.503-2.073-1.503-3.483c0-1.458,0.529-2.656,1.586-3.585C9.539,6.6,10.74,6.115,12.062,6.115c1.374,0,2.58,0.492,3.583,1.477c0.6,0.575,0.925,1.25,1.011,2.02h-4.32v3.313h6.205c-0.086,1.433-0.655,2.65-1.708,3.649c-1.012,0.963-2.268,1.443-3.774,1.443C12.035,16.035,12.01,16.035,12.01,16.035z M12.01,16.035" opacity="0.54"></path><path d="M17.158,18.846c-0.624,0.611-1.393,1.134-2.308,1.569c-0.915,0.434-1.92,0.652-3.008,0.652c-2.483,0-4.604-0.887-6.362-2.66c-1.758-1.773-2.637-3.957-2.637-6.551c0-2.62,0.879-4.814,2.637-6.578c1.758-1.765,3.879-2.648,6.362-2.648c1.555,0,2.986,0.359,4.293,1.076l-1.846,3.037c-0.828-0.492-1.734-0.738-2.712-0.738c-1.348,0-2.518,0.48-3.509,1.441c-0.99,0.963-1.485,2.153-1.485,3.568c0,1.414,0.495,2.604,1.485,3.568c0.99,0.963,2.161,1.443,3.509,1.443c0.978,0,1.869-0.246,2.673-0.738L17.158,18.846z M17.158,18.846"></path></svg>
+<span class="text-lg font-semibold">Continue with Apple</span>
+</button>
+<button class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-card-light px-6 py-3.5 text-slate-700 shadow-sm transition-transform duration-200 ease-in-out hover:scale-[1.02] dark:border-slate-700 dark:bg-card-dark dark:text-slate-300">
+<span class="material-symbols-outlined">shield_person</span>
+<span class="text-lg font-semibold">Continue as Guest</span>
+</button>
+<button class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-card-light px-6 py-3.5 text-slate-700 shadow-sm transition-transform duration-200 ease-in-out hover:scale-[1.02] dark:border-slate-700 dark:bg-card-dark dark:text-slate-300">
+<span class="material-symbols-outlined">mail</span>
+<span class="text-lg font-semibold">Continue with Email</span>
+</button>
+</div>
+</main>
+<footer class="w-full max-w-sm py-6 text-center">
+<p class="text-xs text-slate-500 dark:text-slate-400 px-6">
+        By continuing, you agree to MinQ's <a class="font-bold text-primary hover:underline" href="#">Terms of Service</a> and <a class="font-bold text-primary hover:underline" href="#">Privacy Policy</a>.
+      </p>
+</footer>
+</div>
+
+</body></html>

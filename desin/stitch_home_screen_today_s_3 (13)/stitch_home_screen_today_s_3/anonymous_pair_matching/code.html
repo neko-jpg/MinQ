@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MinQ - Pair</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13b6ec",
+            "background-light": "#f6f8f8",
+            "background-dark": "#101d22",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex flex-col h-screen justify-between">
+<div class="flex-grow overflow-y-auto">
+<header class="sticky top-0 z-10 bg-background-light dark:bg-background-dark bg-opacity-80 backdrop-blur-sm">
+<div class="flex items-center p-4">
+<button class="text-slate-800 dark:text-slate-200">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h1 class="text-slate-900 dark:text-white text-lg font-bold flex-1 text-center">Pair</h1>
+<div class="w-8"></div>
+</div>
+</header>
+<main class="p-6">
+<div class="text-center mb-8">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Find Your Accountability Partner</h2>
+<p class="text-slate-600 dark:text-slate-400">Pair with a friend or get matched anonymously based on your goals.</p>
+</div>
+<div class="space-y-6">
+<div class="bg-white/50 dark:bg-black/10 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2" for="invite-code">Have an invite code?</label>
+<div class="flex gap-3">
+<input class="flex-1 form-input block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-primary focus:border-primary" id="invite-code" placeholder="Enter code" type="text"/>
+<button class="bg-primary/20 dark:bg-primary/30 text-primary font-bold px-4 py-2 rounded-lg hover:bg-primary/30 dark:hover:bg-primary/40 transition-colors">Apply</button>
+</div>
+</div>
+<div class="flex items-center text-center">
+<hr class="flex-grow border-slate-200 dark:border-slate-800"/>
+<span class="px-3 text-sm text-slate-500 dark:text-slate-400 font-medium">OR</span>
+<hr class="flex-grow border-slate-200 dark:border-slate-800"/>
+</div>
+<div class="bg-white/50 dark:bg-black/10 p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
+<p class="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Get matched randomly</p>
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="age-range">Age Range</label>
+<select class="form-select w-full rounded-lg border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary" id="age-range">
+<option>18-24</option>
+<option>25-34</option>
+<option>35-44</option>
+<option>45+</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="goal-category">Goal Category</label>
+<select class="form-select w-full rounded-lg border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary" id="goal-category">
+<option>Fitness</option>
+<option>Learning</option>
+<option>Well-being</option>
+<option>Productivity</option>
+</select>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 pt-2">
+<span class="font-bold">Anonymity Guaranteed:</span> Your partner will only know your age range and goal category. All communication happens inside the app.
+            </p>
+</div>
+<div class="pt-4">
+<button class="w-full bg-primary text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-primary/20 hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105">
+              Find a Partner
+            </button>
+</div>
+</div>
+</main>
+</div>
+<footer class="sticky bottom-0 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-slate-800">
+<nav class="flex justify-around p-2">
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="text-xs font-medium">Progress</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary p-2" href="#">
+<div class="bg-primary/20 dark:bg-primary/30 rounded-full p-2">
+<span class="material-symbols-outlined !fill-1 text-primary">groups</span>
+</div>
+<span class="text-xs font-bold">Pair</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined">checklist</span>
+<span class="text-xs font-medium">Quests</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-xs font-medium">Settings</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

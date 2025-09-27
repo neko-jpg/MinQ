@@ -12,6 +12,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     required this.textSecondary,
     required this.textMuted,
     required this.accentSuccess,
+    required this.border,
     required this.radiusSmall,
     required this.radiusMedium,
     required this.radiusLarge,
@@ -23,9 +24,12 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     required this.spaceXL,
     required this.shadowSoft,
     required this.shadowStrong,
+    required this.displayMedium,
+    required this.displaySmall,
     required this.titleLarge,
     required this.titleMedium,
     required this.titleSmall,
+    required this.bodyLarge,
     required this.bodyMedium,
     required this.bodySmall,
     required this.labelSmall,
@@ -38,6 +42,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   final Color textSecondary;
   final Color textMuted;
   final Color accentSuccess;
+  final Color border;
   final double radiusSmall;
   final double radiusMedium;
   final double radiusLarge;
@@ -49,9 +54,12 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   final double spaceXL;
   final List<BoxShadow> shadowSoft;
   final List<BoxShadow> shadowStrong;
+  final TextStyle displayMedium;
+  final TextStyle displaySmall;
   final TextStyle titleLarge;
   final TextStyle titleMedium;
   final TextStyle titleSmall;
+  final TextStyle bodyLarge;
   final TextStyle bodyMedium;
   final TextStyle bodySmall;
   final TextStyle labelSmall;
@@ -62,6 +70,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   BorderRadius cornerMedium() => BorderRadius.circular(radiusMedium);
   BorderRadius cornerLarge() => BorderRadius.circular(radiusLarge);
   BorderRadius cornerXLarge() => BorderRadius.circular(radiusXLarge);
+  BorderRadius cornerFull() => BorderRadius.circular(999);
 
   static MinqTheme light() {
     const base = 4.0;
@@ -73,6 +82,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       textSecondary: const Color(0xFF1F2933),
       textMuted: const Color(0xFF64748B),
       accentSuccess: const Color(0xFF10B981),
+      border: const Color(0xFFE5E7EB),
       radiusSmall: 8,
       radiusMedium: 12,
       radiusLarge: 16,
@@ -96,6 +106,16 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
           offset: Offset(0, 14),
         ),
       ],
+      displayMedium: GoogleFonts.plusJakartaSans(
+        fontSize: 42,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.5,
+      ),
+      displaySmall: GoogleFonts.plusJakartaSans(
+        fontSize: 36,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.4,
+      ),
       titleLarge: GoogleFonts.plusJakartaSans(
         fontSize: 28,
         fontWeight: FontWeight.w700,
@@ -108,6 +128,11 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       titleSmall: GoogleFonts.plusJakartaSans(
         fontSize: 18,
         fontWeight: FontWeight.w600,
+      ),
+      bodyLarge: GoogleFonts.plusJakartaSans(
+        fontSize: 18,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
       ),
       bodyMedium: GoogleFonts.plusJakartaSans(
         fontSize: 16,
@@ -137,6 +162,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       textSecondary: const Color(0xFFCBD5F5),
       textMuted: const Color(0xFF94A3B8),
       accentSuccess: const Color(0xFF22D3A0),
+      border: const Color(0xFF334155),
       radiusSmall: 8,
       radiusMedium: 12,
       radiusLarge: 16,
@@ -160,6 +186,16 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
           offset: Offset(0, 16),
         ),
       ],
+      displayMedium: GoogleFonts.plusJakartaSans(
+        fontSize: 42,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.5,
+      ),
+      displaySmall: GoogleFonts.plusJakartaSans(
+        fontSize: 36,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.4,
+      ),
       titleLarge: GoogleFonts.plusJakartaSans(
         fontSize: 28,
         fontWeight: FontWeight.w700,
@@ -172,6 +208,11 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       titleSmall: GoogleFonts.plusJakartaSans(
         fontSize: 18,
         fontWeight: FontWeight.w600,
+      ),
+      bodyLarge: GoogleFonts.plusJakartaSans(
+        fontSize: 18,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
       ),
       bodyMedium: GoogleFonts.plusJakartaSans(
         fontSize: 16,
@@ -200,6 +241,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     Color? textSecondary,
     Color? textMuted,
     Color? accentSuccess,
+    Color? border,
     double? radiusSmall,
     double? radiusMedium,
     double? radiusLarge,
@@ -211,9 +253,12 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     double? spaceXL,
     List<BoxShadow>? shadowSoft,
     List<BoxShadow>? shadowStrong,
+    TextStyle? displayMedium,
+    TextStyle? displaySmall,
     TextStyle? titleLarge,
     TextStyle? titleMedium,
     TextStyle? titleSmall,
+    TextStyle? bodyLarge,
     TextStyle? bodyMedium,
     TextStyle? bodySmall,
     TextStyle? labelSmall,
@@ -226,6 +271,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       textSecondary: textSecondary ?? this.textSecondary,
       textMuted: textMuted ?? this.textMuted,
       accentSuccess: accentSuccess ?? this.accentSuccess,
+      border: border ?? this.border,
       radiusSmall: radiusSmall ?? this.radiusSmall,
       radiusMedium: radiusMedium ?? this.radiusMedium,
       radiusLarge: radiusLarge ?? this.radiusLarge,
@@ -237,9 +283,12 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       spaceXL: spaceXL ?? this.spaceXL,
       shadowSoft: shadowSoft ?? this.shadowSoft,
       shadowStrong: shadowStrong ?? this.shadowStrong,
+      displayMedium: displayMedium ?? this.displayMedium,
+      displaySmall: displaySmall ?? this.displaySmall,
       titleLarge: titleLarge ?? this.titleLarge,
       titleMedium: titleMedium ?? this.titleMedium,
       titleSmall: titleSmall ?? this.titleSmall,
+      bodyLarge: bodyLarge ?? this.bodyLarge,
       bodyMedium: bodyMedium ?? this.bodyMedium,
       bodySmall: bodySmall ?? this.bodySmall,
       labelSmall: labelSmall ?? this.labelSmall,
@@ -263,6 +312,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       textMuted: Color.lerp(textMuted, other.textMuted, t) ?? textMuted,
       accentSuccess:
           Color.lerp(accentSuccess, other.accentSuccess, t) ?? accentSuccess,
+      border: Color.lerp(border, other.border, t) ?? border,
       radiusSmall: lerpDouble(radiusSmall, other.radiusSmall, t) ?? radiusSmall,
       radiusMedium:
           lerpDouble(radiusMedium, other.radiusMedium, t) ?? radiusMedium,
@@ -276,10 +326,15 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       spaceXL: lerpDouble(spaceXL, other.spaceXL, t) ?? spaceXL,
       shadowSoft: t < 0.5 ? shadowSoft : other.shadowSoft,
       shadowStrong: t < 0.5 ? shadowStrong : other.shadowStrong,
+      displayMedium:
+          TextStyle.lerp(displayMedium, other.displayMedium, t) ?? displayMedium,
+      displaySmall:
+          TextStyle.lerp(displaySmall, other.displaySmall, t) ?? displaySmall,
       titleLarge: TextStyle.lerp(titleLarge, other.titleLarge, t) ?? titleLarge,
       titleMedium:
           TextStyle.lerp(titleMedium, other.titleMedium, t) ?? titleMedium,
       titleSmall: TextStyle.lerp(titleSmall, other.titleSmall, t) ?? titleSmall,
+      bodyLarge: TextStyle.lerp(bodyLarge, other.bodyLarge, t) ?? bodyLarge,
       bodyMedium: TextStyle.lerp(bodyMedium, other.bodyMedium, t) ?? bodyMedium,
       bodySmall: TextStyle.lerp(bodySmall, other.bodySmall, t) ?? bodySmall,
       labelSmall: TextStyle.lerp(labelSmall, other.labelSmall, t) ?? labelSmall,

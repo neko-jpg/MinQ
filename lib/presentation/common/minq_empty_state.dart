@@ -7,15 +7,13 @@ class MinqEmptyState extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.message,
-    this.actionLabel,
-    this.onAction,
+    this.actionArea,
   });
 
   final IconData icon;
   final String title;
   final String message;
-  final String? actionLabel;
-  final VoidCallback? onAction;
+  final Widget? actionArea;
 
   @override
   Widget build(BuildContext context) {
@@ -53,21 +51,9 @@ class MinqEmptyState extends StatelessWidget {
             textAlign: TextAlign.center,
             style: tokens.bodySmall.copyWith(color: tokens.textMuted),
           ),
-          if (actionLabel != null && onAction != null) ...<Widget>[
+          if (actionArea != null) ...<Widget>[
             SizedBox(height: tokens.spacing(5)),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing(6),
-                  vertical: tokens.spacing(3),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: tokens.cornerLarge(),
-                ),
-              ),
-              onPressed: onAction,
-              child: Text(actionLabel!),
-            ),
+            actionArea!,
           ],
         ],
       ),

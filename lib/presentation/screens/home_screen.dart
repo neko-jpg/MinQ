@@ -101,25 +101,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _snoozeEnabled = true;
   bool _dismissedPermissionBanner = false;
   bool _dismissedTimeBanner = false;
+  late final ProviderSubscription<FeatureFlags> _featureFlagsSubscription;
 
   @override
   void initState() {
     super.initState();
     final flags = ref.read(featureFlagsProvider);
     _snoozeEnabled = flags.homeSuggestionSnoozeEnabled;
-    ref.listen<FeatureFlags>(featureFlagsProvider, (previous, next) {
-      if (previous?.homeSuggestionSnoozeEnabled !=
-          next.homeSuggestionSnoozeEnabled) {
-        setState(() {
-          _snoozeEnabled = next.homeSuggestionSnoozeEnabled;
-        });
-      }
-    });
+    _featureFlagsSubscription = ref.listenManual<FeatureFlags>(
+      featureFlagsProvider,
+      (previous, next) {
+        if (previous?.homeSuggestionSnoozeEnabled !=
+            next.homeSuggestionSnoozeEnabled) {
+          if (!mounted) {
+            return;
+          }
+          setState(() {
+            _snoozeEnabled = next.homeSuggestionSnoozeEnabled;
+          });
+        }
+      },
+    );
+    _featureFlagsSubscription.read();
     Future<void>.delayed(const Duration(milliseconds: 600), () {
       if (mounted) {
         setState(() => _isLoading = false);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _featureFlagsSubscription.close();
+    super.dispose();
   }
 
   void _swapSuggestion(int slot) {
@@ -224,8 +238,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       icon: Icons.flag_circle_outlined,
                       title: l10n.noQuestsToday,
                       message: l10n.chooseFromTemplate,
-                      actionLabel: l10n.findAQuest,
-                      onAction: () => context.go('/quests'),
+                      actionArea: OutlinedButton(
+                        onPressed: () => context.go('/quests'),
+                        child: Text(l10n.findAQuest),
+                      ),
                     ),
                   if (hasQuests)
                     ..._todayQuests

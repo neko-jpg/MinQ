@@ -79,7 +79,7 @@ class PhotoStorageService {
     final verdict = _moderationService.evaluate(decoded);
 
     final sanitizedBytes = Uint8List.fromList(
-      img.encodeJpg(decoded, quality: quality, progressive: true),
+      img.encodeJpg(decoded, quality: quality),
     );
 
     final directory = await _ensurePhotoDirectory(ownerUid);
@@ -91,7 +91,7 @@ class PhotoStorageService {
     final sanitizedFile = File(sanitizedPath);
     await sanitizedFile.writeAsBytes(sanitizedBytes, flush: true);
 
-    await original.delete();
+    await File(original.path).delete();
 
     return _SanitizedPhoto(
       path: sanitizedPath,

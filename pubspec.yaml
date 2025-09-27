@@ -1,5 +1,5 @@
-name: minq
-description: "MinQ - 3タップで続く匿名ペア習慣化アプリ"
+﻿name: minq
+description: "MinQ - 3繧ｿ繝・・縺ｧ邯壹￥蛹ｿ蜷阪・繧｢鄙呈・蛹悶い繝励Μ"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -58,10 +58,11 @@ dependencies:
   collection: any
   uuid: any
   image: any
-  ffmpeg_kit_flutter: any
   flutter_heatmap_calendar: any
   flutter_local_notifications: any
   timezone: any
+  animations: any
+  flutter_staggered_animations: any
 
   cupertino_icons: any
   google_fonts: any

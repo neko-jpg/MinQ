@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MinQ - About</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13b6ec",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#101d22",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<div class="relative flex h-auto min-h-screen w-full flex-col justify-between group/design-root overflow-x-hidden">
+<div>
+<header class="flex items-center p-4 pb-2 justify-between">
+<button class="flex size-10 items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 text-gray-800 dark:text-white">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="text-lg font-bold flex-1 text-center pr-10 text-gray-900 dark:text-white">About MinQ</h1>
+</header>
+<main class="px-4 py-6 space-y-8">
+<div>
+<h2 class="text-sm font-bold uppercase text-gray-500 dark:text-gray-400 mb-3 tracking-wider">About</h2>
+<div class="space-y-4">
+<div class="bg-white dark:bg-background-dark rounded-xl p-4 shadow-sm">
+<h3 class="font-bold text-gray-900 dark:text-white mb-1">What is MinQ?</h3>
+<p class="text-sm text-gray-600 dark:text-gray-300">
+                                MinQ is a habit-forming app that uses mini-quests and anonymous pair accountability to help users build habits with minimal effort.
+                            </p>
+</div>
+<div class="bg-white dark:bg-background-dark rounded-xl p-4 shadow-sm flex justify-between items-center">
+<h3 class="font-bold text-gray-900 dark:text-white">Version</h3>
+<p class="text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">1.0.0</p>
+</div>
+</div>
+</div>
+<div>
+<h2 class="text-sm font-bold uppercase text-gray-500 dark:text-gray-400 mb-3 tracking-wider">Legal</h2>
+<div class="bg-white dark:bg-background-dark rounded-xl shadow-sm">
+<a class="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700/50" href="#">
+<p class="font-medium text-gray-800 dark:text-gray-200">Terms of Service</p>
+<span class="material-symbols-outlined text-gray-400 dark:text-gray-500">arrow_forward_ios</span>
+</a>
+<a class="flex items-center justify-between p-4" href="#">
+<p class="font-medium text-gray-800 dark:text-gray-200">Privacy Policy</p>
+<span class="material-symbols-outlined text-gray-400 dark:text-gray-500">arrow_forward_ios</span>
+</a>
+</div>
+</div>
+</main>
+</div>
+<footer class="sticky bottom-0">
+<div class="bg-white/70 dark:bg-background-dark/70 backdrop-blur-lg border-t border-gray-200/50 dark:border-gray-700/50">
+<div class="flex justify-around items-center h-20 px-2">
+<a class="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-xs font-medium">Home</p>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<p class="text-xs font-medium">Progress</p>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-xs font-medium">Pair</p>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">checklist</span>
+<p class="text-xs font-medium">Quests</p>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-primary" href="#">
+<div class="p-2 rounded-full bg-primary/10">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1">settings</span>
+</div>
+<p class="text-xs font-bold">Settings</p>
+</a>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>

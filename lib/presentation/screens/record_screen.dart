@@ -26,7 +26,6 @@ class RecordScreen extends StatefulWidget {
 
 class _RecordScreenState extends State<RecordScreen> {
   RecordErrorType _error = RecordErrorType.none;
-  bool _showHelpBanner = true;
   bool _isLoading = true;
 
   @override
@@ -39,7 +38,7 @@ class _RecordScreenState extends State<RecordScreen> {
     });
   }
 
-  void _simulateError(RecordErrorType type) {
+  void _handleError(RecordErrorType type) {
     if (type != RecordErrorType.none) {
       MinqLogger.error(
         'record_flow_error',
@@ -49,21 +48,10 @@ class _RecordScreenState extends State<RecordScreen> {
     setState(() => _error = type);
   }
 
-  Future<void> _requestPermissions() async {
-    _simulateError(RecordErrorType.none);
-  }
-
-  Future<void> _retryUpload() async {
-    _simulateError(RecordErrorType.none);
-  }
-
-  Future<void> _openSettings() async {
-    _simulateError(RecordErrorType.none);
-  }
-
-  Future<void> _openOfflineQueue() async {
-    _simulateError(RecordErrorType.none);
-  }
+  Future<void> _requestPermissions() async => _handleError(RecordErrorType.none);
+  Future<void> _retryUpload() async => _handleError(RecordErrorType.none);
+  Future<void> _openSettings() async => _handleError(RecordErrorType.none);
+  Future<void> _openOfflineQueue() async => _handleError(RecordErrorType.none);
 
   @override
   Widget build(BuildContext context) {
@@ -72,70 +60,26 @@ class _RecordScreenState extends State<RecordScreen> {
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
-        title: Text(
-          'Record',
-          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
-        ),
+        title: Text('Record', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
+        elevation: 0,
         surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(Icons.close, color: tokens.textPrimary),
-          onPressed: () => context.pop(),
+        leading: Center(
+          child: MinqIconButton(
+            icon: Icons.close,
+            onTap: () => context.pop(),
+          ),
         ),
       ),
       body: _isLoading
           ? _RecordSkeleton(tokens: tokens)
-          : Column(
-              children: <Widget>[
-                if (_showHelpBanner)
-                  Card(
-                    elevation: 0,
-                    margin: EdgeInsets.all(tokens.spacing(5)),
-                    color: tokens.brandPrimary.withValues(alpha: 0.1),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: tokens.cornerLarge()),
-                    child: ListTile(
-                      leading:
-                          Icon(Icons.info_outline, color: tokens.brandPrimary),
-                      title: Text(
-                        'Questを完了したら、証拠として写真か自己申告を選択してRecordしよう。',
-                        style: tokens.bodySmall
-                            .copyWith(color: tokens.textPrimary),
-                      ),
-                      subtitle: Text(
-                        'カメラ許可は証跡撮影のみに使用され、通知許可はリマインダー配信のためだけに使われます。',
-                        style:
-                            tokens.labelSmall.copyWith(color: tokens.textMuted),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.close, color: tokens.textPrimary),
-                        onPressed: () =>
-                            setState(() => _showHelpBanner = false),
-                      ),
-                    ),
-                  ),
-                Expanded(
-                  child: switch (_error) {
-                    RecordErrorType.none => _RecordForm(
-                        questId: widget.questId, onSimulate: _simulateError),
-                    RecordErrorType.offline => _OfflineRecovery(
-                        onRetry: _retryUpload,
-                        onOpenQueue: _openOfflineQueue,
-                      ),
-                    RecordErrorType.permissionDenied => _PermissionRecovery(
-                        onRequest: _requestPermissions,
-                        onOpenSettings: _openSettings,
-                      ),
-                    RecordErrorType.cameraFailure => _CameraRecovery(
-                        onRetry: _retryUpload,
-                        onSwitchMode: () =>
-                            _simulateError(RecordErrorType.none),
-                      ),
-                  },
-                ),
-              ],
-            ),
+          : switch (_error) {
+              RecordErrorType.none => _RecordForm(questId: widget.questId, onError: _handleError),
+              RecordErrorType.offline => _OfflineRecovery(onRetry: _retryUpload, onOpenQueue: _openOfflineQueue),
+              RecordErrorType.permissionDenied => _PermissionRecovery(onRequest: _requestPermissions, onOpenSettings: _openSettings),
+              RecordErrorType.cameraFailure => _CameraRecovery(onRetry: _retryUpload, onSwitchMode: () => _handleError(RecordErrorType.none)),
+            },
     );
   }
 }
@@ -148,81 +92,47 @@ class _RecordSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.all(tokens.spacing(5)),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       children: <Widget>[
-        MinqSkeleton(
-          height: tokens.spacing(12),
-          borderRadius: tokens.cornerLarge(),
-        ),
-        SizedBox(height: tokens.spacing(5)),
-        const MinqSkeletonLine(width: 140, height: 22),
+        const MinqSkeletonLine(width: 140, height: 28),
         SizedBox(height: tokens.spacing(3)),
-        MinqSkeleton(
-          height: tokens.spacing(18),
-          borderRadius: tokens.cornerLarge(),
-        ),
-        SizedBox(height: tokens.spacing(6)),
-        const MinqSkeletonLine(width: 110, height: 22),
+        MinqSkeleton(height: tokens.spacing(22), borderRadius: tokens.cornerLarge()),
+        SizedBox(height: tokens.spacing(8)),
+        const MinqSkeletonLine(width: 110, height: 28),
         SizedBox(height: tokens.spacing(4)),
-        const MinqSkeletonList(itemCount: 2, itemHeight: 56),
-        SizedBox(height: tokens.spacing(5)),
-        const MinqSkeletonLine(width: 200, height: 18),
-        SizedBox(height: tokens.spacing(3)),
-        const MinqSkeletonList(itemCount: 3, itemHeight: 44),
+        Row(
+          children: [
+            Expanded(child: MinqSkeleton(height: tokens.spacing(40), borderRadius: tokens.cornerLarge())),
+            SizedBox(width: tokens.spacing(4)),
+            Expanded(child: MinqSkeleton(height: tokens.spacing(40), borderRadius: tokens.cornerLarge())),
+          ],
+        ),
       ],
     );
   }
 }
 
 class _RecordForm extends ConsumerWidget {
-  const _RecordForm({required this.questId, required this.onSimulate});
+  const _RecordForm({required this.questId, required this.onError});
 
   final int questId;
-  final void Function(RecordErrorType) onSimulate;
+  final void Function(RecordErrorType) onError;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
 
     return ListView(
-      padding: EdgeInsets.all(tokens.spacing(5)),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       children: <Widget>[
         SizedBox(height: tokens.spacing(4)),
-        Text(
-          'Quest',
-          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
-        ),
+        Text('Mini-Quest', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
         SizedBox(height: tokens.spacing(3)),
         _buildQuestInfoCard(tokens),
         SizedBox(height: tokens.spacing(8)),
-        Text(
-          'Proof',
-          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
-        ),
+        Text('Proof', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
         SizedBox(height: tokens.spacing(4)),
         _buildProofButtons(context, ref, tokens),
-        SizedBox(height: tokens.spacing(6)),
-        Text(
-          'デバッグ: エラーを再現',
-          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
-        ),
-        Wrap(
-          spacing: tokens.spacing(2),
-          children: <Widget>[
-            OutlinedButton(
-              onPressed: () => onSimulate(RecordErrorType.offline),
-              child: const Text('オフライン'),
-            ),
-            OutlinedButton(
-              onPressed: () => onSimulate(RecordErrorType.permissionDenied),
-              child: const Text('権限拒否'),
-            ),
-            OutlinedButton(
-              onPressed: () => onSimulate(RecordErrorType.cameraFailure),
-              child: const Text('カメラ失敗'),
-            ),
-          ],
-        ),
       ],
     );
   }
@@ -231,7 +141,7 @@ class _RecordForm extends ConsumerWidget {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withValues(alpha: 0.08),
+        color: tokens.brandPrimary.withOpacity(0.1),
         borderRadius: tokens.cornerLarge(),
       ),
       child: Row(
@@ -240,28 +150,18 @@ class _RecordForm extends ConsumerWidget {
             width: tokens.spacing(14),
             height: tokens.spacing(14),
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withValues(alpha: 0.2),
-              borderRadius: tokens.cornerMedium(),
+              color: tokens.brandPrimary.withOpacity(0.2),
+              borderRadius: tokens.cornerLarge(),
             ),
-            child: Icon(
-              Icons.spa_outlined,
-              color: tokens.brandPrimary,
-              size: tokens.spacing(9),
-            ),
+            child: Icon(Icons.spa, color: tokens.brandPrimary, size: tokens.spacing(8)),
           ),
           SizedBox(width: tokens.spacing(4)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                'Meditate',
-                style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
-              ),
+              Text('Meditate', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
               SizedBox(height: tokens.spacing(1)),
-              Text(
-                '10 minutes',
-                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
-              ),
+              Text('10 minutes', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
             ],
           ),
         ],
@@ -269,141 +169,121 @@ class _RecordForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildProofButtons(
-      BuildContext context, WidgetRef ref, MinqTheme tokens) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      mainAxisSpacing: tokens.spacing(4),
-      crossAxisSpacing: tokens.spacing(4),
-      physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 0.9,
-      children: <Widget>[
-        _ProofButton(
-          text: 'Capture Photo',
-          icon: Icons.photo_camera_outlined,
-          isPrimary: true,
-          onTap: () async {
-            final messenger = ScaffoldMessenger.of(context);
-            final uid = ref.read(uidProvider);
-            if (uid == null || uid.isEmpty) {
-              messenger.showSnackBar(
-                const SnackBar(content: Text('Unable to record without a signed-in user.')),
-              );
-              onSimulate(RecordErrorType.permissionDenied);
-              return;
-            }
-            try {
-              final result = await ref
-                  .read(photoStorageServiceProvider)
-                  .captureAndSanitize(ownerUid: uid, questId: questId);
-              if (!result.hasFile) {
-                messenger.showSnackBar(
-                  const SnackBar(content: Text('Photo capture cancelled.')),
-                );
-                return;
-              }
-
-              final proceed = await _handleModerationWarning(context, result);
-              if (!proceed) {
-                return;
-              }
-
-              final log = QuestLog()
-                ..uid = uid
-                ..questId = questId
-                ..ts = DateTime.now().toUtc()
-                ..proofType = ProofType.photo
-                ..proofValue = result.path
-                ..synced = false;
-              await ref.read(questLogRepositoryProvider).addLog(log);
-              onSimulate(RecordErrorType.none);
-              // ignore: use_build_context_synchronously
-              context.go('/celebration');
-            } on PhotoCaptureException catch (error) {
-              switch (error.reason) {
-                case PhotoCaptureFailure.permissionDenied:
-                  onSimulate(RecordErrorType.permissionDenied);
-                  break;
-                case PhotoCaptureFailure.cameraFailure:
-                  onSimulate(RecordErrorType.cameraFailure);
-                  break;
-              }
-            } catch (_) {
-              onSimulate(RecordErrorType.cameraFailure);
-            }
-          },
-        ),
-        _ProofButton(
-          text: 'Self-declare',
-          icon: Icons.check_circle_outline,
-          isPrimary: false,
-          onTap: () async {
-            final log = QuestLog()
-              ..uid = ref.read(uidProvider) ?? ''
-              ..questId = questId
-              ..ts = DateTime.now().toUtc()
-              ..proofType = ProofType.check
-              ..synced = false;
-            await ref.read(questLogRepositoryProvider).addLog(log);
-            context.go('/celebration');
-          },
-        ),
-      ],
+  Widget _buildProofButtons(BuildContext context, WidgetRef ref, MinqTheme tokens) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 400;
+        return Flex(
+          direction: isWide ? Axis.horizontal : Axis.vertical,
+          children: <Widget>[
+            Expanded(
+              child: _ProofButton(
+                text: 'Take Photo',
+                icon: Icons.photo_camera,
+                isPrimary: true,
+                onTap: () => _handlePhotoTap(context, ref),
+              ),
+            ),
+            SizedBox(width: isWide ? tokens.spacing(4) : 0, height: isWide ? 0 : tokens.spacing(4)),
+            Expanded(
+              child: _ProofButton(
+                text: 'Self-Declare',
+                icon: Icons.check_circle,
+                isPrimary: false,
+                onTap: () => _handleSelfDeclareTap(context, ref),
+              ),
+            ),
+          ],
+        );
+      },
     );
+  }
+
+  Future<void> _handlePhotoTap(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final uid = ref.read(uidProvider);
+    if (uid == null || uid.isEmpty) {
+      messenger.showSnackBar(const SnackBar(content: Text('Unable to record without a signed-in user.')));
+      onError(RecordErrorType.permissionDenied);
+      return;
+    }
+    try {
+      final result = await ref.read(photoStorageServiceProvider).captureAndSanitize(ownerUid: uid, questId: questId);
+      if (!result.hasFile) {
+        messenger.showSnackBar(const SnackBar(content: Text('Photo capture cancelled.')));
+        return;
+      }
+
+      final proceed = await _handleModerationWarning(context, result);
+      if (!proceed) return;
+
+      final log = QuestLog()
+        ..uid = uid
+        ..questId = questId
+        ..ts = DateTime.now().toUtc()
+        ..proofType = ProofType.photo
+        ..proofValue = result.path
+        ..synced = false;
+      await ref.read(questLogRepositoryProvider).addLog(log);
+      onError(RecordErrorType.none);
+      if (context.mounted) context.go('/celebration');
+    } on PhotoCaptureException catch (error) {
+      switch (error.reason) {
+        case PhotoCaptureFailure.permissionDenied:
+          onError(RecordErrorType.permissionDenied);
+          break;
+        case PhotoCaptureFailure.cameraFailure:
+          onError(RecordErrorType.cameraFailure);
+          break;
+      }
+    } catch (_) {
+      onError(RecordErrorType.cameraFailure);
+    }
+  }
+
+  Future<void> _handleSelfDeclareTap(BuildContext context, WidgetRef ref) async {
+    final log = QuestLog()
+      ..uid = ref.read(uidProvider) ?? ''
+      ..questId = questId
+      ..ts = DateTime.now().toUtc()
+      ..proofType = ProofType.check
+      ..synced = false;
+    await ref.read(questLogRepositoryProvider).addLog(log);
+    if (context.mounted) context.go('/celebration');
   }
 }
 
-Future<bool> _handleModerationWarning(
-  BuildContext context,
-  PhotoCaptureResult result,
-) async {
-  if (result.moderationVerdict == PhotoModerationVerdict.ok) {
-    return true;
-  }
+Future<bool> _handleModerationWarning(BuildContext context, PhotoCaptureResult result) async {
+  if (result.moderationVerdict == PhotoModerationVerdict.ok) return true;
 
   final tokens = context.tokens;
   final message = switch (result.moderationVerdict) {
-    PhotoModerationVerdict.tooDark =>
-        'The captured photo looks very dark. Retake to keep your partner reassured?',
-    PhotoModerationVerdict.tooBright =>
-        'The captured photo is almost entirely bright. Would you like to retake it for clarity?',
-    PhotoModerationVerdict.lowVariance =>
-        'The image appears blurry or blank. Retake to provide clearer proof?',
+    PhotoModerationVerdict.tooDark => 'The captured photo looks very dark. Retake to keep your partner reassured?',
+    PhotoModerationVerdict.tooBright => 'The captured photo is almost entirely bright. Would you like to retake it for clarity?',
+    PhotoModerationVerdict.lowVariance => 'The image appears blurry or blank. Retake to provide clearer proof?',
     PhotoModerationVerdict.ok => '',
   };
 
   final proceed = await showDialog<bool>(
-        context: context,
-        builder: (BuildContext dialogContext) {
-          return AlertDialog(
-            title: const Text('Check your photo'),
-            content: Text(message),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(false),
-                child: const Text('Retake'),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.of(dialogContext).pop(true),
-                style: FilledButton.styleFrom(
-                  backgroundColor: tokens.brandPrimary,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Use photo'),
-              ),
-            ],
-          );
-        },
-      ) ??
-      false;
+    context: context,
+    builder: (BuildContext dialogContext) => AlertDialog(
+      title: const Text('Check your photo'),
+      content: Text(message),
+      actions: <Widget>[
+        TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: const Text('Retake')),
+        FilledButton(
+          onPressed: () => Navigator.of(dialogContext).pop(true),
+          style: FilledButton.styleFrom(backgroundColor: tokens.brandPrimary, foregroundColor: Colors.white),
+          child: const Text('Use photo'),
+        ),
+      ],
+    ),
+  ) ?? false;
 
   if (!proceed) {
     try {
       final file = File(result.path);
-      if (file.existsSync()) {
-        await file.delete();
-      }
+      if (await file.exists()) await file.delete();
     } catch (_) {
       // Ignore cleanup errors.
     }
@@ -412,12 +292,7 @@ Future<bool> _handleModerationWarning(
 }
 
 class _ProofButton extends StatefulWidget {
-  const _ProofButton({
-    required this.text,
-    required this.icon,
-    required this.isPrimary,
-    required this.onTap,
-  });
+  const _ProofButton({required this.text, required this.icon, required this.isPrimary, required this.onTap});
 
   final String text;
   final IconData icon;
@@ -428,79 +303,109 @@ class _ProofButton extends StatefulWidget {
   State<_ProofButton> createState() => _ProofButtonState();
 }
 
-class _ProofButtonState extends State<_ProofButton>
-    with AsyncActionState<_ProofButton> {
+class _ProofButtonState extends State<_ProofButton> with AsyncActionState<_ProofButton> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final Color background =
-        widget.isPrimary ? tokens.brandPrimary : tokens.surface;
-    final Color foreground =
-        widget.isPrimary ? tokens.surface : tokens.textPrimary;
-    final BorderSide borderSide = widget.isPrimary
-        ? BorderSide.none
-        : BorderSide(color: tokens.brandPrimary.withValues(alpha: 0.24));
+    final Color background = widget.isPrimary ? tokens.brandPrimary : tokens.brandPrimary.withOpacity(0.1);
+    final Color foreground = widget.isPrimary ? Colors.white : tokens.textPrimary;
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        minHeight: tokens.spacing(18),
-        minWidth: tokens.spacing(18),
-      ),
+    return SizedBox(
+      height: 160,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: background,
           foregroundColor: foreground,
-          minimumSize: Size(double.infinity, tokens.spacing(18)),
-          padding: EdgeInsets.symmetric(
-            vertical: tokens.spacing(4),
-            horizontal: tokens.spacing(4),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: tokens.cornerLarge(),
-            side: borderSide,
-          ),
-          elevation: widget.isPrimary ? 4 : 0,
-          shadowColor: widget.isPrimary
-              ? tokens.brandPrimary.withValues(alpha: 0.32)
-              : Colors.transparent,
+          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+          elevation: 0,
         ),
-        onPressed: isProcessing
-            ? null
-            : () => runGuarded(() async {
-                  await widget.onTap();
-                }),
+        onPressed: isProcessing ? null : () => runGuarded(widget.onTap),
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return FadeTransition(opacity: animation, child: child);
-          },
+          transitionBuilder: (Widget child, Animation<double> animation) => FadeTransition(opacity: animation, child: child),
           child: isProcessing
               ? SizedBox(
                   key: const ValueKey<String>('progress'),
-                  height: tokens.spacing(6),
-                  width: tokens.spacing(6),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    valueColor: AlwaysStoppedAnimation<Color>(foreground),
-                  ),
+                  height: tokens.spacing(7),
+                  width: tokens.spacing(7),
+                  child: CircularProgressIndicator(strokeWidth: 3, valueColor: AlwaysStoppedAnimation<Color>(foreground)),
                 )
               : Column(
                   key: const ValueKey<String>('content'),
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(widget.icon, size: tokens.spacing(9)),
-                    SizedBox(height: tokens.spacing(3)),
-                    Text(
-                      widget.text,
-                      textAlign: TextAlign.center,
-                      style: tokens.bodyMedium.copyWith(
-                        color: foreground,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    Icon(widget.icon, size: tokens.spacing(10)),
+                    SizedBox(height: tokens.spacing(2)),
+                    Text(widget.text, style: tokens.titleMedium.copyWith(color: foreground, fontWeight: FontWeight.bold)),
                   ],
                 ),
         ),
+      ),
+    );
+  }
+}
+
+class _OfflineRecovery extends StatelessWidget {
+  const _OfflineRecovery({required this.onRetry, required this.onOpenQueue});
+  final VoidCallback onRetry;
+  final VoidCallback onOpenQueue;
+
+  @override
+  Widget build(BuildContext context) {
+    return MinqEmptyState(
+      icon: Icons.wifi_off,
+      title: 'You are offline',
+      message: 'Your proof will be saved locally and uploaded when you reconnect.',
+      actionArea: Column(
+        children: [
+          MinqPrimaryButton(label: 'Retry Upload', onPressed: () async => onRetry(), expand: false),
+          SizedBox(height: 8),
+          TextButton(onPressed: onOpenQueue, child: const Text('View Offline Queue')),
+        ],
+      ),
+    );
+  }
+}
+
+class _PermissionRecovery extends StatelessWidget {
+  const _PermissionRecovery({required this.onRequest, required this.onOpenSettings});
+  final VoidCallback onRequest;
+  final VoidCallback onOpenSettings;
+
+  @override
+  Widget build(BuildContext context) {
+    return MinqEmptyState(
+      icon: Icons.camera_alt_outlined,
+      title: 'Camera Access Needed',
+      message: 'To capture photo proof, MinQ needs access to your camera.',
+      actionArea: Column(
+        children: [
+          MinqPrimaryButton(label: 'Grant Access', onPressed: () async => onRequest(), expand: false),
+          SizedBox(height: 8),
+          TextButton(onPressed: onOpenSettings, child: const Text('Open Settings')),
+        ],
+      ),
+    );
+  }
+}
+
+class _CameraRecovery extends StatelessWidget {
+  const _CameraRecovery({required this.onRetry, required this.onSwitchMode});
+  final VoidCallback onRetry;
+  final VoidCallback onSwitchMode;
+
+  @override
+  Widget build(BuildContext context) {
+    return MinqEmptyState(
+      icon: Icons.error_outline,
+      title: 'Camera Error',
+      message: 'There was an issue with the camera. Please try again.',
+      actionArea: Column(
+        children: [
+          MinqPrimaryButton(label: 'Try Again', onPressed: () async => onRetry(), expand: false),
+          SizedBox(height: 8),
+          TextButton(onPressed: onSwitchMode, child: const Text('Self-Declare Instead')),
+        ],
       ),
     );
   }

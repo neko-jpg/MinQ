@@ -38,22 +38,47 @@ Future<bool> _initializeFirebaseIfAvailable() async {
   return false;
 }
 
-class MinQApp extends ConsumerWidget {
+class MinQApp extends ConsumerStatefulWidget {
   const MinQApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MinQApp> createState() => _MinQAppState();
+}
+
+class _MinQAppState extends ConsumerState<MinQApp> {
+  late final ProviderSubscription<AsyncValue<String>> _notificationTapSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    // React to notification taps emitted by the native layer.
+    _notificationTapSubscription = ref.listenManual<AsyncValue<String>>(
+      notificationTapStreamProvider,
+      (previous, next) => _handleNotificationNavigation(next),
+    );
+    _handleNotificationNavigation(_notificationTapSubscription.read());
+  }
+
+  @override
+  void dispose() {
+    _notificationTapSubscription.close();
+    super.dispose();
+  }
+
+  void _handleNotificationNavigation(AsyncValue<String> notification) {
+    notification.whenData((route) {
+      if (route.isNotEmpty) {
+        ref.read(routerProvider).go(route);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final appStartupAsyncValue = ref.watch(appStartupProvider);
     final router = ref.watch(routerProvider);
     final locale = ref.watch(appLocaleControllerProvider);
 
-    ref.listen(notificationTapStreamProvider, (previous, next) {
-      next.whenData((route) {
-        if (route.isNotEmpty) {
-          router.go(route);
-        }
-      });
-    });
     const seedColor = Color(0xFF3A7DFF);
 
     final minqLight = MinqTheme.light();

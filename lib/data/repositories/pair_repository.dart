@@ -1,12 +1,33 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:minq/domain/pair/pair.dart';
 
 class PairRepository {
   PairRepository(this._firestore);
 
   final FirebaseFirestore _firestore;
   final _random = Random();
+
+  Stream<Pair?> getPairStreamForUser(String uid) {
+    final assignmentStream = _firestore.collection('pair_assignments').doc(uid).snapshots();
+
+    return assignmentStream.asyncMap((assignmentSnap) async {
+      if (!assignmentSnap.exists) {
+        return null;
+      }
+      final pairId = assignmentSnap.data()!['pairId'] as String?;
+      if (pairId == null) {
+        return null;
+      }
+      final pairSnap = await _firestore.collection('pairs').doc(pairId).get();
+      if (!pairSnap.exists) {
+        return null;
+      }
+      return Pair.fromSnapshot(pairSnap);
+    });
+  }
 
   Future<String> createPair(String uid1, String uid2, String category) async {
     final pairRef = _firestore.collection('pairs').doc();
@@ -32,6 +53,16 @@ class PairRepository {
     await _firestore.collection('pairs').doc(pairId).update({
       'lastHighfiveAt': FieldValue.serverTimestamp(),
       'lastHighfiveBy': senderUid,
+    });
+  }
+
+  Future<void> sendQuickMessage(String pairId, String senderUid, String message) async {
+    await _firestore.collection('pairs').doc(pairId).update({
+      'lastMessage': {
+        'text': message,
+        'senderUid': senderUid,
+        'createdAt': FieldValue.serverTimestamp(),
+      },
     });
   }
 

@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/domain/config/feature_flags.dart';
-import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CelebrationScreen extends ConsumerStatefulWidget {
@@ -16,317 +13,198 @@ class CelebrationScreen extends ConsumerStatefulWidget {
   ConsumerState<CelebrationScreen> createState() => _CelebrationScreenState();
 }
 
-class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
-    with SingleTickerProviderStateMixin {
-  static const Duration _confettiDuration = Duration(milliseconds: 900);
-
-  late AnimationController _controller;
-  late Animation<double> _pulseAnimation;
-  late Animation<double> _sparkleAnimation;
-  Timer? _confettiTimer;
-  bool _confettiEnabled = true;
-  bool _rewardCardEnabled = true;
+class _CelebrationScreenState extends ConsumerState<CelebrationScreen> with TickerProviderStateMixin {
+  late final AnimationController _pingController;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+    _pingController = AnimationController(
       vsync: this,
-    );
-
-    _pulseAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-      reverseCurve: Curves.easeInCubic,
-    );
-
-    _sparkleAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.1, 0.8, curve: Curves.easeOutBack),
-    );
-    final flags = ref.read(featureFlagsProvider);
-    _applyFlags(flags, animate: false);
-
-    ref.listen<FeatureFlags>(featureFlagsProvider, (previous, next) {
-      _applyFlags(next);
-    });
+      duration: const Duration(seconds: 2),
+    )..repeat();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
-    _confettiTimer?.cancel();
+    _pingController.dispose();
     super.dispose();
-  }
-
-  void _applyFlags(FeatureFlags flags, {bool animate = true}) {
-    final shouldAnimate = flags.celebrationConfettiEnabled;
-    final shouldShowReward = flags.celebrationRewardCardEnabled;
-
-    if (animate) {
-      if (shouldAnimate) {
-        _startConfetti();
-      } else {
-        _stopConfetti();
-      }
-    } else {
-      if (shouldAnimate) {
-        _startConfetti();
-      }
-    }
-
-    setState(() {
-      _confettiEnabled = shouldAnimate;
-      _rewardCardEnabled = shouldShowReward;
-    });
-  }
-
-  void _startConfetti() {
-    if (_controller.isAnimating) {
-      return;
-    }
-    _controller.repeat(reverse: true);
-    _confettiTimer?.cancel();
-    _confettiTimer = Timer(_confettiDuration, () {
-      if (!mounted) return;
-      _controller.stop();
-    });
-  }
-
-  void _stopConfetti() {
-    _confettiTimer?.cancel();
-    if (_controller.isAnimating) {
-      _controller.stop();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final streak = ref.watch(streakProvider).asData?.value ?? 0;
+    final longestStreak = ref.watch(longestStreakProvider).asData?.value ?? 0;
+    final isLongestStreak = streak > 0 && streak >= longestStreak;
 
     return Scaffold(
       backgroundColor: tokens.background,
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.centerRight,
-              child: Semantics(
-                label: '閉じる',
-                button: true,
-                child: IconButton(
-                  tooltip: '閉じる',
-                  icon: Icon(Icons.close, color: tokens.textPrimary),
-                  onPressed: () => context.go('/'),
-                ),
-              ),
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              const Spacer(flex: 2),
+              _buildCelebrationContent(tokens, isLongestStreak, streak),
+              const Spacer(),
+              _buildRewardCard(tokens),
+              const Spacer(),
+              _buildDoneButton(context, tokens),
+            ],
+          ),
+          _buildCloseButton(context, tokens),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCelebrationContent(MinqTheme tokens, bool isLongest, int streak) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 288,
+            height: 288,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                _PingAnimation(controller: _pingController, isLongest: isLongest),
+                Text(isLongest ? '🏆' : '🎉', style: const TextStyle(fontSize: 72)),
+              ],
             ),
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    if (_confettiEnabled)
-                      _CelebrationBurst(
-                        pulse: _pulseAnimation,
-                        sparkles: _sparkleAnimation,
-                      )
-                    else
-                      Icon(
-                        Icons.celebration,
-                        color: tokens.brandPrimary,
-                        size: tokens.spacing(16),
-                      ),
-                    SizedBox(height: tokens.spacing(6)),
-                    Text(
-                      'Streak +1',
-                      style: tokens.titleLarge.copyWith(
-                        color: tokens.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: tokens.spacing(2)),
-                    Text(
-                      'Great job logging today! Keep going.',
-                      style: tokens.bodyMedium.copyWith(
-                        color: tokens.textMuted,
-                      ),
-                    ),
-                    SizedBox(height: tokens.spacing(8)),
-                    if (_rewardCardEnabled) _buildRewardCard(tokens),
-                  ],
-                ),
-              ),
-            ),
-            _buildNextAction(tokens, context),
-          ],
-        ),
+          ),
+          SizedBox(height: tokens.spacing(4)),
+          Text(
+            isLongest ? 'New Longest Streak!' : 'Day $streak Streak!',
+            style: tokens.displaySmall.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.w800),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: tokens.spacing(2)),
+          Text(
+            isLongest ? 'You set a new personal best!' : 'You\'re on a roll! Keep it up.',
+            style: tokens.bodyLarge.copyWith(color: tokens.textMuted),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildRewardCard(MinqTheme tokens) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
-      child: Card(
-        elevation: 0,
-        color: tokens.brandPrimary.withValues(alpha: 0.08),
-        shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
-        child: ListTile(
-          leading: Container(
-            padding: EdgeInsets.all(tokens.spacing(3)),
-            decoration: BoxDecoration(
-              color: tokens.brandPrimary.withValues(alpha: 0.18),
-              borderRadius: tokens.cornerMedium(),
-            ),
-            child: Icon(
-              Icons.self_improvement,
-              color: tokens.brandPrimary,
-              size: tokens.spacing(7),
-            ),
-          ),
-          title: Text(
-            '1-min Breathing Exercise',
-            style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
-          ),
-          subtitle: Text(
-            'Relax and recenter',
-            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
-          ),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            size: tokens.spacing(4),
-            color: tokens.textMuted,
-          ),
-          onTap: () {},
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNextAction(MinqTheme tokens, BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        tokens.spacing(6),
-        tokens.spacing(4),
-        tokens.spacing(6),
-        tokens.spacing(8),
-      ),
+      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(5)),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          MinqPrimaryButton(
-            label: '次のQuestへ',
-            onPressed: () async => context.go('/'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: tokens.spacing(2)),
+            child: Text('Your Reward', style: tokens.titleSmall.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
           ),
           SizedBox(height: tokens.spacing(3)),
-          TextButton(
-            onPressed: () => context.go('/home'),
-            child: const Text('ホームに戻る'),
+          Material(
+            color: tokens.brandPrimary.withOpacity(0.1),
+            borderRadius: tokens.cornerLarge(),
+            child: InkWell(
+              onTap: () { /* TODO: Implement reward action */ },
+              borderRadius: tokens.cornerLarge(),
+              child: Container(
+                padding: EdgeInsets.all(tokens.spacing(4)),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      width: tokens.spacing(14),
+                      height: tokens.spacing(14),
+                      decoration: BoxDecoration(
+                        color: tokens.brandPrimary.withOpacity(0.2),
+                        borderRadius: tokens.cornerLarge(),
+                      ),
+                      child: Icon(Icons.self_improvement, color: tokens.brandPrimary, size: tokens.spacing(8)),
+                    ),
+                    SizedBox(width: tokens.spacing(4)),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('1-Min Breathing Exercise', style: tokens.titleSmall.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+                          SizedBox(height: tokens.spacing(1)),
+                          Text('Relax and recenter', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios, size: tokens.spacing(4), color: tokens.textMuted),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
-}
 
-class _CelebrationBurst extends StatelessWidget {
-  const _CelebrationBurst({required this.pulse, required this.sparkles});
-
-  final Animation<double> pulse;
-  final Animation<double> sparkles;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    final color = tokens.brandPrimary;
-
-    return AnimatedBuilder(
-      animation: pulse,
-      builder: (BuildContext context, Widget? child) {
-        return SizedBox(
-          width: tokens.spacing(48),
-          height: tokens.spacing(48),
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Container(
-                width: tokens.spacing(28) * pulse.value,
-                height: tokens.spacing(28) * pulse.value,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color.withValues(alpha: 0.12 * pulse.value),
-                ),
-              ),
-              ScaleTransition(
-                scale: pulse,
-                child: Container(
-                  width: tokens.spacing(16),
-                  height: tokens.spacing(16),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: <Color>[color, color.withValues(alpha: 0.6)],
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.celebration,
-                    color: tokens.surface,
-                    size: tokens.spacing(10),
-                  ),
-                ),
-              ),
-              ...List<Widget>.generate(8, (int index) {
-                final angle = (math.pi / 4) * index;
-                return _ConfettiSparkle(
-                  angle: angle,
-                  progress: sparkles.value,
-                  color: color,
-                );
-              }),
-            ],
+  Widget _buildDoneButton(BuildContext context, MinqTheme tokens) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(tokens.spacing(4), tokens.spacing(4), tokens.spacing(4), tokens.spacing(6)),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () => context.go('/home'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: tokens.brandPrimary,
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
+            shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
           ),
-        );
-      },
+          child: Text('Done', style: tokens.titleMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCloseButton(BuildContext context, MinqTheme tokens) {
+    return Positioned(
+      top: MediaQuery.of(context).padding.top,
+      left: tokens.spacing(2),
+      child: IconButton(
+        icon: Container(
+          width: tokens.spacing(12),
+          height: tokens.spacing(12),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            shape: BoxShape.circle,
+            backgroundBlendMode: BlendMode.overlay,
+          ),
+          child: const Icon(Icons.close, color: Colors.white),
+        ),
+        onPressed: () => context.go('/home'),
+      ),
     );
   }
 }
 
-class _ConfettiSparkle extends StatelessWidget {
-  const _ConfettiSparkle({
-    required this.angle,
-    required this.progress,
-    required this.color,
-  });
+class _PingAnimation extends AnimatedWidget {
+  final AnimationController controller;
+  final bool isLongest;
 
-  final double angle;
-  final double progress;
-  final Color color;
+  const _PingAnimation({required this.controller, this.isLongest = false}) : super(listenable: controller);
 
   @override
   Widget build(BuildContext context) {
-    if (progress <= 0) {
-      return const SizedBox.shrink();
-    }
-    final radius = progress * 60;
-    final dx = math.cos(angle) * radius;
-    final dy = math.sin(angle) * radius;
+    final tokens = context.tokens;
+    final animation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: controller, curve: Curves.easeInOut),
+    );
+    final color = isLongest ? Colors.amber.shade400 : tokens.brandPrimary;
 
-    return Positioned(
-      left: 80 + dx,
-      top: 80 + dy,
-      child: Opacity(
-        opacity: 1 - progress,
-        child: Transform.rotate(
-          angle: angle,
-          child: Container(
-            width: 8,
-            height: 12,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.7),
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
+    return Opacity(
+      opacity: 1.0 - animation.value,
+      child: Container(
+        width: 288 * animation.value,
+        height: 288 * animation.value,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: color.withOpacity(0.3),
         ),
       ),
     );

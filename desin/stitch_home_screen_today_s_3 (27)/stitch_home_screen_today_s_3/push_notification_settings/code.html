@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>MinQ Push Notification Settings</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13b6ec",
+            "background-light": "#f6f8f8",
+            "background-dark": "#101d22",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans", "Noto Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+<div class="flex flex-col h-screen justify-between">
+<div class="flex-grow overflow-y-auto">
+<header class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10">
+<div class="flex items-center p-4">
+<button class="p-2 -ml-2">
+<span class="material-symbols-outlined text-slate-800 dark:text-slate-200">arrow_back_ios_new</span>
+</button>
+<h1 class="flex-1 text-center text-lg font-bold text-slate-900 dark:text-white pr-8">Push Notifications</h1>
+</div>
+</header>
+<main class="p-4 space-y-6">
+<section>
+<h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">General</h2>
+<div class="bg-white/50 dark:bg-black/20 rounded-xl">
+<div class="flex items-center justify-between p-4">
+<div>
+<p class="font-medium text-slate-900 dark:text-white">Enable Notifications</p>
+<p class="text-sm text-slate-600 dark:text-slate-400">Receive push notifications for all app activities.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<section>
+<h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">Reminders</h2>
+<div class="bg-white/50 dark:bg-black/20 rounded-xl divide-y divide-slate-200 dark:divide-slate-700/50">
+<div class="flex items-center justify-between p-4">
+<div>
+<p class="font-medium text-slate-900 dark:text-white">Default Reminder</p>
+<p class="text-sm text-slate-600 dark:text-slate-400">Receive a reminder at a specific time each day.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-4">
+<p class="text-slate-800 dark:text-slate-200">Morning</p>
+<p class="text-primary font-medium">9:00 AM</p>
+</div>
+<div class="flex items-center justify-between p-4">
+<p class="text-slate-800 dark:text-slate-200">Evening</p>
+<p class="text-primary font-medium">7:00 PM</p>
+</div>
+</div>
+</section>
+<section>
+<div class="bg-white/50 dark:bg-black/20 rounded-xl divide-y divide-slate-200 dark:divide-slate-700/50">
+<div class="flex items-center justify-between p-4">
+<div>
+<p class="font-medium text-slate-900 dark:text-white">Incomplete Quest Reminder</p>
+<p class="text-sm text-slate-600 dark:text-slate-400">Get a nudge if you haven't finished your quest.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-4">
+<p class="text-slate-800 dark:text-slate-200">Time</p>
+<p class="text-slate-500 dark:text-slate-400">10:00 PM</p>
+</div>
+</div>
+</section>
+</main>
+</div>
+<footer class="sticky bottom-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm border-t border-slate-200 dark:border-slate-800">
+<nav class="flex justify-around p-2">
+<a class="flex flex-col items-center justify-center gap-1 w-1/5 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 w-1/5 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="text-xs">Progress</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 w-1/5 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="text-xs">Pair</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 w-1/5 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">checklist</span>
+<span class="text-xs">Quests</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 w-1/5 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">settings</span>
+<span class="text-xs font-bold">Settings</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

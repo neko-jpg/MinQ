@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MinQ User Profile</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13b6ec",
+            "background-light": "#f6f8f8",
+            "background-dark": "#101d22",
+            "foreground-light": "#0d181b",
+            "foreground-dark": "#e8eff2",
+            "subtle-light": "#4c869a",
+            "subtle-dark": "#a1bdc7",
+            "border-light": "#cfe1e7",
+            "border-dark": "#2d444e",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 1,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-foreground-light dark:text-foreground-dark">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center justify-between p-4">
+<button class="flex items-center justify-center w-10 h-10">
+<span class="material-symbols-outlined text-foreground-light dark:text-foreground-dark">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-center text-foreground-light dark:text-foreground-dark">Profile</h1>
+<div class="w-10 h-10"></div>
+</div>
+</header>
+<main class="flex-grow pb-24">
+<div class="flex flex-col items-center p-6 space-y-4">
+<div class="relative">
+<img alt="User avatar" class="w-24 h-24 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB9ScbmKSJZ_A6qGEcW7SFkoMK5CwF64zOdNZM4TRnQN8B_VkBhrYovzv-j8ObYKD3hkKesD83oIYKi4eTxdATtKuykZwDm49VdYiRIp1tJS6aCeJ5xWOG5bJbxN7OVHQipFa-l0TJLkIfehjJQQmugC_KzVbqWAkbc5QnaNDJ_wukp7yg2AAZmquKGaydIp6mOLbdHM-FKvU7Zjp1ez3TxMT2TeaUtPas_K7Tiy21BpRkOrNHFfguOn-RH1qmNZUfWYG4WONKNQSC"/>
+</div>
+<div class="text-center">
+<p class="text-xl font-bold text-foreground-light dark:text-foreground-dark">Ethan</p>
+<p class="text-subtle-light dark:text-subtle-dark">@ethan_123</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark mt-1">Joined 2 months ago</p>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 px-4">
+<div class="flex flex-col items-center p-4 bg-background-light dark:bg-background-dark/50 border border-border-light dark:border-border-dark rounded-lg">
+<p class="text-2xl font-bold text-primary">12</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Streak</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-background-light dark:bg-background-dark/50 border border-border-light dark:border-border-dark rounded-lg">
+<p class="text-2xl font-bold text-primary">3</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Pairs</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-background-light dark:bg-background-dark/50 border border-border-light dark:border-border-dark rounded-lg">
+<p class="text-2xl font-bold text-primary">2</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Quests</p>
+</div>
+</div>
+<div class="px-4 mt-6">
+<h2 class="text-lg font-bold text-foreground-light dark:text-foreground-dark mb-2">About</h2>
+<p class="text-subtle-light dark:text-subtle-dark text-sm leading-relaxed">
+          I'm a software engineer who loves to code and build things. I'm also a big fan of productivity and habit-building, and I'm excited to be using MinQ to help me achieve my goals.
+        </p>
+</div>
+<div class="px-4 mt-6">
+<div class="bg-background-light dark:bg-background-dark/50 border border-border-light dark:border-border-dark rounded-lg">
+<a class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark" href="#">
+<span class="text-foreground-light dark:text-foreground-dark">Edit Profile</span>
+<span class="material-symbols-outlined text-subtle-light dark:text-subtle-dark !font-thin">arrow_forward_ios</span>
+</a>
+<a class="flex items-center justify-between p-4" href="#">
+<span class="text-foreground-light dark:text-foreground-dark">Settings</span>
+<span class="material-symbols-outlined text-subtle-light dark:text-subtle-dark !font-thin">arrow_forward_ios</span>
+</a>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm border-t border-border-light dark:border-border-dark">
+<nav class="flex justify-around p-2">
+<a class="flex flex-col items-center justify-center w-16 gap-1 text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center w-16 gap-1 text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="text-xs">Progress</span>
+</a>
+<a class="flex flex-col items-center justify-center w-16 gap-1 text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-xs">Pair</span>
+</a>
+<a class="flex flex-col items-center justify-center w-16 gap-1 text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">checklist</span>
+<span class="text-xs">Quests</span>
+</a>
+<a class="flex flex-col items-center justify-center w-16 gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-xs">Settings</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

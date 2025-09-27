@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MinQ - Badges &amp; Rewards</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13b6ec",
+            "secondary": "#ffc700",
+            "background-light": "#f6f8f8",
+            "background-dark": "#101d22",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex flex-col h-screen justify-between">
+<div class="flex-grow overflow-y-auto">
+<header class="sticky top-0 z-10 bg-background-light dark:bg-background-dark bg-opacity-80 backdrop-blur-sm">
+<div class="flex items-center p-4">
+<button class="text-slate-800 dark:text-slate-200">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-slate-900 dark:text-white text-lg font-bold flex-1 text-center">Badges &amp; Rewards</h1>
+<div class="w-8"></div>
+</div>
+</header>
+<main class="p-6">
+<div class="text-center mb-8">
+<h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Your Achievements</h2>
+<p class="text-slate-600 dark:text-slate-400">Keep up the great work! Here are the badges you've earned.</p>
+</div>
+<div class="space-y-8">
+<div>
+<h3 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4">Streaks</h3>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div class="flex flex-col items-center p-4 bg-white/50 dark:bg-black/10 rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="relative mb-2">
+<span class="material-symbols-outlined text-5xl text-amber-500 !fill-1" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 200, 'opsz' 48">local_fire_department</span>
+</div>
+<p class="font-bold text-sm text-slate-800 dark:text-slate-200">7-Day Streak</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">01/15/24</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white/50 dark:bg-black/10 rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="relative mb-2">
+<span class="material-symbols-outlined text-5xl text-slate-400 dark:text-slate-600">rocket_launch</span>
+</div>
+<p class="font-bold text-sm text-slate-500 dark:text-slate-400">14-Day Streak</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Locked</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white/50 dark:bg-black/10 rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="relative mb-2">
+<span class="material-symbols-outlined text-5xl text-slate-400 dark:text-slate-600">star</span>
+</div>
+<p class="font-bold text-sm text-slate-500 dark:text-slate-400">30-Day Streak</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Locked</p>
+</div>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4">Pair Milestones</h3>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div class="flex flex-col items-center p-4 bg-white/50 dark:bg-black/10 rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="relative mb-2">
+<span class="material-symbols-outlined text-5xl text-cyan-500 !fill-1" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 200, 'opsz' 48">handshake</span>
+</div>
+<p class="font-bold text-sm text-slate-800 dark:text-slate-200">First Pair</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">01/10/24</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white/50 dark:bg-black/10 rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="relative mb-2">
+<span class="material-symbols-outlined text-5xl text-primary !fill-1" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 200, 'opsz' 48">group_add</span>
+</div>
+<p class="font-bold text-sm text-slate-800 dark:text-slate-200">Invite a Friend</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">01/12/24</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white/50 dark:bg-black/10 rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="relative mb-2">
+<span class="material-symbols-outlined text-5xl text-slate-400 dark:text-slate-600">military_tech</span>
+</div>
+<p class="font-bold text-sm text-slate-500 dark:text-slate-400">Perfect Pair</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Locked</p>
+</div>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4">Quest Categories</h3>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div class="flex flex-col items-center p-4 bg-white/50 dark:bg-black/10 rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="relative mb-2">
+<span class="material-symbols-outlined text-5xl text-green-500 !fill-1" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 200, 'opsz' 48">fitness_center</span>
+</div>
+<p class="font-bold text-sm text-slate-800 dark:text-slate-200">Fitness Fanatic</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">01/18/24</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white/50 dark:bg-black/10 rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="relative mb-2">
+<span class="material-symbols-outlined text-5xl text-slate-400 dark:text-slate-600">self_improvement</span>
+</div>
+<p class="font-bold text-sm text-slate-500 dark:text-slate-400">Wellness Warrior</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Locked</p>
+</div>
+<div class="flex flex-col items-center p-4 bg-white/50 dark:bg-black/10 rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="relative mb-2">
+<span class="material-symbols-outlined text-5xl text-slate-400 dark:text-slate-600">school</span>
+</div>
+<p class="font-bold text-sm text-slate-500 dark:text-slate-400">Learning Legend</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Locked</p>
+</div>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4">Other Rewards</h3>
+<div class="bg-white/50 dark:bg-black/10 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+<span class="material-symbols-outlined text-4xl text-secondary !fill-1">palette</span>
+<div>
+<p class="font-bold text-slate-800 dark:text-slate-200">New App Theme</p>
+<p class="text-sm text-slate-600 dark:text-slate-400">Unlocked a "Sunset" theme!</p>
+</div>
+<button class="ml-auto bg-primary/20 dark:bg-primary/30 text-primary font-bold px-4 py-2 text-sm rounded-lg hover:bg-primary/30 dark:hover:bg-primary/40 transition-colors">Apply</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<footer class="sticky bottom-0 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-slate-800">
+<nav class="flex justify-around p-2">
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary p-2" href="#">
+<div class="bg-primary/20 dark:bg-primary/30 rounded-full p-2">
+<span class="material-symbols-outlined text-primary !fill-1">emoji_events</span>
+</div>
+<span class="text-xs font-bold">Rewards</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="text-xs font-medium">Pair</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined">checklist</span>
+<span class="text-xs font-medium">Quests</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-xs font-medium">Settings</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

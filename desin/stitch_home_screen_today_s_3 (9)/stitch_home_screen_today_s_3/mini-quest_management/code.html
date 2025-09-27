@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Welcome to MinQ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#13b6ec",
+            "background-light": "#f6f8f8",
+            "background-dark": "#101d22",
+            "card-light": "#ffffff",
+            "card-dark": "#1a2a30",
+          },
+          fontFamily: {
+            display: ["Plus Jakarta Sans", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "1rem",
+            lg: "1.5rem",
+            xl: "2rem",
+            full: "9999px"
+          },
+        },
+      },
+    };
+  </script>
+<style>
+    body {
+      min-height: 100dvh;
+      background-color: #f6f8f8;
+    }
+    .dark body {
+      background-color: #101d22;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #13b6ec, #4f46e5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+<div class="flex flex-col min-h-screen">
+<main class="flex-1 flex flex-col items-center justify-center p-6 text-center">
+<div class="w-24 h-24 mb-6 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-6xl">
+          checklist
+        </span>
+</div>
+<h1 class="text-4xl font-bold text-slate-900 dark:text-white mb-4">Welcome to <span class="gradient-text">MinQ</span></h1>
+<p class="text-slate-600 dark:text-slate-400 max-w-sm mx-auto">
+        Build habits with minimal effort through mini-quests and anonymous support.
+      </p>
+<div class="w-full max-w-sm mt-10 space-y-6">
+<div class="flex items-start gap-4 p-4 rounded-lg bg-card-light dark:bg-card-dark shadow-sm">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl">
+              touch_app
+            </span>
+</div>
+<div>
+<h3 class="font-semibold text-slate-900 dark:text-white text-left">3-Tap Habits</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 text-left">Start a new habit in just three taps. It's that simple.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 rounded-lg bg-card-light dark:bg-card-dark shadow-sm">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl">
+              groups
+            </span>
+</div>
+<div>
+<h3 class="font-semibold text-slate-900 dark:text-white text-left">Anonymous Pairs</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 text-left">Get accountability and support from a partner, anonymously.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 rounded-lg bg-card-light dark:bg-card-dark shadow-sm">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl">
+              explore
+            </span>
+</div>
+<div>
+<h3 class="font-semibold text-slate-900 dark:text-white text-left">Mini-Quests</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 text-left">Turn your goals into tiny, achievable quests that feel rewarding.</p>
+</div>
+</div>
+</div>
+</main>
+<div class="p-6 sticky bottom-0 bg-background-light dark:bg-background-dark">
+<button class="w-full bg-primary text-white font-bold py-4 px-6 rounded-full text-lg shadow-lg hover:bg-primary/90 transition-colors duration-300 flex items-center justify-center gap-2">
+<span>Get Started</span>
+<span class="material-symbols-outlined">
+          arrow_forward
+        </span>
+</button>
+<p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">
+        Already have an account? <a class="font-semibold text-primary" href="#">Log In</a>
+</p>
+</div>
+</div>
+
+</body></html>

@@ -25,7 +25,7 @@ class FeatureFlagsNotifier extends StateNotifier<FeatureFlags> {
     }
 
     await _remoteConfig!.setDefaults(FeatureFlags.defaults());
-    await _remoteConfig!.setConfigSettings(const RemoteConfigSettings(
+    await _remoteConfig!.setConfigSettings(RemoteConfigSettings(
       fetchTimeout: Duration(seconds: 10),
       minimumFetchInterval: Duration(hours: 1),
     ));

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MinQ - Offline Capabilities</title>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13b6ec",
+              "background-light": "#f6f8f8",
+              "background-dark": "#101d22",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex flex-col h-screen justify-between p-6">
+<div class="flex-grow flex flex-col items-center justify-center text-center">
+<div class="relative w-48 h-48 mb-8">
+<div class="absolute inset-0 bg-primary/20 dark:bg-primary/30 rounded-full animate-ping"></div>
+<div class="absolute inset-2 bg-primary/40 dark:bg-primary/50 rounded-full animate-ping" style="animation-delay: 0.5s;"></div>
+<div class="relative w-full h-full flex items-center justify-center bg-background-light dark:bg-background-dark rounded-full shadow-lg">
+<span class="material-symbols-outlined text-7xl text-primary">
+                        cloud_off
+                    </span>
+</div>
+<div class="absolute bottom-0 right-0 bg-background-light dark:bg-background-dark rounded-full p-2 shadow-md">
+<span class="material-symbols-outlined text-4xl text-primary">
+                        sync
+                    </span>
+</div>
+</div>
+<h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-4">Offline, Always On</h1>
+<p class="text-base text-gray-600 dark:text-gray-300 max-w-sm">
+                MinQ works seamlessly offline. Record your mini-quests anytime, anywhere, and your progress will sync automatically when you're back online.
+            </p>
+</div>
+<div class="w-full">
+<div class="flex justify-center items-center gap-2 mb-6">
+<div class="w-2.5 h-2.5 bg-primary/30 dark:bg-primary/40 rounded-full"></div>
+<div class="w-2.5 h-2.5 bg-primary rounded-full"></div>
+<div class="w-2.5 h-2.5 bg-primary/30 dark:bg-primary/40 rounded-full"></div>
+</div>
+<div class="flex justify-between items-center gap-4">
+<button class="flex-1 py-3 px-4 rounded-lg bg-primary/20 dark:bg-primary/30 text-primary font-bold text-lg">
+                    Back
+                </button>
+<button class="flex-1 py-3 px-4 rounded-lg bg-primary text-white font-bold text-lg">
+                    Next
+                </button>
+</div>
+</div>
+</div>
+
+</body></html>
