@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CelebrationScreen extends ConsumerStatefulWidget {
   const CelebrationScreen({super.key});
@@ -8,7 +12,8 @@ class CelebrationScreen extends ConsumerStatefulWidget {
   ConsumerState<CelebrationScreen> createState() => _CelebrationScreenState();
 }
 
-class _CelebrationScreenState extends ConsumerState<CelebrationScreen> with TickerProviderStateMixin {
+class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
+    with TickerProviderStateMixin {
   late final AnimationController _pingController;
 
   @override
@@ -53,7 +58,11 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen> with Tick
     );
   }
 
-  Widget _buildCelebrationContent(MinqTheme tokens, bool isLongest, int streak) {
+  Widget _buildCelebrationContent(
+    MinqTheme tokens,
+    bool isLongest,
+    int streak,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -64,20 +73,31 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen> with Tick
             child: Stack(
               alignment: Alignment.center,
               children: [
-                _PingAnimation(controller: _pingController, isLongest: isLongest),
-                Text(isLongest ? '🏆' : '🎉', style: const TextStyle(fontSize: 72)),
+                _PingAnimation(
+                  controller: _pingController,
+                  isLongest: isLongest,
+                ),
+                Text(
+                  isLongest ? '🏆' : '🎉',
+                  style: const TextStyle(fontSize: 72),
+                ),
               ],
             ),
           ),
           SizedBox(height: tokens.spacing(4)),
           Text(
             isLongest ? 'New Longest Streak!' : 'Day $streak Streak!',
-            style: tokens.displaySmall.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.w800),
+            style: tokens.displaySmall.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.w800,
+            ),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: tokens.spacing(2)),
           Text(
-            isLongest ? 'You set a new personal best!' : 'You\'re on a roll! Keep it up.',
+            isLongest
+                ? 'You set a new personal best!'
+                : 'You\'re on a roll! Keep it up.',
             style: tokens.bodyLarge.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
@@ -94,14 +114,22 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen> with Tick
         children: [
           Padding(
             padding: EdgeInsets.only(left: tokens.spacing(2)),
-            child: Text('Your Reward', style: tokens.titleSmall.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+            child: Text(
+              'Your Reward',
+              style: tokens.titleSmall.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           SizedBox(height: tokens.spacing(3)),
           Material(
             color: tokens.brandPrimary.withOpacity(0.1),
             borderRadius: tokens.cornerLarge(),
             child: InkWell(
-              onTap: () { /* TODO: Implement reward action */ },
+              onTap: () {
+                /* TODO: Implement reward action */
+              },
               borderRadius: tokens.cornerLarge(),
               child: Container(
                 padding: EdgeInsets.all(tokens.spacing(4)),
@@ -114,20 +142,39 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen> with Tick
                         color: tokens.brandPrimary.withOpacity(0.2),
                         borderRadius: tokens.cornerLarge(),
                       ),
-                      child: Icon(Icons.self_improvement, color: tokens.brandPrimary, size: tokens.spacing(8)),
+                      child: Icon(
+                        Icons.self_improvement,
+                        color: tokens.brandPrimary,
+                        size: tokens.spacing(8),
+                      ),
                     ),
                     SizedBox(width: tokens.spacing(4)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('1-Min Breathing Exercise', style: tokens.titleSmall.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+                          Text(
+                            '1-Min Breathing Exercise',
+                            style: tokens.titleSmall.copyWith(
+                              color: tokens.textPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           SizedBox(height: tokens.spacing(1)),
-                          Text('Relax and recenter', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+                          Text(
+                            'Relax and recenter',
+                            style: tokens.bodyMedium.copyWith(
+                              color: tokens.textMuted,
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    Icon(Icons.arrow_forward_ios, size: tokens.spacing(4), color: tokens.textMuted),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: tokens.spacing(4),
+                      color: tokens.textMuted,
+                    ),
                   ],
                 ),
               ),
@@ -140,7 +187,12 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen> with Tick
 
   Widget _buildDoneButton(BuildContext context, MinqTheme tokens) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(tokens.spacing(4), tokens.spacing(4), tokens.spacing(4), tokens.spacing(6)),
+      padding: EdgeInsets.fromLTRB(
+        tokens.spacing(4),
+        tokens.spacing(4),
+        tokens.spacing(4),
+        tokens.spacing(6),
+      ),
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
@@ -151,7 +203,13 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen> with Tick
             padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
           ),
-          child: Text('Done', style: tokens.titleMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+          child: Text(
+            'Done',
+            style: tokens.titleMedium.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
     );
@@ -182,14 +240,16 @@ class _PingAnimation extends AnimatedWidget {
   final AnimationController controller;
   final bool isLongest;
 
-  const _PingAnimation({required this.controller, this.isLongest = false}) : super(listenable: controller);
+  const _PingAnimation({required this.controller, this.isLongest = false})
+    : super(listenable: controller);
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final animation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: controller, curve: Curves.easeInOut),
-    );
+    final animation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
     final color = isLongest ? Colors.amber.shade400 : tokens.brandPrimary;
 
     return Opacity(

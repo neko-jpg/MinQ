@@ -1,4 +1,19 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/data/services/image_moderation_service.dart';
+import 'package:minq/data/services/photo_storage_service.dart';
+import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/presentation/common/minq_buttons.dart';
+import 'package:minq/presentation/common/minq_empty_state.dart';
+import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 enum RecordErrorType { none, offline, permissionDenied, cameraFailure }
 
@@ -35,7 +50,8 @@ class _RecordScreenState extends State<RecordScreen> {
     setState(() => _error = type);
   }
 
-  Future<void> _requestPermissions() async => _handleError(RecordErrorType.none);
+  Future<void> _requestPermissions() async =>
+      _handleError(RecordErrorType.none);
   Future<void> _retryUpload() async => _handleError(RecordErrorType.none);
   Future<void> _openSettings() async => _handleError(RecordErrorType.none);
   Future<void> _openOfflineQueue() async => _handleError(RecordErrorType.none);
@@ -47,26 +63,42 @@ class _RecordScreenState extends State<RecordScreen> {
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
-        title: Text('記録', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        title: Text(
+          '記録',
+          style: tokens.titleMedium.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: Center(
-          child: MinqIconButton(
-            icon: Icons.close,
-            onTap: () => context.pop(),
-          ),
+          child: MinqIconButton(icon: Icons.close, onTap: () => context.pop()),
         ),
       ),
-      body: _isLoading
-          ? _RecordSkeleton(tokens: tokens)
-          : switch (_error) {
-              RecordErrorType.none => _RecordForm(questId: widget.questId, onError: _handleError),
-              RecordErrorType.offline => _OfflineRecovery(onRetry: _retryUpload, onOpenQueue: _openOfflineQueue),
-              RecordErrorType.permissionDenied => _PermissionRecovery(onRequest: _requestPermissions, onOpenSettings: _openSettings),
-              RecordErrorType.cameraFailure => _CameraRecovery(onRetry: _retryUpload, onSwitchMode: () => _handleError(RecordErrorType.none)),
-            },
+      body:
+          _isLoading
+              ? _RecordSkeleton(tokens: tokens)
+              : switch (_error) {
+                RecordErrorType.none => _RecordForm(
+                  questId: widget.questId,
+                  onError: _handleError,
+                ),
+                RecordErrorType.offline => _OfflineRecovery(
+                  onRetry: _retryUpload,
+                  onOpenQueue: _openOfflineQueue,
+                ),
+                RecordErrorType.permissionDenied => _PermissionRecovery(
+                  onRequest: _requestPermissions,
+                  onOpenSettings: _openSettings,
+                ),
+                RecordErrorType.cameraFailure => _CameraRecovery(
+                  onRetry: _retryUpload,
+                  onSwitchMode: () => _handleError(RecordErrorType.none),
+                ),
+              },
     );
   }
 }
@@ -83,15 +115,28 @@ class _RecordSkeleton extends StatelessWidget {
       children: <Widget>[
         const MinqSkeletonLine(width: 140, height: 28),
         SizedBox(height: tokens.spacing(3)),
-        MinqSkeleton(height: tokens.spacing(22), borderRadius: tokens.cornerLarge()),
+        MinqSkeleton(
+          height: tokens.spacing(22),
+          borderRadius: tokens.cornerLarge(),
+        ),
         SizedBox(height: tokens.spacing(8)),
         const MinqSkeletonLine(width: 110, height: 28),
         SizedBox(height: tokens.spacing(4)),
         Row(
           children: [
-            Expanded(child: MinqSkeleton(height: tokens.spacing(40), borderRadius: tokens.cornerLarge())),
+            Expanded(
+              child: MinqSkeleton(
+                height: tokens.spacing(40),
+                borderRadius: tokens.cornerLarge(),
+              ),
+            ),
             SizedBox(width: tokens.spacing(4)),
-            Expanded(child: MinqSkeleton(height: tokens.spacing(40), borderRadius: tokens.cornerLarge())),
+            Expanded(
+              child: MinqSkeleton(
+                height: tokens.spacing(40),
+                borderRadius: tokens.cornerLarge(),
+              ),
+            ),
           ],
         ),
       ],
@@ -112,11 +157,23 @@ class _RecordForm extends ConsumerWidget {
       padding: EdgeInsets.all(tokens.spacing(4)),
       children: <Widget>[
         SizedBox(height: tokens.spacing(4)),
-        Text('ミニクエスト', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        Text(
+          'ミニクエスト',
+          style: tokens.titleLarge.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         SizedBox(height: tokens.spacing(3)),
         _buildQuestInfoCard(tokens),
         SizedBox(height: tokens.spacing(8)),
-        Text('証明', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        Text(
+          '証明',
+          style: tokens.titleLarge.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         SizedBox(height: tokens.spacing(4)),
         _buildProofButtons(context, ref, tokens),
       ],
@@ -139,15 +196,28 @@ class _RecordForm extends ConsumerWidget {
               color: tokens.brandPrimary.withOpacity(0.2),
               borderRadius: tokens.cornerLarge(),
             ),
-            child: Icon(Icons.spa, color: tokens.brandPrimary, size: tokens.spacing(8)),
+            child: Icon(
+              Icons.spa,
+              color: tokens.brandPrimary,
+              size: tokens.spacing(8),
+            ),
           ),
           SizedBox(width: tokens.spacing(4)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('瞑想', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+              Text(
+                '瞑想',
+                style: tokens.titleMedium.copyWith(
+                  color: tokens.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               SizedBox(height: tokens.spacing(1)),
-              Text('10分', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+              Text(
+                '10分',
+                style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+              ),
             ],
           ),
         ],
@@ -155,7 +225,11 @@ class _RecordForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildProofButtons(BuildContext context, WidgetRef ref, MinqTheme tokens) {
+  Widget _buildProofButtons(
+    BuildContext context,
+    WidgetRef ref,
+    MinqTheme tokens,
+  ) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isWide = constraints.maxWidth > 400;
@@ -170,7 +244,10 @@ class _RecordForm extends ConsumerWidget {
                 onTap: () => _handlePhotoTap(context, ref),
               ),
             ),
-            SizedBox(width: isWide ? tokens.spacing(4) : 0, height: isWide ? 0 : tokens.spacing(4)),
+            SizedBox(
+              width: isWide ? tokens.spacing(4) : 0,
+              height: isWide ? 0 : tokens.spacing(4),
+            ),
             Expanded(
               child: _ProofButton(
                 text: '自己申告',
@@ -189,27 +266,34 @@ class _RecordForm extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
     final uid = ref.read(uidProvider);
     if (uid == null || uid.isEmpty) {
-      messenger.showSnackBar(const SnackBar(content: Text('サインインしていないため記録できません。')));
+      messenger.showSnackBar(
+        const SnackBar(content: Text('サインインしていないため記録できません。')),
+      );
       onError(RecordErrorType.permissionDenied);
       return;
     }
     try {
-      final result = await ref.read(photoStorageServiceProvider).captureAndSanitize(ownerUid: uid, questId: questId);
+      final result = await ref
+          .read(photoStorageServiceProvider)
+          .captureAndSanitize(ownerUid: uid, questId: questId);
       if (!result.hasFile) {
-        messenger.showSnackBar(const SnackBar(content: Text('写真の撮影がキャンセルされました。')));
+        messenger.showSnackBar(
+          const SnackBar(content: Text('写真の撮影がキャンセルされました。')),
+        );
         return;
       }
 
       final proceed = await _handleModerationWarning(context, result);
       if (!proceed) return;
 
-      final log = QuestLog()
-        ..uid = uid
-        ..questId = questId
-        ..ts = DateTime.now().toUtc()
-        ..proofType = ProofType.photo
-        ..proofValue = result.path
-        ..synced = false;
+      final log =
+          QuestLog()
+            ..uid = uid
+            ..questId = questId
+            ..ts = DateTime.now().toUtc()
+            ..proofType = ProofType.photo
+            ..proofValue = result.path
+            ..synced = false;
       await ref.read(questLogRepositoryProvider).addLog(log);
       onError(RecordErrorType.none);
       ref.read(navigationUseCaseProvider).goToCelebration();
@@ -227,44 +311,61 @@ class _RecordForm extends ConsumerWidget {
     }
   }
 
-  Future<void> _handleSelfDeclareTap(BuildContext context, WidgetRef ref) async {
-    final log = QuestLog()
-      ..uid = ref.read(uidProvider) ?? ''
-      ..questId = questId
-      ..ts = DateTime.now().toUtc()
-      ..proofType = ProofType.check
-      ..synced = false;
+  Future<void> _handleSelfDeclareTap(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final log =
+        QuestLog()
+          ..uid = ref.read(uidProvider) ?? ''
+          ..questId = questId
+          ..ts = DateTime.now().toUtc()
+          ..proofType = ProofType.check
+          ..synced = false;
     await ref.read(questLogRepositoryProvider).addLog(log);
     ref.read(navigationUseCaseProvider).goToCelebration();
   }
 }
 
-Future<bool> _handleModerationWarning(BuildContext context, PhotoCaptureResult result) async {
+Future<bool> _handleModerationWarning(
+  BuildContext context,
+  PhotoCaptureResult result,
+) async {
   if (result.moderationVerdict == PhotoModerationVerdict.ok) return true;
 
   final tokens = context.tokens;
   final message = switch (result.moderationVerdict) {
     PhotoModerationVerdict.tooDark => '撮影した写真が非常に暗いようです。パートナーを安心させるために撮り直しますか？',
     PhotoModerationVerdict.tooBright => '撮影した写真がほとんど真っ白です。鮮明にするために撮り直しますか？',
-    PhotoModerationVerdict.lowVariance => '画像がぼやけているか、何も映っていないようです。より鮮明な証明のために撮り直しますか？',
+    PhotoModerationVerdict.lowVariance =>
+      '画像がぼやけているか、何も映っていないようです。より鮮明な証明のために撮り直しますか？',
     PhotoModerationVerdict.ok => '',
   };
 
-  final proceed = await showDialog<bool>(
-    context: context,
-    builder: (BuildContext dialogContext) => AlertDialog(
-      title: const Text('写真を確認してください'),
-      content: Text(message),
-      actions: <Widget>[
-        TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: const Text('再撮影')),
-        FilledButton(
-          onPressed: () => Navigator.of(dialogContext).pop(true),
-          style: FilledButton.styleFrom(backgroundColor: tokens.brandPrimary, foregroundColor: Colors.white),
-          child: const Text('この写真を使用'),
-        ),
-      ],
-    ),
-  ) ?? false;
+  final proceed =
+      await showDialog<bool>(
+        context: context,
+        builder:
+            (BuildContext dialogContext) => AlertDialog(
+              title: const Text('写真を確認してください'),
+              content: Text(message),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: const Text('再撮影'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: tokens.brandPrimary,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('この写真を使用'),
+                ),
+              ],
+            ),
+      ) ??
+      false;
 
   if (!proceed) {
     try {
@@ -278,7 +379,12 @@ Future<bool> _handleModerationWarning(BuildContext context, PhotoCaptureResult r
 }
 
 class _ProofButton extends StatefulWidget {
-  const _ProofButton({required this.text, required this.icon, required this.isPrimary, required this.onTap});
+  const _ProofButton({
+    required this.text,
+    required this.icon,
+    required this.isPrimary,
+    required this.onTap,
+  });
 
   final String text;
   final IconData icon;
@@ -289,12 +395,17 @@ class _ProofButton extends StatefulWidget {
   State<_ProofButton> createState() => _ProofButtonState();
 }
 
-class _ProofButtonState extends State<_ProofButton> with AsyncActionState<_ProofButton> {
+class _ProofButtonState extends State<_ProofButton>
+    with AsyncActionState<_ProofButton> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final Color background = widget.isPrimary ? tokens.brandPrimary : tokens.brandPrimary.withOpacity(0.1);
-    final Color foreground = widget.isPrimary ? Colors.white : tokens.textPrimary;
+    final Color background =
+        widget.isPrimary
+            ? tokens.brandPrimary
+            : tokens.brandPrimary.withOpacity(0.1);
+    final Color foreground =
+        widget.isPrimary ? Colors.white : tokens.textPrimary;
 
     return SizedBox(
       height: 160,
@@ -308,23 +419,35 @@ class _ProofButtonState extends State<_ProofButton> with AsyncActionState<_Proof
         onPressed: isProcessing ? null : () => runGuarded(widget.onTap),
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          transitionBuilder: (Widget child, Animation<double> animation) => FadeTransition(opacity: animation, child: child),
-          child: isProcessing
-              ? SizedBox(
-                  key: const ValueKey<String>('progress'),
-                  height: tokens.spacing(7),
-                  width: tokens.spacing(7),
-                  child: CircularProgressIndicator(strokeWidth: 3, valueColor: AlwaysStoppedAnimation<Color>(foreground)),
-                )
-              : Column(
-                  key: const ValueKey<String>('content'),
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(widget.icon, size: tokens.spacing(10)),
-                    SizedBox(height: tokens.spacing(2)),
-                    Text(widget.text, style: tokens.titleMedium.copyWith(color: foreground, fontWeight: FontWeight.bold)),
-                  ],
-                ),
+          transitionBuilder:
+              (Widget child, Animation<double> animation) =>
+                  FadeTransition(opacity: animation, child: child),
+          child:
+              isProcessing
+                  ? SizedBox(
+                    key: const ValueKey<String>('progress'),
+                    height: tokens.spacing(7),
+                    width: tokens.spacing(7),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      valueColor: AlwaysStoppedAnimation<Color>(foreground),
+                    ),
+                  )
+                  : Column(
+                    key: const ValueKey<String>('content'),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(widget.icon, size: tokens.spacing(10)),
+                      SizedBox(height: tokens.spacing(2)),
+                      Text(
+                        widget.text,
+                        style: tokens.titleMedium.copyWith(
+                          color: foreground,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
         ),
       ),
     );
@@ -344,7 +467,11 @@ class _OfflineRecovery extends StatelessWidget {
       message: '証明はローカルに保存され、再接続時にアップロードされます。',
       actionArea: Column(
         children: [
-          MinqPrimaryButton(label: '再アップロード', onPressed: () async => onRetry(), expand: false),
+          MinqPrimaryButton(
+            label: '再アップロード',
+            onPressed: () async => onRetry(),
+            expand: false,
+          ),
           const SizedBox(height: 8),
           TextButton(onPressed: onOpenQueue, child: const Text('オフラインキューを表示')),
         ],
@@ -354,7 +481,10 @@ class _OfflineRecovery extends StatelessWidget {
 }
 
 class _PermissionRecovery extends StatelessWidget {
-  const _PermissionRecovery({required this.onRequest, required this.onOpenSettings});
+  const _PermissionRecovery({
+    required this.onRequest,
+    required this.onOpenSettings,
+  });
   final VoidCallback onRequest;
   final VoidCallback onOpenSettings;
 
@@ -366,7 +496,11 @@ class _PermissionRecovery extends StatelessWidget {
       message: '写真の証明を撮影するには、MinQがカメラにアクセスする必要があります。',
       actionArea: Column(
         children: [
-          MinqPrimaryButton(label: 'アクセスを許可', onPressed: () async => onRequest(), expand: false),
+          MinqPrimaryButton(
+            label: 'アクセスを許可',
+            onPressed: () async => onRequest(),
+            expand: false,
+          ),
           const SizedBox(height: 8),
           TextButton(onPressed: onOpenSettings, child: const Text('設定を開く')),
         ],
@@ -388,7 +522,11 @@ class _CameraRecovery extends StatelessWidget {
       message: 'カメラで問題が発生しました。もう一度お試しください。',
       actionArea: Column(
         children: [
-          MinqPrimaryButton(label: '再試行', onPressed: () async => onRetry(), expand: false),
+          MinqPrimaryButton(
+            label: '再試行',
+            onPressed: () async => onRetry(),
+            expand: false,
+          ),
           const SizedBox(height: 8),
           TextButton(onPressed: onSwitchMode, child: const Text('代わりに自己申告する')),
         ],

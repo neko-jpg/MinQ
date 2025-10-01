@@ -82,24 +82,27 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: AppRoutes.onboarding,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const OnboardingScreen(),
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const OnboardingScreen(),
+            ),
       ),
       GoRoute(
         path: AppRoutes.login,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const LoginScreen(),
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const LoginScreen(),
+            ),
       ),
       GoRoute(
         path: AppRoutes.record,
         pageBuilder: (context, state) {
-          final questId = int.tryParse(state.pathParameters['questId'] ?? '') ?? 0;
+          final questId =
+              int.tryParse(state.pathParameters['questId'] ?? '') ?? 0;
           return buildPageWithTransition<void>(
             context: context,
             state: state,
@@ -110,29 +113,32 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.celebration,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const CelebrationScreen(),
-          transitionType: SharedAxisTransitionType.scaled,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const CelebrationScreen(),
+              transitionType: SharedAxisTransitionType.scaled,
+            ),
       ),
       GoRoute(
         path: AppRoutes.socialSharingDemo,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const SocialSharingDemo(),
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const SocialSharingDemo(),
+            ),
       ),
       GoRoute(
         path: AppRoutes.profile,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const ProfileScreen(),
-          transitionType: SharedAxisTransitionType.vertical,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const ProfileScreen(),
+              transitionType: SharedAxisTransitionType.vertical,
+            ),
       ),
       GoRoute(
         path: AppRoutes.policy,
@@ -152,39 +158,41 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.support,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const SupportScreen(),
-          transitionType: SharedAxisTransitionType.vertical,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const SupportScreen(),
+              transitionType: SharedAxisTransitionType.vertical,
+            ),
       ),
       GoRoute(
         path: AppRoutes.createQuest,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const CreateQuestScreen(),
-          transitionType: SharedAxisTransitionType.vertical,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const CreateQuestScreen(),
+              transitionType: SharedAxisTransitionType.vertical,
+            ),
       ),
       GoRoute(
         path: AppRoutes.notificationSettings,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const NotificationSettingsScreen(),
-          transitionType: SharedAxisTransitionType.vertical,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const NotificationSettingsScreen(),
+              transitionType: SharedAxisTransitionType.vertical,
+            ),
       ),
       GoRoute(
         path: AppRoutes.pairMatching,
         pageBuilder: (context, state) {
-          final code = state.uri.queryParameters['code'];
           return buildPageWithTransition<void>(
             context: context,
             state: state,
-            child: PairMatchingScreen(code: code),
+            child: const PairMatchingScreen(),
             transitionType: SharedAxisTransitionType.vertical,
           );
         },
@@ -196,48 +204,48 @@ final routerProvider = Provider<GoRouter>((ref) {
           return buildPageWithTransition<void>(
             context: context,
             state: state,
-            child: ChatScreen(pairId: state.pathParameters['pairId'] ?? '')
+            child: ChatScreen(pairId: state.pathParameters['pairId'] ?? ''),
           );
         },
       ),
       // Main navigation shell
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-        pageBuilder: (context, state, child) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: ShellScreen(child: child),
-        ),
+        pageBuilder:
+            (context, state, child) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: ShellScreen(child: child),
+            ),
         routes: [
           GoRoute(
             path: AppRoutes.home,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: HomeScreen(),
-            ),
+            pageBuilder:
+                (context, state) => const NoTransitionPage(child: HomeScreen()),
           ),
           GoRoute(
             path: AppRoutes.stats,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: StatsScreen(),
-            ),
+            pageBuilder:
+                (context, state) =>
+                    const NoTransitionPage(child: StatsScreen()),
           ),
           GoRoute(
             path: AppRoutes.pair,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: BuddyListScreen(),
-            ),
+            pageBuilder:
+                (context, state) =>
+                    const NoTransitionPage(child: BuddyListScreen()),
           ),
           GoRoute(
             path: AppRoutes.quests,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: QuestsScreen(),
-            ),
+            pageBuilder:
+                (context, state) =>
+                    const NoTransitionPage(child: QuestsScreen()),
           ),
           GoRoute(
             path: AppRoutes.settings,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: SettingsScreen(),
-            ),
+            pageBuilder:
+                (context, state) =>
+                    const NoTransitionPage(child: SettingsScreen()),
           ),
         ],
       ),
@@ -251,16 +259,19 @@ class NavigationUseCase {
 
   void goToOnboarding() => _router.go(AppRoutes.onboarding);
   void goToLogin() => _router.go(AppRoutes.login);
-  void goToRecord(int questId) => _router.go(AppRoutes.record.replaceFirst(':questId', questId.toString()));
+  void goToRecord(int questId) =>
+      _router.go(AppRoutes.record.replaceFirst(':questId', questId.toString()));
   void goToCelebration() => _router.go(AppRoutes.celebration);
   void goToSocialSharingDemo() => _router.go(AppRoutes.socialSharingDemo);
   void goToProfile() => _router.go(AppRoutes.profile);
-  void goToPolicy(PolicyDocumentId documentId) => _router.go(AppRoutes.policy.replaceFirst(':id', documentId.name));
+  void goToPolicy(PolicyDocumentId documentId) =>
+      _router.go(AppRoutes.policy.replaceFirst(':id', documentId.name));
   void goToSupport() => _router.go(AppRoutes.support);
   void goToCreateQuest() => _router.go(AppRoutes.createQuest);
   void goToNotificationSettings() => _router.go(AppRoutes.notificationSettings);
   void goToPairMatching() => _router.go(AppRoutes.pairMatching);
-  void goToPairChat(String buddyId) => _router.go(AppRoutes.pairChat.replaceFirst(':buddyId', buddyId));
+  void goToPairChat(String buddyId) =>
+      _router.go(AppRoutes.pairChat.replaceFirst(':buddyId', buddyId));
   void goHome() => _router.go(AppRoutes.home);
   void goToStats() => _router.go(AppRoutes.stats);
   void goToPair() => _router.go(AppRoutes.pair);

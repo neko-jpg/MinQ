@@ -6,16 +6,18 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 /// This function encapsulates the logic of translating design tokens from [MinqTheme]
 /// into a fully-fledged [ThemeData] object, ensuring consistency across the app.
 ThemeData buildTheme(MinqTheme tokens) {
-  final colorScheme = ColorScheme(
+  final baseScheme = ColorScheme.fromSeed(
+    seedColor: tokens.brandPrimary,
     brightness: tokens.brightness,
+  );
+
+  final colorScheme = baseScheme.copyWith(
     primary: tokens.brandPrimary,
     onPrimary: tokens.textPrimary,
     secondary: tokens.accentSuccess,
     onSecondary: tokens.textPrimary,
     error: tokens.accentError,
     onError: tokens.textPrimary,
-    background: tokens.background,
-    onBackground: tokens.textPrimary,
     surface: tokens.surface,
     onSurface: tokens.textPrimary,
   );
@@ -43,7 +45,7 @@ ThemeData buildTheme(MinqTheme tokens) {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: tokens.cornerMedium(),

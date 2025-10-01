@@ -1,4 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/pair/pair.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/screens/pair_screen.dart'
+    show userPairProvider;
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 class BuddyListScreen extends ConsumerWidget {
   const BuddyListScreen({super.key});
@@ -11,7 +19,13 @@ class BuddyListScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
-        title: Text('現在のバディ', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        title: Text(
+          '現在のバディ',
+          style: tokens.titleMedium.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: tokens.background,
         elevation: 0,
@@ -44,7 +58,8 @@ class BuddyListScreen extends ConsumerWidget {
         child: ElevatedButton.icon(
           icon: const Icon(Icons.search),
           label: const Text('新しいバディを探す'),
-          onPressed: () => ref.read(navigationUseCaseProvider).goToPairMatching(),
+          onPressed:
+              () => ref.read(navigationUseCaseProvider).goToPairMatching(),
           style: ElevatedButton.styleFrom(
             backgroundColor: tokens.brandPrimary,
             foregroundColor: tokens.surface,
@@ -63,68 +78,94 @@ class _BuddyCard extends ConsumerWidget {
 
   final Pair pair;
 
-  void _showOptionsMenu(BuildContext context, WidgetRef ref, String otherMemberId) {
+  void _showOptionsMenu(
+    BuildContext context,
+    WidgetRef ref,
+    String otherMemberId,
+  ) {
     final repo = ref.read(pairRepositoryProvider);
     final currentUserId = ref.read(uidProvider);
 
     showModalBottomSheet(
       context: context,
-      builder: (ctx) => Wrap(
-        children: <Widget>[
-          ListTile(
-            leading: const Icon(Icons.block, color: Colors.red),
-            title: const Text('バディをブロック', style: TextStyle(color: Colors.red)),
-            onTap: () {
-              Navigator.of(ctx).pop(); // Close the bottom sheet
-              showDialog(
-                context: context,
-                builder: (dialogCtx) => AlertDialog(
-                  title: const Text('バディをブロック'),
-                  content: const Text('ブロックすると、今後このユーザーとマッチングしなくなります。本当によろしいですか？'),
-                  actions: <Widget>[
-                    TextButton(child: const Text('キャンセル'), onPressed: () => Navigator.of(dialogCtx).pop()),
-                    TextButton(
-                      child: const Text('ブロック', style: TextStyle(color: Colors.red)),
-                      onPressed: () {
-                        if (repo != null && currentUserId != null) {
-                          repo.blockUser(currentUserId, otherMemberId);
-                        }
-                        Navigator.of(dialogCtx).pop();
-                      },
-                    ),
-                  ],
+      builder:
+          (ctx) => Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.block, color: Colors.red),
+                title: const Text(
+                  'バディをブロック',
+                  style: TextStyle(color: Colors.red),
                 ),
-              );
-            },
+                onTap: () {
+                  Navigator.of(ctx).pop(); // Close the bottom sheet
+                  showDialog(
+                    context: context,
+                    builder:
+                        (dialogCtx) => AlertDialog(
+                          title: const Text('バディをブロック'),
+                          content: const Text(
+                            'ブロックすると、今後このユーザーとマッチングしなくなります。本当によろしいですか？',
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('キャンセル'),
+                              onPressed: () => Navigator.of(dialogCtx).pop(),
+                            ),
+                            TextButton(
+                              child: const Text(
+                                'ブロック',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              onPressed: () {
+                                if (repo != null && currentUserId != null) {
+                                  repo.blockUser(currentUserId, otherMemberId);
+                                }
+                                Navigator.of(dialogCtx).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout, color: Colors.red),
+                title: const Text('ペアを解消', style: TextStyle(color: Colors.red)),
+                onTap: () {
+                  Navigator.of(ctx).pop(); // Close the bottom sheet
+                  showDialog(
+                    context: context,
+                    builder:
+                        (dialogCtx) => AlertDialog(
+                          title: const Text('ペアを解消'),
+                          content: const Text(
+                            '本当にこのバディとのペアを解消しますか？この操作は取り消せません。',
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('キャンセル'),
+                              onPressed: () => Navigator.of(dialogCtx).pop(),
+                            ),
+                            TextButton(
+                              child: const Text(
+                                '解消する',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              onPressed: () {
+                                if (repo != null && currentUserId != null) {
+                                  repo.leavePair(pair.id, currentUserId);
+                                }
+                                Navigator.of(dialogCtx).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                  );
+                },
+              ),
+            ],
           ),
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.red),
-            title: const Text('ペアを解消', style: TextStyle(color: Colors.red)),
-            onTap: () {
-              Navigator.of(ctx).pop(); // Close the bottom sheet
-              showDialog(
-                context: context,
-                builder: (dialogCtx) => AlertDialog(
-                  title: const Text('ペアを解消'),
-                  content: const Text('本当にこのバディとのペアを解消しますか？この操作は取り消せません。'),
-                  actions: <Widget>[
-                    TextButton(child: const Text('キャンセル'), onPressed: () => Navigator.of(dialogCtx).pop()),
-                    TextButton(
-                      child: const Text('解消する', style: TextStyle(color: Colors.red)),
-                      onPressed: () {
-                        if (repo != null && currentUserId != null) {
-                          repo.leavePair(pair.id, currentUserId);
-                        }
-                        Navigator.of(dialogCtx).pop();
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
     );
   }
 
@@ -132,7 +173,10 @@ class _BuddyCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = MinqTheme.of(context);
     final currentUserId = ref.watch(uidProvider);
-    final otherMemberId = pair.members.firstWhere((id) => id != currentUserId, orElse: () => '...');
+    final otherMemberId = pair.members.firstWhere(
+      (id) => id != currentUserId,
+      orElse: () => '...',
+    );
 
     return Card(
       elevation: 0,
@@ -155,15 +199,27 @@ class _BuddyCard extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Buddy#${otherMemberId.substring(0, 4)}', style: tokens.titleSmall.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+                      Text(
+                        'Buddy#${otherMemberId.substring(0, 4)}',
+                        style: tokens.titleSmall.copyWith(
+                          color: tokens.textPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 2),
-                      Text('目標：${pair.category}', style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
+                      Text(
+                        '目標：${pair.category}',
+                        style: tokens.bodySmall.copyWith(
+                          color: tokens.textMuted,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.more_vert, color: tokens.textMuted),
-                  onPressed: () => _showOptionsMenu(context, ref, otherMemberId),
+                  onPressed:
+                      () => _showOptionsMenu(context, ref, otherMemberId),
                 ),
               ],
             ),
@@ -173,25 +229,43 @@ class _BuddyCard extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _ActionItem(icon: Icons.volunteer_activism_outlined, label: '拍手', color: Colors.green.shade400, onTap: () {
-                  final repo = ref.read(pairRepositoryProvider);
-                  if (currentUserId != null && repo != null) {
-                    repo.sendHighFive(pair.id, currentUserId);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('👏 拍手を送りました！')),
-                    );
-                  }
-                }),
-                _ActionItem(icon: Icons.chat_bubble_outline, label: 'チャット', color: Colors.blue.shade400, onTap: () => ref.read(navigationUseCaseProvider).goToPairChat(pair.id)),
-                _ActionItem(icon: Icons.check_circle_outline, label: 'チェックイン', color: Colors.orange.shade400, onTap: () {
-                  final repo = ref.read(pairRepositoryProvider);
-                  if (currentUserId != null && repo != null) {
-                    repo.sendCheckIn(pair.id, currentUserId);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('✅ 今日の達成を報告しました！')),
-                    );
-                  }
-                }),
+                _ActionItem(
+                  icon: Icons.volunteer_activism_outlined,
+                  label: '拍手',
+                  color: Colors.green.shade400,
+                  onTap: () {
+                    final repo = ref.read(pairRepositoryProvider);
+                    if (currentUserId != null && repo != null) {
+                      repo.sendHighFive(pair.id, currentUserId);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('👏 拍手を送りました！')),
+                      );
+                    }
+                  },
+                ),
+                _ActionItem(
+                  icon: Icons.chat_bubble_outline,
+                  label: 'チャット',
+                  color: Colors.blue.shade400,
+                  onTap:
+                      () => ref
+                          .read(navigationUseCaseProvider)
+                          .goToPairChat(pair.id),
+                ),
+                _ActionItem(
+                  icon: Icons.check_circle_outline,
+                  label: 'チェックイン',
+                  color: Colors.orange.shade400,
+                  onTap: () {
+                    final repo = ref.read(pairRepositoryProvider);
+                    if (currentUserId != null && repo != null) {
+                      repo.sendCheckIn(pair.id, currentUserId);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('✅ 今日の達成を報告しました！')),
+                      );
+                    }
+                  },
+                ),
               ],
             ),
           ],
@@ -227,7 +301,13 @@ class _ActionItem extends StatelessWidget {
           children: [
             Icon(icon, color: color, size: 24),
             const SizedBox(height: 4),
-            Text(label, style: tokens.bodySmall.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.w500)),
+            Text(
+              label,
+              style: tokens.bodySmall.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ],
         ),
       ),
