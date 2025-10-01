@@ -1,6 +1,4 @@
----
-最優先事項
-　　-   [ ] Settings画面内の`GeneralSettings`内に「プロフィール設定」ボタンを追加し、指定のHTMLデザイン (`C:\Users\新井徹平\OneDrive\ドキュメント\minq\desin\セッティング画面内にあるプロフィール設定画面.html`) を基にFlutterで遷移先画面を実装する。
+
 
 ### チェックリストA（UI/UX・機能改善中心）
 
