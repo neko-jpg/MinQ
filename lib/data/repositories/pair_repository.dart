@@ -1,13 +1,18 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:minq/domain/pair/chat_message.dart';
 import 'package:minq/domain/pair/pair.dart';
+import 'package:uuid/uuid.dart';
 
 class PairRepository {
-  PairRepository(this._firestore);
+  PairRepository(this._firestore, this._storage);
 
   final FirebaseFirestore _firestore;
+  final FirebaseStorage _storage;
   final _random = Random();
 
   Stream<Pair?> getPairStreamForUser(String uid) {
@@ -49,20 +54,18 @@ class PairRepository {
     return _firestore.collection('pairs').doc(pairId).snapshots();
   }
 
+  Future<Pair?> getPairById(String pairId) async {
+    final pairSnap = await _firestore.collection('pairs').doc(pairId).get();
+    if (!pairSnap.exists) {
+      return null;
+    }
+    return Pair.fromSnapshot(pairSnap);
+  }
+
   Future<void> sendHighFive(String pairId, String senderUid) async {
     await _firestore.collection('pairs').doc(pairId).update({
       'lastHighfiveAt': FieldValue.serverTimestamp(),
       'lastHighfiveBy': senderUid,
-    });
-  }
-
-  Future<void> sendQuickMessage(String pairId, String senderUid, String message) async {
-    await _firestore.collection('pairs').doc(pairId).update({
-      'lastMessage': {
-        'text': message,
-        'senderUid': senderUid,
-        'createdAt': FieldValue.serverTimestamp(),
-      },
     });
   }
 
@@ -79,10 +82,8 @@ class PairRepository {
   }
 
   Future<String?> requestRandomPair(String uid, String category) async {
-    // First, check if the user is already in a pair.
     final assignment = await fetchAssignment(uid);
     if (assignment != null) {
-      // User is already in a pair, so they can't request a new one.
       return null;
     }
 
@@ -109,11 +110,8 @@ class PairRepository {
         return null;
       }
 
-      // Check for blocks
       final blocked = await _isBlocked(uid, waitingUid);
       if (blocked) {
-        // Can't pair with a blocked user. For now, just return null.
-        // A more sophisticated implementation might try to find another user.
         return null;
       }
 
@@ -181,7 +179,6 @@ class PairRepository {
         return null;
       }
 
-      // Check for blocks
       final blocked = await _isBlocked(joinerUid, ownerUid);
       if (blocked) {
         return null;
@@ -259,5 +256,74 @@ class PairRepository {
       6,
       (_) => letters[_random.nextInt(letters.length)],
     ).join();
+  }
+
+  // Chat-related methods
+
+  Stream<List<ChatMessage>> getMessagesStream(String pairId) {
+    return _firestore
+        .collection('pairs')
+        .doc(pairId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => ChatMessage.fromFirestore(doc)).toList());
+  }
+
+  Future<void> sendMessage({required String pairId, required String senderId, String? text, String? imageUrl}) async {
+    if ((text?.trim().isEmpty ?? true) && (imageUrl?.isEmpty ?? true)) return;
+
+    final messageData = {
+      'senderId': senderId,
+      'text': text?.trim(),
+      'imageUrl': imageUrl,
+      'timestamp': FieldValue.serverTimestamp(),
+      'reactions': {},
+    };
+
+    await _firestore.collection('pairs').doc(pairId).collection('messages').add(messageData);
+  }
+
+  Future<void> addReaction(String pairId, String messageId, String reactionEmoji) async {
+    final messageRef = _firestore.collection('pairs').doc(pairId).collection('messages').doc(messageId);
+
+    await _firestore.runTransaction((transaction) async {
+      final snapshot = await transaction.get(messageRef);
+      if (!snapshot.exists) {
+        throw Exception("Message does not exist!");
+      }
+
+      final currentReactions = Map<String, int>.from(snapshot.data()!['reactions'] ?? {});
+      currentReactions[reactionEmoji] = (currentReactions[reactionEmoji] ?? 0) + 1;
+
+      transaction.update(messageRef, {'reactions': currentReactions});
+    });
+  }
+
+  Future<String> uploadImage(String pairId, File imageFile) async {
+    final fileName = const Uuid().v4();
+    final ref = _storage.ref('pair_chats/$pairId/$fileName');
+    final uploadTask = ref.putFile(imageFile);
+    final snapshot = await uploadTask.whenComplete(() => null);
+    return await snapshot.ref.getDownloadURL();
+  }
+
+  Future<void> sendCheckIn(String pairId, String senderId) async {
+    const checkInMessage = '【チェックイン】今日の目標を達成しました！✅';
+    await sendMessage(pairId: pairId, senderId: senderId, text: checkInMessage);
+  }
+
+  Future<void> sendQuickMessage(String pairId, String senderId, String message) async {
+    await sendMessage(pairId: pairId, senderId: senderId, text: message);
+  }
+
+  Future<void> subscribeToPairingNotifications(String uid, String fcmToken, String category) async {
+    final docRef = _firestore.collection('pair_notifications').doc(uid);
+    await docRef.set({
+      'fcmToken': fcmToken,
+      'category': category,
+      'uid': uid,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
   }
 }

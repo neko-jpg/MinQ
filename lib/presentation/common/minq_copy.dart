@@ -2,32 +2,32 @@ class MinqCopy {
   const MinqCopy._();
 
   static const String valuePropositionHeadline =
-      'Stay consistent in just three taps a day with an anonymous accountability pair.';
+      '匿名のペアと1日3タップで継続する習慣を。';
 
   static const String valuePropositionSubheadline =
-      'Three taps. One partner. Habits that finally stick.';
+      '3タップ。1人のパートナー。ついに続く習慣を。';
 
   static const String onboardingFeatureMiniQuest =
-      'Break goals into rewarding mini-quests you can finish today.';
+      '目標を、今日終えられるやりがいのあるミニクエストに分解します。';
 
   static const String onboardingFeatureAnonymousPair =
-      'Match anonymously for genuine accountability without pressure.';
+      'プレッシャーなく真の説明責任を果たすために、匿名でマッチングします。';
 
   static const String onboardingFeatureNotifications =
-      'We only nudge you at the times you choose, so reminders feel helpful—not nagging.';
+      '選択した時間にのみ通知するため、リマインダーはしつこくなく、役立ちます。';
 
   static const String notificationPrePromptTitle =
-      'We use notifications sparingly';
+      '通知は控えめに使用します';
 
   static const String notificationPrePromptBody =
-      'Enable reminders to get a gentle nudge at the moments you select. You can change or disable them anytime from Settings.';
+      'リマインダーを有効にすると、設定した時間に通知が届きます。設定はいつでも変更・無効化できます。';
 
   static const String notificationPermissionBannerTitle =
-      'Enable reminders to stay on track';
+      'リマインダーを有効にして順調に進めましょう';
   static const String notificationPermissionBannerBody =
-      'Notification access is currently off. Turn it on to receive up to three timely nudges per day.';
+      '現在、通知アクセスはオフになっています。オンにすると、1日最大3回のタイムリーな通知を受け取れます。';
 
-  static const String timeDriftBannerTitle = 'Check your device clock';
+  static const String timeDriftBannerTitle = 'デバイスの時計を確認してください';
   static const String timeDriftBannerBody =
-      'We detected a large difference between your device time and trusted servers. Fixing the clock keeps streaks and reminders accurate.';
+      'デバイスの時刻と信頼できるサーバーの時刻の間に大きな差が検出されました。時計を修正すると、連続記録とリマインダーが正確に保たれます。';
 }

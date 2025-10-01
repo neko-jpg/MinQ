@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>進捗共有</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+    :root {
+      --primary-color: #6366F1;
+      --accent-color: #EC4899;
+      --background-light: #F9FAFB;
+      --background-dark: #111827;
+      --text-light: #1F2937;
+      --text-dark: #F3F4F6;
+      --card-light-bg: rgba(255, 255, 255, 0.7);
+      --card-dark-bg: rgba(31, 41, 55, 0.7);
+      --border-light: rgba(229, 231, 235, 0.6);
+      --border-dark: rgba(55, 65, 81, 0.6);
+    }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--background-light);
+    }
+    .dark body {
+        background: var(--background-dark);
+    }
+    .glass-morphism {
+        background: var(--card-light-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-light);
+    }
+    .dark .glass-morphism {
+        background: var(--card-dark-bg);
+        border: 1px solid var(--border-dark);
+    }
+    .font-display-heavy {
+        font-weight: 900;
+    }
+    .btn-spring {
+        @apply transform transition-transform duration-300;
+    }
+    .btn-spring:hover {
+        transform: scale(1.05);
+    }
+    .btn-spring:active {
+        transform: scale(0.95);
+    }
+    .achievement-progress-bar {
+        background-color: #E5E7EB;
+        border-radius: 9999px;
+        overflow: hidden;
+        height: 8px;
+    }
+    .achievement-progress {
+        background-color: var(--accent-color);
+        height: 100%;
+        transition: width 0.5s ease-in-out;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-text-light dark:text-text-dark">
+<div class="fixed inset-0 bg-background-light/30 dark:bg-background-dark/30 flex items-center justify-center p-4 z-50 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD7TIZIrG9CUmH33U6XOix7AkUabYumAM4okHF3G9DlwNzv7ln3UtArl_0f_7LmQGA68gRYvXNWWjN2FX0wQRcaF_zfHH1M3ha4gna03sAJQdLCtnminefPvU0V7duodYe2WUEw8Xdzdxc0aUHt4KmObaAggbVspPeR5aitFDqsBgVMbus7uQucdjLNfOSZ5oDizyMYhl0RnUnJVxdkF5ikRFxswI5WuKMjgzKzr7oT7a6IGBUoPuJx8qt4yAjsE8mCwMdubHkaixc')">
+<div class="glass-morphism w-full max-w-md rounded-2xl shadow-2xl flex flex-col transition-all duration-300">
+<div class="p-6 border-b border-[var(--border-light)] dark:border-[var(--border-dark)] flex justify-between items-center">
+<h2 class="text-2xl font-display-heavy text-text-light dark:text-text-dark">進捗を共有</h2>
+<button class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors btn-spring">
+<span class="material-icons">close</span>
+</button>
+</div>
+<div class="p-6 space-y-6 overflow-y-auto">
+<div>
+<label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2" for="quest">クエストを選択</label>
+<div class="relative">
+<select class="w-full appearance-none bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-text-light dark:text-text-dark focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-all" id="quest" name="quest">
+<option>今日の目標：運動 🏃</option>
+<option>今日の目標：勉強 📚</option>
+<option>今日の目標：読書 📖</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+<span class="material-icons">expand_more</span>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">証拠を添付</label>
+<div class="flex space-x-4">
+<button class="flex-1 flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50/50 dark:hover:bg-gray-700/50 hover:border-[var(--accent-color)] dark:hover:border-[var(--accent-color)] transition-all duration-300 btn-spring">
+<span class="material-icons text-[var(--accent-color)]">photo_camera</span>
+<span class="mt-1 text-sm font-medium text-gray-600 dark:text-gray-300">写真</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50/50 dark:hover:bg-gray-700/50 hover:border-[var(--accent-color)] dark:hover:border-[var(--accent-color)] transition-all duration-300 btn-spring">
+<span class="material-icons text-[var(--accent-color)]">edit_note</span>
+<span class="mt-1 text-sm font-medium text-gray-600 dark:text-gray-300">メモ</span>
+</button>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="block text-sm font-medium text-gray-600 dark:text-gray-400">達成度</label>
+<span class="text-xs font-bold text-[var(--accent-color)]">+10 EXP</span>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<button class="group relative flex-1 text-center py-3 px-2 rounded-lg bg-green-500/10 text-green-600 dark:bg-green-400/20 dark:text-green-300 font-bold border-2 border-transparent hover:border-green-500 focus:border-green-500 focus:bg-green-500/20 transition-all duration-300 btn-spring">
+<span class="block transition-transform duration-300 group-hover:scale-110">✔ 達成</span>
+</button>
+<button class="group relative flex-1 text-center py-3 px-2 rounded-lg bg-yellow-500/10 text-yellow-600 dark:bg-yellow-400/20 dark:text-yellow-300 font-bold border-2 border-transparent hover:border-yellow-500 focus:border-yellow-500 focus:bg-yellow-500/20 transition-all duration-300 btn-spring">
+<span class="block transition-transform duration-300 group-hover:scale-110">△ 部分</span>
+</button>
+<button class="group relative flex-1 text-center py-3 px-2 rounded-lg bg-red-500/10 text-red-600 dark:bg-red-400/20 dark:text-red-300 font-bold border-2 border-transparent hover:border-red-500 focus:border-red-500 focus:bg-red-500/20 transition-all duration-300 btn-spring">
+<span class="block transition-transform duration-300 group-hover:scale-110">✘ 未達</span>
+</button>
+</div>
+</div>
+<div class="space-y-2 pt-2">
+<div class="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
+<span>連続記録</span>
+<span>🔥 7 日目</span>
+</div>
+<div class="achievement-progress-bar">
+<div class="achievement-progress" style="width: 70%;"></div>
+</div>
+</div>
+</div>
+<div class="p-4 bg-transparent mt-auto">
+<button class="w-full bg-[var(--primary-color)] text-white font-bold py-4 px-4 rounded-xl flex items-center justify-center hover:bg-indigo-500 shadow-lg shadow-indigo-500/30 transition-all duration-300 btn-spring">
+<span class="material-icons mr-2">send</span>
+<span>共有する</span>
+</button>
+</div>
+</div>
+</div>
+
+</body></html>

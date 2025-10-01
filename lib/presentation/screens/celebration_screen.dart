@@ -1,10 +1,5 @@
-import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 
 class CelebrationScreen extends ConsumerStatefulWidget {
   const CelebrationScreen({super.key});
@@ -149,7 +144,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen> with Tick
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: () => context.go('/home'),
+          onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
           style: ElevatedButton.styleFrom(
             backgroundColor: tokens.brandPrimary,
             foregroundColor: Colors.white,
@@ -177,7 +172,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen> with Tick
           ),
           child: const Icon(Icons.close, color: Colors.white),
         ),
-        onPressed: () => context.go('/home'),
+        onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
       ),
     );
   }

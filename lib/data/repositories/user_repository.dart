@@ -1,12 +1,22 @@
-﻿import 'package:isar/isar.dart';
+import 'package:isar/isar.dart';
+import 'package:minq/data/repositories/auth_repository.dart';
 import 'package:minq/domain/user/user.dart';
 
 class UserRepository {
-  UserRepository(this._isar);
+  UserRepository(this._isar, this._authRepository);
 
   final Isar _isar;
+  final AuthRepository _authRepository;
 
-  Future<User?> getLocalUser(String uid) async {
+  Future<User?> getCurrentUser() async {
+    final firebaseUser = _authRepository.getCurrentUser();
+    if (firebaseUser == null) {
+      return null;
+    }
+    return getUserById(firebaseUser.uid);
+  }
+
+  Future<User?> getUserById(String uid) async {
     return _isar.users.filter().uidEqualTo(uid).findFirst();
   }
 
@@ -18,7 +28,7 @@ class UserRepository {
 
   Future<void> updateNotificationTimes(String uid, List<String> times) async {
     await _isar.writeTxn(() async {
-      final user = await getLocalUser(uid);
+      final user = await getUserById(uid);
       if (user == null) {
         return;
       }
@@ -34,7 +44,7 @@ class UserRepository {
     DateTime? longestStreakReachedAt,
   }) async {
     await _isar.writeTxn(() async {
-      final user = await getLocalUser(uid);
+      final user = await getUserById(uid);
       if (user == null) {
         return;
       }
@@ -53,7 +63,7 @@ class UserRepository {
 
   Future<void> updatePairId(String uid, String? pairId) async {
     await _isar.writeTxn(() async {
-      final user = await getLocalUser(uid);
+      final user = await getUserById(uid);
       if (user == null) {
         return;
       }
@@ -62,5 +72,3 @@ class UserRepository {
     });
   }
 }
-
-

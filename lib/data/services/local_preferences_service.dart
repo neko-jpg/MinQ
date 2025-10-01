@@ -21,9 +21,20 @@ class LocalPreferencesService {
   static const String _utmTermKey = 'utm_term_v1';
   static const String _utmCapturedAtKey = 'utm_captured_at_v1';
   static const String _cloudBackupKey = 'cloud_backup_enabled_v1';
+  static const String _dummyDataModeKey = 'dummy_data_mode_enabled_v1';
 
   final Future<SharedPreferences> _prefsFuture;
   final NowProvider _now;
+
+  Future<bool> isDummyDataModeEnabled() async {
+    final prefs = await _prefsFuture;
+    return prefs.getBool(_dummyDataModeKey) ?? false;
+  }
+
+  Future<void> setDummyDataMode(bool enabled) async {
+    final prefs = await _prefsFuture;
+    await prefs.setBool(_dummyDataModeKey, enabled);
+  }
 
   Future<bool> hasSeenPairGuidelines() async {
     final prefs = await _prefsFuture;

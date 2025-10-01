@@ -1,17 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:minq/data/providers.dart';
-import 'package:minq/domain/log/quest_log.dart';
-import 'package:minq/data/services/photo_storage_service.dart';
-import 'package:minq/presentation/common/minq_empty_state.dart';
-import 'package:minq/presentation/common/minq_buttons.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/common/minq_skeleton.dart';
-import 'package:minq/data/logging/minq_logger.dart';
-import 'package:minq/data/services/image_moderation_service.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 
 enum RecordErrorType { none, offline, permissionDenied, cameraFailure }
 
@@ -60,7 +47,7 @@ class _RecordScreenState extends State<RecordScreen> {
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
-        title: Text('Record', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        title: Text('記録', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -118,7 +105,6 @@ class _RecordForm extends ConsumerWidget {
   final int questId;
   final void Function(RecordErrorType) onError;
 
-  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
 
@@ -126,11 +112,11 @@ class _RecordForm extends ConsumerWidget {
       padding: EdgeInsets.all(tokens.spacing(4)),
       children: <Widget>[
         SizedBox(height: tokens.spacing(4)),
-        Text('Mini-Quest', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        Text('ミニクエスト', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
         SizedBox(height: tokens.spacing(3)),
         _buildQuestInfoCard(tokens),
         SizedBox(height: tokens.spacing(8)),
-        Text('Proof', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        Text('証明', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
         SizedBox(height: tokens.spacing(4)),
         _buildProofButtons(context, ref, tokens),
       ],
@@ -159,9 +145,9 @@ class _RecordForm extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Meditate', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+              Text('瞑想', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
               SizedBox(height: tokens.spacing(1)),
-              Text('10 minutes', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+              Text('10分', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
             ],
           ),
         ],
@@ -178,7 +164,7 @@ class _RecordForm extends ConsumerWidget {
           children: <Widget>[
             Expanded(
               child: _ProofButton(
-                text: 'Take Photo',
+                text: '写真を撮る',
                 icon: Icons.photo_camera,
                 isPrimary: true,
                 onTap: () => _handlePhotoTap(context, ref),
@@ -187,7 +173,7 @@ class _RecordForm extends ConsumerWidget {
             SizedBox(width: isWide ? tokens.spacing(4) : 0, height: isWide ? 0 : tokens.spacing(4)),
             Expanded(
               child: _ProofButton(
-                text: 'Self-Declare',
+                text: '自己申告',
                 icon: Icons.check_circle,
                 isPrimary: false,
                 onTap: () => _handleSelfDeclareTap(context, ref),
@@ -203,14 +189,14 @@ class _RecordForm extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
     final uid = ref.read(uidProvider);
     if (uid == null || uid.isEmpty) {
-      messenger.showSnackBar(const SnackBar(content: Text('Unable to record without a signed-in user.')));
+      messenger.showSnackBar(const SnackBar(content: Text('サインインしていないため記録できません。')));
       onError(RecordErrorType.permissionDenied);
       return;
     }
     try {
       final result = await ref.read(photoStorageServiceProvider).captureAndSanitize(ownerUid: uid, questId: questId);
       if (!result.hasFile) {
-        messenger.showSnackBar(const SnackBar(content: Text('Photo capture cancelled.')));
+        messenger.showSnackBar(const SnackBar(content: Text('写真の撮影がキャンセルされました。')));
         return;
       }
 
@@ -226,7 +212,7 @@ class _RecordForm extends ConsumerWidget {
         ..synced = false;
       await ref.read(questLogRepositoryProvider).addLog(log);
       onError(RecordErrorType.none);
-      if (context.mounted) context.go('/celebration');
+      ref.read(navigationUseCaseProvider).goToCelebration();
     } on PhotoCaptureException catch (error) {
       switch (error.reason) {
         case PhotoCaptureFailure.permissionDenied:
@@ -249,7 +235,7 @@ class _RecordForm extends ConsumerWidget {
       ..proofType = ProofType.check
       ..synced = false;
     await ref.read(questLogRepositoryProvider).addLog(log);
-    if (context.mounted) context.go('/celebration');
+    ref.read(navigationUseCaseProvider).goToCelebration();
   }
 }
 
@@ -258,23 +244,23 @@ Future<bool> _handleModerationWarning(BuildContext context, PhotoCaptureResult r
 
   final tokens = context.tokens;
   final message = switch (result.moderationVerdict) {
-    PhotoModerationVerdict.tooDark => 'The captured photo looks very dark. Retake to keep your partner reassured?',
-    PhotoModerationVerdict.tooBright => 'The captured photo is almost entirely bright. Would you like to retake it for clarity?',
-    PhotoModerationVerdict.lowVariance => 'The image appears blurry or blank. Retake to provide clearer proof?',
+    PhotoModerationVerdict.tooDark => '撮影した写真が非常に暗いようです。パートナーを安心させるために撮り直しますか？',
+    PhotoModerationVerdict.tooBright => '撮影した写真がほとんど真っ白です。鮮明にするために撮り直しますか？',
+    PhotoModerationVerdict.lowVariance => '画像がぼやけているか、何も映っていないようです。より鮮明な証明のために撮り直しますか？',
     PhotoModerationVerdict.ok => '',
   };
 
   final proceed = await showDialog<bool>(
     context: context,
     builder: (BuildContext dialogContext) => AlertDialog(
-      title: const Text('Check your photo'),
+      title: const Text('写真を確認してください'),
       content: Text(message),
       actions: <Widget>[
-        TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: const Text('Retake')),
+        TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: const Text('再撮影')),
         FilledButton(
           onPressed: () => Navigator.of(dialogContext).pop(true),
           style: FilledButton.styleFrom(backgroundColor: tokens.brandPrimary, foregroundColor: Colors.white),
-          child: const Text('Use photo'),
+          child: const Text('この写真を使用'),
         ),
       ],
     ),
@@ -354,13 +340,13 @@ class _OfflineRecovery extends StatelessWidget {
   Widget build(BuildContext context) {
     return MinqEmptyState(
       icon: Icons.wifi_off,
-      title: 'You are offline',
-      message: 'Your proof will be saved locally and uploaded when you reconnect.',
+      title: 'オフラインです',
+      message: '証明はローカルに保存され、再接続時にアップロードされます。',
       actionArea: Column(
         children: [
-          MinqPrimaryButton(label: 'Retry Upload', onPressed: () async => onRetry(), expand: false),
-          SizedBox(height: 8),
-          TextButton(onPressed: onOpenQueue, child: const Text('View Offline Queue')),
+          MinqPrimaryButton(label: '再アップロード', onPressed: () async => onRetry(), expand: false),
+          const SizedBox(height: 8),
+          TextButton(onPressed: onOpenQueue, child: const Text('オフラインキューを表示')),
         ],
       ),
     );
@@ -376,13 +362,13 @@ class _PermissionRecovery extends StatelessWidget {
   Widget build(BuildContext context) {
     return MinqEmptyState(
       icon: Icons.camera_alt_outlined,
-      title: 'Camera Access Needed',
-      message: 'To capture photo proof, MinQ needs access to your camera.',
+      title: 'カメラへのアクセスが必要です',
+      message: '写真の証明を撮影するには、MinQがカメラにアクセスする必要があります。',
       actionArea: Column(
         children: [
-          MinqPrimaryButton(label: 'Grant Access', onPressed: () async => onRequest(), expand: false),
-          SizedBox(height: 8),
-          TextButton(onPressed: onOpenSettings, child: const Text('Open Settings')),
+          MinqPrimaryButton(label: 'アクセスを許可', onPressed: () async => onRequest(), expand: false),
+          const SizedBox(height: 8),
+          TextButton(onPressed: onOpenSettings, child: const Text('設定を開く')),
         ],
       ),
     );
@@ -398,13 +384,13 @@ class _CameraRecovery extends StatelessWidget {
   Widget build(BuildContext context) {
     return MinqEmptyState(
       icon: Icons.error_outline,
-      title: 'Camera Error',
-      message: 'There was an issue with the camera. Please try again.',
+      title: 'カメラエラー',
+      message: 'カメラで問題が発生しました。もう一度お試しください。',
       actionArea: Column(
         children: [
-          MinqPrimaryButton(label: 'Try Again', onPressed: () async => onRetry(), expand: false),
-          SizedBox(height: 8),
-          TextButton(onPressed: onSwitchMode, child: const Text('Self-Declare Instead')),
+          MinqPrimaryButton(label: '再試行', onPressed: () async => onRetry(), expand: false),
+          const SizedBox(height: 8),
+          TextButton(onPressed: onSwitchMode, child: const Text('代わりに自己申告する')),
         ],
       ),
     );

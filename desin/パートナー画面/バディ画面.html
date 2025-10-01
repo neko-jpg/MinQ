@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>現在のバディ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+  </style>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#6366F1",
+            "background-light": "#F3F4F6",
+            "background-dark": "#111827",
+            "card-light": "#FFFFFF",
+            "card-dark": "#1F2937",
+            "text-light": "#1F2937",
+            "text-dark": "#F9FAFB",
+            "subtext-light": "#6B7280",
+            "subtext-dark": "#9CA3AF",
+          },
+          fontFamily: {
+            display: ["Noto Sans JP", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "1rem",
+          },
+        },
+      },
+    };
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="min-h-screen flex flex-col p-4 sm:p-6">
+<header class="text-center mb-8">
+<h1 class="text-2xl font-bold text-text-light dark:text-text-dark">現在のバディ</h1>
+</header>
+<main class="flex-grow space-y-4">
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400 text-3xl">person</span>
+</div>
+<div>
+<p class="font-bold text-text-light dark:text-text-dark">田中 太郎</p>
+<p class="text-sm text-subtext-light dark:text-subtext-dark">目標：毎日の運動</p>
+</div>
+</div>
+<button class="text-subtext-light dark:text-subtext-dark">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-around">
+<button class="flex flex-col items-center space-y-1 text-primary">
+<span class="material-symbols-outlined text-green-500">volunteer_activism</span>
+<span class="text-xs font-medium">拍手</span>
+</button>
+<button class="flex flex-col items-center space-y-1 text-primary">
+<span class="material-symbols-outlined text-blue-500">chat</span>
+<span class="text-xs font-medium">チャット</span>
+</button>
+<button class="flex flex-col items-center space-y-1 text-primary">
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+<span class="text-xs font-medium">チェックイン</span>
+</button>
+</div>
+</div>
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400 text-3xl">person</span>
+</div>
+<div>
+<p class="font-bold text-text-light dark:text-text-dark">佐藤 花子</p>
+<p class="text-sm text-subtext-light dark:text-subtext-dark">目標：毎日の運動</p>
+</div>
+</div>
+<button class="text-subtext-light dark:text-subtext-dark">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-around">
+<button class="flex flex-col items-center space-y-1 text-primary">
+<span class="material-symbols-outlined text-green-500">volunteer_activism</span>
+<span class="text-xs font-medium">拍手</span>
+</button>
+<button class="flex flex-col items-center space-y-1 text-primary">
+<span class="material-symbols-outlined text-blue-500">chat</span>
+<span class="text-xs font-medium">チャット</span>
+</button>
+<button class="flex flex-col items-center space-y-1 text-primary">
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+<span class="text-xs font-medium">チェックイン</span>
+</button>
+</div>
+</div>
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400 text-3xl">person</span>
+</div>
+<div>
+<p class="font-bold text-text-light dark:text-text-dark">佐藤 花子</p>
+<p class="text-sm text-subtext-light dark:text-subtext-dark">目標：資格験の勉強</p>
+</div>
+</div>
+<button class="text-subtext-light dark:text-subtext-dark">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-around">
+<button class="flex flex-col items-center space-y-1 text-primary">
+<span class="material-symbols-outlined text-green-500">volunteer_activism</span>
+<span class="text-xs font-medium">拍手</span>
+</button>
+<button class="flex flex-col items-center space-y-1 text-primary">
+<span class="material-symbols-outlined text-blue-500">chat</span>
+<span class="text-xs font-medium">チャット</span>
+</button>
+<button class="flex flex-col items-center space-y-1 text-primary">
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+<span class="text-xs font-medium">チェックイン</span>
+</button>
+</div>
+</div>
+</main>
+<footer class="mt-8">
+<button class="w-full bg-primary text-white py-3 rounded-xl font-bold text-lg shadow-lg hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined">search</span>
+<span>新しいバディを探す</span>
+</button>
+</footer>
+</div>
+
+</body></html>

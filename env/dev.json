@@ -1,0 +1,4 @@
+{
+  "flavor": "dev",
+  "api_base_url": "https://dev.api.example.com"
+}

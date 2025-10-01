@@ -1,46 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/quest/quest.dart' as minq_quest;
+import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 
-class _QuestTemplateData {
-  const _QuestTemplateData({
-    required this.icon,
-    required this.title,
-    this.userCount,
-  });
-
-  final IconData icon;
-  final String title;
-  final String? userCount;
-}
-
-const Map<String, List<_QuestTemplateData>> _templatesByCategory = {
-  'Featured': <_QuestTemplateData>[
-    _QuestTemplateData(icon: Icons.auto_stories, title: 'Read 1 page of a book', userCount: '12.3k users'),
-    _QuestTemplateData(icon: Icons.fitness_center, title: 'Do 1 push-up', userCount: '11.8k users'),
-    _QuestTemplateData(icon: Icons.self_improvement, title: 'Stretch for 1 minute', userCount: '9.7k users'),
-    _QuestTemplateData(icon: Icons.bed, title: 'Make your bed', userCount: '8.2k users'),
-  ],
-  'Learning': <_QuestTemplateData>[
-    _QuestTemplateData(icon: Icons.auto_stories, title: 'Read 1 page of a book'),
-    _QuestTemplateData(icon: Icons.headphones, title: 'Listen to 1 minute of an audiobook'),
-  ],
-  'Exercise': <_QuestTemplateData>[
-    _QuestTemplateData(icon: Icons.fitness_center, title: 'Do 1 push-up'),
-    _QuestTemplateData(icon: Icons.directions_walk, title: 'Walk for 1 minute'),
-  ],
-};
-
-class QuestsScreen extends StatefulWidget {
+class QuestsScreen extends ConsumerStatefulWidget {
   const QuestsScreen({super.key});
 
   @override
-  State<QuestsScreen> createState() => _QuestsScreenState();
+  ConsumerState<QuestsScreen> createState() => _QuestsScreenState();
 }
 
-class _QuestsScreenState extends State<QuestsScreen> {
+class _QuestsScreenState extends ConsumerState<QuestsScreen> {
   bool _isLoading = true;
   String _selectedCategory = 'Featured';
 
@@ -57,7 +32,9 @@ class _QuestsScreenState extends State<QuestsScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final categories = ['Featured', 'All', 'Learning', 'Exercise', 'Tidying'];
+    final categories = ['Featured', 'My Quests', 'All', 'Learning', 'Exercise', 'Tidying'];
+    final templateQuests = ref.watch(templateQuestsProvider);
+    final userQuests = ref.watch(userQuestsProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -69,7 +46,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
       ),
-      body: _isLoading
+      body: (templateQuests.isLoading || userQuests.isLoading)
           ? _QuestsSkeleton(tokens: tokens)
           : CustomScrollView(
               slivers: <Widget>[
@@ -84,11 +61,11 @@ class _QuestsScreenState extends State<QuestsScreen> {
                 ),
                 SliverPadding(
                   padding: EdgeInsets.all(tokens.spacing(4)),
-                  sliver: _buildQuestSections(tokens),
+                  sliver: _buildQuestList(tokens, templateQuests.value ?? [], userQuests.value ?? []),
                 ),
               ],
             ),
-      floatingActionButton: _isLoading ? null : _buildFab(tokens),
+      floatingActionButton: (templateQuests.isLoading || userQuests.isLoading) ? null : _buildFab(tokens),
     );
   }
 
@@ -148,42 +125,39 @@ class _QuestsScreenState extends State<QuestsScreen> {
     );
   }
 
-  Widget _buildQuestSections(MinqTheme tokens) {
-    return SliverList(
-      delegate: SliverChildListDelegate(
-        _templatesByCategory.entries.map((entry) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: tokens.spacing(8)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(entry.key, style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
-                SizedBox(height: tokens.spacing(4)),
-                GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 1.5, // Adjusted for new card layout
-                  ),
-                  itemCount: entry.value.length,
-                  itemBuilder: (context, index) => AnimationConfiguration.staggeredGrid(
-                    position: index,
-                    duration: const Duration(milliseconds: 375),
-                    columnCount: 2,
-                    child: ScaleAnimation(
-                      child: FadeInAnimation(
-                        child: _QuestTemplateCard(data: entry.value[index]),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+  Widget _buildQuestList(MinqTheme tokens, List<minq_quest.Quest> templateQuests, List<minq_quest.Quest> userQuests) {
+    List<minq_quest.Quest> questsToShow = [];
+    if (_selectedCategory == 'All') {
+      questsToShow = [...templateQuests, ...userQuests];
+    } else if (_selectedCategory == 'My Quests') {
+      questsToShow = userQuests;
+    } else if (_selectedCategory == 'Featured') {
+      questsToShow = templateQuests.take(4).toList(); // Simple featured logic
+    } else {
+      questsToShow = templateQuests.where((q) => q.category == _selectedCategory).toList();
+    }
+
+    return SliverGrid(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 1.5,
+      ),
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return AnimationConfiguration.staggeredGrid(
+            position: index,
+            duration: const Duration(milliseconds: 375),
+            columnCount: 2,
+            child: ScaleAnimation(
+              child: FadeInAnimation(
+                child: _QuestCard(quest: questsToShow[index]),
+              ),
             ),
           );
-        }).toList(),
+        },
+        childCount: questsToShow.length,
       ),
     );
   }
@@ -222,17 +196,17 @@ class _QuestsSkeleton extends StatelessWidget {
   }
 }
 
-class _QuestTemplateCard extends StatelessWidget {
-  const _QuestTemplateCard({required this.data});
+class _QuestCard extends StatelessWidget {
+  const _QuestCard({required this.quest});
 
-  final _QuestTemplateData data;
+  final minq_quest.Quest quest;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
     return Card(
-      elevation: 1,
+      elevation: 0,
       shadowColor: tokens.background.withOpacity(0.1),
       color: tokens.surface,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
@@ -244,11 +218,11 @@ class _QuestTemplateCard extends StatelessWidget {
           children: <Widget>[
             Row(
               children: <Widget>[
-                Icon(data.icon, color: tokens.brandPrimary, size: tokens.spacing(6)),
+                Icon(iconDataForKey(quest.iconKey), color: tokens.brandPrimary, size: tokens.spacing(6)),
                 SizedBox(width: tokens.spacing(3)),
                 Expanded(
                   child: Text(
-                    data.title,
+                    quest.title,
                     style: tokens.bodyLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.w600),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
@@ -256,14 +230,7 @@ class _QuestTemplateCard extends StatelessWidget {
                 ),
               ],
             ),
-            if (data.userCount != null)
-              Row(
-                children: <Widget>[
-                  Icon(Icons.group, color: tokens.textMuted, size: tokens.spacing(4)),
-                  SizedBox(width: tokens.spacing(1)),
-                  Text(data.userCount!, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
-                ],
-              ),
+            // We can add user count for template quests if needed
           ],
         ),
       ),

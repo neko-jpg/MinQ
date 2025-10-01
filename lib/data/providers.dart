@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
@@ -34,6 +34,8 @@ final notificationServiceProvider = Provider<NotificationService>(
 
 final notificationPermissionProvider = StateProvider<bool>((ref) => false);
 final timeDriftDetectedProvider = StateProvider<bool>((ref) => false);
+final initializationErrorProvider = StateProvider<Object?>((ref) => null);
+final dummyDataModeProvider = StateProvider<bool>((ref) => false);
 
 final notificationTapStreamProvider = StreamProvider<String>((ref) async* {
   final notifications = ref.watch(notificationServiceProvider);
@@ -81,6 +83,12 @@ final firestoreProvider = Provider<FirebaseFirestore?>(
       : null,
 );
 
+final firebaseStorageProvider = Provider<FirebaseStorage?>(
+  (ref) => ref.watch(firebaseAvailabilityProvider)
+      ? FirebaseStorage.instance
+      : null,
+);
+
 final remoteConfigProvider = Provider<FirebaseRemoteConfig?>((ref) {
   return ref.watch(firebaseAvailabilityProvider)
       ? FirebaseRemoteConfig.instance
@@ -122,7 +130,8 @@ UserRepository _buildUserRepository(Ref ref) {
   if (isar == null) {
     throw StateError('Isar instance is not yet initialised');
   }
-  return UserRepository(isar);
+  final authRepository = ref.watch(authRepositoryProvider);
+  return UserRepository(isar, authRepository);
 }
 
 final questRepositoryProvider = Provider<QuestRepository>(
@@ -135,10 +144,11 @@ final userRepositoryProvider = Provider<UserRepository>(_buildUserRepository);
 
 final pairRepositoryProvider = Provider<PairRepository?>((ref) {
   final firestore = ref.watch(firestoreProvider);
-  if (firestore == null) {
+  final storage = ref.watch(firebaseStorageProvider);
+  if (firestore == null || storage == null) {
     return null;
   }
-  return PairRepository(firestore);
+  return PairRepository(firestore, storage);
 });
 
 final firestoreSyncServiceProvider = Provider<FirestoreSyncService?>((ref) {
@@ -158,136 +168,143 @@ final firestoreSyncServiceProvider = Provider<FirestoreSyncService?>((ref) {
 });
 
 final appStartupProvider = FutureProvider<void>((ref) async {
-  final notifications = ref.read(notificationServiceProvider);
-  final permissionGranted = await notifications.init();
-  ref.read(notificationPermissionProvider.notifier).state = permissionGranted;
-
-  await ref.watch(isarProvider.future);
-  await ref.read(questRepositoryProvider).seedInitialQuests();
-
-  final firebaseAvailable = ref.watch(firebaseAvailabilityProvider);
-  if (!firebaseAvailable) {
-    return;
-  }
-
-  final firebaseUser =
-      await ref.read(authRepositoryProvider).signInAnonymously();
-
-  if (firebaseUser == null) {
-    return;
-  }
-
-  final userRepo = ref.read(userRepositoryProvider);
-  var localUser = await userRepo.getLocalUser(firebaseUser.uid);
-  if (localUser == null) {
-    localUser =
-        minq_user.User()
-          ..uid = firebaseUser.uid
-          ..createdAt = DateTime.now()
-          ..notificationTimes = List.of(
-            NotificationService.defaultReminderTimes,
-          )
-          ..privacy = 'private'
-          ..longestStreak = 0
-          ..currentStreak = 0;
-    await userRepo.saveLocalUser(localUser);
-  } else if (localUser.notificationTimes.isEmpty) {
-    localUser.notificationTimes = List.of(
-      NotificationService.defaultReminderTimes,
-    );
-    await userRepo.saveLocalUser(localUser);
-  }
-
-  final pairRepository = ref.read(pairRepositoryProvider);
-  if (pairRepository != null) {
-    final assignment = await pairRepository.fetchAssignment(firebaseUser.uid);
-    final assignedPairId = assignment?['pairId'] as String?;
-    if (assignedPairId != null && assignedPairId.isNotEmpty) {
-      if (localUser.pairId != assignedPairId) {
-        localUser.pairId = assignedPairId;
-        await userRepo.saveLocalUser(localUser);
-      }
-    }
-  }
-
-  final logRepo = ref.read(questLogRepositoryProvider);
-  final currentStreak = await logRepo.calculateStreak(localUser.uid);
-  final longestStreak = await logRepo.calculateLongestStreak(localUser.uid);
-  final previousLongest = localUser.longestStreak;
-  if (localUser.currentStreak != currentStreak ||
-      localUser.longestStreak != longestStreak) {
-    await userRepo.updateStreaks(
-      localUser.uid,
-      currentStreak: currentStreak,
-      longestStreak: longestStreak,
-      longestStreakReachedAt: longestStreak > previousLongest
-          ? DateTime.now()
-          : localUser.longestStreakReachedAt,
-    );
-    localUser.currentStreak = currentStreak;
-    localUser.longestStreak = longestStreak;
-    if (longestStreak > previousLongest) {
-      localUser.longestStreakReachedAt = DateTime.now();
-    }
-  }
-
-  final reminderTimes = List<String>.from(localUser.notificationTimes);
-  final recurringTimes = reminderTimes.take(2).toList();
-  final auxiliaryTime = reminderTimes.length > 2 ? reminderTimes[2] : null;
-
-  if (permissionGranted) {
-    await notifications.ensureTimezoneConsistency(
-      fallbackRecurring: recurringTimes,
-      fallbackAuxiliary: auxiliaryTime,
-    );
-    if (recurringTimes.isNotEmpty) {
-      await notifications.scheduleRecurringReminders(recurringTimes);
-    }
-
-    if (auxiliaryTime != null) {
-      final hasCompleted = await ref
-          .read(questLogRepositoryProvider)
-          .hasCompletedDailyGoal(localUser.uid);
-      if (hasCompleted) {
-        await notifications.cancelAuxiliaryReminder();
-      } else {
-        await notifications.scheduleAuxiliaryReminder(auxiliaryTime);
-      }
-    } else {
-      await notifications.cancelAuxiliaryReminder();
-    }
-    await notifications.resumeFromTimeDrift();
-  }
-  if (!permissionGranted) {
-    await notifications.ensureTimezoneConsistency(
-      fallbackRecurring: const <String>[],
-      fallbackAuxiliary: null,
-    );
-    await notifications.cancelAll();
-  }
-
   try {
-    final timeConsistent =
-        await ref.read(timeConsistencyServiceProvider).isDeviceTimeConsistent();
-    final hasDrift = !timeConsistent;
-    ref.read(timeDriftDetectedProvider.notifier).state = hasDrift;
-    if (hasDrift) {
-      await notifications.suspendForTimeDrift();
-    }
-  } on SocketException catch (error) {
-    debugPrint('Time consistency probe failed: $error');
-  }
+    final localPrefs = ref.read(localPreferencesServiceProvider);
+    final isDummyMode = await localPrefs.isDummyDataModeEnabled();
+    ref.read(dummyDataModeProvider.notifier).state = isDummyMode;
+    final notifications = ref.read(notificationServiceProvider);
+    final permissionGranted = await notifications.init();
+    ref.read(notificationPermissionProvider.notifier).state = permissionGranted;
 
-  final syncService = ref.read(firestoreSyncServiceProvider);
-  if (syncService != null) {
+    await ref.watch(isarProvider.future);
+    await ref.read(questRepositoryProvider).seedInitialQuests();
+
+    final firebaseAvailable = ref.watch(firebaseAvailabilityProvider);
+    if (!firebaseAvailable) {
+      return;
+    }
+
+    final firebaseUser =
+        await ref.read(authRepositoryProvider).signInAnonymously();
+
+    if (firebaseUser == null) {
+      return;
+    }
+
+    final userRepo = ref.read(userRepositoryProvider);
+    var localUser = await userRepo.getUserById(firebaseUser.uid);
+    if (localUser == null) {
+      localUser =
+          minq_user.User()
+            ..uid = firebaseUser.uid
+            ..createdAt = DateTime.now()
+            ..notificationTimes = List.of(
+              NotificationService.defaultReminderTimes,
+            )
+            ..privacy = 'private'
+            ..longestStreak = 0
+            ..currentStreak = 0;
+      await userRepo.saveLocalUser(localUser);
+    } else if (localUser.notificationTimes.isEmpty) {
+      localUser.notificationTimes = List.of(
+        NotificationService.defaultReminderTimes,
+      );
+      await userRepo.saveLocalUser(localUser);
+    }
+
+    final pairRepository = ref.read(pairRepositoryProvider);
+    if (pairRepository != null) {
+      final assignment = await pairRepository.fetchAssignment(firebaseUser.uid);
+      final assignedPairId = assignment?['pairId'] as String?;
+      if (assignedPairId != null && assignedPairId.isNotEmpty) {
+        if (localUser.pairId != assignedPairId) {
+          localUser.pairId = assignedPairId;
+          await userRepo.saveLocalUser(localUser);
+        }
+      }
+    }
+
+    final logRepo = ref.read(questLogRepositoryProvider);
+    final currentStreak = await logRepo.calculateStreak(localUser.uid);
+    final longestStreak = await logRepo.calculateLongestStreak(localUser.uid);
+    final previousLongest = localUser.longestStreak;
+    if (localUser.currentStreak != currentStreak ||
+        localUser.longestStreak != longestStreak) {
+      await userRepo.updateStreaks(
+        localUser.uid,
+        currentStreak: currentStreak,
+        longestStreak: longestStreak,
+        longestStreakReachedAt: longestStreak > previousLongest
+            ? DateTime.now()
+            : localUser.longestStreakReachedAt,
+      );
+      localUser.currentStreak = currentStreak;
+      localUser.longestStreak = longestStreak;
+      if (longestStreak > previousLongest) {
+        localUser.longestStreakReachedAt = DateTime.now();
+      }
+    }
+
+    final reminderTimes = List<String>.from(localUser.notificationTimes);
+    final recurringTimes = reminderTimes.take(2).toList();
+    final auxiliaryTime = reminderTimes.length > 2 ? reminderTimes[2] : null;
+
+    if (permissionGranted) {
+      await notifications.ensureTimezoneConsistency(
+        fallbackRecurring: recurringTimes,
+        fallbackAuxiliary: auxiliaryTime,
+      );
+      if (recurringTimes.isNotEmpty) {
+        await notifications.scheduleRecurringReminders(recurringTimes);
+      }
+
+      if (auxiliaryTime != null) {
+        final hasCompleted = await ref
+            .read(questLogRepositoryProvider)
+            .hasCompletedDailyGoal(localUser.uid);
+        if (hasCompleted) {
+          await notifications.cancelAuxiliaryReminder();
+        } else {
+          await notifications.scheduleAuxiliaryReminder(auxiliaryTime);
+        }
+      } else {
+        await notifications.cancelAuxiliaryReminder();
+      }
+      await notifications.resumeFromTimeDrift();
+    }
+    if (!permissionGranted) {
+      await notifications.ensureTimezoneConsistency(
+        fallbackRecurring: const <String>[],
+        fallbackAuxiliary: null,
+      );
+      await notifications.cancelAll();
+    }
+
     try {
-      await syncService.syncQuestLogs(firebaseUser.uid);
-    } on FirebaseException catch (error) {
-      debugPrint('Quest log sync failed: ${error.code}');
+      final timeConsistent =
+          await ref.read(timeConsistencyServiceProvider).isDeviceTimeConsistent();
+      final hasDrift = !timeConsistent;
+      ref.read(timeDriftDetectedProvider.notifier).state = hasDrift;
+      if (hasDrift) {
+        await notifications.suspendForTimeDrift();
+      }
+    } on SocketException catch (error) {
+      debugPrint('Time consistency probe failed: $error');
     }
-  }
 
-  await ref.read(featureFlagsProvider.notifier).ensureLoaded();
+    final syncService = ref.read(firestoreSyncServiceProvider);
+    if (syncService != null) {
+      try {
+        await syncService.syncQuestLogs(firebaseUser.uid);
+      } on FirebaseException catch (error) {
+        debugPrint('Quest log sync failed: ${error.code}');
+      }
+    }
+
+    await ref.read(featureFlagsProvider.notifier).ensureLoaded();
+  } catch (e) {
+    ref.read(initializationErrorProvider.notifier).state = e;
+  }
 });
 
 final authStateChangesProvider = StreamProvider<User?>((ref) {
@@ -301,7 +318,7 @@ final localUserProvider = FutureProvider<minq_user.User?>((ref) async {
       if (firebaseUser == null) {
         return null;
       }
-      return ref.watch(userRepositoryProvider).getLocalUser(firebaseUser.uid);
+      return ref.watch(userRepositoryProvider).getUserById(firebaseUser.uid);
     },
     error: (_, __) => Future.value(null),
     loading: () => Future.value(null),
@@ -421,17 +438,3 @@ final heatmapDataProvider = FutureProvider<Map<DateTime, int>>((ref) async {
   }
   return ref.read(questLogRepositoryProvider).getHeatmapData(user.uid);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-

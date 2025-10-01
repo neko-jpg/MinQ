@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/data/services/local_preferences_service.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class SupportScreen extends ConsumerStatefulWidget {

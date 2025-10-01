@@ -82,7 +82,7 @@ class MinqLogger {
       if (_containsBlockedKeyword(key)) {
         sanitized[key] = '**redacted**';
       } else if (value is String && value.length > 120) {
-        sanitized[key] = value.substring(0, 117) + '…';
+        sanitized[key] = '${value.substring(0, 117)}…';
       } else if (value is Map<String, dynamic>) {
         sanitized[key] = _sanitizeMetadata(value);
       } else if (value is Iterable) {

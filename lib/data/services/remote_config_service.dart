@@ -24,16 +24,16 @@ class FeatureFlagsNotifier extends StateNotifier<FeatureFlags> {
       return;
     }
 
-    await _remoteConfig!.setDefaults(FeatureFlags.defaults());
-    await _remoteConfig!.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: Duration(seconds: 10),
-      minimumFetchInterval: Duration(hours: 1),
+    await _remoteConfig.setDefaults(FeatureFlags.defaults());
+    await _remoteConfig.setConfigSettings(RemoteConfigSettings(
+      fetchTimeout: const Duration(seconds: 10),
+      minimumFetchInterval: const Duration(hours: 1),
     ));
 
     await _fetchAndActivate();
 
-    _updateSubscription = _remoteConfig!.onConfigUpdated.listen((_) async {
-      await _remoteConfig!.activate();
+    _updateSubscription = _remoteConfig.onConfigUpdated.listen((_) async {
+      await _remoteConfig.activate();
       _updateFromRemoteConfig();
     });
   }
@@ -54,7 +54,7 @@ class FeatureFlagsNotifier extends StateNotifier<FeatureFlags> {
     if (_remoteConfig == null) {
       return;
     }
-    state = FeatureFlags.fromRemoteConfig(_remoteConfig!);
+    state = FeatureFlags.fromRemoteConfig(_remoteConfig);
   }
 
   @override
