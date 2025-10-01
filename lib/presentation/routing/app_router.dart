@@ -25,6 +25,8 @@ import 'package:minq/presentation/screens/pair/buddy_list_screen.dart';
 import 'package:minq/presentation/screens/pair/chat_screen.dart';
 import 'package:minq/presentation/common/sharing/social_sharing_demo.dart';
 import 'package:minq/presentation/screens/account_deletion_screen.dart';
+import 'package:minq/presentation/screens/profile_setting_screen.dart';
+import 'package:minq/presentation/screens/profile_setting_screen.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -61,6 +63,7 @@ class AppRoutes {
   static const support = '/support';
   static const createQuest = '/quests/create';
   static const notificationSettings = '/settings/notifications';
+  static const profileSettings = '/settings/profile';
   static const pairMatching = '/pair/matching';
   static const pairChat = '/pair/chat/:buddyId';
   static const accountDeletion = '/settings/delete-account';
@@ -198,6 +201,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
       ),
       GoRoute(
+        path: AppRoutes.profileSettings,
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const ProfileSettingScreen(),
+              transitionType: SharedAxisTransitionType.vertical,
+            ),
+      ),
+      GoRoute(
         path: AppRoutes.pairMatching,
         pageBuilder: (context, state) {
           final code = state.uri.queryParameters['code'];
@@ -281,6 +294,7 @@ class NavigationUseCase {
   void goToSupport() => _router.go(AppRoutes.support);
   void goToCreateQuest() => _router.go(AppRoutes.createQuest);
   void goToNotificationSettings() => _router.go(AppRoutes.notificationSettings);
+  void goToProfileSettings() => _router.go(AppRoutes.profileSettings);
   void goToAccountDeletion() => _router.go(AppRoutes.accountDeletion);
   void goToPairMatching({String? code}) {
     final uri = Uri(path: AppRoutes.pairMatching, queryParameters: code != null ? {'code': code} : null);

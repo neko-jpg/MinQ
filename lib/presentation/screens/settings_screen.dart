@@ -6,6 +6,7 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -63,6 +64,10 @@ class SettingsScreen extends ConsumerWidget {
               _SettingsTile(
                 title: l10n.settingsNotificationTime,
                 onTap: () => context.push('/settings/notifications'),
+              ),
+              _SettingsTile(
+                title: l10n.settingsProfile,
+                onTap: () => context.push(AppRoutes.profileSettings),
               ),
               _SettingsTile(title: l10n.settingsSound),
             ],
