@@ -7,7 +7,8 @@ class OnboardingIntegrationDemo extends StatefulWidget {
   const OnboardingIntegrationDemo({super.key});
 
   @override
-  State<OnboardingIntegrationDemo> createState() => _OnboardingIntegrationDemoState();
+  State<OnboardingIntegrationDemo> createState() =>
+      _OnboardingIntegrationDemoState();
 }
 
 class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
@@ -89,24 +90,24 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
           children: [
             // オンボーディング状態表示
             _buildStatusCard(theme),
-            
+
             const SizedBox(height: 24),
-            
+
             // コンテキスト依存のガイド表示デモ（要件6.1）
             _buildContextualGuideDemo(theme),
-            
+
             const SizedBox(height: 24),
-            
+
             // スマートツールチップデモ（要件6.2）
             _buildSmartTooltipDemo(theme),
-            
+
             const SizedBox(height: 24),
-            
+
             // プログレッシブヒントデモ（要件6.2）
             _buildProgressiveHintDemo(theme),
-            
+
             const SizedBox(height: 24),
-            
+
             // インタラクティブツアーデモ（要件6.3）
             _buildInteractiveTourDemo(theme),
           ],
@@ -132,7 +133,9 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
             Row(
               children: [
                 Icon(
-                  _hasCompletedOnboarding ? Icons.check_circle : Icons.radio_button_unchecked,
+                  _hasCompletedOnboarding
+                      ? Icons.check_circle
+                      : Icons.radio_button_unchecked,
                   color: _hasCompletedOnboarding ? Colors.green : Colors.grey,
                 ),
                 const SizedBox(width: 8),
@@ -181,19 +184,31 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
               runSpacing: 8,
               children: [
                 ElevatedButton(
-                  onPressed: () => OnboardingEngine.showContextualGuide('home', context),
+                  onPressed:
+                      () =>
+                          OnboardingEngine.showContextualGuide('home', context),
                   child: const Text('ホーム画面へ移動する'),
                 ),
                 ElevatedButton(
-                  onPressed: () => OnboardingEngine.showContextualGuide('quest_creation', context),
+                  onPressed:
+                      () => OnboardingEngine.showContextualGuide(
+                        'quest_creation',
+                        context,
+                      ),
                   child: const Text('クエストを作成する'),
                 ),
                 ElevatedButton(
-                  onPressed: () => OnboardingEngine.showContextualGuide('stats', context),
+                  onPressed:
+                      () => OnboardingEngine.showContextualGuide(
+                        'stats',
+                        context,
+                      ),
                   child: const Text('統計画面を見る'),
                 ),
                 ElevatedButton(
-                  onPressed: () => OnboardingEngine.showContextualGuide('pair', context),
+                  onPressed:
+                      () =>
+                          OnboardingEngine.showContextualGuide('pair', context),
                   child: const Text('ペア画面へ移動する'),
                 ),
               ],
@@ -246,7 +261,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
                   ),
                 ),
               ],
-
+            ),
             const SizedBox(height: 16),
             AutoSmartTooltip(
               message: '自動表示されるツールチップ',
@@ -345,22 +360,26 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
     final customSteps = [
       const TourStep(
         title: 'カスタムツアーへようこそ',
-        description: 'これはカスタマイズされたツアーの例です。'
+        description:
+            'これはカスタマイズされたツアーの例です。'
             'アプリの特定の機能に焦点を当てたガイドを作成できます。',
       ),
       const TourStep(
         title: 'Progressive Onboarding の特徴',
-        description: 'コンテキスト依存のガイド表示により、'
+        description:
+            'コンテキスト依存のガイド表示により、'
             'ユーザーが必要な時に必要な情報だけを提供します。',
       ),
       const TourStep(
         title: 'スマートツールチップ',
-        description: '一度だけ表示される仕組みにより、'
+        description:
+            '一度だけ表示される仕組みにより、'
             'ユーザーを煩わせることなく適切なタイミングでヒントを提供します。',
       ),
       const TourStep(
         title: 'ツアー完了',
-        description: 'Progressive Onboarding System により、'
+        description:
+            'Progressive Onboarding System により、'
             'ユーザーは段階的にアプリの使い方を学習できます。',
       ),
     ];

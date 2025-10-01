@@ -1,4 +1,11 @@
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/domain/quest/quest.dart' as minq_quest;
+import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -35,9 +42,9 @@ class _Header extends StatelessWidget {
     return Text(
       "ホーム",
       textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+      style: Theme.of(
+        context,
+      ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
     );
   }
 }
@@ -70,18 +77,24 @@ class _TodaysFocusSection extends ConsumerWidget {
                   children: [
                     Text(
                       "今日のフォーカス",
-                      style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       focusQuest?.title ?? "クエストなし",
-                      style: textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                      style: textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     if (focusQuest != null)
                       Text(
                         "${focusQuest.estimatedMinutes}分",
-                        style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
                       ),
                   ],
                 ),
@@ -95,9 +108,15 @@ class _TodaysFocusSection extends ConsumerWidget {
                         value: 0.7, // TODO: Implement progress logic
                         strokeWidth: 6,
                         backgroundColor: colorScheme.surfaceContainerHighest,
-                        valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          colorScheme.primary,
+                        ),
                       ),
-                      Icon(iconDataForKey(focusQuest?.iconKey), size: 32, color: colorScheme.primary),
+                      Icon(
+                        iconDataForKey(focusQuest?.iconKey),
+                        size: 32,
+                        color: colorScheme.primary,
+                      ),
                     ],
                   ),
                 ),
@@ -126,10 +145,13 @@ class _MiniQuestsSection extends ConsumerWidget {
           children: [
             Text(
               "あなたのミニクエスト",
-              style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             IconButton.filled(
-              onPressed: () => ref.read(navigationUseCaseProvider).goToCreateQuest(),
+              onPressed:
+                  () => ref.read(navigationUseCaseProvider).goToCreateQuest(),
               icon: const Icon(Icons.add),
             ),
           ],
@@ -177,11 +199,13 @@ class _QuestGridItem extends ConsumerWidget {
     final isCompleted = recentLogsAsync.when(
       data: (logs) {
         final now = DateTime.now();
-        return logs.any((log) =>
-            log.questId == quest.id &&
-            log.ts.year == now.year &&
-            log.ts.month == now.month &&
-            log.ts.day == now.day);
+        return logs.any(
+          (log) =>
+              log.questId == quest.id &&
+              log.ts.year == now.year &&
+              log.ts.month == now.month &&
+              log.ts.day == now.day,
+        );
       },
       loading: () => false,
       error: (_, __) => false,
@@ -199,7 +223,10 @@ class _QuestGridItem extends ConsumerWidget {
             Expanded(
               child: Row(
                 children: [
-                  Icon(iconDataForKey(quest.iconKey), color: colorScheme.onPrimaryContainer),
+                  Icon(
+                    iconDataForKey(quest.iconKey),
+                    color: colorScheme.onPrimaryContainer,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
@@ -218,7 +245,9 @@ class _QuestGridItem extends ConsumerWidget {
                           Text(
                             quest.category,
                             style: textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onPrimaryContainer.withOpacity(0.7),
+                              color: colorScheme.onPrimaryContainer.withOpacity(
+                                0.7,
+                              ),
                             ),
                           ),
                       ],
@@ -232,9 +261,15 @@ class _QuestGridItem extends ConsumerWidget {
               height: 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isCompleted ? Colors.white.withOpacity(0.9) : Colors.white.withOpacity(0.3),
+                color:
+                    isCompleted
+                        ? Colors.white.withOpacity(0.9)
+                        : Colors.white.withOpacity(0.3),
               ),
-              child: isCompleted ? Icon(Icons.check, size: 16, color: colorScheme.primary) : null,
+              child:
+                  isCompleted
+                      ? Icon(Icons.check, size: 16, color: colorScheme.primary)
+                      : null,
             ),
           ],
         ),
@@ -264,16 +299,36 @@ class _StatsSnapshotSection extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             streakAsync.when(
-              data: (streak) => _StatCircle(value: (streak % 7) / 7, label: "継続日数", stat: "$streak"),
-              loading: () => const _StatCircle(value: 0, label: "継続日数", stat: "-"),
-              error: (_, __) => const _StatCircle(value: 0, label: "継続日数", stat: "!"),
+              data:
+                  (streak) => _StatCircle(
+                    value: (streak % 7) / 7,
+                    label: "継続日数",
+                    stat: "$streak",
+                  ),
+              loading:
+                  () => const _StatCircle(value: 0, label: "継続日数", stat: "-"),
+              error:
+                  (_, __) =>
+                      const _StatCircle(value: 0, label: "継続日数", stat: "!"),
             ),
             completedTodayAsync.when(
-              data: (count) => _StatCircle(value: count > 0 ? 1 : 0, label: "クエスト完了", stat: "$count"),
-              loading: () => const _StatCircle(value: 0, label: "クエスト完了", stat: "-"),
-              error: (_, __) => const _StatCircle(value: 0, label: "クエスト完了", stat: "!"),
+              data:
+                  (count) => _StatCircle(
+                    value: count > 0 ? 1 : 0,
+                    label: "クエスト完了",
+                    stat: "$count",
+                  ),
+              loading:
+                  () => const _StatCircle(value: 0, label: "クエスト完了", stat: "-"),
+              error:
+                  (_, __) =>
+                      const _StatCircle(value: 0, label: "クエスト完了", stat: "!"),
             ),
-            const _StatCircle(value: 0.0, label: "パートナー進捗", stat: ""), // TODO: Implement partner progress
+            const _StatCircle(
+              value: 0.0,
+              label: "パートナー進捗",
+              stat: "",
+            ), // TODO: Implement partner progress
           ],
         ),
       ],
@@ -282,7 +337,11 @@ class _StatsSnapshotSection extends ConsumerWidget {
 }
 
 class _StatCircle extends StatelessWidget {
-  const _StatCircle({required this.value, required this.label, required this.stat});
+  const _StatCircle({
+    required this.value,
+    required this.label,
+    required this.stat,
+  });
 
   final double value;
   final String label;
@@ -309,12 +368,22 @@ class _StatCircle extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
               ),
               if (stat.isNotEmpty)
-                Text(stat, style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  stat,
+                  style: textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
             ],
           ),
         ),
         const SizedBox(height: 8),
-        Text(label, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
+        Text(
+          label,
+          style: textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
       ],
     );
   }
@@ -338,7 +407,9 @@ class _WeeklyStreakSection extends ConsumerWidget {
         const SizedBox(height: 16),
         Card(
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: recentLogsAsync.when(
@@ -364,16 +435,19 @@ class _WeeklyStreakSection extends ConsumerWidget {
 
     for (int i = 1; i <= 7; i++) {
       final dayToDisplay = now.subtract(Duration(days: todayWeekday - i));
-      final isCompleted = logs.any((log) =>
-          log.ts.year == dayToDisplay.year &&
-          log.ts.month == dayToDisplay.month &&
-          log.ts.day == dayToDisplay.day);
-      
+      final isCompleted = logs.any(
+        (log) =>
+            log.ts.year == dayToDisplay.year &&
+            log.ts.month == dayToDisplay.month &&
+            log.ts.day == dayToDisplay.day,
+      );
+
       items.add(
         _DayItem(
           day: ["月", "火", "水", "木", "金", "土", "日"][dayToDisplay.weekday - 1],
           isCompleted: isCompleted,
-          isToday: dayToDisplay.day == now.day && dayToDisplay.month == now.month,
+          isToday:
+              dayToDisplay.day == now.day && dayToDisplay.month == now.month,
         ),
       );
     }
@@ -382,7 +456,11 @@ class _WeeklyStreakSection extends ConsumerWidget {
 }
 
 class _DayItem extends StatelessWidget {
-  const _DayItem({required this.day, required this.isCompleted, this.isToday = false});
+  const _DayItem({
+    required this.day,
+    required this.isCompleted,
+    this.isToday = false,
+  });
 
   final String day;
   final bool isCompleted;
@@ -398,7 +476,8 @@ class _DayItem extends StatelessWidget {
         Text(
           day,
           style: textTheme.bodyMedium?.copyWith(
-            color: isToday ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
+            color:
+                isToday ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
             fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -408,11 +487,15 @@ class _DayItem extends StatelessWidget {
           height: 32,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isCompleted ? colorScheme.primary : colorScheme.surfaceContainerHighest,
+            color:
+                isCompleted
+                    ? colorScheme.primary
+                    : colorScheme.surfaceContainerHighest,
           ),
-          child: isCompleted
-              ? const Icon(Icons.check, color: Colors.white, size: 18)
-              : null,
+          child:
+              isCompleted
+                  ? const Icon(Icons.check, color: Colors.white, size: 18)
+                  : null,
         ),
       ],
     );
