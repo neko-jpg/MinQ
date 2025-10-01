@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -12,21 +13,25 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
-          '設定',
+          l10n.settingsTitle,
           style: tokens.titleMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+        leading: Tooltip(
+          message: l10n.back,
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.pop(),
+          ),
         ),
         backgroundColor: tokens.background.withOpacity(0.8),
         elevation: 0,
@@ -36,11 +41,11 @@ class SettingsScreen extends ConsumerWidget {
         padding: EdgeInsets.all(tokens.spacing(4)),
         children: <Widget>[
           _SettingsSection(
-            title: '一般設定',
+            title: l10n.settingsSectionGeneral,
             tiles: [
               _SettingsTile(
-                title: 'プッシュ通知',
-                subtitle: 'リマインダーとパートナーの更新',
+                title: l10n.settingsPushNotifications,
+                subtitle: l10n.settingsPushNotificationsSubtitle,
                 isSwitch: true,
                 switchValue:
                     true, // This should be driven by a provider in a real app
@@ -56,39 +61,43 @@ class SettingsScreen extends ConsumerWidget {
                 },
               ),
               _SettingsTile(
-                title: '通知時間',
+                title: l10n.settingsNotificationTime,
                 onTap: () => context.push('/settings/notifications'),
               ),
-              const _SettingsTile(title: 'サウンド'),
-            ],
-          ),
-          const _SettingsSection(
-            title: 'プライバシーとデータ',
-            tiles: [
-              _SettingsTile(
-                title: 'データ同期',
-                subtitle: 'デバイス間でデータを同期する',
-                isSwitch: true,
-                switchValue: false,
-              ),
-              _SettingsTile(title: 'ブロック中のユーザーを管理'),
-              _SettingsTile(title: 'データをエクスポート', isDownload: true),
-              _SettingsTile(title: 'アカウントとデータを削除', isDelete: true),
+              _SettingsTile(title: l10n.settingsSound),
             ],
           ),
           _SettingsSection(
-            title: 'MinQについて',
+            title: l10n.settingsSectionPrivacy,
             tiles: [
               _SettingsTile(
-                title: '利用規約',
+                title: l10n.settingsDataSync,
+                subtitle: l10n.settingsDataSyncSubtitle,
+                isSwitch: true,
+                switchValue: false,
+              ),
+              _SettingsTile(title: l10n.settingsManageBlockedUsers),
+              _SettingsTile(title: l10n.settingsExportData, isDownload: true),
+              _SettingsTile(
+                title: l10n.settingsDeleteAccount,
+                isDelete: true,
+                onTap: () => context.push('/settings/delete-account'),
+              ),
+            ],
+          ),
+          _SettingsSection(
+            title: l10n.settingsSectionAbout,
+            tiles: [
+              _SettingsTile(
+                title: l10n.settingsTermsOfService,
                 onTap: () => context.push('/policy/terms'),
               ),
               _SettingsTile(
-                title: 'プライバシーポリシー',
+                title: l10n.settingsPrivacyPolicy,
                 onTap: () => context.push('/policy/privacy'),
               ),
-              const _SettingsTile(
-                title: 'アプリのバージョン',
+              _SettingsTile(
+                title: l10n.settingsAppVersion,
                 isStatic: true,
                 staticValue: '1.0.0',
               ),
@@ -96,11 +105,11 @@ class SettingsScreen extends ConsumerWidget {
           ),
           if (kDebugMode)
             _SettingsSection(
-              title: '開発者向けオプション',
+              title: l10n.settingsSectionDeveloper,
               tiles: [
                 _SettingsTile(
-                  title: 'ダミーデータを使用する',
-                  subtitle: 'データベースの代わりにダミーデータを使用します。',
+                  title: l10n.settingsUseDummyData,
+                  subtitle: l10n.settingsUseDummyDataSubtitle,
                   isSwitch: true,
                   switchValue: ref.watch(dummyDataModeProvider),
                   onSwitchChanged: (value) {
@@ -111,8 +120,8 @@ class SettingsScreen extends ConsumerWidget {
                   },
                 ),
                 _SettingsTile(
-                  title: 'ソーシャル共有デモ',
-                  subtitle: 'ソーシャル共有と祝福機能をテストします',
+                  title: l10n.settingsSocialSharingDemo,
+                  subtitle: l10n.settingsSocialSharingDemoSubtitle,
                   onTap: () => context.push('/social-sharing-demo'),
                 ),
               ],
