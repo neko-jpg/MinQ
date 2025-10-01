@@ -24,7 +24,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
   Future<void> _loadOnboardingState() async {
     final completed = await OnboardingEngine.hasCompletedOnboarding();
     final step = await OnboardingEngine.getCurrentStep();
-    
+
     setState(() {
       _hasCompletedOnboarding = completed;
       _currentStep = step;
@@ -35,7 +35,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await _loadOnboardingState();
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('オンボーディング状態をリセットしました'),
@@ -86,136 +86,112 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
           children: [
             // 状態表示
             _buildStatusCard(theme),
-            
+
             const SizedBox(height: 24),
-            
+
             // インタラクティブツアー
-            _buildSectionCard(
-              theme,
-              'インタラクティブツアー',
-              'ステップバイステップのガイドツアー',
-              [
-                ElevatedButton.icon(
-                  onPressed: _startInteractiveTour,
-                  icon: const Icon(Icons.tour),
-                  label: const Text('ツアーを開始'),
-                ),
-              ],
-            ),
-            
+            _buildSectionCard(theme, 'インタラクティブツアー', 'ステップバイステップのガイドツアー', [
+              ElevatedButton.icon(
+                onPressed: _startInteractiveTour,
+                icon: const Icon(Icons.tour),
+                label: const Text('ツアーを開始'),
+              ),
+            ]),
+
             const SizedBox(height: 16),
-            
+
             // コンテキスト依存ガイド
-            _buildSectionCard(
-              theme,
-              'コンテキスト依存ガイド',
-              '画面に応じたガイドを表示',
-              [
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => _showContextualGuide('home'),
-                      child: const Text('ホームへ移動する'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => _showContextualGuide('quest_creation'),
-                      child: const Text('クエストを作成する'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => _showContextualGuide('stats'),
-                      child: const Text('統計を見る'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => _showContextualGuide('pair'),
-                      child: const Text('ペアを探す'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // スマートツールチップ
-            _buildSectionCard(
-              theme,
-              'スマートツールチップ',
-              '一度だけ表示されるツールチップ',
-              [
-                Row(
-                  children: [
-                    SmartTooltip(
-                      message: 'これは長押しで表示されるツールチップです',
-                      tooltipId: 'demo_longpress_tooltip',
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('長押しで表示する'),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    SmartTooltip(
-                      message: 'これはタップで表示されるツールチップです',
-                      tooltipId: 'demo_tap_tooltip',
-                      trigger: TooltipTrigger.tap,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('タップで表示する'),
-                      ),
-                    ),
-                  ],
-                const SizedBox(height: 16),
-                AutoSmartTooltip(
-                  message: '自動表示されるツールチップ',
-                  tooltipId: 'demo_auto_tooltip',
-                  delay: const Duration(seconds: 1),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.secondaryContainer,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text('自動ツールチップ付きコンテナ'),
+            _buildSectionCard(theme, 'コンテキスト依存ガイド', '画面に応じたガイドを表示', [
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _showContextualGuide('home'),
+                    child: const Text('ホームへ移動する'),
                   ),
-                ),
-              ],
-            ),
-            
-            _buildSectionCard(
-              theme,
-              'プログレッシブヒント',
-              'ユーザーの進捗に応じたヒント',
-              [
-                ElevatedButton.icon(
-                  onPressed: _showProgressiveHint,
-                  icon: const Icon(Icons.lightbulb_outline),
-                  label: const Text('ヒントを表示する'),
-                ),
-              ],
-            ),
-            
+                  ElevatedButton(
+                    onPressed: () => _showContextualGuide('quest_creation'),
+                    child: const Text('クエストを作成する'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _showContextualGuide('stats'),
+                    child: const Text('統計を見る'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _showContextualGuide('pair'),
+                    child: const Text('ペアを探す'),
+                  ),
+                ],
+              ),
+            ]),
+
             const SizedBox(height: 16),
-            
+
+            // スマートツールチップ
+            _buildSectionCard(theme, 'スマートツールチップ', '一度だけ表示されるツールチップ', [
+              Row(
+                children: [
+                  SmartTooltip(
+                    message: 'これは長押しで表示されるツールチップです',
+                    tooltipId: 'demo_longpress_tooltip',
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('長押しで表示する'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  SmartTooltip(
+                    message: 'これはタップで表示されるツールチップです',
+                    tooltipId: 'demo_tap_tooltip',
+                    trigger: TooltipTrigger.tap,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('タップで表示する'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              AutoSmartTooltip(
+                message: '自動表示されるツールチップ',
+                tooltipId: 'demo_auto_tooltip',
+                delay: const Duration(seconds: 1),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text('自動ツールチップ付きコンテナ'),
+                ),
+              ),
+            ]),
+
+            _buildSectionCard(theme, 'プログレッシブヒント', 'ユーザーの進捗に応じたヒント', [
+              ElevatedButton.icon(
+                onPressed: _showProgressiveHint,
+                icon: const Icon(Icons.lightbulb_outline),
+                label: const Text('ヒントを表示する'),
+              ),
+            ]),
+
+            const SizedBox(height: 16),
+
             // オンボーディングオーバーレイ
-            _buildSectionCard(
-              theme,
-              'オンボーディングオーバーレイ',
-              'カスタムオーバーレイガイド',
-              [
-                ElevatedButton.icon(
-                  onPressed: () => _showCustomOverlay(context),
-                  icon: const Icon(Icons.info_outline),
-                  label: const Text('オーバーレイを表示する'),
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton.icon(
-                  onPressed: () => _showStepByStepGuide(context),
-                  icon: const Icon(Icons.assistant),
-                  label: const Text('ガイドを開始する'),
-                ),
-              ],
-            ),
+            _buildSectionCard(theme, 'オンボーディングオーバーレイ', 'カスタムオーバーレイガイド', [
+              ElevatedButton.icon(
+                onPressed: () => _showCustomOverlay(context),
+                icon: const Icon(Icons.info_outline),
+                label: const Text('オーバーレイを表示する'),
+              ),
+              const SizedBox(width: 16),
+              ElevatedButton.icon(
+                onPressed: () => _showStepByStepGuide(context),
+                icon: const Icon(Icons.assistant),
+                label: const Text('ガイドを開始する'),
+              ),
+            ]),
           ],
         ),
       ),
@@ -239,7 +215,9 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
             Row(
               children: [
                 Icon(
-                  _hasCompletedOnboarding ? Icons.check_circle : Icons.radio_button_unchecked,
+                  _hasCompletedOnboarding
+                      ? Icons.check_circle
+                      : Icons.radio_button_unchecked,
                   color: _hasCompletedOnboarding ? Colors.green : Colors.grey,
                 ),
                 const SizedBox(width: 8),
@@ -299,31 +277,33 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context) => OnboardingOverlay(
-        title: 'カスタムオーバーレイ',
-        description: 'これはカスタムオーバーレイの例です。'
-            'ユーザーに重要な情報を伝えるために使用できます。',
-        onDismiss: () => Navigator.of(context).pop(),
-        customContent: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.star,
-                color: Theme.of(context).colorScheme.primary,
+      builder:
+          (context) => OnboardingOverlay(
+            title: 'カスタムオーバーレイ',
+            description:
+                'これはカスタムオーバーレイの例です。'
+                'ユーザーに重要な情報を伝えるために使用できます。',
+            onDismiss: () => Navigator.of(context).pop(),
+            customContent: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Theme.of(
+                  context,
+                ).colorScheme.primaryContainer.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(8),
               ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Text('カスタムコンテンツを追加できます'),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.star,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(child: Text('カスタムコンテンツを追加できます')),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -346,17 +326,18 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => StepByStepOverlay(
-        steps: steps,
-        onComplete: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('ステップバイステップガイドが完了しました！'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        },
-      ),
+      builder:
+          (context) => StepByStepOverlay(
+            steps: steps,
+            onComplete: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('ステップバイステップガイドが完了しました！'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+          ),
     );
   }
 }

@@ -9,16 +9,25 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-@override
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
 
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
-        title: Text('設定', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        title: Text(
+          '設定',
+          style: tokens.titleMedium.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
-        leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
         backgroundColor: tokens.background.withOpacity(0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
@@ -33,24 +42,35 @@ class SettingsScreen extends ConsumerWidget {
                 title: 'プッシュ通知',
                 subtitle: 'リマインダーとパートナーの更新',
                 isSwitch: true,
-                switchValue: true, // This should be driven by a provider in a real app
+                switchValue:
+                    true, // This should be driven by a provider in a real app
                 onSwitchChanged: (value) async {
                   final notifier = ref.read(notificationServiceProvider);
                   if (value) {
-                    await notifier.scheduleRecurringReminders(NotificationService.defaultReminderTimes);
+                    await notifier.scheduleRecurringReminders(
+                      NotificationService.defaultReminderTimes,
+                    );
                   } else {
                     await notifier.cancelAll();
                   }
                 },
               ),
-              _SettingsTile(title: '通知時間', onTap: () => context.push('/settings/notifications')),
+              _SettingsTile(
+                title: '通知時間',
+                onTap: () => context.push('/settings/notifications'),
+              ),
               const _SettingsTile(title: 'サウンド'),
             ],
           ),
           const _SettingsSection(
             title: 'プライバシーとデータ',
             tiles: [
-              _SettingsTile(title: 'データ同期', subtitle: 'デバイス間でデータを同期する', isSwitch: true, switchValue: false),
+              _SettingsTile(
+                title: 'データ同期',
+                subtitle: 'デバイス間でデータを同期する',
+                isSwitch: true,
+                switchValue: false,
+              ),
               _SettingsTile(title: 'ブロック中のユーザーを管理'),
               _SettingsTile(title: 'データをエクスポート', isDownload: true),
               _SettingsTile(title: 'アカウントとデータを削除', isDelete: true),
@@ -59,9 +79,19 @@ class SettingsScreen extends ConsumerWidget {
           _SettingsSection(
             title: 'MinQについて',
             tiles: [
-              _SettingsTile(title: '利用規約', onTap: () => context.push('/policy/terms')),
-              _SettingsTile(title: 'プライバシーポリシー', onTap: () => context.push('/policy/privacy')),
-              const _SettingsTile(title: 'アプリのバージョン', isStatic: true, staticValue: '1.0.0'),
+              _SettingsTile(
+                title: '利用規約',
+                onTap: () => context.push('/policy/terms'),
+              ),
+              _SettingsTile(
+                title: 'プライバシーポリシー',
+                onTap: () => context.push('/policy/privacy'),
+              ),
+              const _SettingsTile(
+                title: 'アプリのバージョン',
+                isStatic: true,
+                staticValue: '1.0.0',
+              ),
             ],
           ),
           if (kDebugMode)
@@ -75,7 +105,9 @@ class SettingsScreen extends ConsumerWidget {
                   switchValue: ref.watch(dummyDataModeProvider),
                   onSwitchChanged: (value) {
                     ref.read(dummyDataModeProvider.notifier).state = value;
-                    ref.read(localPreferencesServiceProvider).setDummyDataMode(value);
+                    ref
+                        .read(localPreferencesServiceProvider)
+                        .setDummyDataMode(value);
                   },
                 ),
                 _SettingsTile(
@@ -106,8 +138,17 @@ class _SettingsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: tokens.spacing(2), bottom: tokens.spacing(4)),
-            child: Text(title, style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+            padding: EdgeInsets.only(
+              left: tokens.spacing(2),
+              bottom: tokens.spacing(4),
+            ),
+            child: Text(
+              title,
+              style: tokens.titleLarge.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           ...tiles,
         ],
@@ -157,10 +198,12 @@ class _SettingsTileState extends State<_SettingsTile> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final titleColor = widget.isDelete ? Colors.red.shade500 : tokens.textPrimary;
+    final titleColor =
+        widget.isDelete ? Colors.red.shade500 : tokens.textPrimary;
 
-'''    return Card(
-      elevation: 0,'''      shadowColor: tokens.background.withOpacity(0.1),
+    return Card(
+      elevation: 0,
+      shadowColor: tokens.background.withOpacity(0.1),
       color: tokens.surface,
       margin: EdgeInsets.symmetric(vertical: tokens.spacing(2)),
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
@@ -175,11 +218,22 @@ class _SettingsTileState extends State<_SettingsTile> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.title, style: tokens.bodyLarge.copyWith(color: titleColor, fontWeight: FontWeight.w600)),
+                    Text(
+                      widget.title,
+                      style: tokens.bodyLarge.copyWith(
+                        color: titleColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     if (widget.subtitle != null)
                       Padding(
                         padding: EdgeInsets.only(top: tokens.spacing(1)),
-                        child: Text(widget.subtitle!, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
+                        child: Text(
+                          widget.subtitle!,
+                          style: tokens.bodySmall.copyWith(
+                            color: tokens.textMuted,
+                          ),
+                        ),
                       ),
                   ],
                 ),
@@ -191,19 +245,29 @@ class _SettingsTileState extends State<_SettingsTile> {
                     setState(() => _currentSwitchValue = value);
                     widget.onSwitchChanged?.call(value);
                   },
-                  activeColor: Colors.white,
-                  activeTrackColor: tokens.brandPrimary,
-                  inactiveThumbColor: Colors.white,
-                  inactiveTrackColor: tokens.border,
+                  thumbColor: const WidgetStatePropertyAll<Color>(Colors.white),
+                  trackColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return tokens.brandPrimary;
+                    }
+                    return tokens.border;
+                  }),
                 )
               else if (widget.isDelete)
                 Icon(Icons.delete, color: titleColor)
               else if (widget.isDownload)
                 Icon(Icons.download, color: tokens.textMuted)
               else if (widget.isStatic)
-                Text(widget.staticValue ?? '', style: tokens.bodyMedium.copyWith(color: tokens.textMuted))
+                Text(
+                  widget.staticValue ?? '',
+                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                )
               else
-                Icon(Icons.arrow_forward_ios, color: tokens.textMuted, size: tokens.spacing(4)),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: tokens.textMuted,
+                  size: tokens.spacing(4),
+                ),
             ],
           ),
         ),

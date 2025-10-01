@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 class ShellScreen extends ConsumerStatefulWidget {
   const ShellScreen({super.key, required this.child});
@@ -14,7 +15,8 @@ class ShellScreen extends ConsumerStatefulWidget {
   ConsumerState<ShellScreen> createState() => _ShellScreenState();
 }
 
-class _ShellScreenState extends ConsumerState<ShellScreen> with WidgetsBindingObserver {
+class _ShellScreenState extends ConsumerState<ShellScreen>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -43,9 +45,13 @@ class _ShellScreenState extends ConsumerState<ShellScreen> with WidgetsBindingOb
     final uid = ref.read(uidProvider);
     if (uid == null) return;
 
-    final completed = await ref.read(questLogRepositoryProvider).hasCompletedDailyGoal(uid);
+    final completed = await ref
+        .read(questLogRepositoryProvider)
+        .hasCompletedDailyGoal(uid);
     if (!completed) {
-      await ref.read(notificationServiceProvider).scheduleAuxiliaryReminder('20:30');
+      await ref
+          .read(notificationServiceProvider)
+          .scheduleAuxiliaryReminder('20:30');
     }
   }
 
