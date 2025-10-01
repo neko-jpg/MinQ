@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
+import 'package:flutter/foundation.dart';
 
 class MinqLogger {
   MinqLogger._();
 
   static const Set<String> _blockedKeys = <String>{
+    'uid', // Added as per checklist
     'email',
     'mail',
     'token',
@@ -23,7 +25,15 @@ class MinqLogger {
     'address',
     'lat',
     'lng',
+    'pairId', // Added for safety
+    'buddyId', // Added for safety
   };
+
+  static void debug(String event, {Map<String, dynamic>? metadata}) {
+    if (kDebugMode) {
+      _log(level: 'DEBUG', event: event, metadata: metadata, levelValue: 700);
+    }
+  }
 
   static void info(String event, {Map<String, dynamic>? metadata}) {
     _log(level: 'INFO', event: event, metadata: metadata);

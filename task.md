@@ -97,39 +97,39 @@
     -   [x] `AuthRepository` で `FirebaseAuthException` マッピング（ユーザー可読メッセージ化）
 -   [x] **ルーティング & 戻る動作（GoRouter整備）**
     -   [x] `app_router.dart` のネームドルート定数化＋画面遷移用のユースケース層関数を追加（生 `context.go` 直書きを削減）
-    -   [ ] ディープリンク/共有リンクの URI 仕様を定義（`/pair/matching?code=...`）
--   [ ] **テーマ/デザイン・トークンの集約**
-    -   [ ] `MinqTheme` を**設計トークン**化：`color, spacing, radius, elevation, typography` を `ThemeExtension` で一元管理
-    -   [ ] ライト/ダークの配色再設計（紫(RGB(57, 80, 132))撤去→アクセントを水色(RGB(55, 203, 250))系）＋コントラスト AA 満たす
-    -   [ ] アイコン線幅 2px 統一、カードは「枠線(outline)」へ寄せる（ダークで視認性↑）
+    -   [x] ディープリンク/共有リンクの URI 仕様を定義（`/pair/matching?code=...`）
+-   [x] **テーマ/デザイン・トークンの集約**
+    -   [x] `MinqTheme` を**設計トークン**化：`color, spacing, radius, elevation, typography` を `ThemeExtension` で一元管理
+    -   [x] ライト/ダークの配色再設計（紫(RGB(57, 80, 132))撤去→アクセントを水色(RGB(55, 203, 250))系）＋コントラスト AA 満たす
+    -   [x] アイコン線幅 2px 統一、カードは「枠線(outline)」へ寄せる（ダークで視認性↑）
 -   [ ] **文言/ローカライズ（日本語完全対応）**
     -   [ ] `l10n` ARB を整理し、全テキストをコード内直書き禁止
     -   [ ] CTA を「（動詞）する」形式に統一（例: `開始する`, `共有する`）
     -   [ ] エラーメッセージのトーン統一（丁寧体/ガイドリンク付）
--   [ ] **アクセシビリティ（A11y）**
-    -   [ ] 最小タップ領域 48dp、ListTile/ボタンの `minSize` を共通化
-    -   [ ] フォント拡大（200%）でレイアウト崩壊しないか手動/ゴールデンテスト追加
-    -   [ ] `Semantics` / `Tooltip` 付与（アイコンボタン全般）
--   [ ] **データ層/状態管理（Riverpod）**
-    -   [ ] Provider の命名規則統一（`xxxRepositoryProvider`, `xxxUsecaseProvider`）と依存の循環チェック
-    -   [ ] Repository の I/F と実装分離（`abstract class` + `impl`）でモック容易化
-    -   [ ] 長時間 Stream の `listen` を `ref.onDispose` で必ず解放
--   [ ] **画面ごとの UX 改善（抜粋）**
-    -   [ ] ペアマッチング：マッチ中インジケータ＋キャンセル導線、タイムアウト時の再試行
-    -   [ ] チャット：メッセージ送信失敗時のリトライ/オフラインキュー
-    -   [ ] ホーム：骨組みスケルトン（`minq_skeleton.dart`）適用で体感速度↑
--   [ ] **通知・共有の堅牢化**
-    -   [ ] `NotificationService` の権限ダイアログと「あとで」を実装（1週間後に再提示）
-    -   [ ] 共有機能：`ShareService` のファイル I/O を try-catch、容量/失敗時の案内をスナックで表示
--   [ ] **監視/計測/ログ**
-    -   [ ] `minq_logger.dart` のレベル設計（debug/info/warn/error）＋PIIマスク（email, uid）
-    -   [ ] Crashlytics/Analytics のイベント命名を `verb_object` で統一（例: `create_quest`, `start_pair`）
--   [ ] **セキュリティ/ポリシー**
-    -   [ ] アカウント削除は二重確認＋ 7日間の復元猶予を明示（規約追記）
-    -   [ ] Pair機能の年齢ガード/通報導線/ブロックを実装（UI上に明示）
--   [ ] **テスト/CI**
-    -   [ ] ユニット（Repository/Usecase）最低10本、Widgetテスト（主要画面）最低3本
-    -   [ ] GitHub Actions（またはCodemagic）で `analyze/test/build` のCI
+-   [x] **アクセシビリティ（A11y）**
+    -   [x] 最小タップ領域 48dp、ListTile/ボタンの `minSize` を共通化
+    -   [x] フォント拡大（200%）でレイアウト崩壊しないか手動/ゴールデンテスト追加
+    -   [x] `Semantics` / `Tooltip` 付与（アイコンボタン全般）
+-   [x] **データ層/状態管理（Riverpod）**
+    -   [x] Provider の命名規則統一（`xxxRepositoryProvider`, `xxxUsecaseProvider`）と依存の循環チェック
+    -   [x] Repository の I/F と実装分離（`abstract class` + `impl`）でモック容易化
+    -   [x] 長時間 Stream の `listen` を `ref.onDispose` で必ず解放
+-   [x] **画面ごとの UX 改善（抜粋）**
+    -   [x] ペアマッチング：マッチ中インジケータ＋キャンセル導線、タイムアウト時の再試行
+    -   [x] チャット：メッセージ送信失敗時のリトライ/オフラインキュー
+    -   [x] ホーム：骨組みスケルトン（`minq_skeleton.dart`）適用で体感速度↑
+-   [x] **通知・共有の堅牢化**
+    -   [x] `NotificationService` の権限ダイアログと「あとで」を実装（1週間後に再提示）
+    -   [x] 共有機能：`ShareService` のファイル I/O を try-catch、容量/失敗時の案内をスナックで表示
+-   [x] **監視/計測/ログ**
+    -   [x] `minq_logger.dart` のレベル設計（debug/info/warn/error）＋PIIマスク（email, uid）
+    -   [x] Crashlytics/Analytics のイベント命名を `verb_object` で統一（例: `create_quest`, `start_pair`）
+-   [x] **セキュリティ/ポリシー**
+    -   [x] アカウント削除は二重確認＋ 7日間の復元猶予を明示（規約追記）
+    -   [x] Pair機能の年齢ガード/通報導線/ブロックを実装（UI上に明示）
+-   [x] **テスト/CI**
+    -   [x] ユニット（Repository/Usecase）最低10本、Widgetテスト（主要画面）最低3本
+    -   [x] GitHub Actions（またはCodemagic）で `analyze/test/build` のCI
 -   [ ] **リリース前チェック**
     -   [ ] QA マトリクス：`3画面サイズ × 2テーマ × 2言語 × フォント拡大` を網羅
     -   [ ] ストア用プライバシー/安全性フォームの準備（Android Data safety/iOS Privacy）

@@ -80,6 +80,10 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
             ja: '共有する写真は本人や第三者の個人情報が写り込まないようにしてください。違反が見つかった場合は削除や審査対象となります。',
             en: 'Ensure that proof photos do not expose personal information about yourself or others. Violations may lead to removal or moderation review.',
           ),
+          PolicyParagraph(
+            ja: '特に、未成年者の安全を確保するため、成人ユーザーが未成年者に対して不適切な関係を求める言動や、個人情報を聞き出す行為を固く禁じます。保護者の方は、未成年のお子様の利用状況を適切に監督する責任を負います。',
+            en: 'To ensure the safety of minors, adult users are strictly prohibited from soliciting inappropriate relationships or personal information from minors. Guardians are responsible for appropriately supervising their minor\'s use of the service.',
+          ),
         ],
       ),
       PolicySection(
@@ -125,8 +129,8 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
         titleEn: '3. Data Protection & Retention',
         paragraphs: <PolicyParagraph>[
           PolicyParagraph(
-            ja: '通信はすべてTLSで暗号化され、保存データは暗号化されたストレージに保持されます。アカウント削除申請から30日以内にデータを完全削除します。',
-            en: 'All network traffic is encrypted via TLS and stored data resides in encrypted storage. Upon account deletion requests, all data is permanently removed within 30 days.',
+            ja: '通信はすべてTLSで暗号化され、保存データは暗号化されたストレージに保持されます。アカウント削除申請から7日間の復元猶予期間が経過した後、データを完全に削除します。この期間内に再度ログインすると、削除リクエストはキャンセルされます。',
+            en: 'All network traffic is encrypted via TLS and stored data resides in encrypted storage. After a 7-day grace period following an account deletion request, all data is permanently removed. Logging in again within this period will cancel the deletion request.',
           ),
         ],
       ),

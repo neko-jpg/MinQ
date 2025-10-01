@@ -59,6 +59,12 @@ ThemeData buildTheme(MinqTheme tokens) {
         minimumSize: WidgetStatePropertyAll<Size>(Size.square(48)),
       ),
     ),
+    iconTheme: const IconThemeData(
+      weight: 400, // Use "regular" weight, which is visually close to a 2dp stroke.
+    ),
+    listTileTheme: const ListTileThemeData(
+      minVerticalPadding: 16, // Ensures a minimum height of ~48dp for a single-line tile
+    ),
     extensions: <ThemeExtension<dynamic>>[tokens],
   );
 }

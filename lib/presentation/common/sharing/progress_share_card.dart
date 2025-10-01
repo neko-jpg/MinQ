@@ -1,11 +1,20 @@
+import 'dart:io';
 import 'dart:math';
+import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/data/providers.dart';
 import 'package:minq/domain/social/achievement_share.dart';
 import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 import 'package:minq/presentation/common/celebration/celebration_system.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// 進捗共有カードウィジェット
-class ProgressShareCard extends StatefulWidget {
+class ProgressShareCard extends ConsumerStatefulWidget {
   final int currentStreak;
   final int bestStreak;
   final int totalQuests;
@@ -24,17 +33,18 @@ class ProgressShareCard extends StatefulWidget {
   });
 
   @override
-  State<ProgressShareCard> createState() => _ProgressShareCardState();
+  ConsumerState<ProgressShareCard> createState() => _ProgressShareCardState();
 }
 
-class _ProgressShareCardState extends State<ProgressShareCard>
+class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
     with TickerProviderStateMixin {
   late AnimationController _pulseController;
   late AnimationController _shareController;
   late Animation<double> _pulseAnimation;
   late Animation<double> _shareScaleAnimation;
-  
+
   final GlobalKey _cardKey = GlobalKey();
+  bool _isSharing = false;
 
   @override
   void initState() {
@@ -69,7 +79,6 @@ class _ProgressShareCardState extends State<ProgressShareCard>
       curve: Curves.easeInOut,
     ));
 
-    // 連続記録が高い場合はパルスアニメーションを開始
     if (widget.currentStreak >= 7) {
       _pulseController.repeat(reverse: true);
     }
@@ -287,11 +296,21 @@ class _ProgressShareCardState extends State<ProgressShareCard>
           child: SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: _handleShare,
-              icon: const Icon(Icons.share, color: Colors.white),
-              label: const Text(
-                '進捗をシェア',
-                style: TextStyle(
+              onPressed: _isSharing ? null : _handleShare,
+              icon: _isSharing
+                  ? Container(
+                      width: 24,
+                      height: 24,
+                      padding: const EdgeInsets.all(2.0),
+                      child: const CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3,
+                      ),
+                    )
+                  : const Icon(Icons.share, color: Colors.white),
+              label: Text(
+                _isSharing ? '準備中...' : '進捗をシェア',
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -312,46 +331,53 @@ class _ProgressShareCardState extends State<ProgressShareCard>
     );
   }
 
-  void _handleShare() async {
+  Future<void> _handleShare() async {
+    if (_isSharing) return;
+
+    setState(() => _isSharing = true);
     HapticManager.selection();
-    
-    _shareController.forward().then((_) {
-      _shareController.reverse();
-    });
+    _shareController.forward().then((_) => _shareController.reverse());
 
-    // 祝福演出を表示（高い連続記録の場合）
-    if (widget.currentStreak >= 7) {
-      CelebrationSystem.showCelebration(
-        context,
-        config: CelebrationSystem.getStreakCelebration(widget.currentStreak),
+    try {
+      final boundary = _cardKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final pngBytes = byteData!.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final file = await File('${tempDir.path}/minq_progress.png').create();
+      await file.writeAsBytes(pngBytes);
+
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: 'MinQで${widget.currentStreak}日連続で目標達成中！ #MinQ #習慣化アプリ',
       );
-    }
 
-    // 進捗データを作成
-    final progressShare = ProgressShare(
-      currentStreak: widget.currentStreak,
-      bestStreak: widget.bestStreak,
-      totalQuests: widget.totalQuests,
-      completedToday: widget.completedToday,
-      shareDate: DateTime.now(),
-      motivationalMessage: _getMotivationalMessage(),
-    );
+      // Log analytics event on successful share
+      ref.read(analyticsServiceProvider).logEvent(
+        'share_progress',
+        parameters: {
+          'current_streak': widget.currentStreak,
+          'total_quests': widget.totalQuests,
+        },
+      );
 
-    // シェア実行のシミュレーション
-    await Future.delayed(const Duration(milliseconds: 500));
-    
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('進捗をシェアしました！'),
-          backgroundColor: _getPrimaryColor(widget.currentStreak),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+    } catch (e) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.shareFailed),
+            backgroundColor: Colors.red,
           ),
-        ),
-      );
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSharing = false);
+      }
     }
+
     widget.onShare?.call();
   }
 
@@ -419,7 +445,6 @@ class _ProgressShareCardState extends State<ProgressShareCard>
   }
 }
 
-/// 進捗共有カードのプレビュー
 class ProgressShareCardPreview extends StatelessWidget {
   final ProgressShare progressShare;
 

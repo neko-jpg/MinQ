@@ -14,5 +14,85 @@
   "undo": "Undo",
   "dismissHelpBanner": "Dismiss tips",
   "openProfile": "Open profile",
-  "snoozeTemporarilyDisabled": "Snooze temporarily unavailable"
+  "snoozeTemporarilyDisabled": "Snooze is temporarily disabled",
+
+  "settingsTitle": "Settings",
+  "settingsSectionGeneral": "General",
+  "settingsPushNotifications": "Push Notifications",
+  "settingsPushNotificationsSubtitle": "Reminders and partner updates",
+  "settingsNotificationTime": "Notification Time",
+  "settingsSound": "Sound",
+
+  "settingsSectionPrivacy": "Privacy and Data",
+  "settingsDataSync": "Data Sync",
+  "settingsDataSyncSubtitle": "Sync data across devices",
+  "settingsManageBlockedUsers": "Manage Blocked Users",
+  "settingsExportData": "Export Data",
+  "settingsDeleteAccount": "Delete Account and Data",
+
+  "settingsSectionAbout": "About MinQ",
+  "settingsTermsOfService": "Terms of Service",
+  "settingsPrivacyPolicy": "Privacy Policy",
+  "settingsAppVersion": "App Version",
+
+  "settingsSectionDeveloper": "Developer Options",
+  "settingsUseDummyData": "Use Dummy Data",
+  "settingsUseDummyDataSubtitle": "Use dummy data instead of the database.",
+  "settingsSocialSharingDemo": "Social Sharing Demo",
+  "settingsSocialSharingDemoSubtitle": "Test social sharing and celebration features",
+
+  "questsTitle": "Mini-Quests",
+  "questsSearchHint": "Search for templates...",
+  "questsFabLabel": "Create Custom",
+  "questsCategoryFeatured": "Featured",
+  "questsCategoryMyQuests": "My Quests",
+  "questsCategoryAll": "All",
+  "questsCategoryLearning": "Learning",
+  "questsCategoryExercise": "Exercise",
+  "questsCategoryTidying": "Tidying",
+
+  "authErrorOperationNotAllowed": "Anonymous sign-in is not enabled for this project.",
+  "authErrorWeakPassword": "The password provided is too weak.",
+  "authErrorEmailAlreadyInUse": "An account already exists for that email.",
+  "authErrorInvalidEmail": "The email address is not valid.",
+  "authErrorUserDisabled": "This user has been disabled.",
+  "authErrorUserNotFound": "No user found for this email.",
+  "authErrorWrongPassword": "Wrong password provided for this user.",
+  "authErrorAccountExistsWithDifferentCredential": "An account already exists with the same email address but different sign-in credentials.",
+  "authErrorInvalidCredential": "The credential received is malformed or has expired.",
+  "authErrorUnknown": "An unknown error occurred.",
+
+  "back": "Back",
+
+  "pairMatchingTimeoutTitle": "Matching Timed Out",
+  "pairMatchingTimeoutMessage": "We couldn't find a buddy for you in time. Please try again or check back later.",
+  "retry": "Retry",
+  "cancel": "Cancel",
+
+  "messageSentFailed": "Failed to send message",
+
+  "chatInputHint": "Type a message...",
+
+  "notificationPermissionDialogTitle": "Enable Notifications?",
+  "notificationPermissionDialogMessage": "Get reminders for your quests and updates from your buddy. You can change this anytime in settings.",
+  "enable": "Enable",
+  "later": "Later",
+
+  "shareFailed": "Failed to share progress. Please try again.",
+
+  "accountDeletionTitle": "Account Deletion",
+  "accountDeletionWarning": "This is a permanent action. After a 7-day grace period, all your data, including quests, progress, and pairs, will be permanently erased. You can cancel this process by logging in again within 7 days.",
+  "accountDeletionConfirmationCheckbox": "I understand the consequences and wish to permanently delete my account.",
+  "deleteMyAccountButton": "Delete My Account",
+
+  "blockUser": "Block User",
+  "reportUser": "Report User",
+  "userBlocked": "User has been blocked.",
+  "reportSubmitted": "Report has been submitted.",
+  "block": "Block",
+  "report": "Report",
+  "areYouSure": "Are you sure?",
+  "blockConfirmation": "Blocking this user will prevent them from contacting you. This can be undone in settings.",
+  "reportConfirmation": "Please provide a brief reason for the report. This helps us take appropriate action.",
+  "reason": "Reason"
 }
