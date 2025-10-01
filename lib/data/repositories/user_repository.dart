@@ -1,12 +1,12 @@
 import 'package:isar/isar.dart';
-import 'package:minq/data/repositories/auth_repository.dart';
+import 'package:minq/data/repositories/firebase_auth_repository.dart';
 import 'package:minq/domain/user/user.dart';
 
 class UserRepository {
   UserRepository(this._isar, this._authRepository);
 
   final Isar _isar;
-  final AuthRepository _authRepository;
+  final IAuthRepository _authRepository;
 
   Future<User?> getCurrentUser() async {
     final firebaseUser = _authRepository.getCurrentUser();

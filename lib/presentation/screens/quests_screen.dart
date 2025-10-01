@@ -7,6 +7,7 @@ import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QuestsScreen extends ConsumerStatefulWidget {
   const QuestsScreen({super.key});
@@ -17,7 +18,7 @@ class QuestsScreen extends ConsumerStatefulWidget {
 
 class _QuestsScreenState extends ConsumerState<QuestsScreen> {
   bool _isLoading = true;
-  String _selectedCategory = 'Featured';
+  String _selectedCategory = 'Featured'; // Use English keys for state
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     final categories = ['Featured', 'My Quests', 'All', 'Learning', 'Exercise', 'Tidying'];
     final templateQuests = ref.watch(templateQuestsProvider);
     final userQuests = ref.watch(userQuestsProvider);
@@ -39,9 +41,12 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
-        title: Text('Mini-Quests', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        title: Text(l10n.questsTitle, style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
+        leading: Tooltip(
+          message: l10n.back,
+          child: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
+        ),
         backgroundColor: tokens.background.withOpacity(0.8),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
@@ -50,14 +55,14 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
           ? _QuestsSkeleton(tokens: tokens)
           : CustomScrollView(
               slivers: <Widget>[
-                SliverToBoxAdapter(child: _buildSearchBar(tokens)),
+                SliverToBoxAdapter(child: _buildSearchBar(tokens, l10n)),
                 SliverAppBar(
                   pinned: true,
                   toolbarHeight: 60,
                   backgroundColor: tokens.background.withOpacity(0.8),
                   surfaceTintColor: Colors.transparent,
                   elevation: 0,
-                  flexibleSpace: _buildCategoryTabs(tokens, categories),
+                  flexibleSpace: _buildCategoryTabs(tokens, categories, l10n),
                 ),
                 SliverPadding(
                   padding: EdgeInsets.all(tokens.spacing(4)),
@@ -65,16 +70,16 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                 ),
               ],
             ),
-      floatingActionButton: (templateQuests.isLoading || userQuests.isLoading) ? null : _buildFab(tokens),
+      floatingActionButton: (templateQuests.isLoading || userQuests.isLoading) ? null : _buildFab(tokens, l10n),
     );
   }
 
-  Widget _buildSearchBar(MinqTheme tokens) {
+  Widget _buildSearchBar(MinqTheme tokens, AppLocalizations l10n) {
     return Padding(
       padding: EdgeInsets.all(tokens.spacing(4)),
       child: TextField(
         decoration: InputDecoration(
-          hintText: 'Search for templates...',
+          hintText: l10n.questsSearchHint,
           prefixIcon: Icon(Icons.search, color: tokens.textMuted),
           filled: true,
           fillColor: tokens.surface,
@@ -91,7 +96,19 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
     );
   }
 
-  Widget _buildCategoryTabs(MinqTheme tokens, List<String> categories) {
+  Widget _buildCategoryTabs(MinqTheme tokens, List<String> categories, AppLocalizations l10n) {
+    String getLocalizedCategory(String key) {
+      switch (key) {
+        case 'Featured': return l10n.questsCategoryFeatured;
+        case 'My Quests': return l10n.questsCategoryMyQuests;
+        case 'All': return l10n.questsCategoryAll;
+        case 'Learning': return l10n.questsCategoryLearning;
+        case 'Exercise': return l10n.questsCategoryExercise;
+        case 'Tidying': return l10n.questsCategoryTidying;
+        default: return key;
+      }
+    }
+
     return Container(
       height: 60,
       decoration: BoxDecoration(
@@ -102,10 +119,10 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
         padding: EdgeInsets.symmetric(horizontal: tokens.spacing(4)),
         itemCount: categories.length,
         itemBuilder: (context, index) {
-          final category = categories[index];
-          final isSelected = category == _selectedCategory;
+          final categoryKey = categories[index];
+          final isSelected = categoryKey == _selectedCategory;
           return GestureDetector(
-            onTap: () => setState(() => _selectedCategory = category),
+            onTap: () => setState(() => _selectedCategory = categoryKey),
             child: Container(
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: tokens.spacing(3)),
@@ -113,7 +130,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                 border: Border(bottom: BorderSide(color: isSelected ? tokens.brandPrimary : Colors.transparent, width: 2.0)),
               ),
               child: Text(
-                category,
+                getLocalizedCategory(categoryKey),
                 style: isSelected
                     ? tokens.bodyMedium.copyWith(color: tokens.brandPrimary, fontWeight: FontWeight.bold)
                     : tokens.bodyMedium.copyWith(color: tokens.textMuted),
@@ -162,10 +179,10 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
     );
   }
 
-  Widget _buildFab(MinqTheme tokens) {
+  Widget _buildFab(MinqTheme tokens, AppLocalizations l10n) {
     return FloatingActionButton.extended(
       onPressed: () => context.push('/quests/create'),
-      label: Text('Create Custom', style: tokens.bodyLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+      label: Text(l10n.questsFabLabel, style: tokens.bodyLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
       icon: const Icon(Icons.add, color: Colors.white),
       backgroundColor: tokens.brandPrimary,
       elevation: 4,

@@ -24,6 +24,7 @@ import 'package:minq/presentation/screens/pair/pair_matching_screen.dart';
 import 'package:minq/presentation/screens/pair/buddy_list_screen.dart';
 import 'package:minq/presentation/screens/pair/chat_screen.dart';
 import 'package:minq/presentation/common/sharing/social_sharing_demo.dart';
+import 'package:minq/presentation/screens/account_deletion_screen.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -62,6 +63,7 @@ class AppRoutes {
   static const notificationSettings = '/settings/notifications';
   static const pairMatching = '/pair/matching';
   static const pairChat = '/pair/chat/:buddyId';
+  static const accountDeletion = '/settings/delete-account';
   static const home = '/';
   static const stats = '/stats';
   static const pair = '/pair';
@@ -88,6 +90,15 @@ final routerProvider = Provider<GoRouter>((ref) {
               state: state,
               child: const OnboardingScreen(),
             ),
+      ),
+      GoRoute(
+        path: AppRoutes.accountDeletion,
+        pageBuilder: (context, state) => buildPageWithTransition<void>(
+          context: context,
+          state: state,
+          child: const AccountDeletionScreen(),
+          transitionType: SharedAxisTransitionType.vertical,
+        ),
       ),
       GoRoute(
         path: AppRoutes.login,
@@ -189,10 +200,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.pairMatching,
         pageBuilder: (context, state) {
+          final code = state.uri.queryParameters['code'];
           return buildPageWithTransition<void>(
             context: context,
             state: state,
-            child: const PairMatchingScreen(),
+            child: PairMatchingScreen(code: code),
             transitionType: SharedAxisTransitionType.vertical,
           );
         },
@@ -269,7 +281,11 @@ class NavigationUseCase {
   void goToSupport() => _router.go(AppRoutes.support);
   void goToCreateQuest() => _router.go(AppRoutes.createQuest);
   void goToNotificationSettings() => _router.go(AppRoutes.notificationSettings);
-  void goToPairMatching() => _router.go(AppRoutes.pairMatching);
+  void goToAccountDeletion() => _router.go(AppRoutes.accountDeletion);
+  void goToPairMatching({String? code}) {
+    final uri = Uri(path: AppRoutes.pairMatching, queryParameters: code != null ? {'code': code} : null);
+    _router.go(uri.toString());
+  }
   void goToPairChat(String buddyId) =>
       _router.go(AppRoutes.pairChat.replaceFirst(':buddyId', buddyId));
   void goHome() => _router.go(AppRoutes.home);

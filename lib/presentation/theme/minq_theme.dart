@@ -205,7 +205,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     const base = 4.0;
     return MinqTheme(
       brightness: Brightness.light,
-      brandPrimary: const Color(0xFF00BFFF),
+      brandPrimary: const Color(0xFF37CBFA),
       background: const Color(0xFFF6F8F8),
       surface: Colors.white,
       textPrimary: const Color(0xFF101D22),
@@ -345,7 +345,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     const base = 4.0;
     return MinqTheme(
       brightness: Brightness.dark,
-      brandPrimary: const Color(0xFF38CFFE),
+      brandPrimary: const Color(0xFF37CBFA),
       background: const Color(0xFF0F172A),
       surface: const Color(0xFF111C2E),
       textPrimary: Colors.white,

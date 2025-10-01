@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CelebrationScreen extends ConsumerStatefulWidget {
   const CelebrationScreen({super.key});
@@ -23,6 +24,41 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat();
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _showPermissionDialogIfNeeded());
+  }
+
+  Future<void> _showPermissionDialogIfNeeded() async {
+    final notificationService = ref.read(notificationServiceProvider);
+    final shouldShow = await notificationService.shouldRequestPermission();
+
+    if (!shouldShow || !mounted) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.notificationPermissionDialogTitle),
+        content: Text(l10n.notificationPermissionDialogMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.later),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.enable),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true) {
+      await notificationService.requestPermission();
+    } else {
+      await notificationService.recordPermissionRequestTimestamp();
+    }
   }
 
   @override

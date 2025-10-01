@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
-import 'package:minq/data/repositories/auth_repository.dart';
+import 'package:minq/data/repositories/firebase_auth_repository.dart';
 import 'package:minq/data/repositories/pair_repository.dart';
 import 'package:minq/data/repositories/quest_log_repository.dart';
 import 'package:minq/data/repositories/quest_repository.dart';
@@ -22,6 +23,7 @@ import 'package:minq/data/services/remote_config_service.dart';
 import 'package:minq/data/services/time_consistency_service.dart';
 import 'package:minq/data/services/marketing_attribution_service.dart';
 import 'package:minq/data/services/app_locale_controller.dart';
+import 'package:minq/data/services/analytics_service.dart';
 import 'package:minq/data/services/image_moderation_service.dart';
 import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/domain/quest/quest.dart';
@@ -95,6 +97,16 @@ final remoteConfigProvider = Provider<FirebaseRemoteConfig?>((ref) {
       : null;
 });
 
+final firebaseAnalyticsProvider = Provider<FirebaseAnalytics?>((ref) {
+  return ref.watch(firebaseAvailabilityProvider)
+      ? FirebaseAnalytics.instance
+      : null;
+});
+
+final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
+  return AnalyticsService(ref.watch(firebaseAnalyticsProvider));
+});
+
 final featureFlagsProvider =
     StateNotifierProvider<FeatureFlagsNotifier, FeatureFlags>((ref) {
   return FeatureFlagsNotifier(ref.watch(remoteConfigProvider));
@@ -105,8 +117,8 @@ final isarProvider = FutureProvider<Isar>((ref) async {
   return isarService.init();
 });
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepository(ref.watch(firebaseAuthProvider));
+final authRepositoryProvider = Provider<IAuthRepository>((ref) {
+  return FirebaseAuthRepository(ref.watch(firebaseAuthProvider));
 });
 
 QuestRepository _buildQuestRepository(Ref ref) {
@@ -362,6 +374,13 @@ final pairStreamProvider =
           .getPairStream(pairId)
           .map<DocumentSnapshot<Map<String, dynamic>>?>((snapshot) => snapshot);
     });
+
+final pairByIdProvider =
+    FutureProvider.family<minq_pair.Pair?, String>((ref, pairId) async {
+  final pairRepository = ref.watch(pairRepositoryProvider);
+  if (pairRepository == null) return null;
+  return pairRepository.getPairById(pairId);
+});
 
 Future<void> _ensureStartup(Ref ref) async {
   await ref.watch(appStartupProvider.future);
