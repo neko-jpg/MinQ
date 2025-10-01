@@ -52,6 +52,7 @@ dependencies:
   firebase_storage: any
   firebase_messaging: any
   firebase_remote_config: any
+  firebase_analytics: any
 
   # Utilities
   intl: any
@@ -63,6 +64,7 @@ dependencies:
   timezone: any
   animations: any
   flutter_staggered_animations: any
+  share_plus: any
 
   # Code Generation
   freezed_annotation: any

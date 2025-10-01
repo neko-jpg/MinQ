@@ -5,46 +5,109 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/quest/quest.dart' as minq_quest;
+import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final questsAsync = ref.watch(userQuestsProvider);
+    final streakAsync = ref.watch(streakProvider);
+    final completedTodayAsync = ref.watch(todayCompletionCountProvider);
+    final recentLogsAsync = ref.watch(recentLogsProvider);
+
+    final isLoading = questsAsync.isLoading ||
+        streakAsync.isLoading ||
+        completedTodayAsync.isLoading ||
+        recentLogsAsync.isLoading;
+
+    final hasError = questsAsync.hasError ||
+        streakAsync.hasError ||
+        completedTodayAsync.hasError ||
+        recentLogsAsync.hasError;
+
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: const [
-            _Header(),
-            SizedBox(height: 24),
-            _TodaysFocusSection(),
-            SizedBox(height: 32),
-            _MiniQuestsSection(),
-            SizedBox(height: 32),
-            _StatsSnapshotSection(),
-            SizedBox(height: 32),
-            _WeeklyStreakSection(),
-          ],
-        ),
+        child: isLoading
+            ? const _HomeScreenSkeleton()
+            : hasError
+                ? const Center(child: Text("データの読み込みに失敗しました。"))
+                : ListView(
+                    padding: const EdgeInsets.all(16.0),
+                    children: const [
+                      _Header(),
+                      SizedBox(height: 24),
+                      _TodaysFocusSection(),
+                      SizedBox(height: 32),
+                      _MiniQuestsSection(),
+                      SizedBox(height: 32),
+                      _StatsSnapshotSection(),
+                      SizedBox(height: 32),
+                      _WeeklyStreakSection(),
+                    ],
+                  ),
       ),
     );
   }
 }
+
+class _HomeScreenSkeleton extends StatelessWidget {
+  const _HomeScreenSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = MinqTheme.of(context);
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(child: MinqSkeletonLine(width: 120, height: 28, borderRadius: tokens.cornerMedium())),
+          const SizedBox(height: 24),
+          MinqSkeleton(height: 130, borderRadius: tokens.cornerLarge()),
+          const SizedBox(height: 32),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              MinqSkeletonLine(width: 200, height: 24, borderRadius: tokens.cornerMedium()),
+              const MinqSkeletonAvatar(size: 40),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const MinqSkeletonGrid(crossAxisCount: 2, itemAspectRatio: 2.0, itemCount: 2),
+          const SizedBox(height: 32),
+          MinqSkeletonLine(width: 220, height: 24, borderRadius: tokens.cornerMedium()),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(3, (_) => const MinqSkeletonAvatar(size: 96)),
+          ),
+          const SizedBox(height: 32),
+          MinqSkeletonLine(width: 180, height: 24, borderRadius: tokens.cornerMedium()),
+          const SizedBox(height: 16),
+          const MinqSkeleton(height: 80, borderRadius: tokens.cornerLarge()),
+        ],
+      ),
+    );
+  }
+}
+
 
 class _Header extends StatelessWidget {
   const _Header();
 
   @override
   Widget build(BuildContext context) {
+    final tokens = MinqTheme.of(context);
     return Text(
       "ホーム",
       textAlign: TextAlign.center,
-      style: Theme.of(
-        context,
-      ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+      style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
     );
   }
 }
@@ -54,75 +117,63 @@ class _TodaysFocusSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
-    final questsAsync = ref.watch(userQuestsProvider);
+    final tokens = MinqTheme.of(context);
+    final quests = ref.watch(userQuestsProvider).valueOrNull ?? [];
+    final focusQuest = quests.firstOrNull;
 
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+      color: tokens.surface,
       child: Padding(
         padding: const EdgeInsets.all(24.0),
-        child: questsAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, stack) => Text("エラー: $err"),
-          data: (quests) {
-            final focusQuest = quests.firstOrNull;
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "今日のフォーカス",
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      focusQuest?.title ?? "クエストなし",
-                      style: textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    if (focusQuest != null)
-                      Text(
-                        "${focusQuest.estimatedMinutes}分",
-                        style: textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                  ],
-                ),
-                SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        value: 0.7, // TODO: Implement progress logic
-                        strokeWidth: 6,
-                        backgroundColor: colorScheme.surfaceContainerHighest,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          colorScheme.primary,
-                        ),
-                      ),
-                      Icon(
-                        iconDataForKey(focusQuest?.iconKey),
-                        size: 32,
-                        color: colorScheme.primary,
-                      ),
-                    ],
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "今日のフォーカス",
+                    style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                   ),
-                ),
-              ],
-            );
-          },
+                  const SizedBox(height: 4),
+                  Text(
+                    focusQuest?.title ?? "クエストなし",
+                    style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  if (focusQuest != null)
+                    Text(
+                      "${focusQuest.estimatedMinutes}分",
+                      style: tokens.bodyLarge.copyWith(color: tokens.textMuted),
+                    ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 80,
+              height: 80,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    value: 0.7, // TODO: Implement progress logic
+                    strokeWidth: 8,
+                    backgroundColor: tokens.border.withOpacity(0.5),
+                    valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
+                  ),
+                  Icon(
+                    iconDataForKey(focusQuest?.iconKey),
+                    size: 32,
+                    color: tokens.brandPrimary,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -134,8 +185,8 @@ class _MiniQuestsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textTheme = Theme.of(context).textTheme;
-    final questsAsync = ref.watch(userQuestsProvider);
+    final tokens = MinqTheme.of(context);
+    final quests = ref.watch(userQuestsProvider).valueOrNull ?? [];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,41 +196,33 @@ class _MiniQuestsSection extends ConsumerWidget {
           children: [
             Text(
               "あなたのミニクエスト",
-              style: textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
             IconButton.filled(
-              onPressed:
-                  () => ref.read(navigationUseCaseProvider).goToCreateQuest(),
+              onPressed: () => ref.read(navigationUseCaseProvider).goToCreateQuest(),
               icon: const Icon(Icons.add),
+              style: IconButton.styleFrom(backgroundColor: tokens.brandPrimary),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        questsAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, stack) => Text("エラー: $err"),
-          data: (quests) {
-            if (quests.isEmpty) {
-              return const Text("今日のクエストはありません。");
-            }
-            return GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 2.0,
-              ),
-              itemCount: quests.length,
-              itemBuilder: (context, index) {
-                return _QuestGridItem(quest: quests[index]);
-              },
-            );
-          },
-        ),
+        if (quests.isEmpty)
+          const Center(child: Text("今日のクエストはありません。"))
+        else
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 2.0,
+            ),
+            itemCount: quests.length,
+            itemBuilder: (context, index) {
+              return _QuestGridItem(quest: quests[index]);
+            },
+          ),
       ],
     );
   }
@@ -192,29 +235,24 @@ class _QuestGridItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final recentLogsAsync = ref.watch(recentLogsProvider);
+    final tokens = MinqTheme.of(context);
+    final recentLogs = ref.watch(recentLogsProvider).valueOrNull ?? [];
 
-    final isCompleted = recentLogsAsync.when(
-      data: (logs) {
-        final now = DateTime.now();
-        return logs.any(
-          (log) =>
-              log.questId == quest.id &&
-              log.ts.year == now.year &&
-              log.ts.month == now.month &&
-              log.ts.day == now.day,
-        );
-      },
-      loading: () => false,
-      error: (_, __) => false,
-    );
+    final isCompleted = recentLogs.any((log) {
+      final now = DateTime.now();
+      return log.questId == quest.id &&
+          log.ts.year == now.year &&
+          log.ts.month == now.month &&
+          log.ts.day == now.day;
+    });
 
     return Card(
       elevation: 0,
-      color: colorScheme.primaryContainer,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: tokens.cornerLarge(),
+        side: BorderSide(color: tokens.border)
+      ),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Row(
@@ -223,10 +261,7 @@ class _QuestGridItem extends ConsumerWidget {
             Expanded(
               child: Row(
                 children: [
-                  Icon(
-                    iconDataForKey(quest.iconKey),
-                    color: colorScheme.onPrimaryContainer,
-                  ),
+                  Icon(iconDataForKey(quest.iconKey), color: tokens.brandPrimary),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
@@ -235,20 +270,13 @@ class _QuestGridItem extends ConsumerWidget {
                       children: [
                         Text(
                           quest.title,
-                          style: textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onPrimaryContainer,
-                          ),
+                          style: tokens.bodyLarge.copyWith(fontWeight: FontWeight.w600),
                           overflow: TextOverflow.ellipsis,
                         ),
                         if (quest.category.isNotEmpty)
                           Text(
                             quest.category,
-                            style: textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onPrimaryContainer.withOpacity(
-                                0.7,
-                              ),
-                            ),
+                            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                           ),
                       ],
                     ),
@@ -261,15 +289,10 @@ class _QuestGridItem extends ConsumerWidget {
               height: 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color:
-                    isCompleted
-                        ? Colors.white.withOpacity(0.9)
-                        : Colors.white.withOpacity(0.3),
+                color: isCompleted ? tokens.brandPrimary : tokens.background,
+                border: Border.all(color: isCompleted ? tokens.brandPrimary : tokens.border)
               ),
-              child:
-                  isCompleted
-                      ? Icon(Icons.check, size: 16, color: colorScheme.primary)
-                      : null,
+              child: isCompleted ? const Icon(Icons.check, color: Colors.white, size: 16) : null,
             ),
           ],
         ),
@@ -283,52 +306,36 @@ class _StatsSnapshotSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textTheme = Theme.of(context).textTheme;
-    final streakAsync = ref.watch(streakProvider);
-    final completedTodayAsync = ref.watch(todayCompletionCountProvider);
+    final tokens = MinqTheme.of(context);
+    final streak = ref.watch(streakProvider).valueOrNull ?? 0;
+    final completedToday = ref.watch(todayCompletionCountProvider).valueOrNull ?? 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           "統計スナップショット",
-          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            streakAsync.when(
-              data:
-                  (streak) => _StatCircle(
-                    value: (streak % 7) / 7,
-                    label: "継続日数",
-                    stat: "$streak",
-                  ),
-              loading:
-                  () => const _StatCircle(value: 0, label: "継続日数", stat: "-"),
-              error:
-                  (_, __) =>
-                      const _StatCircle(value: 0, label: "継続日数", stat: "!"),
+            _StatCircle(
+              value: (streak % 7) / 7.0,
+              label: "継続日数",
+              stat: "$streak",
             ),
-            completedTodayAsync.when(
-              data:
-                  (count) => _StatCircle(
-                    value: count > 0 ? 1 : 0,
-                    label: "クエスト完了",
-                    stat: "$count",
-                  ),
-              loading:
-                  () => const _StatCircle(value: 0, label: "クエスト完了", stat: "-"),
-              error:
-                  (_, __) =>
-                      const _StatCircle(value: 0, label: "クエスト完了", stat: "!"),
+            _StatCircle(
+              value: completedToday > 0 ? 1 : 0,
+              label: "クエスト完了",
+              stat: "$completedToday",
             ),
             const _StatCircle(
               value: 0.0,
               label: "パートナー進捗",
-              stat: "",
-            ), // TODO: Implement partner progress
+              stat: "N/A",
+            ),
           ],
         ),
       ],
@@ -349,10 +356,7 @@ class _StatCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
-
+    final tokens = MinqTheme.of(context);
     return Column(
       children: [
         SizedBox(
@@ -364,15 +368,13 @@ class _StatCircle extends StatelessWidget {
               CircularProgressIndicator(
                 value: value,
                 strokeWidth: 8,
-                backgroundColor: colorScheme.surfaceContainerHighest,
-                valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                backgroundColor: tokens.border.withOpacity(0.5),
+                valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
               ),
               if (stat.isNotEmpty)
                 Text(
                   stat,
-                  style: textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
                 ),
             ],
           ),
@@ -380,9 +382,7 @@ class _StatCircle extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           label,
-          style: textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
         ),
       ],
     );
@@ -394,33 +394,29 @@ class _WeeklyStreakSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textTheme = Theme.of(context).textTheme;
-    final recentLogsAsync = ref.watch(recentLogsProvider);
+    final tokens = MinqTheme.of(context);
+    final recentLogs = ref.watch(recentLogsProvider).valueOrNull ?? [];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           "週間ストリーク",
-          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         Card(
           elevation: 0,
+          color: tokens.surface,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: tokens.cornerLarge(),
+            side: BorderSide(color: tokens.border)
           ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: recentLogsAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Text("エラー: $err"),
-              data: (logs) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: _buildDayItems(context, logs),
-                );
-              },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: _buildDayItems(context, recentLogs),
             ),
           ),
         ),
@@ -430,24 +426,21 @@ class _WeeklyStreakSection extends ConsumerWidget {
 
   List<Widget> _buildDayItems(BuildContext context, List<QuestLog> logs) {
     final now = DateTime.now();
-    final todayWeekday = now.weekday;
+    final today = DateUtils.dateOnly(now);
+    final startOfWeek = today.subtract(Duration(days: today.weekday - 1));
     final List<Widget> items = [];
 
-    for (int i = 1; i <= 7; i++) {
-      final dayToDisplay = now.subtract(Duration(days: todayWeekday - i));
+    for (int i = 0; i < 7; i++) {
+      final dayToDisplay = startOfWeek.add(Duration(days: i));
       final isCompleted = logs.any(
-        (log) =>
-            log.ts.year == dayToDisplay.year &&
-            log.ts.month == dayToDisplay.month &&
-            log.ts.day == dayToDisplay.day,
+        (log) => DateUtils.isSameDay(log.ts, dayToDisplay),
       );
 
       items.add(
         _DayItem(
           day: ["月", "火", "水", "木", "金", "土", "日"][dayToDisplay.weekday - 1],
           isCompleted: isCompleted,
-          isToday:
-              dayToDisplay.day == now.day && dayToDisplay.month == now.month,
+          isToday: DateUtils.isSameDay(dayToDisplay, today),
         ),
       );
     }
@@ -468,16 +461,13 @@ class _DayItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
+    final tokens = MinqTheme.of(context);
     return Column(
       children: [
         Text(
           day,
-          style: textTheme.bodyMedium?.copyWith(
-            color:
-                isToday ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
+          style: tokens.bodyMedium.copyWith(
+            color: isToday ? tokens.textPrimary : tokens.textMuted,
             fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -487,15 +477,10 @@ class _DayItem extends StatelessWidget {
           height: 32,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color:
-                isCompleted
-                    ? colorScheme.primary
-                    : colorScheme.surfaceContainerHighest,
+            color: isCompleted ? tokens.brandPrimary : tokens.background,
+            border: Border.all(color: isCompleted ? tokens.brandPrimary : tokens.border),
           ),
-          child:
-              isCompleted
-                  ? const Icon(Icons.check, color: Colors.white, size: 18)
-                  : null,
+          child: isCompleted ? const Icon(Icons.check, color: Colors.white, size: 18) : null,
         ),
       ],
     );

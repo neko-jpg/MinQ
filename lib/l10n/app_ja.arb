@@ -14,5 +14,85 @@
   "undo": "元に戻す",
   "dismissHelpBanner": "ヒントを閉じる",
   "openProfile": "プロフィールを開く",
-  "snoozeTemporarilyDisabled": "スヌーズは一時的に無効です"
+  "snoozeTemporarilyDisabled": "スヌーズは一時的に無効です",
+
+  "settingsTitle": "設定",
+  "settingsSectionGeneral": "一般設定",
+  "settingsPushNotifications": "プッシュ通知",
+  "settingsPushNotificationsSubtitle": "リマインダーとパートナーの更新",
+  "settingsNotificationTime": "通知時間",
+  "settingsSound": "サウンド",
+
+  "settingsSectionPrivacy": "プライバシーとデータ",
+  "settingsDataSync": "データ同期",
+  "settingsDataSyncSubtitle": "デバイス間でデータを同期する",
+  "settingsManageBlockedUsers": "ブロック中のユーザーを管理",
+  "settingsExportData": "データをエクスポート",
+  "settingsDeleteAccount": "アカウントとデータを削除",
+
+  "settingsSectionAbout": "MinQについて",
+  "settingsTermsOfService": "利用規約",
+  "settingsPrivacyPolicy": "プライバシーポリシー",
+  "settingsAppVersion": "アプリのバージョン",
+
+  "settingsSectionDeveloper": "開発者向けオプション",
+  "settingsUseDummyData": "ダミーデータを使用する",
+  "settingsUseDummyDataSubtitle": "データベースの代わりにダミーデータを使用します。",
+  "settingsSocialSharingDemo": "ソーシャル共有デモ",
+  "settingsSocialSharingDemoSubtitle": "ソーシャル共有と祝福機能をテストします",
+
+  "questsTitle": "ミニクエスト",
+  "questsSearchHint": "テンプレートを検索...",
+  "questsFabLabel": "カスタムを作成する",
+  "questsCategoryFeatured": "おすすめ",
+  "questsCategoryMyQuests": "自分のクエスト",
+  "questsCategoryAll": "すべて",
+  "questsCategoryLearning": "学習",
+  "questsCategoryExercise": "エクササイズ",
+  "questsCategoryTidying": "片付け",
+
+  "authErrorOperationNotAllowed": "匿名サインインはこのプロジェクトでは有効になっていません。",
+  "authErrorWeakPassword": "パスワードが弱すぎます。より強力なパスワードを設定してください。",
+  "authErrorEmailAlreadyInUse": "このメールアドレスは既に使用されています。",
+  "authErrorInvalidEmail": "メールアドレスの形式が正しくありません。",
+  "authErrorUserDisabled": "このユーザーは無効化されています。",
+  "authErrorUserNotFound": "このメールアドレスのユーザーが見つかりませんでした。",
+  "authErrorWrongPassword": "パスワードが間違っています。",
+  "authErrorAccountExistsWithDifferentCredential": "同じメールアドレスで、異なるログイン情報の既存アカウントがあります。",
+  "authErrorInvalidCredential": "認証情報が無効か、期限切れです。",
+  "authErrorUnknown": "不明なエラーが発生しました。",
+
+  "back": "戻る",
+
+  "pairMatchingTimeoutTitle": "マッチングがタイムアウトしました",
+  "pairMatchingTimeoutMessage": "時間内にバディが見つかりませんでした。もう一度試すか、後で再試行してください。",
+  "retry": "再試行する",
+  "cancel": "キャンセル",
+
+  "messageSentFailed": "メッセージの送信に失敗しました",
+
+  "chatInputHint": "メッセージを入力...",
+
+  "notificationPermissionDialogTitle": "通知を有効にしますか？",
+  "notificationPermissionDialogMessage": "クエストのリマインダーやバディからの更新情報を受け取れます。この設定は後からいつでも変更できます。",
+  "enable": "有効にする",
+  "later": "あとで",
+
+  "shareFailed": "進捗のシェアに失敗しました。もう一度お試しください。",
+
+  "accountDeletionTitle": "アカウントの削除",
+  "accountDeletionWarning": "これは元に戻せない操作です。7日間の猶予期間の後、あなたのクエスト、進捗、ペア情報を含むすべてのデータが完全に消去されます。この処理は、7日以内に再度ログインすることでキャンセルできます。",
+  "accountDeletionConfirmationCheckbox": "この操作の結果を理解し、アカウントを完全に削除することを希望します。",
+  "deleteMyAccountButton": "アカウントを削除する",
+
+  "blockUser": "ユーザーをブロック",
+  "reportUser": "ユーザーを報告",
+  "userBlocked": "ユーザーをブロックしました。",
+  "reportSubmitted": "報告が送信されました。",
+  "block": "ブロック",
+  "report": "報告",
+  "areYouSure": "よろしいですか？",
+  "blockConfirmation": "このユーザーをブロックすると、相手からの連絡を受け取れなくなります。この操作は設定から元に戻せます。",
+  "reportConfirmation": "報告の理由を簡単にご記入ください。適切な対応の参考にさせていただきます。",
+  "reason": "理由"
 }
