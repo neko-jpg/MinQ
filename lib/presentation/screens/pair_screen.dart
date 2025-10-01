@@ -1,12 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:minq/data/providers.dart';
-import 'package:minq/domain/pair/pair.dart';
-import 'package:minq/presentation/common/animated_tap.dart';
-import 'package:minq/presentation/common/minq_buttons.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 
 final userPairProvider = StreamProvider<Pair?>((ref) {
   final uid = ref.watch(uidProvider);
@@ -198,7 +190,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         SizedBox(height: tokens.spacing(6)),
         _buildRandomMatchForm(tokens),
         SizedBox(height: tokens.spacing(8)),
-        MinqPrimaryButton(label: 'Find a Partner', onPressed: _findRandomPartner),
+        MinqPrimaryButton(label: 'Find a Partner', onPressed: () async => ref.read(navigationUseCaseProvider).goToPairMatching()),
       ],
     );
   }

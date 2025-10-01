@@ -6,7 +6,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
-    SharedPreferences.setMockInitialValues(<String, Object?>{});
+    SharedPreferences.setMockInitialValues(<String, Object>{});
   });
 
   test('pair guidelines flag defaults to false and can be updated', () async {

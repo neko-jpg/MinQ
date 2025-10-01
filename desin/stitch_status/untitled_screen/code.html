@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Status Screen</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FFC107',
+            'background-light': '#F5F5F5',
+            'background-dark': '#0F172A',
+          },
+          fontFamily: {
+            display: ['Roboto', 'sans-serif'],
+          },
+          borderRadius: {
+            'DEFAULT': '0.5rem',
+            'lg': '1rem',
+            'xl': '1.5rem',
+          },
+        },
+      },
+    };
+  </script>
+<style>
+    .progress-ring__circle {
+      transition: stroke-dashoffset 0.35s;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="container mx-auto px-4 py-6 max-w-md">
+<header class="flex items-center mb-8">
+<button class="text-gray-800 dark:text-gray-200">
+<span class="material-icons">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold text-gray-900 dark:text-white flex-grow text-center">Progress for "Meditate"</h1>
+<div class="w-6"></div>
+</header>
+<main class="pb-24">
+<div class="bg-slate-200 dark:bg-slate-800 rounded-xl p-6 mb-8 text-center">
+<p class="text-gray-600 dark:text-gray-400 mb-2">Current Streak</p>
+<div class="flex items-center justify-center space-x-3">
+<span class="material-icons text-primary text-5xl">local_fire_department</span>
+<span class="text-6xl font-bold text-gray-900 dark:text-white">21</span>
+</div>
+<p class="text-gray-600 dark:text-gray-400 mt-2">days</p>
+</div>
+<div class="bg-slate-200 dark:bg-slate-800 rounded-xl p-6 mb-8">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-lg font-bold text-gray-900 dark:text-white">Set Your Goal</h2>
+<button class="text-primary font-semibold">
+<span class="material-icons align-middle">edit</span>
+<span>Edit</span>
+</button>
+</div>
+<p class="text-gray-600 dark:text-gray-400 mb-6">
+          Setting a goal can help you stay motivated. What do you want to achieve?
+        </p>
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="goal-type">Goal Type</label>
+<select class="w-full bg-slate-300 dark:bg-slate-700 border-none rounded-lg text-gray-900 dark:text-white focus:ring-primary focus:border-primary" id="goal-type">
+<option>Weekly Frequency</option>
+<option>Total Time</option>
+<option>Streak</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="goal-value">How many days a week?</label>
+<div class="flex items-center">
+<input class="w-full bg-slate-300 dark:bg-slate-700 border-none rounded-lg text-gray-900 dark:text-white focus:ring-primary focus:border-primary" id="goal-value" type="number" value="5"/>
+<span class="ml-4 text-gray-600 dark:text-gray-400">days</span>
+</div>
+</div>
+</div>
+<button class="w-full bg-primary text-slate-900 font-bold py-3 px-4 rounded-lg mt-6 hover:bg-primary/90 transition-colors">
+          Set Goal
+        </button>
+</div>
+<div class="bg-slate-200 dark:bg-slate-800 rounded-xl p-6 mb-8">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-lg font-bold text-gray-900 dark:text-white">Compare Progress</h2>
+<div class="flex items-center bg-slate-300 dark:bg-slate-700 rounded-lg p-1">
+<button class="px-3 py-1 text-sm rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-white font-semibold">Week</button>
+<button class="px-3 py-1 text-sm rounded-md text-gray-600 dark:text-gray-400">Month</button>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between items-baseline mb-2">
+<p class="font-medium text-gray-900 dark:text-white">This Week</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">5/7 days</p>
+</div>
+<div class="w-full bg-slate-300 dark:bg-slate-700 rounded-full h-2.5">
+<div class="bg-primary h-2.5 rounded-full" style="width: 71%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-baseline mb-2">
+<p class="font-medium text-gray-900 dark:text-white">Last Week</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">6/7 days</p>
+</div>
+<div class="w-full bg-slate-300 dark:bg-slate-700 rounded-full h-2.5">
+<div class="bg-primary/70 h-2.5 rounded-full" style="width: 85%"></div>
+</div>
+<div class="flex items-center mt-2 text-sm text-red-500">
+<span class="material-icons text-base mr-1">arrow_downward</span>
+<span>-1 day from last week</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-slate-200 dark:bg-slate-800 rounded-xl p-6 mb-8">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-lg font-bold text-gray-900 dark:text-white">Weekly Progress</h2>
+<div class="flex items-center text-gray-600 dark:text-gray-400">
+<span>This week</span>
+<span class="material-icons">arrow_drop_down</span>
+</div>
+</div>
+<div class="flex justify-around text-center">
+<div class="flex flex-col items-center">
+<div class="relative w-20 h-20">
+<svg class="w-full h-full" viewBox="0 0 36 36">
+<path class="text-slate-300 dark:text-slate-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.8"></path>
+<path class="text-primary progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="85, 100" stroke-linecap="round" stroke-width="3.8"></path>
+<text class="text-lg font-bold fill-current text-gray-900 dark:text-white text-center" text-anchor="middle" x="18" y="21">5/7</text>
+</svg>
+</div>
+<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Days</p>
+</div>
+<div class="flex flex-col items-center">
+<div class="relative w-20 h-20">
+<svg class="w-full h-full" viewBox="0 0 36 36">
+<path class="text-slate-300 dark:text-slate-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.8"></path>
+<path class="text-primary progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="60, 100" stroke-linecap="round" stroke-width="3.8"></path>
+<text class="text-base font-bold fill-current text-gray-900 dark:text-white text-center" text-anchor="middle" x="18" y="22">4.2h</text>
+</svg>
+</div>
+<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Total Time</p>
+</div>
+<div class="flex flex-col items-center">
+<div class="relative w-20 h-20">
+<svg class="w-full h-full" viewBox="0 0 36 36">
+<path class="text-slate-300 dark:text-slate-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.8"></path>
+<path class="text-primary progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="75, 100" stroke-linecap="round" stroke-width="3.8"></path>
+<text class="text-base font-bold fill-current text-gray-900 dark:text-white text-center" text-anchor="middle" x="18" y="22">32m</text>
+</svg>
+</div>
+<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Avg. Time</p>
+</div>
+</div>
+</div>
+<div class="bg-slate-200 dark:bg-slate-800 rounded-xl p-6">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-lg font-bold text-gray-900 dark:text-white">September</h2>
+<div class="flex items-center space-x-2">
+<button class="text-gray-600 dark:text-gray-400"><span class="material-icons">chevron_left</span></button>
+<button class="text-gray-600 dark:text-gray-400"><span class="material-icons">chevron_right</span></button>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-2 text-center text-sm text-gray-600 dark:text-gray-400">
+<div>Mo</div>
+<div>Tu</div>
+<div>We</div>
+<div>Th</div>
+<div>Fr</div>
+<div>Sa</div>
+<div>Su</div>
+</div>
+<div class="grid grid-cols-7 gap-2 mt-2 text-center">
+<div class="w-10 h-10 flex items-center justify-center rounded-full"></div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full"></div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full"></div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">1</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/20 text-primary-dark dark:bg-primary/30 dark:text-primary">2</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/20 text-primary-dark dark:bg-primary/30 dark:text-primary">3</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/50 text-primary-dark dark:bg-primary/60 dark:text-primary font-bold">4</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">5</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/20 text-primary-dark dark:bg-primary/30 dark:text-primary">6</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/80 text-primary-dark dark:bg-primary/90 dark:text-primary font-bold">7</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-slate-800 dark:text-slate-900 font-bold">8</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/50 text-primary-dark dark:bg-primary/60 dark:text-primary font-bold">9</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/20 text-primary-dark dark:bg-primary/30 dark:text-primary">10</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">11</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/80 text-primary-dark dark:bg-primary/90 dark:text-primary font-bold">12</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-slate-800 dark:text-slate-900 font-bold">13</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/50 text-primary-dark dark:bg-primary/60 dark:text-primary font-bold">14</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/20 text-primary-dark dark:bg-primary/30 dark:text-primary">15</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">16</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/50 text-primary-dark dark:bg-primary/60 dark:text-primary font-bold">17</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/20 text-primary-dark dark:bg-primary/30 dark:text-primary">18</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-slate-800 dark:text-slate-900 font-bold ring-2 ring-primary ring-offset-2 ring-offset-slate-200 dark:ring-offset-slate-800">19</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/80 text-primary-dark dark:bg-primary/90 dark:text-primary font-bold">20</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/20 text-primary-dark dark:bg-primary/30 dark:text-primary">21</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">22</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">23</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">24</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">25</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">26</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">27</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">28</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">29</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white">30</div>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 bg-slate-200/80 dark:bg-slate-800/80 backdrop-blur-sm max-w-md mx-auto border-t border-slate-300 dark:border-slate-700">
+<nav class="flex justify-around items-center h-20">
+<a class="flex flex-col items-center text-gray-600 dark:text-gray-400" href="#">
+<span class="material-icons">home</span>
+<span class="text-xs">Home</span>
+</a>
+<a class="flex flex-col items-center text-primary" href="#">
+<span class="material-icons">bar_chart</span>
+<span class="text-xs font-bold">Stats</span>
+</a>
+<a class="flex flex-col items-center text-gray-600 dark:text-gray-400" href="#">
+<span class="material-icons">people</span>
+<span class="text-xs">Pair</span>
+</a>
+<a class="flex flex-col items-center text-gray-600 dark:text-gray-400" href="#">
+<span class="material-icons">checklist</span>
+<span class="text-xs">Quests</span>
+</a>
+<a class="flex flex-col items-center text-gray-600 dark:text-gray-400" href="#">
+<span class="material-icons">settings</span>
+<span class="text-xs">Settings</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

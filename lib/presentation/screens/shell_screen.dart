@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/data/services/notification_service.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 
 class ShellScreen extends ConsumerStatefulWidget {
   const ShellScreen({super.key, required this.child});
@@ -52,29 +51,30 @@ class _ShellScreenState extends ConsumerState<ShellScreen> with WidgetsBindingOb
 
   int _calculateSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).uri.toString();
-    if (location.startsWith('/stats')) return 1;
-    if (location.startsWith('/pair')) return 2;
-    if (location.startsWith('/quests')) return 3;
-    if (location.startsWith('/settings')) return 4;
+    if (location.startsWith(AppRoutes.stats)) return 1;
+    if (location.startsWith(AppRoutes.pair)) return 2;
+    if (location.startsWith(AppRoutes.quests)) return 3;
+    if (location.startsWith(AppRoutes.settings)) return 4;
     return 0;
   }
 
   void _onItemTapped(int index, BuildContext context) {
+    final navigation = ref.read(navigationUseCaseProvider);
     switch (index) {
       case 0:
-        context.go('/');
+        navigation.goHome();
         break;
       case 1:
-        context.go('/stats');
+        navigation.goToStats();
         break;
       case 2:
-        context.go('/pair');
+        navigation.goToPair();
         break;
       case 3:
-        context.go('/quests');
+        navigation.goToQuests();
         break;
       case 4:
-        context.go('/settings');
+        navigation.goToSettings();
         break;
     }
   }
@@ -112,27 +112,27 @@ class _ShellScreenState extends ConsumerState<ShellScreen> with WidgetsBindingOb
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             activeIcon: Icon(Icons.home),
-            label: 'Home',
+            label: 'ホーム',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart_outlined),
             activeIcon: Icon(Icons.bar_chart),
-            label: 'Stats',
+            label: '進捗',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.groups_outlined),
             activeIcon: Icon(Icons.groups),
-            label: 'Pair',
+            label: 'ペア',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.checklist_outlined),
             activeIcon: Icon(Icons.checklist),
-            label: 'Quests',
+            label: 'クエスト',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_outlined),
             activeIcon: Icon(Icons.settings),
-            label: 'Settings',
+            label: '設定',
           ),
         ],
       ),

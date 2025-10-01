@@ -64,6 +64,10 @@ dependencies:
   animations: any
   flutter_staggered_animations: any
 
+  # Code Generation
+  freezed_annotation: any
+  json_annotation: any
+
   cupertino_icons: any
   google_fonts: any
   google_sign_in: ^7.2.0
@@ -78,8 +82,11 @@ dev_dependencies:
   # Code Generation
   build_runner: any
   isar_generator: any
+  freezed: any
+  json_serializable: any
 
   flutter_lints: any
+  mockito: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

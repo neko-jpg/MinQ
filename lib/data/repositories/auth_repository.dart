@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 
+import 'package:minq/domain/auth/auth_exception.dart';
+
 class AuthRepository {
   AuthRepository(this._firebaseAuth);
 
@@ -15,7 +17,7 @@ class AuthRepository {
   Stream<User?> get authStateChanges {
     final auth = _firebaseAuth;
     if (auth == null) {
-      return Stream<User?>.empty();
+      return const Stream<User?>.empty();
     }
     return auth.authStateChanges();
   }
@@ -33,14 +35,18 @@ class AuthRepository {
     try {
       final userCredential = await auth.signInAnonymously();
       return userCredential.user;
-    } catch (e) {
-      debugPrint('Failed to sign in anonymously: $e');
-      return null;
+    } on FirebaseAuthException catch (e) {
+      throw AuthException(_handleFirebaseAuthException(e));
     }
   }
 
   Future<User?> linkWithGoogle() async {
     debugPrint('Google Sign-In is temporarily disabled.');
+    // try {
+    //   // ...
+    // } on FirebaseAuthException catch (e) {
+    //   throw AuthException(_handleFirebaseAuthException(e));
+    // }
     return null;
   }
 
@@ -52,5 +58,30 @@ class AuthRepository {
     }
     // await _googleSignIn.signOut();
     await auth.signOut();
+  }
+
+  String _handleFirebaseAuthException(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'operation-not-allowed':
+        return 'Anonymous sign-in is not enabled for this project.';
+      case 'weak-password':
+        return 'The password provided is too weak.';
+      case 'email-already-in-use':
+        return 'An account already exists for that email.';
+      case 'invalid-email':
+        return 'The email address is not valid.';
+      case 'user-disabled':
+        return 'This user has been disabled.';
+      case 'user-not-found':
+        return 'No user found for this email.';
+      case 'wrong-password':
+        return 'Wrong password provided for this user.';
+      case 'account-exists-with-different-credential':
+        return 'An account already exists with the same email address but different sign-in credentials.';
+      case 'invalid-credential':
+        return 'The credential received is malformed or has expired.';
+      default:
+        return 'An unknown error occurred.';
+    }
   }
 }

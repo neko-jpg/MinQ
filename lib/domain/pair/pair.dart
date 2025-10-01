@@ -15,6 +15,9 @@ class Pair {
     this.lastHighfiveAt,
   });
 
+  String? get user1Id => members.isNotEmpty ? members[0] : null;
+  String? get user2Id => members.length >= 2 ? members[1] : null;
+
   factory Pair.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     return Pair(

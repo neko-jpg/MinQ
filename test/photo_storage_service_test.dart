@@ -19,6 +19,7 @@ class _FakeImagePicker extends ImagePicker {
     double? maxHeight,
     int? imageQuality,
     CameraDevice preferredCameraDevice = CameraDevice.rear,
+    bool requestFullMetadata = false,
   }) async {
     return _file;
   }
@@ -39,7 +40,7 @@ void main() {
 
   test('sanitizes photos and hashes filenames', () async {
     final image = img.Image(width: 2, height: 2);
-    image.fill(0xFF42A5F5);
+    img.fill(image, color: img.ColorRgb8(66, 165, 245));
     final originalBytes = img.encodeJpg(image);
 
     final originalFile = File(p.join(tempDir.path, 'original.jpg'));
@@ -67,7 +68,7 @@ void main() {
 
   test('flags extremely dark images for moderation', () async {
     final image = img.Image(width: 16, height: 16);
-    image.fill(0xFF000000);
+    img.fill(image, color: img.ColorRgb8(0, 0, 0));
     final originalBytes = img.encodeJpg(image);
 
     final originalFile = File(p.join(tempDir.path, 'dark.jpg'));

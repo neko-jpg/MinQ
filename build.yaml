@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      isar_generator:
+        generate_for:
+          include:
+            - lib/domain/**.dart
+          exclude:
+            - lib/domain/pair/**.dart

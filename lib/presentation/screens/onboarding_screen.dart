@@ -1,185 +1,146 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/presentation/common/minq_copy.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 
-class OnboardingSlide {
-  const OnboardingSlide({
+class OnboardingScreen extends ConsumerWidget {
+  const OnboardingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 40),
+                    Container(
+                      width: 96,
+                      height: 96,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.checklist,
+                        color: colorScheme.primary,
+                        size: 56,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: textTheme.headlineLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onSurface,
+                        ),
+                        children: [
+                          const TextSpan(text: "MinQへようこそ"),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      "ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。",
+                      textAlign: TextAlign.center,
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    _FeatureCard(
+                      icon: Icons.touch_app,
+                      title: "3タップで習慣化",
+                      description: "新しい習慣をたった3タップで始められます。とてもシンプルです。",
+                      colorScheme: colorScheme,
+                    ),
+                    const SizedBox(height: 16),
+                    _FeatureCard(
+                      icon: Icons.groups,
+                      title: "匿名ペア",
+                      description: "パートナーから、匿名で説明責任とサポートを得られます。",
+                      colorScheme: colorScheme,
+                    ),
+                    const SizedBox(height: 16),
+                    _FeatureCard(
+                      icon: Icons.explore,
+                      title: "ミニクエスト",
+                      description: "あなたの目標を、達成感のある小さなクエストに変えましょう。",
+                      colorScheme: colorScheme,
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+            _BottomNavigation(colorScheme: colorScheme, textTheme: textTheme),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FeatureCard extends StatelessWidget {
+  const _FeatureCard({
     required this.icon,
     required this.title,
-    required this.subtitle,
+    required this.description,
+    required this.colorScheme,
   });
 
   final IconData icon;
   final String title;
-  final String subtitle;
-}
-
-class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
-
-  @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
-}
-
-class _OnboardingScreenState extends State<OnboardingScreen> {
-  late final PageController _pageController;
-  int _currentPage = 0;
-
-  static const List<OnboardingSlide> _slides = <OnboardingSlide>[
-    OnboardingSlide(
-      icon: Icons.flag_circle_outlined,
-      title: 'Mini-quests that stick',
-      subtitle: MinqCopy.onboardingFeatureMiniQuest,
-    ),
-    OnboardingSlide(
-      icon: Icons.groups,
-      title: 'Anonymous accountability',
-      subtitle: MinqCopy.onboardingFeatureAnonymousPair,
-    ),
-    OnboardingSlide(
-      icon: Icons.notifications_active_outlined,
-      title: 'Smart reminders (optional)',
-      subtitle: MinqCopy.onboardingFeatureNotifications,
-    ),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  void _handleNext() {
-    if (_currentPage < _slides.length - 1) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 280),
-        curve: Curves.easeOut,
-      );
-      return;
-    }
-    _showNotificationPrePrompt();
-  }
-
-  Future<void> _showNotificationPrePrompt() async {
-    final tokens = context.tokens;
-    await showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: tokens.surface,
-      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
-      builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.fromLTRB(
-            tokens.spacing(6),
-            tokens.spacing(6),
-            tokens.spacing(6),
-            tokens.spacing(8),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                MinqCopy.notificationPrePromptTitle,
-                style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
-              ),
-              SizedBox(height: tokens.spacing(3)),
-              Text(
-                MinqCopy.notificationPrePromptBody,
-                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
-              ),
-              SizedBox(height: tokens.spacing(5)),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  minimumSize: Size(double.infinity, tokens.spacing(12)),
-                  backgroundColor: tokens.brandPrimary,
-                  foregroundColor: tokens.surface,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: tokens.cornerLarge(),
-                  ),
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Sounds good'),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-    if (!mounted) return;
-    context.go('/login');
-  }
-
-  void _handleSkip() {
-    context.go('/login');
-  }
+  final String description;
+  final ColorScheme colorScheme;
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
-    return Scaffold(
-      backgroundColor: tokens.background,
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(
-                left: tokens.spacing(6),
-                right: tokens.spacing(6),
-                top: tokens.spacing(6),
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: colorScheme.primary.withOpacity(0.1),
+                shape: BoxShape.circle,
               ),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: _handleSkip,
-                  child: const Text('スキップ'),
-                ),
-              ),
+              child: Icon(icon, color: colorScheme.primary),
             ),
+            const SizedBox(width: 16),
             Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: _slides.length,
-                onPageChanged:
-                    (int index) => setState(() => _currentPage = index),
-                itemBuilder: (BuildContext context, int index) {
-                  final slide = _slides[index];
-                  return _OnboardingSlideView(slide: slide);
-                },
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  _OnboardingIndicator(
-                    length: _slides.length,
-                    currentIndex: _currentPage,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
-                  SizedBox(height: tokens.spacing(6)),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      minimumSize: Size(double.infinity, tokens.spacing(14)),
-                      backgroundColor: tokens.brandPrimary,
-                      foregroundColor: tokens.surface,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: tokens.cornerXLarge(),
-                      ),
-                    ),
-                    onPressed: _handleNext,
-                    child: Text(
-                      _currentPage == _slides.length - 1 ? '通知を設定して続ける' : '次へ',
-                    ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
                   ),
-                  SizedBox(height: tokens.spacing(4)),
                 ],
               ),
             ),
@@ -190,83 +151,58 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 }
 
-class _OnboardingSlideView extends StatelessWidget {
-  const _OnboardingSlideView({required this.slide});
+class _BottomNavigation extends ConsumerWidget {
+  const _BottomNavigation({
+    required this.colorScheme,
+    required this.textTheme,
+  });
 
-  final OnboardingSlide slide;
+  final ColorScheme colorScheme;
+  final TextTheme textTheme;
 
   @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
+      padding: const EdgeInsets.all(16.0).copyWith(top: 8),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: tokens.spacing(24),
-            height: tokens.spacing(24),
-            decoration: BoxDecoration(
-              color: tokens.brandPrimary.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              slide.icon,
-              size: tokens.spacing(13),
-              color: tokens.brandPrimary,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () => ref.read(navigationUseCaseProvider).goToLogin(),
+              icon: const Icon(Icons.arrow_forward),
+              label: const Text("始める"),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                textStyle: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
             ),
           ),
-          SizedBox(height: tokens.spacing(6)),
-          Text(
-            slide.title,
-            textAlign: TextAlign.center,
-            style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
-          ),
-          SizedBox(height: tokens.spacing(3)),
-          Text(
-            slide.subtitle,
-            textAlign: TextAlign.center,
-            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "すでにアカウントをお持ちですか？",
+                style: textTheme.bodySmall,
+              ),
+              TextButton(
+                onPressed: () => ref.read(navigationUseCaseProvider).goToLogin(),
+                child: Text(
+                  "ログイン",
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
-    );
-  }
-}
-
-class _OnboardingIndicator extends StatelessWidget {
-  const _OnboardingIndicator({
-    required this.length,
-    required this.currentIndex,
-  });
-
-  final int length;
-  final int currentIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List<Widget>.generate(length, (int index) {
-        final bool isActive = index == currentIndex;
-        return AnimatedContainer(
-          margin: EdgeInsets.symmetric(horizontal: tokens.spacing(1)),
-          duration: const Duration(milliseconds: 240),
-          height: tokens.spacing(2),
-          width: isActive ? tokens.spacing(6) : tokens.spacing(2.5),
-          decoration: BoxDecoration(
-            color:
-                isActive
-                    ? tokens.brandPrimary
-                    : tokens.brandPrimary.withValues(alpha: 0.25),
-            borderRadius: tokens.cornerSmall(),
-          ),
-        );
-      }),
     );
   }
 }

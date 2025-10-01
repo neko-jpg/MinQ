@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,14 +9,14 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  @override
+@override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
 
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
-        title: Text('Settings', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        title: Text('設定', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
         centerTitle: true,
         leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
         backgroundColor: tokens.background.withOpacity(0.8),
@@ -26,11 +27,11 @@ class SettingsScreen extends ConsumerWidget {
         padding: EdgeInsets.all(tokens.spacing(4)),
         children: <Widget>[
           _SettingsSection(
-            title: 'General Settings',
+            title: '一般設定',
             tiles: [
               _SettingsTile(
-                title: 'Push Notifications',
-                subtitle: 'Reminders & partner updates',
+                title: 'プッシュ通知',
+                subtitle: 'リマインダーとパートナーの更新',
                 isSwitch: true,
                 switchValue: true, // This should be driven by a provider in a real app
                 onSwitchChanged: (value) async {
@@ -42,27 +43,48 @@ class SettingsScreen extends ConsumerWidget {
                   }
                 },
               ),
-              _SettingsTile(title: 'Notification Times', onTap: () => context.push('/settings/notifications')),
-              const _SettingsTile(title: 'Sounds'),
+              _SettingsTile(title: '通知時間', onTap: () => context.push('/settings/notifications')),
+              const _SettingsTile(title: 'サウンド'),
             ],
           ),
           const _SettingsSection(
-            title: 'Privacy & Data',
+            title: 'プライバシーとデータ',
             tiles: [
-              _SettingsTile(title: 'Data Sync', subtitle: 'Keep data synced across devices', isSwitch: true, switchValue: false),
-              _SettingsTile(title: 'Manage Blocked Users'),
-              _SettingsTile(title: 'Export My Data', isDownload: true),
-              _SettingsTile(title: 'Delete Account & Data', isDelete: true),
+              _SettingsTile(title: 'データ同期', subtitle: 'デバイス間でデータを同期する', isSwitch: true, switchValue: false),
+              _SettingsTile(title: 'ブロック中のユーザーを管理'),
+              _SettingsTile(title: 'データをエクスポート', isDownload: true),
+              _SettingsTile(title: 'アカウントとデータを削除', isDelete: true),
             ],
           ),
           _SettingsSection(
-            title: 'About MinQ',
+            title: 'MinQについて',
             tiles: [
-              _SettingsTile(title: 'Terms of Service', onTap: () => context.push('/policy/terms')),
-              _SettingsTile(title: 'Privacy Policy', onTap: () => context.push('/policy/privacy')),
-              const _SettingsTile(title: 'App Version', isStatic: true, staticValue: '1.0.0'),
+              _SettingsTile(title: '利用規約', onTap: () => context.push('/policy/terms')),
+              _SettingsTile(title: 'プライバシーポリシー', onTap: () => context.push('/policy/privacy')),
+              const _SettingsTile(title: 'アプリのバージョン', isStatic: true, staticValue: '1.0.0'),
             ],
           ),
+          if (kDebugMode)
+            _SettingsSection(
+              title: '開発者向けオプション',
+              tiles: [
+                _SettingsTile(
+                  title: 'ダミーデータを使用する',
+                  subtitle: 'データベースの代わりにダミーデータを使用します。',
+                  isSwitch: true,
+                  switchValue: ref.watch(dummyDataModeProvider),
+                  onSwitchChanged: (value) {
+                    ref.read(dummyDataModeProvider.notifier).state = value;
+                    ref.read(localPreferencesServiceProvider).setDummyDataMode(value);
+                  },
+                ),
+                _SettingsTile(
+                  title: 'ソーシャル共有デモ',
+                  subtitle: 'ソーシャル共有と祝福機能をテストします',
+                  onTap: () => context.push('/social-sharing-demo'),
+                ),
+              ],
+            ),
         ],
       ),
     );
@@ -137,9 +159,8 @@ class _SettingsTileState extends State<_SettingsTile> {
     final tokens = context.tokens;
     final titleColor = widget.isDelete ? Colors.red.shade500 : tokens.textPrimary;
 
-    return Card(
-      elevation: 1,
-      shadowColor: tokens.background.withOpacity(0.1),
+'''    return Card(
+      elevation: 0,'''      shadowColor: tokens.background.withOpacity(0.1),
       color: tokens.surface,
       margin: EdgeInsets.symmetric(vertical: tokens.spacing(2)),
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),

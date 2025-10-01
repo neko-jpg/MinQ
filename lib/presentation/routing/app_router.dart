@@ -8,7 +8,6 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/screens/shell_screen.dart';
 import 'package:minq/presentation/screens/home_screen.dart';
 import 'package:minq/presentation/screens/stats_screen.dart';
-import 'package:minq/presentation/screens/pair_screen.dart';
 import 'package:minq/presentation/screens/quests_screen.dart';
 import 'package:minq/presentation/screens/settings_screen.dart';
 import 'package:minq/presentation/screens/onboarding_screen.dart';
@@ -21,6 +20,10 @@ import 'package:minq/presentation/common/policy_documents.dart';
 import 'package:minq/presentation/screens/create_quest_screen.dart';
 import 'package:minq/presentation/screens/support_screen.dart';
 import 'package:minq/presentation/screens/notification_settings_screen.dart';
+import 'package:minq/presentation/screens/pair/pair_matching_screen.dart';
+import 'package:minq/presentation/screens/pair/buddy_list_screen.dart';
+import 'package:minq/presentation/screens/pair/chat_screen.dart';
+import 'package:minq/presentation/common/sharing/social_sharing_demo.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -46,9 +49,29 @@ CustomTransitionPage<T> buildPageWithTransition<T>({
   );
 }
 
+class AppRoutes {
+  static const onboarding = '/onboarding';
+  static const login = '/login';
+  static const record = '/record/:questId';
+  static const celebration = '/celebration';
+  static const socialSharingDemo = '/social-sharing-demo';
+  static const profile = '/profile';
+  static const policy = '/policy/:id';
+  static const support = '/support';
+  static const createQuest = '/quests/create';
+  static const notificationSettings = '/settings/notifications';
+  static const pairMatching = '/pair/matching';
+  static const pairChat = '/pair/chat/:buddyId';
+  static const home = '/';
+  static const stats = '/stats';
+  static const pair = '/pair';
+  static const quests = '/quests';
+  static const settings = '/settings';
+}
+
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/onboarding',
+    initialLocation: AppRoutes.onboarding,
     navigatorKey: _rootNavigatorKey,
     redirect: (context, state) {
       unawaited(
@@ -58,7 +81,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
     routes: [
       GoRoute(
-        path: '/onboarding',
+        path: AppRoutes.onboarding,
         pageBuilder: (context, state) => buildPageWithTransition<void>(
           context: context,
           state: state,
@@ -66,7 +89,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/login',
+        path: AppRoutes.login,
         pageBuilder: (context, state) => buildPageWithTransition<void>(
           context: context,
           state: state,
@@ -74,7 +97,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/record/:questId',
+        path: AppRoutes.record,
         pageBuilder: (context, state) {
           final questId = int.tryParse(state.pathParameters['questId'] ?? '') ?? 0;
           return buildPageWithTransition<void>(
@@ -86,7 +109,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/celebration',
+        path: AppRoutes.celebration,
         pageBuilder: (context, state) => buildPageWithTransition<void>(
           context: context,
           state: state,
@@ -95,7 +118,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/profile',
+        path: AppRoutes.socialSharingDemo,
+        pageBuilder: (context, state) => buildPageWithTransition<void>(
+          context: context,
+          state: state,
+          child: const SocialSharingDemo(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
         pageBuilder: (context, state) => buildPageWithTransition<void>(
           context: context,
           state: state,
@@ -104,7 +135,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/policy/:id',
+        path: AppRoutes.policy,
         pageBuilder: (context, state) {
           final rawId = state.pathParameters['id'];
           final documentId = PolicyDocumentId.values.firstWhere(
@@ -120,7 +151,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/support',
+        path: AppRoutes.support,
         pageBuilder: (context, state) => buildPageWithTransition<void>(
           context: context,
           state: state,
@@ -129,7 +160,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/quests/create',
+        path: AppRoutes.createQuest,
         pageBuilder: (context, state) => buildPageWithTransition<void>(
           context: context,
           state: state,
@@ -138,13 +169,36 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/settings/notifications',
+        path: AppRoutes.notificationSettings,
         pageBuilder: (context, state) => buildPageWithTransition<void>(
           context: context,
           state: state,
           child: const NotificationSettingsScreen(),
           transitionType: SharedAxisTransitionType.vertical,
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.pairMatching,
+        pageBuilder: (context, state) {
+          final code = state.uri.queryParameters['code'];
+          return buildPageWithTransition<void>(
+            context: context,
+            state: state,
+            child: PairMatchingScreen(code: code),
+            transitionType: SharedAxisTransitionType.vertical,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.pairChat,
+        pageBuilder: (context, state) {
+          // final buddyId = state.pathParameters['buddyId']!;
+          return buildPageWithTransition<void>(
+            context: context,
+            state: state,
+            child: ChatScreen(pairId: state.pathParameters['pairId'] ?? '')
+          );
+        },
       ),
       // Main navigation shell
       ShellRoute(
@@ -156,31 +210,31 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
         routes: [
           GoRoute(
-            path: '/',
+            path: AppRoutes.home,
             pageBuilder: (context, state) => const NoTransitionPage(
               child: HomeScreen(),
             ),
           ),
           GoRoute(
-            path: '/stats',
+            path: AppRoutes.stats,
             pageBuilder: (context, state) => const NoTransitionPage(
               child: StatsScreen(),
             ),
           ),
           GoRoute(
-            path: '/pair',
+            path: AppRoutes.pair,
             pageBuilder: (context, state) => const NoTransitionPage(
-              child: PairScreen(),
+              child: BuddyListScreen(),
             ),
           ),
           GoRoute(
-            path: '/quests',
+            path: AppRoutes.quests,
             pageBuilder: (context, state) => const NoTransitionPage(
               child: QuestsScreen(),
             ),
           ),
           GoRoute(
-            path: '/settings',
+            path: AppRoutes.settings,
             pageBuilder: (context, state) => const NoTransitionPage(
               child: SettingsScreen(),
             ),
@@ -189,4 +243,32 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
+});
+
+class NavigationUseCase {
+  final GoRouter _router;
+  NavigationUseCase(this._router);
+
+  void goToOnboarding() => _router.go(AppRoutes.onboarding);
+  void goToLogin() => _router.go(AppRoutes.login);
+  void goToRecord(int questId) => _router.go(AppRoutes.record.replaceFirst(':questId', questId.toString()));
+  void goToCelebration() => _router.go(AppRoutes.celebration);
+  void goToSocialSharingDemo() => _router.go(AppRoutes.socialSharingDemo);
+  void goToProfile() => _router.go(AppRoutes.profile);
+  void goToPolicy(PolicyDocumentId documentId) => _router.go(AppRoutes.policy.replaceFirst(':id', documentId.name));
+  void goToSupport() => _router.go(AppRoutes.support);
+  void goToCreateQuest() => _router.go(AppRoutes.createQuest);
+  void goToNotificationSettings() => _router.go(AppRoutes.notificationSettings);
+  void goToPairMatching() => _router.go(AppRoutes.pairMatching);
+  void goToPairChat(String buddyId) => _router.go(AppRoutes.pairChat.replaceFirst(':buddyId', buddyId));
+  void goHome() => _router.go(AppRoutes.home);
+  void goToStats() => _router.go(AppRoutes.stats);
+  void goToPair() => _router.go(AppRoutes.pair);
+  void goToQuests() => _router.go(AppRoutes.quests);
+  void goToSettings() => _router.go(AppRoutes.settings);
+}
+
+final navigationUseCaseProvider = Provider<NavigationUseCase>((ref) {
+  final router = ref.watch(routerProvider);
+  return NavigationUseCase(router);
 });

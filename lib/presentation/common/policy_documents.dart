@@ -41,14 +41,14 @@ class PolicyDocument {
 
 final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
     <PolicyDocumentId, PolicyDocument>{
-  PolicyDocumentId.terms: PolicyDocument(
+  PolicyDocumentId.terms: const PolicyDocument(
     id: PolicyDocumentId.terms,
     titleJa: '利用規約 & コミュニティガイドライン',
     titleEn: 'Terms of Service & Community Guidelines',
     lastUpdated: '2024-06-26',
     highlightTag: '13歳以上の方のみご利用いただけます',
     sections: <PolicySection>[
-      const PolicySection(
+      PolicySection(
         titleJa: '1. サービス概要',
         titleEn: '1. Service Overview',
         paragraphs: <PolicyParagraph>[
@@ -58,7 +58,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '2. 13歳以上の利用条件',
         titleEn: '2. Age Requirement (13+)',
         paragraphs: <PolicyParagraph>[
@@ -68,7 +68,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '3. コミュニティガイドライン',
         titleEn: '3. Community Guidelines',
         paragraphs: <PolicyParagraph>[
@@ -82,7 +82,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '4. 通報・ブロック',
         titleEn: '4. Reporting & Blocking',
         paragraphs: <PolicyParagraph>[
@@ -94,13 +94,13 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
       ),
     ],
   ),
-  PolicyDocumentId.privacy: PolicyDocument(
+  PolicyDocumentId.privacy: const PolicyDocument(
     id: PolicyDocumentId.privacy,
     titleJa: 'プライバシーポリシー',
     titleEn: 'Privacy Policy',
     lastUpdated: '2024-06-26',
     sections: <PolicySection>[
-      const PolicySection(
+      PolicySection(
         titleJa: '1. 収集する情報',
         titleEn: '1. Information We Collect',
         paragraphs: <PolicyParagraph>[
@@ -110,7 +110,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '2. 利用目的',
         titleEn: '2. How We Use Information',
         paragraphs: <PolicyParagraph>[
@@ -120,7 +120,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '3. データの保護と保持期間',
         titleEn: '3. Data Protection & Retention',
         paragraphs: <PolicyParagraph>[
@@ -130,7 +130,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '4. ユーザーの権利',
         titleEn: '4. Your Rights',
         paragraphs: <PolicyParagraph>[
@@ -142,13 +142,13 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
       ),
     ],
   ),
-  PolicyDocumentId.community: PolicyDocument(
+  PolicyDocumentId.community: const PolicyDocument(
     id: PolicyDocumentId.community,
     titleJa: '安全対策 & 通報対応',
     titleEn: 'Safety Measures & Reporting SOP',
     lastUpdated: '2024-06-26',
     sections: <PolicySection>[
-      const PolicySection(
+      PolicySection(
         titleJa: '1. 初動対応',
         titleEn: '1. Initial Response',
         paragraphs: <PolicyParagraph>[
@@ -158,7 +158,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '2. 調査と連絡',
         titleEn: '2. Investigation & Communication',
         paragraphs: <PolicyParagraph>[
@@ -168,7 +168,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '3. 再発防止',
         titleEn: '3. Preventive Measures',
         paragraphs: <PolicyParagraph>[
@@ -180,13 +180,13 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
       ),
     ],
   ),
-  PolicyDocumentId.licenses: PolicyDocument(
+  PolicyDocumentId.licenses: const PolicyDocument(
     id: PolicyDocumentId.licenses,
     titleJa: 'コンテンツ権利 & ライセンス一覧',
     titleEn: 'Content Rights & Licensing Overview',
     lastUpdated: '2024-07-01',
     sections: <PolicySection>[
-      const PolicySection(
+      PolicySection(
         titleJa: '1. ビジュアルアセット',
         titleEn: '1. Visual Assets',
         paragraphs: <PolicyParagraph>[
@@ -204,7 +204,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '2. アイコン & アニメーション',
         titleEn: '2. Icons & Animations',
         paragraphs: <PolicyParagraph>[
@@ -222,7 +222,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '3. 効果音 & BGM',
         titleEn: '3. Sound Effects & BGM',
         paragraphs: <PolicyParagraph>[
@@ -240,7 +240,7 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
-      const PolicySection(
+      PolicySection(
         titleJa: '4. OSSコンポーネント',
         titleEn: '4. Open Source Software Components',
         paragraphs: <PolicyParagraph>[

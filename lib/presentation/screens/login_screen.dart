@@ -1,13 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
 
     return Scaffold(
@@ -46,25 +48,25 @@ class LoginScreen extends StatelessWidget {
                     // NOTE: Using a standard icon instead of the image from HTML
                     icon: Icons.g_mobiledata, // Placeholder for Google
                     text: 'Continue with Google',
-                    onPressed: () => context.go('/home'),
+                    onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
                   ),
                   SizedBox(height: tokens.spacing(3)), // space-y-3
                   _SocialLoginButton(
                     icon: Icons.apple,
                     text: 'Continue with Apple',
-                    onPressed: () => context.go('/home'),
+                    onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
                   ),
                   SizedBox(height: tokens.spacing(3)),
                   _SocialLoginButton(
                     icon: Icons.shield_outlined, // shield_person
                     text: 'Continue as Guest',
-                    onPressed: () => context.go('/home'),
+                    onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
                   ),
                   SizedBox(height: tokens.spacing(3)),
                   _SocialLoginButton(
                     icon: Icons.mail_outline, // mail
                     text: 'Continue with Email',
-                    onPressed: () => context.go('/home'),
+                    onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
                   ),
                   const Spacer(),
                   Padding(

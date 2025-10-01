@@ -321,6 +321,34 @@ class NotificationService {
     }
   }
 
+  Future<void> sendNotificationToUser({
+    required String userId,
+    required String title,
+    required String body,
+    Map<String, String>? data,
+  }) async {
+    // TODO: Replace with a real push notification service (e.g., FCM)
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+
+    await _plugin.show(
+      userId.hashCode, // Use a hash of the user ID for the notification ID
+      title,
+      body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'minq_user_channel',
+          'MinQ ユーザー通知',
+          channelDescription: 'ユーザーへの通知です。',
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+      ),
+      payload: data != null ? jsonEncode(data) : null,
+    );
+  }
+
   Future<void> _cancelRecurringReminders() async {
     if (!_supportsLocalNotifications) {
       return;

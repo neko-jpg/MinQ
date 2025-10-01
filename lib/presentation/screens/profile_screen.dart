@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
 
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
-          'Profile',
+          'プロフィール',
           style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
         ),
         centerTitle: true,
@@ -33,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(height: tokens.spacing(8)),
           _buildAboutSection(tokens),
           SizedBox(height: tokens.spacing(6)),
-          _buildMenu(context, tokens),
+          _buildMenu(context, tokens, ref),
         ],
       ),
     );
@@ -60,20 +62,19 @@ class ProfileScreen extends StatelessWidget {
         ),
         SizedBox(height: tokens.spacing(2)),
         Text(
-          'Joined 2 months ago',
+          '2ヶ月前に参加',
           style: tokens.bodySmall.copyWith(color: tokens.textMuted),
-        ),
-      ],
+        ),      ],
     );
   }
 
   Widget _buildStatsRow(MinqTheme tokens) {
-    return Row(
+    return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: const <Widget>[
-        _StatItem(label: 'Streak', value: '12'),
-        _StatItem(label: 'Pairs', value: '3'),
-        _StatItem(label: 'Quests', value: '2'),
+      children: <Widget>[
+        _StatItem(label: '連続', value: '12'),
+        _StatItem(label: 'ペア', value: '3'),
+        _StatItem(label: 'クエスト', value: '2'),
       ],
     );
   }
@@ -85,12 +86,12 @@ class ProfileScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'About',
+            '概要',
             style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
           ),
           SizedBox(height: tokens.spacing(2)),
           Text(
-            "I'm a software engineer who loves to code and build things. I'm also a big fan of productivity and habit-building, and I'm excited to be using MinQ to help me achieve my goals.",
+            "私はソフトウェアエンジニアで、コーディングとものづくりが大好きです。また、生産性向上や習慣化の大ファンでもあり、MinQを使って目標を達成できることを楽しみにしています。",
             style: tokens.bodySmall.copyWith(
               color: tokens.textMuted,
               height: 1.5,
@@ -101,7 +102,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMenu(BuildContext context, MinqTheme tokens) {
+  Widget _buildMenu(BuildContext context, MinqTheme tokens, WidgetRef ref) {
     return Card(
       elevation: 0,
       color: tokens.surface,
@@ -110,7 +111,7 @@ class ProfileScreen extends StatelessWidget {
         children: <Widget>[
           ListTile(
             title: Text(
-              'Edit Profile',
+              'プロフィールを編集',
               style: tokens.bodyMedium.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.w600,
@@ -126,7 +127,7 @@ class ProfileScreen extends StatelessWidget {
           const Divider(height: 1),
           ListTile(
             title: Text(
-              'Settings',
+              '設定',
               style: tokens.bodyMedium.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.w600,
@@ -137,7 +138,7 @@ class ProfileScreen extends StatelessWidget {
               size: tokens.spacing(4),
               color: tokens.textMuted,
             ),
-            onTap: () => context.go('/settings'),
+            onTap: () => ref.read(navigationUseCaseProvider).goToSettings(),
           ),
         ],
       ),

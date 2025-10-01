@@ -30,7 +30,7 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
     ];
     await ref.read(notificationServiceProvider).scheduleRecurringReminders(times);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Notification times saved!')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('通知時間を保存しました！')));
       context.pop();
     }
   }
@@ -40,7 +40,7 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
     final tokens = context.tokens;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notification Times', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+        title: Text('通知時間', style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
         centerTitle: true,
         leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
       ),
@@ -49,19 +49,19 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
         children: [
           _TimePickerTile(
             tokens: tokens,
-            label: 'Morning Reminder',
+            label: '朝のリマインダー',
             time: _morningTime,
             onTap: () => _selectTime(context, _morningTime, (time) => _morningTime = time),
           ),
           SizedBox(height: tokens.spacing(4)),
           _TimePickerTile(
             tokens: tokens,
-            label: 'Evening Reminder',
+            label: '夜のリマインダー',
             time: _eveningTime,
             onTap: () => _selectTime(context, _eveningTime, (time) => _eveningTime = time),
           ),
           SizedBox(height: tokens.spacing(8)),
-          MinqPrimaryButton(label: 'Save', onPressed: _saveSettings),
+          MinqPrimaryButton(label: '保存', onPressed: _saveSettings),
         ],
       ),
     );
@@ -84,7 +84,7 @@ class _TimePickerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 1,
+        elevation: 0,
       shadowColor: tokens.background.withOpacity(0.1),
       color: tokens.surface,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
