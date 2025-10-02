@@ -39,7 +39,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) => _startPairing());
   }
 
-  void _startPairing() {
+  Future<void> _startPairing() async {
     setState(() {
       _status = PairMatchingStatus.searching;
     });
@@ -86,7 +86,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     }
   }
 
-  void _cancelPairing() {
+  Future<void> _cancelPairing() async {
     _pairingTimer?.cancel();
     final repo = ref.read(pairRepositoryProvider);
     final uid = ref.read(uidProvider);

@@ -1,52 +1,34 @@
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
-import 'package:uni_links/uni_links.dart';
 
 /// Bridges platform deep links into a broadcast stream that the UI can observe.
 class DeepLinkService {
-  DeepLinkService();
+  DeepLinkService() {
+    _init();
+  }
 
+  final _appLinks = AppLinks();
   final StreamController<Uri> _controller = StreamController<Uri>.broadcast();
-  StreamSubscription<Uri?>? _subscription;
-  bool _initialized = false;
+  StreamSubscription<Uri>? _subscription;
 
   /// A stream of incoming deep links.
-  ///
-  /// The initial link (if available) is emitted before any subsequent updates.
-  Stream<Uri> get linkStream {
-    _ensureInitialized();
-    return _controller.stream;
-  }
+  Stream<Uri> get linkStream => _controller.stream;
 
-  void _ensureInitialized() {
-    if (_initialized) {
-      return;
+  Future<void> _init() async {
+    // Get the initial link
+    final initialLink = await _appLinks.getInitialLink();
+    if (initialLink != null) {
+      _controller.add(initialLink);
     }
-    _initialized = true;
 
-    unawaited(_emitInitialUri());
-    _subscription = uriLinkStream.listen(
-      (Uri? uri) {
-        if (uri != null) {
-          _controller.add(uri);
-        }
-      },
-      onError: (Object error) {
-        debugPrint('Failed to parse incoming deep link: $error');
-      },
-    );
-  }
-
-  Future<void> _emitInitialUri() async {
-    try {
-      final Uri? initialUri = await getInitialUri();
-      if (initialUri != null) {
-        _controller.add(initialUri);
-      }
-    } catch (error) {
-      debugPrint('Failed to obtain initial deep link: $error');
-    }
+    // Listen for further links
+    _subscription = _appLinks.uriLinkStream.listen((uri) {
+      _controller.add(uri);
+    }, onError: (Object err, StackTrace stack) {
+      debugPrint('Failed to handle deep link: $err');
+    });
   }
 
   void dispose() {

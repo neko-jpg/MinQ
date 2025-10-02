@@ -10,7 +10,7 @@ class HomeDataController extends AutoDisposeAsyncNotifier<HomeViewData> {
   Future<HomeViewData> build() async {
     final LocalPreferencesService localPrefs = ref.read(localPreferencesServiceProvider);
     final HomeViewData? cached = await localPrefs.loadHomeViewData();
-    if (cached != null && mounted) {
+    if (cached != null) {
       state = AsyncData<HomeViewData>(cached);
     }
 

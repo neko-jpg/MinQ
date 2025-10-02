@@ -34,6 +34,7 @@ import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/user/user.dart' as minq_user;
+import 'package:minq/domain/pair/pair.dart' as minq_pair;
 
 final notificationServiceProvider = Provider<NotificationService>(
   (ref) => NotificationService(),
