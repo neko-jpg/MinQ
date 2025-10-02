@@ -4,15 +4,53 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/notification_service.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  bool _developerOptionsUnlocked = kDebugMode;
+  int _versionTapCount = 0;
+  DateTime? _lastVersionTap;
+
+  void _handleVersionTap(BuildContext context) {
+    final now = DateTime.now();
+    if (_lastVersionTap == null || now.difference(_lastVersionTap!) > const Duration(seconds: 2)) {
+      _versionTapCount = 0;
+    }
+    _lastVersionTap = now;
+    _versionTapCount++;
+
+    if (_developerOptionsUnlocked) {
+      FeedbackMessenger.showInfoToast(context, '開発者向けオプションは表示中です');
+      return;
+    }
+
+    final tapsRemaining = 5 - _versionTapCount;
+    if (tapsRemaining > 0) {
+      FeedbackMessenger.showInfoToast(
+        context,
+        '開発者向けオプションまであと${tapsRemaining}回タップ',
+      );
+      return;
+    }
+
+    setState(() {
+      _developerOptionsUnlocked = true;
+    });
+    FeedbackMessenger.showSuccessToast(context, '開発者向けオプションを有効化しました');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context)!;
 
@@ -56,8 +94,14 @@ class SettingsScreen extends ConsumerWidget {
                     await notifier.scheduleRecurringReminders(
                       NotificationService.defaultReminderTimes,
                     );
+                    if (context.mounted) {
+                      FeedbackMessenger.showSuccessToast(context, '通知を有効にしました');
+                    }
                   } else {
                     await notifier.cancelAll();
+                    if (context.mounted) {
+                      FeedbackMessenger.showInfoToast(context, '通知を停止しました');
+                    }
                   }
                 },
               ),
@@ -105,10 +149,11 @@ class SettingsScreen extends ConsumerWidget {
                 title: l10n.settingsAppVersion,
                 isStatic: true,
                 staticValue: '1.0.0',
+                onTap: () => _handleVersionTap(context),
               ),
             ],
           ),
-          if (kDebugMode)
+          if (_developerOptionsUnlocked)
             _SettingsSection(
               title: l10n.settingsSectionDeveloper,
               tiles: [
@@ -122,6 +167,10 @@ class SettingsScreen extends ConsumerWidget {
                     ref
                         .read(localPreferencesServiceProvider)
                         .setDummyDataMode(value);
+                    FeedbackMessenger.showInfoToast(
+                      context,
+                      value ? 'ダミーデータモードを有効にしました' : 'ダミーデータモードを無効にしました',
+                    );
                   },
                 ),
                 _SettingsTile(

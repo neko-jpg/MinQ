@@ -96,5 +96,7 @@
   "areYouSure": "Are you sure?",
   "blockConfirmation": "Blocking this user will prevent them from contacting you. This can be undone in settings.",
   "reportConfirmation": "Please provide a brief reason for the report. This helps us take appropriate action.",
-  "reason": "Reason"
+  "reason": "Reason",
+  "notSignedIn": "You are not signed in.",
+  "errorGeneric": "Something went wrong. Please try again later."
 }

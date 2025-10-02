@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class SupportScreen extends ConsumerStatefulWidget {
@@ -52,7 +53,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         title: Text(
-          'Support & FAQ',
+          'サポートとFAQ',
           style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
         ),
       ),
@@ -143,10 +144,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
 
   void _copyToClipboard(BuildContext context, String text) {
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Copied "$text"'),
-      ),
+    FeedbackMessenger.showSuccessToast(
+      context,
+      'コピーしました: $text',
     );
   }
 
@@ -161,12 +161,12 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Rate your MinQ experience',
+              'MinQの使い心地を教えてください',
               style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
             ),
             SizedBox(height: tokens.spacing(2)),
             Text(
-              '0 = Not likely to recommend, 10 = Extremely likely',
+              '0 = おすすめしたくない / 10 = とてもおすすめしたい',
               style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             ),
             SizedBox(height: tokens.spacing(4)),
@@ -184,7 +184,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: Text(
-                'Score: $_npsScore',
+                'スコア: $_npsScore',
                 style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ),
@@ -204,7 +204,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               Padding(
                 padding: EdgeInsets.only(bottom: tokens.spacing(2)),
                 child: Text(
-                  'Thanks! Saved on ${_recordedAt!.year}/${_recordedAt!.month}/${_recordedAt!.day}.',
+                  'ありがとうございます！ ${_recordedAt!.year}/${_recordedAt!.month}/${_recordedAt!.day} に保存しました。',
                   style: tokens.bodySmall.copyWith(color: tokens.accentSuccess),
                 ),
               ),
@@ -212,7 +212,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               alignment: Alignment.centerRight,
               child: FilledButton(
                 onPressed: () => _submitNps(tokens),
-                child: Text(_submitted ? 'Update feedback' : 'Submit feedback'),
+                child: Text(_submitted ? 'フィードバックを更新する' : 'フィードバックを送信する'),
               ),
             ),
           ],
@@ -235,11 +235,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     if (!mounted) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: tokens.brandPrimary,
-        content: const Text('Thanks for letting us know!'),
-      ),
+    FeedbackMessenger.showSuccessToast(
+      context,
+      'ご協力ありがとうございます！',
     );
   }
 }
