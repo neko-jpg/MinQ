@@ -175,17 +175,51 @@ class AnimationSystem {
   static const Duration animatedSwitcher = fast;
   static const Curve animatedSwitcherCurve = standard;
 
+  /// Shimmerアニメーション（Skeletonローディング用）
+  static const Duration shimmer = Duration(milliseconds: 1400);
+
   // ========================================
   // ヘルパーメソッド
   // ========================================
+
+  /// Reduce Motion設定を考慮すべきかどうか
+  static bool shouldReduceMotion(BuildContext context) {
+    final mediaQuery = MediaQuery.maybeOf(context);
+    if (mediaQuery == null) {
+      return false;
+    }
+
+    return mediaQuery.disableAnimations || mediaQuery.accessibleNavigation;
+  }
 
   /// Reduce Motion設定を考慮したDurationを取得
   static Duration getDuration(
     BuildContext context,
     Duration baseDuration,
   ) {
-    final reduceMotion = MediaQuery.of(context).disableAnimations;
-    return reduceMotion ? Duration.zero : baseDuration;
+    return shouldReduceMotion(context) ? Duration.zero : baseDuration;
+  }
+
+  /// Reduce Motion時に利用するCurveを選択
+  static Curve getCurve(BuildContext context, Curve baseCurve) {
+    return shouldReduceMotion(context) ? Curves.linear : baseCurve;
+  }
+
+  /// Reduce Motion設定に応じてアニメーションコントローラーを制御
+  static void syncControllerWithAccessibility(
+    AnimationController controller,
+    BuildContext context, {
+    bool repeat = false,
+    Duration? repeatDuration,
+  }) {
+    if (shouldReduceMotion(context)) {
+      if (controller.isAnimating) {
+        controller.stop();
+      }
+      controller.value = repeat ? 1.0 : controller.lowerBound;
+    } else if (repeat && !controller.isAnimating) {
+      controller.repeat(period: repeatDuration);
+    }
   }
 
   /// アニメーションコントローラーを作成

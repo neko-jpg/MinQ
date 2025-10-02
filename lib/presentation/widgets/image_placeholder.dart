@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/animation_system.dart';
+import '../theme/minq_theme.dart';
 import '../theme/spacing_system.dart';
 
 /// 画像プレースホルダとエラーハンドリングのユーティリティ
@@ -22,21 +23,26 @@ class ImagePlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.tokens;
     final bgColor = backgroundColor ?? theme.colorScheme.surfaceContainerHighest;
     final iColor = iconColor ?? theme.colorScheme.onSurfaceVariant;
 
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(
-        child: Icon(
-          icon,
-          size: 48,
-          color: iColor,
+    return Semantics(
+      container: true,
+      label: 'placeholder image',
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: tokens.cornerMedium(),
+        ),
+        child: Center(
+          child: Icon(
+            icon,
+            size: tokens.spacing(12),
+            color: iColor,
+          ),
         ),
       ),
     );
@@ -66,8 +72,9 @@ class NetworkImageWithFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
     return ClipRRect(
-      borderRadius: borderRadius ?? BorderRadius.circular(8),
+      borderRadius: borderRadius ?? tokens.cornerMedium(),
       child: Image.network(
         imageUrl,
         width: width,
@@ -77,8 +84,14 @@ class NetworkImageWithFallback extends StatelessWidget {
           if (wasSynchronouslyLoaded) {
             return child;
           }
+          final duration =
+              AnimationSystem.getDuration(context, AnimationSystem.animatedSwitcher);
+          final curve =
+              AnimationSystem.getCurve(context, AnimationSystem.animatedSwitcherCurve);
           return AnimatedSwitcher(
-            duration: AnimationSystem.animatedSwitcher,
+            duration: duration,
+            switchInCurve: curve,
+            switchOutCurve: curve,
             child: frame != null
                 ? child
                 : placeholder ??
@@ -131,8 +144,9 @@ class AssetImageWithFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
     return ClipRRect(
-      borderRadius: borderRadius ?? BorderRadius.circular(8),
+      borderRadius: borderRadius ?? tokens.cornerMedium(),
       child: Image.asset(
         assetPath,
         width: width,

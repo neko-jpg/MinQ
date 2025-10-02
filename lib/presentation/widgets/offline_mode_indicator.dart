@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 import '../../core/network/network_status_service.dart';
 
 /// オフラインモードインジケーター
@@ -14,6 +15,7 @@ class OfflineModeIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isOnline = ref.watch(networkStatusProvider);
+    final tokens = context.tokens;
 
     return Stack(
       children: [
@@ -28,34 +30,39 @@ class OfflineModeIndicator extends ConsumerWidget {
             top: 0,
             left: 0,
             right: 0,
-            child: Material(
-              color: Colors.orange,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.cloud_off,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    const Expanded(
-                      child: Text(
-                        'オフラインモード（読み取り専用）',
-                        style: TextStyle(color: Colors.white),
+            child: Semantics(
+              container: true,
+              liveRegion: true,
+              label: 'オフラインモード: 読み取り専用',
+              child: Material(
+                color: Colors.orange,
+                child: Padding(
+                  padding: EdgeInsets.all(tokens.spacing(2)),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.cloud_off,
+                        color: Colors.white,
+                        size: 20,
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // 再接続を試みる
-                      },
-                      child: const Text(
-                        '再接続',
-                        style: TextStyle(color: Colors.white),
+                      SizedBox(width: tokens.spacing(2)),
+                      const Expanded(
+                        child: Text(
+                          'オフラインモード（読み取り専用）',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
-                    ),
-                  ],
+                      TextButton(
+                        onPressed: () {
+                          // 再接続を試みる
+                        },
+                        child: const Text(
+                          '再接続',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

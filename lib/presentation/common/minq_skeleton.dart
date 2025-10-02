@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class MinqSkeleton extends StatefulWidget {
@@ -22,14 +23,33 @@ class MinqSkeleton extends StatefulWidget {
 class _MinqSkeletonState extends State<MinqSkeleton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  bool _reduceMotion = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
-    )..repeat();
+      duration: AnimationSystem.shimmer,
+    )..repeat(period: AnimationSystem.shimmer);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final shouldReduce = AnimationSystem.shouldReduceMotion(context);
+    if (_reduceMotion != shouldReduce) {
+      setState(() {
+        _reduceMotion = shouldReduce;
+      });
+    }
+
+    AnimationSystem.syncControllerWithAccessibility(
+      _controller,
+      context,
+      repeat: true,
+      repeatDuration: AnimationSystem.shimmer,
+    );
   }
 
   @override
@@ -47,13 +67,25 @@ class _MinqSkeletonState extends State<MinqSkeleton>
     final highlightColor = Theme.of(context).brightness == Brightness.dark
         ? Colors.white.withValues(alpha: 0.25)
         : Colors.white.withValues(alpha: 0.6);
+    final borderRadius = widget.borderRadius ?? tokens.cornerLarge();
+
+    if (_reduceMotion) {
+      return ClipRRect(
+        borderRadius: borderRadius,
+        child: Container(
+          width: widget.width,
+          height: widget.height,
+          color: baseColor,
+        ),
+      );
+    }
 
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
         final shimmerPosition = _controller.value * 2 - 1;
         return ClipRRect(
-          borderRadius: widget.borderRadius ?? tokens.cornerLarge(),
+          borderRadius: borderRadius,
           child: ShaderMask(
             shaderCallback: (Rect bounds) {
               return LinearGradient(
