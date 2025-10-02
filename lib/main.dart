@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/routing/app_router.dart';
@@ -136,16 +137,14 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         theme: lightTheme,
         darkTheme: darkTheme,
         themeMode: ThemeMode.system,
-        locale: locale,
+        locale: locale ?? const Locale('ja'),
         localizationsDelegates: const [
+          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: const [
-          Locale('en', ''), // English, no country code
-          Locale('ja', ''), // Japanese, no country code
-        ],
+        supportedLocales: const [Locale('ja')],
         builder: (BuildContext context, Widget? child) {
           final mediaQuery = MediaQuery.of(context);
           final clampedScaler = mediaQuery.textScaler.clamp(

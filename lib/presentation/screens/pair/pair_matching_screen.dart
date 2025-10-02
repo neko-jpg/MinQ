@@ -226,7 +226,12 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
             onPressed: _startPairing,
           ),
           const SizedBox(height: 16),
-          MinqTextButton(label: l10n.cancel, onTap: () => context.pop()),
+          MinqTextButton(
+            label: l10n.cancel,
+            onTap: () async {
+              context.pop();
+            },
+          ),
           const SizedBox(height: 24),
         ],
       ),

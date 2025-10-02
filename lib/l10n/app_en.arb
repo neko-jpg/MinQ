@@ -7,15 +7,14 @@
   "snoozedRecommendation": "Snoozed this recommendation until tomorrow.",
   "noQuestsToday": "No Quests for today yet",
   "chooseFromTemplate": "Choose from a template and start your 3-tap habit.",
-  "findAQuest": "Find a Quest",
-  "swapRecommendation": "Swap for another recommendation",
-  "snoozeUntilTomorrow": "Snooze until tomorrow",
+  "findAQuest": "クエストを探す",
+  "swapRecommendation": "別のおすすめに入れ替える",
+  "snoozeUntilTomorrow": "明日までスヌーズする",
   "snoozed": "Snoozed",
   "undo": "Undo",
   "dismissHelpBanner": "Dismiss tips",
   "openProfile": "Open profile",
   "snoozeTemporarilyDisabled": "Snooze is temporarily disabled",
-
   "settingsTitle": "Settings",
   "settingsSectionGeneral": "General",
   "settingsPushNotifications": "Push Notifications",
@@ -23,25 +22,21 @@
   "settingsNotificationTime": "Notification Time",
   "settingsSound": "Sound",
   "settingsProfile": "Profile Settings",
-
   "settingsSectionPrivacy": "Privacy and Data",
-  "settingsDataSync": "Data Sync",
+  "settingsDataSync": "データ同期を設定する",
   "settingsDataSyncSubtitle": "Sync data across devices",
-  "settingsManageBlockedUsers": "Manage Blocked Users",
-  "settingsExportData": "Export Data",
-  "settingsDeleteAccount": "Delete Account and Data",
-
+  "settingsManageBlockedUsers": "ブロック中のユーザーを管理する",
+  "settingsExportData": "データをエクスポートする",
+  "settingsDeleteAccount": "アカウントとデータを削除する",
   "settingsSectionAbout": "About MinQ",
   "settingsTermsOfService": "Terms of Service",
   "settingsPrivacyPolicy": "Privacy Policy",
   "settingsAppVersion": "App Version",
-
   "settingsSectionDeveloper": "Developer Options",
   "settingsUseDummyData": "Use Dummy Data",
   "settingsUseDummyDataSubtitle": "Use dummy data instead of the database.",
-  "settingsSocialSharingDemo": "Social Sharing Demo",
+  "settingsSocialSharingDemo": "ソーシャル共有デモを試す",
   "settingsSocialSharingDemoSubtitle": "Test social sharing and celebration features",
-
   "questsTitle": "Mini-Quests",
   "questsSearchHint": "Search for templates...",
   "questsFabLabel": "Create Custom",
@@ -52,7 +47,6 @@
   "questsCategoryExercise": "Exercise",
   "questsCategoryTidying": "Tidying",
   "questsCategoryRecent": "Recent",
-
   "authErrorOperationNotAllowed": "Anonymous sign-in is not enabled for this project.",
   "authErrorWeakPassword": "The password provided is too weak.",
   "authErrorEmailAlreadyInUse": "An account already exists for that email.",
@@ -63,40 +57,87 @@
   "authErrorAccountExistsWithDifferentCredential": "An account already exists with the same email address but different sign-in credentials.",
   "authErrorInvalidCredential": "The credential received is malformed or has expired.",
   "authErrorUnknown": "An unknown error occurred.",
-
   "back": "Back",
-
   "pairMatchingTimeoutTitle": "Matching Timed Out",
   "pairMatchingTimeoutMessage": "We couldn't find a buddy for you in time. Please try again or check back later.",
-  "retry": "Retry",
-  "cancel": "Cancel",
-
+  "retry": "再試行する",
+  "cancel": "キャンセルする",
   "messageSentFailed": "Failed to send message",
-
   "chatInputHint": "Type a message...",
-
   "notificationPermissionDialogTitle": "Enable Notifications?",
   "notificationPermissionDialogMessage": "Get reminders for your quests and updates from your buddy. You can change this anytime in settings.",
   "enable": "Enable",
   "later": "Later",
-
   "shareFailed": "Failed to share progress. Please try again.",
-
   "accountDeletionTitle": "Account Deletion",
   "accountDeletionWarning": "This is a permanent action. After a 7-day grace period, all your data, including quests, progress, and pairs, will be permanently erased. You can cancel this process by logging in again within 7 days.",
   "accountDeletionConfirmationCheckbox": "I understand the consequences and wish to permanently delete my account.",
   "deleteMyAccountButton": "Delete My Account",
-
-  "blockUser": "Block User",
-  "reportUser": "Report User",
+  "blockUser": "ユーザーをブロックする",
+  "reportUser": "ユーザーを報告する",
   "userBlocked": "User has been blocked.",
   "reportSubmitted": "Report has been submitted.",
-  "block": "Block",
-  "report": "Report",
+  "block": "ブロックする",
+  "report": "報告する",
   "areYouSure": "Are you sure?",
   "blockConfirmation": "Blocking this user will prevent them from contacting you. This can be undone in settings.",
   "reportConfirmation": "Please provide a brief reason for the report. This helps us take appropriate action.",
   "reason": "Reason",
   "notSignedIn": "You are not signed in.",
-  "errorGeneric": "Something went wrong. Please try again later."
+  "errorGeneric": "Something went wrong. Please try again later.",
+  "pairTitle": "ペア",
+  "pairAnonymousPartner": "匿名のパートナー",
+  "pairPairedQuest": "{questName}のクエストでペアリング中",
+  "@pairPairedQuest": {
+    "description": "ペアのカテゴリ名を含む説明文",
+    "placeholders": {
+      "questName": {}
+    }
+  },
+  "pairHighFiveAction": "ハイタッチを送る",
+  "pairHighFiveSent": "ハイタッチを送信済み",
+  "pairQuickMessagePrompt": "ひとことメッセージを送る",
+  "pairQuickMessageGreat": "すばらしいよ！",
+  "pairQuickMessageKeepGoing": "その調子でいこう！",
+  "pairQuickMessageFinishStrong": "最後までやり切ろう！",
+  "pairQuickMessageCompletedGoal": "目標を達成したよ！",
+  "streakDayCount": "{count, plural, =0 {連続0日} other {連続{count}日}}",
+  "@streakDayCount": {
+    "description": "現在の連続日数を示すテキスト",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "celebrationNewLongestStreak": "連続記録を更新しました！",
+  "celebrationStreakMessage": "{count, plural, =0 {まだ記録がありません。今日から始めましょう！} other {{count}日連続を達成！}}",
+  "@celebrationStreakMessage": {
+    "description": "連続日数の祝福メッセージ",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "celebrationLongestSubtitle": "自己ベストを更新しました！",
+  "celebrationKeepGoingSubtitle": "とても順調です。この調子で続けましょう。",
+  "celebrationRewardTitle": "ごほうび",
+  "celebrationRewardName": "1分間の呼吸エクササイズ",
+  "celebrationRewardDescription": "深呼吸で心を整えましょう",
+  "celebrationDone": "完了する",
+  "pairPartnerHeroTitle": "パートナーと一緒に成長しよう！",
+  "pairPartnerHeroDescription": "アカウンタビリティパートナーがいると達成率が95%向上します。匿名で安心して続けましょう。",
+  "pairInviteTitle": "招待コードをお持ちですか？",
+  "pairInviteHint": "コードを入力してください",
+  "pairInviteApply": "適用する",
+  "pairDividerOr": "または",
+  "pairRandomMatchTitle": "ランダムでマッチングする",
+  "pairAgeRangeLabel": "年齢帯",
+  "pairGoalCategoryLabel": "目標カテゴリ",
+  "pairRandomMatchNote": "匿名性は守られます。年齢帯と目標カテゴリのみが共有され、すべてのやり取りはアプリ内で行われます。",
+  "pairAgeOption1824": "18-24歳",
+  "pairAgeOption2534": "25-34歳",
+  "pairAgeOption3544": "35-44歳",
+  "pairAgeOption45Plus": "45歳以上",
+  "pairGoalFitness": "フィットネス",
+  "pairGoalLearning": "学習",
+  "pairGoalWellbeing": "ウェルビーイング",
+  "pairGoalProductivity": "生産性"
 }
