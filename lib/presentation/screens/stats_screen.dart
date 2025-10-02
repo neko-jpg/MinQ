@@ -250,6 +250,8 @@ class _ProgressEntry {
     required this.unit,
     required this.progress,
     required this.color,
+    required this.icon,
+    required this.semanticsLabel,
   });
 
   final String label;
@@ -257,6 +259,8 @@ class _ProgressEntry {
   final String unit;
   final double progress;
   final Color color;
+  final IconData icon;
+  final String semanticsLabel;
 }
 
 class _RingMetric {
@@ -284,6 +288,8 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
       unit: '日',
       progress: 0.71,
       color: tokens.brandPrimary,
+      icon: Icons.trending_up,
+      semanticsLabel: '今週は5日達成しています',
     ),
     _ProgressEntry(
       label: '先週',
@@ -291,6 +297,8 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
       unit: '日',
       progress: 0.86,
       color: tokens.serenity,
+      icon: Icons.history,
+      semanticsLabel: '先週は6日達成しました',
     ),
   ];
   final hasProgress = entries.any((entry) => entry.progress > 0);
@@ -325,23 +333,20 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
             runSpacing: tokens.spacing(2),
             children: [
               for (final entry in entries)
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: tokens.spacing(2),
-                      height: tokens.spacing(2),
-                      decoration: BoxDecoration(
-                        color: entry.color,
-                        shape: BoxShape.circle,
+                Semantics(
+                  container: true,
+                  label: entry.semanticsLabel,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _LegendBadge(color: entry.color, icon: entry.icon),
+                      SizedBox(width: tokens.spacing(1.5)),
+                      Text(
+                        '${entry.label}（${entry.unit}）',
+                        style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
                       ),
-                    ),
-                    SizedBox(width: tokens.spacing(1)),
-                    Text(
-                      '${entry.label}（${entry.unit}）',
-                      style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
             ],
           ),
@@ -457,13 +462,27 @@ Widget _buildProgressBar(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            entry.label,
-            style: tokens.typeScale.bodyMedium.copyWith(
-              color: tokens.textPrimary,
-              fontWeight: FontWeight.bold,
+          _LegendBadge(color: progressColor, icon: entry.icon),
+          SizedBox(width: tokens.spacing(2)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  entry.label,
+                  style: tokens.typeScale.bodyMedium.copyWith(
+                    color: tokens.textPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (deltaLabel != null)
+                  Text(
+                    '先週比 $deltaLabel',
+                    style: tokens.typeScale.bodySmall
+                        .copyWith(color: tokens.textMuted),
+                  ),
+              ],
             ),
           ),
           Column(
@@ -476,28 +495,51 @@ Widget _buildProgressBar(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              if (deltaLabel != null)
-                Text(
-                  '先週比 $deltaLabel',
-                  style: tokens.typeScale.bodySmall
-                      .copyWith(color: tokens.textMuted),
-                ),
             ],
           ),
         ],
       ),
       SizedBox(height: tokens.spacing(2)),
-      ClipRRect(
-        borderRadius: tokens.cornerLarge(),
-        child: LinearProgressIndicator(
-          value: entry.progress.clamp(0.0, 1.0),
-          minHeight: 10,
-          backgroundColor: tokens.border.withOpacity(0.3),
-          valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+      Semantics(
+        label: entry.semanticsLabel,
+        value: '${(entry.progress * 100).round()}%',
+        child: ClipRRect(
+          borderRadius: tokens.cornerLarge(),
+          child: LinearProgressIndicator(
+            value: entry.progress.clamp(0.0, 1.0),
+            minHeight: 10,
+            backgroundColor: tokens.border.withOpacity(0.3),
+            valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+          ),
         ),
       ),
     ],
   );
+}
+
+class _LegendBadge extends StatelessWidget {
+  const _LegendBadge({required this.color, required this.icon});
+
+  final Color color;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final Color iconColor =
+        tokens.ensureAccessibleOnBackground(tokens.textPrimary, color);
+    return Container(
+      width: tokens.spacing(6),
+      height: tokens.spacing(6),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: tokens.cornerMedium(),
+        border: Border.all(color: tokens.border.withOpacity(0.4)),
+      ),
+      alignment: Alignment.center,
+      child: Icon(icon, color: iconColor, size: tokens.spacing(3.5)),
+    );
+  }
 }
 
 String _formatDelta(double delta, String unit) {

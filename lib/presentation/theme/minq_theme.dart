@@ -169,6 +169,31 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     return isHighContrastMode(context) ? highContrastBackground : background;
   }
 
+  /// Returns a version of [base] that meets WCAG AA contrast on [background].
+  /// If the original color is already accessible it is returned as-is.
+  Color ensureAccessibleOnBackground(
+    Color base,
+    Color background, {
+    double minContrast = 4.5,
+  }) {
+    if (meetsWCAGAA(base, background)) {
+      return base;
+    }
+
+    final bool isBackgroundLight = background.computeLuminance() >= 0.5;
+    final Color target = isBackgroundLight ? Colors.black : Colors.white;
+
+    Color candidate = base;
+    for (double step = 0.1; step <= 1.0; step += 0.1) {
+      candidate = Color.lerp(base, target, step)!;
+      if (meetsWCAGAA(candidate, background)) {
+        return candidate;
+      }
+    }
+
+    return target;
+  }
+
   // Animation duration helpers based on accessibility settings
   Duration getAnimationDuration(BuildContext context, Duration baseDuration) {
     final reduceMotion = MediaQuery.of(context).disableAnimations;
