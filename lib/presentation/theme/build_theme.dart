@@ -22,6 +22,14 @@ ThemeData buildTheme(MinqTheme tokens) {
     onSurface: tokens.textPrimary,
   );
 
+  final buttonShape = WidgetStatePropertyAll<OutlinedBorder>(
+    RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+  );
+  final buttonPadding = WidgetStatePropertyAll<EdgeInsetsGeometry>(
+    EdgeInsets.symmetric(horizontal: tokens.spacing(4)),
+  );
+  const minButtonSize = WidgetStatePropertyAll<Size>(Size(80, 48));
+
   final textTheme = TextTheme(
     displayMedium: tokens.displayMedium,
     displaySmall: tokens.displaySmall,
@@ -52,6 +60,30 @@ ThemeData buildTheme(MinqTheme tokens) {
         side: BorderSide(color: tokens.border),
       ),
       elevation: 0,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        minimumSize: minButtonSize,
+        padding: buttonPadding,
+        shape: buttonShape,
+        tapTargetSize: MaterialTapTargetSize.padded,
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: ButtonStyle(
+        minimumSize: minButtonSize,
+        padding: buttonPadding,
+        shape: buttonShape,
+        tapTargetSize: MaterialTapTargetSize.padded,
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        minimumSize: minButtonSize,
+        padding: buttonPadding,
+        shape: buttonShape,
+        tapTargetSize: MaterialTapTargetSize.padded,
+      ),
     ),
     iconButtonTheme: const IconButtonThemeData(
       style: ButtonStyle(
