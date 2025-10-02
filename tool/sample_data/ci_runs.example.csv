@@ -1,0 +1,4 @@
+workflow,minutes,runner
+flutter_test,18,ubuntu-latest
+analyze,7,ubuntu-22.04
+integration,35,macos-latest

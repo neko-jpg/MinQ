@@ -1,0 +1,10 @@
+firestore:
+  monthly_budget_usd: 1200
+  daily_growth_warning_ratio: 1.2
+cloud_functions:
+  monthly_budget_usd: 900
+  daily_growth_warning_ratio: 1.2
+  max_daily_invocations: 3000000
+cloud_run:
+  monthly_budget_usd: 600
+  cpu_seconds_hourly_threshold: 50000

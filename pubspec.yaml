@@ -80,6 +80,7 @@ dependencies:
   workmanager: any
   package_info_plus: any
   url_launcher: any
+  yaml: any
 
   # Code Generation
   freezed_annotation: any

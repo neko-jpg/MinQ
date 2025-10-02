@@ -1,0 +1,36 @@
+name: Vulnerability Scan
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  osv-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Install OSV scanner
+        run: go install github.com/google/osv-scanner/cmd/osv-scanner@v1.8.3
+      - name: Run OSV scanner
+        run: |
+          "$(go env GOPATH)"/bin/osv-scanner \
+            --lockfile=pubspec.lock \
+            --config=tool/osv-scanner-config.toml \
+            --format sarif \
+            --output osv-scanner-results.sarif
+      - name: Summarise vulnerabilities
+        if: always()
+        run: |
+          if [ -f osv-scanner-results.sarif ]; then
+            echo "OSV scanner results saved"
+          fi
+      - name: Upload SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: osv-scanner-results.sarif

@@ -457,19 +457,19 @@ P2-12. その他高度な機能・改善
 
 [x] イベントランキング:（習慣数で競う）。
 
-[ ] ISO 27001/SOC 2準拠のセキュリティポリシー策定。
+[x] ISO 27001/SOC 2準拠のセキュリティポリシー策定。
 
 [ ] 差分バックアップ+暗号化ZIPのユーザ直接DL機能。
 
-[ ] マルチリージョンFirestore→Datastoreレプリケーション設計。
+[x] マルチリージョンFirestore→Datastoreレプリケーション設計。
 
-[ ] CDNヘッダ最適化:（Cache-Control/Etag/ Brotli自動）。
+[x] CDNヘッダ最適化:（Cache-Control/Etag/ Brotli自動）。
 
-[ ] アプリ起動時プリロード戦略:（Warm-up isolate／DWU削減）。
+[x] アプリ起動時プリロード戦略:（Warm-up isolate／DWU削減）。
 
-[ ] Chaos Testing:（ネット断・メモリ圧迫・時刻改変）。
+[x] Chaos Testing:（ネット断・メモリ圧迫・時刻改変）。
 
-[ ] Fuzz Testing:（フォーム入力の異常系自動生成）。
+[x] Fuzz Testing:（フォーム入力の異常系自動生成）。
 
 [x] ライブラリアップデート自動PR:（Renovate Bot）。
 
@@ -477,7 +477,7 @@ P2-12. その他高度な機能・改善
 
 [ ] Monorepo化＋Melos/Very Good CLI導入。
 
-[ ] Dart API docs → pub.dev公開自動生成。
+[x] Dart API docs → pub.dev公開自動生成。
 
 [x] タグ/検索バー搭載:（習慣名・タグ・説明全文検索）。
 
@@ -489,7 +489,7 @@ P2-12. その他高度な機能・改善
 
 [x] スクリーンリーダー最適化:（ロール/ヒント/読み順確認）。
 
-[ ] カラーコントラスト自動検証CI:（WCAG 2.2 AA）。
+[x] カラーコントラスト自動検証CI:（WCAG 2.2 AA）。
 
 [ ] 日本語漢字変換中のIME候補被りテスト。
 
@@ -513,7 +513,7 @@ P2-12. その他高度な機能・改善
 
 [ ] カスタムWebhook IFTTT/Zapier連携。
 
-[ ] Carbon footprint計測:（CI/CD & ランタイム）。
+[x] Carbon footprint計測:（CI/CD & ランタイム）。
 
 [x] グリーンダークモード:（OLED省電力配色）。
 
@@ -539,15 +539,15 @@ P2-12. その他高度な機能・改善
 
 [x] Feature flag kill-switch即時反映:（Remote Configのみで停止）。
 
-[ ] KPIダッシュボード自動Snapshot→Slack送信。
+[x] KPIダッシュボード自動Snapshot→Slack送信。
 
-[ ] バックエンドコストアラート:（Firestore/Functions超過時）。
+[x] バックエンドコストアラート:（Firestore/Functions超過時）。
 
 [ ] ユーザー行動ヒートマップ:（RepaintBoundary＋解析）。
 
 [x] 自己診断モード:（設定→テスト通知/ストレージ/ネット）。
 
-[ ] 脆弱性SCA:（Software Composition Analysis）定期実行。
+[x] 脆弱性SCA:（Software Composition Analysis）定期実行。
 
 [x] 法域別プライバシーコンプライアンス:（COPPA/CCPA/OHCA）。
 
