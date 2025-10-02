@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:minq/data/providers.dart';
@@ -14,6 +15,7 @@ class StatsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     final heatmapData = ref.watch(heatmapDataProvider);
     final streakAsync = ref.watch(streakProvider);
 
@@ -37,7 +39,7 @@ class StatsScreen extends ConsumerWidget {
 
           return heatmapData.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(child: Text('エラー: $error')),
+            error: (error, stack) => Center(child: Text(l10n.errorGeneric)),
             data: (data) {
               Widget child = ListView(
                 padding: EdgeInsets.symmetric(
@@ -45,7 +47,7 @@ class StatsScreen extends ConsumerWidget {
                   vertical: tokens.spacing(6),
                 ),
                 children: [
-                  _buildStreakCard(context, tokens, streakAsync),
+                  _buildStreakCard(context, tokens, streakAsync, l10n),
                   SizedBox(height: tokens.spacing(6)),
                   _buildGoalCard(context, ref, tokens),
                   SizedBox(height: tokens.spacing(6)),
@@ -79,9 +81,11 @@ Widget _buildStreakCard(
   BuildContext context,
   MinqTheme tokens,
   AsyncValue<int> streakAsync,
+  AppLocalizations l10n,
 ) {
   Widget buildContent(int streak) {
     final streakText = '$streak';
+    final streakDescription = l10n.streakDayCount(streak);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -91,8 +95,8 @@ Widget _buildStreakCard(
         ),
         SizedBox(height: tokens.spacing(2)),
         Semantics(
-          label: '現在の連続日数',
-          value: '$streakText日',
+          label: streakDescription,
+          value: streakDescription,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -111,7 +115,10 @@ Widget _buildStreakCard(
           ),
         ),
         SizedBox(height: tokens.spacing(2)),
-        Text('日', style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text(
+          streakDescription,
+          style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
       ],
     );
   }
