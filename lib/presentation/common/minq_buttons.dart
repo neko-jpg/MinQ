@@ -82,7 +82,7 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
             child: Text(
               widget.label,
               textAlign: TextAlign.center,
-              style: tokens.titleSmall.copyWith(color: tokens.surface),
+              style: tokens.typeScale.button.copyWith(color: tokens.surface),
             ),
           ),
         ],
@@ -96,7 +96,7 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
         minimumSize: Size.fromHeight(tokens.spacing(14)),
         padding: EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
         shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
-        textStyle: tokens.titleSmall,
+        textStyle: tokens.typeScale.button,
       ),
       onPressed: disabled
           ? null
@@ -172,7 +172,8 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
             child: Text(
               widget.label,
               textAlign: TextAlign.center,
-              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
+              style:
+                  tokens.typeScale.button.copyWith(color: tokens.textPrimary),
             ),
           ),
         ],
@@ -187,7 +188,7 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
         minimumSize: Size.fromHeight(tokens.spacing(14)),
         padding: EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
         shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
-        textStyle: tokens.titleSmall,
+        textStyle: tokens.typeScale.button,
       ),
       onPressed: disabled
           ? null

@@ -264,47 +264,47 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
         ),
       ],
       displayMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 42,
+        fontSize: 32,
         fontWeight: FontWeight.w800,
         letterSpacing: -0.5,
       ),
       displaySmall: GoogleFonts.plusJakartaSans(
-        fontSize: 36,
-        fontWeight: FontWeight.w800,
-        letterSpacing: -0.4,
+        fontSize: 28,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.3,
       ),
       titleLarge: GoogleFonts.plusJakartaSans(
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.2,
       ),
       titleMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: FontWeight.w600,
       ),
       titleSmall: GoogleFonts.plusJakartaSans(
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: FontWeight.w600,
       ),
       bodyLarge: GoogleFonts.plusJakartaSans(
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: FontWeight.w500,
         height: 1.5,
       ),
       bodyMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: FontWeight.w500,
-        height: 1.4,
+        height: 1.5,
       ),
       bodySmall: GoogleFonts.plusJakartaSans(
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: FontWeight.w500,
         height: 1.4,
       ),
       labelSmall: GoogleFonts.plusJakartaSans(
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: FontWeight.w600,
-        letterSpacing: 0.4,
+        letterSpacing: 0.5,
       ),
 
       // Emotional typography styles
@@ -404,47 +404,47 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
         ),
       ],
       displayMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 42,
+        fontSize: 32,
         fontWeight: FontWeight.w800,
         letterSpacing: -0.5,
       ),
       displaySmall: GoogleFonts.plusJakartaSans(
-        fontSize: 36,
-        fontWeight: FontWeight.w800,
-        letterSpacing: -0.4,
+        fontSize: 28,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.3,
       ),
       titleLarge: GoogleFonts.plusJakartaSans(
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.2,
       ),
       titleMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: FontWeight.w600,
       ),
       titleSmall: GoogleFonts.plusJakartaSans(
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: FontWeight.w600,
       ),
       bodyLarge: GoogleFonts.plusJakartaSans(
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: FontWeight.w500,
         height: 1.5,
       ),
       bodyMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: FontWeight.w500,
-        height: 1.4,
+        height: 1.5,
       ),
       bodySmall: GoogleFonts.plusJakartaSans(
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: FontWeight.w500,
         height: 1.4,
       ),
       labelSmall: GoogleFonts.plusJakartaSans(
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: FontWeight.w600,
-        letterSpacing: 0.4,
+        letterSpacing: 0.5,
       ),
 
       // Emotional typography styles (adjusted for dark theme)
@@ -691,6 +691,47 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       bounceOut: t < 0.5 ? bounceOut : other.bounceOut,
     );
   }
+}
+
+class MinqTypeScale {
+  const MinqTypeScale({
+    required this.h1,
+    required this.h2,
+    required this.h3,
+    required this.h4,
+    required this.h5,
+    required this.bodyLarge,
+    required this.bodyMedium,
+    required this.bodySmall,
+    required this.button,
+    required this.caption,
+  });
+
+  final TextStyle h1;
+  final TextStyle h2;
+  final TextStyle h3;
+  final TextStyle h4;
+  final TextStyle h5;
+  final TextStyle bodyLarge;
+  final TextStyle bodyMedium;
+  final TextStyle bodySmall;
+  final TextStyle button;
+  final TextStyle caption;
+}
+
+extension MinqThemeTypography on MinqTheme {
+  MinqTypeScale get typeScale => MinqTypeScale(
+        h1: displayMedium,
+        h2: displaySmall,
+        h3: titleLarge,
+        h4: titleMedium,
+        h5: titleSmall,
+        bodyLarge: bodyLarge,
+        bodyMedium: bodyMedium,
+        bodySmall: bodySmall,
+        button: titleSmall.copyWith(letterSpacing: 0.2),
+        caption: labelSmall,
+      );
 }
 
 extension MinqThemeGetter on BuildContext {

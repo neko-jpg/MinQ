@@ -30,16 +30,20 @@ ThemeData buildTheme(MinqTheme tokens) {
   );
   const minButtonSize = WidgetStatePropertyAll<Size>(Size(80, 48));
 
+  final typeScale = tokens.typeScale;
   final textTheme = TextTheme(
-    displayMedium: tokens.displayMedium,
-    displaySmall: tokens.displaySmall,
-    titleLarge: tokens.titleLarge,
-    titleMedium: tokens.titleMedium,
-    titleSmall: tokens.titleSmall,
-    bodyLarge: tokens.bodyLarge,
-    bodyMedium: tokens.bodyMedium,
-    bodySmall: tokens.bodySmall,
-    labelSmall: tokens.labelSmall,
+    displayMedium: typeScale.h1,
+    displaySmall: typeScale.h2,
+    headlineMedium: typeScale.h3,
+    headlineSmall: typeScale.h4,
+    titleLarge: typeScale.h3,
+    titleMedium: typeScale.h4,
+    titleSmall: typeScale.h5,
+    bodyLarge: typeScale.bodyLarge,
+    bodyMedium: typeScale.bodyMedium,
+    bodySmall: typeScale.bodySmall,
+    labelLarge: typeScale.button,
+    labelSmall: typeScale.caption,
   ).apply(bodyColor: tokens.textPrimary, displayColor: tokens.textPrimary);
 
   return ThemeData(
