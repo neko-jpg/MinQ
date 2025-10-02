@@ -1,0 +1,95 @@
+# Fastfile
+
+default_platform(:android)
+
+platform :android do
+  desc "Build and deploy to internal testing"
+  lane :internal do
+    gradle(
+      task: "bundle",
+      build_type: "Release"
+    )
+    
+    upload_to_play_store(
+      track: "internal",
+      aab: "build/app/outputs/bundle/release/app-release.aab"
+    )
+  end
+
+  desc "Build and deploy to beta testing"
+  lane :beta do
+    gradle(
+      task: "bundle",
+      build_type: "Release"
+    )
+    
+    upload_to_play_store(
+      track: "beta",
+      aab: "build/app/outputs/bundle/release/app-release.aab"
+    )
+  end
+
+  desc "Build and deploy to production"
+  lane :production do
+    gradle(
+      task: "bundle",
+      build_type: "Release"
+    )
+    
+    upload_to_play_store(
+      track: "production",
+      aab: "build/app/outputs/bundle/release/app-release.aab"
+    )
+  end
+
+  desc "Increment version code"
+  lane :bump_version do
+    increment_version_code(
+      gradle_file_path: "android/app/build.gradle"
+    )
+  end
+end
+
+platform :ios do
+  desc "Build and deploy to TestFlight"
+  lane :beta do
+    build_app(
+      scheme: "Runner",
+      export_method: "app-store"
+    )
+    
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Build and deploy to App Store"
+  lane :production do
+    build_app(
+      scheme: "Runner",
+      export_method: "app-store"
+    )
+    
+    upload_to_app_store(
+      skip_metadata: false,
+      skip_screenshots: false,
+      submit_for_review: true,
+      automatic_release: false
+    )
+  end
+
+  desc "Increment build number"
+  lane :bump_build do
+    increment_build_number(
+      xcodeproj: "ios/Runner.xcodeproj"
+    )
+  end
+
+  desc "Match certificates"
+  lane :certificates do
+    match(
+      type: "appstore",
+      readonly: true
+    )
+  end
+end

@@ -18,6 +18,7 @@ import 'package:minq/presentation/screens/profile_screen.dart';
 import 'package:minq/presentation/screens/policy_viewer_screen.dart';
 import 'package:minq/presentation/common/policy_documents.dart';
 import 'package:minq/presentation/screens/create_quest_screen.dart';
+import 'package:minq/presentation/screens/edit_quest_screen.dart';
 import 'package:minq/presentation/screens/support_screen.dart';
 import 'package:minq/presentation/screens/notification_settings_screen.dart';
 import 'package:minq/presentation/screens/pair/pair_matching_screen.dart';
@@ -32,6 +33,24 @@ import 'package:minq/presentation/screens/quest_detail_screen.dart';
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
+/// GoRouterのrefreshListenableとして使用するStreamラッパー
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+          (dynamic _) => notifyListeners(),
+        );
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
 
 CustomTransitionPage<T> buildPageWithTransition<T>({
   required BuildContext context,
@@ -63,6 +82,7 @@ class AppRoutes {
   static const policy = '/policy/:id';
   static const support = '/support';
   static const createQuest = '/quests/create';
+  static const editQuest = '/quests/:questId/edit';
   static const questDetail = '/quest/:questId';
   static const notificationSettings = '/settings/notifications';
   static const profileSettings = '/settings/profile';
@@ -77,13 +97,41 @@ class AppRoutes {
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
+  // 認証状態を監視
+  final authState = ref.watch(authControllerProvider);
+
   return GoRouter(
     initialLocation: AppRoutes.onboarding,
     navigatorKey: _rootNavigatorKey,
+    refreshListenable: GoRouterRefreshStream(
+      ref.watch(authControllerProvider.notifier).stream,
+    ),
     redirect: (context, state) {
+      // マーケティングアトリビューション
       unawaited(
         ref.read(marketingAttributionServiceProvider).captureUri(state.uri),
       );
+
+      // 認証ガード
+      final isAuthenticated = authState.maybeWhen(
+        data: (user) => user != null,
+        orElse: () => false,
+      );
+
+      final isOnboardingRoute = state.matchedLocation == AppRoutes.onboarding;
+      final isLoginRoute = state.matchedLocation == AppRoutes.login;
+      final isPublicRoute = isOnboardingRoute || isLoginRoute;
+
+      // 未認証で保護されたルートにアクセスしようとした場合
+      if (!isAuthenticated && !isPublicRoute) {
+        return AppRoutes.onboarding;
+      }
+
+      // 認証済みでログイン画面にアクセスしようとした場合
+      if (isAuthenticated && isPublicRoute) {
+        return AppRoutes.home;
+      }
+
       return null;
     },
     routes: [
@@ -189,6 +237,18 @@ final routerProvider = Provider<GoRouter>((ref) {
               context: context,
               state: state,
               child: const CreateQuestScreen(),
+              transitionType: SharedAxisTransitionType.vertical,
+            ),
+      ),
+      GoRoute(
+        path: AppRoutes.editQuest,
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: EditQuestScreen(
+                questId: int.parse(state.pathParameters['questId']!),
+              ),
               transitionType: SharedAxisTransitionType.vertical,
             ),
       ),
@@ -308,6 +368,7 @@ class NavigationUseCase {
       _router.go(AppRoutes.policy.replaceFirst(':id', documentId.name));
   void goToSupport() => _router.go(AppRoutes.support);
   void goToCreateQuest() => _router.go(AppRoutes.createQuest);
+  void goToEditQuest(int questId) => _router.go(AppRoutes.editQuest.replaceFirst(':questId', questId.toString()));
   void goToQuestDetail(int questId) =>
       _router.go(AppRoutes.questDetail
           .replaceFirst(':questId', questId.toString()));

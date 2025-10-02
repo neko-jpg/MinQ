@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/data/services/content_moderation_service.dart';
 import 'package:minq/presentation/common/security/sensitive_content.dart';
+import 'package:minq/presentation/screens/pair_screen.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +15,8 @@ class ProfileSettingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context)!;
+    final userAsync = ref.watch(localUserProvider);
+    final isDummyMode = ref.watch(dummyDataModeProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -31,23 +36,40 @@ class ProfileSettingScreen extends ConsumerWidget {
         backgroundColor: tokens.background.withOpacity(0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
+        actions: [
+          if (isDummyMode)
+            IconButton(
+              icon: const Icon(Icons.warning, color: Colors.orange),
+              onPressed: () => _showDummyModeWarning(context),
+              tooltip: 'ダミーデータモード',
+            ),
+        ],
       ),
       body: SensitiveContent(
-        child: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: [
-            _buildProfileHeader(context),
-            const SizedBox(height: 24),
-            _buildTags(context),
-            const SizedBox(height: 24),
-            _buildStats(context),
-            const SizedBox(height: 24),
-            _buildAccountSettings(context),
-            const SizedBox(height: 24),
-            _buildSnsShare(context),
-            const SizedBox(height: 24),
-            _buildPairInfo(context),
-            const SizedBox(height: 24),
+        child: userAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, _) => Center(
+            child: Text(
+              'プロフィールの読み込みに失敗しました',
+              style: tokens.bodyMedium.copyWith(color: tokens.accentError),
+            ),
+          ),
+          data: (user) => ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: [
+              _buildProfileHeader(context, ref, user),
+              const SizedBox(height: 24),
+              _buildTags(context, ref, user),
+              const SizedBox(height: 24),
+              _buildStats(context, ref, user),
+              const SizedBox(height: 24),
+              _buildAccountSettings(context, ref, user),
+              const SizedBox(height: 24),
+              _buildSnsShare(context, ref, user),
+              const SizedBox(height: 24),
+              _buildPairInfo(context, ref, user),
+              const SizedBox(height: 24),
+              if (isDummyMode) _buildDummyDataControls(context, ref),
             _buildOtherSettings(context),
             const SizedBox(height: 24),
             _buildPremiumFeatures(context),
@@ -58,8 +80,21 @@ class ProfileSettingScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
+  Widget _buildProfileHeader(BuildContext context, WidgetRef ref, user) {
     final tokens = context.tokens;
+    final isDummyMode = ref.watch(dummyDataModeProvider);
+    
+    // Generate anonymous username if not set
+    final displayName = user?.displayName?.isNotEmpty == true 
+        ? user!.displayName 
+        : ContentModerationService.generateAnonymousUsername();
+    
+    final bio = user?.bio?.isNotEmpty == true 
+        ? user!.bio 
+        : isDummyMode 
+            ? '自己紹介文がここに入ります。ユーザーの簡単な説明です。'
+            : '習慣化を頑張っています！';
+
     return Column(
       children: [
         Stack(
@@ -67,35 +102,45 @@ class ProfileSettingScreen extends ConsumerWidget {
           children: [
             Builder(
               builder: (context) {
-                const avatarUrl =
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuB4vUzoYiKTiCCCXbd0O3qbfuJgpaM3LOMHFzNzTBon5Qs2emMO6ToMK7WXGiq2oHUba9VbQOd1AjxiNcvsVWZll_hLRZKHWqe6CSNf1gYrPZzNsp8kZuHTxSh29HdEWfo0_KNdRjvpNFpAabh50wZOoM-_goQOnAtriaTgG1BAO2EQlWy_U6Yj02gibaZb6ActchMxg_-f7nWNey-YIdsjPsaAb_3t8-PJjpbF486yWHtA8ywucP5c9Wlp4G1cI4DfZ-h07gieyos';
                 const radius = 48.0;
                 final pixelRatio = MediaQuery.of(context).devicePixelRatio;
                 final cacheDimension = (radius * 2 * pixelRatio).round();
-                return ClipOval(
-                  child: Image.network(
-                    avatarUrl,
-                    width: radius * 2,
-                    height: radius * 2,
-                    cacheWidth: cacheDimension,
-                    cacheHeight: cacheDimension,
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.high,
-                  ),
-                );
+                
+                // Use avatar URL if available, otherwise show default avatar
+                final avatarUrl = user?.avatarUrl;
+                
+                if (avatarUrl?.isNotEmpty == true) {
+                  return ClipOval(
+                    child: Image.network(
+                      avatarUrl!,
+                      width: radius * 2,
+                      height: radius * 2,
+                      cacheWidth: cacheDimension,
+                      cacheHeight: cacheDimension,
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
+                      errorBuilder: (context, error, stackTrace) => _buildDefaultAvatar(tokens, radius),
+                    ),
+                  );
+                } else {
+                  return _buildDefaultAvatar(tokens, radius);
+                }
               },
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: tokens.brandPrimary,
-                shape: BoxShape.circle,
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(6.0),
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                  size: 16,
+            GestureDetector(
+              onTap: () => _editProfile(context, ref, user),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: tokens.brandPrimary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(6.0),
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
               ),
             ),
@@ -103,16 +148,32 @@ class ProfileSettingScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'ニックネーム',
+          displayName,
           style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Text(
-          '自己紹介文がここに入ります。ユーザーの簡単な説明です。',
+          bio,
           textAlign: TextAlign.center,
           style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
         ),
       ],
+    );
+  }
+
+  Widget _buildDefaultAvatar(MinqTheme tokens, double radius) {
+    return Container(
+      width: radius * 2,
+      height: radius * 2,
+      decoration: BoxDecoration(
+        color: tokens.brandPrimary.withOpacity(0.1),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        Icons.person,
+        size: radius,
+        color: tokens.brandPrimary,
+      ),
     );
   }
 
@@ -472,6 +533,417 @@ class ProfileSettingScreen extends ConsumerWidget {
         shape: BoxShape.circle,
       ),
       child: const Icon(Icons.share, color: Colors.white, size: 24), // Placeholder icon
+    );
+  }
+}  vo
+id _showDummyModeWarning(BuildContext context) {
+    final tokens = context.tokens;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ダミーデータモード'),
+        content: const Text(
+          'ダミーデータモードが有効になっています。'
+          '実際のデータを使用するには、設定画面でダミーデータモードを無効にしてください。',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _editProfile(BuildContext context, WidgetRef ref, user) {
+    final tokens = context.tokens;
+    final nameController = TextEditingController(text: user?.displayName ?? '');
+    final bioController = TextEditingController(text: user?.bio ?? '');
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('プロフィール編集'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'ニックネーム',
+                  hintText: '表示名を入力してください',
+                ),
+                maxLength: 20,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: bioController,
+                decoration: const InputDecoration(
+                  labelText: '自己紹介',
+                  hintText: '簡単な自己紹介を入力してください',
+                ),
+                maxLines: 3,
+                maxLength: 100,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () async {
+              final name = nameController.text.trim();
+              final bio = bioController.text.trim();
+              
+              // Content moderation
+              if (name.isNotEmpty) {
+                final nameResult = ContentModerationService.moderateUsername(name);
+                if (nameResult.isBlocked) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(nameResult.details ?? '不適切なニックネームです')),
+                  );
+                  return;
+                }
+              }
+              
+              if (bio.isNotEmpty) {
+                final bioResult = ContentModerationService.moderateText(bio);
+                if (bioResult.isBlocked) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(bioResult.details ?? '不適切な自己紹介です')),
+                  );
+                  return;
+                }
+              }
+              
+              // Update user profile
+              try {
+                final userRepository = ref.read(userRepositoryProvider);
+                if (user != null) {
+                  user.displayName = name.isNotEmpty ? name : null;
+                  user.bio = bio.isNotEmpty ? bio : null;
+                  await userRepository.saveLocalUser(user);
+                  
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('プロフィールを更新しました')),
+                  );
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('プロフィールの更新に失敗しました')),
+                );
+              }
+            },
+            child: const Text('保存'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDummyDataControls(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+    
+    return Card(
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: tokens.cornerLarge(),
+        side: BorderSide(color: tokens.accentWarning),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(4)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.warning, color: tokens.accentWarning),
+                SizedBox(width: tokens.spacing(2)),
+                Text(
+                  'ダミーデータモード',
+                  style: tokens.titleSmall.copyWith(
+                    color: tokens.accentWarning,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: tokens.spacing(2)),
+            Text(
+              'ダミーデータモードが有効になっています。実際のデータを使用するには、下のボタンを押してダミーデータを撤去してください。',
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+            ),
+            SizedBox(height: tokens.spacing(3)),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () => _removeDummyData(context, ref),
+                icon: const Icon(Icons.cleaning_services),
+                label: const Text('ダミーデータを撤去'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: tokens.accentWarning,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _removeDummyData(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ダミーデータ撤去'),
+        content: const Text(
+          'ダミーデータモードを無効にして、実際のデータを使用しますか？'
+          'この操作により、すべての機能が実際のデータで動作するようになります。',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () async {
+              // Disable dummy data mode
+              ref.read(dummyDataModeProvider.notifier).state = false;
+              await ref.read(localPreferencesServiceProvider).setDummyDataMode(false);
+              
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('ダミーデータモードを無効にしました。実際のデータで動作します。'),
+                ),
+              );
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('撤去する'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Update other methods to accept user parameter
+  Widget _buildTags(BuildContext context, WidgetRef ref, user) {
+    final tokens = context.tokens;
+    final isDummyMode = ref.watch(dummyDataModeProvider);
+    
+    final tags = isDummyMode 
+        ? ['習慣化', 'ランニング', '読書', '早起き']
+        : user?.tags ?? ['習慣化'];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'タグ',
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: tags.map((tag) => Chip(
+            label: Text(tag),
+            backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+            labelStyle: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
+          )).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStats(BuildContext context, WidgetRef ref, user) {
+    final tokens = context.tokens;
+    final streakAsync = ref.watch(streakProvider);
+    final todayCountAsync = ref.watch(todayCompletionCountProvider);
+    
+    return Row(
+      children: [
+        Expanded(
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text('ストリーク', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+                  const SizedBox(height: 8),
+                  streakAsync.when(
+                    data: (streak) => Text(
+                      '$streak日',
+                      style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    loading: () => const CircularProgressIndicator(),
+                    error: (_, __) => const Text('--'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text('今日の完了', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+                  const SizedBox(height: 8),
+                  todayCountAsync.when(
+                    data: (count) => Text(
+                      '$count個',
+                      style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    loading: () => const CircularProgressIndicator(),
+                    error: (_, __) => const Text('--'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAccountSettings(BuildContext context, WidgetRef ref, user) {
+    final tokens = context.tokens;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'アカウント設定',
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        ListTile(
+          leading: const Icon(Icons.notifications),
+          title: const Text('通知設定'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            // Navigate to notification settings
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.privacy_tip),
+          title: const Text('プライバシー設定'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            // Navigate to privacy settings
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSnsShare(BuildContext context, WidgetRef ref, user) {
+    final tokens = context.tokens;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'SNS共有',
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        ElevatedButton.icon(
+          onPressed: () {
+            // Implement SNS sharing
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('SNS共有機能は準備中です')),
+            );
+          },
+          icon: const Icon(Icons.share),
+          label: const Text('進捗を共有'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPairInfo(BuildContext context, WidgetRef ref, user) {
+    final tokens = context.tokens;
+    final pairAsync = ref.watch(userPairProvider);
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'ペア情報',
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        pairAsync.when(
+          data: (pair) {
+            if (pair == null) {
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      const Icon(Icons.person_add, size: 48),
+                      const SizedBox(height: 8),
+                      const Text('ペアが見つかりません'),
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Navigate to pair screen
+                        },
+                        child: const Text('ペアを探す'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            
+            return Card(
+              child: ListTile(
+                leading: const CircleAvatar(
+                  child: Icon(Icons.person),
+                ),
+                title: Text('ペア: ${pair.id}'),
+                subtitle: const Text('一緒に頑張っています'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.chat),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.block, color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+          loading: () => const Card(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          ),
+          error: (_, __) => const Card(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text('ペア情報の読み込みに失敗しました'),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

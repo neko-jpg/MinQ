@@ -160,6 +160,32 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
     await ref.read(questRepositoryProvider).addQuest(newQuest);
 
+    // Schedule notifications if reminder is enabled
+    if (_isReminderOn) {
+      try {
+        final notificationService = ref.read(notificationServiceProvider);
+        final timeString = '${_reminderTime.hour.toString().padLeft(2, '0')}:${_reminderTime.minute.toString().padLeft(2, '0')}';
+        
+        // Update user's notification times to include this quest's reminder
+        final userRepository = ref.read(userRepositoryProvider);
+        final user = await userRepository.getUserById(uid);
+        if (user != null) {
+          final updatedTimes = List<String>.from(user.notificationTimes);
+          if (!updatedTimes.contains(timeString)) {
+            updatedTimes.add(timeString);
+            user.notificationTimes = updatedTimes;
+            await userRepository.saveLocalUser(user);
+            
+            // Reschedule all notifications
+            await notificationService.scheduleRecurringReminders(updatedTimes);
+          }
+        }
+      } catch (e) {
+        debugPrint('Failed to schedule notification: $e');
+        // Don't fail quest creation if notification scheduling fails
+      }
+    }
+
     if (mounted) {
       FeedbackMessenger.showSuccessToast(
         context,

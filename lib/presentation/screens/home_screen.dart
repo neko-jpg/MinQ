@@ -22,10 +22,12 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  ProviderSubscription<SyncStatus>? _syncStatusSubscription;
+
   @override
   void initState() {
     super.initState();
-    ref.listen<SyncStatus>(syncStatusProvider, (previous, next) {
+    _syncStatusSubscription = ref.listenManual<SyncStatus>(syncStatusProvider, (previous, next) {
       if (!mounted) return;
       if (next.showBanner && next.bannerMessage != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -42,6 +44,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _syncStatusSubscription?.close();
+    super.dispose();
   }
 
   @override

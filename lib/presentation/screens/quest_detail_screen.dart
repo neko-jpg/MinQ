@@ -154,11 +154,26 @@ class _QuestDetailContent extends ConsumerWidget {
               },
             ),
             SizedBox(height: tokens.spacing(2)),
-            MinqSecondaryButton(
-              label: 'クエスト一覧に戻る',
-              onPressed: () async {
-                navigation.goToQuests();
-              },
+            Row(
+              children: [
+                Expanded(
+                  child: MinqSecondaryButton(
+                    label: '編集',
+                    onPressed: () async {
+                      navigation.goToEditQuest(quest.id);
+                    },
+                  ),
+                ),
+                SizedBox(width: tokens.spacing(2)),
+                Expanded(
+                  child: MinqSecondaryButton(
+                    label: '一覧に戻る',
+                    onPressed: () async {
+                      navigation.goToQuests();
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         ),

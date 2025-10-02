@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 class OnboardingScreen extends ConsumerWidget {
   const OnboardingScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
 
     return Scaffold(
@@ -27,12 +28,12 @@ class OnboardingScreen extends ConsumerWidget {
                       width: 96,
                       height: 96,
                       decoration: BoxDecoration(
-                        color: colorScheme.primary.withOpacity(0.1),
+                        color: tokens.brandPrimary.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         Icons.checklist,
-                        color: colorScheme.primary,
+                        color: tokens.brandPrimary,
                         size: 56,
                       ),
                     ),
@@ -42,7 +43,7 @@ class OnboardingScreen extends ConsumerWidget {
                       text: TextSpan(
                         style: textTheme.headlineLarge?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: colorScheme.onSurface,
+                          color: tokens.textPrimary,
                         ),
                         children: [
                           const TextSpan(text: "MinQへようこそ"),
@@ -54,7 +55,7 @@ class OnboardingScreen extends ConsumerWidget {
                       "ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。",
                       textAlign: TextAlign.center,
                       style: textTheme.bodyLarge?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
+                        color: tokens.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -62,28 +63,25 @@ class OnboardingScreen extends ConsumerWidget {
                       icon: Icons.touch_app,
                       title: "3タップで習慣化",
                       description: "新しい習慣をたった3タップで始められます。とてもシンプルです。",
-                      colorScheme: colorScheme,
                     ),
                     const SizedBox(height: 16),
                     _FeatureCard(
                       icon: Icons.groups,
                       title: "匿名ペア",
                       description: "パートナーから、匿名で説明責任とサポートを得られます。",
-                      colorScheme: colorScheme,
                     ),
                     const SizedBox(height: 16),
                     _FeatureCard(
                       icon: Icons.explore,
                       title: "ミニクエスト",
                       description: "あなたの目標を、達成感のある小さなクエストに変えましょう。",
-                      colorScheme: colorScheme,
                     ),
                     const SizedBox(height: 20),
                   ],
                 ),
               ),
             ),
-            _BottomNavigation(colorScheme: colorScheme, textTheme: textTheme),
+            _BottomNavigation(textTheme: textTheme),
           ],
         ),
       ),
@@ -96,21 +94,19 @@ class _FeatureCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.description,
-    required this.colorScheme,
   });
 
   final IconData icon;
   final String title;
   final String description;
-  final ColorScheme colorScheme;
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    
     return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: tokens.breathingPadding,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -118,28 +114,29 @@ class _FeatureCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: colorScheme.primary.withOpacity(0.1),
+                color: tokens.brandPrimary.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: colorScheme.primary),
+              child: Icon(icon, color: tokens.brandPrimary),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: tokens.spaceMD),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: tokens.titleMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: tokens.textPrimary,
+                    ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: tokens.intimateSpace),
                   Text(
                     description,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                    style: tokens.bodyMedium.copyWith(
+                      color: tokens.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -153,15 +150,14 @@ class _FeatureCard extends StatelessWidget {
 
 class _BottomNavigation extends ConsumerWidget {
   const _BottomNavigation({
-    required this.colorScheme,
     required this.textTheme,
   });
 
-  final ColorScheme colorScheme;
   final TextTheme textTheme;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
     return Padding(
       padding: const EdgeInsets.all(16.0).copyWith(top: 8),
       child: Column(
@@ -194,7 +190,7 @@ class _BottomNavigation extends ConsumerWidget {
                 child: Text(
                   "ログイン",
                   style: textTheme.bodySmall?.copyWith(
-                    color: colorScheme.primary,
+                    color: tokens.brandPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

@@ -346,6 +346,24 @@ class QuestRepository {
     });
   }
 
+  Future<void> updateQuest(Quest quest) async {
+    if (quest.estimatedMinutes <= 0) {
+      quest.estimatedMinutes = 5;
+    }
+    await _isar.writeTxn(() async {
+      await _isar.quests.put(quest);
+    });
+  }
+
+  Future<void> reorderQuests(List<Quest> quests) async {
+    await _isar.writeTxn(() async {
+      for (int i = 0; i < quests.length; i++) {
+        quests[i].sortOrder = i;
+        await _isar.quests.put(quests[i]);
+      }
+    });
+  }
+
   Future<void> deleteQuest(int id) async {
     await _isar.writeTxn(() async {
       final quest = await getQuestById(id);

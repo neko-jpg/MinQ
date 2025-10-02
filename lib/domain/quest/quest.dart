@@ -18,6 +18,8 @@ class Quest {
   late String category;
 
   int estimatedMinutes = 5;
+  String? difficulty; // 'easy', 'medium', 'hard'
+  String? location; // 'home', 'gym', 'office', etc.
 
   String? iconKey;
 

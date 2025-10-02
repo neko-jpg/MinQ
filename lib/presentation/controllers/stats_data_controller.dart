@@ -17,13 +17,18 @@ class StatsDataController extends AutoDisposeAsyncNotifier<StatsViewData> {
       return cached ?? StatsViewData.empty();
     }
 
-    final streak = await ref.read(questLogRepositoryProvider).calculateStreak(user.uid);
-    final heatmap = await ref.read(questLogRepositoryProvider).getHeatmapData(user.uid);
+    final logRepo = ref.read(questLogRepositoryProvider);
+    final streak = await logRepo.calculateStreak(user.uid);
+    final heatmap = await logRepo.getHeatmapData(user.uid);
+    final weeklyCompletionRate = await logRepo.calculateWeeklyCompletionRate(user.uid);
+    final todayCompletionCount = await logRepo.countLogsForDay(user.uid, DateTime.now());
 
     final StatsViewData fresh = StatsViewData(
       streak: streak,
       heatmap: heatmap,
       updatedAt: DateTime.now(),
+      weeklyCompletionRate: weeklyCompletionRate,
+      todayCompletionCount: todayCompletionCount,
     );
 
     await localPrefs.saveStatsViewData(fresh);
