@@ -9,6 +9,8 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/image_moderation_service.dart';
 import 'package:minq/data/services/photo_storage_service.dart';
 import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/presentation/common/feedback/feedback_manager.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
@@ -263,11 +265,11 @@ class _RecordForm extends ConsumerWidget {
   }
 
   Future<void> _handlePhotoTap(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(context);
     final uid = ref.read(uidProvider);
     if (uid == null || uid.isEmpty) {
-      messenger.showSnackBar(
-        const SnackBar(content: Text('サインインしていないため記録できません。')),
+      FeedbackMessenger.showErrorSnackBar(
+        context,
+        'サインインしていないため記録できません。',
       );
       onError(RecordErrorType.permissionDenied);
       return;
@@ -277,8 +279,9 @@ class _RecordForm extends ConsumerWidget {
           .read(photoStorageServiceProvider)
           .captureAndSanitize(ownerUid: uid, questId: questId);
       if (!result.hasFile) {
-        messenger.showSnackBar(
-          const SnackBar(content: Text('写真の撮影がキャンセルされました。')),
+        FeedbackMessenger.showInfoToast(
+          context,
+          '写真の撮影がキャンセルされました。',
         );
         return;
       }
@@ -297,6 +300,7 @@ class _RecordForm extends ConsumerWidget {
       await ref.read(questLogRepositoryProvider).addLog(log);
       onError(RecordErrorType.none);
       ref.read(navigationUseCaseProvider).goToCelebration();
+      FeedbackManager.questCompleted();
     } on PhotoCaptureException catch (error) {
       switch (error.reason) {
         case PhotoCaptureFailure.permissionDenied:
@@ -324,6 +328,7 @@ class _RecordForm extends ConsumerWidget {
           ..synced = false;
     await ref.read(questLogRepositoryProvider).addLog(log);
     ref.read(navigationUseCaseProvider).goToCelebration();
+    FeedbackManager.questCompleted();
   }
 }
 
