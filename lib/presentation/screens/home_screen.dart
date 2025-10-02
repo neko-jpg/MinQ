@@ -248,6 +248,8 @@ class _FocusHeroCard extends ConsumerWidget {
     );
     final progress = hasCompletedToday ? 1.0 : 0.0;
 
+    final visibleCount = _expanded ? quests.length : math.min(quests.length, 2);
+
     return Card(
       color: tokens.surface,
       shape: RoundedRectangleBorder(
@@ -408,8 +410,8 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
     final recentLogs = ref.watch(recentLogsProvider).valueOrNull ?? [];
     final navigation = ref.read(navigationUseCaseProvider);
 
-    if (quests.isEmpty) {
-      return Card(
+      if (quests.isEmpty) {
+        return Card(
         color: tokens.surface,
         shape: RoundedRectangleBorder(
           borderRadius: tokens.cornerLarge(),
@@ -429,12 +431,11 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
           ),
         ),
       );
-    }
+      }
 
-    final visibleCount = _expanded ? quests.length : math.min(quests.length, 2);
-    final visibleQuests = quests.take(visibleCount).toList();
+      final visibleCount = _expanded ? quests.length : math.min(quests.length, 2);
 
-    return Card(
+      return Card(
       color: tokens.surface,
       shape: RoundedRectangleBorder(
         borderRadius: tokens.cornerLarge(),
@@ -464,13 +465,24 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
               ],
             ),
             SizedBox(height: tokens.spacing(2)),
-            for (int i = 0; i < visibleQuests.length; i++) ...[
-              if (i > 0) SizedBox(height: tokens.spacing(2)),
-              _QuestSummaryRow(
-                quest: visibleQuests[i],
-                isCompleted: _isCompletedToday(visibleQuests[i], recentLogs),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              child: ListView.separated(
+                key: ValueKey<bool>(_expanded),
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: visibleCount,
+                separatorBuilder: (_, __) => SizedBox(height: tokens.spacing(2)),
+                itemBuilder: (context, index) {
+                  final quest = quests[index];
+                  return _QuestSummaryRow(
+                    quest: quest,
+                    isCompleted: _isCompletedToday(quest, recentLogs),
+                  );
+                },
               ),
-            ],
+            ),
             if (quests.length > visibleCount) ...[
               SizedBox(height: tokens.spacing(4)),
               Align(
