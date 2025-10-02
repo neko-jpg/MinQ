@@ -25,6 +25,8 @@ import 'package:minq/data/services/marketing_attribution_service.dart';
 import 'package:minq/data/services/app_locale_controller.dart';
 import 'package:minq/data/services/analytics_service.dart';
 import 'package:minq/data/services/image_moderation_service.dart';
+import 'package:minq/data/services/deep_link_service.dart';
+import 'package:minq/data/services/in_app_review_service.dart';
 import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/log/quest_log.dart';
@@ -48,6 +50,16 @@ final notificationTapStreamProvider = StreamProvider<String>((ref) async* {
   yield* notifications.notificationTapStream;
 });
 
+final deepLinkServiceProvider = Provider<DeepLinkService>((ref) {
+  final service = DeepLinkService();
+  ref.onDispose(service.dispose);
+  return service;
+});
+
+final deepLinkStreamProvider = StreamProvider<Uri>((ref) {
+  return ref.watch(deepLinkServiceProvider).linkStream;
+});
+
 final timeConsistencyServiceProvider =
     Provider<TimeConsistencyService>((ref) => TimeConsistencyService());
 
@@ -65,6 +77,10 @@ final localPreferencesServiceProvider =
 final marketingAttributionServiceProvider =
     Provider<MarketingAttributionService>((ref) {
   return MarketingAttributionService(ref.watch(localPreferencesServiceProvider));
+});
+
+final inAppReviewServiceProvider = Provider<InAppReviewService>((ref) {
+  return InAppReviewService(ref.watch(localPreferencesServiceProvider));
 });
 
 final appLocaleControllerProvider =

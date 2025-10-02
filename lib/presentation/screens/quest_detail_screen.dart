@@ -1,0 +1,276 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/quest/quest.dart';
+import 'package:minq/presentation/common/minq_buttons.dart';
+import 'package:minq/presentation/common/quest_icon_catalog.dart';
+import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
+
+class QuestDetailScreen extends ConsumerWidget {
+  const QuestDetailScreen({super.key, required this.questId});
+
+  final int questId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+    final questAsync = ref.watch(questByIdProvider(questId));
+
+    return Scaffold(
+      backgroundColor: tokens.background,
+      appBar: AppBar(
+        title: Text(
+          'クエスト詳細',
+          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          tooltip: '戻る',
+          onPressed: () => context.pop(),
+        ),
+        backgroundColor: tokens.background,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: questAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => _QuestDetailError(tokens: tokens),
+        data: (quest) {
+          if (quest == null) {
+            return _QuestDetailNotFound(tokens: tokens);
+          }
+          return _QuestDetailContent(quest: quest);
+        },
+      ),
+    );
+  }
+}
+
+class _QuestDetailContent extends ConsumerWidget {
+  const _QuestDetailContent({required this.quest});
+
+  final Quest quest;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+    final icon = iconDataForKey(quest.iconKey);
+    final navigation = ref.read(navigationUseCaseProvider);
+
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: tokens.spacing(4),
+          vertical: tokens.spacing(4),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Card(
+              elevation: 0,
+              color: tokens.surface,
+              shape: RoundedRectangleBorder(
+                borderRadius: tokens.cornerXLarge(),
+                side: BorderSide(color: tokens.border),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(tokens.spacing(5)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: tokens.spacing(12),
+                          height: tokens.spacing(12),
+                          decoration: BoxDecoration(
+                            color: tokens.brandPrimary.withOpacity(0.1),
+                            borderRadius: tokens.cornerLarge(),
+                          ),
+                          child: Icon(
+                            icon,
+                            size: tokens.spacing(8),
+                            color: tokens.brandPrimary,
+                          ),
+                        ),
+                        SizedBox(width: tokens.spacing(4)),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                quest.title,
+                                style: tokens.displaySmall
+                                    .copyWith(color: tokens.textPrimary),
+                              ),
+                              SizedBox(height: tokens.spacing(2)),
+                              Wrap(
+                                spacing: tokens.spacing(2),
+                                runSpacing: tokens.spacing(2),
+                                children: [
+                                  _QuestInfoChip(
+                                    icon: Icons.category_outlined,
+                                    label: quest.category,
+                                  ),
+                                  _QuestInfoChip(
+                                    icon: Icons.timer_outlined,
+                                    label: '${quest.estimatedMinutes}分想定',
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: tokens.spacing(4)),
+                    Text(
+                      'このクエストについて',
+                      style: tokens.titleSmall.copyWith(
+                        color: tokens.textPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: tokens.spacing(2)),
+                    Text(
+                      '短い時間で取り組める${quest.category}クエストです。'
+                      '記録するとペアに進捗が共有され、次の継続に向けたリマインダーも届きます。',
+                      style:
+                          tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Spacer(),
+            MinqPrimaryButton(
+              label: 'このクエストを記録する',
+              onPressed: () async {
+                navigation.goToRecord(quest.id);
+              },
+            ),
+            SizedBox(height: tokens.spacing(2)),
+            MinqSecondaryButton(
+              label: 'クエスト一覧に戻る',
+              onPressed: () async {
+                navigation.goToQuests();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _QuestDetailNotFound extends StatelessWidget {
+  const _QuestDetailNotFound({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(4)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search_off, size: tokens.spacing(14), color: tokens.textMuted),
+            SizedBox(height: tokens.spacing(4)),
+            Text(
+              'クエストが見つかりませんでした',
+              style:
+                  tokens.titleSmall.copyWith(color: tokens.textPrimary),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: tokens.spacing(2)),
+            Text(
+              'リンクが古い可能性があります。クエスト一覧から探し直してください。',
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: tokens.spacing(4)),
+            MinqSecondaryButton(
+              label: 'クエスト一覧に戻る',
+              onPressed: () async {
+                GoRouter.of(context).go(AppRoutes.quests);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _QuestDetailError extends StatelessWidget {
+  const _QuestDetailError({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(4)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: tokens.spacing(14), color: tokens.accentError),
+            SizedBox(height: tokens.spacing(4)),
+            Text(
+              'クエスト情報を読み込めませんでした',
+              style:
+                  tokens.titleSmall.copyWith(color: tokens.textPrimary),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: tokens.spacing(2)),
+            Text(
+              '通信状況を確認してからもう一度お試しください。',
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _QuestInfoChip extends StatelessWidget {
+  const _QuestInfoChip({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: tokens.spacing(3),
+        vertical: tokens.spacing(2),
+      ),
+      decoration: BoxDecoration(
+        color: tokens.brandPrimary.withOpacity(0.1),
+        borderRadius: tokens.cornerLarge(),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: tokens.spacing(4), color: tokens.brandPrimary),
+          SizedBox(width: tokens.spacing(2)),
+          Text(
+            label,
+            style: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
+          ),
+        ],
+      ),
+    );
+  }
+}
