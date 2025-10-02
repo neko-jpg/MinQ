@@ -96,6 +96,24 @@ final Map<PolicyDocumentId, PolicyDocument> policyDocuments =
           ),
         ],
       ),
+      PolicySection(
+        titleJa: '5. Pair機能における禁止事項',
+        titleEn: '5. Prohibited Behaviour in Pair Mode',
+        paragraphs: <PolicyParagraph>[
+          PolicyParagraph(
+            ja:
+                '未成年者同士のペアリングは、同年代かつ学習目的に限定されます。成人ユーザーは未成年との個別連絡、オフラインでの接触要請、金銭やギフトの要求、個人情報（氏名・連絡先・学校名など）の取得を一切行ってはいけません。違反が確認された場合は即時にペア解消・アカウント停止を行います。',
+            en:
+                'Pairing between minors is restricted to peers with educational goals only. Adult users must never initiate private contact with minors, request offline meetings, solicit money or gifts, or collect personally identifiable information (such as real names, contact details, or school names). Any violation results in immediate pair termination and possible account suspension.',
+          ),
+          PolicyParagraph(
+            ja:
+                '年齢にかかわらず、性的な表現、デート・マッチング目的の利用、賭博・金融商品の勧誘、勧誘リンクの送付は禁止です。違反を受けた場合は通報機能から安全チームにお知らせください。',
+            en:
+                'Regardless of age, sexual content, dating or matchmaking solicitations, gambling, financial product promotions, and referral links are prohibited. If you encounter these behaviours, report them to the safety team using the in-app reporting tools.',
+          ),
+        ],
+      ),
     ],
   ),
   PolicyDocumentId.privacy: const PolicyDocument(

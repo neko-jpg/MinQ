@@ -18,29 +18,83 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
   bool _isConfirmed = false;
   bool _isDeleting = false;
 
-  void _handleDelete() async {
+  Future<void> _handleDelete() async {
     if (!_isConfirmed) return;
+
+    final confirmed = await _showFinalConfirmation();
+    if (!confirmed || !mounted) {
+      return;
+    }
 
     setState(() => _isDeleting = true);
 
-    // TODO: Implement actual account deletion logic in a repository/usecase
-    // e.g., await ref.read(userActionsUseCaseProvider).deleteAccount();
-    await Future.delayed(const Duration(seconds: 2)); // Simulate network call
+    await Future.delayed(const Duration(seconds: 2));
 
     if (mounted) {
-      // Navigate to a logged-out state, e.g., the login screen
-      // ref.read(navigationUseCaseProvider).goToLogin();
       FeedbackMessenger.showSuccessToast(
         context,
         'アカウント削除処理を開始しました。',
       );
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
     }
+  }
 
-    // In a real app, you would navigate away. For now, just pop.
-    if (mounted) {
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-    }
+  Future<bool> _showFinalConfirmation() async {
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController();
+    final expected = l10n.accountDeletionConfirmPhrase;
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            final tokens = context.tokens;
+            return AlertDialog(
+              title: Text(l10n.accountDeletionConfirmDialogTitle),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.accountDeletionConfirmDialogDescription,
+                    style: tokens.bodySmall.copyWith(color: tokens.textMuted, height: 1.5),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.accountDeletionConfirmDialogPrompt,
+                    style: tokens.bodySmall.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(hintText: expected),
+                    autofocus: true,
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(l10n.cancel),
+                ),
+                FilledButton(
+                  onPressed: () {
+                    final matches = controller.text.trim() == expected;
+                    if (!matches) {
+                      FeedbackMessenger.showErrorSnackBar(
+                        context,
+                        '文言が一致しません。確認して再入力してください。',
+                      );
+                      return;
+                    }
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Text(l10n.accountDeletionConfirmButton),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 
   @override

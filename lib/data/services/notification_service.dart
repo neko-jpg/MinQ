@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -129,38 +130,234 @@ class NotificationService {
   }
 
   Future<void> scheduleRecurringReminders(List<String> times) async {
-    // ... (existing implementation)
+    if (!_supportsLocalNotifications || times.isEmpty) {
+      return;
+    }
+
+    await _ensureAndroidChannels();
+    await _loadState();
+
+    final normalized = _normalizeTimes(times);
+    final previousCount = _state.recurringReminderTimes.length;
+
+    await _cancelRecurringReminders(max(previousCount, normalized.length));
+
+    final notificationDetails = NotificationDetails(
+      android: _androidDetailsForChannel(_reminderChannelId),
+    );
+
+    for (var index = 0; index < normalized.length; index++) {
+      final parsed = _parseTime(normalized[index]);
+      if (parsed == null) {
+        continue;
+      }
+      final scheduledDate = _nextInstance(parsed.$1, parsed.$2);
+      await _plugin.zonedSchedule(
+        _recurringNotificationBaseId + index,
+        _titleForIndex(index),
+        _bodyForIndex(index),
+        scheduledDate,
+        notificationDetails,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidAllowWhileIdle: true,
+        payload: _recordRoutePayload,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.wallClockTime,
+        matchDateTimeComponents: DateTimeComponents.time,
+      );
+    }
+
+    _state = _state.copyWith(
+      timezoneName: tz.local.name,
+      recurringReminderTimes: normalized,
+      suspended: false,
+    );
+    await _persistState();
   }
 
   Future<void> scheduleAuxiliaryReminder(String time) async {
-    // ... (existing implementation)
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+
+    await _ensureAndroidChannels();
+    await _loadState();
+
+    final parsed = _parseTime(time);
+    if (parsed == null) {
+      return;
+    }
+
+    final scheduledDate = _nextInstance(parsed.$1, parsed.$2);
+    final isTooClose = _state.recurringReminderTimes.any((recurring) {
+      final recurringParsed = _parseTime(recurring);
+      if (recurringParsed == null) {
+        return false;
+      }
+      final recurringDate = _nextInstance(recurringParsed.$1, recurringParsed.$2);
+      return (scheduledDate.difference(recurringDate)).abs() < _minimumGap;
+    });
+
+    if (isTooClose) {
+      return;
+    }
+
+    await _plugin.zonedSchedule(
+      _auxiliaryNotificationId,
+      'もう一歩で達成です',
+      '今日のミニクエストを記録して連続日数を伸ばしましょう。',
+      scheduledDate,
+      NotificationDetails(android: _androidDetailsForChannel(_reminderChannelId)),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidAllowWhileIdle: true,
+      payload: _recordRoutePayload,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.wallClockTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+
+    _state = _state.copyWith(
+      auxiliaryReminderTime: _ReminderTime(totalMinutes: parsed.$1 * 60 + parsed.$2).formatted,
+      suspended: false,
+    );
+    await _persistState();
   }
 
   Future<void> _handleSnooze(String actionId, String? payload) async {
-    // ... (existing implementation)
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+
+    Duration? duration;
+    switch (actionId) {
+      case snoozeActionId_10m:
+        duration = const Duration(minutes: 10);
+        break;
+      case snoozeActionId_1h:
+        duration = const Duration(hours: 1);
+        break;
+      case snoozeActionId_1d:
+        duration = const Duration(days: 1);
+        break;
+    }
+
+    if (duration == null) {
+      return;
+    }
+
+    await _plugin.zonedSchedule(
+      _snoozeNotificationId,
+      '後で再開しますか？',
+      'タイマーを延長しました。覚えているうちに記録しましょう。',
+      tz.TZDateTime.now(tz.local).add(duration),
+      NotificationDetails(android: _androidDetailsForChannel(_reminderChannelId)),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidAllowWhileIdle: true,
+      payload: payload ?? _recordRoutePayload,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
   }
 
   Future<void> cancelAuxiliaryReminder() async {
-    // ... (existing implementation)
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+    await _plugin.cancel(_auxiliaryNotificationId);
+    await _loadState();
+    if (_state.auxiliaryReminderTime != null) {
+      _state = _state.copyWith(auxiliaryReminderTime: null);
+      await _persistState();
+    }
   }
 
   Future<void> cancelAll() async {
-    // ... (existing implementation)
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+    await _plugin.cancelAll();
+    await _loadState();
+    _state = _state.copyWith(
+      recurringReminderTimes: const <String>[],
+      auxiliaryReminderTime: null,
+    );
+    await _persistState();
   }
 
   Future<void> suspendForTimeDrift() async {
-    // ... (existing implementation)
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+    await _loadState();
+    if (_state.suspended) {
+      return;
+    }
+    await _cancelRecurringReminders(_state.recurringReminderTimes.length);
+    await _plugin.cancel(_snoozeNotificationId);
+    await cancelAuxiliaryReminder();
+    _state = _state.copyWith(suspended: true);
+    await _persistState();
   }
 
   Future<void> resumeFromTimeDrift() async {
-    // ... (existing implementation)
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+    await _loadState();
+    if (!_state.suspended) {
+      return;
+    }
+
+    final recurring = List<String>.from(_state.recurringReminderTimes);
+    final auxiliary = _state.auxiliaryReminderTime;
+    _state = _state.copyWith(suspended: false);
+    await _persistState();
+
+    if (recurring.isNotEmpty) {
+      await scheduleRecurringReminders(recurring);
+    }
+    if (auxiliary != null) {
+      await scheduleAuxiliaryReminder(auxiliary);
+    }
   }
 
   Future<void> ensureTimezoneConsistency({
     List<String>? fallbackRecurring,
     String? fallbackAuxiliary,
   }) async {
-    // ... (existing implementation)
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+
+    await _loadState();
+    final currentTimezone = tz.local.name;
+    final storedTimezone = _state.timezoneName;
+
+    if (storedTimezone != currentTimezone) {
+      final recurring = _state.recurringReminderTimes.isNotEmpty
+          ? _state.recurringReminderTimes
+          : (fallbackRecurring ?? const <String>[]);
+      final auxiliary = _state.auxiliaryReminderTime ?? fallbackAuxiliary;
+
+      _state = _state.copyWith(timezoneName: currentTimezone);
+      await _persistState();
+
+      if (recurring.isNotEmpty) {
+        await scheduleRecurringReminders(recurring);
+      }
+      if (auxiliary != null) {
+        await scheduleAuxiliaryReminder(auxiliary);
+      }
+      return;
+    }
+
+    if (_state.recurringReminderTimes.isEmpty &&
+        (fallbackRecurring?.isNotEmpty ?? false)) {
+      await scheduleRecurringReminders(fallbackRecurring!);
+    }
+    if (_state.auxiliaryReminderTime == null && fallbackAuxiliary != null) {
+      await scheduleAuxiliaryReminder(fallbackAuxiliary);
+    }
   }
 
   Future<void> sendNotificationToUser({
@@ -273,28 +470,77 @@ class NotificationService {
     }
   }
 
-  Future<void> _cancelRecurringReminders() async {
-    // ... (existing implementation)
+  Future<void> _cancelRecurringReminders(int count) async {
+    if (!_supportsLocalNotifications || count <= 0) {
+      return;
+    }
+    for (var index = 0; index < count; index++) {
+      await _plugin.cancel(_recurringNotificationBaseId + index);
+    }
   }
 
   List<String> _normalizeTimes(List<String> times) {
-    // ... (existing implementation)
+    final seen = <int>{};
+    final result = <_ReminderTime>[];
+    for (final time in times) {
+      final parsed = _parseTime(time);
+      if (parsed == null) {
+        continue;
+      }
+      final minutes = parsed.$1 * 60 + parsed.$2;
+      if (seen.add(minutes)) {
+        result.add(_ReminderTime(totalMinutes: minutes));
+      }
+    }
+    result.sort((a, b) => a.totalMinutes.compareTo(b.totalMinutes));
+    return result.map((time) => time.formatted).toList(growable: false);
   }
 
   (int, int)? _parseTime(String time) {
-    // ... (existing implementation)
+    final parts = time.split(':');
+    if (parts.length != 2) {
+      return null;
+    }
+    final hour = int.tryParse(parts[0]);
+    final minute = int.tryParse(parts[1]);
+    if (hour == null || minute == null) {
+      return null;
+    }
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+      return null;
+    }
+    return (hour, minute);
   }
 
   tz.TZDateTime _nextInstance(int hour, int minute) {
-    // ... (existing implementation)
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    if (scheduled.isBefore(now)) {
+      scheduled = scheduled.add(const Duration(days: 1));
+    }
+    return scheduled;
   }
 
   String _titleForIndex(int index) {
-    // ... (existing implementation)
+    switch (index) {
+      case 0:
+        return '朝のスタートを整えましょう';
+      case 1:
+        return '夕方の振り返りタイム';
+      default:
+        return '今日のクエストを記録しませんか？';
+    }
   }
 
   String _bodyForIndex(int index) {
-    // ... (existing implementation)
+    switch (index) {
+      case 0:
+        return '最初の一歩で連続日数を伸ばすチャンスです。記録画面を開きましょう。';
+      case 1:
+        return '一日の終わりに成果を記録して、次の挑戦への勢いをつくりましょう。';
+      default:
+        return '今日の目標を達成したか確認して、習慣化を続けましょう。';
+    }
   }
 
   Future<void> _loadState() async {

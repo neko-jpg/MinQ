@@ -1,9 +1,12 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
 import 'package:minq/config/flavor.dart';
@@ -12,7 +15,27 @@ import 'package:minq/firebase_options_stg.dart' as stg;
 import 'package:minq/firebase_options_prod.dart' as prod;
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final binding = WidgetsFlutterBinding.ensureInitialized();
+  GestureBinding.instance.resamplingEnabled = true;
+
+  assert(() {
+    binding.addTimingsCallback((List<FrameTiming> timings) {
+      for (final timing in timings) {
+        final totalMillis = timing.totalSpan.inMilliseconds;
+        if (totalMillis > 16) {
+          MinqLogger.debug(
+            'Frame exceeded vsync budget',
+            metadata: <String, Object?>{
+              'frameTimeMs': totalMillis,
+              'buildTimeMs': timing.buildDuration.inMilliseconds,
+              'rasterTimeMs': timing.rasterDuration.inMilliseconds,
+            },
+          );
+        }
+      }
+    });
+    return true;
+  }());
 
   const flavorString = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
   final flavor = Flavor.values.firstWhere(

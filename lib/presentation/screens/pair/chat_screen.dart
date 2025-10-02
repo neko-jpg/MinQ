@@ -1,4 +1,5 @@
-import 'dart.io';
+import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -189,10 +190,17 @@ class _MessageBubble extends ConsumerWidget {
 
     Widget messageContent;
     if (message.imageUrl != null) {
+      final maxWidth = math.min(MediaQuery.of(context).size.width * 0.55, 260.0);
+      final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+      final cacheDimension = (maxWidth * pixelRatio).round();
       messageContent = ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.network(
           message.imageUrl!,
+          width: maxWidth,
+          cacheWidth: cacheDimension,
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.high,
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) return child;
             return const Center(child: CircularProgressIndicator());
