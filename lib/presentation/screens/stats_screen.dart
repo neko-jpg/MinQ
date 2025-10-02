@@ -458,62 +458,64 @@ Widget _buildProgressBar(
   final deltaLabel = delta != null ? _formatDelta(delta, entry.unit) : null;
   final valueText = '${entry.value.toStringAsFixed(entry.value % 1 == 0 ? 0 : 1)}${entry.unit}';
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          _LegendBadge(color: progressColor, icon: entry.icon),
-          SizedBox(width: tokens.spacing(2)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  return RepaintBoundary(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            _LegendBadge(color: progressColor, icon: entry.icon),
+            SizedBox(width: tokens.spacing(2)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    entry.label,
+                    style: tokens.typeScale.bodyMedium.copyWith(
+                      color: tokens.textPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (deltaLabel != null)
+                    Text(
+                      '先週比 $deltaLabel',
+                      style: tokens.typeScale.bodySmall
+                          .copyWith(color: tokens.textMuted),
+                    ),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  entry.label,
+                  valueText,
                   style: tokens.typeScale.bodyMedium.copyWith(
                     color: tokens.textPrimary,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                if (deltaLabel != null)
-                  Text(
-                    '先週比 $deltaLabel',
-                    style: tokens.typeScale.bodySmall
-                        .copyWith(color: tokens.textMuted),
-                  ),
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                valueText,
-                style: tokens.typeScale.bodyMedium.copyWith(
-                  color: tokens.textPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      SizedBox(height: tokens.spacing(2)),
-      Semantics(
-        label: entry.semanticsLabel,
-        value: '${(entry.progress * 100).round()}%',
-        child: ClipRRect(
-          borderRadius: tokens.cornerLarge(),
-          child: LinearProgressIndicator(
-            value: entry.progress.clamp(0.0, 1.0),
-            minHeight: 10,
-            backgroundColor: tokens.border.withOpacity(0.3),
-            valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+          ],
+        ),
+        SizedBox(height: tokens.spacing(2)),
+        Semantics(
+          label: entry.semanticsLabel,
+          value: '${(entry.progress * 100).round()}%',
+          child: ClipRRect(
+            borderRadius: tokens.cornerLarge(),
+            child: LinearProgressIndicator(
+              value: entry.progress.clamp(0.0, 1.0),
+              minHeight: 10,
+              backgroundColor: tokens.border.withOpacity(0.3),
+              valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+            ),
           ),
         ),
-      ),
-    ],
+      ],
+    ),
   );
 }
 
@@ -557,65 +559,67 @@ Widget _buildProgressRing(MinqTheme tokens, _RingMetric metric) {
       '${metric.value.toStringAsFixed(metric.value % 1 == 0 ? 0 : 1)}${metric.unit}';
   final deltaLabel =
       metric.delta != null ? _formatDelta(metric.delta!, metric.unit) : null;
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      SizedBox(
-        width: 96,
-        height: 96,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            CircularProgressIndicator(
-              value: 1,
-              strokeWidth: 8,
-              valueColor: AlwaysStoppedAnimation<Color>(tokens.border.withOpacity(0.3)),
-              backgroundColor: Colors.transparent,
-            ),
-            if (hasProgress)
+  return RepaintBoundary(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 96,
+          height: 96,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
               CircularProgressIndicator(
-                value: metric.progress.clamp(0.0, 1.0),
+                value: 1,
                 strokeWidth: 8,
-                valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
+                valueColor: AlwaysStoppedAnimation<Color>(tokens.border.withOpacity(0.3)),
                 backgroundColor: Colors.transparent,
               ),
-            Padding(
-              padding: EdgeInsets.all(tokens.spacing(2)),
-              child: hasProgress
-                  ? Text(
-                      valueText,
-                      style: tokens.typeScale.bodyMedium
-                          .copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold),
-                    )
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.hourglass_empty, size: tokens.spacing(6), color: tokens.textMuted),
-                        SizedBox(height: tokens.spacing(2)),
-                        Text('未計測', style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
-                      ],
-                    ),
-            ),
-          ],
+              if (hasProgress)
+                CircularProgressIndicator(
+                  value: metric.progress.clamp(0.0, 1.0),
+                  strokeWidth: 8,
+                  valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
+                  backgroundColor: Colors.transparent,
+                ),
+              Padding(
+                padding: EdgeInsets.all(tokens.spacing(2)),
+                child: hasProgress
+                    ? Text(
+                        valueText,
+                        style: tokens.typeScale.bodyMedium
+                            .copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold),
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.hourglass_empty, size: tokens.spacing(6), color: tokens.textMuted),
+                          SizedBox(height: tokens.spacing(2)),
+                          Text('未計測', style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
+                        ],
+                      ),
+              ),
+            ],
+          ),
         ),
-      ),
-      SizedBox(height: tokens.spacing(2)),
-      Text(
-        metric.label,
-        style: tokens.typeScale.bodySmall.copyWith(
-          color: tokens.textMuted,
-          fontWeight: FontWeight.w600,
-        ),
-        textAlign: TextAlign.center,
-      ),
-      if (deltaLabel != null) ...[
-        SizedBox(height: tokens.spacing(1)),
+        SizedBox(height: tokens.spacing(2)),
         Text(
-          '先週比 $deltaLabel',
-          style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
+          metric.label,
+          style: tokens.typeScale.bodySmall.copyWith(
+            color: tokens.textMuted,
+            fontWeight: FontWeight.w600,
+          ),
+          textAlign: TextAlign.center,
         ),
+        if (deltaLabel != null) ...[
+          SizedBox(height: tokens.spacing(1)),
+          Text(
+            '先週比 $deltaLabel',
+            style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
+          ),
+        ],
       ],
-    ],
+    ),
   );
 }
 Widget _buildCalendarCard(
