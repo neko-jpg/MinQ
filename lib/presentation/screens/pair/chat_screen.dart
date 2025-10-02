@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/pair/chat_message.dart';
 import 'package:minq/presentation/screens/pair/share_progress_sheet.dart';
+import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
@@ -436,7 +437,7 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
       elevation: 10,
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(tokens.spacing(2)),
           child: Row(
             children: [
               Expanded(
@@ -447,57 +448,86 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
                     filled: true,
                     fillColor: tokens.background,
                     border: OutlineInputBorder(borderRadius: tokens.cornerXLarge(), borderSide: BorderSide.none),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    contentPadding: EdgeInsets.symmetric(horizontal: tokens.spacing(4)),
                   ),
                   minLines: 1,
                   maxLines: 5,
                   onSubmitted: (_) => _sendMessage(),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: tokens.spacing(2)),
               if (_isUploading)
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(),
-                )
-              else
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder: (child, animation) => ScaleTransition(scale: animation, child: child),
-                  child: _showSendButton
-                      ? _isSending
-                          ? const Padding(
-                              padding: EdgeInsets.all(12.0),
-                              child: SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              ),
-                            )
-                          : IconButton.filled(
-                              key: const ValueKey('send'),
-                              icon: const Icon(Icons.send),
-                              onPressed: _sendMessage,
-                              style: IconButton.styleFrom(backgroundColor: tokens.brandPrimary),
-                            )
-                      : Row(
-                          key: const ValueKey('actions'),
-                          children: [
-                            IconButton(icon: const Icon(Icons.attach_file), onPressed: _sendImage),
-                            IconButton(
-                              icon: const Icon(Icons.fact_check_outlined),
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  builder: (_) => ShareProgressSheet(pairId: widget.pairId),
-                                  backgroundColor: Colors.transparent,
-                                  isScrollControlled: true,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                Padding(
+                  padding: EdgeInsets.all(tokens.spacing(2)),
+                  child: const CircularProgressIndicator(),
                 ),
+              else
+                Builder(
+                  builder: (context) {
+                    final switchCurve = AnimationSystem.getCurve(
+                      context,
+                      AnimationSystem.animatedSwitcherCurve,
+                    );
+                    final switchDuration = AnimationSystem.getDuration(
+                      context,
+                      AnimationSystem.animatedSwitcher,
+                    );
+                    final reduceMotion = AnimationSystem.shouldReduceMotion(context);
+                    return AnimatedSwitcher(
+                      duration: switchDuration,
+                      switchInCurve: switchCurve,
+                      switchOutCurve: switchCurve,
+                      transitionBuilder: (child, animation) {
+                        if (reduceMotion) {
+                          return child;
+                        }
+                        final curvedAnimation = CurvedAnimation(
+                          parent: animation,
+                          curve: switchCurve,
+                        );
+                        return ScaleTransition(scale: curvedAnimation, child: child);
+                      },
+                      child: _showSendButton
+                          ? _isSending
+                              ? Padding(
+                                  padding: EdgeInsets.all(tokens.spacing(3)),
+                                  child: SizedBox(
+                                    width: tokens.spacing(6),
+                                    height: tokens.spacing(6),
+                                    child: const CircularProgressIndicator(strokeWidth: 2),
+                                  ),
+                                )
+                              : IconButton.filled(
+                                  key: const ValueKey('send'),
+                                  icon: const Icon(Icons.send),
+                                  onPressed: _sendMessage,
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: tokens.brandPrimary,
+                                  ),
+                                )
+                          : Row(
+                              key: const ValueKey('actions'),
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.attach_file),
+                                  onPressed: _sendImage,
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.fact_check_outlined),
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (_) => ShareProgressSheet(pairId: widget.pairId),
+                                      backgroundColor: Colors.transparent,
+                                      isScrollControlled: true,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                    );
+                  },
+                )
             ],
           ),
         ),
