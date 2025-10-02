@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:minq/data/providers.dart';
@@ -23,13 +24,14 @@ class PairScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     final pairAsync = ref.watch(userPairProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
-          'Pair',
+          l10n.pairTitle,
           style: tokens.titleMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -54,7 +56,7 @@ class PairScreen extends ConsumerWidget {
                       : const _UnpairedView(key: ValueKey('unpaired')),
             ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
+        error: (err, stack) => Center(child: Text(l10n.errorGeneric)),
       ),
     );
   }
@@ -68,6 +70,7 @@ class _PairedView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     // TODO: Handle null repository gracefully
     final pairStream = ref.watch(pairRepositoryProvider)!.getPairStream(pairId);
 
@@ -82,6 +85,12 @@ class _PairedView extends ConsumerWidget {
         final canHighFive =
             pair.lastHighfiveAt == null ||
             DateTime.now().difference(pair.lastHighfiveAt!).inHours >= 24;
+        final quickMessages = <String>[
+          l10n.pairQuickMessageGreat,
+          l10n.pairQuickMessageKeepGoing,
+          l10n.pairQuickMessageFinishStrong,
+          l10n.pairQuickMessageCompletedGoal,
+        ];
 
         return SingleChildScrollView(
           padding: EdgeInsets.all(tokens.spacing(5)),
@@ -101,17 +110,18 @@ class _PairedView extends ConsumerWidget {
               ),
               SizedBox(height: tokens.spacing(4)),
               Text(
-                'Anonymous Partner',
+                l10n.pairAnonymousPartner,
                 style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
               ),
               SizedBox(height: tokens.spacing(1)),
               Text(
-                'Paired for "${pair.category}" Quest',
+                l10n.pairPairedQuest(pair.category),
                 style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
               SizedBox(height: tokens.spacing(8)),
               MinqPrimaryButton(
-                label: canHighFive ? 'High Five!' : 'High Five Sent',
+                label:
+                    canHighFive ? l10n.pairHighFiveAction : l10n.pairHighFiveSent,
                 onPressed:
                     canHighFive
                         ? () async {
@@ -126,7 +136,7 @@ class _PairedView extends ConsumerWidget {
               ),
               SizedBox(height: tokens.spacing(10)),
               Text(
-                'Send a quick message:',
+                l10n.pairQuickMessagePrompt,
                 style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
               SizedBox(height: tokens.spacing(4)),
@@ -134,39 +144,14 @@ class _PairedView extends ConsumerWidget {
                 spacing: tokens.spacing(3),
                 runSpacing: tokens.spacing(3),
                 alignment: WrapAlignment.center,
-                children: [
-                  _QuickMessageChip(
-                    text: "You're doing great!",
-                    onTap:
-                        () => _sendQuickMessage(
-                          ref,
-                          pairId,
-                          "You're doing great!",
-                        ),
-                  ),
-                  _QuickMessageChip(
-                    text: 'Keep it up!',
-                    onTap: () => _sendQuickMessage(ref, pairId, 'Keep it up!'),
-                  ),
-                  _QuickMessageChip(
-                    text: "Let's finish strong.",
-                    onTap:
-                        () => _sendQuickMessage(
-                          ref,
-                          pairId,
-                          "Let's finish strong.",
-                        ),
-                  ),
-                  _QuickMessageChip(
-                    text: 'I completed my goal!',
-                    onTap:
-                        () => _sendQuickMessage(
-                          ref,
-                          pairId,
-                          'I completed my goal!',
-                        ),
-                  ),
-                ],
+                children: quickMessages
+                    .map(
+                      (message) => _QuickMessageChip(
+                        text: message,
+                        onTap: () => _sendQuickMessage(ref, pairId, message),
+                      ),
+                    )
+                    .toList(),
               ),
             ],
           ),
@@ -271,6 +256,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     return SafeArea(
       top: false,
       bottom: true,
@@ -283,13 +269,13 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
           tokens.spacing(4),
         ),
         children: [
-          _buildHeader(tokens),
+          _buildHeader(tokens, l10n),
           SizedBox(height: tokens.spacing(8)),
-          _buildInviteCodeInput(tokens),
+          _buildInviteCodeInput(tokens, l10n),
           SizedBox(height: tokens.spacing(6)),
           _buildDivider(tokens),
           SizedBox(height: tokens.spacing(6)),
-          _buildRandomMatchForm(tokens),
+          _buildRandomMatchForm(tokens, l10n),
           SizedBox(height: tokens.spacing(8)),
           MinqPrimaryButton(
             label: 'マッチングを開始する',
@@ -301,7 +287,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     );
   }
 
-  Widget _buildHeader(MinqTheme tokens) {
+  Widget _buildHeader(MinqTheme tokens, AppLocalizations l10n) {
     return Column(
       children: [
         Row(
@@ -324,7 +310,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         ),
         SizedBox(height: tokens.spacing(4)),
         Text(
-          'Power Up with a Partner!',
+          l10n.pairPartnerHeroTitle,
           style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -332,31 +318,16 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
           textAlign: TextAlign.center,
         ),
         SizedBox(height: tokens.spacing(2)),
-        RichText(
+        Text(
+          l10n.pairPartnerHeroDescription,
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           textAlign: TextAlign.center,
-          text: TextSpan(
-            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
-            children: [
-              const TextSpan(
-                text:
-                    'Having an accountability partner increases your chance of success by ',
-              ),
-              TextSpan(
-                text: '95%',
-                style: TextStyle(
-                  color: tokens.brandPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const TextSpan(text: '. Stay anonymous and motivated.'),
-            ],
-          ),
         ),
       ],
     );
   }
 
-  Widget _buildInviteCodeInput(MinqTheme tokens) {
+  Widget _buildInviteCodeInput(MinqTheme tokens, AppLocalizations l10n) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(5)),
       decoration: BoxDecoration(
@@ -368,7 +339,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Have an invite code?',
+            l10n.pairInviteTitle,
             style: tokens.bodyMedium.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.w600,
@@ -381,7 +352,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
                 child: TextField(
                   controller: _inviteCodeController,
                   decoration: InputDecoration(
-                    hintText: 'Enter code',
+                    hintText: l10n.pairInviteHint,
                     filled: true,
                     fillColor: tokens.background,
                     border: OutlineInputBorder(
@@ -409,7 +380,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
                     vertical: tokens.spacing(3.5),
                   ),
                 ),
-                child: const Text('Apply'),
+                child: Text(l10n.pairInviteApply),
               ),
             ],
           ),
@@ -425,7 +396,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: tokens.spacing(3)),
           child: Text(
-            'OR',
+            l10n.pairDividerOr,
             style: tokens.bodySmall.copyWith(
               color: tokens.textMuted,
               fontWeight: FontWeight.w600,
@@ -437,7 +408,19 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     );
   }
 
-  Widget _buildRandomMatchForm(MinqTheme tokens) {
+  Widget _buildRandomMatchForm(MinqTheme tokens, AppLocalizations l10n) {
+    final ageOptions = <_DropdownOption>[
+      _DropdownOption(value: '18-24', label: l10n.pairAgeOption1824),
+      _DropdownOption(value: '25-34', label: l10n.pairAgeOption2534),
+      _DropdownOption(value: '35-44', label: l10n.pairAgeOption3544),
+      _DropdownOption(value: '45+', label: l10n.pairAgeOption45Plus),
+    ];
+    final categoryOptions = <_DropdownOption>[
+      _DropdownOption(value: 'Fitness', label: l10n.pairGoalFitness),
+      _DropdownOption(value: 'Learning', label: l10n.pairGoalLearning),
+      _DropdownOption(value: 'Well-being', label: l10n.pairGoalWellbeing),
+      _DropdownOption(value: 'Productivity', label: l10n.pairGoalProductivity),
+    ];
     return Container(
       padding: EdgeInsets.all(tokens.spacing(5)),
       decoration: BoxDecoration(
@@ -449,7 +432,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Get matched randomly',
+            l10n.pairRandomMatchTitle,
             style: tokens.bodyMedium.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.w600,
@@ -458,22 +441,22 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
           SizedBox(height: tokens.spacing(4)),
           _buildDropdown(
             tokens,
-            'Age Range',
-            ['18-24', '25-34', '35-44', '45+'],
+            l10n.pairAgeRangeLabel,
+            ageOptions,
             _selectedAgeRange,
             (val) => setState(() => _selectedAgeRange = val!),
           ),
           SizedBox(height: tokens.spacing(4)),
           _buildDropdown(
             tokens,
-            'Goal Category',
-            ['Fitness', 'Learning', 'Well-being', 'Productivity'],
+            l10n.pairGoalCategoryLabel,
+            categoryOptions,
             _selectedCategory,
             (val) => setState(() => _selectedCategory = val!),
           ),
           SizedBox(height: tokens.spacing(4)),
           Text(
-            'Anonymity Guaranteed: Your partner will only know your age range and goal category. All communication happens inside the app.',
+            l10n.pairRandomMatchNote,
             style: tokens.bodySmall.copyWith(color: tokens.textMuted),
           ),
         ],
@@ -484,7 +467,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
   Widget _buildDropdown(
     MinqTheme tokens,
     String label,
-    List<String> items,
+    List<_DropdownOption> items,
     String currentValue,
     ValueChanged<String?> onChanged,
   ) {
@@ -501,12 +484,14 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         SizedBox(height: tokens.spacing(1)),
         DropdownButtonFormField<String>(
           value: currentValue,
-          items:
-              items
-                  .map(
-                    (item) => DropdownMenuItem(value: item, child: Text(item)),
-                  )
-                  .toList(),
+          items: items
+              .map(
+                (item) => DropdownMenuItem(
+                  value: item.value,
+                  child: Text(item.label),
+                ),
+              )
+              .toList(),
           onChanged: onChanged,
           decoration: InputDecoration(
             filled: true,
@@ -520,4 +505,11 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
       ],
     );
   }
+}
+
+class _DropdownOption {
+  const _DropdownOption({required this.value, required this.label});
+
+  final String value;
+  final String label;
 }

@@ -290,7 +290,7 @@ class PairRepository {
     await _firestore.runTransaction((transaction) async {
       final snapshot = await transaction.get(messageRef);
       if (!snapshot.exists) {
-        throw Exception("Message does not exist!");
+        throw Exception('メッセージが存在しません');
       }
 
       final currentReactions = Map<String, int>.from(snapshot.data()!['reactions'] ?? {});

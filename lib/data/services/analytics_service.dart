@@ -23,7 +23,9 @@ class AnalyticsService {
       );
       // In debug mode, we might want to throw an error to catch this early.
       if (kDebugMode) {
-        throw ArgumentError('Invalid event name format: "$name". Must be in verb_object format (e.g., "create_quest").');
+        throw ArgumentError(
+          'イベント名の形式が正しくありません: "$name"。verb_object 形式（例: "create_quest"）で指定してください。',
+        );
       }
       return;
     }

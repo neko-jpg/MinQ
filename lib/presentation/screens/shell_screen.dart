@@ -100,6 +100,35 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     final tokens = context.tokens;
     final currentIndex = _calculateSelectedIndex(context);
 
+    const navItems = <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home_outlined),
+        activeIcon: Icon(Icons.home),
+        label: 'ホーム',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.bar_chart_outlined),
+        activeIcon: Icon(Icons.bar_chart),
+        label: '進捗',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.groups_outlined),
+        activeIcon: Icon(Icons.groups),
+        label: 'ペア',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.checklist_outlined),
+        activeIcon: Icon(Icons.checklist),
+        label: 'クエスト',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.settings_outlined),
+        activeIcon: Icon(Icons.settings),
+        label: '設定',
+      ),
+    ];
+    assert(navItems.length <= 5, 'ボトムナビゲーションのタブ数は5個以下にしてください。');
+
     return Scaffold(
       body: PageTransitionSwitcher(
         duration: const Duration(milliseconds: 400),
@@ -127,33 +156,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
           unselectedFontSize: 12,
           backgroundColor: tokens.surface,
           elevation: 0,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'ホーム',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart_outlined),
-              activeIcon: Icon(Icons.bar_chart),
-              label: '進捗',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.groups_outlined),
-              activeIcon: Icon(Icons.groups),
-              label: 'ペア',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.checklist_outlined),
-              activeIcon: Icon(Icons.checklist),
-              label: 'クエスト',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings_outlined),
-              activeIcon: Icon(Icons.settings),
-              label: '設定',
-            ),
-          ],
+          items: navItems,
         ),
       ),
     );
