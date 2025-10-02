@@ -15,6 +15,7 @@ class StatsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final heatmapData = ref.watch(heatmapDataProvider);
+    final streakAsync = ref.watch(streakProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -44,7 +45,7 @@ class StatsScreen extends ConsumerWidget {
                   vertical: tokens.spacing(6),
                 ),
                 children: [
-                  _buildStreakCard(context, tokens),
+                  _buildStreakCard(context, tokens, streakAsync),
                   SizedBox(height: tokens.spacing(6)),
                   _buildGoalCard(context, ref, tokens),
                   SizedBox(height: tokens.spacing(6)),
@@ -74,7 +75,47 @@ class StatsScreen extends ConsumerWidget {
     );
   }
 }
-Widget _buildStreakCard(BuildContext context, MinqTheme tokens) {
+Widget _buildStreakCard(
+  BuildContext context,
+  MinqTheme tokens,
+  AsyncValue<int> streakAsync,
+) {
+  Widget buildContent(int streak) {
+    final streakText = '$streak';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          '現在の連続日数',
+          style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
+        SizedBox(height: tokens.spacing(2)),
+        Semantics(
+          label: '現在の連続日数',
+          value: '$streakText日',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.local_fire_department,
+                size: tokens.spacing(12),
+                color: tokens.brandPrimary,
+              ),
+              SizedBox(width: tokens.spacing(2)),
+              Text(
+                streakText,
+                style: tokens.typeScale.h1.copyWith(color: tokens.textPrimary),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: tokens.spacing(2)),
+        Text('日', style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted)),
+      ],
+    );
+  }
+
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
@@ -84,28 +125,25 @@ Widget _buildStreakCard(BuildContext context, MinqTheme tokens) {
     elevation: 0,
     child: Padding(
       padding: EdgeInsets.all(tokens.spacing(6)),
-      child: Column(
-        children: [
-          Text('現在の連続日数', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
-          SizedBox(height: tokens.spacing(2)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.local_fire_department, size: tokens.spacing(12), color: tokens.brandPrimary),
-              SizedBox(width: tokens.spacing(2)),
-              Text(
-                '21',
-                style: tokens.displayMedium.copyWith(
-                  color: tokens.textPrimary,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: tokens.spacing(2)),
-          Text('日', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
-        ],
+      child: streakAsync.when(
+        data: buildContent,
+        loading: () => SizedBox(
+          height: tokens.spacing(20),
+          child: const Center(child: CircularProgressIndicator()),
+        ),
+        error: (error, _) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.error_outline, color: tokens.accentError),
+            SizedBox(height: tokens.spacing(2)),
+            Text(
+              '連続日数を取得できませんでした',
+              style:
+                  tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -119,46 +157,41 @@ Widget _buildGoalCard(BuildContext context, WidgetRef ref, MinqTheme tokens) {
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
-    child: Padding(
-      padding: EdgeInsets.all(tokens.spacing(4)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    child: ListTile(
+      onTap: () => _showGoalBottomSheet(context, tokens),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: tokens.spacing(4),
+        vertical: tokens.spacing(2),
+      ),
+      leading: Container(
+        width: tokens.spacing(10),
+        height: tokens.spacing(10),
+        decoration: BoxDecoration(
+          color: tokens.brandPrimary.withOpacity(0.12),
+          borderRadius: tokens.cornerLarge(),
+        ),
+        child: Icon(Icons.flag, color: tokens.brandPrimary, size: tokens.spacing(6)),
+      ),
+      title: Text(
+        '目標設定',
+        style: tokens.typeScale.h4.copyWith(color: tokens.textPrimary),
+      ),
+      subtitle: Padding(
+        padding: EdgeInsets.only(top: tokens.spacing(1)),
+        child: Text(
+          '今月の目標: 5日継続',
+          style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
+        ),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          InkWell(
-            borderRadius: tokens.cornerLarge(),
-            onTap: () => _showGoalBottomSheet(context, tokens),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: tokens.spacing(2),
-                vertical: tokens.spacing(2),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '目標設定',
-                        style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: tokens.spacing(2)),
-                      Text(
-                        '今月の目標: 5日継続',
-                        style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
-                      ),
-                    ],
-                  ),
-                  Icon(Icons.chevron_right, color: tokens.textMuted),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: tokens.spacing(2)),
           Text(
-            'タップして達成目標を編集できます。',
-            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            '編集する',
+            style: tokens.typeScale.bodySmall.copyWith(color: tokens.brandPrimary),
           ),
+          SizedBox(width: tokens.spacing(1)),
+          Icon(Icons.chevron_right, color: tokens.brandPrimary),
         ],
       ),
     ),
@@ -206,24 +239,56 @@ void _showGoalBottomSheet(BuildContext context, MinqTheme tokens) {
 class _ProgressEntry {
   const _ProgressEntry({
     required this.label,
-    required this.valueLabel,
+    required this.value,
+    required this.unit,
     required this.progress,
-    this.deltaLabel,
+    required this.color,
   });
 
   final String label;
-  final String valueLabel;
+  final double value;
+  final String unit;
   final double progress;
-  final String? deltaLabel;
+  final Color color;
+}
+
+class _RingMetric {
+  const _RingMetric({
+    required this.label,
+    required this.value,
+    required this.unit,
+    required this.progress,
+    this.delta,
+  });
+
+  final String label;
+  final double value;
+  final String unit;
+  final double progress;
+  final double? delta;
 }
 
 Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme tokens) {
   final navigation = ref.read(navigationUseCaseProvider);
   final entries = <_ProgressEntry>[
-    const _ProgressEntry(label: '今週', valueLabel: '5/7日', progress: 0.71, deltaLabel: null),
-    const _ProgressEntry(label: '先週', valueLabel: '6/7日', progress: 0.85, deltaLabel: '−1日'),
+    _ProgressEntry(
+      label: '今週',
+      value: 5,
+      unit: '日',
+      progress: 0.71,
+      color: tokens.brandPrimary,
+    ),
+    _ProgressEntry(
+      label: '先週',
+      value: 6,
+      unit: '日',
+      progress: 0.86,
+      color: tokens.serenity,
+    ),
   ];
   final hasProgress = entries.any((entry) => entry.progress > 0);
+  final double? deltaFromPrevious =
+      entries.length >= 2 ? entries.first.value - entries[1].value : null;
 
   if (!hasProgress) {
     return _buildZeroChart(
@@ -247,9 +312,40 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('進捗を比較する', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+          SizedBox(height: tokens.spacing(3)),
+          Wrap(
+            spacing: tokens.spacing(3),
+            runSpacing: tokens.spacing(2),
+            children: [
+              for (final entry in entries)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: tokens.spacing(2),
+                      height: tokens.spacing(2),
+                      decoration: BoxDecoration(
+                        color: entry.color,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(width: tokens.spacing(1)),
+                    Text(
+                      '${entry.label}（${entry.unit}）',
+                      style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
+                    ),
+                  ],
+                ),
+            ],
+          ),
           SizedBox(height: tokens.spacing(4)),
           for (int i = 0; i < entries.length; i++) ...[
-            _buildProgressBar(tokens, entries[i], isPrimary: i == 0),
+            _buildProgressBar(
+              tokens,
+              entries[i],
+              isPrimary: i == 0,
+              delta: i == 0 ? deltaFromPrevious : null,
+            ),
             if (i < entries.length - 1) SizedBox(height: tokens.spacing(4)),
           ],
         ],
@@ -271,6 +367,12 @@ Widget _buildWeeklyProgressCard(BuildContext context, WidgetRef ref, MinqTheme t
     );
   }
 
+  final metrics = <_RingMetric>[
+    const _RingMetric(label: '日数', value: 5, unit: '日', progress: 0.71, delta: 1),
+    const _RingMetric(label: '合計時間', value: 4.2, unit: '時間', progress: 0.6, delta: -0.3),
+    const _RingMetric(label: '平均時間', value: 32, unit: '分', progress: 0.75, delta: 2),
+  ];
+
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
@@ -286,11 +388,14 @@ Widget _buildWeeklyProgressCard(BuildContext context, WidgetRef ref, MinqTheme t
           Text('週間の進捗', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
           SizedBox(height: tokens.spacing(4)),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildProgressRing(tokens, '5/7', '日数', 0.71),
-              _buildProgressRing(tokens, '4.2h', '合計時間', 0.6),
-              _buildProgressRing(tokens, '32m', '平均時間', 0.75),
+              for (final metric in metrics)
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: tokens.spacing(2)),
+                    child: _buildProgressRing(tokens, metric),
+                  ),
+                ),
             ],
           ),
         ],
@@ -330,45 +435,79 @@ Widget _buildZeroChart(
   );
 }
 
-Widget _buildProgressBar(MinqTheme tokens, _ProgressEntry entry, {bool isPrimary = false}) {
+Widget _buildProgressBar(
+  MinqTheme tokens,
+  _ProgressEntry entry, {
+  bool isPrimary = false,
+  double? delta,
+}) {
+  final progressColor =
+      isPrimary ? entry.color : entry.color.withOpacity(0.7);
+  final deltaLabel = delta != null ? _formatDelta(delta, entry.unit) : null;
+  final valueText = '${entry.value.toStringAsFixed(entry.value % 1 == 0 ? 0 : 1)}${entry.unit}';
+
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(entry.label, style: tokens.bodyMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
-          Text(entry.valueLabel, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
+          Text(
+            entry.label,
+            style: tokens.typeScale.bodyMedium.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                valueText,
+                style: tokens.typeScale.bodyMedium.copyWith(
+                  color: tokens.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              if (deltaLabel != null)
+                Text(
+                  '先週比 $deltaLabel',
+                  style: tokens.typeScale.bodySmall
+                      .copyWith(color: tokens.textMuted),
+                ),
+            ],
+          ),
         ],
       ),
       SizedBox(height: tokens.spacing(2)),
-      LinearProgressIndicator(
-        value: entry.progress.clamp(0.0, 1.0),
-        backgroundColor: tokens.background,
-        color: isPrimary ? tokens.brandPrimary : tokens.brandPrimary.withOpacity(0.6),
-        minHeight: 8,
+      ClipRRect(
         borderRadius: tokens.cornerLarge(),
-      ),
-      if (entry.deltaLabel != null)
-        Padding(
-          padding: EdgeInsets.only(top: tokens.spacing(2)),
-          child: Row(
-            children: [
-              Icon(
-                entry.deltaLabel!.startsWith('−') ? Icons.arrow_downward : Icons.arrow_upward,
-                size: 16,
-                color: entry.deltaLabel!.startsWith('−') ? Colors.red.shade400 : tokens.accentSuccess,
-              ),
-              SizedBox(width: tokens.spacing(2)),
-              Text(entry.deltaLabel!, style: tokens.bodySmall.copyWith(color: entry.deltaLabel!.startsWith('−') ? Colors.red.shade400 : tokens.accentSuccess)),
-            ],
-          ),
+        child: LinearProgressIndicator(
+          value: entry.progress.clamp(0.0, 1.0),
+          minHeight: 10,
+          backgroundColor: tokens.border.withOpacity(0.3),
+          valueColor: AlwaysStoppedAnimation<Color>(progressColor),
         ),
+      ),
     ],
   );
 }
-Widget _buildProgressRing(MinqTheme tokens, String value, String label, double progress) {
-  final hasProgress = progress > 0;
+
+String _formatDelta(double delta, String unit) {
+  if (delta > 0) {
+    return '▲${delta.toStringAsFixed(delta.abs() < 1 ? 1 : 0)}$unit';
+  }
+  if (delta < 0) {
+    return '▼${delta.abs().toStringAsFixed(delta.abs() < 1 ? 1 : 0)}$unit';
+  }
+  return '±0$unit';
+}
+Widget _buildProgressRing(MinqTheme tokens, _RingMetric metric) {
+  final hasProgress = metric.progress > 0;
+  final valueText =
+      '${metric.value.toStringAsFixed(metric.value % 1 == 0 ? 0 : 1)}${metric.unit}';
+  final deltaLabel =
+      metric.delta != null ? _formatDelta(metric.delta!, metric.unit) : null;
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: [
@@ -386,7 +525,7 @@ Widget _buildProgressRing(MinqTheme tokens, String value, String label, double p
             ),
             if (hasProgress)
               CircularProgressIndicator(
-                value: progress.clamp(0.0, 1.0),
+                value: metric.progress.clamp(0.0, 1.0),
                 strokeWidth: 8,
                 valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
                 backgroundColor: Colors.transparent,
@@ -395,8 +534,9 @@ Widget _buildProgressRing(MinqTheme tokens, String value, String label, double p
               padding: EdgeInsets.all(tokens.spacing(2)),
               child: hasProgress
                   ? Text(
-                      value,
-                      style: tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold),
+                      valueText,
+                      style: tokens.typeScale.bodyMedium
+                          .copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold),
                     )
                   : Column(
                       mainAxisSize: MainAxisSize.min,
@@ -411,7 +551,21 @@ Widget _buildProgressRing(MinqTheme tokens, String value, String label, double p
         ),
       ),
       SizedBox(height: tokens.spacing(2)),
-      Text(label, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
+      Text(
+        metric.label,
+        style: tokens.typeScale.bodySmall.copyWith(
+          color: tokens.textMuted,
+          fontWeight: FontWeight.w600,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      if (deltaLabel != null) ...[
+        SizedBox(height: tokens.spacing(1)),
+        Text(
+          '先週比 $deltaLabel',
+          style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
+        ),
+      ],
     ],
   );
 }
