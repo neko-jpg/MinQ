@@ -39,7 +39,7 @@ class LoginScreen extends ConsumerWidget {
                   ),
                   SizedBox(height: tokens.spacing(2)), // mt-2
                   Text(
-                    'Build habits, one mini-quest at a time.',
+                    '1日3タップのミニクエストで習慣化を後押しします。',
                     style: tokens.bodyLarge.copyWith(color: tokens.textMuted),
                     textAlign: TextAlign.center,
                   ),
@@ -47,25 +47,25 @@ class LoginScreen extends ConsumerWidget {
                   _SocialLoginButton(
                     // NOTE: Using a standard icon instead of the image from HTML
                     icon: Icons.g_mobiledata, // Placeholder for Google
-                    text: 'Continue with Google',
+                    text: 'Googleで続行する',
                     onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
                   ),
                   SizedBox(height: tokens.spacing(3)), // space-y-3
                   _SocialLoginButton(
                     icon: Icons.apple,
-                    text: 'Continue with Apple',
+                    text: 'Appleで続行する',
                     onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
                   ),
                   SizedBox(height: tokens.spacing(3)),
                   _SocialLoginButton(
                     icon: Icons.shield_outlined, // shield_person
-                    text: 'Continue as Guest',
+                    text: 'ゲストとして試す',
                     onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
                   ),
                   SizedBox(height: tokens.spacing(3)),
                   _SocialLoginButton(
                     icon: Icons.mail_outline, // mail
-                    text: 'Continue with Email',
+                    text: 'メールアドレスで続行する',
                     onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
                   ),
                   const Spacer(),
@@ -76,25 +76,29 @@ class LoginScreen extends ConsumerWidget {
                       text: TextSpan(
                         style: tokens.labelSmall.copyWith(color: tokens.textMuted),
                         children: <TextSpan>[
-                          const TextSpan(text: 'By continuing, you agree to MinQ\'s '),
+                          const TextSpan(text: '続行すると、MinQの'),
                           TextSpan(
-                            text: 'Terms of Service',
+                            text: '利用規約',
                             style: tokens.labelSmall.copyWith(
-                              color: tokens.brandPrimary,
+                              color: tokens.ensureAccessibleOnBackground(tokens.brandPrimary, tokens.background),
                               fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                              decorationColor: tokens.ensureAccessibleOnBackground(tokens.brandPrimary, tokens.background),
                             ),
                             recognizer: TapGestureRecognizer()..onTap = () => context.push('/policy/terms'),
                           ),
-                          const TextSpan(text: ' and '),
+                          const TextSpan(text: 'と'),
                           TextSpan(
-                            text: 'Privacy Policy',
+                            text: 'プライバシーポリシー',
                             style: tokens.labelSmall.copyWith(
-                              color: tokens.brandPrimary,
+                              color: tokens.ensureAccessibleOnBackground(tokens.brandPrimary, tokens.background),
                               fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                              decorationColor: tokens.ensureAccessibleOnBackground(tokens.brandPrimary, tokens.background),
                             ),
                             recognizer: TapGestureRecognizer()..onTap = () => context.push('/policy/privacy'),
                           ),
-                          const TextSpan(text: '.'),
+                          const TextSpan(text: 'に同意したものとみなされます。'),
                         ],
                       ),
                     ),
