@@ -51,6 +51,7 @@
   "questsCategoryLearning": "学習",
   "questsCategoryExercise": "エクササイズ",
   "questsCategoryTidying": "片付け",
+  "questsCategoryRecent": "最近",
 
   "authErrorOperationNotAllowed": "匿名サインインはこのプロジェクトでは有効になっていません。",
   "authErrorWeakPassword": "パスワードが弱すぎます。より強力なパスワードを設定してください。",

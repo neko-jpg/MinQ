@@ -16,9 +16,21 @@ class QuestsScreen extends ConsumerStatefulWidget {
   ConsumerState<QuestsScreen> createState() => _QuestsScreenState();
 }
 
+const String _categoryRecommended = 'recommended';
+const String _categoryMine = 'mine';
+const String _categoryLearning = 'learning';
+const String _categoryRecent = 'recent';
+
+class _Category {
+  const _Category({required this.key, required this.label});
+
+  final String key;
+  final String label;
+}
+
 class _QuestsScreenState extends ConsumerState<QuestsScreen> {
   bool _isLoading = true;
-  String _selectedCategory = 'Featured'; // Use English keys for state
+  String _selectedCategory = _categoryRecommended;
 
   @override
   void initState() {
@@ -34,7 +46,12 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context)!;
-    final categories = ['Featured', 'My Quests', 'All', 'Learning', 'Exercise', 'Tidying'];
+    final categories = <_Category>[
+      _Category(key: _categoryRecommended, label: l10n.questsCategoryFeatured),
+      _Category(key: _categoryMine, label: l10n.questsCategoryMyQuests),
+      _Category(key: _categoryLearning, label: l10n.questsCategoryLearning),
+      _Category(key: _categoryRecent, label: l10n.questsCategoryRecent),
+    ];
     final templateQuests = ref.watch(templateQuestsProvider);
     final userQuests = ref.watch(userQuestsProvider);
 
@@ -62,11 +79,16 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                   backgroundColor: tokens.background.withOpacity(0.8),
                   surfaceTintColor: Colors.transparent,
                   elevation: 0,
-                  flexibleSpace: _buildCategoryTabs(tokens, categories, l10n),
+                  flexibleSpace: _buildCategoryTabs(tokens, categories),
                 ),
                 SliverPadding(
                   padding: EdgeInsets.all(tokens.spacing(4)),
-                  sliver: _buildQuestList(tokens, templateQuests.value ?? [], userQuests.value ?? []),
+                  sliver: _buildQuestList(
+                    tokens,
+                    l10n,
+                    templateQuests.value ?? [],
+                    userQuests.value ?? [],
+                  ),
                 ),
               ],
             ),
@@ -96,19 +118,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
     );
   }
 
-  Widget _buildCategoryTabs(MinqTheme tokens, List<String> categories, AppLocalizations l10n) {
-    String getLocalizedCategory(String key) {
-      switch (key) {
-        case 'Featured': return l10n.questsCategoryFeatured;
-        case 'My Quests': return l10n.questsCategoryMyQuests;
-        case 'All': return l10n.questsCategoryAll;
-        case 'Learning': return l10n.questsCategoryLearning;
-        case 'Exercise': return l10n.questsCategoryExercise;
-        case 'Tidying': return l10n.questsCategoryTidying;
-        default: return key;
-      }
-    }
-
+  Widget _buildCategoryTabs(MinqTheme tokens, List<_Category> categories) {
     return Container(
       height: 60,
       decoration: BoxDecoration(
@@ -119,10 +129,10 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
         padding: EdgeInsets.symmetric(horizontal: tokens.spacing(4)),
         itemCount: categories.length,
         itemBuilder: (context, index) {
-          final categoryKey = categories[index];
-          final isSelected = categoryKey == _selectedCategory;
+          final category = categories[index];
+          final isSelected = category.key == _selectedCategory;
           return GestureDetector(
-            onTap: () => setState(() => _selectedCategory = categoryKey),
+            onTap: () => setState(() => _selectedCategory = category.key),
             child: Container(
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: tokens.spacing(3)),
@@ -130,7 +140,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                 border: Border(bottom: BorderSide(color: isSelected ? tokens.brandPrimary : Colors.transparent, width: 2.0)),
               ),
               child: Text(
-                getLocalizedCategory(categoryKey),
+                category.label,
                 style: isSelected
                     ? tokens.bodyMedium.copyWith(color: tokens.brandPrimary, fontWeight: FontWeight.bold)
                     : tokens.bodyMedium.copyWith(color: tokens.textMuted),
@@ -142,16 +152,51 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
     );
   }
 
-  Widget _buildQuestList(MinqTheme tokens, List<minq_quest.Quest> templateQuests, List<minq_quest.Quest> userQuests) {
-    List<minq_quest.Quest> questsToShow = [];
-    if (_selectedCategory == 'All') {
-      questsToShow = [...templateQuests, ...userQuests];
-    } else if (_selectedCategory == 'My Quests') {
-      questsToShow = userQuests;
-    } else if (_selectedCategory == 'Featured') {
-      questsToShow = templateQuests.take(4).toList(); // Simple featured logic
-    } else {
-      questsToShow = templateQuests.where((q) => q.category == _selectedCategory).toList();
+  Widget _buildQuestList(
+    MinqTheme tokens,
+    AppLocalizations l10n,
+    List<minq_quest.Quest> templateQuests,
+    List<minq_quest.Quest> userQuests,
+  ) {
+    List<minq_quest.Quest> questsToShow;
+
+    switch (_selectedCategory) {
+      case _categoryMine:
+        questsToShow = userQuests;
+        break;
+      case _categoryLearning:
+        questsToShow = templateQuests
+            .where((q) => q.category.toLowerCase() == 'learning'.toLowerCase())
+            .toList();
+        break;
+      case _categoryRecent:
+        questsToShow = [...userQuests]
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        questsToShow = questsToShow.take(6).toList();
+        if (questsToShow.isEmpty) {
+          questsToShow = [...templateQuests]
+            ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          questsToShow = questsToShow.take(6).toList();
+        }
+        break;
+      case _categoryRecommended:
+      default:
+        questsToShow = templateQuests.take(6).toList();
+        break;
+    }
+
+    if (questsToShow.isEmpty) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: tokens.spacing(8)),
+          child: Center(
+            child: Text(
+              '該当するクエストが見つかりません',
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+            ),
+          ),
+        ),
+      );
     }
 
     return SliverGrid(
@@ -169,7 +214,11 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
             columnCount: 2,
             child: ScaleAnimation(
               child: FadeInAnimation(
-                child: _QuestCard(quest: questsToShow[index]),
+                child: _QuestCard(
+                  quest: questsToShow[index],
+                  categoryLabel:
+                      _localizeCategoryLabel(l10n, questsToShow[index].category),
+                ),
               ),
             ),
           );
@@ -188,6 +237,23 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
     );
+  }
+}
+
+String _localizeCategoryLabel(AppLocalizations l10n, String key) {
+  switch (key) {
+    case 'Learning':
+      return l10n.questsCategoryLearning;
+    case 'Exercise':
+      return l10n.questsCategoryExercise;
+    case 'Tidying':
+      return l10n.questsCategoryTidying;
+    case 'My Quests':
+      return l10n.questsCategoryMyQuests;
+    case 'Featured':
+      return l10n.questsCategoryFeatured;
+    default:
+      return key;
   }
 }
 
@@ -214,9 +280,10 @@ class _QuestsSkeleton extends StatelessWidget {
 }
 
 class _QuestCard extends StatelessWidget {
-  const _QuestCard({required this.quest});
+  const _QuestCard({required this.quest, required this.categoryLabel});
 
   final minq_quest.Quest quest;
+  final String categoryLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -234,20 +301,32 @@ class _QuestCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Icon(iconDataForKey(quest.iconKey), color: tokens.brandPrimary, size: tokens.spacing(6)),
                 SizedBox(width: tokens.spacing(3)),
                 Expanded(
-                  child: Text(
-                    quest.title,
-                    style: tokens.bodyLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.w600),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        quest.title,
+                        style: tokens.bodyLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.w600),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                      SizedBox(height: tokens.spacing(1)),
+                      Text(
+                        categoryLabel,
+                        style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-            // We can add user count for template quests if needed
           ],
         ),
       ),
