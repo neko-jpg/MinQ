@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
@@ -93,6 +94,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
     return RepaintBoundary(
       key: _cardKey,
       child: AnimatedBuilder(
@@ -101,31 +103,24 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
           return Transform.scale(
             scale: _pulseAnimation.value,
             child: Container(
-              margin: const EdgeInsets.all(16),
+              margin: EdgeInsets.all(tokens.spacing(4)),
               decoration: BoxDecoration(
                 gradient: _getGradientForStreak(widget.currentStreak),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: _getPrimaryColor(widget.currentStreak).withOpacity(0.3),
-                    blurRadius: 15,
-                    spreadRadius: 2,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
+                borderRadius: tokens.cornerLarge(),
+                boxShadow: tokens.shadowStrong,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(tokens.spacing(6)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHeader(),
-                    const SizedBox(height: 20),
+                    SizedBox(height: tokens.spacing(5)),
                     _buildMainStats(),
-                    const SizedBox(height: 16),
+                    SizedBox(height: tokens.spacing(4)),
                     _buildSubStats(),
                     if (widget.showShareButton) ...[
-                      const SizedBox(height: 20),
+                      SizedBox(height: tokens.spacing(5)),
                       _buildShareButton(),
                     ],
                   ],
@@ -139,13 +134,14 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
   }
 
   Widget _buildHeader() {
+    final tokens = context.tokens;
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: EdgeInsets.all(tokens.spacing(2)),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: tokens.cornerMedium(),
           ),
           child: const Icon(
             Icons.trending_up,
@@ -153,7 +149,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
             size: 24,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: tokens.spacing(3)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,11 +178,15 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
   }
 
   Widget _buildStreakBadge() {
+    final tokens = context.tokens;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.symmetric(
+        horizontal: tokens.spacing(3),
+        vertical: tokens.spacing(1.5),
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(tokens.spacing(5)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -195,7 +195,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
             '🔥',
             style: TextStyle(fontSize: 16),
           ),
-          const SizedBox(width: 4),
+          SizedBox(width: tokens.spacing(1)),
           Text(
             '${widget.currentStreak}',
             style: TextStyle(

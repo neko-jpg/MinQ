@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
+
+enum FocusAccent {
+  neutral,
+  success,
+  error,
+}
 
 /// フォーカスシステム - キーボード操作対応
 class FocusSystem {
@@ -25,17 +32,37 @@ class FocusSystem {
   // フォーカスカラー
   // ========================================
 
-  /// ライトモードのフォーカスカラー
-  static const Color focusColorLight = Color(0xFF2196F3);
+  /// 状態に応じたフォーカスカラーを解決
+  static Color resolveFocusColor(
+    BuildContext context, {
+    FocusAccent accent = FocusAccent.neutral,
+    Color? override,
+  }) {
+    if (override != null) {
+      return override;
+    }
 
-  /// ダークモードのフォーカスカラー
-  static const Color focusColorDark = Color(0xFF64B5F6);
+    final tokens = context.tokens;
+    Color baseColor;
+    switch (accent) {
+      case FocusAccent.success:
+        baseColor = tokens.accentSuccess;
+        break;
+      case FocusAccent.error:
+        baseColor = tokens.accentError;
+        break;
+      case FocusAccent.neutral:
+      default:
+        baseColor = tokens.brandPrimary;
+        break;
+    }
 
-  /// エラー時のフォーカスカラー
-  static const Color focusColorError = Color(0xFFEF4444);
+    if (tokens.isHighContrastMode(context)) {
+      return tokens.getAccessibleTextColor(context);
+    }
 
-  /// 成功時のフォーカスカラー
-  static const Color focusColorSuccess = Color(0xFF10B981);
+    return baseColor;
+  }
 
   // ========================================
   // フォーカステーマ
@@ -43,16 +70,18 @@ class FocusSystem {
 
   /// ライトモードのフォーカステーマ
   static FocusThemeData lightFocusTheme() {
+    final tokens = MinqTheme.light();
     return FocusThemeData(
-      glowColor: focusColorLight.withOpacity(0.3),
+      glowColor: tokens.brandPrimary.withOpacity(0.3),
       glowFactor: 2.0,
     );
   }
 
   /// ダークモードのフォーカステーマ
   static FocusThemeData darkFocusTheme() {
+    final tokens = MinqTheme.dark();
     return FocusThemeData(
-      glowColor: focusColorDark.withOpacity(0.3),
+      glowColor: tokens.brandPrimary.withOpacity(0.3),
       glowFactor: 2.0,
     );
   }
@@ -66,6 +95,7 @@ class FocusSystem {
     required Color focusColor,
     double width = focusRingWidth,
     double radius = focusRingRadius,
+    bool highContrast = false,
   }) {
     return BoxDecoration(
       border: Border.all(
@@ -75,11 +105,34 @@ class FocusSystem {
       borderRadius: BorderRadius.circular(radius),
       boxShadow: [
         BoxShadow(
-          color: focusColor.withOpacity(0.3),
+          color: highContrast ? focusColor : focusColor.withOpacity(0.3),
           blurRadius: 4,
           spreadRadius: 1,
         ),
       ],
+    );
+  }
+
+  /// BuildContextからフォーカスデコレーションを生成
+  static BoxDecoration focusDecorationForContext(
+    BuildContext context, {
+    FocusAccent accent = FocusAccent.neutral,
+    Color? override,
+    double width = focusRingWidth,
+    double radius = focusRingRadius,
+  }) {
+    final tokens = context.tokens;
+    final focusColor = resolveFocusColor(
+      context,
+      accent: accent,
+      override: override,
+    );
+
+    return focusDecoration(
+      focusColor: focusColor,
+      width: width,
+      radius: radius,
+      highContrast: tokens.isHighContrastMode(context),
     );
   }
 
@@ -151,34 +204,42 @@ class _FocusableWidgetState extends State<FocusableWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final focusColor = widget.focusColor ??
-        (isDark ? FocusSystem.focusColorDark : FocusSystem.focusColorLight);
+    final tokens = context.tokens;
+    final focusColor = FocusSystem.resolveFocusColor(
+      context,
+      override: widget.focusColor,
+    );
 
-    return Focus(
-      focusNode: _focusNode,
-      autofocus: widget.autofocus,
-      onKey: (node, event) {
-        if (event is RawKeyDownEvent) {
-          if (event.logicalKey == LogicalKeyboardKey.enter ||
-              event.logicalKey == LogicalKeyboardKey.space) {
-            widget.onTap?.call();
-            return KeyEventResult.handled;
+    return Semantics(
+      focused: _isFocused,
+      button: widget.onTap != null,
+      child: Focus(
+        focusNode: _focusNode,
+        autofocus: widget.autofocus,
+        onKey: (node, event) {
+          if (event is RawKeyDownEvent) {
+            if (event.logicalKey == LogicalKeyboardKey.enter ||
+                event.logicalKey == LogicalKeyboardKey.space) {
+              widget.onTap?.call();
+              return KeyEventResult.handled;
+            }
           }
-        }
-        return KeyEventResult.ignored;
-      },
-      child: GestureDetector(
-        onTap: () {
-          _focusNode.requestFocus();
-          widget.onTap?.call();
+          return KeyEventResult.ignored;
         },
-        child: Container(
-          decoration: _isFocused
-              ? FocusSystem.focusDecoration(focusColor: focusColor)
-              : null,
-          child: widget.child,
+        child: GestureDetector(
+          onTap: () {
+            _focusNode.requestFocus();
+            widget.onTap?.call();
+          },
+          child: Container(
+            decoration: _isFocused
+                ? FocusSystem.focusDecoration(
+                    focusColor: focusColor,
+                    highContrast: tokens.isHighContrastMode(context),
+                  )
+                : null,
+            child: widget.child,
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// ツールチップ付き統計チャート
 class StatsChartWithTooltip extends StatefulWidget {
@@ -56,11 +57,12 @@ class _StatsChartWithTooltipState extends State<StatsChartWithTooltip> {
 
   Widget _buildTooltip() {
     final data = widget.data[_hoveredIndex!];
+    final tokens = context.tokens;
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.all(tokens.spacing(2)),
       decoration: BoxDecoration(
         color: Colors.black87,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: tokens.cornerSmall(),
       ),
       child: Text(
         widget.tooltipBuilder(data),
