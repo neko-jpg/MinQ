@@ -64,7 +64,8 @@ class MinQApp extends ConsumerStatefulWidget {
 
 class _MinQAppState extends ConsumerState<MinQApp> {
   late final ProviderSubscription<AsyncValue<String>>
-  _notificationTapSubscription;
+      _notificationTapSubscription;
+  ProviderSubscription<AsyncValue<Uri>>? _deepLinkSubscription;
 
   @override
   void initState() {
@@ -75,11 +76,18 @@ class _MinQAppState extends ConsumerState<MinQApp> {
       (previous, next) => _handleNotificationNavigation(next),
     );
     _handleNotificationNavigation(_notificationTapSubscription.read());
+
+    _deepLinkSubscription = ref.listenManual<AsyncValue<Uri>>(
+      deepLinkStreamProvider,
+      (previous, next) => _handleDeepLinkNavigation(next),
+    );
+    _handleDeepLinkNavigation(_deepLinkSubscription?.read());
   }
 
   @override
   void dispose() {
     _notificationTapSubscription.close();
+    _deepLinkSubscription?.close();
     super.dispose();
   }
 
@@ -89,6 +97,31 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         ref.read(routerProvider).go(route);
       }
     });
+  }
+
+  void _handleDeepLinkNavigation(AsyncValue<Uri>? deepLink) {
+    deepLink?.whenData((uri) {
+      final route = _mapDeepLinkToRoute(uri);
+      if (route != null) {
+        ref.read(routerProvider).go(route);
+      }
+    });
+  }
+
+  String? _mapDeepLinkToRoute(Uri uri) {
+    if (uri.scheme != 'app') {
+      return null;
+    }
+
+    if (uri.host == 'quest' && uri.pathSegments.isNotEmpty) {
+      final questId = int.tryParse(uri.pathSegments.first);
+      if (questId != null) {
+        return AppRoutes.questDetail
+            .replaceFirst(':questId', questId.toString());
+      }
+    }
+
+    return null;
   }
 
   @override
@@ -149,7 +182,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
           final mediaQuery = MediaQuery.of(context);
           final clampedScaler = mediaQuery.textScaler.clamp(
             minScaleFactor: 1.0,
-            maxScaleFactor: 1.3,
+            maxScaleFactor: 2.0,
           );
           return MediaQuery(
             data: mediaQuery.copyWith(textScaler: clampedScaler),
