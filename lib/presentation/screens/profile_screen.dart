@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/presentation/common/security/sensitive_content.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -26,17 +27,19 @@ class ProfileScreen extends ConsumerWidget {
           onPressed: () => context.pop(),
         ),
       ),
-      body: ListView(
-        padding: EdgeInsets.all(tokens.spacing(5)),
-        children: <Widget>[
-          _buildProfileHeader(tokens),
-          SizedBox(height: tokens.spacing(6)),
-          _buildStatsRow(tokens),
-          SizedBox(height: tokens.spacing(8)),
-          _buildAboutSection(tokens),
-          SizedBox(height: tokens.spacing(6)),
-          _buildMenu(context, tokens, ref),
-        ],
+      body: SensitiveContent(
+        child: ListView(
+          padding: EdgeInsets.all(tokens.spacing(5)),
+          children: <Widget>[
+            _buildProfileHeader(tokens),
+            SizedBox(height: tokens.spacing(6)),
+            _buildStatsRow(tokens),
+            SizedBox(height: tokens.spacing(8)),
+            _buildAboutSection(tokens),
+            SizedBox(height: tokens.spacing(6)),
+            _buildMenu(context, tokens, ref),
+          ],
+        ),
       ),
     );
   }
@@ -44,11 +47,23 @@ class ProfileScreen extends ConsumerWidget {
   Widget _buildProfileHeader(MinqTheme tokens) {
     return Column(
       children: <Widget>[
-        CircleAvatar(
-          radius: tokens.spacing(12),
-          backgroundImage: const NetworkImage(
-            'https://i.pravatar.cc/150?img=3',
-          ),
+        Builder(
+          builder: (context) {
+            final avatarSize = tokens.spacing(24);
+            final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+            final cacheDimension = (avatarSize * pixelRatio).round();
+            return ClipOval(
+              child: Image.network(
+                'https://i.pravatar.cc/150?img=3',
+                width: avatarSize,
+                height: avatarSize,
+                cacheWidth: cacheDimension,
+                cacheHeight: cacheDimension,
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
+              ),
+            );
+          },
         ),
         SizedBox(height: tokens.spacing(4)),
         Text(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/presentation/common/security/sensitive_content.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -31,34 +32,28 @@ class ProfileSettingScreen extends ConsumerWidget {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          // プロフィールヘッダー
-          _buildProfileHeader(context),
-          const SizedBox(height: 24),
-          // タグ
-          _buildTags(context),
-          const SizedBox(height: 24),
-          // 統計
-          _buildStats(context),
-          const SizedBox(height: 24),
-          // アカウント設定
-          _buildAccountSettings(context),
-          const SizedBox(height: 24),
-          // SNSシェア・招待
-          _buildSnsShare(context),
-          const SizedBox(height: 24),
-          // ペア
-          _buildPairInfo(context),
-          const SizedBox(height: 24),
-          // その他
-          _buildOtherSettings(context),
-          const SizedBox(height: 24),
-          // プレミアム機能
-          _buildPremiumFeatures(context),
-          const SizedBox(height: 24),
-        ],
+      body: SensitiveContent(
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
+          children: [
+            _buildProfileHeader(context),
+            const SizedBox(height: 24),
+            _buildTags(context),
+            const SizedBox(height: 24),
+            _buildStats(context),
+            const SizedBox(height: 24),
+            _buildAccountSettings(context),
+            const SizedBox(height: 24),
+            _buildSnsShare(context),
+            const SizedBox(height: 24),
+            _buildPairInfo(context),
+            const SizedBox(height: 24),
+            _buildOtherSettings(context),
+            const SizedBox(height: 24),
+            _buildPremiumFeatures(context),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }
@@ -70,10 +65,25 @@ class ProfileSettingScreen extends ConsumerWidget {
         Stack(
           alignment: Alignment.bottomRight,
           children: [
-            const CircleAvatar(
-              radius: 48,
-              backgroundImage: NetworkImage(
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuB4vUzoYiKTiCCCXbd0O3qbfuJgpaM3LOMHFzNzTBon5Qs2emMO6ToMK7WXGiq2oHUba9VbQOd1AjxiNcvsVWZll_hLRZKHWqe6CSNf1gYrPZzNsp8kZuHTxSh29HdEWfo0_KNdRjvpNFpAabh50wZOoM-_goQOnAtriaTgG1BAO2EQlWy_U6Yj02gibaZb6ActchMxg_-f7nWNey-YIdsjPsaAb_3t8-PJjpbF486yWHtA8ywucP5c9Wlp4G1cI4DfZ-h07gieyos'),
+            Builder(
+              builder: (context) {
+                const avatarUrl =
+                    'https://lh3.googleusercontent.com/aida-public/AB6AXuB4vUzoYiKTiCCCXbd0O3qbfuJgpaM3LOMHFzNzTBon5Qs2emMO6ToMK7WXGiq2oHUba9VbQOd1AjxiNcvsVWZll_hLRZKHWqe6CSNf1gYrPZzNsp8kZuHTxSh29HdEWfo0_KNdRjvpNFpAabh50wZOoM-_goQOnAtriaTgG1BAO2EQlWy_U6Yj02gibaZb6ActchMxg_-f7nWNey-YIdsjPsaAb_3t8-PJjpbF486yWHtA8ywucP5c9Wlp4G1cI4DfZ-h07gieyos';
+                const radius = 48.0;
+                final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+                final cacheDimension = (radius * 2 * pixelRatio).round();
+                return ClipOval(
+                  child: Image.network(
+                    avatarUrl,
+                    width: radius * 2,
+                    height: radius * 2,
+                    cacheWidth: cacheDimension,
+                    cacheHeight: cacheDimension,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
+                  ),
+                );
+              },
             ),
             Container(
               decoration: BoxDecoration(
@@ -305,9 +315,25 @@ class ProfileSettingScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                const CircleAvatar(
-                  radius: 24,
-                  backgroundImage: NetworkImage('https://lh3.googleusercontent.com/aida-public/AB6AXuD2HXX6O9Ry4fdKOLT4GAgrvT0GaEd1zK6s_j9dcBB0GEJ8dzNXLkIBjEPOYeBz8O0hWfBAarj3WCLZuZBuGKxRrRkAn96bNK0Rnlrrv2kujNoJOaouDyUitLqmb4VrK0XhmtsBq13OlU-y5jRXY92iMfOk1x7Mx1feEQZw90VHDuSnDYlLsrqlFYag7kv9ftpVkqBROiTbaS82XKJVRM0ECJQIKUclpMae0LxknbxUz7o60bxB36X6b2G2ODrs4gcIUJ9X_TwSUBQ'),
+                Builder(
+                  builder: (context) {
+                    const avatarUrl =
+                        'https://lh3.googleusercontent.com/aida-public/AB6AXuD2HXX6O9Ry4fdKOLT4GAgrvT0GaEd1zK6s_j9dcBB0GEJ8dzNXLkIBjEPOYeBz8O0hWfBAarj3WCLZuZBuGKxRrRkAn96bNK0Rnlrrv2kujNoJOaouDyUitLqmb4VrK0XhmtsBq13OlU-y5jRXY92iMfOk1x7Mx1feEQZw90VHDuSnDYlLsrqlFYag7kv9ftpVkqBROiTbaS82XKJVRM0ECJQIKUclpMae0LxknbxUz7o60bxB36X6b2G2ODrs4gcIUJ9X_TwSUBQ';
+                    const radius = 24.0;
+                    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+                    final cacheDimension = (radius * 2 * pixelRatio).round();
+                    return ClipOval(
+                      child: Image.network(
+                        avatarUrl,
+                        width: radius * 2,
+                        height: radius * 2,
+                        cacheWidth: cacheDimension,
+                        cacheHeight: cacheDimension,
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.high,
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(width: 16),
                 Expanded(
