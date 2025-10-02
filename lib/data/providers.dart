@@ -30,6 +30,9 @@ import 'package:minq/data/services/deep_link_service.dart';
 import 'package:minq/data/services/in_app_review_service.dart';
 import 'package:minq/data/services/connectivity_service.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
+import 'package:minq/core/sharing/share_service.dart';
+import 'package:minq/core/sharing/ogp_image_generator.dart';
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/log/quest_log.dart';
@@ -102,6 +105,14 @@ final marketingAttributionServiceProvider =
 
 final inAppReviewServiceProvider = Provider<InAppReviewService>((ref) {
   return InAppReviewService(ref.watch(localPreferencesServiceProvider));
+});
+
+final ogpImageGeneratorProvider = Provider<OgpImageGenerator>((ref) {
+  return OgpImageGenerator(ref.watch(appLoggerProvider));
+});
+
+final shareServiceProvider = Provider<ShareService>((ref) {
+  return ShareService(ogpGenerator: ref.watch(ogpImageGeneratorProvider));
 });
 
 final appLocaleControllerProvider =

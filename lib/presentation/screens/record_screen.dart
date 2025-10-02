@@ -14,6 +14,7 @@ import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
+import 'package:minq/presentation/controllers/quest_log_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -289,18 +290,20 @@ class _RecordForm extends ConsumerWidget {
       final proceed = await _handleModerationWarning(context, result);
       if (!proceed) return;
 
-      final log =
-          QuestLog()
-            ..uid = uid
-            ..questId = questId
-            ..ts = DateTime.now().toUtc()
-            ..proofType = ProofType.photo
-            ..proofValue = result.path
-            ..synced = false;
-      await ref.read(questLogRepositoryProvider).addLog(log);
-      onError(RecordErrorType.none);
-      ref.read(navigationUseCaseProvider).goToCelebration();
-      FeedbackManager.questCompleted();
+      final controller = ref.read(questLogControllerProvider.notifier);
+      final success = await controller.recordProgress(
+        questId, 
+        proofValue: result.path, 
+        proofType: ProofType.photo,
+      );
+      
+      if (success) {
+        onError(RecordErrorType.none);
+        ref.read(navigationUseCaseProvider).goToCelebration();
+        FeedbackManager.questCompleted();
+      } else {
+        onError(RecordErrorType.cameraFailure);
+      }
     } on PhotoCaptureException catch (error) {
       switch (error.reason) {
         case PhotoCaptureFailure.permissionDenied:
@@ -319,16 +322,20 @@ class _RecordForm extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) async {
-    final log =
-        QuestLog()
-          ..uid = ref.read(uidProvider) ?? ''
-          ..questId = questId
-          ..ts = DateTime.now().toUtc()
-          ..proofType = ProofType.check
-          ..synced = false;
-    await ref.read(questLogRepositoryProvider).addLog(log);
-    ref.read(navigationUseCaseProvider).goToCelebration();
-    FeedbackManager.questCompleted();
+    final controller = ref.read(questLogControllerProvider.notifier);
+    final success = await controller.recordProgress(questId, proofType: ProofType.check);
+    
+    if (success) {
+      ref.read(navigationUseCaseProvider).goToCelebration();
+      FeedbackManager.questCompleted();
+    } else {
+      final error = ref.read(questLogControllerProvider).error;
+      if (error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.toString())),
+        );
+      }
+    }
   }
 }
 

@@ -13,17 +13,53 @@ class QuestLogRepository {
     });
   }
 
+  Future<void> deleteLog(int logId) async {
+    await _isar.writeTxn(() async {
+      await _isar.questLogs.delete(logId);
+    });
+  }
+
+  Future<QuestLog?> getLogById(int logId) async {
+    return _isar.questLogs.get(logId);
+  }
+
+  Future<QuestLog?> getLatestLogForQuest(String uid, int questId) async {
+    return _isar.questLogs
+        .filter()
+        .uidEqualTo(uid)
+        .questIdEqualTo(questId)
+        .sortByTsDesc()
+        .findFirst();
+  }
+
+  Future<List<QuestLog>> getLogsForDay(String uid, DateTime day) async {
+    // Use local timezone for day boundaries to handle day transitions correctly
+    final localDay = day.toLocal();
+    final dayStart = DateTime(localDay.year, localDay.month, localDay.day);
+    final nextDay = dayStart.add(const Duration(days: 1));
+    
+    return _isar.questLogs
+        .filter()
+        .uidEqualTo(uid)
+        .tsBetween(dayStart.toUtc(), nextDay.toUtc(), includeLower: true, includeUpper: false)
+        .sortByTsDesc()
+        .findAll();
+  }
+
   Future<List<QuestLog>> getLogsForUser(String uid) async {
     return _isar.questLogs.filter().uidEqualTo(uid).sortByTsDesc().findAll();
   }
 
   Future<int> countLogsForDay(String uid, DateTime day) async {
-    final dayStart = DateTime(day.year, day.month, day.day);
+    // Use local timezone for day boundaries to handle day transitions correctly
+    final localDay = day.toLocal();
+    final dayStart = DateTime(localDay.year, localDay.month, localDay.day);
     final nextDay = dayStart.add(const Duration(days: 1));
+    
     return _isar.questLogs
         .filter()
         .uidEqualTo(uid)
-        .tsBetween(dayStart, nextDay, includeLower: true, includeUpper: false)
+        .tsBetween(dayStart.toUtc(), nextDay.toUtc(), includeLower: true, includeUpper: false)
         .count();
   }
 
@@ -59,16 +95,21 @@ class QuestLogRepository {
     final logs = await getLogsForUser(uid);
     if (logs.isEmpty) return 0;
 
+    // Convert to local timezone for proper day calculation
     final uniqueDays =
         logs
-            .map((log) => DateTime.utc(log.ts.year, log.ts.month, log.ts.day))
+            .map((log) {
+              final localTime = log.ts.toLocal();
+              return DateTime(localTime.year, localTime.month, localTime.day);
+            })
             .toSet()
             .toList()
           ..sort((a, b) => b.compareTo(a));
 
-    final today = DateTime.now().toUtc();
-    final currentDate = DateTime.utc(today.year, today.month, today.day);
+    final today = DateTime.now();
+    final currentDate = DateTime(today.year, today.month, today.day);
 
+    // Check if the most recent log is from today or yesterday
     if (uniqueDays.first.isBefore(
       currentDate.subtract(const Duration(days: 1)),
     )) {
@@ -97,6 +138,36 @@ class QuestLogRepository {
     }
 
     return streak;
+  }
+
+  Future<double> calculateWeeklyCompletionRate(String uid) async {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    
+    // Get the start of the current week (Monday)
+    final weekStart = today.subtract(Duration(days: today.weekday - 1));
+    
+    int completedDays = 0;
+    int totalDays = 0;
+    
+    for (int i = 0; i < 7; i++) {
+      final day = weekStart.add(Duration(days: i));
+      totalDays++;
+      
+      // Don't count future days
+      if (day.isAfter(today)) {
+        totalDays--;
+        continue;
+      }
+      
+      final logsForDay = await countLogsForDay(uid, day);
+      if (logsForDay > 0) {
+        completedDays++;
+      }
+    }
+    
+    if (totalDays == 0) return 0.0;
+    return completedDays / totalDays;
   }
 
   Future<int> calculateLongestStreak(String uid) async {

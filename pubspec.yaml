@@ -53,6 +53,8 @@ dependencies:
   firebase_messaging: any
   firebase_remote_config: any
   firebase_analytics: any
+  firebase_crashlytics: any
+  firebase_performance: any
 
   # Utilities
   intl: any
@@ -68,6 +70,16 @@ dependencies:
   connectivity_plus: any
   in_app_review: any
   app_links: any
+  logger: any
+  csv: any
+  device_info_plus: any
+  image_cropper: any
+  flutter_image_compress: any
+  sentry_flutter: any
+  quick_actions: any
+  workmanager: any
+  package_info_plus: any
+  url_launcher: any
 
   # Code Generation
   freezed_annotation: any

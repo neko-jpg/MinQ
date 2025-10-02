@@ -10,6 +10,7 @@ import 'package:minq/presentation/screens/pair/share_progress_sheet.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
+import 'package:minq/data/services/content_moderation_service.dart';
 
 final chatMessagesProvider =
     StreamProvider.family<List<ChatMessage>, String>((ref, pairId) {
@@ -361,6 +362,39 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
 
     if (text.isEmpty || currentUserId == null || pairRepository == null || _isSending) {
       return;
+    }
+
+    // Content moderation check
+    final moderationResult = ContentModerationService.moderateText(text);
+    if (moderationResult.isBlocked) {
+      FeedbackMessenger.showErrorSnackBar(
+        context,
+        moderationResult.details ?? '不適切な内容が含まれています',
+      );
+      return;
+    }
+
+    if (moderationResult.isFlagged) {
+      // Show warning but allow sending
+      final shouldSend = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('内容の確認'),
+          content: Text(moderationResult.details ?? 'この内容を送信してもよろしいですか？'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('キャンセル'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('送信'),
+            ),
+          ],
+        ),
+      );
+      
+      if (shouldSend != true) return;
     }
 
     setState(() => _isSending = true);

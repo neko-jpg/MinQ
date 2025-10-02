@@ -1,0 +1,212 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ========================================
+    // ヘルパー関数
+    // ========================================
+    
+    // 認証済みユーザーかチェック
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // 自分のデータかチェック
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // データが存在するかチェック
+    function exists(path) {
+      return exists(/databases/$(database)/documents/$(path));
+    }
+    
+    // 必須フィールドが存在するかチェック
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    // フィールドが変更されていないかチェック
+    function isUnchanged(field) {
+      return request.resource.data[field] == resource.data[field];
+    }
+    
+    // ========================================
+    // ユーザーコレクション
+    // ========================================
+    
+    match /users/{userId} {
+      // 読み取り: 自分のデータのみ
+      allow read: if isOwner(userId);
+      
+      // 作成: 認証済みで自分のIDのみ
+      allow create: if isOwner(userId) 
+        && hasRequiredFields(['createdAt', 'email']);
+      
+      // 更新: 自分のデータのみ、IDと作成日時は変更不可
+      allow update: if isOwner(userId)
+        && isUnchanged('id')
+        && isUnchanged('createdAt');
+      
+      // 削除: 自分のデータのみ
+      allow delete: if isOwner(userId);
+    }
+    
+    // ========================================
+    // クエストコレクション
+    // ========================================
+    
+    match /quests/{questId} {
+      // 読み取り: 自分のクエストのみ
+      allow read: if isAuthenticated() 
+        && resource.data.userId == request.auth.uid;
+      
+      // 作成: 認証済みで自分のクエストのみ
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && hasRequiredFields(['userId', 'title', 'createdAt', 'order', 'isActive']);
+      
+      // 更新: 自分のクエストのみ、userIdと作成日時は変更不可
+      allow update: if isAuthenticated()
+        && resource.data.userId == request.auth.uid
+        && isUnchanged('userId')
+        && isUnchanged('createdAt');
+      
+      // 削除: 自分のクエストのみ
+      allow delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+    }
+    
+    // ========================================
+    // クエストログコレクション
+    // ========================================
+    
+    match /quest_logs/{logId} {
+      // 読み取り: 自分のログのみ
+      allow read: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+      
+      // 作成: 認証済みで自分のログのみ
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && hasRequiredFields(['userId', 'questId', 'date', 'completed']);
+      
+      // 更新: 自分のログのみ、userIdとquestIdは変更不可
+      allow update: if isAuthenticated()
+        && resource.data.userId == request.auth.uid
+        && isUnchanged('userId')
+        && isUnchanged('questId');
+      
+      // 削除: 自分のログのみ
+      allow delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+    }
+    
+    // ========================================
+    // ペアコレクション
+    // ========================================
+    
+    match /pairs/{pairId} {
+      // 読み取り: ペアの参加者のみ
+      allow read: if isAuthenticated()
+        && (resource.data.user1Id == request.auth.uid 
+            || resource.data.user2Id == request.auth.uid);
+      
+      // 作成: 認証済みで自分が参加者の場合のみ
+      allow create: if isAuthenticated()
+        && (request.resource.data.user1Id == request.auth.uid 
+            || request.resource.data.user2Id == request.auth.uid)
+        && hasRequiredFields(['user1Id', 'user2Id', 'createdAt', 'status']);
+      
+      // 更新: ペアの参加者のみ
+      allow update: if isAuthenticated()
+        && (resource.data.user1Id == request.auth.uid 
+            || resource.data.user2Id == request.auth.uid);
+      
+      // 削除: ペアの参加者のみ
+      allow delete: if isAuthenticated()
+        && (resource.data.user1Id == request.auth.uid 
+            || resource.data.user2Id == request.auth.uid);
+    }
+    
+    // ========================================
+    // 通報コレクション
+    // ========================================
+    
+    match /reports/{reportId} {
+      // 読み取り: 管理者のみ（カスタムクレーム使用）
+      allow read: if isAuthenticated()
+        && request.auth.token.admin == true;
+      
+      // 作成: 認証済みユーザーのみ
+      allow create: if isAuthenticated()
+        && request.resource.data.reporterId == request.auth.uid
+        && hasRequiredFields(['reporterId', 'reportedUserId', 'reason', 'createdAt']);
+      
+      // 更新・削除: 管理者のみ
+      allow update, delete: if isAuthenticated()
+        && request.auth.token.admin == true;
+    }
+    
+    // ========================================
+    // ブロックリストコレクション
+    // ========================================
+    
+    match /blocked_users/{blockId} {
+      // 読み取り: 自分がブロックしたユーザーのみ
+      allow read: if isAuthenticated()
+        && resource.data.blockerId == request.auth.uid;
+      
+      // 作成: 認証済みで自分がブロッカーの場合のみ
+      allow create: if isAuthenticated()
+        && request.resource.data.blockerId == request.auth.uid
+        && hasRequiredFields(['blockerId', 'blockedUserId', 'createdAt']);
+      
+      // 削除: 自分がブロックしたユーザーのみ
+      allow delete: if isAuthenticated()
+        && resource.data.blockerId == request.auth.uid;
+    }
+    
+    // ========================================
+    // リファラルコレクション
+    // ========================================
+    
+    match /referrals/{referralId} {
+      // 読み取り: リファラーまたは新規ユーザー本人のみ
+      allow read: if isAuthenticated()
+        && (resource.data.referrerId == request.auth.uid 
+            || resource.data.newUserId == request.auth.uid);
+      
+      // 作成: 認証済みユーザーのみ
+      allow create: if isAuthenticated()
+        && hasRequiredFields(['referrerId', 'newUserId', 'createdAt', 'status']);
+      
+      // 更新: システムのみ（Cloud Functions経由）
+      allow update: if false;
+      
+      // 削除: 不可
+      allow delete: if false;
+    }
+    
+    // ========================================
+    // リファラルキャンペーンコレクション
+    // ========================================
+    
+    match /referral_campaigns/{campaignId} {
+      // 読み取り: すべての認証済みユーザー
+      allow read: if isAuthenticated();
+      
+      // 作成・更新・削除: 管理者のみ
+      allow create, update, delete: if isAuthenticated()
+        && request.auth.token.admin == true;
+    }
+    
+    // ========================================
+    // デフォルト: すべて拒否
+    // ========================================
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

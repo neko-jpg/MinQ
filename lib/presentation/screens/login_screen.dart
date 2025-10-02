@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/presentation/controllers/auth_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -11,6 +12,25 @@ class LoginScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final authState = ref.watch(authControllerProvider);
+    final authController = ref.read(authControllerProvider.notifier);
+
+    // Show error if authentication failed
+    if (authState.error != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_getErrorMessage(authState.error!)),
+            backgroundColor: tokens.accentError,
+            action: SnackBarAction(
+              label: '再試行',
+              textColor: Colors.white,
+              onPressed: () => authController.clearError(),
+            ),
+          ),
+        );
+      });
+    }
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -48,25 +68,29 @@ class LoginScreen extends ConsumerWidget {
                     // NOTE: Using a standard icon instead of the image from HTML
                     icon: Icons.g_mobiledata, // Placeholder for Google
                     text: 'Googleで続行する',
-                    onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
+                    isLoading: authState.isLoading,
+                    onPressed: () => _handleSignIn(ref, AuthMethod.google),
                   ),
                   SizedBox(height: tokens.spacing(3)), // space-y-3
                   _SocialLoginButton(
                     icon: Icons.apple,
                     text: 'Appleで続行する',
-                    onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
+                    isLoading: authState.isLoading,
+                    onPressed: () => _handleSignIn(ref, AuthMethod.apple),
                   ),
                   SizedBox(height: tokens.spacing(3)),
                   _SocialLoginButton(
                     icon: Icons.shield_outlined, // shield_person
                     text: 'ゲストとして試す',
-                    onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
+                    isLoading: authState.isLoading,
+                    onPressed: () => _handleSignIn(ref, AuthMethod.anonymous),
                   ),
                   SizedBox(height: tokens.spacing(3)),
                   _SocialLoginButton(
                     icon: Icons.mail_outline, // mail
                     text: 'メールアドレスで続行する',
-                    onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
+                    isLoading: authState.isLoading,
+                    onPressed: () => _handleSignIn(ref, AuthMethod.email),
                   ),
                   const Spacer(),
                   Padding(
@@ -113,16 +137,62 @@ class LoginScreen extends ConsumerWidget {
   }
 }
 
+  Future<void> _handleSignIn(WidgetRef ref, AuthMethod method) async {
+    final authController = ref.read(authControllerProvider.notifier);
+    final success = await authController.signIn(method);
+    
+    if (success) {
+      final navigation = ref.read(navigationUseCaseProvider);
+      final authState = ref.read(authControllerProvider);
+      
+      if (authState.isFirstTimeUser) {
+        // Navigate to onboarding for first-time users
+        navigation.goToOnboarding();
+      } else {
+        // Navigate to home for returning users
+        navigation.goHome();
+      }
+    }
+  }
+
+  String _getErrorMessage(String errorKey) {
+    switch (errorKey) {
+      case 'authErrorOperationNotAllowed':
+        return 'この認証方法は現在利用できません。';
+      case 'authErrorWeakPassword':
+        return 'パスワードが弱すぎます。';
+      case 'authErrorEmailAlreadyInUse':
+        return 'このメールアドレスは既に使用されています。';
+      case 'authErrorInvalidEmail':
+        return 'メールアドレスの形式が正しくありません。';
+      case 'authErrorUserDisabled':
+        return 'このアカウントは無効化されています。';
+      case 'authErrorUserNotFound':
+        return 'ユーザーが見つかりません。';
+      case 'authErrorWrongPassword':
+        return 'パスワードが正しくありません。';
+      case 'authErrorAccountExistsWithDifferentCredential':
+        return 'このメールアドレスは別の認証方法で登録されています。';
+      case 'authErrorInvalidCredential':
+        return '認証情報が無効です。';
+      default:
+        return '認証に失敗しました。もう一度お試しください。';
+    }
+  }
+}
+
 class _SocialLoginButton extends StatelessWidget {
   const _SocialLoginButton({
     required this.icon,
     required this.text,
     required this.onPressed,
+    this.isLoading = false,
   });
 
   final IconData icon;
   final String text;
   final VoidCallback onPressed;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -141,16 +211,26 @@ class _SocialLoginButton extends StatelessWidget {
         elevation: 1,
         shadowColor: tokens.border.withOpacity(0.5),
       ),
-      onPressed: onPressed,
+      onPressed: isLoading ? null : onPressed,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(icon, size: tokens.spacing(6)), // w-6 h-6
+          if (isLoading)
+            SizedBox(
+              width: tokens.spacing(6),
+              height: tokens.spacing(6),
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
+              ),
+            )
+          else
+            Icon(icon, size: tokens.spacing(6)), // w-6 h-6
           SizedBox(width: tokens.spacing(3)), // gap-3
           Text(
             text,
             style: tokens.titleSmall.copyWith(
-              color: tokens.textPrimary,
+              color: isLoading ? tokens.textMuted : tokens.textPrimary,
               fontWeight: FontWeight.w600,
             ),
           ),

@@ -175,6 +175,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: l10n.settingsSectionAbout,
             tiles: [
               _SettingsTile(
+                title: 'アプリを評価する',
+                subtitle: 'App Storeでレビューを書く',
+                onTap: () async {
+                  final reviewService = ref.read(inAppReviewServiceProvider);
+                  await reviewService.openStoreListing();
+                },
+              ),
+              _SettingsTile(
                 title: l10n.settingsTermsOfService,
                 onTap: () => context.push('/policy/terms'),
               ),

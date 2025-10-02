@@ -1,0 +1,28 @@
+# CODEOWNERS
+# これらのファイルの変更には指定されたレビュアーの承認が必要です
+
+# デフォルトオーナー
+* @team
+
+# コアロジック
+/lib/core/ @backend-team
+/lib/data/ @backend-team
+
+# UI/UX
+/lib/presentation/ @frontend-team
+/lib/presentation/theme/ @design-team
+
+# テスト
+/test/ @qa-team
+
+# CI/CD
+/.github/ @devops-team
+/scripts/ @devops-team
+
+# ドキュメント
+/docs/ @documentation-team
+*.md @documentation-team
+
+# 設定ファイル
+/pubspec.yaml @tech-lead
+/analysis_options.yaml @tech-lead

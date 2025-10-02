@@ -372,7 +372,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       brightness: Brightness.dark,
       brandPrimary: const Color(0xFF37CBFA),
       background: const Color(0xFF0F172A),
-      surface: const Color(0xFF111C2E),
+      surface: const Color(0xFF3D444D), // RGB(61,68,77)
       textPrimary: Colors.white,
       textSecondary: const Color(0xFFCBD5F5),
       textMuted: const Color(0xFF94A3B8),

@@ -8,6 +8,8 @@ class StatsViewData {
     required this.streak,
     required this.heatmap,
     required this.updatedAt,
+    required this.weeklyCompletionRate,
+    required this.todayCompletionCount,
   });
 
   factory StatsViewData.empty() {
@@ -15,6 +17,8 @@ class StatsViewData {
       streak: 0,
       heatmap: const <DateTime, int>{},
       updatedAt: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal(),
+      weeklyCompletionRate: 0.0,
+      todayCompletionCount: 0,
     );
   }
 
@@ -33,14 +37,18 @@ class StatsViewData {
       heatmap: decodedHeatmap,
       updatedAt: DateTime.tryParse(json['updatedAt'] as String? ?? '')?.toLocal() ??
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal(),
+      weeklyCompletionRate: (json['weeklyCompletionRate'] as num?)?.toDouble() ?? 0.0,
+      todayCompletionCount: json['todayCompletionCount'] as int? ?? 0,
     );
   }
 
   final int streak;
   final Map<DateTime, int> heatmap;
   final DateTime updatedAt;
+  final double weeklyCompletionRate; // 0.0 to 1.0
+  final int todayCompletionCount;
 
-  bool get hasCachedContent => streak > 0 || heatmap.isNotEmpty;
+  bool get hasCachedContent => streak > 0 || heatmap.isNotEmpty || todayCompletionCount > 0;
 
   String toJson() {
     final Map<String, dynamic> json = <String, dynamic>{
@@ -50,6 +58,8 @@ class StatsViewData {
           entry.key.toUtc().toIso8601String(): entry.value,
       },
       'updatedAt': updatedAt.toUtc().toIso8601String(),
+      'weeklyCompletionRate': weeklyCompletionRate,
+      'todayCompletionCount': todayCompletionCount,
     };
     return jsonEncode(json);
   }
@@ -58,11 +68,15 @@ class StatsViewData {
     int? streak,
     Map<DateTime, int>? heatmap,
     DateTime? updatedAt,
+    double? weeklyCompletionRate,
+    int? todayCompletionCount,
   }) {
     return StatsViewData(
       streak: streak ?? this.streak,
       heatmap: heatmap ?? this.heatmap,
       updatedAt: updatedAt ?? this.updatedAt,
+      weeklyCompletionRate: weeklyCompletionRate ?? this.weeklyCompletionRate,
+      todayCompletionCount: todayCompletionCount ?? this.todayCompletionCount,
     );
   }
 
@@ -72,9 +86,17 @@ class StatsViewData {
     return other is StatsViewData &&
         other.streak == streak &&
         mapEquals(other.heatmap, heatmap) &&
-        other.updatedAt == updatedAt;
+        other.updatedAt == updatedAt &&
+        other.weeklyCompletionRate == weeklyCompletionRate &&
+        other.todayCompletionCount == todayCompletionCount;
   }
 
   @override
-  int get hashCode => Object.hash(streak, Object.hashAllUnordered(heatmap.entries), updatedAt);
+  int get hashCode => Object.hash(
+    streak, 
+    Object.hashAllUnordered(heatmap.entries), 
+    updatedAt,
+    weeklyCompletionRate,
+    todayCompletionCount,
+  );
 }

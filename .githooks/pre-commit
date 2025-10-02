@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# Pre-commit hook for Flutter project
+# This hook runs format, lint, and test before committing
+
+echo "🔍 Running pre-commit checks..."
+
+# Format check
+echo "📝 Checking code formatting..."
+dart format --set-exit-if-changed lib test
+if [ $? -ne 0 ]; then
+  echo "❌ Code formatting failed. Please run 'dart format lib test' to fix."
+  exit 1
+fi
+echo "✅ Code formatting passed"
+
+# Analyze
+echo "🔎 Running static analysis..."
+flutter analyze
+if [ $? -ne 0 ]; then
+  echo "❌ Static analysis failed. Please fix the issues above."
+  exit 1
+fi
+echo "✅ Static analysis passed"
+
+# Check for unused imports
+echo "🧹 Checking for unused imports..."
+dart run dart_code_metrics:metrics check-unused-files lib
+if [ $? -ne 0 ]; then
+  echo "⚠️  Unused files detected. Consider removing them."
+  # Don't fail the commit for this
+fi
+
+# Run tests
+echo "🧪 Running tests..."
+flutter test
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed. Please fix the failing tests."
+  exit 1
+fi
+echo "✅ Tests passed"
+
+echo "✨ All pre-commit checks passed!"
+exit 0

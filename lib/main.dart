@@ -17,6 +17,7 @@ import 'package:minq/presentation/controllers/crash_recovery_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/screens/crash_recovery_screen.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/widgets/version_check_widget.dart';
 import 'package:minq/config/flavor.dart';
 import 'package:minq/firebase_options_dev.dart' as dev;
 import 'package:minq/firebase_options_stg.dart' as stg;
@@ -262,7 +263,9 @@ class _MinQAppState extends ConsumerState<MinQApp> {
           );
           return MediaQuery(
             data: mediaQuery.copyWith(textScaler: clampedScaler),
-            child: child ?? const SizedBox.shrink(),
+            child: VersionCheckWidget(
+              child: child ?? const SizedBox.shrink(),
+            ),
           );
         },
       ),

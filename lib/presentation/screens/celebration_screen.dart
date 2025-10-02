@@ -85,6 +85,27 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
     }
   }
 
+  Future<void> _shareAchievement() async {
+    try {
+      final streak = await ref.read(streakProvider.future);
+      final totalCompleted = await ref.read(todayCompletionCountProvider.future);
+      final shareService = ref.read(shareServiceProvider);
+
+      await shareService.shareAchievementWithOgp(
+        questTitle: 'クエスト達成',
+        currentStreak: streak,
+        totalCompleted: totalCompleted,
+      );
+    } catch (error) {
+      debugPrint('Share failed: $error');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('共有に失敗しました')),
+        );
+      }
+    }
+  }
+
   @override
   void dispose() {
     _pingController.dispose();
@@ -262,24 +283,43 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
         tokens.spacing(4),
         tokens.spacing(6),
       ),
-      child: SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: tokens.brandPrimary,
-            foregroundColor: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
-            shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
-          ),
-          child: Text(
-            l10n.celebrationDone,
-            style: tokens.titleMedium.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+      child: Column(
+        children: [
+          // 共有ボタン
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _shareAchievement(),
+              icon: const Icon(Icons.share),
+              label: Text('達成を共有する'),
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
+                shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
+              ),
             ),
           ),
-        ),
+          SizedBox(height: tokens.spacing(3)),
+          // 完了ボタン
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: tokens.brandPrimary,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
+                shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
+              ),
+              child: Text(
+                l10n.celebrationDone,
+                style: tokens.titleMedium.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

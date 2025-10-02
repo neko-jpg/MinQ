@@ -20,10 +20,13 @@ class StatsScreen extends ConsumerStatefulWidget {
 }
 
 class _StatsScreenState extends ConsumerState<StatsScreen> {
+  ProviderSubscription<SyncStatus>? _syncStatusSubscription;
+  bool _hasRequestedReview = false;
+
   @override
   void initState() {
     super.initState();
-    ref.listen<SyncStatus>(syncStatusProvider, (previous, next) {
+    _syncStatusSubscription = ref.listenManual<SyncStatus>(syncStatusProvider, (previous, next) {
       if (!mounted) return;
       if (next.showBanner && next.bannerMessage != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -40,6 +43,34 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
         });
       }
     });
+
+    // Stats画面表示時にレビューリクエストを試行
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _maybeRequestReview();
+    });
+  }
+
+  Future<void> _maybeRequestReview() async {
+    if (_hasRequestedReview || !mounted) return;
+    _hasRequestedReview = true;
+
+    try {
+      final statsData = await ref.read(statsDataProvider.future);
+      final totalCompleted = statsData.totalQuestsCompleted;
+      
+      final reviewService = ref.read(inAppReviewServiceProvider);
+      await reviewService.maybeRequestReviewByQuestCount(
+        completedCount: totalCompleted,
+      );
+    } catch (e) {
+      // エラーは無視（ユーザー体験を損なわない）
+    }
+  }
+
+  @override
+  void dispose() {
+    _syncStatusSubscription?.close();
+    super.dispose();
   }
 
   @override
@@ -96,6 +127,10 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                   child: const LinearProgressIndicator(),
                 ),
               _buildStreakCard(context, tokens, content, l10n),
+              SizedBox(height: tokens.spacing(6)),
+              _buildTodayStatsCard(context, tokens, content, ref),
+              SizedBox(height: tokens.spacing(6)),
+              _buildWeeklyStatsCard(context, tokens, content, ref),
               SizedBox(height: tokens.spacing(6)),
               _buildGoalCard(context, tokens),
               SizedBox(height: tokens.spacing(6)),
@@ -242,33 +277,43 @@ void _showGoalBottomSheet(BuildContext context, MinqTheme tokens) {
     isScrollControlled: true,
     shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
     builder: (context) {
-      return Padding(
-        padding: EdgeInsets.only(
-          left: tokens.spacing(4),
-          right: tokens.spacing(4),
-          top: tokens.spacing(4),
-          bottom: MediaQuery.of(context).viewInsets.bottom + tokens.spacing(4),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('目標を編集する', style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold)),
-            SizedBox(height: tokens.spacing(4)),
-            TextField(
-              decoration: InputDecoration(
-                labelText: '連続日数の目標',
-                hintText: '例: 7',
-                border: OutlineInputBorder(borderRadius: tokens.cornerLarge()),
-              ),
-              keyboardType: TextInputType.number,
+      return SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height * 0.3,
+          ),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+              left: tokens.spacing(4),
+              right: tokens.spacing(4),
+              top: tokens.spacing(4),
+              bottom: MediaQuery.of(context).viewInsets.bottom + tokens.spacing(4),
             ),
-            SizedBox(height: tokens.spacing(4)),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('保存する'),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('目標を編集する', style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold)),
+                SizedBox(height: tokens.spacing(4)),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: '連続日数の目標',
+                    hintText: '例: 7',
+                    border: OutlineInputBorder(borderRadius: tokens.cornerLarge()),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                SizedBox(height: tokens.spacing(4)),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('保存する'),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       );
     },
@@ -728,6 +773,231 @@ Widget _buildCalendarCard(
                 ),
               );
             },
+          ),
+        ],
+      ),
+    ),
+  );
+}
+Widget _buildTodayStatsCard(
+  BuildContext context,
+  MinqTheme tokens,
+  StatsViewData data,
+  WidgetRef ref,
+) {
+  final navigation = ref.read(navigationUseCaseProvider);
+  final todayCount = data.todayCompletionCount;
+  final hasProgress = todayCount > 0;
+
+  if (!hasProgress) {
+    return Card(
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: tokens.cornerXLarge(),
+        side: BorderSide(color: tokens.border),
+      ),
+      elevation: 0,
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(6)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.today_outlined,
+              size: tokens.spacing(12),
+              color: tokens.textMuted,
+            ),
+            SizedBox(height: tokens.spacing(3)),
+            Text(
+              '今日はまだ記録がありません',
+              style: tokens.titleMedium.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: tokens.spacing(2)),
+            Text(
+              '最初のクエストを完了して、今日の記録を始めましょう！',
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: tokens.spacing(4)),
+            ElevatedButton(
+              onPressed: () => navigation.goToQuests(),
+              child: const Text('クエストを見る'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  return Card(
+    color: tokens.surface,
+    shape: RoundedRectangleBorder(
+      borderRadius: tokens.cornerXLarge(),
+      side: BorderSide(color: tokens.border),
+    ),
+    elevation: 0,
+    child: Padding(
+      padding: EdgeInsets.all(tokens.spacing(6)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            '今日の完了数',
+            style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          SizedBox(height: tokens.spacing(2)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.check_circle,
+                size: tokens.spacing(12),
+                color: tokens.accentSuccess,
+              ),
+              SizedBox(width: tokens.spacing(2)),
+              Text(
+                '$todayCount',
+                style: tokens.typeScale.h1.copyWith(color: tokens.textPrimary),
+              ),
+            ],
+          ),
+          SizedBox(height: tokens.spacing(2)),
+          Text(
+            todayCount >= 3 
+                ? '素晴らしい！今日の目標を達成しました。'
+                : '目標まであと${3 - todayCount}個です。',
+            style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _buildWeeklyStatsCard(
+  BuildContext context,
+  MinqTheme tokens,
+  StatsViewData data,
+  WidgetRef ref,
+) {
+  final navigation = ref.read(navigationUseCaseProvider);
+  final weeklyRate = data.weeklyCompletionRate;
+  final percentage = (weeklyRate * 100).round();
+  final hasProgress = weeklyRate > 0;
+
+  if (!hasProgress) {
+    return Card(
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: tokens.cornerXLarge(),
+        side: BorderSide(color: tokens.border),
+      ),
+      elevation: 0,
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(6)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.calendar_week_outlined,
+              size: tokens.spacing(12),
+              color: tokens.textMuted,
+            ),
+            SizedBox(height: tokens.spacing(3)),
+            Text(
+              '今週はまだ記録がありません',
+              style: tokens.titleMedium.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: tokens.spacing(2)),
+            Text(
+              '今週の習慣を始めて、週間達成率を向上させましょう！',
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: tokens.spacing(4)),
+            ElevatedButton(
+              onPressed: () => navigation.goToQuests(),
+              child: const Text('今すぐ始める'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  return Card(
+    color: tokens.surface,
+    shape: RoundedRectangleBorder(
+      borderRadius: tokens.cornerXLarge(),
+      side: BorderSide(color: tokens.border),
+    ),
+    elevation: 0,
+    child: Padding(
+      padding: EdgeInsets.all(tokens.spacing(6)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            '今週の達成率',
+            style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          SizedBox(height: tokens.spacing(4)),
+          SizedBox(
+            width: 120,
+            height: 120,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CircularProgressIndicator(
+                  value: 1,
+                  strokeWidth: 12,
+                  valueColor: AlwaysStoppedAnimation<Color>(tokens.border.withOpacity(0.3)),
+                  backgroundColor: Colors.transparent,
+                ),
+                CircularProgressIndicator(
+                  value: weeklyRate.clamp(0.0, 1.0),
+                  strokeWidth: 12,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    weeklyRate >= 0.7 ? tokens.accentSuccess : tokens.brandPrimary,
+                  ),
+                  backgroundColor: Colors.transparent,
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '$percentage%',
+                      style: tokens.typeScale.h2.copyWith(
+                        color: tokens.textPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '達成',
+                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: tokens.spacing(4)),
+          Text(
+            weeklyRate >= 0.7
+                ? '素晴らしい週間パフォーマンスです！'
+                : weeklyRate >= 0.5
+                    ? '良いペースです。継続していきましょう。'
+                    : '今週はもう少し頑張ってみましょう。',
+            style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
