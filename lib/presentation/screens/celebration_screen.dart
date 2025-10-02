@@ -25,39 +25,63 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
       duration: const Duration(seconds: 2),
     )..repeat();
 
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _showPermissionDialogIfNeeded());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handlePostCelebrationFlows();
+    });
   }
 
-  Future<void> _showPermissionDialogIfNeeded() async {
+  Future<void> _handlePostCelebrationFlows() async {
+    await _maybeRequestNotificationPermission();
+    if (!mounted) return;
+    await _maybeTriggerInAppReview();
+  }
+
+  Future<void> _maybeRequestNotificationPermission() async {
     final notificationService = ref.read(notificationServiceProvider);
     final shouldShow = await notificationService.shouldRequestPermission();
 
     if (!shouldShow || !mounted) return;
 
     final l10n = AppLocalizations.of(context)!;
+    final prefs = ref.read(localPreferencesServiceProvider);
+    final hasEducated = await prefs.hasShownNotificationEducation();
+    final tokens = context.tokens;
+
     final result = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.notificationPermissionDialogTitle),
-        content: Text(l10n.notificationPermissionDialogMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.later),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.enable),
-          ),
-        ],
+      barrierDismissible: false,
+      builder: (dialogContext) => _NotificationEducationDialog(
+        l10n: l10n,
+        tokens: tokens,
+        showEducation: !hasEducated,
       ),
     );
 
+    if (!mounted) return;
+
+    if (!hasEducated) {
+      await prefs.markNotificationEducationShown();
+    }
+
     if (result == true) {
-      await notificationService.requestPermission();
+      final granted = await notificationService.requestPermission();
+      ref.read(notificationPermissionProvider.notifier).state = granted;
+      if (!granted) {
+        await notificationService.recordPermissionRequestTimestamp();
+      }
     } else {
       await notificationService.recordPermissionRequestTimestamp();
+    }
+  }
+
+  Future<void> _maybeTriggerInAppReview() async {
+    try {
+      final currentStreak = await ref.read(streakProvider.future);
+      await ref
+          .read(inAppReviewServiceProvider)
+          .maybeRequestReview(currentStreak: currentStreak);
+    } catch (error) {
+      debugPrint('In-app review trigger skipped: $error');
     }
   }
 
@@ -276,6 +300,94 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
           child: const Icon(Icons.close, color: Colors.white),
         ),
         onPressed: () => ref.read(navigationUseCaseProvider).goHome(),
+      ),
+    );
+  }
+}
+
+class _NotificationEducationDialog extends StatelessWidget {
+  const _NotificationEducationDialog({
+    required this.l10n,
+    required this.tokens,
+    required this.showEducation,
+  });
+
+  final AppLocalizations l10n;
+  final MinqTheme tokens;
+  final bool showEducation;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(l10n.notificationPermissionDialogTitle),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.notificationPermissionDialogMessage,
+            style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
+          ),
+          if (showEducation) ...[
+            SizedBox(height: tokens.spacing(3)),
+            Text(
+              l10n.notificationPermissionDialogBenefitsHeading,
+              style: tokens.bodyMedium.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: tokens.spacing(2)),
+            _DialogBullet(text: l10n.notificationPermissionDialogBenefitReminders, tokens: tokens),
+            _DialogBullet(text: l10n.notificationPermissionDialogBenefitPair, tokens: tokens),
+            _DialogBullet(text: l10n.notificationPermissionDialogBenefitGoal, tokens: tokens),
+          ],
+          SizedBox(height: tokens.spacing(3)),
+          Text(
+            l10n.notificationPermissionDialogFooter,
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(l10n.later),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(l10n.enable),
+        ),
+      ],
+    );
+  }
+}
+
+class _DialogBullet extends StatelessWidget {
+  const _DialogBullet({required this.text, required this.tokens});
+
+  final String text;
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: tokens.spacing(1)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '•',
+            style: tokens.bodyMedium.copyWith(color: tokens.brandPrimary),
+          ),
+          SizedBox(width: tokens.spacing(2)),
+          Expanded(
+            child: Text(
+              text,
+              style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
+            ),
+          ),
+        ],
       ),
     );
   }

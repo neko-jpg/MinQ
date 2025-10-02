@@ -137,6 +137,8 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               ),
             ),
           ),
+          SizedBox(height: tokens.spacing(5)),
+          _BatteryOptimizationCard(tokens: tokens),
         ],
       ),
     );
@@ -238,6 +240,57 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     FeedbackMessenger.showSuccessToast(
       context,
       'ご協力ありがとうございます！',
+    );
+  }
+}
+
+class _BatteryOptimizationCard extends StatelessWidget {
+  const _BatteryOptimizationCard({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    const instructions = <String>[
+      'Android: 設定 > アプリと通知 > 特別なアプリアクセス > 電池の最適化 で MinQ を「最適化しない」に設定してください。',
+      'iOS: 設定 > 一般 > Appのバックグラウンド更新 から MinQ をオンにして通知を維持してください。',
+      'どの端末でも、省電力モードが有効な場合は通知が遅れることがあります。学習時間に合わせて解除することをおすすめします。',
+    ];
+
+    return Card(
+      elevation: 0,
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(4)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              '通知が届かない場合のチェックリスト',
+              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
+            ),
+            SizedBox(height: tokens.spacing(3)),
+            ...instructions.map(
+              (instruction) => Padding(
+                padding: EdgeInsets.only(bottom: tokens.spacing(2)),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('• ', style: tokens.bodyMedium.copyWith(color: tokens.brandPrimary)),
+                    Expanded(
+                      child: Text(
+                        instruction,
+                        style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

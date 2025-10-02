@@ -19,6 +19,9 @@ class NotificationService {
   static const int _snoozeNotificationId = 400;
   static const String _recordRoutePayload = '/record';
   static const Duration _minimumGap = Duration(minutes: 10);
+  static const String _reminderChannelId = 'minq_reminders_v1';
+  static const String _pairChannelId = 'minq_pair_v1';
+  static const String _systemChannelId = 'minq_system_v1';
 
   static const String snoozeActionId_10m = 'snooze_10m';
   static const String snoozeActionId_1h = 'snooze_1h';
@@ -34,6 +37,7 @@ class NotificationService {
   String? _initialPayload;
   _NotificationState _state = const _NotificationState();
   bool _stateLoaded = false;
+  bool _channelsInitialised = false;
 
   bool get _supportsLocalNotifications => !kIsWeb;
 
@@ -45,9 +49,9 @@ class NotificationService {
     return payload;
   }
 
-  Future<void> init() async {
+  Future<bool> init() async {
     if (!_supportsLocalNotifications) {
-      return;
+      return false;
     }
 
     if (!_initialized) {
@@ -76,8 +80,10 @@ class NotificationService {
           }
         },
       );
+      await _ensureAndroidChannels();
       _initialized = true;
     }
+    return hasPermission();
   }
 
   Future<bool> hasPermission() async {
@@ -116,6 +122,8 @@ class NotificationService {
     final granted = await _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission() ?? false;
     if (!granted) {
       await cancelAll();
+    } else {
+      await _ensureAndroidChannels();
     }
     return granted;
   }
@@ -161,7 +169,108 @@ class NotificationService {
     required String body,
     Map<String, String>? data,
   }) async {
-    // ... (existing implementation)
+    if (!_supportsLocalNotifications) {
+      return;
+    }
+
+    await _ensureAndroidChannels();
+
+    final channelId = _resolveChannelId(data);
+    final androidDetails = _androidDetailsForChannel(channelId);
+    final details = NotificationDetails(android: androidDetails);
+    final payload = data != null ? data['route'] ?? '' : '';
+
+    final notificationId =
+        DateTime.now().millisecondsSinceEpoch % 1000000 + _auxiliaryNotificationId;
+
+    await _plugin.show(
+      notificationId,
+      title,
+      body,
+      details,
+      payload: payload,
+    );
+  }
+
+  Future<void> _ensureAndroidChannels() async {
+    if (_channelsInitialised || !_supportsLocalNotifications) {
+      return;
+    }
+    if (!Platform.isAndroid) {
+      _channelsInitialised = true;
+      return;
+    }
+    final androidPlugin =
+        _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlugin == null) {
+      return;
+    }
+    const channels = <AndroidNotificationChannel>[
+      AndroidNotificationChannel(
+        _reminderChannelId,
+        '習慣リマインダー',
+        description: '毎日のクエストと補助的な通知をお届けします',
+        importance: Importance.high,
+      ),
+      AndroidNotificationChannel(
+        _pairChannelId,
+        'ペア通知',
+        description: 'ペアからの応援やメッセージをお知らせします',
+        importance: Importance.high,
+      ),
+      AndroidNotificationChannel(
+        _systemChannelId,
+        'システム通知',
+        description: 'MinQからのお知らせや重要な案内です',
+        importance: Importance.defaultImportance,
+      ),
+    ];
+
+    for (final channel in channels) {
+      await androidPlugin.createNotificationChannel(channel);
+    }
+    _channelsInitialised = true;
+  }
+
+  String _resolveChannelId(Map<String, String>? data) {
+    final type = data?['type'] ?? data?['category'] ?? '';
+    if (type == 'pair_reminder' || type == 'pair') {
+      return _pairChannelId;
+    }
+    if (type == 'system') {
+      return _systemChannelId;
+    }
+    return _reminderChannelId;
+  }
+
+  AndroidNotificationDetails _androidDetailsForChannel(String channelId) {
+    switch (channelId) {
+      case _pairChannelId:
+        return const AndroidNotificationDetails(
+          _pairChannelId,
+          'ペア通知',
+          channelDescription: 'ペアからの応援やメッセージをお知らせします',
+          importance: Importance.high,
+          priority: Priority.high,
+        );
+      case _systemChannelId:
+        return const AndroidNotificationDetails(
+          _systemChannelId,
+          'システム通知',
+          channelDescription: 'MinQからのお知らせや重要な案内です',
+          importance: Importance.defaultImportance,
+          priority: Priority.defaultPriority,
+        );
+      case _reminderChannelId:
+      default:
+        return const AndroidNotificationDetails(
+          _reminderChannelId,
+          '習慣リマインダー',
+          channelDescription: '毎日のクエストと補助的な通知をお届けします',
+          importance: Importance.high,
+          priority: Priority.high,
+        );
+    }
   }
 
   Future<void> _cancelRecurringReminders() async {
