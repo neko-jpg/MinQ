@@ -70,6 +70,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     final streak = ref.watch(streakProvider).asData?.value ?? 0;
     final longestStreak = ref.watch(longestStreakProvider).asData?.value ?? 0;
     final isLongestStreak = streak > 0 && streak >= longestStreak;
@@ -81,11 +82,11 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
           Column(
             children: <Widget>[
               const Spacer(flex: 2),
-              _buildCelebrationContent(tokens, isLongestStreak, streak),
+              _buildCelebrationContent(tokens, isLongestStreak, streak, l10n),
               const Spacer(),
-              _buildRewardCard(tokens),
+              _buildRewardCard(tokens, l10n),
               const Spacer(),
-              _buildDoneButton(context, tokens),
+              _buildDoneButton(context, tokens, l10n),
             ],
           ),
           _buildCloseButton(context, tokens),
@@ -98,7 +99,13 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
     MinqTheme tokens,
     bool isLongest,
     int streak,
+    AppLocalizations l10n,
   ) {
+    final titleText =
+        isLongest ? l10n.celebrationNewLongestStreak : l10n.celebrationStreakMessage(streak);
+    final subtitleText = isLongest
+        ? l10n.celebrationLongestSubtitle
+        : l10n.celebrationKeepGoingSubtitle;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +129,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
           ),
           SizedBox(height: tokens.spacing(4)),
           Text(
-            isLongest ? 'New Longest Streak!' : 'Day $streak Streak!',
+            titleText,
             style: tokens.displaySmall.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.w800,
@@ -131,9 +138,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
           ),
           SizedBox(height: tokens.spacing(2)),
           Text(
-            isLongest
-                ? 'You set a new personal best!'
-                : 'You\'re on a roll! Keep it up.',
+            subtitleText,
             style: tokens.bodyLarge.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
@@ -142,7 +147,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
     );
   }
 
-  Widget _buildRewardCard(MinqTheme tokens) {
+  Widget _buildRewardCard(MinqTheme tokens, AppLocalizations l10n) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: tokens.spacing(5)),
       child: Column(
@@ -151,7 +156,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
           Padding(
             padding: EdgeInsets.only(left: tokens.spacing(2)),
             child: Text(
-              'Your Reward',
+              l10n.celebrationRewardTitle,
               style: tokens.titleSmall.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
@@ -190,7 +195,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            '1-Min Breathing Exercise',
+                            l10n.celebrationRewardName,
                             style: tokens.titleSmall.copyWith(
                               color: tokens.textPrimary,
                               fontWeight: FontWeight.bold,
@@ -198,7 +203,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
                           ),
                           SizedBox(height: tokens.spacing(1)),
                           Text(
-                            'Relax and recenter',
+                            l10n.celebrationRewardDescription,
                             style: tokens.bodyMedium.copyWith(
                               color: tokens.textMuted,
                             ),
@@ -221,7 +226,11 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
     );
   }
 
-  Widget _buildDoneButton(BuildContext context, MinqTheme tokens) {
+  Widget _buildDoneButton(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         tokens.spacing(4),
@@ -240,7 +249,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
           ),
           child: Text(
-            'Done',
+            l10n.celebrationDone,
             style: tokens.titleMedium.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
