@@ -184,3 +184,10 @@ final quest = await client.quests.create(
 - ドキュメント: https://docs.minq.app
 - API Status: https://status.minq.app
 - サポート: api-support@minq.app
+
+## 自動生成パイプライン
+
+- `tool/generate_api_docs.sh` を利用して `dart doc` を実行し、`build/api_docs` に成果物を出力
+- `.github/workflows/api-docs.yml` が `main` ブランチへの push と手動トリガーで動作し、生成物をアーティファクトとして保存
+- 公開用のZIPはGitHub Actions内で`api-docs.zip`に圧縮され、pub.devのドキュメントアップロードにそのまま利用可能
+- 生成されたドキュメントのURLはSlack `#minq-devrel` に通知され、レビュー完了後に公開

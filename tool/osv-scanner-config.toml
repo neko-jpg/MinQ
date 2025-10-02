@@ -1,0 +1,4 @@
+[[IgnoredVulns]]
+id = "GHSA-xxxx-xxxx-xxxx"
+reason = "Example placeholder until a real ignore is required."
+expires = 2025-12-31T00:00:00Z
