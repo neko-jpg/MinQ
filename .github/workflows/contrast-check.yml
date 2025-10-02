@@ -1,0 +1,20 @@
+name: Accessibility Contrast Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  contrast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Run contrast validation
+        run: dart run tool/contrast_check.dart

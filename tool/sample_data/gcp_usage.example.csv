@@ -1,0 +1,4 @@
+service,energy_kwh
+firestore,120.5
+cloud_functions,85.2
+cloud_run,64.0

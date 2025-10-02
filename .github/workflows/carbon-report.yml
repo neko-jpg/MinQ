@@ -1,0 +1,27 @@
+name: Carbon Footprint Report
+
+on:
+  schedule:
+    - cron: '0 1 1 * *'
+  workflow_dispatch:
+
+jobs:
+  carbon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Generate carbon report
+        env:
+          SLACK_CARBON_WEBHOOK_URL: ${{ secrets.SLACK_CARBON_WEBHOOK_URL }}
+        run: |
+          dart run tool/carbon_report.dart --ci=tool/sample_data/ci_runs.example.csv --gcp=tool/sample_data/gcp_usage.example.csv --output=carbon-report.json
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: carbon-report
+          path: carbon-report.json
