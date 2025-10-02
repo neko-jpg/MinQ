@@ -8,7 +8,7 @@ class AnalyticsService {
   final FirebaseAnalytics? _analytics;
 
   // Regex to enforce verb_object naming convention (e.g., create_quest, start_pair)
-  static final RegExp _eventNameRegex = RegExp(r'^[a-z]+(_[a-z]+)*$');
+  static final RegExp _eventNameRegex = RegExp(r'^[a-z]+_[a-z]+(_[a-z]+)*$');
 
   Future<void> logEvent(String name, {Map<String, Object>? parameters}) async {
     if (_analytics == null) {

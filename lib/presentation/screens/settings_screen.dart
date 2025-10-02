@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/notification_service.dart';
+import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -53,6 +54,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context)!;
+    final opsSnapshot = ref.watch(operationsSnapshotProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -131,6 +133,41 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 title: l10n.settingsDeleteAccount,
                 isDelete: true,
                 onTap: () => context.push('/settings/delete-account'),
+              ),
+            ],
+          ),
+          _SettingsSection(
+            title: '運用状況',
+            tiles: [
+              opsSnapshot.when<_SettingsTile>(
+                data: (OperationsSnapshot snapshot) {
+                  final double crashFreeRate =
+                      (snapshot.crashFreeRate * 100).clamp(0, 100);
+                  final bool meetsTarget = snapshot.meetsCrashFreeTarget(0.995);
+                  final String subtitle = meetsTarget
+                      ? '目標達成中（99.5%以上）'
+                      : '目標を下回っています（99.5%未満）';
+                  return _SettingsTile(
+                    title: 'クラッシュフリー率',
+                    subtitle: subtitle,
+                    isStatic: true,
+                    staticValue: '${crashFreeRate.toStringAsFixed(2)}%',
+                    onTap: () => ref.invalidate(operationsSnapshotProvider),
+                  );
+                },
+                loading: () => const _SettingsTile(
+                  title: 'クラッシュフリー率',
+                  subtitle: '指標を計測中です…',
+                  isStatic: true,
+                  staticValue: '--',
+                ),
+                error: (error, _) => _SettingsTile(
+                  title: 'クラッシュフリー率',
+                  subtitle: '指標の読み込みに失敗しました。タップして再試行してください。',
+                  isStatic: true,
+                  staticValue: '--',
+                  onTap: () => ref.invalidate(operationsSnapshotProvider),
+                ),
               ),
             ],
           ),
