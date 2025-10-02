@@ -69,6 +69,15 @@ class ProgressRing extends StatefulWidget {
 
 class _ProgressRingState extends State<ProgressRing>
     with TickerProviderStateMixin {
+  bool get _reduceMotion =>
+      WidgetsBinding.instance.platformDispatcher.accessibilityFeatures
+          .disableAnimations;
+
+  bool get _shouldShowSparkles => widget.showSparkles && !_reduceMotion;
+
+  bool get _shouldProvideCompletionFeedback =>
+      widget.enableCompletionFeedback && !_reduceMotion;
+
   late AnimationController _progressController;
   late AnimationController _sparkleController;
   late AnimationController _pulseController;
@@ -91,9 +100,18 @@ class _ProgressRingState extends State<ProgressRing>
   }
 
   void _initializeAnimations() {
+    final Duration progressDuration =
+        _reduceMotion ? Duration.zero : widget.animationDuration;
+    final Duration sparkleDuration =
+        _reduceMotion ? Duration.zero : const Duration(milliseconds: 1200);
+    final Duration pulseDuration =
+        _reduceMotion ? Duration.zero : const Duration(milliseconds: 600);
+    final Duration rotationDuration =
+        _reduceMotion ? Duration.zero : const Duration(milliseconds: 2000);
+
     // Progress animation
     _progressController = AnimationController(
-      duration: widget.animationDuration,
+      duration: progressDuration,
       vsync: this,
     );
     _progressAnimation = Tween<double>(
@@ -106,7 +124,7 @@ class _ProgressRingState extends State<ProgressRing>
 
     // Sparkle animation for completion effect
     _sparkleController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: sparkleDuration,
       vsync: this,
     );
     _sparkleAnimation = Tween<double>(
@@ -119,12 +137,13 @@ class _ProgressRingState extends State<ProgressRing>
 
     // Pulse animation for completion celebration
     _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: pulseDuration,
       vsync: this,
     );
+    final double pulseEnd = _reduceMotion ? 1.0 : 1.1;
     _pulseAnimation = Tween<double>(
       begin: 1.0,
-      end: 1.1,
+      end: pulseEnd,
     ).animate(CurvedAnimation(
       parent: _pulseController,
       curve: Curves.elasticOut,
@@ -132,7 +151,7 @@ class _ProgressRingState extends State<ProgressRing>
 
     // Rotation animation for sparkles
     _rotationController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: rotationDuration,
       vsync: this,
     );
     _rotationAnimation = Tween<double>(
@@ -170,32 +189,39 @@ class _ProgressRingState extends State<ProgressRing>
     if (_hasCompleted) return;
     _hasCompleted = true;
 
-    // Start completion animations
-    if (widget.showSparkles) {
-      _sparkleController.forward();
-      _rotationController.repeat();
-    }
-
-    _pulseController.forward().then((_) {
-      _pulseController.reverse();
-    });
-
-    // Provide feedback
-    if (widget.enableCompletionFeedback) {
-      FeedbackManager.questCompleted();
-    }
-
-    // Call completion callback
-    widget.onComplete?.call();
-
-    // Stop sparkle animations after a delay
-    _sparkleTimer?.cancel();
-    _sparkleTimer = Timer(const Duration(milliseconds: 2000), () {
-      if (mounted) {
-        _sparkleController.reverse();
-        _rotationController.stop();
+    if (_shouldShowSparkles && _sparkleController.duration != Duration.zero) {
+      _sparkleController
+        ..reset()
+        ..forward();
+      if (_rotationController.duration != Duration.zero) {
+        _rotationController
+          ..reset()
+          ..repeat();
       }
-    });
+
+      _sparkleTimer?.cancel();
+      _sparkleTimer = Timer(const Duration(milliseconds: 2000), () {
+        if (mounted) {
+          _sparkleController.reverse();
+          _rotationController.stop();
+        }
+      });
+    }
+
+    if (_shouldProvideCompletionFeedback) {
+      FeedbackManager.questCompleted();
+      if (_pulseController.duration != Duration.zero) {
+        _pulseController
+          ..reset()
+          ..forward().then((_) {
+            if (_pulseController.duration != Duration.zero) {
+              _pulseController.reverse();
+            }
+          });
+      }
+    }
+
+    widget.onComplete?.call();
   }
 
   @override
@@ -206,8 +232,13 @@ class _ProgressRingState extends State<ProgressRing>
       if (widget.progress < _previousProgress) {
         // Progress decreased, reset completion state
         _hasCompleted = false;
-        _sparkleController.reset();
-        _rotationController.reset();
+        _sparkleTimer?.cancel();
+        if (_sparkleController.duration != Duration.zero) {
+          _sparkleController.reset();
+        }
+        if (_rotationController.duration != Duration.zero) {
+          _rotationController.reset();
+        }
       }
       _animateToProgress();
     }
@@ -268,7 +299,7 @@ class _ProgressRingState extends State<ProgressRing>
                 ),
                 
                 // Sparkles
-                if (widget.showSparkles && _sparkleAnimation.value > 0)
+                if (_shouldShowSparkles && _sparkleAnimation.value > 0)
                   Transform.rotate(
                     angle: _rotationAnimation.value,
                     child: CustomPaint(
