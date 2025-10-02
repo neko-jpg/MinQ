@@ -110,7 +110,7 @@ class _ChatMenu extends ConsumerWidget {
     if (confirmed == true) {
       await ref.read(pairRepositoryProvider)?.blockUser(currentUserId, buddyId);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.userBlocked)));
+        FeedbackMessenger.showSuccessToast(context, l10n.userBlocked);
       }
     }
   }
@@ -140,7 +140,7 @@ class _ChatMenu extends ConsumerWidget {
     if (confirmed == true && reasonController.text.isNotEmpty) {
       await ref.read(pairRepositoryProvider)?.reportUser(currentUserId, buddyId, reasonController.text);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.reportSubmitted)));
+        FeedbackMessenger.showSuccessToast(context, l10n.reportSubmitted);
       }
     }
   }
@@ -365,14 +365,11 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
       _textController.clear();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.messageSentFailed),
-            action: SnackBarAction(
-              label: l10n.retry,
-              onPressed: _sendMessage,
-            ),
-          ),
+        FeedbackMessenger.showErrorSnackBar(
+          context,
+          l10n.messageSentFailed,
+          actionLabel: l10n.retry,
+          onAction: _sendMessage,
         );
       }
     } finally {

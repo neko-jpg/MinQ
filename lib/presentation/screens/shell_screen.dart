@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/presentation/common/feedback/feedback_manager.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -17,6 +18,9 @@ class ShellScreen extends ConsumerStatefulWidget {
 
 class _ShellScreenState extends ConsumerState<ShellScreen>
     with WidgetsBindingObserver {
+  DateTime? _lastNavTap;
+  static const Duration _navThrottle = Duration(milliseconds: 500);
+
   @override
   void initState() {
     super.initState();
@@ -65,6 +69,11 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
   }
 
   void _onItemTapped(int index, BuildContext context) {
+    final now = DateTime.now();
+    if (_lastNavTap != null && now.difference(_lastNavTap!) < _navThrottle) {
+      return;
+    }
+    _lastNavTap = now;
     final navigation = ref.read(navigationUseCaseProvider);
     switch (index) {
       case 0:
@@ -83,6 +92,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
         navigation.goToSettings();
         break;
     }
+    FeedbackManager.selected();
   }
 
   @override

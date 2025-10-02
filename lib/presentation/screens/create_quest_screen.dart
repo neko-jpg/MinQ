@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 class CreateQuestScreen extends ConsumerStatefulWidget {
@@ -36,8 +37,9 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       final uid = ref.read(uidProvider);
       if (uid == null || uid.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ユーザーがサインインしていません。')),
+        FeedbackMessenger.showErrorSnackBar(
+          context,
+          'ユーザーがサインインしていません。',
         );
         return;
       }
@@ -54,8 +56,9 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
       await ref.read(questRepositoryProvider).addQuest(newQuest);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('新しい習慣を作成しました！')),
+        FeedbackMessenger.showSuccessToast(
+          context,
+          '新しい習慣を作成しました！',
         );
         context.pop();
       }
