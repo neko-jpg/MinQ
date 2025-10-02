@@ -1,5 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:minq/domain/home/home_view_data.dart';
+import 'package:minq/domain/stats/stats_view_data.dart';
+
 typedef NowProvider = DateTime Function();
 
 /// Stores lightweight privacy/safety related flags locally.
@@ -26,6 +29,8 @@ class LocalPreferencesService {
       'notification_permission_education_v1';
   static const String _inAppReviewPromptedAtKey =
       'in_app_review_prompted_at_v1';
+  static const String _homeViewCacheKey = 'home_view_cache_v1';
+  static const String _statsViewCacheKey = 'stats_view_cache_v1';
 
   final Future<SharedPreferences> _prefsFuture;
   final NowProvider _now;
@@ -238,6 +243,44 @@ class LocalPreferencesService {
       term: term,
       capturedAt: capturedAt,
     );
+  }
+
+  Future<void> saveHomeViewData(HomeViewData data) async {
+    final prefs = await _prefsFuture;
+    await prefs.setString(_homeViewCacheKey, data.toJson());
+  }
+
+  Future<HomeViewData?> loadHomeViewData() async {
+    final prefs = await _prefsFuture;
+    final raw = prefs.getString(_homeViewCacheKey);
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+    try {
+      return HomeViewData.fromJson(raw);
+    } catch (_) {
+      await prefs.remove(_homeViewCacheKey);
+      return null;
+    }
+  }
+
+  Future<void> saveStatsViewData(StatsViewData data) async {
+    final prefs = await _prefsFuture;
+    await prefs.setString(_statsViewCacheKey, data.toJson());
+  }
+
+  Future<StatsViewData?> loadStatsViewData() async {
+    final prefs = await _prefsFuture;
+    final raw = prefs.getString(_statsViewCacheKey);
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+    try {
+      return StatsViewData.fromJson(raw);
+    } catch (_) {
+      await prefs.remove(_statsViewCacheKey);
+      return null;
+    }
   }
 }
 

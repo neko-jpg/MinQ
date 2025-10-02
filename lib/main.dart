@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -5,9 +8,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/data/services/crash_recovery_store.dart';
+import 'package:minq/data/services/operations_metrics_service.dart';
+import 'package:minq/presentation/controllers/crash_recovery_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/screens/crash_recovery_screen.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
 import 'package:minq/config/flavor.dart';
 import 'package:minq/firebase_options_dev.dart' as dev;
@@ -17,6 +25,39 @@ import 'package:minq/firebase_options_prod.dart' as prod;
 Future<void> main() async {
   final binding = WidgetsFlutterBinding.ensureInitialized();
   GestureBinding.instance.resamplingEnabled = true;
+
+  final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+  final crashRecoveryStore = CrashRecoveryStore(sharedPrefs);
+  final operationsMetricsService = OperationsMetricsService(sharedPrefs);
+  await operationsMetricsService.recordSessionStart(DateTime.now());
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    unawaited(operationsMetricsService.recordCrash(DateTime.now()));
+    unawaited(
+      crashRecoveryStore.recordCrash(
+        CrashReport(
+          message: details.exceptionAsString(),
+          stackTrace: details.stack?.toString() ?? '',
+          recordedAt: DateTime.now(),
+        ),
+      ),
+    );
+  };
+
+  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+    unawaited(operationsMetricsService.recordCrash(DateTime.now()));
+    unawaited(
+      crashRecoveryStore.recordCrash(
+        CrashReport(
+          message: error.toString(),
+          stackTrace: stack.toString(),
+          recordedAt: DateTime.now(),
+        ),
+      ),
+    );
+    return false;
+  };
 
   assert(() {
     binding.addTimingsCallback((List<FrameTiming> timings) {
@@ -48,6 +89,8 @@ Future<void> main() async {
     ProviderScope(
       overrides: [
         firebaseAvailabilityProvider.overrideWithValue(firebaseInitialized),
+        crashRecoveryStoreProvider.overrideWithValue(crashRecoveryStore),
+        operationsMetricsServiceProvider.overrideWithValue(operationsMetricsService),
       ],
       child: const MinQApp(),
     ),
@@ -153,6 +196,16 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     final initializationError = ref.watch(initializationErrorProvider);
     final router = ref.watch(routerProvider);
     final locale = ref.watch(appLocaleControllerProvider);
+    final crashRecoveryState = ref.watch(crashRecoveryControllerProvider);
+
+    if (crashRecoveryState.needsRecovery) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        home: const CrashRecoveryScreen(),
+      );
+    }
 
     if (initializationError != null) {
       return MaterialApp(

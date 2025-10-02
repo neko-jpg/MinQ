@@ -5,33 +5,52 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:minq/data/providers.dart';
-import 'package:minq/domain/log/quest_log.dart';
-import 'package:minq/domain/quest/quest.dart' as minq_quest;
+import 'package:minq/domain/home/home_view_data.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
+import 'package:minq/presentation/controllers/home_data_controller.dart';
+import 'package:minq/presentation/controllers/sync_status_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final questsAsync = ref.watch(userQuestsProvider);
-    final streakAsync = ref.watch(streakProvider);
-    final completedTodayAsync = ref.watch(todayCompletionCountProvider);
-    final recentLogsAsync = ref.watch(recentLogsProvider);
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
 
-    final isLoading = questsAsync.isLoading ||
-        streakAsync.isLoading ||
-        completedTodayAsync.isLoading ||
-        recentLogsAsync.isLoading;
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    ref.listen<SyncStatus>(syncStatusProvider, (previous, next) {
+      if (!mounted) return;
+      if (next.showBanner && next.bannerMessage != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.hideCurrentSnackBar();
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(next.bannerMessage!),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
+        });
+      }
+    });
+  }
 
-    final hasError = questsAsync.hasError ||
-        streakAsync.hasError ||
-        completedTodayAsync.hasError ||
-        recentLogsAsync.hasError;
+  @override
+  Widget build(BuildContext context) {
+    final homeDataAsync = ref.watch(homeDataProvider);
+    final HomeViewData? data = homeDataAsync.valueOrNull;
+    final bool hasCachedContent = data?.hasCachedContent ?? false;
+    final bool isLoading = homeDataAsync.isLoading && !hasCachedContent;
+    final bool hasError = homeDataAsync.hasError && !hasCachedContent;
 
     return Scaffold(
       body: SafeArea(
@@ -48,6 +67,7 @@ class HomeScreen extends ConsumerWidget {
               );
             } else {
               final tokens = context.tokens;
+              final HomeViewData content = data ?? HomeViewData.empty();
               child = ListView(
                 padding: EdgeInsets.symmetric(
                   horizontal: tokens.spacing(4),
@@ -56,11 +76,11 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   const _Header(),
                   SizedBox(height: tokens.spacing(6)),
-                  const _FocusHeroCard(),
+                  _FocusHeroCard(data: content),
                   SizedBox(height: tokens.spacing(6)),
-                  const _HomeHighlights(),
+                  _HomeHighlights(data: content),
                   SizedBox(height: tokens.spacing(8)),
-                  const _WeeklyStreakSection(),
+                  _WeeklyStreakSection(data: content),
                 ],
               );
             }
@@ -185,14 +205,16 @@ class _Header extends StatelessWidget {
 }
 
 class _FocusHeroCard extends ConsumerWidget {
-  const _FocusHeroCard();
+  const _FocusHeroCard({required this.data});
+
+  final HomeViewData data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final quests = ref.watch(userQuestsProvider).valueOrNull ?? [];
+    final quests = data.quests;
     final focusQuest = quests.firstOrNull;
-    final recentLogs = ref.watch(recentLogsProvider).valueOrNull ?? [];
+    final recentLogs = data.recentLogs;
     final navigation = ref.read(navigationUseCaseProvider);
 
     if (focusQuest == null) {
@@ -242,13 +264,11 @@ class _FocusHeroCard extends ConsumerWidget {
     final hasCompletedToday = recentLogs.any(
       (log) =>
           log.questId == focusQuest.id &&
-          log.ts.year == now.year &&
-          log.ts.month == now.month &&
-          log.ts.day == now.day,
+          log.timestamp.year == now.year &&
+          log.timestamp.month == now.month &&
+          log.timestamp.day == now.day,
     );
     final progress = hasCompletedToday ? 1.0 : 0.0;
-
-    final visibleCount = _expanded ? quests.length : math.min(quests.length, 2);
 
     return Card(
       color: tokens.surface,
@@ -361,7 +381,9 @@ class _FocusHeroCard extends ConsumerWidget {
   }
 }
 class _HomeHighlights extends StatelessWidget {
-  const _HomeHighlights();
+  const _HomeHighlights({required this.data});
+
+  final HomeViewData data;
 
   @override
   Widget build(BuildContext context) {
@@ -372,9 +394,12 @@ class _HomeHighlights extends StatelessWidget {
         if (constraints.maxWidth < 560) {
           return Column(
             children: [
-              const _MiniQuestsCard(),
+              _MiniQuestsCard(
+                quests: data.quests,
+                recentLogs: data.recentLogs,
+              ),
               SizedBox(height: spacing),
-              const _StatsSnapshotCard(),
+              _StatsSnapshotCard(data: data),
             ],
           );
         }
@@ -384,8 +409,14 @@ class _HomeHighlights extends StatelessWidget {
           spacing: spacing,
           runSpacing: spacing,
           children: [
-            SizedBox(width: cardWidth, child: const _MiniQuestsCard()),
-            SizedBox(width: cardWidth, child: const _StatsSnapshotCard()),
+            SizedBox(
+              width: cardWidth,
+              child: _MiniQuestsCard(
+                quests: data.quests,
+                recentLogs: data.recentLogs,
+              ),
+            ),
+            SizedBox(width: cardWidth, child: _StatsSnapshotCard(data: data)),
           ],
         );
       },
@@ -394,7 +425,10 @@ class _HomeHighlights extends StatelessWidget {
 }
 
 class _MiniQuestsCard extends ConsumerStatefulWidget {
-  const _MiniQuestsCard();
+  const _MiniQuestsCard({required this.quests, required this.recentLogs});
+
+  final List<HomeQuestItem> quests;
+  final List<HomeLogItem> recentLogs;
 
   @override
   ConsumerState<_MiniQuestsCard> createState() => _MiniQuestsCardState();
@@ -406,12 +440,12 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final quests = ref.watch(userQuestsProvider).valueOrNull ?? [];
-    final recentLogs = ref.watch(recentLogsProvider).valueOrNull ?? [];
+    final quests = widget.quests;
+    final recentLogs = widget.recentLogs;
     final navigation = ref.read(navigationUseCaseProvider);
 
-      if (quests.isEmpty) {
-        return Card(
+    if (quests.isEmpty) {
+      return Card(
         color: tokens.surface,
         shape: RoundedRectangleBorder(
           borderRadius: tokens.cornerLarge(),
@@ -431,11 +465,11 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
           ),
         ),
       );
-      }
+    }
 
-      final visibleCount = _expanded ? quests.length : math.min(quests.length, 2);
+    final visibleCount = _expanded ? quests.length : math.min(quests.length, 2);
 
-      return Card(
+    return Card(
       color: tokens.surface,
       shape: RoundedRectangleBorder(
         borderRadius: tokens.cornerLarge(),
@@ -508,13 +542,13 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
     );
   }
 
-  bool _isCompletedToday(minq_quest.Quest quest, List<QuestLog> recentLogs) {
+  bool _isCompletedToday(HomeQuestItem quest, List<HomeLogItem> recentLogs) {
     final now = DateTime.now();
     return recentLogs.any((log) {
       return log.questId == quest.id &&
-          log.ts.year == now.year &&
-          log.ts.month == now.month &&
-          log.ts.day == now.day;
+          log.timestamp.year == now.year &&
+          log.timestamp.month == now.month &&
+          log.timestamp.day == now.day;
     });
   }
 }
@@ -525,7 +559,7 @@ class _QuestSummaryRow extends StatelessWidget {
     required this.isCompleted,
   });
 
-  final minq_quest.Quest quest;
+  final HomeQuestItem quest;
   final bool isCompleted;
 
   @override
@@ -573,14 +607,16 @@ class _QuestSummaryRow extends StatelessWidget {
     );
   }
 }
-class _StatsSnapshotCard extends ConsumerWidget {
-  const _StatsSnapshotCard();
+class _StatsSnapshotCard extends StatelessWidget {
+  const _StatsSnapshotCard({required this.data});
+
+  final HomeViewData data;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final streak = ref.watch(streakProvider).valueOrNull ?? 0;
-    final completedToday = ref.watch(todayCompletionCountProvider).valueOrNull ?? 0;
+    final streak = data.streak;
+    final completedToday = data.completionsToday;
 
     final statItems = <_StatData>[
       _StatData(
@@ -763,13 +799,15 @@ class _ProgressRing extends StatelessWidget {
     );
   }
 }
-class _WeeklyStreakSection extends ConsumerWidget {
-  const _WeeklyStreakSection();
+class _WeeklyStreakSection extends StatelessWidget {
+  const _WeeklyStreakSection({required this.data});
+
+  final HomeViewData data;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final recentLogs = ref.watch(recentLogsProvider).valueOrNull ?? [];
+    final recentLogs = data.recentLogs;
     final dayItems = _buildDayItems(recentLogs);
 
     return Card(
@@ -804,7 +842,7 @@ class _WeeklyStreakSection extends ConsumerWidget {
     );
   }
 
-  List<Widget> _buildDayItems(List<QuestLog> logs) {
+  List<Widget> _buildDayItems(List<HomeLogItem> logs) {
     final now = DateTime.now();
     final today = DateUtils.dateOnly(now);
     final startOfWeek = today.subtract(Duration(days: today.weekday - 1));
@@ -813,7 +851,7 @@ class _WeeklyStreakSection extends ConsumerWidget {
     return List<Widget>.generate(7, (index) {
       final dayToDisplay = startOfWeek.add(Duration(days: index));
       final isCompleted = logs.any(
-        (log) => DateUtils.isSameDay(log.ts, dayToDisplay),
+        (log) => DateUtils.isSameDay(log.timestamp, dayToDisplay),
       );
 
       return _DayItem(
