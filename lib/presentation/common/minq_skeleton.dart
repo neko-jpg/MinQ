@@ -85,15 +85,17 @@ class MinqSkeletonLine extends StatelessWidget {
     super.key,
     this.width,
     this.height = 12,
+    this.borderRadius,
   });
 
   final double? width;
   final double height;
+  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final radius = tokens.cornerMedium();
+    final radius = borderRadius ?? tokens.cornerMedium();
     return MinqSkeleton(
       width: width,
       height: height,

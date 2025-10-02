@@ -273,7 +273,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
           SizedBox(height: tokens.spacing(8)),
           _buildInviteCodeInput(tokens, l10n),
           SizedBox(height: tokens.spacing(6)),
-          _buildDivider(tokens),
+          _buildDivider(tokens, l10n),
           SizedBox(height: tokens.spacing(6)),
           _buildRandomMatchForm(tokens, l10n),
           SizedBox(height: tokens.spacing(8)),
@@ -389,7 +389,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     );
   }
 
-  Widget _buildDivider(MinqTheme tokens) {
+  Widget _buildDivider(MinqTheme tokens, AppLocalizations l10n) {
     return Row(
       children: [
         Expanded(child: Divider(color: tokens.border, thickness: 1)),

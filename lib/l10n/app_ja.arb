@@ -101,7 +101,9 @@
   "@pairPairedQuest": {
     "description": "ペアのカテゴリ名を含む説明文",
     "placeholders": {
-      "questName": {}
+      "questName": {
+        "type": "Object"
+      }
     }
   },
   "pairHighFiveAction": "ハイタッチを送る",
@@ -115,7 +117,9 @@
   "@streakDayCount": {
     "description": "現在の連続日数を示すテキスト",
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "num"
+      }
     }
   },
   "celebrationNewLongestStreak": "連続記録を更新しました！",
@@ -123,7 +127,9 @@
   "@celebrationStreakMessage": {
     "description": "連続日数の祝福メッセージ",
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "num"
+      }
     }
   },
   "celebrationLongestSubtitle": "自己ベストを更新しました！",

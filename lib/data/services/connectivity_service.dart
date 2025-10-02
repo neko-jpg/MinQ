@@ -16,24 +16,24 @@ class ConnectivityService {
   final StreamController<ConnectivityStatus> _controller =
       StreamController<ConnectivityStatus>.broadcast();
 
-  StreamSubscription<ConnectivityResult>? _subscription;
+  StreamSubscription<List<ConnectivityResult>>? _subscription;
 
   Stream<ConnectivityStatus> get onStatusChanged async* {
-    final ConnectivityResult initial = await _connectivity.checkConnectivity();
-    yield _mapResult(initial);
+    final List<ConnectivityResult> initial = await _connectivity.checkConnectivity();
+    yield _mapResult(initial.first);
     yield* _controller.stream;
   }
 
   Future<void> initialize() async {
     _subscription?.cancel();
-    _subscription = _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
-      _controller.add(_mapResult(result));
+    _subscription = _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> result) {
+      _controller.add(_mapResult(result.first));
     });
   }
 
   Future<ConnectivityStatus> getCurrentStatus() async {
-    final ConnectivityResult result = await _connectivity.checkConnectivity();
-    return _mapResult(result);
+    final List<ConnectivityResult> result = await _connectivity.checkConnectivity();
+    return _mapResult(result.first);
   }
 
   Future<void> dispose() async {

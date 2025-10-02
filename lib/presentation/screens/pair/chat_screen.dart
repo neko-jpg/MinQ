@@ -9,6 +9,7 @@ import 'package:minq/domain/pair/chat_message.dart';
 import 'package:minq/presentation/screens/pair/share_progress_sheet.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 
 final chatMessagesProvider =
     StreamProvider.family<List<ChatMessage>, String>((ref, pairId) {
@@ -46,7 +47,7 @@ class ChatScreen extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop()),
         title: Column(
           children: [
-            Text('Buddy#${buddyId.substring(0, 4)}',
+            Text('Buddy#${buddyId?.substring(0, 4) ?? ''}',
                 style: tokens.titleSmall
                     .copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
             Text('目標: 毎日運動する',
@@ -55,7 +56,7 @@ class ChatScreen extends ConsumerWidget {
         ),
         centerTitle: true,
         actions: [
-          if (buddyId.isNotEmpty)
+          if (buddyId != null && buddyId.isNotEmpty)
             _ChatMenu(pairId: pairId, currentUserId: currentUserId!, buddyId: buddyId)
         ],
       ),

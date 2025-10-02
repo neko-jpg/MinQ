@@ -8,7 +8,7 @@ class StatsDataController extends AutoDisposeAsyncNotifier<StatsViewData> {
   Future<StatsViewData> build() async {
     final LocalPreferencesService localPrefs = ref.read(localPreferencesServiceProvider);
     final StatsViewData? cached = await localPrefs.loadStatsViewData();
-    if (cached != null && mounted) {
+    if (cached != null) {
       state = AsyncData<StatsViewData>(cached);
     }
 
