@@ -554,3 +554,14 @@ P2-12. その他高度な機能・改善
 [x] パブリックAPI公開:（Personal Access Token＋Rate Limit）。
 
 [x] OSS公開計画:（ライセンス選定、CONTRIBUTING.md）。
+## 2024-02-09 追加対応メモ
+- [x] Reduce Motion対応: `animation_system.dart` と Skeleton/チャット送信UIで `MediaQuery.disableAnimations` を尊重し、動きを抑制しました。
+- [x] フォーカスリング/アクセント色: `focus_system.dart` をトークンベースのカラー解決とセマンティクス強化に更新しました。
+- [x] コントラスト検証: `contrast_validator_test.dart` を追加し、WCAG準拠の閾値を自動テストしました。
+- [x] TextOverflowポリシー統一: `text_overflow_policy_test.dart` でタイトル/本文のオーバーフロールールを検証しました。
+- [x] 画像プレースホルダ/失敗時のFallback: `image_placeholder.dart` にセマンティクスとトークン半径、Reduce Motion対応のアニメーション調整を追加しました。
+- [x] アクセシビリティ: Semantics: フォーカス可能ウィジェットとオフラインバナーにセマンティクスを付与しスクリーンリーダー対応を強化しました。
+- [x] Magic Number撤去: シェアカードやチャット入力などの余白・サイズを `context.tokens` に置き換えました。
+- [x] EdgeInsets直書き撤去: `offline_mode_indicator.dart` などでSpacingトークンへ置換しました。
+- [x] ローディング: Skeletonローダーに静的フォールバックを追加し、Reduce Motion時はアニメーションを停止するようにしました。
+- [x] QAチェック: `test/presentation/theme` 配下のユニット/ウィジェットテストを追加し、UIトークン周りの回帰を防止しました。
