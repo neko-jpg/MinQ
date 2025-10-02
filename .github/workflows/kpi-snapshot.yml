@@ -1,0 +1,25 @@
+name: KPI Snapshot to Slack
+
+on:
+  schedule:
+    - cron: '0 0 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Generate KPI payload
+        run: |
+          cp tool/sample_data/kpi_payload.example.json payload.json
+      - name: Send KPI snapshot
+        env:
+          SLACK_KPI_WEBHOOK_URL: ${{ secrets.SLACK_KPI_WEBHOOK_URL }}
+        run: |
+          dart run tool/kpi_snapshot.dart --input=payload.json

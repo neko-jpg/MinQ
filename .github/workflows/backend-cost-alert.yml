@@ -1,0 +1,23 @@
+name: Backend Cost Alert
+
+on:
+  schedule:
+    - cron: '30 15 * * *'
+  workflow_dispatch:
+
+jobs:
+  cost-alert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Run backend cost alert
+        env:
+          SLACK_COST_ALERT_WEBHOOK_URL: ${{ secrets.SLACK_COST_ALERT_WEBHOOK_URL }}
+          OPSGENIE_API_KEY: ${{ secrets.OPSGENIE_API_KEY }}
+        run: |
+          dart run tool/backend_cost_alert.dart --input=tool/sample_data/backend_cost_payload.example.json

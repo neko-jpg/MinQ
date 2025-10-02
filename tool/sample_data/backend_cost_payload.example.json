@@ -1,0 +1,32 @@
+{
+  "generatedAt": "2024-06-01T00:00:00Z",
+  "records": [
+    {
+      "service": "firestore",
+      "monthlyCost": 980.0,
+      "dailyCost": 62.5,
+      "dailyAverageLastWeek": 45.0,
+      "monthlyForecast": 1450.0,
+      "dailyInvocations": null,
+      "cpuSecondsHourly": null
+    },
+    {
+      "service": "cloud_functions",
+      "monthlyCost": 720.0,
+      "dailyCost": 50.0,
+      "dailyAverageLastWeek": 32.0,
+      "monthlyForecast": 1030.0,
+      "dailyInvocations": 3200000,
+      "cpuSecondsHourly": null
+    },
+    {
+      "service": "cloud_run",
+      "monthlyCost": 380.0,
+      "dailyCost": 22.0,
+      "dailyAverageLastWeek": 18.0,
+      "monthlyForecast": 410.0,
+      "dailyInvocations": null,
+      "cpuSecondsHourly": 62000
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "generatedAt": "2024-06-01T00:00:00Z",
+  "metrics": [
+    {"key": "d1_retention", "label": "D1 Retention", "value": 0.46, "target": 0.45},
+    {"key": "quest_completion", "label": "Quest Completion", "value": 0.68, "target": 0.65},
+    {"key": "notification_open", "label": "Notification Open", "value": 0.18, "target": 0.20}
+  ]
+}
