@@ -271,24 +271,33 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    return ListView(
-      padding: EdgeInsets.all(tokens.spacing(6)),
-      children: [
-        _buildHeader(tokens),
-        SizedBox(height: tokens.spacing(8)),
-        _buildInviteCodeInput(tokens),
-        SizedBox(height: tokens.spacing(6)),
-        _buildDivider(tokens),
-        SizedBox(height: tokens.spacing(6)),
-        _buildRandomMatchForm(tokens),
-        SizedBox(height: tokens.spacing(8)),
-        MinqPrimaryButton(
-          label: 'Find a Partner',
-          onPressed:
-              () async =>
-                  ref.read(navigationUseCaseProvider).goToPairMatching(),
+    return SafeArea(
+      top: false,
+      bottom: true,
+      minimum: EdgeInsets.only(bottom: tokens.spacing(6)),
+      child: ListView(
+        padding: EdgeInsets.fromLTRB(
+          tokens.spacing(6),
+          tokens.spacing(6),
+          tokens.spacing(6),
+          tokens.spacing(4),
         ),
-      ],
+        children: [
+          _buildHeader(tokens),
+          SizedBox(height: tokens.spacing(8)),
+          _buildInviteCodeInput(tokens),
+          SizedBox(height: tokens.spacing(6)),
+          _buildDivider(tokens),
+          SizedBox(height: tokens.spacing(6)),
+          _buildRandomMatchForm(tokens),
+          SizedBox(height: tokens.spacing(8)),
+          MinqPrimaryButton(
+            label: 'マッチングを開始する',
+            onPressed: () async =>
+                ref.read(navigationUseCaseProvider).goToPairMatching(),
+          ),
+        ],
+      ),
     );
   }
 
