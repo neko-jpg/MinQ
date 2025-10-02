@@ -4,20 +4,67 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/domain/stats/stats_view_data.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
+import 'package:minq/presentation/controllers/stats_data_controller.dart';
+import 'package:minq/presentation/controllers/sync_status_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-class StatsScreen extends ConsumerWidget {
+class StatsScreen extends ConsumerStatefulWidget {
   const StatsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<StatsScreen> createState() => _StatsScreenState();
+}
+
+class _StatsScreenState extends ConsumerState<StatsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    ref.listen<SyncStatus>(syncStatusProvider, (previous, next) {
+      if (!mounted) return;
+      if (next.showBanner && next.bannerMessage != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.hideCurrentSnackBar();
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(next.bannerMessage!),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context)!;
-    final heatmapData = ref.watch(heatmapDataProvider);
-    final streakAsync = ref.watch(streakProvider);
+    final statsAsync = ref.watch(statsDataProvider);
+    final StatsViewData? data = statsAsync.valueOrNull;
+    final bool hasCachedContent = data?.hasCachedContent ?? false;
+    final bool isLoading = statsAsync.isLoading && !hasCachedContent;
+    final bool hasError = statsAsync.hasError && !hasCachedContent;
+    final bool isRefreshing = statsAsync.isLoading && hasCachedContent;
+    final StatsViewData content = data ?? StatsViewData.empty();
+
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (hasError) {
+      return Scaffold(
+        body: Center(child: Text(l10n.errorGeneric)),
+      );
+    }
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -37,41 +84,40 @@ class StatsScreen extends ConsumerWidget {
         builder: (context, constraints) {
           const maxWidth = 640.0;
 
-          return heatmapData.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(child: Text(l10n.errorGeneric)),
-            data: (data) {
-              Widget child = ListView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing(4),
-                  vertical: tokens.spacing(6),
+          Widget child = ListView(
+            padding: EdgeInsets.symmetric(
+              horizontal: tokens.spacing(4),
+              vertical: tokens.spacing(6),
+            ),
+            children: [
+              if (isRefreshing)
+                Padding(
+                  padding: EdgeInsets.only(bottom: tokens.spacing(3)),
+                  child: const LinearProgressIndicator(),
                 ),
-                children: [
-                  _buildStreakCard(context, tokens, streakAsync, l10n),
-                  SizedBox(height: tokens.spacing(6)),
-                  _buildGoalCard(context, ref, tokens),
-                  SizedBox(height: tokens.spacing(6)),
-                  _buildCompareProgressCard(context, ref, tokens),
-                  SizedBox(height: tokens.spacing(6)),
-                  _buildWeeklyProgressCard(context, ref, tokens),
-                  SizedBox(height: tokens.spacing(6)),
-                  _buildCalendarCard(context, ref, tokens, data),
-                ],
-              );
-
-              if (constraints.maxWidth > maxWidth) {
-                child = Align(
-                  alignment: Alignment.topCenter,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: maxWidth),
-                    child: child,
-                  ),
-                );
-              }
-
-              return child;
-            },
+              _buildStreakCard(context, tokens, content, l10n),
+              SizedBox(height: tokens.spacing(6)),
+              _buildGoalCard(context, tokens),
+              SizedBox(height: tokens.spacing(6)),
+              _buildCompareProgressCard(context, ref, tokens),
+              SizedBox(height: tokens.spacing(6)),
+              _buildWeeklyProgressCard(context, ref, tokens),
+              SizedBox(height: tokens.spacing(6)),
+              _buildCalendarCard(context, ref, tokens, content.heatmap),
+            ],
           );
+
+          if (constraints.maxWidth > maxWidth) {
+            child = Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: maxWidth),
+                child: child,
+              ),
+            );
+          }
+
+          return child;
         },
       ),
     );
@@ -80,48 +126,15 @@ class StatsScreen extends ConsumerWidget {
 Widget _buildStreakCard(
   BuildContext context,
   MinqTheme tokens,
-  AsyncValue<int> streakAsync,
+  StatsViewData data,
   AppLocalizations l10n,
 ) {
-  Widget buildContent(int streak) {
-    final streakText = '$streak';
-    final streakDescription = l10n.streakDayCount(streak);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          '現在の連続日数',
-          style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
-        ),
-        SizedBox(height: tokens.spacing(2)),
-        Semantics(
-          label: streakDescription,
-          value: streakDescription,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.local_fire_department,
-                size: tokens.spacing(12),
-                color: tokens.brandPrimary,
-              ),
-              SizedBox(width: tokens.spacing(2)),
-              Text(
-                streakText,
-                style: tokens.typeScale.h1.copyWith(color: tokens.textPrimary),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: tokens.spacing(2)),
-        Text(
-          streakDescription,
-          style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
-        ),
-      ],
-    );
-  }
+  final int streak = data.streak;
+  final bool hasStreak = streak > 0;
+  final String streakText = '$streak';
+  final String streakDescription = hasStreak
+      ? l10n.streakDayCount(streak)
+      : 'まだ連続記録がありません';
 
   return Card(
     color: tokens.surface,
@@ -132,31 +145,49 @@ Widget _buildStreakCard(
     elevation: 0,
     child: Padding(
       padding: EdgeInsets.all(tokens.spacing(6)),
-      child: streakAsync.when(
-        data: buildContent,
-        loading: () => SizedBox(
-          height: tokens.spacing(20),
-          child: const Center(child: CircularProgressIndicator()),
-        ),
-        error: (error, _) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.error_outline, color: tokens.accentError),
-            SizedBox(height: tokens.spacing(2)),
-            Text(
-              '連続日数を取得できませんでした',
-              style:
-                  tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
-              textAlign: TextAlign.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            '現在の連続日数',
+            style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          SizedBox(height: tokens.spacing(2)),
+          Semantics(
+            label: streakDescription,
+            value: streakDescription,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.local_fire_department,
+                  size: tokens.spacing(12),
+                  color: hasStreak ? tokens.brandPrimary : tokens.textMuted,
+                ),
+                SizedBox(width: tokens.spacing(2)),
+                Text(
+                  streakText,
+                  style: tokens.typeScale.h1.copyWith(color: tokens.textPrimary),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: tokens.spacing(2)),
+          Text(
+            hasStreak
+                ? streakDescription
+                : '今日の最初の習慣を記録して連続日数をスタートしましょう。',
+            style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     ),
   );
 }
 
-Widget _buildGoalCard(BuildContext context, WidgetRef ref, MinqTheme tokens) {
+Widget _buildGoalCard(BuildContext context, MinqTheme tokens) {
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(

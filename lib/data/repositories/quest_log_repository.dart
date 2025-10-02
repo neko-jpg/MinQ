@@ -47,6 +47,14 @@ class QuestLogRepository {
     });
   }
 
+  Future<bool> hasUnsyncedLogs(String uid) async {
+    return _isar.questLogs
+        .filter()
+        .uidEqualTo(uid)
+        .syncedEqualTo(false)
+        .isNotEmpty();
+  }
+
   Future<int> calculateStreak(String uid) async {
     final logs = await getLogsForUser(uid);
     if (logs.isEmpty) return 0;

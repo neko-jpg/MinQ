@@ -14,6 +14,7 @@ import 'package:minq/data/repositories/pair_repository.dart';
 import 'package:minq/data/repositories/quest_log_repository.dart';
 import 'package:minq/data/repositories/quest_repository.dart';
 import 'package:minq/data/repositories/user_repository.dart';
+import 'package:minq/data/services/crash_recovery_store.dart';
 import 'package:minq/data/services/firestore_sync_service.dart';
 import 'package:minq/data/services/isar_service.dart';
 import 'package:minq/data/services/notification_service.dart';
@@ -27,6 +28,8 @@ import 'package:minq/data/services/analytics_service.dart';
 import 'package:minq/data/services/image_moderation_service.dart';
 import 'package:minq/data/services/deep_link_service.dart';
 import 'package:minq/data/services/in_app_review_service.dart';
+import 'package:minq/data/services/connectivity_service.dart';
+import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/log/quest_log.dart';
@@ -73,6 +76,23 @@ final photoStorageServiceProvider = Provider<PhotoStorageService>((ref) {
 
 final localPreferencesServiceProvider =
     Provider<LocalPreferencesService>((_) => LocalPreferencesService());
+
+final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
+  return ConnectivityService();
+});
+
+final crashRecoveryStoreProvider = Provider<CrashRecoveryStore>((ref) {
+  throw StateError('CrashRecoveryStore is not initialised');
+});
+
+final operationsMetricsServiceProvider = Provider<OperationsMetricsService>((ref) {
+  throw StateError('OperationsMetricsService is not initialised');
+});
+
+final operationsSnapshotProvider = FutureProvider<OperationsSnapshot>((ref) async {
+  final service = ref.watch(operationsMetricsServiceProvider);
+  return service.loadSnapshot();
+});
 
 final marketingAttributionServiceProvider =
     Provider<MarketingAttributionService>((ref) {
