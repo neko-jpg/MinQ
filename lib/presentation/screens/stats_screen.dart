@@ -279,7 +279,11 @@ class _RingMetric {
   final double? delta;
 }
 
-Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme tokens) {
+Widget _buildCompareProgressCard(
+  BuildContext context,
+  WidgetRef ref,
+  MinqTheme tokens,
+) {
   final navigation = ref.read(navigationUseCaseProvider);
   final entries = <_ProgressEntry>[
     _ProgressEntry(
@@ -314,59 +318,73 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
     );
   }
 
-  return Card(
-    color: tokens.surface,
-    shape: RoundedRectangleBorder(
-      borderRadius: tokens.cornerXLarge(),
-      side: BorderSide(color: tokens.border),
-    ),
-    elevation: 0,
-    child: Padding(
-      padding: EdgeInsets.all(tokens.spacing(4)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('進捗を比較する', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
-          SizedBox(height: tokens.spacing(3)),
-          Wrap(
-            spacing: tokens.spacing(3),
-            runSpacing: tokens.spacing(2),
-            children: [
-              for (final entry in entries)
-                Semantics(
-                  container: true,
-                  label: entry.semanticsLabel,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _LegendBadge(color: entry.color, icon: entry.icon),
-                      SizedBox(width: tokens.spacing(1.5)),
-                      Text(
-                        '${entry.label}（${entry.unit}）',
-                        style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-          SizedBox(height: tokens.spacing(4)),
-          for (int i = 0; i < entries.length; i++) ...[
-            _buildProgressBar(
-              tokens,
-              entries[i],
-              isPrimary: i == 0,
-              delta: i == 0 ? deltaFromPrevious : null,
+  return RepaintBoundary(
+    child: Card(
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: tokens.cornerXLarge(),
+        side: BorderSide(color: tokens.border),
+      ),
+      elevation: 0,
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(4)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '進捗を比較する',
+              style: tokens.titleLarge.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            if (i < entries.length - 1) SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing(3)),
+            Wrap(
+              spacing: tokens.spacing(3),
+              runSpacing: tokens.spacing(2),
+              children: [
+                for (final entry in entries)
+                  Semantics(
+                    container: true,
+                    label: entry.semanticsLabel,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _LegendBadge(color: entry.color, icon: entry.icon),
+                        SizedBox(width: tokens.spacing(1.5)),
+                        Text(
+                          '${entry.label}（${entry.unit}）',
+                          style:
+                              tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            SizedBox(height: tokens.spacing(4)),
+            for (int i = 0; i < entries.length; i++) ...[
+              _buildProgressBar(
+                tokens,
+                entries[i],
+                isPrimary: i == 0,
+                delta: i == 0 ? deltaFromPrevious : null,
+              ),
+              if (i < entries.length - 1)
+                SizedBox(height: tokens.spacing(4)),
+            ],
           ],
-        ],
+        ),
       ),
     ),
   );
 }
 
-Widget _buildWeeklyProgressCard(BuildContext context, WidgetRef ref, MinqTheme tokens) {
+Widget _buildWeeklyProgressCard(
+  BuildContext context,
+  WidgetRef ref,
+  MinqTheme tokens,
+) {
   final navigation = ref.read(navigationUseCaseProvider);
   final hasProgress = true; // Replace with actual data when available
 
@@ -385,32 +403,40 @@ Widget _buildWeeklyProgressCard(BuildContext context, WidgetRef ref, MinqTheme t
     const _RingMetric(label: '平均時間', value: 32, unit: '分', progress: 0.75, delta: 2),
   ];
 
-  return Card(
-    color: tokens.surface,
-    shape: RoundedRectangleBorder(
-      borderRadius: tokens.cornerXLarge(),
-      side: BorderSide(color: tokens.border),
-    ),
-    elevation: 0,
-    child: Padding(
-      padding: EdgeInsets.all(tokens.spacing(4)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('週間の進捗', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
-          SizedBox(height: tokens.spacing(4)),
-          Row(
-            children: [
-              for (final metric in metrics)
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: tokens.spacing(2)),
-                    child: _buildProgressRing(tokens, metric),
+  return RepaintBoundary(
+    child: Card(
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: tokens.cornerXLarge(),
+        side: BorderSide(color: tokens.border),
+      ),
+      elevation: 0,
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(4)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '週間の進捗',
+              style: tokens.titleLarge.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: tokens.spacing(4)),
+            Row(
+              children: [
+                for (final metric in metrics)
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(2)),
+                      child: _buildProgressRing(tokens, metric),
+                    ),
                   ),
-                ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -641,60 +667,70 @@ Widget _buildCalendarCard(
     );
   }
 
-  return Card(
-    color: tokens.surface,
-    shape: RoundedRectangleBorder(
-      borderRadius: tokens.cornerXLarge(),
-      side: BorderSide(color: tokens.border),
-    ),
-    elevation: 0,
-    child: Padding(
-      padding: EdgeInsets.all(tokens.spacing(4)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(monthName, style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
-              Row(
-                children: [
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_left)),
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_right)),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: tokens.spacing(4)),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
-            itemCount: daysInMonth + weekdayOfFirstDay - 1,
-            itemBuilder: (context, index) {
-              if (index < weekdayOfFirstDay - 1) {
-                return const SizedBox.shrink();
-              }
-              final day = index - (weekdayOfFirstDay - 2);
-              final date = DateTime(now.year, now.month, day);
-              final value = data[DateUtils.dateOnly(date)] ?? 0;
-              final isToday = DateUtils.isSameDay(date, now);
+  return RepaintBoundary(
+    child: Card(
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: tokens.cornerXLarge(),
+        side: BorderSide(color: tokens.border),
+      ),
+      elevation: 0,
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(4)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  monthName,
+                  style: tokens.titleLarge.copyWith(
+                    color: tokens.textPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  children: [
+                    IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_left)),
+                    IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_right)),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: tokens.spacing(4)),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
+              itemCount: daysInMonth + weekdayOfFirstDay - 1,
+              itemBuilder: (context, index) {
+                if (index < weekdayOfFirstDay - 1) {
+                  return const SizedBox.shrink();
+                }
+                final day = index - (weekdayOfFirstDay - 2);
+                final date = DateTime(now.year, now.month, day);
+                final value = data[DateUtils.dateOnly(date)] ?? 0;
+                final isToday = DateUtils.isSameDay(date, now);
 
-              return Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: value > 0 ? tokens.brandPrimary.withOpacity(value / 5.0) : Colors.transparent,
-                  shape: BoxShape.circle,
-                  border: isToday ? Border.all(color: tokens.brandPrimary, width: 2) : null,
-                ),
-                child: Text(
-                  '$day',
-                  style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
-                ),
-              );
-            },
-          ),
-        ],
+                return Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: value > 0
+                        ? tokens.brandPrimary.withOpacity((value.clamp(0, 5)) / 5.0)
+                        : Colors.transparent,
+                    shape: BoxShape.circle,
+                    border: isToday ? Border.all(color: tokens.brandPrimary, width: 2) : null,
+                  ),
+                  child: Text(
+                    '$day',
+                    style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     ),
   );

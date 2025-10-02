@@ -1,11 +1,15 @@
 import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:minq/data/providers.dart';
+import 'package:minq/domain/pair/pair.dart';
+import 'package:minq/presentation/common/feedback/feedback_manager.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -27,6 +31,10 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
   late final AnimationController _controller;
   String? _foundPairId;
   Timer? _pairingTimer;
+  Future<Pair?>? _pairPreviewFuture;
+  bool _hasShownMatchToast = false;
+  bool _hasShownFailure = false;
+  bool _hasSubscribedToPair = false;
 
   @override
   void initState() {
@@ -44,10 +52,24 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
       _status = PairMatchingStatus.searching;
     });
 
+    _hasShownFailure = false;
+    _hasShownMatchToast = false;
+    _hasSubscribedToPair = false;
+
     _pairingTimer?.cancel();
     _pairingTimer = Timer(const Duration(seconds: 30), () {
       if (mounted) {
         setState(() => _status = PairMatchingStatus.timeout);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          FeedbackMessenger.showErrorSnackBar(
+            context,
+            '一定時間内にマッチングできませんでした。',
+            actionLabel: '再試行',
+            onAction: _startPairing,
+          );
+          FeedbackManager.warning();
+        });
       }
     });
 
@@ -78,11 +100,42 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
       setState(() {
         if (pairId != null) {
           _foundPairId = pairId;
+          _pairPreviewFuture = repo.getPairById(pairId);
           _status = PairMatchingStatus.matchFound;
         } else {
+          _pairPreviewFuture = null;
           _status = PairMatchingStatus.noMatch;
         }
       });
+
+      if (pairId != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (!mounted) return;
+          if (!_hasShownMatchToast) {
+            FeedbackMessenger.showSuccessToast(
+              context,
+              'バディが見つかりました！',
+            );
+            await FeedbackManager.achievementUnlocked();
+            _hasShownMatchToast = true;
+          }
+          if (!_hasSubscribedToPair) {
+            await _subscribeToNotifications(pairId);
+            _hasSubscribedToPair = true;
+          }
+        });
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || _hasShownFailure) return;
+          FeedbackMessenger.showErrorSnackBar(
+            context,
+            '現在マッチングできませんでした。',
+            actionLabel: '再試行する',
+            onAction: _startPairing,
+          );
+          _hasShownFailure = true;
+        });
+      }
     }
   }
 
@@ -99,8 +152,22 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     }
   }
 
-  Future<void> _subscribeToNotifications() async {
-    // ... (existing implementation)
+  Future<void> _subscribeToNotifications(String pairId) async {
+    try {
+      final messaging = FirebaseMessaging.instance;
+      await messaging.requestPermission();
+      await messaging.subscribeToTopic('pair_$pairId');
+
+      final uid = ref.read(uidProvider);
+      if (uid != null) {
+        await messaging.subscribeToTopic('user_$uid');
+      }
+
+      await ref.read(notificationServiceProvider).init();
+    } catch (error, stackTrace) {
+      debugPrint('Failed to subscribe to pair notifications: $error');
+      debugPrintStack(stackTrace: stackTrace);
+    }
   }
 
   @override
@@ -121,9 +188,12 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           duration: const Duration(milliseconds: 500),
           child: switch (_status) {
             PairMatchingStatus.searching => _buildSearchingUI(context, tokens, l10n),
-            PairMatchingStatus.matchFound => _buildMatchFoundUI(context, tokens, l10n),
-            PairMatchingStatus.noMatch => _buildNoMatchUI(context, tokens, l10n),
-            PairMatchingStatus.confirmed => _buildConfirmedUI(context, tokens, l10n),
+            PairMatchingStatus.matchFound =>
+                _buildMatchFoundUI(context, tokens, l10n),
+            PairMatchingStatus.noMatch =>
+                _buildNoMatchUI(context, tokens, l10n),
+            PairMatchingStatus.confirmed =>
+                _buildConfirmedUI(context, tokens, l10n),
             PairMatchingStatus.timeout => _buildTimeoutUI(context, tokens, l10n),
           },
         ),
@@ -239,13 +309,111 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
   }
 
   Widget _buildMatchFoundUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+    final pairId = _foundPairId;
+
     return Padding(
       key: const ValueKey('matchFound'),
       padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ... (existing implementation, can be localized later if needed)
+          const Spacer(),
+          Icon(Icons.emoji_events, color: tokens.brandPrimary, size: 72),
+          const SizedBox(height: 24),
+          Text(
+            'バディが見つかりました！',
+            textAlign: TextAlign.center,
+            style: tokens.titleLarge.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            '相手に挨拶を送り、目標を共有しましょう。',
+            textAlign: TextAlign.center,
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          const SizedBox(height: 24),
+          Card(
+            color: tokens.surface,
+            elevation: 0,
+            shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
+            child: Padding(
+              padding: EdgeInsets.all(tokens.spacing(4)),
+              child: FutureBuilder<Pair?>(
+                future: _pairPreviewFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const SizedBox(
+                      height: 72,
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  if (!snapshot.hasData || snapshot.data == null) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'ペア情報を取得できませんでした',
+                          style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'しばらくしてからもう一度お試しください。',
+                          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                        ),
+                      ],
+                    );
+                  }
+
+                  final pair = snapshot.data!;
+                  final joinedAt = pair.createdAt;
+                  final formattedDate =
+                      '${joinedAt.year}/${joinedAt.month.toString().padLeft(2, '0')}/${joinedAt.day.toString().padLeft(2, '0')}';
+                  final partnerCount = pair.members.length;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildInfoRow(tokens, 'カテゴリ', pair.category),
+                      SizedBox(height: tokens.spacing(2)),
+                      _buildInfoRow(tokens, 'メンバー数', '$partnerCount'),
+                      SizedBox(height: tokens.spacing(2)),
+                      _buildInfoRow(tokens, 'ペア作成日', formattedDate),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+          MinqPrimaryButton(
+            label: 'チャットを開く',
+            icon: Icons.chat_bubble_outline,
+            onPressed: () async {
+              FeedbackManager.selected();
+              ref.read(navigationUseCaseProvider).goToPair();
+            },
+          ),
+          const SizedBox(height: 12),
+          MinqSecondaryButton(
+            label: 'ホームに戻る',
+            icon: Icons.home_outlined,
+            onPressed: () async {
+              FeedbackManager.selected();
+              ref.read(navigationUseCaseProvider).goHome();
+            },
+          ),
+          const Spacer(),
+          if (pairId != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Text(
+                'ペアID: $pairId',
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+              ),
+            ),
         ],
       ),
     );
@@ -258,7 +426,41 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ... (existing implementation, can be localized later if needed)
+          const Spacer(),
+          Icon(Icons.sentiment_dissatisfied, size: 72, color: tokens.textMuted),
+          const SizedBox(height: 24),
+          Text(
+            '現在マッチング中のユーザーが見つかりませんでした',
+            textAlign: TextAlign.center,
+            style: tokens.titleLarge.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            '数分後に再試行するか、招待コードで参加してみましょう。',
+            textAlign: TextAlign.center,
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          const Spacer(),
+          MinqPrimaryButton(
+            label: 'もう一度探す',
+            icon: Icons.refresh,
+            onPressed: () async {
+              FeedbackManager.buttonPressed();
+              _startPairing();
+            },
+          ),
+          const SizedBox(height: 12),
+          MinqTextButton(
+            label: 'ホームに戻る',
+            onPressed: () async {
+              FeedbackManager.selected();
+              ref.read(navigationUseCaseProvider).goHome();
+            },
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );
@@ -271,7 +473,44 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ... (existing implementation, can be localized later if needed)
+          const Spacer(),
+          Icon(Icons.verified_rounded, color: tokens.brandPrimary, size: 72),
+          const SizedBox(height: 24),
+          Text(
+            'マッチングを確定しました',
+            textAlign: TextAlign.center,
+            style: tokens.titleLarge.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'ペアチャットで自己紹介を送り、目標や活動時間を共有しましょう。',
+            textAlign: TextAlign.center,
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          const Spacer(),
+          MinqPrimaryButton(
+            label: 'ペアチャットを開く',
+            icon: Icons.message_outlined,
+            onPressed: () async {
+              FeedbackManager.buttonPressed();
+              ref.read(navigationUseCaseProvider).goToPair();
+            },
+          ),
+          const SizedBox(height: 12),
+          MinqSecondaryButton(
+            label: l10n.cancel,
+            icon: Icons.close,
+            onPressed: () async {
+              FeedbackManager.selected();
+              if (context.mounted) {
+                context.pop();
+              }
+            },
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );

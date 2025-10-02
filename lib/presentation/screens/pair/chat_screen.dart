@@ -191,11 +191,25 @@ class _MessageBubble extends ConsumerWidget {
     if (message.imageUrl != null) {
       messageContent = ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: Image.network(
-          message.imageUrl!,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return const Center(child: CircularProgressIndicator());
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final targetWidth = (constraints.maxWidth.isFinite
+                    ? constraints.maxWidth
+                    : MediaQuery.of(context).size.width * 0.6)
+                .clamp(0.0, 1024.0);
+            final cacheWidth = targetWidth.ceil().clamp(1, 2048).toInt();
+            final cacheHeight = (targetWidth * 1.2).ceil().clamp(1, 2048).toInt();
+            return Image.network(
+              message.imageUrl!,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.medium,
+              cacheWidth: cacheWidth,
+              cacheHeight: cacheHeight,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(child: CircularProgressIndicator());
+              },
+            );
           },
         ),
       );
