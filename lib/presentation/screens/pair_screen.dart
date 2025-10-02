@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/pair/pair.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -230,8 +231,9 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
   Future<void> _joinWithInvite() async {
     final code = _inviteCodeController.text.trim();
     if (code.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter an invite code.')),
+      FeedbackMessenger.showErrorSnackBar(
+        context,
+        '招待コードを入力してください。',
       );
       return;
     }
@@ -243,9 +245,10 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         .read(pairRepositoryProvider)!
         .joinByInvitation(code, uid);
     if (mounted && pairId == null) {
-      ScaffoldMessenger.of(
+      FeedbackMessenger.showErrorSnackBar(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Invalid invite code.')));
+        '招待コードが無効です。',
+      );
     }
   }
 
@@ -258,12 +261,9 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         .read(pairRepositoryProvider)!
         .requestRandomPair(uid, _selectedCategory);
     if (mounted && pairId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'No partner found yet. You have been added to the queue.',
-          ),
-        ),
+      FeedbackMessenger.showInfoToast(
+        context,
+        '現在マッチング中です。順番をお待ちください。',
       );
     }
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/presentation/common/feedback/feedback_manager.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:minq/data/providers.dart';
@@ -28,13 +30,14 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
     if (mounted) {
       // Navigate to a logged-out state, e.g., the login screen
       // ref.read(navigationUseCaseProvider).goToLogin();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('アカウント削除処理を開始しました。')),
+      FeedbackMessenger.showSuccessToast(
+        context,
+        'アカウント削除処理を開始しました。',
       );
     }
 
     // In a real app, you would navigate away. For now, just pop.
-    if(mounted) {
+    if (mounted) {
       Navigator.of(context).pop();
       Navigator.of(context).pop();
     }
@@ -97,7 +100,20 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: _isConfirmed && !_isDeleting ? _handleDelete : null,
+              onPressed: _isConfirmed && !_isDeleting
+                  ? () {
+                      FeedbackMessenger.showInfoToast(
+                        context,
+                        '安全のため、ボタンを長押しして確定してください。',
+                      );
+                    }
+                  : null,
+              onLongPress: _isConfirmed && !_isDeleting
+                  ? () {
+                      FeedbackManager.warning();
+                      _handleDelete();
+                    }
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: tokens.accentError,
                 foregroundColor: Colors.white,
@@ -113,7 +129,7 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
                         color: Colors.white,
                       ),
                     )
-                  : Text(l10n.deleteMyAccountButton),
+                  : const Text('長押しでアカウントを削除する'),
             ),
             const Spacer(flex: 1),
           ],

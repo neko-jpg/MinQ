@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -30,7 +31,10 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
     ];
     await ref.read(notificationServiceProvider).scheduleRecurringReminders(times);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('通知時間を保存しました！')));
+      FeedbackMessenger.showSuccessToast(
+        context,
+        '通知時間を保存しました！',
+      );
       context.pop();
     }
   }
