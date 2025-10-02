@@ -27,6 +27,7 @@ import 'package:minq/presentation/common/sharing/social_sharing_demo.dart';
 import 'package:minq/presentation/screens/account_deletion_screen.dart';
 import 'package:minq/presentation/screens/profile_setting_screen.dart';
 import 'package:minq/presentation/screens/profile_setting_screen.dart';
+import 'package:minq/presentation/screens/quest_detail_screen.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -62,6 +63,7 @@ class AppRoutes {
   static const policy = '/policy/:id';
   static const support = '/support';
   static const createQuest = '/quests/create';
+  static const questDetail = '/quest/:questId';
   static const notificationSettings = '/settings/notifications';
   static const profileSettings = '/settings/profile';
   static const pairMatching = '/pair/matching';
@@ -191,6 +193,19 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
       ),
       GoRoute(
+        path: AppRoutes.questDetail,
+        pageBuilder: (context, state) {
+          final questId =
+              int.tryParse(state.pathParameters['questId'] ?? '') ?? 0;
+          return buildPageWithTransition<void>(
+            context: context,
+            state: state,
+            child: QuestDetailScreen(questId: questId),
+            transitionType: SharedAxisTransitionType.vertical,
+          );
+        },
+      ),
+      GoRoute(
         path: AppRoutes.notificationSettings,
         pageBuilder:
             (context, state) => buildPageWithTransition<void>(
@@ -293,6 +308,9 @@ class NavigationUseCase {
       _router.go(AppRoutes.policy.replaceFirst(':id', documentId.name));
   void goToSupport() => _router.go(AppRoutes.support);
   void goToCreateQuest() => _router.go(AppRoutes.createQuest);
+  void goToQuestDetail(int questId) =>
+      _router.go(AppRoutes.questDetail
+          .replaceFirst(':questId', questId.toString()));
   void goToNotificationSettings() => _router.go(AppRoutes.notificationSettings);
   void goToProfileSettings() => _router.go(AppRoutes.profileSettings);
   void goToAccountDeletion() => _router.go(AppRoutes.accountDeletion);

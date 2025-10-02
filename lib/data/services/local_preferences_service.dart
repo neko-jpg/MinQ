@@ -22,6 +22,10 @@ class LocalPreferencesService {
   static const String _utmCapturedAtKey = 'utm_captured_at_v1';
   static const String _cloudBackupKey = 'cloud_backup_enabled_v1';
   static const String _dummyDataModeKey = 'dummy_data_mode_enabled_v1';
+  static const String _notificationEducationKey =
+      'notification_permission_education_v1';
+  static const String _inAppReviewPromptedAtKey =
+      'in_app_review_prompted_at_v1';
 
   final Future<SharedPreferences> _prefsFuture;
   final NowProvider _now;
@@ -34,6 +38,33 @@ class LocalPreferencesService {
   Future<void> setDummyDataMode(bool enabled) async {
     final prefs = await _prefsFuture;
     await prefs.setBool(_dummyDataModeKey, enabled);
+  }
+
+  Future<bool> hasShownNotificationEducation() async {
+    final prefs = await _prefsFuture;
+    return prefs.getBool(_notificationEducationKey) ?? false;
+  }
+
+  Future<void> markNotificationEducationShown() async {
+    final prefs = await _prefsFuture;
+    await prefs.setBool(_notificationEducationKey, true);
+  }
+
+  Future<DateTime?> lastInAppReviewPromptedAt() async {
+    final prefs = await _prefsFuture;
+    final millis = prefs.getInt(_inAppReviewPromptedAtKey);
+    if (millis == null || millis <= 0) {
+      return null;
+    }
+    return DateTime.fromMillisecondsSinceEpoch(millis, isUtc: true).toLocal();
+  }
+
+  Future<void> recordInAppReviewPrompt(DateTime when) async {
+    final prefs = await _prefsFuture;
+    await prefs.setInt(
+      _inAppReviewPromptedAtKey,
+      when.toUtc().millisecondsSinceEpoch,
+    );
   }
 
   Future<bool> hasSeenPairGuidelines() async {

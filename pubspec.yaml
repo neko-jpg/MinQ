@@ -65,6 +65,8 @@ dependencies:
   animations: any
   flutter_staggered_animations: any
   share_plus: any
+  in_app_review: any
+  uni_links: any
 
   # Code Generation
   freezed_annotation: any

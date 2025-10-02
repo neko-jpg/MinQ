@@ -8,6 +8,7 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 
 class QuestsScreen extends ConsumerStatefulWidget {
   const QuestsScreen({super.key});
@@ -218,6 +219,12 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                   quest: questsToShow[index],
                   categoryLabel:
                       _localizeCategoryLabel(l10n, questsToShow[index].category),
+                  onTap: () => context.push(
+                    AppRoutes.questDetail.replaceFirst(
+                      ':questId',
+                      questsToShow[index].id.toString(),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -280,10 +287,15 @@ class _QuestsSkeleton extends StatelessWidget {
 }
 
 class _QuestCard extends StatelessWidget {
-  const _QuestCard({required this.quest, required this.categoryLabel});
+  const _QuestCard({
+    required this.quest,
+    required this.categoryLabel,
+    required this.onTap,
+  });
 
   final minq_quest.Quest quest;
   final String categoryLabel;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -294,40 +306,44 @@ class _QuestCard extends StatelessWidget {
       shadowColor: tokens.background.withOpacity(0.1),
       color: tokens.surface,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
-      child: Padding(
-        padding: EdgeInsets.all(tokens.spacing(4)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Icon(iconDataForKey(quest.iconKey), color: tokens.brandPrimary, size: tokens.spacing(6)),
-                SizedBox(width: tokens.spacing(3)),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        quest.title,
-                        style: tokens.bodyLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.w600),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                      ),
-                      SizedBox(height: tokens.spacing(1)),
-                      Text(
-                        categoryLabel,
-                        style: tokens.bodySmall.copyWith(color: tokens.textMuted),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: tokens.cornerLarge(),
+        child: Padding(
+          padding: EdgeInsets.all(tokens.spacing(4)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Icon(iconDataForKey(quest.iconKey), color: tokens.brandPrimary, size: tokens.spacing(6)),
+                  SizedBox(width: tokens.spacing(3)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          quest.title,
+                          style: tokens.bodyLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.w600),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                        SizedBox(height: tokens.spacing(1)),
+                        Text(
+                          categoryLabel,
+                          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
