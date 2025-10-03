@@ -142,7 +142,23 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   final Curve easeInOutQuart;
   final Curve bounceOut;
 
+  // Additional computed properties
+  Color get surfaceVariant => brightness == Brightness.light
+      ? surface.withOpacity(0.8)
+      : Color.lerp(surface, Colors.white, 0.05)!;
+  
+  Color get onPrimary => brightness == Brightness.light
+      ? Colors.white
+      : Colors.black;
+  
+  TextStyle get labelMedium => bodyMedium.copyWith(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+  );
+
   double spacing(double units) => spaceBase * units;
+  
+  double radius(double units) => radiusSmall * units;
 
   BorderRadius cornerSmall() => BorderRadius.circular(radiusSmall);
   BorderRadius cornerMedium() => BorderRadius.circular(radiusMedium);

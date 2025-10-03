@@ -82,7 +82,7 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
         ..uid = uid
         ..questId = questId
         ..ts = DateTime.now().toUtc()
-        ..proofType = proofType.name
+        ..proofType = proofType
         ..proofValue = proofValue ?? ''
         ..synced = false;
 
@@ -116,33 +116,34 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
               ),
         );
 
-        final prefs = _ref.read(localPreferencesServiceProvider);
-        if (await prefs.isLiveActivityEnabled()) {
-          final liveActivityService = _ref.read(liveActivityServiceProvider);
-          await liveActivityService.startForQuest(
-            questId: quest.id.toString(),
-            title: quest.title,
-            completed: 1,
-            total: 1,
-          );
-          await liveActivityService.endForQuest(quest.id.toString());
-        }
+        // TODO: Implement live activity, wearable sync, and fitness sync
+        // final prefs = _ref.read(localPreferencesServiceProvider);
+        // if (await prefs.isLiveActivityEnabled()) {
+        //   final liveActivityService = _ref.read(liveActivityServiceProvider);
+        //   await liveActivityService.startForQuest(
+        //     questId: quest.id.toString(),
+        //     title: quest.title,
+        //     completed: 1,
+        //     total: 1,
+        //   );
+        //   await liveActivityService.endForQuest(quest.id.toString());
+        // }
 
-        if (await prefs.isWearableSyncEnabled()) {
-          final wearableService = _ref.read(wearableSyncServiceProvider);
-          final quests = await questRepository.getAllQuests();
-          await wearableService.syncQuests(userId: uid, quests: quests);
-        }
+        // if (await prefs.isWearableSyncEnabled()) {
+        //   final wearableService = _ref.read(wearableSyncServiceProvider);
+        //   final quests = await questRepository.getAllQuests();
+        //   await wearableService.syncQuests(userId: uid, quests: quests);
+        // }
 
-        if (await prefs.isFitnessAutoLoggingEnabled()) {
-          final fitnessService = _ref.read(fitnessSyncServiceProvider);
-          final snapshot = await fitnessService.fetchDailySteps(DateTime.now());
-          await fitnessService.syncHabit(
-            habitId: questId.toString(),
-            completionDate: DateTime.now(),
-            steps: snapshot.steps,
-          );
-        }
+        // if (await prefs.isFitnessAutoLoggingEnabled()) {
+        //   final fitnessService = _ref.read(fitnessSyncServiceProvider);
+        //   final snapshot = await fitnessService.fetchDailySteps(DateTime.now());
+        //   await fitnessService.syncHabit(
+        //     habitId: questId.toString(),
+        //     completionDate: DateTime.now(),
+        //     steps: snapshot.steps,
+        //   );
+        // }
       }
 
       state = const AsyncValue.data(null);

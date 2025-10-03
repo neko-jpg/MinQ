@@ -358,7 +358,8 @@ class QuestRepository {
   Future<void> reorderQuests(List<Quest> quests) async {
     await _isar.writeTxn(() async {
       for (int i = 0; i < quests.length; i++) {
-        quests[i].sortOrder = i;
+        // TODO: Add sortOrder field to Quest model
+        // quests[i].sortOrder = i;
         await _isar.quests.put(quests[i]);
       }
     });

@@ -87,8 +87,9 @@ dependencies:
   crypto: any
   just_audio: any
   speech_to_text: any
-  miinq_integrations:
-    path: packages/integrations
+  # TODO: Fix integrations package
+  # miinq_integrations:
+  #   path: packages/integrations
   equatable: any
 
   # Code Generation
@@ -105,6 +106,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
 
   # Code Generation
   build_runner: any
@@ -117,6 +120,12 @@ dev_dependencies:
   mocktail: ^1.0.4
   very_good_analysis: ^6.0.0
   import_lint: ^1.0.1
+
+
+
+dependency_overrides:
+  jni:
+    path: packages/vendor/jni
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -159,4 +168,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
 

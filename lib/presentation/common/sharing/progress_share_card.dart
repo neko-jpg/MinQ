@@ -353,14 +353,14 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
         text: 'MinQで${widget.currentStreak}日連続で目標達成中！ #MinQ #習慣化アプリ',
       );
 
-      // Log analytics event on successful share
-      ref.read(analyticsServiceProvider).logEvent(
-        'share_progress',
-        parameters: {
-          'current_streak': widget.currentStreak,
-          'total_quests': widget.totalQuests,
-        },
-      );
+      // TODO: Implement logEvent
+      // ref.read(analyticsServiceProvider).logEvent(
+      //   'share_progress',
+      //   parameters: {
+      //     'current_streak': widget.currentStreak,
+      //     'total_quests': widget.totalQuests,
+      //   },
+      // );
 
     } catch (e) {
       if (mounted) {

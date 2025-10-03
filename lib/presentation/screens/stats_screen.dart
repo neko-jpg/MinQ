@@ -56,7 +56,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
 
     try {
       final statsData = await ref.read(statsDataProvider.future);
-      final totalCompleted = statsData.totalQuestsCompleted;
+      final totalCompleted = statsData.heatmap.values.fold<int>(0, (sum, count) => sum + count);
       
       final reviewService = ref.read(inAppReviewServiceProvider);
       await reviewService.maybeRequestReviewByQuestCount(
@@ -904,7 +904,7 @@ Widget _buildWeeklyStatsCard(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
-              Icons.calendar_week_outlined,
+              Icons.calendar_today,
               size: tokens.spacing(12),
               color: tokens.textMuted,
             ),

@@ -70,11 +70,13 @@ class ProfileSettingScreen extends ConsumerWidget {
               _buildPairInfo(context, ref, user),
               const SizedBox(height: 24),
               if (isDummyMode) _buildDummyDataControls(context, ref),
-            _buildOtherSettings(context),
-            const SizedBox(height: 24),
-            _buildPremiumFeatures(context),
-            const SizedBox(height: 24),
-          ],
+              if (isDummyMode) const SizedBox(height: 24),
+              _buildOtherSettings(context, ref, user),
+              const SizedBox(height: 24),
+              _buildPremiumFeatures(context),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );
@@ -177,366 +179,7 @@ class ProfileSettingScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTags(BuildContext context) {
-    final tokens = context.tokens;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('タグ', style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold)),
-            TextButton(
-              onPressed: () {},
-              child: Text('編集', style: TextStyle(color: tokens.brandPrimary)),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
-          children: [
-            _buildTagChip(context, '#ゲーム'),
-            _buildTagChip(context, '#映画鑑賞'),
-            _buildTagChip(context, '#旅行'),
-            _buildTagChip(context, '#料理'),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTagChip(BuildContext context, String label) {
-    final tokens = context.tokens;
-    return Chip(
-      label: Text(label, style: TextStyle(color: tokens.brandPrimary)),
-      backgroundColor: tokens.brandPrimary.withOpacity(0.1),
-      side: BorderSide.none,
-    );
-  }
-
-  Widget _buildStats(BuildContext context) {
-    final tokens = context.tokens;
-    return Row(
-      children: [
-        Expanded(
-          child: Card(
-            elevation: 0,
-            color: tokens.surface,
-            shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge(), side: BorderSide(color: tokens.border)),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text('ストリーク', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
-                  const SizedBox(height: 8),
-                  Text('12日', style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Card(
-            elevation: 0,
-            color: tokens.surface,
-            shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge(), side: BorderSide(color: tokens.border)),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text('総クエスト数', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
-                  const SizedBox(height: 8),
-                  Text('85', style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAccountSettings(BuildContext context) {
-    final tokens = context.tokens;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('アカウント設定', style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Card(
-          elevation: 0,
-          color: tokens.surface,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge(), side: BorderSide(color: tokens.border)),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: [
-              ListTile(
-                title: const Text('通知'),
-                trailing: Icon(Icons.arrow_forward_ios, size: 16, color: tokens.textMuted),
-                onTap: () {},
-              ),
-              const Divider(height: 1),
-              ListTile(
-                title: const Text('言語'),
-                trailing: Icon(Icons.arrow_forward_ios, size: 16, color: tokens.textMuted),
-                onTap: () {},
-              ),
-              const Divider(height: 1),
-              ListTile(
-                title: const Text('ログアウト'),
-                trailing: Icon(Icons.logout, color: tokens.textMuted),
-                onTap: () {},
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSnsShare(BuildContext context) {
-    final tokens = context.tokens;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('SNSシェア・招待', style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Card(
-          elevation: 0,
-          color: tokens.surface,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge(), side: BorderSide(color: tokens.border)),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('友達を招待して特典をゲット！', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: tokens.background,
-                          borderRadius: tokens.cornerMedium(),
-                        ),
-                        child: const Text('AB12-34CD-56EF', style: TextStyle(fontFamily: 'monospace')),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: tokens.brandPrimary,
-                        shape: RoundedRectangleBorder(borderRadius: tokens.cornerMedium()),
-                      ),
-                      child: const Text('コピー'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text('SNSでシェアする', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    _buildSocialButton(color: const Color(0xFF1DA1F2)), // Twitter
-                    const SizedBox(width: 16),
-                    _buildSocialButton(color: const Color(0xFF1877F2)), // Facebook
-                    const SizedBox(width: 16),
-                    _buildSocialButton(isGradient: true), // Instagram
-                    const SizedBox(width: 16),
-                    _buildSocialButton(color: const Color(0xFF00B900)), // Line
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPairInfo(BuildContext context) {
-    final tokens = context.tokens;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('ペア', style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Card(
-          elevation: 0,
-          color: tokens.surface,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge(), side: BorderSide(color: tokens.border)),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Builder(
-                  builder: (context) {
-                    const avatarUrl =
-                        'https://lh3.googleusercontent.com/aida-public/AB6AXuD2HXX6O9Ry4fdKOLT4GAgrvT0GaEd1zK6s_j9dcBB0GEJ8dzNXLkIBjEPOYeBz8O0hWfBAarj3WCLZuZBuGKxRrRkAn96bNK0Rnlrrv2kujNoJOaouDyUitLqmb4VrK0XhmtsBq13OlU-y5jRXY92iMfOk1x7Mx1feEQZw90VHDuSnDYlLsrqlFYag7kv9ftpVkqBROiTbaS82XKJVRM0ECJQIKUclpMae0LxknbxUz7o60bxB36X6b2G2ODrs4gcIUJ9X_TwSUBQ';
-                    const radius = 24.0;
-                    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
-                    final cacheDimension = (radius * 2 * pixelRatio).round();
-                    return ClipOval(
-                      child: Image.network(
-                        avatarUrl,
-                        width: radius * 2,
-                        height: radius * 2,
-                        cacheWidth: cacheDimension,
-                        cacheHeight: cacheDimension,
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.high,
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('ペアの名前', style: tokens.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 4),
-                      LinearProgressIndicator(
-                        value: 0.75,
-                        backgroundColor: tokens.border.withOpacity(0.5),
-                        valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.link_off, color: tokens.textMuted),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.block, color: Colors.red),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildOtherSettings(BuildContext context) {
-    final tokens = context.tokens;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('その他', style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Card(
-          elevation: 0,
-          color: tokens.surface,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge(), side: BorderSide(color: tokens.border)),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: [
-              ListTile(
-                title: const Text('年齢認証ステータス'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('認証済み', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-                    const SizedBox(width: 8),
-                    Icon(Icons.arrow_forward_ios, size: 16, color: tokens.textMuted),
-                  ],
-                ),
-                onTap: () {},
-              ),
-              const Divider(height: 1),
-              ListTile(
-                title: const Text('実績/バッジコレクション'),
-                trailing: Icon(Icons.arrow_forward_ios, size: 16, color: tokens.textMuted),
-                onTap: () {},
-              ),
-              const Divider(height: 1),
-              ListTile(
-                title: const Text('公開範囲設定'),
-                trailing: Icon(Icons.arrow_forward_ios, size: 16, color: tokens.textMuted),
-                onTap: () {},
-              ),
-              const Divider(height: 1),
-              ListTile(
-                title: const Text('詳細統計'),
-                trailing: Icon(Icons.arrow_forward_ios, size: 16, color: tokens.textMuted),
-                onTap: () {},
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPremiumFeatures(BuildContext context) {
-    final tokens = context.tokens;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('プレミアム機能', style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Card(
-          elevation: 0,
-          color: tokens.surface,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge(), side: BorderSide(color: tokens.border)),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: [
-              ListTile(
-                leading: Icon(Icons.people, color: tokens.brandPrimary),
-                title: const Text('複数ペア解放'),
-                trailing: Icon(Icons.lock, color: Colors.amber),
-                onTap: () {},
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: Icon(Icons.palette, color: tokens.brandPrimary),
-                title: const Text('カスタマイズ (テーマ・フレーム)'),
-                trailing: Icon(Icons.lock, color: Colors.amber),
-                onTap: () {},
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: Icon(Icons.star, color: tokens.brandPrimary),
-                title: const Text('優先マッチング'),
-                trailing: Icon(Icons.lock, color: Colors.amber),
-                onTap: () {},
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSocialButton({Color? color, bool isGradient = false}) {
-    return Container(
-      width: 48,
-      height: 48,
-      decoration: BoxDecoration(
-        color: isGradient ? null : color,
-        gradient: isGradient
-            ? const LinearGradient(
-                colors: [Color(0xFF833AB4), Color(0xFFFD1D1D), Color(0xFFFCAF45)],
-              )
-            : null,
-        shape: BoxShape.circle,
-      ),
-      child: const Icon(Icons.share, color: Colors.white, size: 24), // Placeholder icon
-    );
-  }
-}  vo
-id _showDummyModeWarning(BuildContext context) {
+  void _showDummyModeWarning(BuildContext context) {
     final tokens = context.tokens;
     showDialog(
       context: context,
@@ -944,6 +587,126 @@ id _showDummyModeWarning(BuildContext context) {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildOtherSettings(BuildContext context, WidgetRef ref, user) {
+    final tokens = context.tokens;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'その他',
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        ListTile(
+          leading: const Icon(Icons.help),
+          title: const Text('ヘルプ'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            // Navigate to help
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.info),
+          title: const Text('アプリについて'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            // Navigate to about
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.logout),
+          title: const Text('ログアウト'),
+          onTap: () async {
+            final confirmed = await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('ログアウト'),
+                content: const Text('ログアウトしますか？'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text('キャンセル'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text('ログアウト'),
+                  ),
+                ],
+              ),
+            );
+            
+            if (confirmed == true) {
+              await ref.read(authRepositoryProvider).signOut();
+              if (context.mounted) {
+                context.go('/');
+              }
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPremiumFeatures(BuildContext context) {
+    final tokens = context.tokens;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'プレミアム機能',
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                const Icon(Icons.star, size: 48, color: Colors.amber),
+                const SizedBox(height: 8),
+                const Text('プレミアム機能は準備中です'),
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to premium features
+                  },
+                  child: const Text('詳細を見る'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTagChip(BuildContext context, String label) {
+    final tokens = context.tokens;
+    return Chip(
+      label: Text(label),
+      backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+      labelStyle: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
+      side: BorderSide.none,
+    );
+  }
+
+  Widget _buildSocialButton({Color? color, bool isGradient = false}) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: isGradient ? null : color,
+        gradient: isGradient
+            ? const LinearGradient(
+                colors: [Color(0xFF833AB4), Color(0xFFFD1D1D), Color(0xFFFCAF45)],
+              )
+            : null,
+        shape: BoxShape.circle,
+      ),
+      child: const Icon(Icons.share, color: Colors.white, size: 24),
     );
   }
 }

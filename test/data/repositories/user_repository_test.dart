@@ -9,28 +9,21 @@ import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 
 import 'user_repository_test.mocks.dart';
 
-// Mock classes for dependencies
-class MockIAuthRepository extends Mock implements IAuthRepository {}
-class MockIsar extends Mock implements Isar {}
-class MockUserCollection extends Mock implements IsarCollection<User> {}
-class MockUserQuery extends Mock implements Query<User> {}
-class MockFirebaseUser extends Mock implements fb_auth.User {}
-
 @GenerateMocks([IAuthRepository, Isar, IsarCollection, Query, fb_auth.User])
 void main() {
   group('UserRepository', () {
     late MockIsar mockIsar;
     late MockIAuthRepository mockAuthRepository;
     late UserRepository userRepository;
-    late MockUserCollection mockUserCollection;
-    late MockUserQuery mockQuery;
+    late MockIsarCollection<User> mockUserCollection;
+    late MockQuery<User> mockQuery;
 
     setUp(() {
       mockIsar = MockIsar();
       mockAuthRepository = MockIAuthRepository();
       userRepository = UserRepository(mockIsar, mockAuthRepository);
-      mockUserCollection = MockUserCollection();
-      mockQuery = MockUserQuery();
+      mockUserCollection = MockIsarCollection<User>();
+      mockQuery = MockQuery<User>();
 
       when(mockIsar.users).thenReturn(mockUserCollection);
       when(mockUserCollection.filter()).thenReturn(mockQuery);
@@ -38,7 +31,7 @@ void main() {
     });
 
     test('getCurrentUser returns user from Isar when firebase user exists', () async {
-      final mockFirebaseUser = MockFirebaseUser();
+      final mockFirebaseUser = MockUser();
       when(mockFirebaseUser.uid).thenReturn('test_uid');
       when(mockAuthRepository.getCurrentUser()).thenReturn(mockFirebaseUser);
 

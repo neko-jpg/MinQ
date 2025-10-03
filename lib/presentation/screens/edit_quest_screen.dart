@@ -81,7 +81,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
         setState(() {
           _originalQuest = quest;
           _titleController.text = quest.title;
-          _selectedIconKey = quest.iconKey;
+          _selectedIconKey = quest.iconKey ?? 'default';
           _isTimeGoal = quest.estimatedMinutes > 0;
           _goalValueController.text = quest.estimatedMinutes > 0
               ? quest.estimatedMinutes.toString()

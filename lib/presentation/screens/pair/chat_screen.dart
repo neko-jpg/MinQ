@@ -450,7 +450,8 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
         currentUserId,
         trimmed,
       );
-      FeedbackManager.selected();
+      // TODO: Implement FeedbackManager
+      // FeedbackManager.selected();
     } catch (e) {
       if (mounted) {
         FeedbackMessenger.showErrorSnackBar(

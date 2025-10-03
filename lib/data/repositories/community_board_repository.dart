@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:miinq/domain/community/community_post.dart';
+import 'package:minq/domain/community/community_post.dart';
 
 class CommunityBoardRepository {
   CommunityBoardRepository(FirebaseFirestore firestore)

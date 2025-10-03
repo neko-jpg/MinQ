@@ -1,5 +1,5 @@
-import 'package:miinq/data/providers.dart';
-import 'package:miinq/domain/support/support_message.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/support/support_message.dart';
 import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:riverpod/riverpod.dart';
 

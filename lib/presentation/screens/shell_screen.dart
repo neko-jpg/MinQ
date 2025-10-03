@@ -259,7 +259,9 @@ class _UsageLimitOverlay extends ConsumerWidget {
                 SizedBox(height: tokens.spacing(4)),
                 MinqSecondaryButton(
                   label: '設定を開く',
-                  onPressed: () => navigation.goToSettings(),
+                  onPressed: () async {
+                    navigation.goToSettings();
+                  },
                 ),
               ],
             ),

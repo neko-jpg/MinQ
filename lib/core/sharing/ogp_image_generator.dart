@@ -41,7 +41,7 @@ class OgpImageGenerator {
       _logger.info('OGP image generated: ${file.path}');
       return file;
     } catch (e, stack) {
-      _logger.error('Failed to generate OGP image', error: e, stackTrace: stack);
+      _logger.error('Failed to generate OGP image', e, stack);
       return null;
     }
   }
@@ -61,7 +61,7 @@ class OgpImageGenerator {
         child: repaintBoundary,
       ),
       configuration: ViewConfiguration(
-        size: logicalSize,
+        logicalConstraints: BoxConstraints.tight(logicalSize),
         devicePixelRatio: devicePixelRatio,
       ),
     );

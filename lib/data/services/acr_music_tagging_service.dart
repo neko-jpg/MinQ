@@ -2,10 +2,20 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:miinq/data/providers.dart';
-import 'package:miinq/domain/music/music_tag_result.dart';
-import 'package:miinq_integrations/miinq_integrations.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/music/music_tag_result.dart';
+// TODO: Fix integrations package
+// import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:riverpod/riverpod.dart';
+
+// Dummy types until integrations package is fixed
+class ACRCloudClient {
+  const ACRCloudClient({required dynamic httpClient, required dynamic config});
+  Future<dynamic> identify({required dynamic audio}) async => null;
+}
+class ACRCloudConfig {
+  static ACRCloudConfig? fromBase64(String encoded) => null;
+}
 
 class ACRMuiscTaggingService {
   ACRMuiscTaggingService({

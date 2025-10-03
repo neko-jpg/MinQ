@@ -1,5 +1,13 @@
-import 'package:miinq_integrations/miinq_integrations.dart';
+// TODO: Fix integrations package
+// import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:riverpod/riverpod.dart';
+
+// Dummy type until integrations package is fixed
+class MenuBarChannel {
+  const MenuBarChannel();
+  Future<void> updateTimer({required String title, required Duration remaining}) async {}
+  Future<void> clear() async {}
+}
 
 class DesktopMenuBarService {
   DesktopMenuBarService({required MenuBarChannel channel}) : _channel = channel;

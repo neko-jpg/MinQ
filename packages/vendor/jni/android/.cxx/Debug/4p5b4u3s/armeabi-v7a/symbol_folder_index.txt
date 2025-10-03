@@ -1,0 +1,1 @@
+C:\minq_android_build\android\jni\intermediates\cxx\Debug\4p5b4u3s\obj\armeabi-v7a

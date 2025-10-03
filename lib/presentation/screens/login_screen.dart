@@ -135,7 +135,6 @@ class LoginScreen extends ConsumerWidget {
       ),
     );
   }
-}
 
   Future<void> _handleSignIn(WidgetRef ref, AuthMethod method) async {
     final authController = ref.read(authControllerProvider.notifier);
