@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
@@ -85,7 +87,7 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
         ..synced = false;
 
       await logRepository.addLog(log);
-      
+
       // Update streak and other stats
       final userRepository = _ref.read(userRepositoryProvider);
       final currentStreak = await logRepository.calculateStreak(uid);
@@ -103,7 +105,17 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
         final notificationService = _ref.read(notificationServiceProvider);
         await notificationService.cancelAuxiliaryReminder();
       }
-      
+
+      final quest = await _ref.read(questRepositoryProvider).getQuestById(questId);
+      if (quest != null) {
+        unawaited(
+          _ref.read(webhookDispatchServiceProvider).dispatchQuestCompletion(
+                quest: quest,
+                log: log,
+              ),
+        );
+      }
+
       state = const AsyncValue.data(null);
       return true;
     } catch (e, stackTrace) {

@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: dart-format
+        name: dart format
+        entry: bash -c 'dart format --output=none --set-exit-if-changed lib test tool'
+        language: system
+        pass_filenames: false
+      - id: flutter-analyze
+        name: flutter analyze
+        entry: bash -c 'flutter analyze'
+        language: system
+        pass_filenames: false
+      - id: flutter-test
+        name: flutter test
+        entry: bash -c 'flutter test'
+        language: system
+        pass_filenames: false
+      - id: import-lint
+        name: import_lint
+        entry: bash -c 'dart run import_lint'
+        language: system
+        pass_filenames: false
