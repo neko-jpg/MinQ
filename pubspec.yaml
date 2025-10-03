@@ -81,6 +81,10 @@ dependencies:
   package_info_plus: any
   url_launcher: any
   yaml: any
+  http: any
+  archive: any
+  encrypt: any
+  crypto: any
 
   # Code Generation
   freezed_annotation: any
