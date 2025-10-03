@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:just_audio/just_audio.dart';
 
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/image_moderation_service.dart';
 import 'package:minq/data/services/photo_storage_service.dart';
+import 'package:minq/data/services/focus_music_service.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
@@ -20,16 +22,16 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 
 enum RecordErrorType { none, offline, permissionDenied, cameraFailure }
 
-class RecordScreen extends StatefulWidget {
+class RecordScreen extends ConsumerStatefulWidget {
   const RecordScreen({super.key, required this.questId});
 
   final int questId;
 
   @override
-  State<RecordScreen> createState() => _RecordScreenState();
+  ConsumerState<RecordScreen> createState() => _RecordScreenState();
 }
 
-class _RecordScreenState extends State<RecordScreen> {
+class _RecordScreenState extends ConsumerState<RecordScreen> {
   RecordErrorType _error = RecordErrorType.none;
   bool _isLoading = true;
 
@@ -58,6 +60,12 @@ class _RecordScreenState extends State<RecordScreen> {
   Future<void> _retryUpload() async => _handleError(RecordErrorType.none);
   Future<void> _openSettings() async => _handleError(RecordErrorType.none);
   Future<void> _openOfflineQueue() async => _handleError(RecordErrorType.none);
+
+  @override
+  void dispose() {
+    ref.read(focusMusicServiceProvider).stop();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,6 +177,8 @@ class _RecordForm extends ConsumerWidget {
         ),
         SizedBox(height: tokens.spacing(3)),
         _buildQuestInfoCard(tokens),
+        SizedBox(height: tokens.spacing(8)),
+        const _FocusMusicPanel(),
         SizedBox(height: tokens.spacing(8)),
         Text(
           '証明',
@@ -336,6 +346,167 @@ class _RecordForm extends ConsumerWidget {
         );
       }
     }
+  }
+}
+
+class _FocusMusicPanel extends ConsumerWidget {
+  const _FocusMusicPanel();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+    final PlayerState? playerState =
+        ref.watch(focusMusicPlayerStateProvider).maybeWhen(
+              data: (state) => state,
+              orElse: () => null,
+            );
+    final service = ref.watch(focusMusicServiceProvider);
+    final currentTrack = service.currentTrack;
+    final isPlaying = playerState?.playing == true;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '集中BGM',
+          style: tokens.titleLarge.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: tokens.spacing(2)),
+        Text(
+          '習慣を実行しながら流す音楽を選べます。ヘッドホン推奨です。',
+          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+        ),
+        SizedBox(height: tokens.spacing(3)),
+        ...FocusMusicService.tracks.map(
+          (track) => Padding(
+            padding: EdgeInsets.only(bottom: tokens.spacing(2)),
+            child: _FocusMusicTile(
+              track: track,
+              service: service,
+              isActive: currentTrack?.id == track.id,
+              isPlaying: currentTrack?.id == track.id && isPlaying,
+            ),
+          ),
+        ),
+        if (isPlaying)
+          Padding(
+            padding: EdgeInsets.only(top: tokens.spacing(1)),
+            child: MinqSecondaryButton(
+              label: '再生を停止',
+              icon: Icons.stop,
+              onPressed: () async {
+                try {
+                  await service.stop();
+                } catch (error) {
+                  FeedbackMessenger.showErrorSnackBar(
+                    context,
+                    'BGMの停止に失敗しました。',
+                  );
+                }
+              },
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _FocusMusicTile extends StatelessWidget {
+  const _FocusMusicTile({
+    required this.track,
+    required this.service,
+    required this.isActive,
+    required this.isPlaying,
+  });
+
+  final FocusMusicTrack track;
+  final FocusMusicService service;
+  final bool isActive;
+  final bool isPlaying;
+
+  Future<void> _handleTap(BuildContext context) async {
+    try {
+      if (isActive && isPlaying) {
+        await service.stop();
+      } else {
+        await service.play(track);
+      }
+    } catch (error) {
+      FeedbackMessenger.showErrorSnackBar(
+        context,
+        'BGMの再生に失敗しました。',
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final Color tileColor =
+        isActive ? tokens.brandPrimary.withOpacity(0.12) : tokens.surface;
+    final borderColor =
+        isActive ? tokens.brandPrimary : tokens.border.withOpacity(0.4);
+
+    return Material(
+      color: Colors.transparent,
+      borderRadius: tokens.cornerLarge(),
+      child: InkWell(
+        borderRadius: tokens.cornerLarge(),
+        onTap: () => _handleTap(context),
+        child: Container(
+          decoration: BoxDecoration(
+            color: tileColor,
+            borderRadius: tokens.cornerLarge(),
+            border: Border.all(color: borderColor),
+          ),
+          padding: EdgeInsets.all(tokens.spacing(4)),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill,
+                color: tokens.brandPrimary,
+                size: tokens.spacing(7),
+              ),
+              SizedBox(width: tokens.spacing(3)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      track.title,
+                      style: tokens.titleSmall.copyWith(
+                        color: tokens.textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: tokens.spacing(1)),
+                    Text(
+                      track.description,
+                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: tokens.spacing(3)),
+              FilledButton.tonal(
+                onPressed: () => _handleTap(context),
+                style: FilledButton.styleFrom(
+                  backgroundColor:
+                      isPlaying ? tokens.brandPrimary : tokens.surface,
+                  foregroundColor:
+                      isPlaying ? Colors.white : tokens.textPrimary,
+                ),
+                child: Text(isPlaying ? '停止' : '再生'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

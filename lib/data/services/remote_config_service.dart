@@ -69,6 +69,7 @@ class RemoteConfigService {
     'show_ads': false,
     'ad_frequency_minutes': 30,
     'premium_price_monthly': 500,
+    'stripe_billing_portal_endpoint': 'https://api.example.com/billing-portal',
   };
 
   // Feature flags
@@ -106,6 +107,8 @@ class RemoteConfigService {
   bool get showAds => _getBool('show_ads');
   int get adFrequencyMinutes => _getInt('ad_frequency_minutes');
   int get premiumPriceMonthly => _getInt('premium_price_monthly');
+  String get stripeBillingPortalEndpoint =>
+      _getString('stripe_billing_portal_endpoint');
 
   // Helper methods
   bool _getBool(String key) {
