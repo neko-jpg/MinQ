@@ -23,6 +23,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _goalValueController = TextEditingController(text: '10');
+  final _contactLinkController = TextEditingController();
   final PageController _pageController = PageController();
   final SetEquality<int> _setEquality = const SetEquality<int>();
 
@@ -35,6 +36,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
   TimeOfDay _reminderTime = const TimeOfDay(hour: 7, minute: 0);
   bool _isReminderOn = true;
   int _currentStep = 0;
+  bool _isVoiceListening = false;
 
   bool get _reduceMotion =>
       WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.disableAnimations;
@@ -49,7 +51,8 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         !_setEquality.equals(_selectedDays, _defaultSelectedDays) ||
         _reminderTime != const TimeOfDay(hour: 7, minute: 0) ||
         _isReminderOn != true ||
-        (_isTimeGoal && _goalValueController.text != '10');
+        (_isTimeGoal && _goalValueController.text != '10') ||
+        _contactLinkController.text.trim().isNotEmpty;
   }
 
   bool get _canSubmit => _titleController.text.trim().isNotEmpty;
@@ -59,6 +62,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     super.initState();
     _titleController.addListener(_onFormChanged);
     _goalValueController.addListener(_onFormChanged);
+    _contactLinkController.addListener(_onFormChanged);
   }
 
   @override
@@ -69,8 +73,58 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     _goalValueController
       ..removeListener(_onFormChanged)
       ..dispose();
+    _contactLinkController
+      ..removeListener(_onFormChanged)
+      ..dispose();
+    final speech = ref.read(speechInputServiceProvider);
+    if (speech.isListening) {
+      speech.stop();
+    }
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _toggleVoiceInput() async {
+    final speech = ref.read(speechInputServiceProvider);
+    if (_isVoiceListening) {
+      await speech.stop();
+      if (mounted) setState(() => _isVoiceListening = false);
+      return;
+    }
+
+    try {
+      final available = await speech.ensureInitialized();
+      if (!available) {
+        if (mounted) {
+          FeedbackMessenger.showErrorSnackBar(
+            context,
+            '音声入力を使用できませんでした。マイクの権限を確認してください。',
+          );
+        }
+        return;
+      }
+      if (mounted) setState(() => _isVoiceListening = true);
+      await speech.startListening(
+        onResult: (text) {
+          if (!mounted) return;
+          _titleController.text = text;
+          _titleController.selection = TextSelection.fromPosition(
+            TextPosition(offset: _titleController.text.length),
+          );
+        },
+        onFinalResult: () {
+          if (mounted) setState(() => _isVoiceListening = false);
+        },
+      );
+    } catch (_) {
+      if (mounted) {
+        setState(() => _isVoiceListening = false);
+        FeedbackMessenger.showErrorSnackBar(
+          context,
+          '音声入力の開始に失敗しました。',
+        );
+      }
+    }
   }
 
   void _onFormChanged() {
@@ -160,6 +214,14 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
     await ref.read(questRepositoryProvider).addQuest(newQuest);
 
+    final contactLink = _contactLinkController.text.trim();
+    final contactRepository = ref.read(contactLinkRepositoryProvider);
+    if (contactLink.isNotEmpty) {
+      await contactRepository.setLink(newQuest.id, contactLink);
+    } else {
+      await contactRepository.removeLink(newQuest.id);
+    }
+
     // Schedule notifications if reminder is enabled
     if (_isReminderOn) {
       try {
@@ -203,7 +265,11 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _HabitNameInput(controller: _titleController),
+            _HabitNameInput(
+              controller: _titleController,
+              onVoiceInputTap: _toggleVoiceInput,
+              isListening: _isVoiceListening,
+            ),
             SizedBox(height: tokens.spacing(4)),
             _IconAndColorPicker(
               selectedIcon: _selectedIconKey,
@@ -215,6 +281,8 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                 setState(() => _selectedColor = color);
               },
             ),
+            SizedBox(height: tokens.spacing(4)),
+            _ContactLinkInput(controller: _contactLinkController),
           ],
         ),
       ),
@@ -493,9 +561,15 @@ class _StepPage extends StatelessWidget {
 }
 
 class _HabitNameInput extends StatelessWidget {
-  const _HabitNameInput({required this.controller});
+  const _HabitNameInput({
+    required this.controller,
+    this.onVoiceInputTap,
+    this.isListening = false,
+  });
 
   final TextEditingController controller;
+  final VoidCallback? onVoiceInputTap;
+  final bool isListening;
 
   @override
   Widget build(BuildContext context) {
@@ -520,7 +594,69 @@ class _HabitNameInput extends StatelessWidget {
               borderRadius: tokens.cornerXLarge(),
               borderSide: BorderSide.none,
             ),
+            suffixIcon: onVoiceInputTap == null
+                ? null
+                : Tooltip(
+                    message: isListening ? '音声入力を停止' : '音声入力',
+                    child: Semantics(
+                      button: true,
+                      toggled: isListening,
+                      label: '音声入力',
+                      child: IconButton(
+                        icon: Icon(
+                          isListening ? Icons.mic : Icons.mic_none,
+                          color:
+                              isListening ? tokens.brandPrimary : tokens.textMuted,
+                        ),
+                        onPressed: onVoiceInputTap,
+                      ),
+                    ),
+                  ),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ContactLinkInput extends StatelessWidget {
+  const _ContactLinkInput({required this.controller});
+
+  final TextEditingController controller;
+
+  bool _isValidUrl(String value) {
+    final uri = Uri.tryParse(value.trim());
+    return uri != null && uri.hasScheme && uri.host.isNotEmpty;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          '連絡先リンク (任意)',
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
+        SizedBox(height: tokens.spacing(2)),
+        TextFormField(
+          controller: controller,
+          keyboardType: TextInputType.url,
+          decoration: InputDecoration(
+            hintText: '例：https://line.me/R/xxxxx',
+            prefixIcon: const Icon(Icons.link),
+            filled: true,
+            border: OutlineInputBorder(
+              borderRadius: tokens.cornerXLarge(),
+              borderSide: BorderSide.none,
+            ),
+          ),
+          validator: (String? value) {
+            final trimmed = value?.trim() ?? '';
+            if (trimmed.isEmpty) return null;
+            return _isValidUrl(trimmed) ? null : '正しいURLを入力してください';
+          },
         ),
       ],
     );

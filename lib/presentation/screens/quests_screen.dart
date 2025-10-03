@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart' as minq_quest;
+import 'package:minq/domain/recommendation/habit_ai_suggestion_service.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -55,6 +56,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
     ];
     final templateQuests = ref.watch(templateQuestsProvider);
     final userQuests = ref.watch(userQuestsProvider);
+    final aiSuggestions = ref.watch(habitAiSuggestionsProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -82,6 +84,8 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                   elevation: 0,
                   flexibleSpace: _buildCategoryTabs(tokens, categories),
                 ),
+                if (_selectedCategory == _categoryRecommended)
+                  ..._buildAiSuggestionSlivers(tokens, aiSuggestions),
                 SliverPadding(
                   padding: EdgeInsets.all(tokens.spacing(4)),
                   sliver: _buildQuestList(
@@ -235,6 +239,52 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
     );
   }
 
+  List<Widget> _buildAiSuggestionSlivers(
+    MinqTheme tokens,
+    AsyncValue<List<HabitAiSuggestion>> suggestions,
+  ) {
+    return suggestions.when(
+      data: (items) {
+        if (items.isEmpty) {
+          return const <Widget>[];
+        }
+        return <Widget>[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: tokens.spacing(4),
+                vertical: tokens.spacing(3),
+              ),
+              child: _AiSuggestionSection(suggestions: items),
+            ),
+          ),
+        ];
+      },
+      loading: () => <Widget>[
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: tokens.spacing(4),
+              vertical: tokens.spacing(3),
+            ),
+            child: _AiSuggestionSkeleton(tokens: tokens),
+          ),
+        ),
+      ],
+      error: (error, _) => <Widget>[
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: tokens.spacing(4),
+              vertical: tokens.spacing(3),
+            ),
+            child: _AiSuggestionError(tokens: tokens),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildFab(MinqTheme tokens, AppLocalizations l10n) {
     return FloatingActionButton.extended(
       onPressed: () => context.push('/quests/create'),
@@ -282,6 +332,189 @@ class _QuestsSkeleton extends StatelessWidget {
         SizedBox(height: tokens.spacing(4)),
         const MinqSkeletonGrid(crossAxisCount: 2, itemCount: 4, itemAspectRatio: 1.5),
       ],
+    );
+  }
+}
+
+class _AiSuggestionSection extends StatelessWidget {
+  const _AiSuggestionSection({required this.suggestions});
+
+  final List<HabitAiSuggestion> suggestions;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'AIおすすめ',
+          style: tokens.titleLarge.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: tokens.spacing(2)),
+        SizedBox(
+          height: tokens.spacing(28),
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: suggestions.length,
+            separatorBuilder: (_, __) => SizedBox(width: tokens.spacing(3)),
+            itemBuilder: (context, index) => _AiSuggestionCard(
+              suggestion: suggestions[index],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AiSuggestionCard extends StatelessWidget {
+  const _AiSuggestionCard({required this.suggestion});
+
+  final HabitAiSuggestion suggestion;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final template = suggestion.template;
+    final icon = template.icon ?? template.category.icon;
+    final confidence = (suggestion.confidence * 100).clamp(0, 100).round();
+
+    return Container(
+      width: 240,
+      padding: EdgeInsets.all(tokens.spacing(4)),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: tokens.cornerLarge(),
+        border: Border.all(color: tokens.border.withOpacity(0.6)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(icon, style: tokens.displaySmall),
+              SizedBox(width: tokens.spacing(2)),
+              Expanded(
+                child: Text(
+                  template.title,
+                  style: tokens.titleSmall.copyWith(
+                    color: tokens.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: tokens.spacing(1)),
+          Text(
+            '適合度: $confidence%',
+            style: tokens.bodySmall.copyWith(
+              color: tokens.brandPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: tokens.spacing(2)),
+          Text(
+            suggestion.rationale,
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: tokens.spacing(2)),
+          ...suggestion.supportingFacts.take(2).map(
+                (fact) => Padding(
+                  padding: EdgeInsets.only(bottom: tokens.spacing(1)),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('• ', style: tokens.bodySmall),
+                      Expanded(
+                        child: Text(
+                          fact,
+                          style: tokens.bodySmall.copyWith(
+                            color: tokens.textMuted,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AiSuggestionSkeleton extends StatelessWidget {
+  const _AiSuggestionSkeleton({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: tokens.spacing(3),
+          width: tokens.spacing(16),
+          decoration: BoxDecoration(
+            color: tokens.surface,
+            borderRadius: tokens.cornerSmall(),
+          ),
+        ),
+        SizedBox(height: tokens.spacing(3)),
+        SizedBox(
+          height: tokens.spacing(28),
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (_, __) => MinqSkeleton(
+              width: 220,
+              height: tokens.spacing(28),
+              borderRadius: tokens.cornerLarge(),
+            ),
+            separatorBuilder: (_, __) => SizedBox(width: tokens.spacing(3)),
+            itemCount: 3,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AiSuggestionError extends StatelessWidget {
+  const _AiSuggestionError({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing(4)),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: tokens.cornerLarge(),
+        border: Border.all(color: tokens.border.withOpacity(0.5)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.auto_awesome, color: tokens.textMuted),
+          SizedBox(width: tokens.spacing(2)),
+          Expanded(
+            child: Text(
+              'AIおすすめの読み込みに失敗しました。接続状況をご確認ください。',
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

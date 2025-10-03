@@ -20,6 +20,15 @@ final chatMessagesProvider =
   return pairRepository.getMessagesStream(pairId);
 });
 
+const List<String> _quickReplyTemplates = <String>[
+  'おつかれさま！',
+  '今から取り組みます！',
+  '今日はこれでおしまいにします。',
+  '助けてくれてありがとう！',
+];
+
+const List<String> _stampOptions = <String>['👏', '🔥', '💪', '🙌', '✨'];
+
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key, required this.pairId});
 
@@ -423,6 +432,39 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
     }
   }
 
+  Future<void> _sendQuickText(String text) async {
+    final trimmed = text.trim();
+    final currentUserId = ref.read(uidProvider);
+    final pairRepository = ref.read(pairRepositoryProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    if (trimmed.isEmpty || currentUserId == null || pairRepository == null ||
+        _isSending) {
+      return;
+    }
+
+    setState(() => _isSending = true);
+    try {
+      await pairRepository.sendQuickMessage(
+        widget.pairId,
+        currentUserId,
+        trimmed,
+      );
+      FeedbackManager.selected();
+    } catch (e) {
+      if (mounted) {
+        FeedbackMessenger.showErrorSnackBar(
+          context,
+          l10n.messageSentFailed,
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSending = false);
+      }
+    }
+  }
+
   Future<void> _sendImage() async {
     // ... (existing implementation)
   }
@@ -438,100 +480,178 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(tokens.spacing(2)),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: TextField(
-                  controller: _textController,
-                  decoration: InputDecoration(
-                    hintText: l10n.chatInputHint,
-                    filled: true,
-                    fillColor: tokens.background,
-                    border: OutlineInputBorder(borderRadius: tokens.cornerXLarge(), borderSide: BorderSide.none),
-                    contentPadding: EdgeInsets.symmetric(horizontal: tokens.spacing(4)),
-                  ),
-                  minLines: 1,
-                  maxLines: 5,
-                  onSubmitted: (_) => _sendMessage(),
-                ),
+              _QuickReplyBar(
+                isSending: _isSending || _isUploading,
+                onReplySelected: _sendQuickText,
+                onStampSelected: _sendQuickText,
               ),
-              SizedBox(width: tokens.spacing(2)),
-              if (_isUploading)
-                Padding(
-                  padding: EdgeInsets.all(tokens.spacing(2)),
-                  child: const CircularProgressIndicator(),
-                ),
-              else
-                Builder(
-                  builder: (context) {
-                    final switchCurve = AnimationSystem.getCurve(
-                      context,
-                      AnimationSystem.animatedSwitcherCurve,
-                    );
-                    final switchDuration = AnimationSystem.getDuration(
-                      context,
-                      AnimationSystem.animatedSwitcher,
-                    );
-                    final reduceMotion = AnimationSystem.shouldReduceMotion(context);
-                    return AnimatedSwitcher(
-                      duration: switchDuration,
-                      switchInCurve: switchCurve,
-                      switchOutCurve: switchCurve,
-                      transitionBuilder: (child, animation) {
-                        if (reduceMotion) {
-                          return child;
-                        }
-                        final curvedAnimation = CurvedAnimation(
-                          parent: animation,
-                          curve: switchCurve,
+              SizedBox(height: tokens.spacing(2)),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _textController,
+                      decoration: InputDecoration(
+                        hintText: l10n.chatInputHint,
+                        filled: true,
+                        fillColor: tokens.background,
+                        border: OutlineInputBorder(
+                          borderRadius: tokens.cornerXLarge(),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: tokens.spacing(4),
+                          vertical: tokens.spacing(3),
+                        ),
+                      ),
+                      minLines: 1,
+                      maxLines: 5,
+                      onSubmitted: (_) => _sendMessage(),
+                    ),
+                  ),
+                  SizedBox(width: tokens.spacing(2)),
+                  if (_isUploading)
+                    Padding(
+                      padding: EdgeInsets.all(tokens.spacing(2)),
+                      child: const CircularProgressIndicator(),
+                    )
+                  else
+                    Builder(
+                      builder: (context) {
+                        final switchCurve = AnimationSystem.getCurve(
+                          context,
+                          AnimationSystem.animatedSwitcherCurve,
                         );
-                        return ScaleTransition(scale: curvedAnimation, child: child);
+                        final switchDuration = AnimationSystem.getDuration(
+                          context,
+                          AnimationSystem.animatedSwitcher,
+                        );
+                        final reduceMotion = AnimationSystem.shouldReduceMotion(context);
+                        return AnimatedSwitcher(
+                          duration: switchDuration,
+                          switchInCurve: switchCurve,
+                          switchOutCurve: switchCurve,
+                          transitionBuilder: (child, animation) {
+                            if (reduceMotion) {
+                              return child;
+                            }
+                            final curvedAnimation = CurvedAnimation(
+                              parent: animation,
+                              curve: switchCurve,
+                            );
+                            return ScaleTransition(scale: curvedAnimation, child: child);
+                          },
+                          child: _showSendButton
+                              ? _isSending
+                                  ? Padding(
+                                      padding: EdgeInsets.all(tokens.spacing(3)),
+                                      child: SizedBox(
+                                        width: tokens.spacing(6),
+                                        height: tokens.spacing(6),
+                                        child: const CircularProgressIndicator(strokeWidth: 2),
+                                      ),
+                                    )
+                                  : IconButton.filled(
+                                      key: const ValueKey('send'),
+                                      icon: const Icon(Icons.send),
+                                      onPressed: _sendMessage,
+                                      style: IconButton.styleFrom(
+                                        backgroundColor: tokens.brandPrimary,
+                                      ),
+                                    )
+                              : Row(
+                                  key: const ValueKey('actions'),
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.attach_file),
+                                      onPressed: _sendImage,
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.fact_check_outlined),
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (_) =>
+                                              ShareProgressSheet(pairId: widget.pairId),
+                                          backgroundColor: Colors.transparent,
+                                          isScrollControlled: true,
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                        );
                       },
-                      child: _showSendButton
-                          ? _isSending
-                              ? Padding(
-                                  padding: EdgeInsets.all(tokens.spacing(3)),
-                                  child: SizedBox(
-                                    width: tokens.spacing(6),
-                                    height: tokens.spacing(6),
-                                    child: const CircularProgressIndicator(strokeWidth: 2),
-                                  ),
-                                )
-                              : IconButton.filled(
-                                  key: const ValueKey('send'),
-                                  icon: const Icon(Icons.send),
-                                  onPressed: _sendMessage,
-                                  style: IconButton.styleFrom(
-                                    backgroundColor: tokens.brandPrimary,
-                                  ),
-                                )
-                          : Row(
-                              key: const ValueKey('actions'),
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.attach_file),
-                                  onPressed: _sendImage,
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.fact_check_outlined),
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      builder: (_) => ShareProgressSheet(pairId: widget.pairId),
-                                      backgroundColor: Colors.transparent,
-                                      isScrollControlled: true,
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                    );
-                  },
-                )
+                    )
+                ],
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _QuickReplyBar extends StatelessWidget {
+  const _QuickReplyBar({
+    required this.isSending,
+    required this.onReplySelected,
+    required this.onStampSelected,
+  });
+
+  final bool isSending;
+  final ValueChanged<String> onReplySelected;
+  final ValueChanged<String> onStampSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = MinqTheme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: tokens.spacing(2),
+          runSpacing: tokens.spacing(1.5),
+          children: _quickReplyTemplates
+              .map(
+                (reply) => ActionChip(
+                  label: Text(reply),
+                  onPressed:
+                      isSending ? null : () => onReplySelected(reply),
+                ),
+              )
+              .toList(),
+        ),
+        SizedBox(height: tokens.spacing(2)),
+        Wrap(
+          spacing: tokens.spacing(1.5),
+          children: _stampOptions.map((stamp) {
+            return GestureDetector(
+              onTap: isSending ? null : () => onStampSelected(stamp),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: tokens.spacing(2),
+                  vertical: tokens.spacing(1.5),
+                ),
+                decoration: BoxDecoration(
+                  color: tokens.background,
+                  borderRadius: tokens.cornerFull(),
+                  border: Border.all(color: tokens.border.withOpacity(0.6)),
+                ),
+                child: Text(
+                  stamp,
+                  style: tokens.titleLarge,
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -48,6 +50,17 @@ class NotificationService {
     final payload = _initialPayload;
     _initialPayload = null;
     return payload;
+  }
+
+  Future<String?> getReminderSoundProfileId() async {
+    await _loadState();
+    return _state.reminderSoundProfileId;
+  }
+
+  Future<void> updateReminderSoundProfile(String profileId) async {
+    await _loadState();
+    _state = _state.copyWith(reminderSoundProfileId: profileId);
+    await _persistState();
   }
 
   Future<bool> init() async {
@@ -453,12 +466,20 @@ class NotificationService {
         );
       case _reminderChannelId:
       default:
-        return const AndroidNotificationDetails(
+        final profile =
+            NotificationSoundProfile.byId(_state.reminderSoundProfileId);
+        final vibrationPattern = profile.vibrationPattern != null
+            ? Int64List.fromList(profile.vibrationPattern!)
+            : null;
+        return AndroidNotificationDetails(
           _reminderChannelId,
           '習慣リマインダー',
           channelDescription: '毎日のクエストと補助的な通知をお届けします',
           importance: Importance.high,
           priority: Priority.high,
+          playSound: profile.playSound,
+          enableVibration: profile.enableVibration,
+          vibrationPattern: vibrationPattern,
         );
     }
   }
@@ -590,6 +611,7 @@ class _NotificationState {
     this.auxiliaryReminderTime,
     this.suspended = false,
     this.permissionLastAskedTimestamp,
+    this.reminderSoundProfileId = 'default',
   });
 
   final String? timezoneName;
@@ -597,6 +619,7 @@ class _NotificationState {
   final String? auxiliaryReminderTime;
   final bool suspended;
   final int? permissionLastAskedTimestamp;
+  final String? reminderSoundProfileId;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'timezone': timezoneName,
@@ -604,6 +627,7 @@ class _NotificationState {
         'auxiliary': auxiliaryReminderTime,
         'suspended': suspended,
         'permissionLastAskedTimestamp': permissionLastAskedTimestamp,
+        'reminderSoundProfileId': reminderSoundProfileId,
       };
 
   _NotificationState copyWith({
@@ -612,6 +636,7 @@ class _NotificationState {
     String? auxiliaryReminderTime,
     bool? suspended,
     int? permissionLastAskedTimestamp,
+    String? reminderSoundProfileId,
   }) {
     return _NotificationState(
       timezoneName: timezoneName ?? this.timezoneName,
@@ -619,7 +644,10 @@ class _NotificationState {
           recurringReminderTimes ?? this.recurringReminderTimes,
       auxiliaryReminderTime: auxiliaryReminderTime ?? this.auxiliaryReminderTime,
       suspended: suspended ?? this.suspended,
-      permissionLastAskedTimestamp: permissionLastAskedTimestamp ?? this.permissionLastAskedTimestamp,
+      permissionLastAskedTimestamp:
+          permissionLastAskedTimestamp ?? this.permissionLastAskedTimestamp,
+      reminderSoundProfileId:
+          reminderSoundProfileId ?? this.reminderSoundProfileId,
     );
   }
 
@@ -633,6 +661,8 @@ class _NotificationState {
       auxiliaryReminderTime: json['auxiliary'] as String?,
       suspended: json['suspended'] as bool? ?? false,
       permissionLastAskedTimestamp: json['permissionLastAskedTimestamp'] as int?,
+      reminderSoundProfileId:
+          json['reminderSoundProfileId'] as String? ?? 'default',
     );
   }
 }

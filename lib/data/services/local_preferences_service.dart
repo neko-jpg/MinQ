@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:minq/domain/home/home_view_data.dart';
@@ -31,6 +33,14 @@ class LocalPreferencesService {
       'in_app_review_prompted_at_v1';
   static const String _homeViewCacheKey = 'home_view_cache_v1';
   static const String _statsViewCacheKey = 'stats_view_cache_v1';
+  static const String _questContactLinksKey = 'quest_contact_links_v1';
+  static const String _webhookEndpointsKey = 'webhook_endpoints_v1';
+  static const String _usageLimitMinutesKey = 'usage_limit_minutes_v1';
+  static const String _usageUsedSecondsKey = 'usage_used_seconds_v1';
+  static const String _usageLastResetKey = 'usage_last_reset_epoch_v1';
+  static const String _notificationSoundProfileKey =
+      'notification_sound_profile_v1';
+  static const String _stripeCustomerIdKey = 'stripe_customer_id_v1';
 
   final Future<SharedPreferences> _prefsFuture;
   final NowProvider _now;
@@ -243,6 +253,151 @@ class LocalPreferencesService {
       term: term,
       capturedAt: capturedAt,
     );
+  }
+
+  Future<Map<int, String>> loadQuestContactLinks() async {
+    final prefs = await _prefsFuture;
+    final raw = prefs.getString(_questContactLinksKey);
+    if (raw == null || raw.isEmpty) {
+      return <int, String>{};
+    }
+
+    try {
+      final decoded = jsonDecode(raw) as Map<String, dynamic>;
+      final result = <int, String>{};
+      decoded.forEach((key, value) {
+        final questId = int.tryParse(key);
+        if (questId != null && value is String && value.isNotEmpty) {
+          result[questId] = value;
+        }
+      });
+      return result;
+    } catch (_) {
+      await prefs.remove(_questContactLinksKey);
+      return <int, String>{};
+    }
+  }
+
+  Future<void> saveQuestContactLinks(Map<int, String> links) async {
+    final prefs = await _prefsFuture;
+    if (links.isEmpty) {
+      await prefs.remove(_questContactLinksKey);
+      return;
+    }
+    final sanitized = <String, String>{};
+    links.forEach((key, value) {
+      if (value.trim().isEmpty) return;
+      sanitized[key.toString()] = value.trim();
+    });
+    if (sanitized.isEmpty) {
+      await prefs.remove(_questContactLinksKey);
+      return;
+    }
+    await prefs.setString(_questContactLinksKey, jsonEncode(sanitized));
+  }
+
+  Future<List<String>> loadWebhookEndpoints() async {
+    final prefs = await _prefsFuture;
+    final stored = prefs.getStringList(_webhookEndpointsKey) ?? <String>[];
+    return stored.where((endpoint) => endpoint.trim().isNotEmpty).toList();
+  }
+
+  Future<void> saveWebhookEndpoints(List<String> endpoints) async {
+    final prefs = await _prefsFuture;
+    final sanitized = endpoints
+        .map((endpoint) => endpoint.trim())
+        .where((endpoint) => endpoint.isNotEmpty)
+        .toList(growable: false);
+    if (sanitized.isEmpty) {
+      await prefs.remove(_webhookEndpointsKey);
+      return;
+    }
+    await prefs.setStringList(_webhookEndpointsKey, sanitized);
+  }
+
+  Future<int?> getUsageLimitMinutes() async {
+    final prefs = await _prefsFuture;
+    final minutes = prefs.getInt(_usageLimitMinutesKey);
+    if (minutes == null || minutes <= 0) {
+      return null;
+    }
+    return minutes;
+  }
+
+  Future<void> setUsageLimitMinutes(int? minutes) async {
+    final prefs = await _prefsFuture;
+    if (minutes == null || minutes <= 0) {
+      await prefs.remove(_usageLimitMinutesKey);
+      return;
+    }
+    await prefs.setInt(_usageLimitMinutesKey, minutes);
+  }
+
+  Future<int> getUsageUsedSeconds() async {
+    final prefs = await _prefsFuture;
+    return prefs.getInt(_usageUsedSecondsKey) ?? 0;
+  }
+
+  Future<void> setUsageUsedSeconds(int seconds) async {
+    final prefs = await _prefsFuture;
+    if (seconds <= 0) {
+      await prefs.remove(_usageUsedSecondsKey);
+      return;
+    }
+    await prefs.setInt(_usageUsedSecondsKey, seconds);
+  }
+
+  Future<DateTime?> getUsageLastReset() async {
+    final prefs = await _prefsFuture;
+    final stored = prefs.getInt(_usageLastResetKey);
+    if (stored == null || stored <= 0) {
+      return null;
+    }
+    return DateTime.fromMillisecondsSinceEpoch(stored, isUtc: true).toLocal();
+  }
+
+  Future<void> setUsageLastReset(DateTime now) async {
+    final prefs = await _prefsFuture;
+    await prefs.setInt(
+      _usageLastResetKey,
+      now.toUtc().millisecondsSinceEpoch,
+    );
+  }
+
+  Future<String?> getNotificationSoundProfileId() async {
+    final prefs = await _prefsFuture;
+    final id = prefs.getString(_notificationSoundProfileKey);
+    if (id == null || id.isEmpty) {
+      return null;
+    }
+    return id;
+  }
+
+  Future<void> setNotificationSoundProfileId(String? id) async {
+    final prefs = await _prefsFuture;
+    if (id == null || id.isEmpty) {
+      await prefs.remove(_notificationSoundProfileKey);
+      return;
+    }
+    await prefs.setString(_notificationSoundProfileKey, id);
+  }
+
+  Future<String?> getStripeCustomerId() async {
+    final prefs = await _prefsFuture;
+    final id = prefs.getString(_stripeCustomerIdKey);
+    if (id == null || id.trim().isEmpty) {
+      return null;
+    }
+    return id.trim();
+  }
+
+  Future<void> setStripeCustomerId(String? id) async {
+    final prefs = await _prefsFuture;
+    if (id == null || id.trim().isEmpty) {
+      await prefs.remove(_stripeCustomerIdKey);
+      return;
+    }
+    await prefs.setString(_stripeCustomerIdKey, id.trim());
   }
 
   Future<void> saveHomeViewData(HomeViewData data) async {

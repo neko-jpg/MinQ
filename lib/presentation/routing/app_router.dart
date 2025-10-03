@@ -87,7 +87,7 @@ class AppRoutes {
   static const notificationSettings = '/settings/notifications';
   static const profileSettings = '/settings/profile';
   static const pairMatching = '/pair/matching';
-  static const pairChat = '/pair/chat/:buddyId';
+  static const pairChat = '/pair/chat/:pairId';
   static const accountDeletion = '/settings/delete-account';
   static const home = '/';
   static const stats = '/stats';
@@ -379,8 +379,8 @@ class NavigationUseCase {
     final uri = Uri(path: AppRoutes.pairMatching, queryParameters: code != null ? {'code': code} : null);
     _router.go(uri.toString());
   }
-  void goToPairChat(String buddyId) =>
-      _router.go(AppRoutes.pairChat.replaceFirst(':buddyId', buddyId));
+  void goToPairChat(String pairId) =>
+      _router.go(AppRoutes.pairChat.replaceFirst(':pairId', pairId));
   void goHome() => _router.go(AppRoutes.home);
   void goToStats() => _router.go(AppRoutes.stats);
   void goToPair() => _router.go(AppRoutes.pair);

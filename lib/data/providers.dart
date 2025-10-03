@@ -7,37 +7,115 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:minq/config/stripe_config.dart';
+import 'package:minq/core/sharing/ogp_image_generator.dart';
+import 'package:minq/core/sharing/share_service.dart';
+import 'package:minq/core/logging/app_logger.dart';
+import 'package:minq/data/repositories/contact_link_repository.dart';
 import 'package:minq/data/repositories/firebase_auth_repository.dart';
 import 'package:minq/data/repositories/pair_repository.dart';
 import 'package:minq/data/repositories/quest_log_repository.dart';
 import 'package:minq/data/repositories/quest_repository.dart';
 import 'package:minq/data/repositories/user_repository.dart';
-import 'package:minq/data/services/crash_recovery_store.dart';
-import 'package:minq/data/services/firestore_sync_service.dart';
-import 'package:minq/data/services/isar_service.dart';
-import 'package:minq/data/services/notification_service.dart';
-import 'package:minq/data/services/photo_storage_service.dart';
-import 'package:minq/data/services/local_preferences_service.dart';
-import 'package:minq/data/services/remote_config_service.dart';
-import 'package:minq/data/services/time_consistency_service.dart';
-import 'package:minq/data/services/marketing_attribution_service.dart';
-import 'package:minq/data/services/app_locale_controller.dart';
 import 'package:minq/data/services/analytics_service.dart';
-import 'package:minq/data/services/image_moderation_service.dart';
-import 'package:minq/data/services/deep_link_service.dart';
-import 'package:minq/data/services/in_app_review_service.dart';
+import 'package:minq/data/services/app_locale_controller.dart';
 import 'package:minq/data/services/connectivity_service.dart';
+import 'package:minq/data/services/crash_recovery_store.dart';
+import 'package:minq/data/services/deep_link_service.dart';
+import 'package:minq/data/services/firestore_sync_service.dart';
+import 'package:minq/data/services/focus_music_service.dart';
+import 'package:minq/data/services/image_moderation_service.dart';
+import 'package:minq/data/services/in_app_review_service.dart';
+import 'package:minq/data/services/isar_service.dart';
+import 'package:minq/data/services/local_preferences_service.dart';
+import 'package:minq/data/services/marketing_attribution_service.dart';
+import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
-import 'package:minq/core/sharing/share_service.dart';
-import 'package:minq/core/sharing/ogp_image_generator.dart';
-import 'package:minq/core/logging/app_logger.dart';
+import 'package:minq/data/services/photo_storage_service.dart';
+import 'package:minq/data/services/remote_config_service.dart';
+import 'package:minq/data/services/speech_input_service.dart';
+import 'package:minq/data/services/stripe_billing_service.dart';
+import 'package:minq/data/services/time_consistency_service.dart';
+import 'package:minq/data/services/usage_limit_service.dart';
+import 'package:minq/data/services/webhook_dispatch_service.dart';
 import 'package:minq/domain/config/feature_flags.dart';
-import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/log/quest_log.dart';
-import 'package:minq/domain/user/user.dart' as minq_user;
+import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/pair/pair.dart' as minq_pair;
+import 'package:minq/domain/quest/quest.dart';
+import 'package:minq/domain/recommendation/habit_ai_suggestion_service.dart';
+import 'package:minq/domain/user/user.dart' as minq_user;
+import 'package:speech_to_text/speech_to_text.dart';
+
+final httpClientProvider = Provider<http.Client>((ref) {
+  final client = http.Client();
+  ref.onDispose(client.close);
+  return client;
+});
+
+final appLoggerProvider = Provider<AppLogger>((ref) {
+  final logger = AppLogger();
+  logger.initialize();
+  return logger;
+});
+
+final remoteConfigServiceProvider = Provider<RemoteConfigService>((ref) {
+  return RemoteConfigService(ref.watch(remoteConfigProvider));
+});
+
+final speechToTextProvider = Provider<SpeechToText>((ref) => SpeechToText());
+
+final speechInputServiceProvider = Provider<SpeechInputService>((ref) {
+  return SpeechInputService(ref.watch(speechToTextProvider));
+});
+
+final audioPlayerProvider = Provider<AudioPlayer>((ref) {
+  final player = AudioPlayer();
+  ref.onDispose(player.dispose);
+  return player;
+});
+
+final focusMusicServiceProvider = Provider<FocusMusicService>((ref) {
+  final service = FocusMusicService(ref.watch(audioPlayerProvider));
+  ref.onDispose(() {
+    // ignore: discarded_futures
+    service.dispose();
+  });
+  return service;
+});
+
+final focusMusicPlayerStateProvider = StreamProvider<PlayerState>((ref) {
+  return ref.watch(focusMusicServiceProvider).playerStateStream;
+});
+
+final contactLinkRepositoryProvider = Provider<ContactLinkRepository>((ref) {
+  return ContactLinkRepository(ref.watch(localPreferencesServiceProvider));
+});
+
+final usageLimitServiceProvider = Provider<UsageLimitService>((ref) {
+  return UsageLimitService(ref.watch(localPreferencesServiceProvider));
+});
+
+final webhookDispatchServiceProvider = Provider<WebhookDispatchService>((ref) {
+  return WebhookDispatchService(
+    client: ref.watch(httpClientProvider),
+    preferences: ref.watch(localPreferencesServiceProvider),
+    logger: ref.watch(appLoggerProvider),
+  );
+});
+
+final stripeBillingServiceProvider = Provider<StripeBillingService>((ref) {
+  final config = StripeConfig.fromRemoteConfig(ref.watch(remoteConfigServiceProvider));
+  return StripeBillingService(
+    client: ref.watch(httpClientProvider),
+    config: config,
+    logger: ref.watch(appLoggerProvider),
+  );
+});
 
 final notificationServiceProvider = Provider<NotificationService>(
   (ref) => NotificationService(),
@@ -55,6 +133,26 @@ final notificationTapStreamProvider = StreamProvider<String>((ref) async* {
     yield initialPayload;
   }
   yield* notifications.notificationTapStream;
+});
+
+final notificationSoundProfilesProvider =
+    Provider<List<NotificationSoundProfile>>(
+  (ref) => NotificationSoundProfile.presets,
+);
+
+final selectedNotificationSoundProfileProvider =
+    FutureProvider<NotificationSoundProfile>((ref) async {
+  final service = ref.watch(notificationServiceProvider);
+  final profileId = await service.getReminderSoundProfileId();
+  return NotificationSoundProfile.byId(profileId);
+});
+
+final webhookEndpointsProvider = FutureProvider<List<Uri>>((ref) {
+  return ref.watch(webhookDispatchServiceProvider).loadEndpoints();
+});
+
+final stripeCustomerIdProvider = FutureProvider<String?>((ref) {
+  return ref.watch(localPreferencesServiceProvider).getStripeCustomerId();
 });
 
 final deepLinkServiceProvider = Provider<DeepLinkService>((ref) {
@@ -235,6 +333,8 @@ final appStartupProvider = FutureProvider<void>((ref) async {
     final notifications = ref.read(notificationServiceProvider);
     final permissionGranted = await notifications.init();
     ref.read(notificationPermissionProvider.notifier).state = permissionGranted;
+
+    await ref.read(remoteConfigServiceProvider).initialize();
 
     await ref.watch(isarProvider.future);
     await ref.read(questRepositoryProvider).seedInitialQuests();
@@ -457,6 +557,11 @@ final questByIdProvider = FutureProvider.family<Quest?, int>((ref, id) async {
   return ref.read(questRepositoryProvider).getQuestById(id);
 });
 
+final questContactLinkProvider =
+    FutureProvider.family<String?, int>((ref, questId) async {
+  return ref.watch(contactLinkRepositoryProvider).getLink(questId);
+});
+
 final streakProvider = FutureProvider<int>((ref) async {
   await _ensureStartup(ref);
   final user = await ref.watch(localUserProvider.future);
@@ -496,6 +601,22 @@ final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
       .read(questLogRepositoryProvider)
       .getLogsForUser(user.uid);
   return logs.take(30).toList();
+});
+
+final habitAiSuggestionServiceProvider =
+    Provider<HabitAiSuggestionService>((ref) => HabitAiSuggestionService());
+
+final habitAiSuggestionsProvider = FutureProvider<List<HabitAiSuggestion>>(
+    (ref) async {
+  await _ensureStartup(ref);
+  final logs = await ref.watch(recentLogsProvider.future);
+  final quests = await ref.watch(userQuestsProvider.future);
+  final service = ref.watch(habitAiSuggestionServiceProvider);
+  return service.generateSuggestions(
+    userQuests: quests,
+    logs: logs,
+    now: DateTime.now(),
+  );
 });
 final heatmapDataProvider = FutureProvider<Map<DateTime, int>>((ref) async {
   await _ensureStartup(ref);
