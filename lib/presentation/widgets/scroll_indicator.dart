@@ -106,8 +106,6 @@ class ScrollIndicatorWrapper extends StatelessWidget {
   }
 
   Widget _buildScrollbar(BuildContext context, ScrollIndicatorConfig config) {
-    final theme = Theme.of(context);
-
     if (controller != null) {
       return Scrollbar(
         controller: controller,

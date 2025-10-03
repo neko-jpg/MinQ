@@ -2,6 +2,8 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/presentation/theme/typography_system.dart';
 
 class MinqTheme extends ThemeExtension<MinqTheme> {
   const MinqTheme({
@@ -156,7 +158,16 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     fontWeight: FontWeight.w500,
   );
 
-  double spacing(double units) => spaceBase * units;
+  _SpacingTokens get spacing => _SpacingTokens(this);
+
+  _RadiusTokens get radius => _RadiusTokens(this);
+
+  _TypographyTokens get typography => _TypographyTokens(this);
+
+  Color get primary => brandPrimary;
+  Color get success => accentSuccess;
+  Color get warning => accentWarning;
+  Color get error => accentError;
   
   double radius(double units) => radiusSmall * units;
 
@@ -778,4 +789,84 @@ extension MinqThemeTypography on MinqTheme {
 extension MinqThemeGetter on BuildContext {
   MinqTheme get tokens =>
       Theme.of(this).extension<MinqTheme>() ?? MinqTheme.light();
+}
+
+class _SpacingTokens {
+  const _SpacingTokens(this.theme);
+
+  final MinqTheme theme;
+
+  double call(double units) => theme.spaceBase * units;
+
+  double get none => SpacingSystem.none;
+  double get xxxs => SpacingSystem.xxxs;
+  double get xxs => SpacingSystem.xxs;
+  double get xs => SpacingSystem.xs;
+  double get sm => SpacingSystem.sm;
+  double get md => SpacingSystem.md;
+  double get lg => SpacingSystem.lg;
+  double get xl => SpacingSystem.xl;
+  double get xxl => SpacingSystem.xxl;
+  double get xxxl => SpacingSystem.xxxl;
+  double get xxxxl => SpacingSystem.xxxxl;
+  double get xxxxxl => SpacingSystem.xxxxxl;
+  double get xxxxxxl => SpacingSystem.xxxxxxl;
+
+  double get intimate => SpacingSystem.intimate;
+  double get breathing => SpacingSystem.breathing;
+  double get respectful => SpacingSystem.respectful;
+  double get dramatic => SpacingSystem.dramatic;
+
+  EdgeInsets all(double value) => SpacingSystem.all(value);
+  EdgeInsets horizontal(double value) => SpacingSystem.horizontal(value);
+  EdgeInsets vertical(double value) => SpacingSystem.vertical(value);
+  EdgeInsets symmetric({double horizontal = 0, double vertical = 0}) =>
+      SpacingSystem.symmetric(horizontal: horizontal, vertical: vertical);
+  EdgeInsets only({
+    double left = 0,
+    double top = 0,
+    double right = 0,
+    double bottom = 0,
+  }) =>
+      SpacingSystem.only(
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
+      );
+}
+
+class _RadiusTokens {
+  const _RadiusTokens(this.theme);
+
+  final MinqTheme theme;
+
+  double call(double units) => theme.spaceBase * units;
+
+  double get xs => theme.radiusSmall * 0.5;
+  double get sm => theme.radiusSmall;
+  double get md => theme.radiusMedium;
+  double get lg => theme.radiusLarge;
+  double get xl => theme.radiusXLarge;
+  double get full => 999;
+}
+
+class _TypographyTokens {
+  const _TypographyTokens(this.theme);
+
+  final MinqTheme theme;
+
+  TextStyle get h1 => theme.displayMedium;
+  TextStyle get h2 => theme.displaySmall;
+  TextStyle get h3 => theme.titleLarge;
+  TextStyle get h4 => theme.titleMedium;
+  TextStyle get h5 => theme.titleSmall;
+  TextStyle get bodyLarge => theme.bodyLarge;
+  TextStyle get body => theme.bodyMedium;
+  TextStyle get bodyMedium => theme.bodyMedium;
+  TextStyle get bodySmall => theme.bodySmall;
+  TextStyle get caption => theme.labelSmall;
+  TextStyle get label => theme.labelSmall;
+  TextStyle get button => theme.titleSmall;
+  TextStyle get overline => TypographySystem.overline();
 }

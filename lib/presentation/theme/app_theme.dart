@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/build_theme.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
+export 'package:minq/presentation/theme/minq_theme.dart';
+
 /// Centralized definition of the app's light and dark themes.
 ///
 /// This file uses the `buildTheme` utility to construct `ThemeData` objects

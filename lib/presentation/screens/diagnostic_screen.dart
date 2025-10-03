@@ -92,7 +92,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
           _buildDiagnosticItem(
             title: 'データベーステスト',
             description: 'ローカルデータベースの動作を確認',
-            icon: Icons.database_outlined,
+            icon: Icons.storage_outlined,
             testKey: 'database',
             onTest: _testDatabase,
             tokens: tokens,
