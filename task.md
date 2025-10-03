@@ -1,567 +1,578 @@
+プロジェクトタスクチェックリスト (リセット版)
+このリストは、全てのタスクを未完了（[]）の状態に戻し、プロジェクトの新たな出発点とするために作成されました。
+
 P0 (必須・不具合/統一) - マストハブ
-[x] 色統一: カード背景を tokens.surface に統一（Darkは RGB(61,68,77)）。直指定色を撤去。
+[ ] 色統一: カード背景を tokens.surface に統一（Darkは RGB(61,68,77)）。直指定色を撤去。
 
-[x] Onboarding: ColorScheme 直参照 → すべて context.tokens に置換。_FeatureCard は CardTheme 準拠。
+[ ] Onboarding: ColorScheme 直参照 → すべて context.tokens に置換。_FeatureCard は CardTheme 準拠。
 
-[x] Riverpodエラー対策: ref.listen → ref.listenManual に変更し ProviderSubscription を dispose() で close()。
+[ ] Riverpodエラー対策: ref.listen → ref.listenManual に変更し ProviderSubscription を dispose() で close()。
 
-[x] BOTTOM OVERFLOWED対策: SafeArea、SingleChildScrollView+viewInsets余白、ConstrainedBox(minHeight)、Expanded/Flexible 徹底。
+[ ] BOTTOM OVERFLOWED対策: SafeArea、SingleChildScrollView+viewInsets余白、ConstrainedBox(minHeight)、Expanded/Flexible 徹底。
 
-[x] 認証フロー完成: Google/Apple/Email、失敗/再試行、初回プロフィール初期化。
+[ ] 認証フロー完成: Google/Apple/Email、失敗/再試行、初回プロフィール初期化。
 
-[x] MiniQuest CRUD: 作成/編集/削除/並び替え、通知スケジュール。
+[ ] MiniQuest CRUD: 作成/編集/削除/並び替え、通知スケジュール。
 
-[x] 進捗ログ: 記録/取り消し、日跨ぎ・タイムゾーン処理。
+[ ] 進捗ログ: 記録/取り消し、日跨ぎ・タイムゾーン処理。
 
-[x] Stats確定: 連続日数・7日達成率・当日完了数、0件時の行動喚起カード。
+[ ] Stats確定: 連続日数・7日達成率・当日完了数、0件時の行動喚起カード。
 
-[x] ペア機能の安全: 匿名、通報/ブロック、NGワード基本フィルタ。
+[ ] ペア機能の安全: 匿名、通報/ブロック、NGワード基本フィルタ。
 
-[x] プロフィール実データ化: Firestore連携、ダミー撤去ボタンを押したときにしっかりとすべての機能がつかえるようにする。
+[ ] プロフィール実データ化: Firestore連携、ダミー撤去ボタンを押したときにしっかりとすべての機能がつかえるようにする。
 
-[x] 同期バナー: 表示条件整理、表示後 acknowledgeBanner()。
+[ ] 同期バナー: 表示条件整理、表示後 acknowledgeBanner()。
 
-[x] エラーUX標準化: SnackBar/Dialog/EmptyState のガイド適用。
+[ ] エラーUX標準化: SnackBar/Dialog/EmptyState のガイド適用。
 
-[x]戻るボタンや、×ボタンが機能するか確認さらにAndoroidアプリでの戻るボタンでも確認、Appleユーザように戻るボタンも配置かつ機能しているかも確認
+[ ] 戻るボタンや、×ボタンが機能するか確認さらにAndoroidアプリでの戻るボタンでも確認、Appleユーザように戻るボタンも配置かつ機能しているかも確認
 
-[x]'package:flutter_riverpod/src/consumer.dart': Failed assertion: line 600 pos 7: 'debugDoingBuild':
-ref.listen can only be used within the build method of a ConsumerWidget
-See also: https://docs.flutter.dev/testing/errors　このエラーを直してhome画面と進捗画面が表示されるようにし色統一がされていることを確認する。
+[ ] 'package:flutter_riverpod/src/consumer.dart': Failed assertion: line 600 pos 7: 'debugDoingBuild': ref.listen can only be used within the build method of a ConsumerWidget See also: https://docs.flutter.dev/testing/errors　このエラーを直してhome画面と進捗画面が表示されるようにし色統一がされていることを確認する。
 
 P1 (体験磨き) - UX改善
-[x] ボタン規格統一: minq_buttons.dart にVariant集約（Elevated/Outlined/Text）。
+[ ] ボタン規格統一: minq_buttons.dart にVariant集約（Elevated/Outlined/Text）。
 
-[x] カード様式統一: 枠線/角丸トークン統一。
+[ ] カード様式統一: 枠線/角丸トークン統一。
 
-[x] ローディング: リスト=スケルトン、ボタン=スピナー、グラフ=フェード。
+[ ] ローディング: リスト=スケルトン、ボタン=スピナー、グラフ=フェード。
 
-[x] i18n: ハードコード文言抽出→.arb、ja完了/en雛形。
+[ ] i18n: ハードコード文言抽出→.arb、ja完了/en雛形。
 
-[x] Onboarding短縮: 最大3枚、通知許可→初回クエスト作成へ直行。
+[ ] Onboarding短縮: 最大3枚、通知許可→初回クエスト作成へ直行。
 
-[x] 共有カード調整: 余白/フォント/エクスポート解像度統一。
+[ ] 共有カード調整: 余白/フォント/エクスポート解像度統一。
 
-[x] DeepLink/Push: 通知タップで対象画面へ遷移。
+[ ] DeepLink/Push: 通知タップで対象画面へ遷移。
 
-[x] 設定: バックアップ/JSONエクスポート、複数リマインド時刻。
+[ ] 設定: バックアップ/JSONエクスポート、複数リマインド時刻。
 
-[x] 空状態コピー統一: 次アクション提示。
+[ ] 空状態コピー統一: 次アクション提示。
 
-[x] アクセシビリティ: Semantics、48dpタップ、TextScale 1.3対応。
+[ ] アクセシビリティ: Semantics、48dpタップ、TextScale 1.3対応。
 
-[x] 画像最適化: cacheWidth/Height 指定の徹底。
+[ ] 画像最適化: cacheWidth/Height 指定の徹底。
 
-[x] ナビ/コピー統一: 肯定=右、否定=左、CTA表現統一。
+[ ] ナビ/コピー統一: 肯定=右、否定=左、CTA表現統一。
 
 P2 (成長/収益/運用/技術負債) - 拡張性と安定性
 P2-1. アナリティクスと収益
-[x] Analytics設計: Auth→Onboard→QuestCreate→Complete→Share のイベント定義。
+[ ] Analytics設計: Auth→Onboard→QuestCreate→Complete→Share のイベント定義。
 
-[x] Remote Config/A-B: コピー/CTA配置の実験基盤。
+[ ] Remote Config/A-B: コピー/CTA配置の実験基盤。
 
-[x] モネタイズ方針: AdMobの配置ポリシー（実行導線では非表示）、サブスク権限の下準備。
+[ ] モネタイズ方針: AdMobの配置ポリシー（実行導線では非表示）、サブスク権限の下準備。
 
-[x] 招待/リファラ: 招待リンク、導線計測。
+[ ] 招待/リファラ: 招待リンク、導線計測。
 
 P2-2. デザインシステムとアクセシビリティ
-[x] 祝アニメーション: ペア成立時の軽量アニメ。
+[ ] 祝アニメーション: ペア成立時の軽量アニメ。
 
-[x] 高度統計/CSV出力: 期間比較、エクスポート。
+[ ] 高度統計/CSV出力: 期間比較、エクスポート。
 
-[x] QAチェック: 端末サイズ/ダーク・ライト/オフライン動作の回帰テスト。
+[ ] QAチェック: 端末サイズ/ダーク・ライト/オフライン動作の回帰テスト。
 
-[x] テーマトークン監査: Spacing/Radius/Elevation/Border を定義・未使用色削除。
+[ ] テーマトークン監査: Spacing/Radius/Elevation/Border を定義・未使用色削除。
 
-[x] タイポグラフィ階層定義:（H1–H6、Body、Caption、Mono）。
+[ ] タイポグラフィ階層定義:（H1–H6、Body、Caption、Mono）。
 
-[x] ベースライングリッド適用:（4/8px）とマージン統一。
+[ ] ベースライングリッド適用:（4/8px）とマージン統一。
 
-[x] コントラスト検証:（WCAG AA/AAA）と不適合箇所修正。
+[ ] コントラスト検証:（WCAG AA/AAA）と不適合箇所修正。
 
-[x] Magic Number撤去:→全てトークン化。
+[ ] Magic Number撤去:→全てトークン化。
 
-[x] EdgeInsets直書き撤去:→Spacingトークンへ置換。
+[ ] EdgeInsets直書き撤去:→Spacingトークンへ置換。
 
-[x] アセットアイコン統一:（アイコンセット固定・不要削除・ツリーシェイク）。
+[ ] アセットアイコン統一:（アイコンセット固定・不要削除・ツリーシェイク）。
 
-[x] Reduce Motion対応:（OS設定でアニメ無効）。
+[ ] Reduce Motion対応:（OS設定でアニメ無効）。
 
-[x] ハプティクス規格:（成功/警告/軽タップの統一）。
+[ ] ハプティクス規格:（成功/警告/軽タップの統一）。
 
-[x] フォーカスリング/アクセント色: のキーボード操作対応。
+[ ] フォーカスリング/アクセント色: のキーボード操作対応。
 
 P2-3. UIコンポーネントとエラー処理
-[x] SnackBarグローバルマネージャ導入:（重複排他）。
+[ ] SnackBarグローバルマネージャ導入:（重複排他）。
 
-[x] ダイアログ/ボトムシートの標準コンポーネント化。
+[ ] ダイアログ/ボトムシートの標準コンポーネント化。
 
-[x] 空状態イラスト/アイコンのスタイル統一。
+[ ] 空状態イラスト/アイコンのスタイル統一。
 
-[x] フォームValidationメッセージ統一:（行内/下部どちらかに統一）。
+[ ] フォームValidationメッセージ統一:（行内/下部どちらかに統一）。
 
-[x] IMEオーバーラップ検証:（長文入力・日本語変換中）。
+[ ] IMEオーバーラップ検証:（長文入力・日本語変換中）。
 
-[x] TextOverflowポリシー統一:（ellipsis/softWrap）。
+[ ] TextOverflowポリシー統一:（ellipsis/softWrap）。
 
-[x] 画像プレースホルダ/失敗時のFallback実装。
+[ ] 画像プレースホルダ/失敗時のFallback実装。
 
-[x] Hero/ImplicitアニメのEasing/Duration規格化。
+[ ] Hero/ImplicitアニメのEasing/Duration規格化。
 
-[x] タブ/BottomNavのバッジ規格:（数値/点表示）。
+[ ] タブ/BottomNavのバッジ規格:（数値/点表示）。
 
-[x] スクロール到達インジケータ:（EdgeGlow/Scrollbar統一）。
+[ ] スクロール到達インジケータ:（EdgeGlow/Scrollbar統一）。
 
 P2-4. アーキテクチャとテスト
-[x] ProviderObserver導入:（Riverpod遷移ログ）。
+[ ] ProviderObserver導入:（Riverpod遷移ログ）。
 
-[x] AsyncValue.guard の標準化:（例外→UI表現変換）。
+[ ] AsyncValue.guard の標準化:（例外→UI表現変換）。
 
-[x] Repositoryインターフェース化＋Fake実装。
+[ ] Repositoryインターフェース化＋Fake実装。
 
-[x] Now/Clock Provider導入:（時刻依存のテスト容易化）。
+[ ] Now/Clock Provider導入:（時刻依存のテスト容易化）。
 
-[x] AutoDispose/keepAlive の方針整理。
+[ ] AutoDispose/keepAlive の方針整理。
 
-[x] 依存循環検知:（import_lint設定）。
+[ ] 依存循環検知:（import_lint設定）。
 
-[x] Navigatorガード:（未ログイン時の保護）。
+[ ] Navigatorガード:（未ログイン時の保護）。
 
-[x] flutter_lints強化＋analyzer拡張:（prefer_const/avoid_print等）。
+[ ] flutter_lints強化＋analyzer拡張:（prefer_const/avoid_print等）。
 
-[x] import順序/未使用警告ゼロ化:（lint-staged）。
+[ ] import順序/未使用警告ゼロ化:（lint-staged）。
 
-[x] pre-commitフック:（format/lint/test）。
+[ ] pre-commitフック:（format/lint/test）。
 
-[x] Dart-defineで環境切替:（dev/stg/prod）。
+[ ] Dart-defineで環境切替:（dev/stg/prod）。
 
-[x] Flavor別Firebaseプロジェクト分離。
+[ ] Flavor別Firebaseプロジェクト分離。
 
-[x] Logger導入:（JSON構造ログ）。
+[ ] Logger導入:（JSON構造ログ）。
 
-[x] Crashlytics導入:（非致命ログ＋キー/パンくず）。
+[ ] Crashlytics導入:（非致命ログ＋キー/パンくず）。
 
-[x] Performance Monitoring:（起動/描画/HTTPトレース）。
+[ ] Performance Monitoring:（起動/描画/HTTPトレース）。
 
-[x] Sentryオプション:（リリースビルドのみ）。
+[ ] Sentryオプション:（リリースビルドのみ）。
 
-[x] Renovate/Dependabot設定:（依存更新）。
+[ ] Renovate/Dependabot設定:（依存更新）。
 
-[x] GitHub Actions: Lint/Test/Build/Artifacts。
+[ ] GitHub Actions: Lint/Test/Build/Artifacts。
 
-[x] CIでgoldenテスト差分チェック。
+[ ] CIでgoldenテスト差分チェック。
 
-[x] Fastlane:（署名/ビルド番号/配布自動化）。
+[ ] Fastlane:（署名/ビルド番号/配布自動化）。
 
-[x] コードカバレッジ収集:（閾値設定）。
+[ ] コードカバレッジ収集:（閾値設定）。
 
-[x] Conventional Commits:＋自動CHANGELOG生成。
+[ ] Conventional Commits:＋自動CHANGELOG生成。
 
-[x] CODEOWNERS/レビュー規約。
+[ ] CODEOWNERS/レビュー規約。
 
-[x] ユニットテスト:（Notifier/Repo）。
+[ ] ユニットテスト:（Notifier/Repo）。
 
-[x] ウィジェットテスト:（主要画面の状態分岐）。
+[ ] ウィジェットテスト:（主要画面の状態分岐）。
 
-[x] ゴールデンテスト:（デバイス3種・ライト/ダーク）。
+[ ] ゴールデンテスト:（デバイス3種・ライト/ダーク）。
 
-[x] integration_test:（認証→作成→達成→共有フロー）。
+[ ] integration_test:（認証→作成→達成→共有フロー）。
 
-[x] パフォーマンステスト:（初回描画/フレームドロップ）。
+[ ] パフォーマンステスト:（初回描画/フレームドロップ）。
 
-[x] 回帰テストシナリオ表作成:（手動QA）。
+[ ] 回帰テストシナリオ表作成:（手動QA）。
 
 P2-5. Firebase/インフラストラクチャ
-[x] Firestoreルールv2整理:（最小権限・ロール分離）。
+[ ] Firestoreルールv2整理:（最小権限・ロール分離）。
 
-[x] ルールユニットテスト:（エミュレータ）。
+[ ] ルールユニットテスト:（エミュレータ）。
 
-[x] インデックス/複合インデックス定義。
+[ ] インデックス/複合インデックス定義。
 
-[x] TTL/ソフトデリート方針。
+[ ] TTL/ソフトデリート方針。
 
-[x] 一意制約:（Cloud Functionsで強制）。
+[ ] 一意制約:（Cloud Functionsで強制）。
 
-[x] オフライン永続化/キャッシュ上限設定。
+[ ] オフライン永続化/キャッシュ上限設定。
 
-[x] 競合解決ポリシー:（last-write-win/merge）。
+[ ] 競合解決ポリシー:（last-write-win/merge）。
 
-[x] リトライ/バックオフ:（ネット不安定時）。
+[ ] リトライ/バックオフ:（ネット不安定時）。
 
-[x] 書込レート制御:（料金最適化）。
+[ ] 書込レート制御:（料金最適化）。
 
-[x] データモデル版管理/移行スクリプト。
+[ ] データモデル版管理/移行スクリプト。
 
-[x] BigQueryエクスポート有効化。
+[ ] BigQueryエクスポート有効化。
 
 P2-6. 通知とディープリンク
-[x] 通知チャンネル定義:（Android：重要/通常/消音）。
+[ ] 通知チャンネル定義:（Android：重要/通常/消音）。
 
-[x] 通知アクション:（完了/スヌーズ）。
+[ ] 通知アクション:（完了/スヌーズ）。
 
-[x] まとめ通知:（デイリーサマリ）。
+[ ] まとめ通知:（デイリーサマリ）。
 
-[x] iOS provisional許可対応:（静かに配信）。
+[ ] iOS provisional許可対応:（静かに配信）。
 
-[x] DeepLinkパラメタ検証/サニタイズ。
+[ ] DeepLinkパラメタ検証/サニタイズ。
 
-[x] Android App Links/ iOS Universal Links整備。
+[ ] Android App Links/ iOS Universal Links整備。
 
-[x] Webフォールバックページ:（DeepLink失敗時）。
+[ ] Webフォールバックページ:（DeepLink失敗時）。
 
 P2-7. App Storeとプラットフォーム連携
-[x] In-App Review導線。
+[ ] In-App Review導線。
 
-[x] In-App Update:（Android柔軟更新）。
+[ ] In-App Update:（Android柔軟更新）。
 
-[x] Widget対応:（iOS/Androidホームウィジェット）。
+[ ] Widget対応:（iOS/Androidホームウィジェット）。
 
-[x] Quick Actions / App Shortcuts。
+[ ] Quick Actions / App Shortcuts。
 
-[x] 共有シートエクスポート:（画像/テキスト）。
+[ ] 共有シートエクスポート:（画像/テキスト）。
 
-[x] アバターアップロード:（Crop/圧縮）。
+[ ] アバターアップロード:（Crop/圧縮）。
 
-[x] 画像ストレージリサイズ:（Functionsで生成）。
+[ ] 画像ストレージリサイズ:（Functionsで生成）。
 
-[x] CSV/JSONエクスポート/インポート。
+[ ] CSV/JSONエクスポート/インポート。
 
-[x] カレンダー連携:（ICS出力）。
+[ ] カレンダー連携:（ICS出力）。
 
-[x] バックアップ/リストア:（Drive/Files）。
+[ ] バックアップ/リストア:（Drive/Files）。
 
 P2-8. ペア機能の高度化とモデレーション
-[x] モデレーション方針:（ペア機能：通報→審査→措置）。
+[ ] モデレーション方針:（ペア機能：通報→審査→措置）。
 
-[x] NGワード辞書更新フロー。
+[ ] NGワード辞書更新フロー。
 
-[x] レート制限/スパム対策:（Cloud Functions）。
+[ ] レート制限/スパム対策:（Cloud Functions）。
 
-[x] ブロック/ミュート実装拡張:（期間/解除）。
+[ ] ブロック/ミュート実装拡張:（期間/解除）。
 
-[x] マッチング設定:（時間帯/言語/目的）。
+[ ] マッチング設定:（時間帯/言語/目的）。
 
-[x] 再マッチ回避/クールダウン。
+[ ] 再マッチ回避/クールダウン。
 
 P2-9. ユーザ体験の磨き込み
-[x] Onboarding計測:（ステップ別離脱）。
+[ ] Onboarding計測:（ステップ別離脱）。
 
-[x] コーチマーク/チュートリアル。
+[ ] コーチマーク/チュートリアル。
 
-[x] ライフログのテンプレ/おすすめ導線。
+[ ] ライフログのテンプレ/おすすめ導線。
 
-[x] 習慣の一時停止/スキップ/凍結日:（Streak保護）。
+[ ] 習慣の一時停止/スキップ/凍結日:（Streak保護）。
 
-[x] スヌーズ/Do Not Disturb時間帯。
+[ ] スヌーズ/Do Not Disturb時間帯。
 
-[x] スマート提案:（過去実績→通知時刻提案）。
+[ ] スマート提案:（過去実績→通知時刻提案）。
 
-[x] バッジ/実績/週次チャレンジ。
+[ ] バッジ/実績/週次チャレンジ。
 
-[x] ペアスコアボード/軽量ランキング。
+[ ] ペアスコアボード/軽量ランキング。
 
-[x] 多言語整形:（日時/数値/通貨/単位）。
+[ ] 多言語整形:（日時/数値/通貨/単位）。
 
-[x] Bidi対応:（RTL検証）。
+[ ] Bidi対応:（RTL検証）。
 
-[x] 日本語固有表記:（全角/半角/長音）方針。
+[ ] 日本語固有表記:（全角/半角/長音）方針。
 
-[x] 曜日/祝日表示:（ロケール準拠）。
+[ ] 曜日/祝日表示:（ロケール準拠）。
 
 P2-10. 端末対応とパフォーマンス
-[x] 端末マトリクスQA:（小/中/大/折りたたみ/タブ）。
+[ ] 端末マトリクスQA:（小/中/大/折りたたみ/タブ）。
 
-[x] セーフエリア/ノッチ/ホームインジケータ検証。
+[ ] セーフエリア/ノッチ/ホームインジケータ検証。
 
-[x] 画面回転/ランドスケープ制御。
+[ ] 画面回転/ランドスケープ制御。
 
-[x] 低速端末/低メモリ耐性。
+[ ] 低速端末/低メモリ耐性。
 
-[x] 起動時間短縮:（遅延初期化/画像プリフェッチ）。
+[ ] 起動時間短縮:（遅延初期化/画像プリフェッチ）。
 
-[x] ABI別分割/圧縮:（Android App Bundle最適化）。
+[ ] ABI別分割/圧縮:（Android App Bundle最適化）。
 
-[x] 未使用アセット/フォント削除。
+[ ] 未使用アセット/フォント削除。
 
-[x] ベクター化:（PNG→SVG/PNGW）。
+[ ] ベクター化:（PNG→SVG/PNGW）。
 
-[x] 背景Isolateで重処理:（集計/書き出し）。
+[ ] 背景Isolateで重処理:（集計/書き出し）。
 
 P2-11. 法務とリリース運用
-[x] 法務: 利用規約/プライバシーポリシー整備。
+[ ] 法務: 利用規約/プライバシーポリシー整備。
 
-[x] データセーフティフォーム:（Play Console）。
+[ ] データセーフティフォーム:（Play Console）。
 
-[x] アカウント削除/データ削除導線:（GDPR/個人情報保護法）。
+[ ] アカウント削除/データ削除導線:（GDPR/個人情報保護法）。
 
-[x] 年齢配慮/ペア機能の年少者保護。
+[ ] 年齢配慮/ペア機能の年少者保護。
 
-[x] 追跡拒否トグル:（Do Not Track）。
+[ ] 追跡拒否トグル:（Do Not Track）。
 
-[x] メタデータ多言語化/ASOキーワード。
+[ ] メタデータ多言語化/ASOキーワード。
 
-[x] 内部テスト/クローズドテスト/オープンβ運用。
+[ ] 内部テスト/クローズドテスト/オープンβ運用。
 
-[x] プレローンチレポート対応:（クラッシュ/互換）。
+[ ] プレローンチレポート対応:（クラッシュ/互換）。
 
-[x] バグ報告機能:（スクショ添付/ログ同梱）。
+[ ] バグ報告機能:（スクショ添付/ログ同梱）。
 
-[x] ストア素材作成:（スクショ/動画/アイコン/説明文）。
+[ ] ストア素材作成:（スクショ/動画/アイコン/説明文）。
 
-[x] インアプリFAQ/ヘルプ/問い合わせ。
+[ ] インアプリFAQ/ヘルプ/問い合わせ。
 
-[x] 稼働監視ダッシュボード:（障害/指標）。
+[ ] 稼働監視ダッシュボード:（障害/指標）。
 
-[x] Slack/メール通知:（重大イベント）。
+[ ] Slack/メール通知:（重大イベント）。
 
-[x] リモートフラグのキルスイッチ。
+[ ] リモートフラグのキルスイッチ。
 
-[x] 実験テンプレ:（対象/指標/期間）。
+[ ] 実験テンプレ:（対象/指標/期間）。
 
-[x] 料金/権限のフェンス:（無料/有料機能切替）。
+[ ] 料金/権限のフェンス:（無料/有料機能切替）。
 
-[x] リファラ計測:（招待リンク/詐欺対策）。
+[ ] リファラ計測:（招待リンク/詐欺対策）。
 
-[x] 変更履歴/お知らせセンター。
+[ ] 変更履歴/お知らせセンター。
 
-[x] テックドキュメント整備:（ARCHITECTURE.md/RUNBOOK.md）。
+[ ] テックドキュメント整備:（ARCHITECTURE.md/RUNBOOK.md）。
 
-[x] デザインシステムガイド:（色/タイポ/モーション）。
+[ ] デザインシステムガイド:（色/タイポ/モーション）。
 
-[x] TODO/DEBT棚卸しと優先度付け。
+[ ] TODO/DEBT棚卸しと優先度付け。
 
-[x] 依存パッケージのライセンス表記。
+[ ] 依存パッケージのライセンス表記。
 
 P2-12. その他高度な機能・改善
-[x] FCMトピック設計:（ニュース/週次まとめ）。
+[ ] FCMトピック設計:（ニュース/週次まとめ）。
 
-[x] バックグラウンド同期の窓口:（WorkManager等）。
+[ ] バックグラウンド同期の窓口:（WorkManager等）。
 
-[x] タイムゾーン異常/うるう年/月末処理の境界テスト。
+[ ] タイムゾーン異常/うるう年/月末処理の境界テスト。
 
-[x] DND中の通知延期ロジック。
+[ ] DND中の通知延期ロジック。
 
-[x] 連続通知抑制:（デバウンス/バッチ）。
+[ ] 連続通知抑制:（デバウンス/バッチ）。
 
-[x] 例外セーフガード:（エラーバウンダリ相当の画面）。
+[ ] 例外セーフガード:（エラーバウンダリ相当の画面）。
 
-[x] ネットワーク断/機内モード時のデグレード表示。
+[ ] ネットワーク断/機内モード時のデグレード表示。
 
-[x] CDN/HTTPキャッシュ戦略:（外部静的アセット用）。
+[ ] CDN/HTTPキャッシュ戦略:（外部静的アセット用）。
 
-[x] 入力サニタイズ:（DeepLink/外部入力全般）。
+[ ] 入力サニタイズ:（DeepLink/外部入力全般）。
 
-[x] Play Integrity APIの検討:（改ざん対策）。
+[ ] Play Integrity APIの検討:（改ざん対策）。
 
-[x] アプリ内時刻表現の一貫性:（相対/絶対の規則）。
+[ ] アプリ内時刻表現の一貫性:（相対/絶対の規則）。
 
-[x] アプリ起動スプラッシュ画面の統一:（ライト/ダーク/ロゴ解像度）。
+[ ] アプリ起動スプラッシュ画面の統一:（ライト/ダーク/ロゴ解像度）。
 
-[x] ダークモード切替を即時反映:（再起動不要）。
+[ ] ダークモード切替を即時反映:（再起動不要）。
 
-[x] アクセントカラーをユーザ設定で切替可能に:（青/緑/紫系など）。
+[ ] アクセントカラーをユーザ設定で切替可能に:（青/緑/紫系など）。
 
-[x] フォントサイズ変更UI:（ユーザが調整可能）。
+[ ] フォントサイズ変更UI:（ユーザが調整可能）。
 
-[x] プロフィールのニックネーム重複検証。
+[ ] プロフィールのニックネーム重複検証。
 
-[x] ペア機能での「おすすめユーザ」表示:（条件：アクティブ度・時間帯）。
+[ ] ペア機能での「おすすめユーザ」表示:（条件：アクティブ度・時間帯）。
 
-[x] タスク/習慣のタグ機能:（分類・検索用）。
+[ ] タスク/習慣のタグ機能:（分類・検索用）。
 
-[x] クエストのアーカイブ機能:（削除せず非表示）。
+[ ] クエストのアーカイブ機能:（削除せず非表示）。
 
-[x] クエストのリマインド複数設定:（朝・昼・夜）。
+[ ] クエストのリマインド複数設定:（朝・昼・夜）。
 
-[x] クエストの優先度ラベル:（高/中/低）。
+[ ] クエストの優先度ラベル:（高/中/低）。
 
-[x] 達成画面のアニメーション追加:（祝福演出）。
+[ ] 達成画面のアニメーション追加:（祝福演出）。
 
-[x] Statsでの週単位・月単位切替。
+[ ] Statsでの週単位・月単位切替。
 
-[x] Statsのグラフにツールチップ追加:（正確な数値表示）。
+[ ] Statsのグラフにツールチップ追加:（正確な数値表示）。
 
-[x] データエクスポートをPDF形式でも提供。
+[ ] データエクスポートをPDF形式でも提供。
 
-[x] サーバーメンテナンス時のメッセージ画面。
+[ ] サーバーメンテナンス時のメッセージ画面。
 
-[x] オフラインモード時のUI表示改善:（読み取り専用モード）。
+[ ] オフラインモード時のUI表示改善:（読み取り専用モード）。
 
-[x] 通知タップで直接「今日のクエスト一覧」へ遷移。
+[ ] 通知タップで直接「今日のクエスト一覧」へ遷移。
 
-[x] 機種変更時のデータ移行ガイド:（Google Driveバックアップ）。
+[ ] 機種変更時のデータ移行ガイド:（Google Driveバックアップ）。
 
-[x] ストリーク途切れ時のリカバリー機能:（課金や広告視聴で保護）。
+[ ] ストリーク途切れ時のリカバリー機能:（課金や広告視聴で保護）。
 
-[x] ペアの進捗比較画面:（自分と相手のグラフ並列）。
+[ ] ペアの進捗比較画面:（自分と相手のグラフ並列）。
 
-[x] ペア解消機能:（トラブル時に一方解除可）。
+[ ] ペア解消機能:（トラブル時に一方解除可）。
 
-[x] ペアリマインド通知:（相手が未達成ならプッシュ）。
+[ ] ペアリマインド通知:（相手が未達成ならプッシュ）。
 
-[x] サーバーレスポンス遅延時のリトライUI。
+[ ] サーバーレスポンス遅延時のリトライUI。
 
-[x] バージョンアップ時の変更点案内:（What’s New画面）。
+[ ] バージョンアップ時の変更点案内:（What’s New画面）。
 
-[x] バージョン互換チェック:（古いクライアントを警告）。
+[ ] バージョン互換チェック:（古いクライアントを警告）。
 
-[x] ストア評価リクエスト導線:（一定利用後に表示）。
+[ ] ストア評価リクエスト導線:（一定利用後に表示）。
 
-[x] SNSシェア時のOGP画像生成:（クエスト達成バナー）。
+[ ] SNSシェア時のOGP画像生成:（クエスト達成バナー）。
 
-[x] ユーザ削除時の二重確認:（誤操作防止）。
+[ ] ユーザ削除時の二重確認:（誤操作防止）。
 
-[x] 通知の曜日/祝日カスタム:（休みの日は通知しない）。
+[ ] 通知の曜日/祝日カスタム:（休みの日は通知しない）。
 
-[x] 習慣テンプレート集:（例：朝ラン・読書・日記）。
+[ ] 習慣テンプレート集:（例：朝ラン・読書・日記）。
 
-[x] 習慣提案AI:（過去の記録から推奨）。
+[ ] 習慣提案AI:（過去の記録から推奨）。
 
-[x] 習慣に「難易度」属性追加:（簡単/普通/難しい）。
+[ ] 習慣に「難易度」属性追加:（簡単/普通/難しい）。
 
-[x] 習慣に「推定時間」属性追加:（5分/15分/30分）。
+[ ] 習慣に「推定時間」属性追加:（5分/15分/30分）。
 
-[x] 習慣の「場所」属性:（ジム/自宅/図書館）。
+[ ] 習慣の「場所」属性:（ジム/自宅/図書館）。
 
-[x] 習慣の「連絡先」リンク:（例：ペアのLINE）。
+[ ] 習慣の「連絡先」リンク:（例：ペアのLINE）。
 
-[x] 音声入力でクエスト作成。
+[ ] 音声入力でクエスト作成。
 
-[x] 習慣実行時のタイマー機能。
+[ ] 習慣実行時のタイマー機能。
 
-[x] 習慣実行中のBGM:（集中モード）。
+[ ] 習慣実行中のBGM:（集中モード）。
 
-[x] ペア同士の軽いチャット:（スタンプ/定型文のみ）。
+[ ] ペア同士の軽いチャット:（スタンプ/定型文のみ）。
 
-[x] 不正利用検出:（短時間で大量クエスト完了→警告）。
+[ ] 不正利用検出:（短時間で大量クエスト完了→警告）。
 
-[x] 利用時間制限:（親子モード）。
+[ ] 利用時間制限:（親子モード）。
 
-[x] デバイス通知音のカスタム。
+[ ] デバイス通知音のカスタム。
 
-[x] アプリ内での「よくある質問」ヘルプセンター。
+[ ] アプリ内での「よくある質問」ヘルプセンター。
 
-[x] フィードバック投稿フォーム:（Googleフォーム連携）。
+[ ] フィードバック投稿フォーム:（Googleフォーム連携）。
 
-[x] アプリ内アンケート:（UI改善用）。
+[ ] アプリ内アンケート:（UI改善用）。
 
-[x] バッジシステム:（7日連続達成・30日達成）。
+[ ] バッジシステム:（7日連続達成・30日達成）。
 
-[x] アチーブメント一覧画面。
+[ ] アチーブメント一覧画面。
 
-[x] プロフィールに「獲得バッジ数」表示。
+[ ] プロフィールに「獲得バッジ数」表示。
 
-[x] イベントモード:（期間限定クエスト）。
+[ ] イベントモード:（期間限定クエスト）。
 
-[x] チーム習慣:（ペア以上＝複数人での達成競争）。
+[ ] チーム習慣:（ペア以上＝複数人での達成競争）。
 
-[x] イベントランキング:（習慣数で競う）。
+[ ] イベントランキング:（習慣数で競う）。
 
-[x] ISO 27001/SOC 2準拠のセキュリティポリシー策定。
+[ ] ISO 27001/SOC 2準拠のセキュリティポリシー策定。
 
-[x] 差分バックアップ+暗号化ZIPのユーザ直接DL機能。
+[ ] 差分バックアップ+暗号化ZIPのユーザ直接DL機能。
 
-[x] マルチリージョンFirestore→Datastoreレプリケーション設計。
+[ ] マルチリージョンFirestore→Datastoreレプリケーション設計。
 
-[x] CDNヘッダ最適化:（Cache-Control/Etag/ Brotli自動）。
+[ ] CDNヘッダ最適化:（Cache-Control/Etag/ Brotli自動）。
 
-[x] アプリ起動時プリロード戦略:（Warm-up isolate／DWU削減）。
+[ ] アプリ起動時プリロード戦略:（Warm-up isolate／DWU削減）。
 
-[x] Chaos Testing:（ネット断・メモリ圧迫・時刻改変）。
+[ ] Chaos Testing:（ネット断・メモリ圧迫・時刻改変）。
 
-[x] Fuzz Testing:（フォーム入力の異常系自動生成）。
+[ ] Fuzz Testing:（フォーム入力の異常系自動生成）。
 
-[x] ライブラリアップデート自動PR:（Renovate Bot）。
+[ ] ライブラリアップデート自動PR:（Renovate Bot）。
 
-[x] 開発用データシードスクリプト:（faker付き）。
+[ ] 開発用データシードスクリプト:（faker付き）。
 
-[x] Monorepo化＋Melos/Very Good CLI導入。
+[ ] Monorepo化＋Melos/Very Good CLI導入。
 
-[x] Dart API docs → pub.dev公開自動生成。
+[ ] Dart API docs → pub.dev公開自動生成。
 
-[x] タグ/検索バー搭載:（習慣名・タグ・説明全文検索）。
+[ ] タグ/検索バー搭載:（習慣名・タグ・説明全文検索）。
 
-[x] AIレコメンド:（達成率・時間帯で次の習慣提案）。
+[ ] AIレコメンド:（達成率・時間帯で次の習慣提案）。
 
-[x] パーソナライズPush:（RFM分析で送信頻度調整）。
+[ ] パーソナライズPush:（RFM分析で送信頻度調整）。
 
-[x] ACR Cloud連携でBGM自動タグ付け:（集中曲提案）。
+[ ] ACR Cloud連携でBGM自動タグ付け:（集中曲提案）。
 
-[x] スクリーンリーダー最適化:（ロール/ヒント/読み順確認）。
+[ ] スクリーンリーダー最適化:（ロール/ヒント/読み順確認）。
 
-[x] カラーコントラスト自動検証CI:（WCAG 2.2 AA）。
+[ ] カラーコントラスト自動検証CI:（WCAG 2.2 AA）。
 
-[x] 日本語漢字変換中のIME候補被りテスト。
+[ ] 日本語漢字変換中のIME候補被りテスト。
 
-[x] 祝日API同期:（各国ローカル通知自動スキップ）。
+[ ] 祝日API同期:（各国ローカル通知自動スキップ）。
 
-[x] DST/うるう秒/閏年パスケース単体テスト。
+[ ] DST/うるう秒/閏年パスケース単体テスト。
 
-[x] オフライン完全モード:（IndexedDB＋PWA用）。
+[ ] オフライン完全モード:（IndexedDB＋PWA用）。
 
-[x] PWAインストールバナー＆Add to Home Screen対応。
+[ ] PWAインストールバナー＆Add to Home Screen対応。
 
-[x] Mac/Winネイティブビルド:（Flutter Desktop、menu bar timer）。
+[ ] Mac/Winネイティブビルド:（Flutter Desktop、menu bar timer）。
 
-[x] Wear OS/Apple Watchクイックチェックアプリ。
+[ ] Wear OS/Apple Watchクイックチェックアプリ。
 
-[x] HealthKit/Google Fit連携:（歩数→習慣自動達成）。
+[ ] HealthKit/Google Fit連携:（歩数→習慣自動達成）。
 
-[x] GPT-4o埋め込みチャットサポートBot:（問い合わせ自動回答）。
+[ ] GPT-4o埋め込みチャットサポートBot:（問い合わせ自動回答）。
 
-[x] アプリ内コミュニティ掲示板:（モデレーション付き）。
+[ ] アプリ内コミュニティ掲示板:（モデレーション付き）。
 
-[x] カスタムWebhook IFTTT/Zapier連携。
+[ ] カスタムWebhook IFTTT/Zapier連携。
 
-[x] Carbon footprint計測:（CI/CD & ランタイム）。
+[ ] Carbon footprint計測:（CI/CD & ランタイム）。
 
-[x] グリーンダークモード:（OLED省電力配色）。
+[ ] グリーンダークモード:（OLED省電力配色）。
 
-[x] 動画チュートリアル生成パイプライン:（Lottie＋TTS）。
+[ ] 動画チュートリアル生成パイプライン:（Lottie＋TTS）。
 
-[x] Live Activity / Android Live Widget:（進捗リアルタイム表示）。
+[ ] Live Activity / Android Live Widget:（進捗リアルタイム表示）。
 
-[x] Stripe Billing Portal統合:（サブスク管理セルフサービス）。
+[ ] Stripe Billing Portal統合:（サブスク管理セルフサービス）。
 
-[x] アプリ内投げ銭:（Sponsor block ads 解除）。
+[ ] アプリ内投げ銭:（Sponsor block ads 解除）。
 
-[x] Referral Code deep link:（友達招待→報酬）。
+[ ] Referral Code deep link:（友達招待→報酬）。
 
-[x] ユーザートークン制Rate Limiter:（機能乱用対策）。
+[ ] ユーザートークン制Rate Limiter:（機能乱用対策）。
 
-[x] 地理的位置連動通知:（ジオフェンス：ジム到着→習慣リマインド）。
+[ ] 地理的位置連動通知:（ジオフェンス：ジム到着→習慣リマインド）。
 
-[x] 画像生成AIでSNS共有バナー自動作成。
+[ ] 画像生成AIでSNS共有バナー自動作成。
 
-[x] 高齢者向けアクセシビリティ設定:（特大UI・音声読み上げ速度）。
+[ ] 高齢者向けアクセシビリティ設定:（特大UI・音声読み上げ速度）。
 
-[x] プログレッシブオンボーディング:（機能解放レベル制）。
+[ ] プログレッシブオンボーディング:（機能解放レベル制）。
 
-[x] Feature flag kill-switch即時反映:（Remote Configのみで停止）。
+[ ] Feature flag kill-switch即時反映:（Remote Configのみで停止）。
 
-[x] KPIダッシュボード自動Snapshot→Slack送信。
+[ ] KPIダッシュボード自動Snapshot→Slack送信。
 
-[x] バックエンドコストアラート:（Firestore/Functions超過時）。
+[ ] バックエンドコストアラート:（Firestore/Functions超過時）。
 
-[x] ユーザー行動ヒートマップ:（RepaintBoundary＋解析）。
+[ ] ユーザー行動ヒートマップ:（RepaintBoundary＋解析）。
 
-[x] 自己診断モード:（設定→テスト通知/ストレージ/ネット）。
+[ ] 自己診断モード:（設定→テスト通知/ストレージ/ネット）。
 
-[x] 脆弱性SCA:（Software Composition Analysis）定期実行。
+[ ] 脆弱性SCA:（Software Composition Analysis）定期実行。
 
-[x] 法域別プライバシーコンプライアンス:（COPPA/CCPA/OHCA）。
+[ ] 法域別プライバシーコンプライアンス:（COPPA/CCPA/OHCA）。
 
-[x] パブリックAPI公開:（Personal Access Token＋Rate Limit）。
+[ ] パブリックAPI公開:（Personal Access Token＋Rate Limit）。
 
-[x] OSS公開計画:（ライセンス選定、CONTRIBUTING.md）。
-## 2024-02-09 追加対応メモ
-- [x] Reduce Motion対応: `animation_system.dart` と Skeleton/チャット送信UIで `MediaQuery.disableAnimations` を尊重し、動きを抑制しました。
-- [x] フォーカスリング/アクセント色: `focus_system.dart` をトークンベースのカラー解決とセマンティクス強化に更新しました。
-- [x] コントラスト検証: `contrast_validator_test.dart` を追加し、WCAG準拠の閾値を自動テストしました。
-- [x] TextOverflowポリシー統一: `text_overflow_policy_test.dart` でタイトル/本文のオーバーフロールールを検証しました。
-- [x] 画像プレースホルダ/失敗時のFallback: `image_placeholder.dart` にセマンティクスとトークン半径、Reduce Motion対応のアニメーション調整を追加しました。
-- [x] アクセシビリティ: Semantics: フォーカス可能ウィジェットとオフラインバナーにセマンティクスを付与しスクリーンリーダー対応を強化しました。
-- [x] Magic Number撤去: シェアカードやチャット入力などの余白・サイズを `context.tokens` に置き換えました。
-- [x] EdgeInsets直書き撤去: `offline_mode_indicator.dart` などでSpacingトークンへ置換しました。
-- [x] ローディング: Skeletonローダーに静的フォールバックを追加し、Reduce Motion時はアニメーションを停止するようにしました。
-- [x] QAチェック: `test/presentation/theme` 配下のユニット/ウィジェットテストを追加し、UIトークン周りの回帰を防止しました。
+[ ] OSS公開計画:（ライセンス選定、CONTRIBUTING.md）。
+
+2024-02-09 追加対応メモ (リセット)
+[ ] Reduce Motion対応: animation_system.dart と Skeleton/チャット送信UIで MediaQuery.disableAnimations を尊重し、動きを抑制しました。
+
+[ ] フォーカスリング/アクセント色: focus_system.dart をトークンベースのカラー解決とセマンティクス強化に更新しました。
+
+[ ] コントラスト検証: contrast_validator_test.dart を追加し、WCAG準拠の閾値を自動テストしました。
+
+[ ] TextOverflowポリシー統一: text_overflow_policy_test.dart でタイトル/本文のオーバーフロールールを検証しました。
+
+[ ] 画像プレースホルダ/失敗時のFallback: image_placeholder.dart にセマンティクスとトークン半径、Reduce Motion対応のアニメーション調整を追加しました。
+
+[ ] アクセシビリティ: Semantics: フォーカス可能ウィジェットとオフラインバナーにセマンティクスを付与しスクリーンリーダー対応を強化しました。
+
+[ ] Magic Number撤去: シェアカードやチャット入力などの余白・サイズを context.tokens に置き換えました。
+
+[ ] EdgeInsets直書き撤去: offline_mode_indicator.dart などでSpacingトークンへ置換しました。
+
+[ ] ローディング: Skeletonローダーに静的フォールバックを追加し、Reduce Motion時はアニメーションを停止するようにしました。
+
+[ ] QAチェック: test/presentation/theme 配下のユニット/ウィジェットテストを追加し、UIトークン周りの回帰を防止しました。
