@@ -25,6 +25,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _goalValueController = TextEditingController();
+  final _contactLinkController = TextEditingController();
   final PageController _pageController = PageController();
   final SetEquality<int> _setEquality = const SetEquality<int>();
 
@@ -40,6 +41,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
 
   Quest? _originalQuest;
   bool _isLoading = true;
+  String? _originalContactLink;
 
   bool get _reduceMotion =>
       WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.disableAnimations;
@@ -52,27 +54,40 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
     return _titleController.text.trim() != _originalQuest!.title ||
         _selectedIconKey != _originalQuest!.iconKey ||
         _isTimeGoal != (_originalQuest!.estimatedMinutes > 0) ||
-        (_isTimeGoal && int.tryParse(_goalValueController.text) != _originalQuest!.estimatedMinutes);
+        (_isTimeGoal &&
+            int.tryParse(_goalValueController.text) !=
+                _originalQuest!.estimatedMinutes) ||
+        _contactLinkController.text.trim() !=
+            (_originalContactLink ?? '');
   }
 
   @override
   void initState() {
     super.initState();
     _loadQuest();
+    _contactLinkController.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   Future<void> _loadQuest() async {
     try {
       final quest = await ref.read(questByIdProvider(widget.questId).future);
       if (quest != null && mounted) {
+        final link =
+            await ref.read(contactLinkRepositoryProvider).getLink(widget.questId);
         setState(() {
           _originalQuest = quest;
           _titleController.text = quest.title;
           _selectedIconKey = quest.iconKey;
           _isTimeGoal = quest.estimatedMinutes > 0;
-          _goalValueController.text = quest.estimatedMinutes > 0 
-              ? quest.estimatedMinutes.toString() 
+          _goalValueController.text = quest.estimatedMinutes > 0
+              ? quest.estimatedMinutes.toString()
               : '10';
+          _originalContactLink = link;
+          _contactLinkController.text = link ?? '';
           _isLoading = false;
         });
       } else if (mounted) {
@@ -97,6 +112,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
   void dispose() {
     _titleController.dispose();
     _goalValueController.dispose();
+    _contactLinkController.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -157,6 +173,16 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
 
     await ref.read(questRepositoryProvider).updateQuest(updatedQuest);
 
+    final contactLink = _contactLinkController.text.trim();
+    final contactRepository = ref.read(contactLinkRepositoryProvider);
+    if (contactLink.isNotEmpty) {
+      await contactRepository.setLink(updatedQuest.id, contactLink);
+      _originalContactLink = contactLink;
+    } else {
+      await contactRepository.removeLink(updatedQuest.id);
+      _originalContactLink = null;
+    }
+
     // Update notifications if reminder settings changed
     if (_isReminderOn) {
       try {
@@ -213,8 +239,11 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
     );
 
     if (shouldDelete == true) {
+      await ref
+          .read(contactLinkRepositoryProvider)
+          .removeLink(_originalQuest!.id);
       await ref.read(questRepositoryProvider).deleteQuest(_originalQuest!.id);
-      
+
       if (mounted) {
         FeedbackMessenger.showSuccessToast(
           context,
@@ -322,6 +351,8 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
                 });
               },
             ),
+            SizedBox(height: tokens.spacing(6)),
+            _ContactLinkInput(controller: _contactLinkController),
           ],
         ),
       ),
@@ -574,6 +605,46 @@ class _HabitNameInput extends StatelessWidget {
             hintText: '例: 朝のランニング',
             border: OutlineInputBorder(borderRadius: tokens.cornerLarge()),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ContactLinkInput extends StatelessWidget {
+  const _ContactLinkInput({required this.controller});
+
+  final TextEditingController controller;
+
+  bool _isValidUrl(String value) {
+    final uri = Uri.tryParse(value.trim());
+    return uri != null && uri.hasScheme && uri.host.isNotEmpty;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'ペアへの連絡先リンク (任意)',
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
+        SizedBox(height: tokens.spacing(2)),
+        TextFormField(
+          controller: controller,
+          keyboardType: TextInputType.url,
+          decoration: InputDecoration(
+            hintText: '例：https://line.me/R/xxxxx',
+            border: OutlineInputBorder(borderRadius: tokens.cornerLarge()),
+            prefixIcon: const Icon(Icons.link),
+          ),
+          validator: (String? value) {
+            final trimmed = value?.trim() ?? '';
+            if (trimmed.isEmpty) return null;
+            return _isValidUrl(trimmed) ? null : '正しいURLを入力してください';
+          },
         ),
       ],
     );

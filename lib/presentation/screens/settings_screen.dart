@@ -5,10 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
+import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/controllers/usage_limit_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -50,11 +53,247 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     FeedbackMessenger.showSuccessToast(context, '開発者向けオプションを有効化しました');
   }
 
+  String _formatDuration(Duration duration) {
+    if (duration.inHours >= 1) {
+      final hours = duration.inHours;
+      final minutes = duration.inMinutes.remainder(60);
+      if (minutes == 0) return '${hours}時間';
+      return '${hours}時間${minutes}分';
+    }
+    return '${duration.inMinutes}分';
+  }
+
+  Future<void> _showUsageLimitSheet(
+    BuildContext context,
+    UsageLimitViewState state,
+  ) async {
+    final tokens = context.tokens;
+    final options = <Duration?>[
+      null,
+      const Duration(minutes: 30),
+      const Duration(hours: 1),
+      const Duration(hours: 2),
+      const Duration(hours: 3),
+    ];
+
+    final selected = state.dailyLimit;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(tokens.spacing(4)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '1日の利用時間を設定',
+                  style: tokens.titleLarge.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: tokens.textPrimary,
+                  ),
+                ),
+                SizedBox(height: tokens.spacing(3)),
+                ...options.map((option) {
+                  final isSelected = (option == null && selected == null) ||
+                      (option != null && option == selected);
+                  final label = option == null
+                      ? '制限なし'
+                      : _formatDuration(option);
+                  return RadioListTile<Duration?>(
+                    value: option,
+                    groupValue: selected,
+                    title: Text(label),
+                    onChanged: (value) async {
+                      Navigator.of(context).pop();
+                      await ref
+                          .read(usageLimitControllerProvider.notifier)
+                          .setDailyLimit(value);
+                      if (mounted) {
+                        final message = value == null
+                            ? '利用時間制限をオフにしました。'
+                            : '1日の利用時間を${_formatDuration(value)}に設定しました。';
+                        FeedbackMessenger.showSuccessToast(context, message);
+                      }
+                    },
+                  );
+                }).toList(),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showSoundProfileSheet(
+    BuildContext context,
+    NotificationSoundProfile current,
+  ) async {
+    final tokens = context.tokens;
+    final profiles = ref.read(notificationSoundProfilesProvider);
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(tokens.spacing(4)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '通知サウンドを選択',
+                  style: tokens.titleLarge.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: tokens.textPrimary,
+                  ),
+                ),
+                SizedBox(height: tokens.spacing(3)),
+                ...profiles.map((profile) {
+                  final isSelected = profile.id == current.id;
+                  return RadioListTile<String>(
+                    value: profile.id,
+                    groupValue: current.id,
+                    title: Text(profile.label),
+                    subtitle: Text(profile.description),
+                    onChanged: (value) async {
+                      Navigator.of(context).pop();
+                      await ref
+                          .read(notificationServiceProvider)
+                          .updateReminderSoundProfile(value!);
+                      if (mounted) {
+                        FeedbackMessenger.showSuccessToast(
+                          context,
+                          '${profile.label}を通知音に設定しました。',
+                        );
+                        ref.invalidate(selectedNotificationSoundProfileProvider);
+                      }
+                    },
+                    selected: isSelected,
+                  );
+                }).toList(),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showWebhookEditor(
+    BuildContext context,
+    List<Uri> endpoints,
+  ) async {
+    final tokens = context.tokens;
+    final controller = TextEditingController(
+      text: endpoints.map((uri) => uri.toString()).join('\n'),
+    );
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + tokens.spacing(4),
+            left: tokens.spacing(4),
+            right: tokens.spacing(4),
+            top: tokens.spacing(4),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'カスタムWebhookエンドポイント',
+                style: tokens.titleLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: tokens.textPrimary,
+                ),
+              ),
+              SizedBox(height: tokens.spacing(2)),
+              Text(
+                '1行につき1つのURLを入力してください。クエスト完了時にPOSTリクエストを送信します。',
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+              ),
+              SizedBox(height: tokens.spacing(3)),
+              TextField(
+                controller: controller,
+                minLines: 4,
+                maxLines: 8,
+                decoration: const InputDecoration(
+                  hintText: 'https://example.com/webhook',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: tokens.spacing(3)),
+              FilledButton(
+                onPressed: () async {
+                  final lines = controller.text
+                      .split('\n')
+                      .map((line) => line.trim())
+                      .where((line) => line.isNotEmpty)
+                      .toList();
+                  await ref
+                      .read(webhookDispatchServiceProvider)
+                      .saveEndpoints(lines);
+                  if (mounted) {
+                    Navigator.of(context).pop();
+                    FeedbackMessenger.showSuccessToast(
+                      context,
+                      'Webhookエンドポイントを更新しました。',
+                    );
+                    ref.invalidate(webhookEndpointsProvider);
+                  }
+                },
+                child: const Text('保存する'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _openStripePortal(
+    BuildContext context,
+    String customerId,
+  ) async {
+    final service = ref.read(stripeBillingServiceProvider);
+    try {
+      final portalUrl = await service.createBillingPortalSession(
+        customerId: customerId,
+        returnUrl: Uri.parse('https://app.minq.example/settings'),
+      );
+      final launched = await launchUrl(portalUrl, mode: LaunchMode.externalApplication);
+      if (!launched && mounted) {
+        FeedbackMessenger.showErrorSnackBar(
+          context,
+          'ブラウザでポータルを開けませんでした。',
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        FeedbackMessenger.showErrorSnackBar(
+          context,
+          '請求ポータルの起動に失敗しました。',
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context)!;
     final opsSnapshot = ref.watch(operationsSnapshotProvider);
+    final usageLimitState = ref.watch(usageLimitControllerProvider);
+    final selectedSoundProfile = ref.watch(selectedNotificationSoundProfileProvider);
+    final webhookEndpoints = ref.watch(webhookEndpointsProvider);
+    final stripeCustomerId = ref.watch(stripeCustomerIdProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -84,6 +323,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           _SettingsSection(
             title: l10n.settingsSectionGeneral,
             tiles: [
+              _SettingsTile(
+                title: '利用時間制限',
+                subtitle: usageLimitState.isLoading
+                    ? '読み込み中…'
+                    : usageLimitState.dailyLimit == null
+                        ? '制限なし'
+                        : '今日 ${_formatDuration(usageLimitState.usedToday)} / ${_formatDuration(usageLimitState.dailyLimit!)}',
+                onTap: usageLimitState.isLoading
+                    ? null
+                    : () => _showUsageLimitSheet(context, usageLimitState),
+              ),
               _SettingsTile(
                 title: l10n.settingsPushNotifications,
                 subtitle: l10n.settingsPushNotificationsSubtitle,
@@ -115,7 +365,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 title: l10n.settingsProfile,
                 onTap: () => context.push(AppRoutes.profileSettings),
               ),
-              _SettingsTile(title: l10n.settingsSound),
+              selectedSoundProfile.when(
+                data: (profile) => _SettingsTile(
+                  title: '通知サウンド',
+                  subtitle: profile.label,
+                  onTap: () => _showSoundProfileSheet(context, profile),
+                ),
+                loading: () => const _SettingsTile(
+                  title: '通知サウンド',
+                  subtitle: '読み込み中…',
+                  isStatic: true,
+                  staticValue: '',
+                ),
+                error: (_, __) => _SettingsTile(
+                  title: '通知サウンド',
+                  subtitle: '読み込みに失敗しました',
+                  onTap: () => ref.invalidate(selectedNotificationSoundProfileProvider),
+                ),
+              ),
             ],
           ),
           _SettingsSection(
@@ -133,6 +400,58 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 title: l10n.settingsDeleteAccount,
                 isDelete: true,
                 onTap: () => context.push('/settings/delete-account'),
+              ),
+            ],
+          ),
+          _SettingsSection(
+            title: '連携',
+            tiles: [
+              webhookEndpoints.when(
+                data: (endpoints) => _SettingsTile(
+                  title: 'カスタムWebhook',
+                  subtitle: endpoints.isEmpty
+                      ? '連携は未設定です'
+                      : '${endpoints.length}件のエンドポイント',
+                  onTap: () => _showWebhookEditor(context, endpoints),
+                ),
+                loading: () => const _SettingsTile(
+                  title: 'カスタムWebhook',
+                  subtitle: '読み込み中…',
+                  isStatic: true,
+                  staticValue: '',
+                ),
+                error: (_, __) => _SettingsTile(
+                  title: 'カスタムWebhook',
+                  subtitle: '読み込みに失敗しました。タップして再試行',
+                  onTap: () => ref.invalidate(webhookEndpointsProvider),
+                ),
+              ),
+            ],
+          ),
+          _SettingsSection(
+            title: 'サブスクリプション',
+            tiles: [
+              stripeCustomerId.when(
+                data: (customerId) => _SettingsTile(
+                  title: 'Stripe請求ポータル',
+                  subtitle: customerId == null
+                      ? '有効なサブスク情報がありません'
+                      : '支払い方法や請求履歴を確認',
+                  onTap: customerId == null
+                      ? null
+                      : () => _openStripePortal(context, customerId),
+                ),
+                loading: () => const _SettingsTile(
+                  title: 'Stripe請求ポータル',
+                  subtitle: '読み込み中…',
+                  isStatic: true,
+                  staticValue: '',
+                ),
+                error: (_, __) => _SettingsTile(
+                  title: 'Stripe請求ポータル',
+                  subtitle: '読み込みに失敗しました。タップして再試行',
+                  onTap: () => ref.invalidate(stripeCustomerIdProvider),
+                ),
               ),
             ],
           ),

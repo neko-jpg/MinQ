@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class QuestDetailScreen extends ConsumerWidget {
   const QuestDetailScreen({super.key, required this.questId});
@@ -59,6 +61,7 @@ class _QuestDetailContent extends ConsumerWidget {
     final tokens = context.tokens;
     final icon = iconDataForKey(quest.iconKey);
     final navigation = ref.read(navigationUseCaseProvider);
+    final contactLinkAsync = ref.watch(questContactLinkProvider(quest.id));
 
     return SafeArea(
       child: Padding(
@@ -142,6 +145,27 @@ class _QuestDetailContent extends ConsumerWidget {
                       style:
                           tokens.bodyMedium.copyWith(color: tokens.textMuted),
                     ),
+                    contactLinkAsync.when(
+                      data: (link) {
+                        final sanitized = link?.trim() ?? '';
+                        if (sanitized.isEmpty) {
+                          return const SizedBox.shrink();
+                        }
+                        return Padding(
+                          padding: EdgeInsets.only(top: tokens.spacing(4)),
+                          child: _ContactLinkButton(link: sanitized),
+                        );
+                      },
+                      loading: () => Padding(
+                        padding: EdgeInsets.only(top: tokens.spacing(4)),
+                        child: const SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                      error: (_, __) => const SizedBox.shrink(),
+                    ),
                   ],
                 ),
               ),
@@ -178,6 +202,37 @@ class _QuestDetailContent extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ContactLinkButton extends StatelessWidget {
+  const _ContactLinkButton({required this.link});
+
+  final String link;
+
+  @override
+  Widget build(BuildContext context) {
+    return MinqSecondaryButton(
+      label: 'ペアに連絡する',
+      icon: Icons.link,
+      onPressed: () async {
+        final uri = Uri.tryParse(link);
+        if (uri == null) {
+          FeedbackMessenger.showErrorSnackBar(
+            context,
+            'リンクの形式が正しくありません。',
+          );
+          return;
+        }
+        final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+        if (!launched && context.mounted) {
+          FeedbackMessenger.showErrorSnackBar(
+            context,
+            'リンクを開けませんでした。',
+          );
+        }
+      },
     );
   }
 }

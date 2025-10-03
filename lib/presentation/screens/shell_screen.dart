@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
+import 'package:minq/presentation/common/minq_buttons.dart';
+import 'package:minq/presentation/controllers/usage_limit_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -20,15 +22,18 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     with WidgetsBindingObserver {
   DateTime? _lastNavTap;
   static const Duration _navThrottle = Duration(milliseconds: 500);
+  DateTime? _sessionStartedAt;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _sessionStartedAt = DateTime.now();
   }
 
   @override
   void dispose() {
+    _recordSessionUsage();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -36,8 +41,23 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      _sessionStartedAt = DateTime.now();
       _checkAndScheduleAuxiliaryNotification();
+      ref.read(usageLimitControllerProvider.notifier).refresh();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      _recordSessionUsage();
     }
+  }
+
+  Future<void> _recordSessionUsage() async {
+    if (_sessionStartedAt == null) return;
+    final duration = DateTime.now().difference(_sessionStartedAt!);
+    _sessionStartedAt = null;
+    if (duration.isNegative || duration.inSeconds == 0) return;
+    await ref
+        .read(usageLimitControllerProvider.notifier)
+        .recordUsage(duration);
   }
 
   Future<void> _checkAndScheduleAuxiliaryNotification() async {
@@ -99,6 +119,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final currentIndex = _calculateSelectedIndex(context);
+    final usageLimitState = ref.watch(usageLimitControllerProvider);
 
     const navItems = <BottomNavigationBarItem>[
       BottomNavigationBarItem(
@@ -129,7 +150,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     ];
     assert(navItems.length <= 5, 'ボトムナビゲーションのタブ数は5個以下にしてください。');
 
-    return Scaffold(
+    final scaffold = Scaffold(
       body: PageTransitionSwitcher(
         duration: const Duration(milliseconds: 400),
         transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
@@ -157,6 +178,92 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
           backgroundColor: tokens.surface,
           elevation: 0,
           items: navItems,
+        ),
+      ),
+    );
+
+    if (!usageLimitState.isBlocked) {
+      return scaffold;
+    }
+
+    return Stack(
+      children: [
+        scaffold,
+        _UsageLimitOverlay(state: usageLimitState),
+      ],
+    );
+  }
+}
+
+class _UsageLimitOverlay extends ConsumerWidget {
+  const _UsageLimitOverlay({required this.state});
+
+  final UsageLimitViewState state;
+
+  String _formatDuration(Duration? duration) {
+    if (duration == null) return '--';
+    if (duration.inHours >= 1) {
+      final hours = duration.inHours;
+      final minutes = duration.inMinutes.remainder(60);
+      return '${hours}時間${minutes}分';
+    }
+    return '${duration.inMinutes}分';
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+    final navigation = ref.read(navigationUseCaseProvider);
+    final dailyLimit = state.dailyLimit ?? Duration.zero;
+    final used = state.usedToday;
+    final remaining = state.remaining;
+
+    return Positioned.fill(
+      child: Material(
+        color: Colors.black.withOpacity(0.55),
+        child: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 360),
+            padding: EdgeInsets.all(tokens.spacing(5)),
+            decoration: BoxDecoration(
+              color: tokens.surface,
+              borderRadius: tokens.cornerXLarge(),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.lock_clock,
+                    size: tokens.spacing(10), color: tokens.brandPrimary),
+                SizedBox(height: tokens.spacing(3)),
+                Text(
+                  '利用時間制限に達しました',
+                  style: tokens.titleLarge.copyWith(
+                    color: tokens.textPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: tokens.spacing(2)),
+                Text(
+                  '本日の利用 ${_formatDuration(used)} / ${_formatDuration(dailyLimit)}',
+                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                ),
+                SizedBox(height: tokens.spacing(1)),
+                Text(
+                  remaining == Duration.zero
+                      ? '今日はこれ以上操作できません。'
+                      : '残り時間: ${_formatDuration(remaining)}',
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                ),
+                SizedBox(height: tokens.spacing(4)),
+                MinqSecondaryButton(
+                  label: '設定を開く',
+                  onPressed: () => navigation.goToSettings(),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
