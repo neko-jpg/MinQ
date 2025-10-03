@@ -1,6 +1,14 @@
-import 'package:miinq/domain/quest/quest.dart';
-import 'package:miinq_integrations/miinq_integrations.dart';
+import 'package:minq/domain/quest/quest.dart';
+// TODO: Fix integrations package
+// import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:riverpod/riverpod.dart';
+
+// Dummy type until integrations package is fixed
+class WearableChannel {
+  const WearableChannel();
+  Future<void> syncSnapshot({String? userId, List<Map<String, dynamic>>? quests}) async {}
+  Future<void> registerQuickAction({String? questId, String? label}) async {}
+}
 
 class WearableSyncService {
   WearableSyncService({required WearableChannel channel}) : _channel = channel;

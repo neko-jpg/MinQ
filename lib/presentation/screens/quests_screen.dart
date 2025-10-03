@@ -380,7 +380,7 @@ class _AiSuggestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final template = suggestion.template;
-    final icon = template.icon ?? template.category.icon;
+    final icon = template.icon ?? Icons.star;
     final confidence = (suggestion.confidence * 100).clamp(0, 100).round();
 
     return Container(
@@ -396,7 +396,7 @@ class _AiSuggestionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(icon, style: tokens.displaySmall),
+              Icon(icon as IconData, size: 32, color: tokens.brandPrimary),
               SizedBox(width: tokens.spacing(2)),
               Expanded(
                 child: Text(

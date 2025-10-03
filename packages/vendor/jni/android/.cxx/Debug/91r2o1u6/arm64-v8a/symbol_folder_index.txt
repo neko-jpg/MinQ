@@ -1,0 +1,1 @@
+C:\minq_android_build\android\jni\intermediates\cxx\Debug\91r2o1u6\obj\arm64-v8a

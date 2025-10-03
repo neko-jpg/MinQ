@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:miinq/config/stripe_config.dart';
-import 'package:miinq/data/providers.dart';
-import 'package:miinq/domain/support/tip_option.dart';
+import 'package:minq/config/stripe_config.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/support/tip_option.dart';
 import 'package:riverpod/riverpod.dart';
 
 class TipJarService {

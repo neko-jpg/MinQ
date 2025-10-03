@@ -47,7 +47,7 @@ class VersionCheckService {
 
       return VersionCheckResult.supported(currentVersion);
     } catch (e, stack) {
-      _logger.error('Version check failed', error: e, stackTrace: stack);
+      _logger.error('Version check failed', e, stack);
       // エラー時はサポート済みとして扱う（ユーザー体験を損なわない）
       return VersionCheckResult.error();
     }
@@ -120,7 +120,7 @@ class VersionCheckError extends VersionCheckResult {
 /// Provider
 final versionCheckServiceProvider = Provider<VersionCheckService>((ref) {
   final remoteConfig = FirebaseRemoteConfig.instance;
-  final logger = ref.watch(appLoggerProvider);
+  final logger = AppLogger();
   return VersionCheckService(remoteConfig, logger);
 });
 

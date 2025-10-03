@@ -176,42 +176,19 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
       return;
     }
 
-    final service = ref.read(supportChatServiceProvider);
-    if (service == null) {
+    // TODO: Implement supportChatServiceProvider
+    // final service = ref.read(supportChatServiceProvider);
+    // if (service == null) {
       FeedbackMessenger.showInfoToast(context, '現在はサポートボットをご利用いただけません');
       return;
-    }
+    // }
 
-    final history = List<SupportMessage>.from(_messages);
-    setState(() {
-      _chatSending = true;
-      _messages.add(SupportMessage(role: 'user', content: content));
-    });
-    _chatController.clear();
-
-    try {
-      final reply = await service.sendMessage(
-        conversationId: _conversationId,
-        content: content,
-        history: history,
-      );
-      if (!mounted) return;
-      setState(() {
-        _messages.add(reply);
-        _chatSending = false;
-      });
-    } catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _messages.removeLast();
-        _chatSending = false;
-      });
-      FeedbackMessenger.showErrorToast(context, 'サポートボットへの送信に失敗しました');
-    }
+    // TODO: Implement support chat service
   }
 
   Widget _buildSupportBotCard(MinqTheme tokens) {
-    final isChatAvailable = ref.watch(supportChatServiceProvider) != null;
+    // TODO: Implement supportChatServiceProvider
+    final isChatAvailable = false; // ref.watch(supportChatServiceProvider) != null;
     return Card(
       elevation: 0,
       color: tokens.surface,

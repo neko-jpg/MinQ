@@ -23,7 +23,7 @@ class FocusMusicService {
   FocusMusicTrack? _currentTrack;
 
   static final List<FocusMusicTrack> tracks = <FocusMusicTrack>[
-    const FocusMusicTrack(
+    FocusMusicTrack(
       id: 'lofi_river',
       title: 'Lofi River',
       description: '静かな川のせせらぎに合わせたローファイBGM',
@@ -31,7 +31,7 @@ class FocusMusicService {
         'https://cdn.pixabay.com/audio/2023/04/18/audio_b00f6805be.mp3',
       ),
     ),
-    const FocusMusicTrack(
+    FocusMusicTrack(
       id: 'deep_focus',
       title: 'Deep Focus',
       description: '低めのシンセで集中力を高めます',
@@ -39,7 +39,7 @@ class FocusMusicService {
         'https://cdn.pixabay.com/audio/2023/01/31/audio_1ad95bbfb7.mp3',
       ),
     ),
-    const FocusMusicTrack(
+    FocusMusicTrack(
       id: 'acoustic_breeze',
       title: 'Acoustic Breeze',
       description: '軽やかなアコースティックギターでリラックス',

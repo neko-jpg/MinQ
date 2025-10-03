@@ -1,5 +1,14 @@
-import 'package:miinq_integrations/miinq_integrations.dart';
+// TODO: Fix integrations package
+// import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:riverpod/riverpod.dart';
+
+// Dummy type until integrations package is fixed
+class LiveActivityChannel {
+  const LiveActivityChannel();
+  Future<void> startProgressActivity({required String questId, required String title, required int completed, required int total}) async {}
+  Future<void> updateProgress({required String questId, required int completed, required int total}) async {}
+  Future<void> endProgress(String questId) async {}
+}
 
 class LiveActivityService {
   LiveActivityService({required LiveActivityChannel channel}) : _channel = channel;

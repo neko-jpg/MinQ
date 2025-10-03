@@ -1,0 +1,18 @@
+                        -HC:\Users\新井徹平\AppData\Local\Pub\Cache\hosted\pub.dev\jni-0.14.2\src
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=21
+-DANDROID_PLATFORM=android-21
+-DANDROID_ABI=arm64-v8a
+-DCMAKE_ANDROID_ARCH_ABI=arm64-v8a
+-DANDROID_NDK=C:\Android\SDK\ndk\26.3.11579264
+-DCMAKE_ANDROID_NDK=C:\Android\SDK\ndk\26.3.11579264
+-DCMAKE_TOOLCHAIN_FILE=C:\Android\SDK\ndk\26.3.11579264\build\cmake\android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=C:\Android\SDK\cmake\3.22.1\bin\ninja.exe
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=C:\minq_android_build\android\jni\intermediates\cxx\Debug\91r2o1u6\obj\arm64-v8a
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=C:\minq_android_build\android\jni\intermediates\cxx\Debug\91r2o1u6\obj\arm64-v8a
+-DCMAKE_BUILD_TYPE=Debug
+-BC:\Users\新井徹平\AppData\Local\Pub\Cache\hosted\pub.dev\jni-0.14.2\android\.cxx\Debug\91r2o1u6\arm64-v8a
+-GNinja
+                        Build command args: []
+                        Version: 2

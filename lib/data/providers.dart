@@ -13,7 +13,8 @@ import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:minq/config/stripe_config.dart';
 import 'package:minq/core/sharing/ai_share_banner_service.dart';
-import 'package:miinq_integrations/miinq_integrations.dart';
+// TODO: Fix integrations package
+// import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
 import 'package:minq/core/sharing/share_service.dart';
 import 'package:minq/core/logging/app_logger.dart';
@@ -225,6 +226,7 @@ final ogpImageGeneratorProvider = Provider<OgpImageGenerator>((ref) {
   return OgpImageGenerator(ref.watch(appLoggerProvider));
 });
 
+// TODO: Fix integrations package
 final aiShareBannerServiceProvider = Provider<AIShareBannerService>((ref) {
   return AIShareBannerService(generator: const AIBannerGenerator());
 });
@@ -276,10 +278,11 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
   return AnalyticsService(ref.watch(firebaseAnalyticsProvider));
 });
 
-final featureFlagsProvider =
-    StateNotifierProvider<FeatureFlagsNotifier, FeatureFlags>((ref) {
-  return FeatureFlagsNotifier(ref.watch(remoteConfigProvider));
-});
+// TODO: Implement FeatureFlagsNotifier
+// final featureFlagsProvider =
+//     StateNotifierProvider<FeatureFlagsNotifier, FeatureFlags>((ref) {
+//   return FeatureFlagsNotifier(ref.watch(remoteConfigProvider));
+// });
 
 final isarProvider = FutureProvider<Isar>((ref) async {
   final isarService = IsarService();
@@ -484,7 +487,8 @@ final appStartupProvider = FutureProvider<void>((ref) async {
       }
     }
 
-    await ref.read(featureFlagsProvider.notifier).ensureLoaded();
+    // TODO: Implement featureFlagsProvider
+    // await ref.read(featureFlagsProvider.notifier).ensureLoaded();
   } catch (e) {
     ref.read(initializationErrorProvider.notifier).state = e;
   }

@@ -100,14 +100,14 @@ class AppRoutes {
 
 final routerProvider = Provider<GoRouter>((ref) {
   // 認証状態を監視
-  final authState = ref.watch(authControllerProvider);
+  final authRepo = ref.watch(authRepositoryProvider);
 
   return GoRouter(
     initialLocation: AppRoutes.onboarding,
     navigatorKey: _rootNavigatorKey,
-    refreshListenable: GoRouterRefreshStream(
-      ref.watch(authControllerProvider.notifier).stream,
-    ),
+    // refreshListenable: GoRouterRefreshStream(
+    //   ref.watch(authStateProvider.notifier).stream,
+    // ),
     redirect: (context, state) {
       // マーケティングアトリビューション
       unawaited(
@@ -115,10 +115,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       );
 
       // 認証ガード
-      final isAuthenticated = authState.maybeWhen(
-        data: (user) => user != null,
-        orElse: () => false,
-      );
+      final isAuthenticated = authRepo.getCurrentUser() != null;
 
       final isOnboardingRoute = state.matchedLocation == AppRoutes.onboarding;
       final isLoginRoute = state.matchedLocation == AppRoutes.login;

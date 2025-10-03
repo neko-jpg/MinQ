@@ -69,7 +69,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final tokens = context.tokens;
 
     return Scaffold(

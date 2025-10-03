@@ -197,8 +197,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (context) {
-        return Padding(
+      builder: (BuildContext context) => Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom + tokens.spacing(4),
             left: tokens.spacing(4),
@@ -253,62 +252,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 },
                 child: const Text('保存する'),
               ),
-              _SettingsTile(
-                title: 'ライブアクティビティ / Androidウィジェット',
-                subtitle: '進捗をロック画面に常時表示',
-                isSwitch: true,
-                switchValue: liveActivityToggle.valueOrNull ?? false,
-                onSwitchChanged: liveActivityToggle.isLoading
-                    ? null
-                    : (value) =>
-                        ref.read(liveActivityToggleProvider.notifier).toggle(value),
-              ),
-              _SettingsTile(
-                title: 'Wear OS / Apple Watch 連携',
-                subtitle: '最新のクエスト状況を同期',
-                isSwitch: true,
-                switchValue: wearableSyncToggle.valueOrNull ?? false,
-                onSwitchChanged: wearableSyncToggle.isLoading
-                    ? null
-                    : (value) =>
-                        ref.read(wearableSyncToggleProvider.notifier).toggle(value),
-              ),
-              _SettingsTile(
-                title: '歩数連動で自動達成 (HealthKit / Google Fit)',
-                subtitle: '1日の歩数で習慣を自動チェック',
-                isSwitch: true,
-                switchValue: fitnessToggle.valueOrNull ?? false,
-                onSwitchChanged: fitnessToggle.isLoading
-                    ? null
-                    : (value) =>
-                        ref.read(fitnessSyncToggleProvider.notifier).toggle(value),
-              ),
-              _SettingsTile(
-                title: 'デスクトップ メニューバータイマー',
-                subtitle: 'Mac/Windows のメニューバーに残り時間を表示',
-                isSwitch: true,
-                switchValue: menuBarToggle.valueOrNull ?? false,
-                onSwitchChanged: menuBarToggle.isLoading
-                    ? null
-                    : (value) =>
-                        ref.read(menuBarTimerToggleProvider.notifier).toggle(value),
-              ),
             ],
           ),
-          _SettingsSection(
-            title: 'コミュニティ',
-            tiles: [
-              _SettingsTile(
-                title: 'コミュニティ掲示板',
-                subtitle: '仲間と取り組みやアイデアを共有',
-                onTap: () => context.push(AppRoutes.communityBoard),
-              ),
-            ],
-          ),
-        );
-      },
+        ),
     );
   }
+
+
 
   Future<void> _showTipJar(BuildContext context) async {
     final service = ref.read(tipJarServiceProvider);

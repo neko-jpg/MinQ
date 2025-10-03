@@ -23,6 +23,15 @@ class FeedbackMessenger {
     );
   }
 
+  /// Shows an error toast message.
+  static void showErrorToast(BuildContext context, String message) {
+    _showSnackBar(
+      context,
+      message,
+      duration: const Duration(seconds: 2),
+    );
+  }
+
   /// Shows an error snackbar with an action button.
   static void showErrorSnackBar(
     BuildContext context,
