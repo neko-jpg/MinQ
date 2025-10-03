@@ -1,0 +1,25 @@
+import 'package:miinq_integrations/miinq_integrations.dart';
+import 'package:riverpod/riverpod.dart';
+
+class DesktopMenuBarService {
+  DesktopMenuBarService({required MenuBarChannel channel}) : _channel = channel;
+
+  final MenuBarChannel _channel;
+
+  Future<void> updateTimer({
+    required String title,
+    required Duration remaining,
+  }) async {
+    await _channel.updateTimer(title: title, remaining: remaining);
+  }
+
+  Future<void> clear() => _channel.clear();
+}
+
+final menuBarChannelProvider = Provider<MenuBarChannel>((ref) {
+  return MenuBarChannel();
+});
+
+final desktopMenuBarServiceProvider = Provider<DesktopMenuBarService>((ref) {
+  return DesktopMenuBarService(channel: ref.watch(menuBarChannelProvider));
+});

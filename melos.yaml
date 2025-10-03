@@ -1,0 +1,9 @@
+name: miinq
+packages:
+  - .
+  - packages/**
+
+scripts:
+  analyze: melos exec -- flutter analyze
+  format: melos exec -- flutter format lib test --line-length 100
+  test: melos exec -- flutter test
