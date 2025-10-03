@@ -12,9 +12,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:minq/config/stripe_config.dart';
+import 'package:minq/core/sharing/ai_share_banner_service.dart';
+import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
 import 'package:minq/core/sharing/share_service.dart';
 import 'package:minq/core/logging/app_logger.dart';
+import 'package:minq/data/repositories/community_board_repository.dart';
 import 'package:minq/data/repositories/contact_link_repository.dart';
 import 'package:minq/data/repositories/firebase_auth_repository.dart';
 import 'package:minq/data/repositories/pair_repository.dart';
@@ -96,6 +99,14 @@ final contactLinkRepositoryProvider = Provider<ContactLinkRepository>((ref) {
   return ContactLinkRepository(ref.watch(localPreferencesServiceProvider));
 });
 
+final communityBoardRepositoryProvider = Provider<CommunityBoardRepository?>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    return null;
+  }
+  return CommunityBoardRepository(firestore);
+});
+
 final usageLimitServiceProvider = Provider<UsageLimitService>((ref) {
   return UsageLimitService(ref.watch(localPreferencesServiceProvider));
 });
@@ -108,8 +119,13 @@ final webhookDispatchServiceProvider = Provider<WebhookDispatchService>((ref) {
   );
 });
 
-final stripeBillingServiceProvider = Provider<StripeBillingService>((ref) {
-  final config = StripeConfig.fromRemoteConfig(ref.watch(remoteConfigServiceProvider));
+final stripeBillingServiceProvider = Provider<StripeBillingService?>((ref) {
+  final config = StripeConfig.maybeFromRemoteConfig(
+    ref.watch(remoteConfigServiceProvider),
+  );
+  if (config == null) {
+    return null;
+  }
   return StripeBillingService(
     client: ref.watch(httpClientProvider),
     config: config,
@@ -209,8 +225,15 @@ final ogpImageGeneratorProvider = Provider<OgpImageGenerator>((ref) {
   return OgpImageGenerator(ref.watch(appLoggerProvider));
 });
 
+final aiShareBannerServiceProvider = Provider<AIShareBannerService>((ref) {
+  return AIShareBannerService(generator: const AIBannerGenerator());
+});
+
 final shareServiceProvider = Provider<ShareService>((ref) {
-  return ShareService(ogpGenerator: ref.watch(ogpImageGeneratorProvider));
+  return ShareService(
+    ogpGenerator: ref.watch(ogpImageGeneratorProvider),
+    aiBannerService: ref.watch(aiShareBannerServiceProvider),
+  );
 });
 
 final appLocaleControllerProvider =
