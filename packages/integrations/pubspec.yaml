@@ -1,0 +1,31 @@
+name: miinq_integrations
+description: Shared integration clients and platform bridges for the MiinQ app monorepo.
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.7.2
+  flutter: '>=3.24.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: any
+  crypto: any
+  meta: any
+  collection: any
+  convert: any
+  json_annotation: any
+  http_parser: any
+  image: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test: any
+  json_serializable: any
+  build_runner: any
+  very_good_analysis: ^6.0.0
+
+flutter:
+  uses-material-design: false

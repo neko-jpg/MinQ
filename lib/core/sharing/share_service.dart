@@ -4,14 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'ai_share_banner_service.dart';
 import 'ogp_image_generator.dart';
 import '../logging/app_logger.dart';
 
 /// 共有サービス
 class ShareService {
   final OgpImageGenerator? _ogpGenerator;
+  final AIShareBannerService? _aiBannerService;
 
-  ShareService({OgpImageGenerator? ogpGenerator}) : _ogpGenerator = ogpGenerator;
+  ShareService({
+    OgpImageGenerator? ogpGenerator,
+    AIShareBannerService? aiBannerService,
+  })  : _ogpGenerator = ogpGenerator,
+        _aiBannerService = aiBannerService;
   /// テキストを共有
   Future<void> shareText({
     required String text,
@@ -105,6 +111,31 @@ class ShareService {
     await shareFile(
       file: imageFile,
       text: text,
+    );
+  }
+
+  Future<void> shareAIGeneratedBanner({
+    required String title,
+    required String subtitle,
+    String? text,
+    int seed = 0,
+  }) async {
+    if (_aiBannerService == null) {
+      await shareText(text: text ?? '$title\n$subtitle');
+      return;
+    }
+
+    final bannerBytes = await _aiBannerService!.buildBanner(
+      title: title,
+      subtitle: subtitle,
+      seed: seed,
+    );
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/miinq_ai_banner.png');
+    await file.writeAsBytes(bannerBytes, flush: true);
+    await shareFile(
+      file: file,
+      text: text ?? '$title\n$subtitle',
     );
   }
 

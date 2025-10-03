@@ -69,7 +69,11 @@ class RemoteConfigService {
     'show_ads': false,
     'ad_frequency_minutes': 30,
     'premium_price_monthly': 500,
-    'stripe_billing_portal_endpoint': 'https://api.example.com/billing-portal',
+    'stripe_billing_portal_endpoint': '',
+    'tip_jar_endpoint': '',
+    'support_bot_endpoint': '',
+    'support_bot_api_key': '',
+    'acr_cloud_credentials': '',
   };
 
   // Feature flags
@@ -110,6 +114,39 @@ class RemoteConfigService {
   String get stripeBillingPortalEndpoint =>
       _getString('stripe_billing_portal_endpoint');
 
+  String? tryGetString(String key) {
+    final value = _remoteConfig?.getString(key);
+    final candidate =
+        (value == null || value.isEmpty) ? _defaultValues[key] : value;
+    if (candidate is! String) {
+      return null;
+    }
+    final trimmed = candidate.trim();
+    if (trimmed.isEmpty) {
+      return null;
+    }
+    return trimmed;
+  }
+
+  Uri? tryGetUri(String key) {
+    final raw = tryGetString(key);
+    if (raw == null) {
+      return null;
+    }
+    try {
+      final uri = Uri.parse(raw);
+      if (!uri.hasScheme || !uri.hasAuthority) {
+        return null;
+      }
+      if (_placeholderHosts.contains(uri.host)) {
+        return null;
+      }
+      return uri;
+    } catch (_) {
+      return null;
+    }
+  }
+
   // Helper methods
   bool _getBool(String key) {
     return _remoteConfig?.getBool(key) ?? _defaultValues[key] as bool;
@@ -136,3 +173,8 @@ class RemoteConfigService {
     return variants.first;
   }
 }
+
+const Set<String> _placeholderHosts = <String>{
+  'api.example.com',
+  'example.com',
+};

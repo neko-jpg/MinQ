@@ -41,6 +41,11 @@ class LocalPreferencesService {
   static const String _notificationSoundProfileKey =
       'notification_sound_profile_v1';
   static const String _stripeCustomerIdKey = 'stripe_customer_id_v1';
+  static const String _liveActivityEnabledKey = 'live_activity_enabled_v1';
+  static const String _wearableSyncEnabledKey = 'wearable_sync_enabled_v1';
+  static const String _fitnessAutoLoggingEnabledKey =
+      'fitness_auto_logging_enabled_v1';
+  static const String _menuBarTimerEnabledKey = 'menu_bar_timer_enabled_v1';
 
   final Future<SharedPreferences> _prefsFuture;
   final NowProvider _now;
@@ -149,6 +154,46 @@ class LocalPreferencesService {
   Future<void> setCloudBackupEnabled(bool enabled) async {
     final prefs = await _prefsFuture;
     await prefs.setBool(_cloudBackupKey, enabled);
+  }
+
+  Future<bool> isLiveActivityEnabled() async {
+    final prefs = await _prefsFuture;
+    return prefs.getBool(_liveActivityEnabledKey) ?? false;
+  }
+
+  Future<void> setLiveActivityEnabled(bool enabled) async {
+    final prefs = await _prefsFuture;
+    await prefs.setBool(_liveActivityEnabledKey, enabled);
+  }
+
+  Future<bool> isWearableSyncEnabled() async {
+    final prefs = await _prefsFuture;
+    return prefs.getBool(_wearableSyncEnabledKey) ?? false;
+  }
+
+  Future<void> setWearableSyncEnabled(bool enabled) async {
+    final prefs = await _prefsFuture;
+    await prefs.setBool(_wearableSyncEnabledKey, enabled);
+  }
+
+  Future<bool> isFitnessAutoLoggingEnabled() async {
+    final prefs = await _prefsFuture;
+    return prefs.getBool(_fitnessAutoLoggingEnabledKey) ?? false;
+  }
+
+  Future<void> setFitnessAutoLoggingEnabled(bool enabled) async {
+    final prefs = await _prefsFuture;
+    await prefs.setBool(_fitnessAutoLoggingEnabledKey, enabled);
+  }
+
+  Future<bool> isMenuBarTimerEnabled() async {
+    final prefs = await _prefsFuture;
+    return prefs.getBool(_menuBarTimerEnabledKey) ?? false;
+  }
+
+  Future<void> setMenuBarTimerEnabled(bool enabled) async {
+    final prefs = await _prefsFuture;
+    await prefs.setBool(_menuBarTimerEnabledKey, enabled);
   }
 
   Future<void> setPreferredLocale(String? localeTag) async {

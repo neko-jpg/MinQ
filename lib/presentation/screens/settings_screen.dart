@@ -6,7 +6,9 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/domain/notification/notification_sound_profile.dart';
+import 'package:minq/data/services/tip_jar_service.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
+import 'package:minq/presentation/controllers/integration_settings_controller.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
@@ -251,6 +253,56 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 },
                 child: const Text('保存する'),
               ),
+              _SettingsTile(
+                title: 'ライブアクティビティ / Androidウィジェット',
+                subtitle: '進捗をロック画面に常時表示',
+                isSwitch: true,
+                switchValue: liveActivityToggle.valueOrNull ?? false,
+                onSwitchChanged: liveActivityToggle.isLoading
+                    ? null
+                    : (value) =>
+                        ref.read(liveActivityToggleProvider.notifier).toggle(value),
+              ),
+              _SettingsTile(
+                title: 'Wear OS / Apple Watch 連携',
+                subtitle: '最新のクエスト状況を同期',
+                isSwitch: true,
+                switchValue: wearableSyncToggle.valueOrNull ?? false,
+                onSwitchChanged: wearableSyncToggle.isLoading
+                    ? null
+                    : (value) =>
+                        ref.read(wearableSyncToggleProvider.notifier).toggle(value),
+              ),
+              _SettingsTile(
+                title: '歩数連動で自動達成 (HealthKit / Google Fit)',
+                subtitle: '1日の歩数で習慣を自動チェック',
+                isSwitch: true,
+                switchValue: fitnessToggle.valueOrNull ?? false,
+                onSwitchChanged: fitnessToggle.isLoading
+                    ? null
+                    : (value) =>
+                        ref.read(fitnessSyncToggleProvider.notifier).toggle(value),
+              ),
+              _SettingsTile(
+                title: 'デスクトップ メニューバータイマー',
+                subtitle: 'Mac/Windows のメニューバーに残り時間を表示',
+                isSwitch: true,
+                switchValue: menuBarToggle.valueOrNull ?? false,
+                onSwitchChanged: menuBarToggle.isLoading
+                    ? null
+                    : (value) =>
+                        ref.read(menuBarTimerToggleProvider.notifier).toggle(value),
+              ),
+            ],
+          ),
+          _SettingsSection(
+            title: 'コミュニティ',
+            tiles: [
+              _SettingsTile(
+                title: 'コミュニティ掲示板',
+                subtitle: '仲間と取り組みやアイデアを共有',
+                onTap: () => context.push(AppRoutes.communityBoard),
+              ),
             ],
           ),
         );
@@ -258,11 +310,72 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  Future<void> _showTipJar(BuildContext context) async {
+    final service = ref.read(tipJarServiceProvider);
+    if (service == null) {
+      FeedbackMessenger.showInfoToast(context, '現在は投げ銭をご利用いただけません');
+      return;
+    }
+    try {
+      final options = await service.fetchTipOptions();
+      if (!mounted) return;
+      await showModalBottomSheet<void>(
+        context: context,
+        builder: (context) {
+          final tokens = context.tokens;
+          return SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(tokens.spacing(4)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'MinQを応援する',
+                    style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: tokens.spacing(2)),
+                  ...options.map(
+                    (option) => ListTile(
+                      title: Text(option.label),
+                      subtitle: Text('¥${option.amount} の投げ銭'),
+                      trailing: const Icon(Icons.open_in_new),
+                      onTap: () async {
+                        final checkoutUrl = await service.createTipCheckout(option.id);
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop();
+                        final canLaunch = await canLaunchUrl(checkoutUrl);
+                        if (canLaunch) {
+                          await launchUrl(checkoutUrl, mode: LaunchMode.externalApplication);
+                        } else {
+                          FeedbackMessenger.showErrorToast(context, '購入ページを開けませんでした');
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } catch (error) {
+      if (!mounted) return;
+      FeedbackMessenger.showErrorToast(context, '投げ銭プランの取得に失敗しました');
+    }
+  }
+
   Future<void> _openStripePortal(
     BuildContext context,
     String customerId,
   ) async {
     final service = ref.read(stripeBillingServiceProvider);
+    if (service == null) {
+      if (mounted) {
+        FeedbackMessenger.showInfoToast(context, '現在は請求ポータルをご利用いただけません');
+      }
+      return;
+    }
     try {
       final portalUrl = await service.createBillingPortalSession(
         customerId: customerId,
@@ -294,6 +407,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final selectedSoundProfile = ref.watch(selectedNotificationSoundProfileProvider);
     final webhookEndpoints = ref.watch(webhookEndpointsProvider);
     final stripeCustomerId = ref.watch(stripeCustomerIdProvider);
+    final liveActivityToggle = ref.watch(liveActivityToggleProvider);
+    final wearableSyncToggle = ref.watch(wearableSyncToggleProvider);
+    final fitnessToggle = ref.watch(fitnessSyncToggleProvider);
+    final menuBarToggle = ref.watch(menuBarTimerToggleProvider);
+    final hasStripePortal = ref.watch(stripeBillingServiceProvider) != null;
+    final hasTipJar = ref.watch(tipJarServiceProvider) != null;
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -434,10 +553,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               stripeCustomerId.when(
                 data: (customerId) => _SettingsTile(
                   title: 'Stripe請求ポータル',
-                  subtitle: customerId == null
-                      ? '有効なサブスク情報がありません'
-                      : '支払い方法や請求履歴を確認',
-                  onTap: customerId == null
+                  subtitle: !hasStripePortal
+                      ? '現在ご利用いただけません'
+                      : customerId == null
+                          ? '有効なサブスク情報がありません'
+                          : '支払い方法や請求履歴を確認',
+                  onTap: !hasStripePortal || customerId == null
                       ? null
                       : () => _openStripePortal(context, customerId),
                 ),
@@ -452,6 +573,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   subtitle: '読み込みに失敗しました。タップして再試行',
                   onTap: () => ref.invalidate(stripeCustomerIdProvider),
                 ),
+              ),
+            ],
+          ),
+          _SettingsSection(
+            title: 'サポート',
+            tiles: [
+              _SettingsTile(
+                title: 'GPT-4o サポートチャット',
+                subtitle: '困ったことをAIサポートに質問',
+                onTap: () => context.push(AppRoutes.support),
+              ),
+              _SettingsTile(
+                title: '投げ銭で応援',
+                subtitle: hasTipJar
+                    ? 'Sponsor Block広告の解除 & 開発支援'
+                    : '現在準備中です',
+                onTap: hasTipJar ? () => _showTipJar(context) : null,
               ),
             ],
           ),
