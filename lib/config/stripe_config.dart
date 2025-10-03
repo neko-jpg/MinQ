@@ -1,19 +1,35 @@
 import 'package:minq/data/services/remote_config_service.dart';
 
 class StripeConfig {
-  StripeConfig({required this.portalEndpoint});
+  StripeConfig({required this.portalEndpoint, this.tipEndpoint});
 
   final Uri portalEndpoint;
+  final Uri? tipEndpoint;
+
+  bool get hasTipEndpoint => tipEndpoint != null;
 
   factory StripeConfig.fromRemoteConfig(RemoteConfigService remoteConfig) {
-    final raw = remoteConfig.stripeBillingPortalEndpoint;
-    if (raw.isEmpty) {
-      throw StateError('Stripe billing portal endpoint is not configured.');
+    final config = StripeConfig.maybeFromRemoteConfig(remoteConfig);
+    if (config == null) {
+      throw StateError('Stripe endpoints are not configured.');
     }
-    final uri = Uri.parse(raw);
-    if (!uri.hasScheme) {
-      throw FormatException('Invalid Stripe billing portal endpoint: $raw');
+    if (!config.hasTipEndpoint) {
+      throw StateError('Tip jar endpoint is not configured.');
     }
-    return StripeConfig(portalEndpoint: uri);
+    return config;
+  }
+
+  static StripeConfig? maybeFromRemoteConfig(RemoteConfigService remoteConfig) {
+    final portalUri = remoteConfig.tryGetUri('stripe_billing_portal_endpoint');
+    if (portalUri == null) {
+      return null;
+    }
+
+    final tipUri = remoteConfig.tryGetUri('tip_jar_endpoint');
+
+    return StripeConfig(
+      portalEndpoint: portalUri,
+      tipEndpoint: tipUri,
+    );
   }
 }

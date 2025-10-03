@@ -106,7 +106,8 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
         await notificationService.cancelAuxiliaryReminder();
       }
 
-      final quest = await _ref.read(questRepositoryProvider).getQuestById(questId);
+      final questRepository = _ref.read(questRepositoryProvider);
+      final quest = await questRepository.getQuestById(questId);
       if (quest != null) {
         unawaited(
           _ref.read(webhookDispatchServiceProvider).dispatchQuestCompletion(
@@ -114,6 +115,34 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
                 log: log,
               ),
         );
+
+        final prefs = _ref.read(localPreferencesServiceProvider);
+        if (await prefs.isLiveActivityEnabled()) {
+          final liveActivityService = _ref.read(liveActivityServiceProvider);
+          await liveActivityService.startForQuest(
+            questId: quest.id.toString(),
+            title: quest.title,
+            completed: 1,
+            total: 1,
+          );
+          await liveActivityService.endForQuest(quest.id.toString());
+        }
+
+        if (await prefs.isWearableSyncEnabled()) {
+          final wearableService = _ref.read(wearableSyncServiceProvider);
+          final quests = await questRepository.getAllQuests();
+          await wearableService.syncQuests(userId: uid, quests: quests);
+        }
+
+        if (await prefs.isFitnessAutoLoggingEnabled()) {
+          final fitnessService = _ref.read(fitnessSyncServiceProvider);
+          final snapshot = await fitnessService.fetchDailySteps(DateTime.now());
+          await fitnessService.syncHabit(
+            habitId: questId.toString(),
+            completionDate: DateTime.now(),
+            steps: snapshot.steps,
+          );
+        }
       }
 
       state = const AsyncValue.data(null);

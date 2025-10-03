@@ -29,6 +29,7 @@ import 'package:minq/presentation/screens/account_deletion_screen.dart';
 import 'package:minq/presentation/screens/profile_setting_screen.dart';
 import 'package:minq/presentation/screens/profile_setting_screen.dart';
 import 'package:minq/presentation/screens/quest_detail_screen.dart';
+import 'package:minq/presentation/screens/community_board_screen.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -89,6 +90,7 @@ class AppRoutes {
   static const pairMatching = '/pair/matching';
   static const pairChat = '/pair/chat/:pairId';
   static const accountDeletion = '/settings/delete-account';
+  static const communityBoard = '/community-board';
   static const home = '/';
   static const stats = '/stats';
   static const pair = '/pair';
@@ -231,6 +233,15 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
       ),
       GoRoute(
+        path: AppRoutes.communityBoard,
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const CommunityBoardScreen(),
+            ),
+      ),
+      GoRoute(
         path: AppRoutes.createQuest,
         pageBuilder:
             (context, state) => buildPageWithTransition<void>(
@@ -367,6 +378,7 @@ class NavigationUseCase {
   void goToPolicy(PolicyDocumentId documentId) =>
       _router.go(AppRoutes.policy.replaceFirst(':id', documentId.name));
   void goToSupport() => _router.go(AppRoutes.support);
+  void goToCommunityBoard() => _router.go(AppRoutes.communityBoard);
   void goToCreateQuest() => _router.go(AppRoutes.createQuest);
   void goToEditQuest(int questId) => _router.go(AppRoutes.editQuest.replaceFirst(':questId', questId.toString()));
   void goToQuestDetail(int questId) =>

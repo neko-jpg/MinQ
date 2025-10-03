@@ -10,6 +10,7 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/image_moderation_service.dart';
 import 'package:minq/data/services/photo_storage_service.dart';
 import 'package:minq/data/services/focus_music_service.dart';
+import 'package:minq/data/services/acr_music_tagging_service.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
@@ -68,7 +69,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
 
     return Scaffold(
@@ -414,7 +415,7 @@ class _FocusMusicPanel extends ConsumerWidget {
   }
 }
 
-class _FocusMusicTile extends StatelessWidget {
+class _FocusMusicTile extends ConsumerWidget {
   const _FocusMusicTile({
     required this.track,
     required this.service,
@@ -442,9 +443,31 @@ class _FocusMusicTile extends StatelessWidget {
     }
   }
 
+  Future<void> _identifyTrack(BuildContext context, WidgetRef ref) async {
+    final taggingService = ref.read(acrMusicTaggingServiceProvider);
+    if (taggingService == null) {
+      FeedbackMessenger.showInfoToast(context, 'BGMの識別は現在ご利用いただけません');
+      return;
+    }
+    try {
+      final result = await taggingService.identifyFromUrl(track.url);
+      if (result == null) {
+        FeedbackMessenger.showInfoToast(context, '楽曲を特定できませんでした');
+        return;
+      }
+      FeedbackMessenger.showSuccessToast(
+        context,
+        '${result.title} / ${result.artists.join(', ')}',
+      );
+    } catch (error) {
+      FeedbackMessenger.showErrorSnackBar(context, 'BGMの識別に失敗しました');
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final hasTagging = ref.watch(acrMusicTaggingServiceProvider) != null;
     final Color tileColor =
         isActive ? tokens.brandPrimary.withOpacity(0.12) : tokens.surface;
     final borderColor =
@@ -476,12 +499,25 @@ class _FocusMusicTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      track.title,
-                      style: tokens.titleSmall.copyWith(
-                        color: tokens.textPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            track.title,
+                            style: tokens.titleSmall.copyWith(
+                              color: tokens.textPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'BGMを自動タグ付け',
+                          icon: const Icon(Icons.music_note),
+                          onPressed: hasTagging
+                              ? () => _identifyTrack(context, ref)
+                              : null,
+                        ),
+                      ],
                     ),
                     SizedBox(height: tokens.spacing(1)),
                     Text(

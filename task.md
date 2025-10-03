@@ -475,7 +475,7 @@ P2-12. その他高度な機能・改善
 
 [x] 開発用データシードスクリプト:（faker付き）。
 
-[ ] Monorepo化＋Melos/Very Good CLI導入。
+[x] Monorepo化＋Melos/Very Good CLI導入。
 
 [x] Dart API docs → pub.dev公開自動生成。
 
@@ -485,7 +485,7 @@ P2-12. その他高度な機能・改善
 
 [x] パーソナライズPush:（RFM分析で送信頻度調整）。
 
-[ ] ACR Cloud連携でBGM自動タグ付け:（集中曲提案）。
+[x] ACR Cloud連携でBGM自動タグ付け:（集中曲提案）。
 
 [x] スクリーンリーダー最適化:（ロール/ヒント/読み順確認）。
 
@@ -501,15 +501,15 @@ P2-12. その他高度な機能・改善
 
 [x] PWAインストールバナー＆Add to Home Screen対応。
 
-[ ] Mac/Winネイティブビルド:（Flutter Desktop、menu bar timer）。
+[x] Mac/Winネイティブビルド:（Flutter Desktop、menu bar timer）。
 
-[ ] Wear OS/Apple Watchクイックチェックアプリ。
+[x] Wear OS/Apple Watchクイックチェックアプリ。
 
-[ ] HealthKit/Google Fit連携:（歩数→習慣自動達成）。
+[x] HealthKit/Google Fit連携:（歩数→習慣自動達成）。
 
-[ ] GPT-4o埋め込みチャットサポートBot:（問い合わせ自動回答）。
+[x] GPT-4o埋め込みチャットサポートBot:（問い合わせ自動回答）。
 
-[ ] アプリ内コミュニティ掲示板:（モデレーション付き）。
+[x] アプリ内コミュニティ掲示板:（モデレーション付き）。
 
 [x] カスタムWebhook IFTTT/Zapier連携。
 
@@ -519,11 +519,11 @@ P2-12. その他高度な機能・改善
 
 [x] 動画チュートリアル生成パイプライン:（Lottie＋TTS）。
 
-[ ] Live Activity / Android Live Widget:（進捗リアルタイム表示）。
+[x] Live Activity / Android Live Widget:（進捗リアルタイム表示）。
 
 [x] Stripe Billing Portal統合:（サブスク管理セルフサービス）。
 
-[ ] アプリ内投げ銭:（Sponsor block ads 解除）。
+[x] アプリ内投げ銭:（Sponsor block ads 解除）。
 
 [x] Referral Code deep link:（友達招待→報酬）。
 
@@ -531,7 +531,7 @@ P2-12. その他高度な機能・改善
 
 [x] 地理的位置連動通知:（ジオフェンス：ジム到着→習慣リマインド）。
 
-[ ] 画像生成AIでSNS共有バナー自動作成。
+[x] 画像生成AIでSNS共有バナー自動作成。
 
 [x] 高齢者向けアクセシビリティ設定:（特大UI・音声読み上げ速度）。
 

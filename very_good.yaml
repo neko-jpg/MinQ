@@ -1,0 +1,7 @@
+scripts:
+  analyze: flutter analyze
+  format: flutter format lib test --line-length 100
+  test: flutter test
+coverage:
+  exclude:
+    - '**/*.g.dart'
