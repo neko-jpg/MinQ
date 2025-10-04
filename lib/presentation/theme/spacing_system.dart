@@ -415,3 +415,58 @@ class ResponsiveSpacing {
     );
   }
 }
+
+/// Legacy spacing shim to keep backward compatibility with older layout code.
+class AppSpacing {
+  const AppSpacing._();
+
+  static const double none = SpacingSystem.none;
+  static const double xxxs = SpacingSystem.xxxs;
+  static const double xxs = SpacingSystem.xxs;
+  static const double xs = SpacingSystem.xs;
+  static const double sm = SpacingSystem.sm;
+  static const double md = SpacingSystem.md;
+  static const double lg = SpacingSystem.lg;
+  static const double xl = SpacingSystem.xl;
+  static const double xxl = SpacingSystem.xxl;
+  static const double xxxl = SpacingSystem.xxxl;
+  static const double xxxxl = SpacingSystem.xxxxl;
+  static const double xxxxxl = SpacingSystem.xxxxxl;
+  static const double xxxxxxl = SpacingSystem.xxxxxxl;
+
+  static const double intimate = SpacingSystem.intimate;
+  static const double breathing = SpacingSystem.breathing;
+  static const double respectful = SpacingSystem.respectful;
+  static const double dramatic = SpacingSystem.dramatic;
+
+  static const double cardPadding = SpacingSystem.cardPadding;
+  static const double cardMargin = SpacingSystem.cardMargin;
+  static const double listItemSpacing = SpacingSystem.listItemSpacing;
+  static const double buttonPaddingH = SpacingSystem.buttonPaddingH;
+  static const double buttonPaddingV = SpacingSystem.buttonPaddingV;
+  static const double iconTextGap = SpacingSystem.iconTextGap;
+  static const double formFieldSpacing = SpacingSystem.formFieldSpacing;
+  static const double sectionSpacing = SpacingSystem.sectionSpacing;
+  static const double screenPadding = SpacingSystem.screenPadding;
+  static const double dialogPadding = SpacingSystem.dialogPadding;
+  static const double bottomSheetPadding = SpacingSystem.bottomSheetPadding;
+
+  static EdgeInsets all(double value) => SpacingSystem.all(value);
+  static EdgeInsets horizontal(double value) =>
+      SpacingSystem.horizontal(value);
+  static EdgeInsets vertical(double value) => SpacingSystem.vertical(value);
+  static EdgeInsets symmetric({double horizontal = 0, double vertical = 0}) =>
+      SpacingSystem.symmetric(horizontal: horizontal, vertical: vertical);
+  static EdgeInsets only({
+    double left = 0,
+    double top = 0,
+    double right = 0,
+    double bottom = 0,
+  }) =>
+      SpacingSystem.only(
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
+      );
+}

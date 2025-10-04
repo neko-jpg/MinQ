@@ -119,7 +119,6 @@ dev_dependencies:
   mockito: any
   mocktail: ^1.0.4
   very_good_analysis: ^6.0.0
-  import_lint: ^1.0.1
 
 
 

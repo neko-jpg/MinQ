@@ -1,7 +1,7 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:minq/data/services/usage_limit_service.dart';
 import 'package:minq/presentation/controllers/usage_limit_controller.dart';
-import 'package:test/test.dart';
 
 class MockUsageLimitService extends Mock implements UsageLimitService {}
 
