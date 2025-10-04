@@ -44,7 +44,6 @@ MinQは、**Flutter 3.29.x**、Dart 3.x、Riverpod、Firebase、Freezedを使用
 
 #### 段階的な戦略
 
-  - 1つのPRで最大300件のエラーを削減するバッチPRを作成します（差分をレビューしやすくするため）。
   - 安全な場合は`dart fix --apply`を使用しますが、`// ignore`による抑制は絶対に追加しないでください。
   - マージ後、CIが`flutter analyze`を再実行し、エラーが残っている場合は、次のサブタスクを自動的に開きます。
 
