@@ -4,7 +4,7 @@
 - [ ] 🔧 Lint-zeroキャンペーン (2,000件以上の解析エラーを修正)
 
 P0 (必須・不具合/統一) - マストハブ
-[ ] 色統一: カード背景を tokens.surface に統一（Darkは RGB(61,68,77)）。直指定色を撤去。
+[x] 色統一: カード背景を tokens.surface に統一（Darkは RGB(61,68,77)）。直指定色を撤去。 — #ba3fa2e (2025-10-04)
 
 [ ] Onboarding: ColorScheme 直参照 → すべて context.tokens に置換。_FeatureCard は CardTheme 準拠。
 
