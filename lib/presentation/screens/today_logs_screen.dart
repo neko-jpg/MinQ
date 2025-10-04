@@ -225,6 +225,8 @@ class _LogCard extends ConsumerWidget {
               final controller = ref.read(questLogControllerProvider.notifier);
               final success = await controller.undoLog(log.id);
               
+              if (!context.mounted) return;
+              
               if (success) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
