@@ -37,26 +37,27 @@ class QuestRecommendationService {
       categoryCounts.update(quest.category, (value) => value + 1, ifAbsent: () => 1);
     }
 
-    final scored = quests.map((quest) {
-      final completionRate = completionsByQuest[quest.id]?.completionRate ?? 0;
-      final streak = streakByQuest[quest.id] ?? 0;
-      final recencyBoost = _recencyWeight(completionsByQuest[quest.id]?.lastCompletedAt, now);
-      final baseScore = (1 - completionRate) * 0.6 + recencyBoost + streak * 0.05;
-      final variance = _categoryDiversityWeight(quest.category, categoryCounts);
-      final totalScore = max(0, baseScore + variance);
-      final reason = _buildReason(
-        quest: quest,
-        completionRate: completionRate,
-        streak: streak,
-        recencyBoost: recencyBoost,
-      );
-      return QuestRecommendation(
-        quest: quest,
-        score: totalScore,
-        recommendedFor: now,
-        reason: reason,
-      );
-    }).toList();
+    final scored =
+        quests.map((quest) {
+          final completionRate = completionsByQuest[quest.id]?.completionRate ?? 0;
+          final streak = streakByQuest[quest.id] ?? 0;
+          final recencyBoost = _recencyWeight(completionsByQuest[quest.id]?.lastCompletedAt, now);
+          final baseScore = (1 - completionRate) * 0.6 + recencyBoost + streak * 0.05;
+          final variance = _categoryDiversityWeight(quest.category, categoryCounts);
+          final totalScore = max(0.0, baseScore + variance);
+          final reason = _buildReason(
+            quest: quest,
+            completionRate: completionRate,
+            streak: streak,
+            recencyBoost: recencyBoost,
+          );
+          return QuestRecommendation(
+            quest: quest,
+            score: totalScore,
+            recommendedFor: now,
+            reason: reason,
+          );
+        }).toList();
 
     scored.sort((a, b) => b.score.compareTo(a.score));
     return scored.take(limit).toList();
@@ -66,7 +67,8 @@ class QuestRecommendationService {
     final grouped = groupBy(logs, (QuestLog log) => log.questId);
     return grouped.map((key, entries) {
       entries.sort((a, b) => a.ts.compareTo(b.ts));
-      final completedDays = entries.map((e) => DateTime.utc(e.ts.year, e.ts.month, e.ts.day)).toSet();
+      final completedDays =
+          entries.map((e) => DateTime.utc(e.ts.year, e.ts.month, e.ts.day)).toSet();
       final firstTs = entries.first.ts;
       final lastTs = entries.last.ts;
       final summary = _QuestCompletionSummary(
@@ -109,17 +111,15 @@ class QuestRecommendationService {
     return min(0.4, days * 0.05);
   }
 
-  double _categoryDiversityWeight(
-    String category,
-    Map<String, int> categoryCounts,
-  ) {
+  double _categoryDiversityWeight(String category, Map<String, int> categoryCounts) {
     final totalCategories = categoryCounts.length;
     if (totalCategories <= 1) {
       return 0;
     }
     final occurrences = categoryCounts[category] ?? 0;
     if (occurrences == 0) return 0.2;
-    final average = categoryCounts.values.fold<int>(0, (prev, value) => prev + value) /
+    final average =
+        categoryCounts.values.fold<int>(0, (prev, value) => prev + value) /
         categoryCounts.values.length;
     if (occurrences > average) {
       return -0.1;

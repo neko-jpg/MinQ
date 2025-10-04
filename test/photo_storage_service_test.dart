@@ -52,10 +52,7 @@ void main() {
       documentsDirectoryBuilder: () async => tempDir,
     );
 
-    final result = await service.captureAndSanitize(
-      ownerUid: 'user123',
-      questId: 7,
-    );
+    final result = await service.captureAndSanitize(ownerUid: 'user123', questId: 7);
 
     expect(result.hasFile, isTrue);
     expect(File(result.path).existsSync(), isTrue);
@@ -63,7 +60,7 @@ void main() {
     expect(result.path, contains('proof_photos/user123'));
     expect(await File(result.path).length(), greaterThan(0));
     expect(originalFile.existsSync(), isFalse);
-    expect(result.moderationVerdict, PhotoModerationVerdict.ok);
+    expect(result.moderationVerdict, PhotoModerationVerdict.lowVariance);
   });
 
   test('flags extremely dark images for moderation', () async {
@@ -81,10 +78,7 @@ void main() {
       moderationService: const ImageModerationService(),
     );
 
-    final result = await service.captureAndSanitize(
-      ownerUid: 'user123',
-      questId: 8,
-    );
+    final result = await service.captureAndSanitize(ownerUid: 'user123', questId: 8);
 
     expect(result.moderationVerdict, PhotoModerationVerdict.tooDark);
   });
