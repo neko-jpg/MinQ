@@ -11,7 +11,11 @@ void main() {
       });
 
       test('2023 is not a leap year', () {
-        expect(() => DateTime(2023, 2, 29), throwsException);
+        final normalized = DateTime(2023, 2, 29);
+        expect(normalized.year, 2023);
+        expect(normalized.month, 3);
+        expect(normalized.day, 1);
+        expect(isLeapYear(2023), false);
       });
 
       test('2000 is a leap year (divisible by 400)', () {
@@ -20,7 +24,11 @@ void main() {
       });
 
       test('1900 is not a leap year (divisible by 100 but not 400)', () {
-        expect(() => DateTime(1900, 2, 29), throwsException);
+        final normalized = DateTime(1900, 2, 29);
+        expect(normalized.year, 1900);
+        expect(normalized.month, 3);
+        expect(normalized.day, 1);
+        expect(isLeapYear(1900), false);
       });
 
       test('Leap year calculation', () {
@@ -40,7 +48,10 @@ void main() {
       test('February has 28 days in non-leap year', () {
         final lastDay = DateTime(2023, 2, 28);
         expect(lastDay.day, 28);
-        expect(() => DateTime(2023, 2, 29), throwsException);
+
+        final overflow = DateTime(2023, 2, 29);
+        expect(overflow.month, 3);
+        expect(overflow.day, 1);
       });
 
       test('February has 29 days in leap year', () {
@@ -51,7 +62,10 @@ void main() {
       test('April has 30 days', () {
         final lastDay = DateTime(2025, 4, 30);
         expect(lastDay.day, 30);
-        expect(() => DateTime(2025, 4, 31), throwsException);
+
+        final overflow = DateTime(2025, 4, 31);
+        expect(overflow.month, 5);
+        expect(overflow.day, 1);
       });
 
       test('Adding 1 month to January 31 goes to February 28/29', () {
@@ -151,11 +165,7 @@ void main() {
 
     group('Streak Calculation Tests', () {
       test('Consecutive days streak', () {
-        final dates = [
-          DateTime(2025, 10, 1),
-          DateTime(2025, 10, 2),
-          DateTime(2025, 10, 3),
-        ];
+        final dates = [DateTime(2025, 10, 1), DateTime(2025, 10, 2), DateTime(2025, 10, 3)];
 
         final streak = calculateStreak(dates);
         expect(streak, 3);
@@ -251,11 +261,9 @@ int calculateStreak(List<DateTime> dates) {
   if (dates.isEmpty) return 0;
 
   // 日付のみで比較するため、時刻を削除
-  final sortedDates = dates
-      .map((d) => DateTime(d.year, d.month, d.day))
-      .toSet()
-      .toList()
-    ..sort((a, b) => b.compareTo(a)); // 降順
+  final sortedDates =
+      dates.map((d) => DateTime(d.year, d.month, d.day)).toSet().toList()
+        ..sort((a, b) => b.compareTo(a)); // 降順
 
   int streak = 1;
   for (int i = 0; i < sortedDates.length - 1; i++) {
@@ -272,7 +280,5 @@ int calculateStreak(List<DateTime> dates) {
 
 /// 同じ日かチェック
 bool isSameDay(DateTime date1, DateTime date2) {
-  return date1.year == date2.year &&
-      date1.month == date2.month &&
-      date1.day == date2.day;
+  return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
 }
