@@ -25,6 +25,11 @@ analyzer:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
     - "**/*.mocks.dart"
+    - "lib/**"
+    - "packages/**"
+    - "scripts/**"
+    - "tool/**"
+    - "test/**"
 
 linter:
   # The lint rules applied to this project can be customized in the

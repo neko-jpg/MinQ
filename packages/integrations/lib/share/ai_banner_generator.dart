@@ -18,7 +18,7 @@ class AIBannerGenerator {
     final palette = _generatePalette(rng);
     final canvas = img.Image(width: width, height: height);
 
-    img.fill(canvas, palette.background);
+    img.fill(canvas, color: palette.background);
 
     _paintGradient(canvas, palette, rng);
     _paintBlobs(canvas, palette, rng);
@@ -46,30 +46,61 @@ class AIBannerGenerator {
   void _paintBlobs(_ImageLike canvas, _Palette palette, Random rng) {
     final blobCount = 4;
     for (var i = 0; i < blobCount; i++) {
-      final radius = (canvas.width * 0.15 + rng.nextDouble() * canvas.width * 0.1).toInt();
+      final radius =
+          (canvas.width * 0.15 + rng.nextDouble() * canvas.width * 0.1).toInt();
       final centerX = rng.nextInt(canvas.width);
       final centerY = rng.nextInt(canvas.height);
       final color = palette.accents[rng.nextInt(palette.accents.length)];
-      img.drawCircle(canvas as img.Image, centerX, centerY, radius, color,
-          thickness: -1, blend: img.BlendMode.overlay);
+      img.drawCircle(
+        canvas as img.Image,
+        centerX,
+        centerY,
+        radius,
+        color: color,
+        thickness: -1,
+        blend: img.BlendMode.overlay,
+      );
     }
   }
 
-  void _drawText(_ImageLike canvas, String title, String subtitle, _Palette palette) {
+  void _drawText(
+    _ImageLike canvas,
+    String title,
+    String subtitle,
+    _Palette palette,
+  ) {
     final boldFont = img.arial_48;
     final regularFont = img.arial_24;
 
     final titleLines = img.wrapText(boldFont, title, canvas.width - 160);
     var offsetY = 160;
     for (final line in titleLines) {
-      img.drawString(canvas as img.Image, line, font: boldFont, x: 80, y: offsetY, color: palette.onBackground);
+      img.drawString(
+        canvas as img.Image,
+        line,
+        font: boldFont,
+        x: 80,
+        y: offsetY,
+        color: palette.onBackground,
+      );
       offsetY += boldFont.height + 12;
     }
 
-    final subtitleLines = img.wrapText(regularFont, subtitle, canvas.width - 160);
+    final subtitleLines = img.wrapText(
+      regularFont,
+      subtitle,
+      canvas.width - 160,
+    );
     offsetY += 24;
     for (final line in subtitleLines) {
-      img.drawString(canvas as img.Image, line, font: regularFont, x: 80, y: offsetY, color: palette.onBackgroundSecondary);
+      img.drawString(
+        canvas as img.Image,
+        line,
+        font: regularFont,
+        x: 80,
+        y: offsetY,
+        color: palette.onBackgroundSecondary,
+      );
       offsetY += regularFont.height + 8;
     }
   }
@@ -77,43 +108,43 @@ class AIBannerGenerator {
   _Palette _generatePalette(Random rng) {
     final backgrounds = [
       _Palette(
-        background: img.getColor(20, 28, 33),
-        onBackground: img.getColor(240, 245, 250),
-        onBackgroundSecondary: img.getColor(205, 213, 220),
+        background: _rgb(20, 28, 33),
+        onBackground: _rgb(240, 245, 250),
+        onBackgroundSecondary: _rgb(205, 213, 220),
         accents: [
-          img.getColor(17, 138, 178),
-          img.getColor(239, 71, 111),
-          img.getColor(255, 209, 102),
-          img.getColor(6, 214, 160),
+          _rgb(17, 138, 178),
+          _rgb(239, 71, 111),
+          _rgb(255, 209, 102),
+          _rgb(6, 214, 160),
         ],
       ),
       _Palette(
-        background: img.getColor(33, 17, 52),
-        onBackground: img.getColor(244, 242, 255),
-        onBackgroundSecondary: img.getColor(199, 196, 214),
+        background: _rgb(33, 17, 52),
+        onBackground: _rgb(244, 242, 255),
+        onBackgroundSecondary: _rgb(199, 196, 214),
         accents: [
-          img.getColor(131, 56, 236),
-          img.getColor(58, 134, 255),
-          img.getColor(252, 163, 17),
-          img.getColor(11, 218, 81),
+          _rgb(131, 56, 236),
+          _rgb(58, 134, 255),
+          _rgb(252, 163, 17),
+          _rgb(11, 218, 81),
         ],
       ),
     ];
     return backgrounds[rng.nextInt(backgrounds.length)];
   }
 
-  int _lerpColor(int a, int b, double t) {
-    final ar = img.getRed(a);
-    final ag = img.getGreen(a);
-    final ab = img.getBlue(a);
-    final br = img.getRed(b);
-    final bg = img.getGreen(b);
-    final bb = img.getBlue(b);
+  img.Color _lerpColor(img.Color a, img.Color b, double t) {
+    final ar = a.r.toDouble();
+    final ag = a.g.toDouble();
+    final ab = a.b.toDouble();
+    final br = b.r.toDouble();
+    final bg = b.g.toDouble();
+    final bb = b.b.toDouble();
 
-    final rr = (ar + ((br - ar) * t)).round();
-    final rg = (ag + ((bg - ag) * t)).round();
-    final rb = (ab + ((bb - ab) * t)).round();
-    return img.getColor(rr, rg, rb);
+    final rr = (ar + ((br - ar) * t)).round().clamp(0, 255);
+    final rg = (ag + ((bg - ag) * t)).round().clamp(0, 255);
+    final rb = (ab + ((bb - ab) * t)).round().clamp(0, 255);
+    return _rgb(rr, rg, rb);
   }
 }
 
@@ -127,8 +158,10 @@ class _Palette {
     required this.accents,
   });
 
-  final int background;
-  final int onBackground;
-  final int onBackgroundSecondary;
-  final List<int> accents;
+  final img.Color background;
+  final img.Color onBackground;
+  final img.Color onBackgroundSecondary;
+  final List<img.Color> accents;
 }
+
+img.ColorRgb8 _rgb(int r, int g, int b) => img.ColorRgb8(r, g, b);
