@@ -374,3 +374,31 @@ class ResponsiveTypography {
     return TypographySystem.h3(color: color).copyWith(fontSize: baseSize);
   }
 }
+
+/// Legacy typography shim mirroring the previous `AppTypography` API.
+class AppTypography {
+  const AppTypography._();
+
+  static TextStyle get h1 => TypographySystem.h1();
+  static TextStyle get h2 => TypographySystem.h2();
+  static TextStyle get h3 => TypographySystem.h3();
+  static TextStyle get h4 => TypographySystem.h4();
+  static TextStyle get h5 => TypographySystem.h5();
+  static TextStyle get h6 => TypographySystem.h6();
+
+  static TextStyle get bodyLarge => TypographySystem.bodyLarge();
+  static TextStyle get body => TypographySystem.bodyMedium();
+  static TextStyle get bodyMedium => TypographySystem.bodyMedium();
+  static TextStyle get bodySmall => TypographySystem.bodySmall();
+
+  static TextStyle get caption => TypographySystem.caption();
+  static TextStyle get overline => TypographySystem.overline();
+
+  static TextStyle get buttonLarge => TypographySystem.buttonLarge();
+  static TextStyle get buttonMedium => TypographySystem.buttonMedium();
+  static TextStyle get buttonSmall => TypographySystem.buttonSmall();
+
+  static TextStyle get monoLarge => TypographySystem.monoLarge();
+  static TextStyle get monoMedium => TypographySystem.monoMedium();
+  static TextStyle get monoSmall => TypographySystem.monoSmall();
+}
