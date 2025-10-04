@@ -210,8 +210,8 @@ class _FocusableWidgetState extends State<FocusableWidget> {
       child: Focus(
         focusNode: _focusNode,
         autofocus: widget.autofocus,
-        onKey: (node, event) {
-          if (event is RawKeyDownEvent) {
+        onKeyEvent: (node, event) {
+          if (event is KeyDownEvent) {
             if (event.logicalKey == LogicalKeyboardKey.enter ||
                 event.logicalKey == LogicalKeyboardKey.space) {
               widget.onTap?.call();
@@ -306,8 +306,8 @@ class _KeyboardNavigableListState extends State<KeyboardNavigableList> {
   @override
   Widget build(BuildContext context) {
     return Focus(
-      onKey: (node, event) {
-        if (event is RawKeyDownEvent) {
+      onKeyEvent: (node, event) {
+        if (event is KeyDownEvent) {
           if (widget.scrollDirection == Axis.vertical) {
             if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
               _moveFocus(1);
@@ -404,46 +404,46 @@ class KeyboardShortcuts {
   const KeyboardShortcuts._();
 
   /// Ctrl/Cmd + S: 保孁E
-  static bool isSaveShortcut(RawKeyEvent event) {
-    return event.isControlPressed &&
+  static bool isSaveShortcut(KeyEvent event) {
+    return HardwareKeyboard.instance.isControlPressed &&
         event.logicalKey == LogicalKeyboardKey.keyS;
   }
 
   /// Ctrl/Cmd + N: 新規作�E
-  static bool isNewShortcut(RawKeyEvent event) {
-    return event.isControlPressed &&
+  static bool isNewShortcut(KeyEvent event) {
+    return HardwareKeyboard.instance.isControlPressed &&
         event.logicalKey == LogicalKeyboardKey.keyN;
   }
 
   /// Ctrl/Cmd + F: 検索
-  static bool isSearchShortcut(RawKeyEvent event) {
-    return event.isControlPressed &&
+  static bool isSearchShortcut(KeyEvent event) {
+    return HardwareKeyboard.instance.isControlPressed &&
         event.logicalKey == LogicalKeyboardKey.keyF;
   }
 
   /// Esc: キャンセル/閉じめE
-  static bool isEscapeKey(RawKeyEvent event) {
+  static bool isEscapeKey(KeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.escape;
   }
 
   /// Enter: 確宁E
-  static bool isEnterKey(RawKeyEvent event) {
+  static bool isEnterKey(KeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.enter;
   }
 
   /// Space: 選抁Eトグル
-  static bool isSpaceKey(RawKeyEvent event) {
+  static bool isSpaceKey(KeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.space;
   }
 
   /// Tab: 次のフォーカス
-  static bool isTabKey(RawKeyEvent event) {
+  static bool isTabKey(KeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.tab;
   }
 
   /// Shift + Tab: 前�Eフォーカス
-  static bool isShiftTabKey(RawKeyEvent event) {
-    return event.isShiftPressed &&
+  static bool isShiftTabKey(KeyEvent event) {
+    return HardwareKeyboard.instance.isShiftPressed &&
         event.logicalKey == LogicalKeyboardKey.tab;
   }
 }

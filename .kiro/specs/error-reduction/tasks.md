@@ -77,7 +77,9 @@
   - Gitコミット
   - _Requirements: 1.4, 9.2_
 
-- [-] 3. Phase 2: 型安全性の確保
+- [x] 3. Phase 2: 型安全性の確保
+
+
 
 
 - [x] 3.1 referral_serviceの型エラー修正
@@ -144,52 +146,82 @@
   - 適切にインポート
   - _Requirements: 3.4, 8.2_
 
-- [-] 3.10 Phase 2の検証
+- [ ] 3.10 Phase 2の検証
+
+
+
 
   - `flutter analyze`を実行してエラー数を確認
   - ビルドが成功することを確認
   - Gitコミット
   - _Requirements: 1.4, 9.2_
 
+
 - [ ] 4. Phase 3: BuildContext使用の安全性確保
-- [ ] 4.1 async gap警告の一括修正
+
+
+
+
+
+- [x] 4.1 async gap警告の一括修正
+
   - `use_build_context_synchronously`警告があるすべてのファイルを特定
   - 各ファイルでasync処理後のBuildContext使用箇所に`if (!context.mounted) return;`を追加
   - _Requirements: 6.1, 6.2, 6.3_
 
+
 - [ ] 4.2 Phase 3の検証
+
+
+
+
+
   - `flutter analyze`を実行して警告が解消されたか確認
   - ビルドが成功することを確認
   - Gitコミット
   - _Requirements: 1.4, 9.2_
 
+
 - [ ] 5. Phase 4: 非推奨APIの移行
-- [ ] 5.1 onPopInvokedの移行
+
+
+- [x] 5.1 onPopInvokedの移行
+
+
   - `onPopInvoked`を使用しているファイルを特定
   - `onPopInvokedWithResult`に移行
   - _Requirements: 4.2_
 
-- [ ] 5.2 RawKeyEventの移行
+- [x] 5.2 RawKeyEventの移行
+
+
   - `lib/presentation/theme/focus_system.dart`の`RawKeyEvent`関連APIを新しいAPIに移行
   - `KeyEvent`を使用
   - _Requirements: 4.3_
 
-- [ ] 5.3 Shareパッケージの移行
+- [x] 5.3 Shareパッケージの移行
+
+
+
   - `Share.shareXFiles`を使用している箇所を特定
   - `SharePlus.instance.share()`に移行
   - _Requirements: 4.4_
 
-- [ ] 5.4 Color APIの移行
+- [x] 5.4 Color APIの移行
+
+
   - `color.red`, `color.green`, `color.blue`を`.r`, `.g`, `.b`に移行
   - _Requirements: 4.1_
 
-- [ ] 5.5 Phase 4の検証
+- [-] 5.5 Phase 4の検証
+
   - `flutter analyze`を実行してinfo数を確認
   - ビルドが成功することを確認
   - Gitコミット
   - _Requirements: 1.4, 9.2_
 
 - [ ] 6. Phase 5: 未使用コードのクリーンアップ
+
 - [ ] 6.1 dart fixの自動適用
   - `dart fix --dry-run`で修正内容を確認
   - `dart fix --apply`で自動修正を適用
@@ -222,6 +254,7 @@
   - _Requirements: 1.4, 9.2_
 
 - [ ] 7. Phase 6: テストの修正
+
 - [ ] 7.1 testパッケージの依存関係確認
   - `pubspec.yaml`の`dev_dependencies`に`test`があるか確認
   - 不足している場合は追加
@@ -254,6 +287,7 @@
   - _Requirements: 2.1, 2.2, 2.3, 9.2_
 
 - [ ] 8. 最終検証とドキュメント更新
+
 - [ ] 8.1 最終ビルドテスト
   - `flutter clean`を実行
   - `flutter pub get`を実行
