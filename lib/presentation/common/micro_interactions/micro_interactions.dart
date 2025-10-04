@@ -5,5 +5,5 @@
 library;
 
 export 'animated_checkbox.dart';
-export 'pulsing_button.dart';
 export 'progress_ring.dart';
+export 'pulsing_button.dart';

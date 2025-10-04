@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
 
 /// コントラスト検証ツール
 /// WCAG 2.1準拠のコントラスト比チェック
@@ -197,8 +198,8 @@ class ContrastValidator {
 
     // プライマリテキスト
     reports['primary_on_background'] = generateReport(
-      theme.colorScheme.onBackground,
-      theme.colorScheme.background,
+      theme.colorScheme.onSurface,
+      theme.colorScheme.surface,
     );
 
     reports['primary_on_surface'] = generateReport(
@@ -311,7 +312,7 @@ class ThemeContrastReport {
     buffer.writeln('=== Theme Contrast Report ===');
     buffer.writeln('Overall AA Compliance: ${allMeetAA ? "✓ Pass" : "✗ Fail"}');
     buffer.writeln(
-        'Overall AAA Compliance: ${allMeetAAA ? "✓ Pass" : "✗ Fail"}');
+        'Overall AAA Compliance: ${allMeetAAA ? "✓ Pass" : "✗ Fail"}',);
     buffer.writeln('');
 
     for (final entry in reports.entries) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/spacing_system.dart';
-import '../theme/elevation_system.dart';
+import 'package:minq/presentation/theme/elevation_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// 標準ボトムシート - 統一されたボトムシートコンポーネント
 class StandardBottomSheet extends StatelessWidget {

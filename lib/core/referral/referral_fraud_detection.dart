@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// リファラル詐欺検出サービス
 /// 
@@ -28,9 +28,7 @@ class ReferralFraudDetection {
     try {
       // 1. 自己招待チェック
       if (referrerId == newUserId) {
-        AppLogger.warning('Self-referral detected', {
-          'referrer_id': referrerId,
-        });
+        AppLogger.warning('Self-referral detected: referrer_id=$referrerId');
         return ReferralValidationResult(
           isValid: false,
           reason: FraudReason.selfReferral,
@@ -41,9 +39,7 @@ class ReferralFraudDetection {
       // 2. リファラーのアカウント年齢チェック
       final referrerValid = await _checkReferrerAccountAge(referrerId);
       if (!referrerValid) {
-        AppLogger.warning('Referrer account too new', {
-          'referrer_id': referrerId,
-        });
+        AppLogger.warning('Referrer account too new: referrer_id=$referrerId');
         return ReferralValidationResult(
           isValid: false,
           reason: FraudReason.newAccount,
@@ -54,10 +50,7 @@ class ReferralFraudDetection {
       // 3. 1日あたりの招待数チェック
       final dailyCount = await _getDailyReferralCount(referrerId);
       if (dailyCount >= _maxReferralsPerDay) {
-        AppLogger.warning('Daily referral limit exceeded', {
-          'referrer_id': referrerId,
-          'count': dailyCount,
-        });
+        AppLogger.warning('Daily referral limit exceeded: referrer_id=$referrerId, count=$dailyCount');
         return ReferralValidationResult(
           isValid: false,
           reason: FraudReason.tooManyReferrals,
@@ -69,10 +62,7 @@ class ReferralFraudDetection {
       if (ipAddress != null) {
         final ipCount = await _getIPReferralCount(ipAddress);
         if (ipCount >= _maxReferralsPerIP) {
-          AppLogger.warning('IP referral limit exceeded', {
-            'ip_address': ipAddress,
-            'count': ipCount,
-          });
+          AppLogger.warning('IP referral limit exceeded: ip_address=$ipAddress, count=$ipCount');
           return ReferralValidationResult(
             isValid: false,
             reason: FraudReason.sameIP,
@@ -87,10 +77,7 @@ class ReferralFraudDetection {
         _suspiciousTimeWindow,
       );
       if (recentCount >= 3) {
-        AppLogger.warning('Suspicious referral pattern detected', {
-          'referrer_id': referrerId,
-          'count': recentCount,
-        });
+        AppLogger.warning('Suspicious referral pattern detected: referrer_id=$referrerId, count=$recentCount');
         return ReferralValidationResult(
           isValid: false,
           reason: FraudReason.suspiciousPattern,
@@ -102,9 +89,7 @@ class ReferralFraudDetection {
       if (deviceId != null) {
         final deviceUsed = await _isDeviceAlreadyUsed(deviceId);
         if (deviceUsed) {
-          AppLogger.warning('Device already used for referral', {
-            'device_id': deviceId,
-          });
+          AppLogger.warning('Device already used for referral: device_id=$deviceId');
           return ReferralValidationResult(
             isValid: false,
             reason: FraudReason.duplicateDevice,
@@ -116,9 +101,7 @@ class ReferralFraudDetection {
       // 7. ブラックリストチェック
       final isBlacklisted = await _isBlacklisted(referrerId);
       if (isBlacklisted) {
-        AppLogger.warning('Blacklisted user attempted referral', {
-          'referrer_id': referrerId,
-        });
+        AppLogger.warning('Blacklisted user attempted referral: referrer_id=$referrerId');
         return ReferralValidationResult(
           isValid: false,
           reason: FraudReason.blacklisted,
@@ -133,7 +116,7 @@ class ReferralFraudDetection {
         message: null,
       );
     } catch (e, stack) {
-      AppLogger.error('Referral validation failed', e, stack);
+      AppLogger.error('Referral validation failed', error: e, stackTrace: stack);
       return ReferralValidationResult(
         isValid: false,
         reason: FraudReason.error,
@@ -231,12 +214,9 @@ class ReferralFraudDetection {
         'addedAt': FieldValue.serverTimestamp(),
       });
 
-      AppLogger.info('User added to blacklist', {
-        'user_id': userId,
-        'reason': reason,
-      });
+      AppLogger.info('User added to blacklist: user_id=$userId, reason=$reason');
     } catch (e, stack) {
-      AppLogger.error('Failed to add user to blacklist', e, stack);
+      AppLogger.error('Failed to add user to blacklist', error: e, stackTrace: stack);
       rethrow;
     }
   }
@@ -246,11 +226,9 @@ class ReferralFraudDetection {
     try {
       await _firestore.collection('blacklist').doc(userId).delete();
 
-      AppLogger.info('User removed from blacklist', {
-        'user_id': userId,
-      });
+      AppLogger.info('User removed from blacklist: user_id=$userId');
     } catch (e, stack) {
-      AppLogger.error('Failed to remove user from blacklist', e, stack);
+      AppLogger.error('Failed to remove user from blacklist', error: e, stackTrace: stack);
       rethrow;
     }
   }
@@ -269,13 +247,9 @@ class ReferralFraudDetection {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      AppLogger.warning('Suspicious activity recorded', {
-        'user_id': userId,
-        'reason': reason.name,
-        ...?metadata,
-      });
+      AppLogger.warning('Suspicious activity recorded: user_id=$userId, reason=${reason.name}');
     } catch (e, stack) {
-      AppLogger.error('Failed to record suspicious activity', e, stack);
+      AppLogger.error('Failed to record suspicious activity', error: e, stackTrace: stack);
     }
   }
 
@@ -316,7 +290,7 @@ class ReferralFraudDetection {
         reasonCounts: reasonCounts,
       );
     } catch (e, stack) {
-      AppLogger.error('Failed to get fraud stats', e, stack);
+      AppLogger.error('Failed to get fraud stats', error: e, stackTrace: stack);
       return FraudStats(
         totalSuspiciousActivities: 0,
         blacklistedUsers: 0,

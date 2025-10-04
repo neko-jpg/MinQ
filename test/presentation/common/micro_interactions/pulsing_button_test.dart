@@ -268,7 +268,7 @@ void main() {
       expect(() async {
         await tester.tap(find.byType(PulsingButton));
         await tester.pump();
-      }, returnsNormally);
+      }, returnsNormally,);
     });
   });
 }

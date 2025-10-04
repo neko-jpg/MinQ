@@ -25,7 +25,7 @@ class DesktopMenuBarService {
 }
 
 final menuBarChannelProvider = Provider<MenuBarChannel>((ref) {
-  return MenuBarChannel();
+  return const MenuBarChannel();
 });
 
 final desktopMenuBarServiceProvider = Provider<DesktopMenuBarService>((ref) {

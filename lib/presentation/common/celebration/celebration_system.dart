@@ -1,7 +1,8 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 import 'package:minq/presentation/common/feedback/audio_feedback_manager.dart';
+import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 
 /// 祝福演出の種類
 enum CelebrationType {
@@ -191,7 +192,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.elasticOut,
-    ));
+    ),);
 
     _opacityAnimation = Tween<double>(
       begin: 0.0,
@@ -199,7 +200,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.0, 0.3),
-    ));
+    ),);
 
     _controller.forward().then((_) {
       Future.delayed(const Duration(milliseconds: 500), () {
@@ -354,7 +355,7 @@ class ParticleEffectPainter extends CustomPainter {
         vy: (random.nextDouble() - 0.5) * 2,
         color: i % 2 == 0 ? config.primaryColor : config.secondaryColor,
         size: random.nextDouble() * 4 + 2,
-      ));
+      ),);
     }
     
     return particles;

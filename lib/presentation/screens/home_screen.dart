@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:minq/data/providers.dart';
 import 'package:minq/domain/home/home_view_data.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
@@ -307,24 +306,6 @@ class _FocusHeroCard extends ConsumerWidget {
               children: [
                 _ProgressRing(
                   progress: progress,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        iconDataForKey(focusQuest.iconKey),
-                        size: tokens.spacing(6),
-                        color: tokens.brandPrimary,
-                      ),
-                      SizedBox(height: tokens.spacing(2)),
-                      Text(
-                        '達成済み',
-                        style: tokens.bodySmall.copyWith(
-                          color: tokens.brandPrimary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
                   emptyChild: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -338,6 +319,24 @@ class _FocusHeroCard extends ConsumerWidget {
                         '未着手',
                         style: tokens.bodySmall.copyWith(
                           color: tokens.textMuted,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        iconDataForKey(focusQuest.iconKey),
+                        size: tokens.spacing(6),
+                        color: tokens.brandPrimary,
+                      ),
+                      SizedBox(height: tokens.spacing(2)),
+                      Text(
+                        '達成済み',
+                        style: tokens.bodySmall.copyWith(
+                          color: tokens.brandPrimary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -732,14 +731,6 @@ class _StatCircle extends StatelessWidget {
       children: [
         _ProgressRing(
           progress: data.value,
-          child: hasProgress
-              ? Center(
-                  child: Text(
-                    data.stat.isEmpty ? '--' : data.stat,
-                    style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                )
-              : const SizedBox.shrink(),
           emptyChild: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -751,6 +742,14 @@ class _StatCircle extends StatelessWidget {
               ),
             ],
           ),
+          child: hasProgress
+              ? Center(
+                  child: Text(
+                    data.stat.isEmpty ? '--' : data.stat,
+                    style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                )
+              : const SizedBox.shrink(),
         ),
         SizedBox(height: tokens.spacing(2)),
         Text(

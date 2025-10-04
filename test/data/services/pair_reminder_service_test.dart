@@ -166,7 +166,7 @@ void main() {
 
     group('ReminderTemplates', () {
       test('encouragement templates are not empty', () {
-        final templates = ReminderTemplates.encouragementTemplates;
+        const templates = ReminderTemplates.encouragementTemplates;
         expect(templates.isNotEmpty, true);
         
         for (final template in templates) {
@@ -177,7 +177,7 @@ void main() {
       });
 
       test('celebration templates are not empty', () {
-        final templates = ReminderTemplates.celebrationTemplates;
+        const templates = ReminderTemplates.celebrationTemplates;
         expect(templates.isNotEmpty, true);
         
         for (final template in templates) {
@@ -188,7 +188,7 @@ void main() {
       });
 
       test('checkIn templates are not empty', () {
-        final templates = ReminderTemplates.checkInTemplates;
+        const templates = ReminderTemplates.checkInTemplates;
         expect(templates.isNotEmpty, true);
         
         for (final template in templates) {
@@ -199,7 +199,7 @@ void main() {
       });
 
       test('motivation templates are not empty', () {
-        final templates = ReminderTemplates.motivationTemplates;
+        const templates = ReminderTemplates.motivationTemplates;
         expect(templates.isNotEmpty, true);
         
         for (final template in templates) {
@@ -259,7 +259,7 @@ void main() {
       });
 
       test('encouragement templates have positive tone', () {
-        final templates = ReminderTemplates.encouragementTemplates;
+        const templates = ReminderTemplates.encouragementTemplates;
         
         for (final template in templates) {
           // 励ましの言葉が含まれていることを確認
@@ -274,7 +274,7 @@ void main() {
       });
 
       test('celebration templates have congratulatory tone', () {
-        final templates = ReminderTemplates.celebrationTemplates;
+        const templates = ReminderTemplates.celebrationTemplates;
         
         for (final template in templates) {
           // お祝いの言葉が含まれていることを確認

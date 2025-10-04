@@ -58,7 +58,7 @@ class HolidaySyncService {
               date: DateTime.parse(item['date'] as String),
               name: item['localName'] as String,
               locale: item['countryCode'] as String,
-            ))
+            ),)
         .toList();
     final result = HolidaySyncResult(holidays: holidays, fetchedAt: now, source: uri);
     _cache = result;

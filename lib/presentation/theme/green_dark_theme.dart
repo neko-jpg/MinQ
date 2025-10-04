@@ -16,13 +16,11 @@ class GreenDarkTheme {
       colorScheme: const ColorScheme.dark(
         primary: Color(0xFF4CAF50), // グリーン
         secondary: Color(0xFF81C784),
-        surface: Color(0xFF0A0A0A), // ほぼ黒
-        background: Colors.black,
+        surface: Color(0xFF0A0A0A),
         error: Color(0xFFCF6679),
         onPrimary: Colors.black,
         onSecondary: Colors.black,
         onSurface: Color(0xFFE0E0E0),
-        onBackground: Color(0xFFE0E0E0),
         onError: Colors.black,
       ),
       // カード

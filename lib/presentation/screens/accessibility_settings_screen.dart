@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// アクセシビリティ設定画面
 /// 高齢者向けの特大UI・音声読み上げ速度などの設定

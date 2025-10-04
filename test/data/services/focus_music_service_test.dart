@@ -1,6 +1,6 @@
 import 'package:just_audio/just_audio.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:minq/data/services/focus_music_service.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockAudioPlayer extends Mock implements AudioPlayer {}
@@ -16,7 +16,9 @@ void main() {
     setUp(() {
       player = MockAudioPlayer();
       when(() => player.playerStateStream).thenAnswer((_) => const Stream.empty());
-      when(() => player.setUrl(any())).thenAnswer((_) async {});
+      when(() => player.setUrl(any())).thenAnswer((_) async {
+        return null;
+      });
       when(() => player.setLoopMode(any())).thenAnswer((_) async {});
       when(() => player.play()).thenAnswer((_) async {});
       service = FocusMusicService(player);

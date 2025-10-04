@@ -1,6 +1,6 @@
-import 'package:mocktail/mocktail.dart';
 import 'package:minq/data/services/local_preferences_service.dart';
 import 'package:minq/data/services/usage_limit_service.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockLocalPreferencesService extends Mock

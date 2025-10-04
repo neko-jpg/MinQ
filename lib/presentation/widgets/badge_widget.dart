@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/spacing_system.dart';
-import '../theme/typography_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/presentation/theme/typography_system.dart';
 
 /// バッジの種類
 enum BadgeType {

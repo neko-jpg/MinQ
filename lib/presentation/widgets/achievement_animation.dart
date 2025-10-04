@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
 
 /// 達成アニメーションウィジェット
 class AchievementAnimation extends StatefulWidget {

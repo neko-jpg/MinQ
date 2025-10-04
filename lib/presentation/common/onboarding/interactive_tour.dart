@@ -48,7 +48,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
     ).animate(CurvedAnimation(
       parent: _slideController,
       curve: Curves.easeInOut,
-    ));
+    ),);
 
     _fadeAnimation = Tween<double>(
       begin: 0.0,
@@ -56,7 +56,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
     ).animate(CurvedAnimation(
       parent: _fadeController,
       curve: Curves.easeInOut,
-    ));
+    ),);
   }
 
   void _nextStep() {

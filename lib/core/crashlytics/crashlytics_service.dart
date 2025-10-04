@@ -82,7 +82,7 @@ class CrashlyticsService {
 
   /// テストクラッシュを送信
   Future<void> testCrash() async {
-    await _crashlytics.crash();
+    _crashlytics.crash();
   }
 }
 

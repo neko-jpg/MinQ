@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/common/sharing/progress_share_card.dart';
 import 'package:minq/presentation/common/celebration/celebration_system.dart';
+import 'package:minq/presentation/common/sharing/progress_share_card.dart';
 
 /// ソーシャルシェア機能のデモ画面
 class SocialSharingDemo extends StatefulWidget {

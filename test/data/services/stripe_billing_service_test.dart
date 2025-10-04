@@ -1,8 +1,8 @@
 import 'package:http/http.dart' as http;
-import 'package:mocktail/mocktail.dart';
 import 'package:minq/config/stripe_config.dart';
 import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/data/services/stripe_billing_service.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockClient extends Mock implements http.Client {}
@@ -34,7 +34,7 @@ void main() {
             any(),
             headers: any(named: 'headers'),
             body: any(named: 'body'),
-          )).thenAnswer(
+          ),).thenAnswer(
         (_) async => http.Response('{"url":"https://billing.example.com"}', 200),
       );
       when(() => logger.logApiRequest(any(), any(), body: any(named: 'body')))
@@ -55,7 +55,7 @@ void main() {
             any(),
             headers: any(named: 'headers'),
             body: any(named: 'body'),
-          )).thenAnswer(
+          ),).thenAnswer(
         (_) async => http.Response('error', 500),
       );
       when(() => logger.logApiRequest(any(), any(), body: any(named: 'body')))

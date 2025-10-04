@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart' as minq_quest;
 import 'package:minq/domain/recommendation/habit_ai_suggestion_service.dart';
-import 'package:minq/presentation/common/quest_icon_catalog.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 class QuestsScreen extends ConsumerStatefulWidget {
   const QuestsScreen({super.key});

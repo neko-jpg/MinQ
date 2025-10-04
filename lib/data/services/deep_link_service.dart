@@ -28,7 +28,7 @@ class DeepLinkService {
       _controller.add(uri);
     }, onError: (Object err, StackTrace stack) {
       debugPrint('Failed to handle deep link: $err');
-    });
+    },);
   }
 
   void dispose() {

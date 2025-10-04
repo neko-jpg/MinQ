@@ -1,17 +1,15 @@
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/data/services/content_moderation_service.dart';
 import 'package:minq/domain/pair/chat_message.dart';
+import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/screens/pair/share_progress_sheet.dart';
 import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
-import 'package:minq/data/services/content_moderation_service.dart';
 
 final chatMessagesProvider =
     StreamProvider.family<List<ChatMessage>, String>((ref, pairId) {
@@ -55,20 +53,20 @@ class ChatScreen extends ConsumerWidget {
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop()),
+            onPressed: () => Navigator.of(context).pop(),),
         title: Column(
           children: [
             Text('Buddy#${buddyId?.substring(0, 4) ?? ''}',
                 style: tokens.titleSmall
-                    .copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+                    .copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold),),
             Text('目標: 毎日運動する',
-                style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),),
           ],
         ),
         centerTitle: true,
         actions: [
           if (buddyId != null && buddyId.isNotEmpty)
-            _ChatMenu(pairId: pairId, currentUserId: currentUserId!, buddyId: buddyId)
+            _ChatMenu(pairId: pairId, currentUserId: currentUserId!, buddyId: buddyId),
         ],
       ),
       body: Column(
@@ -280,10 +278,10 @@ class _MessageBubble extends ConsumerWidget {
                   _ReactionButton(emoji: '👍', onTap: () => addReaction('👍')),
                   _ReactionButton(emoji: '👏', onTap: () => addReaction('👏')),
                   _ReactionButton(emoji: '🔥', onTap: () => addReaction('🔥')),
-                ]
+                ],
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -345,7 +343,7 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
   final _textController = TextEditingController();
   bool _showSendButton = false;
   bool _isSending = false;
-  bool _isUploading = false;
+  final bool _isUploading = false;
 
   @override
   void initState() {
@@ -587,7 +585,7 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
                                 ),
                         );
                       },
-                    )
+                    ),
                 ],
               ),
             ],

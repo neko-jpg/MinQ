@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../theme/spacing_system.dart';
-import '../theme/typography_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/presentation/theme/typography_system.dart';
 
 /// 変更履歴・お知らせセンター画面
 class ChangelogScreen extends ConsumerWidget {
@@ -14,14 +14,14 @@ class ChangelogScreen extends ConsumerWidget {
         title: const Text('お知らせ・変更履歴'),
       ),
       body: ListView(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           _buildSection(
             context,
             title: '最新のお知らせ',
             items: _getAnnouncements(),
           ),
-          SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.lg),
           _buildSection(
             context,
             title: '変更履歴',
@@ -44,7 +44,7 @@ class ChangelogScreen extends ConsumerWidget {
           title,
           style: AppTypography.h2,
         ),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         ...items.map((item) => _buildChangelogCard(context, item)),
       ],
     );
@@ -52,14 +52,14 @@ class ChangelogScreen extends ConsumerWidget {
 
   Widget _buildChangelogCard(BuildContext context, ChangelogItem item) {
     return Card(
-      margin: EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           Row(
             children: [
               _buildTypeChip(item.type),
-              SizedBox(width: AppSpacing.sm),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   item.title,
@@ -68,7 +68,7 @@ class ChangelogScreen extends ConsumerWidget {
               ),
             ],
           ),
-          SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             _formatDate(item.date),
             style: AppTypography.caption.copyWith(
@@ -76,16 +76,16 @@ class ChangelogScreen extends ConsumerWidget {
             ),
           ),
           if (item.description != null) ...[
-            SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               item.description!,
               style: AppTypography.body,
             ),
           ],
           if (item.changes.isNotEmpty) ...[
-            SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             ...item.changes.map((change) => Padding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     left: AppSpacing.md,
                     bottom: AppSpacing.xs,
                   ),
@@ -101,7 +101,7 @@ class ChangelogScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                )),
+                ),),
           ],
         ],
       ),

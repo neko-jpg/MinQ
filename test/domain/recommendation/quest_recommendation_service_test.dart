@@ -40,7 +40,7 @@ QuestLog createLog({
 
 void main() {
   group('QuestRecommendationService', () {
-    final service = QuestRecommendationService();
+    const service = QuestRecommendationService();
 
     test('prioritises quests with low completion and stale recency', () {
       final quests = [

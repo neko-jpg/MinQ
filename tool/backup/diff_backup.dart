@@ -37,7 +37,7 @@ Future<void> main(List<String> arguments) async {
     archive.addFile(ArchiveFile(entry.relativePath, bytes.length, bytes));
   }
 
-  final encoded = ZipEncoder().encode(archive)!;
+  final encoded = ZipEncoder().encode(archive);
   final encrypted = _encrypt(encoded, args.password);
   final outputFile = File(args.output);
   await outputFile.create(recursive: true);

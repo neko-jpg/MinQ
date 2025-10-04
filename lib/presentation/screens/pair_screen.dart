@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/pair/pair.dart';
-import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
+import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/spacing_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// フォームバリデーションシステム - 統一されたバリデーションメッセージ
 class FormValidation {

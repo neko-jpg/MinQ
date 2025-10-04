@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:minq/domain/home/home_view_data.dart';
 import 'package:minq/domain/stats/stats_view_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 typedef NowProvider = DateTime Function();
 
@@ -114,7 +113,7 @@ class LocalPreferencesService {
         .map((String value) => DateTime.fromMillisecondsSinceEpoch(
               int.tryParse(value) ?? 0,
               isUtc: true,
-            ))
+            ),)
         .where((DateTime timestamp) => timestamp.isAfter(cutoff))
         .toList()
       ..sort();

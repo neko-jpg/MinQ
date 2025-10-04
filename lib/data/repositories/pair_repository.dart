@@ -212,7 +212,7 @@ class PairRepository {
   }
 
   Future<void> reportUser(
-      String reporterUid, String reportedUid, String reason) async {
+      String reporterUid, String reportedUid, String reason,) async {
     await _firestore.collection('reports').add({
       'reporter': reporterUid,
       'reported': reportedUid,

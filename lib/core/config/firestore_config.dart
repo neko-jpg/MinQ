@@ -36,7 +36,7 @@ class FirestoreConfig {
   /// キャッシュ設定
   static void _configureCacheSettings(FirebaseFirestore firestore) {
     // キャッシュサイズの設定（デフォルト: 40MB、最大: 100MB）
-    firestore.settings = Settings(
+    firestore.settings = const Settings(
       persistenceEnabled: true,
       cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED, // 無制限（推奨）
       // または具体的なサイズを指定
@@ -256,7 +256,7 @@ class OfflineStatusMonitor {
       _controller.add(true);
     }, onError: (_) {
       _controller.add(false);
-    });
+    },);
   }
 
   void dispose() {
@@ -269,25 +269,25 @@ class CachePresets {
   const CachePresets._();
 
   /// 開発環境用（小さいキャッシュ）
-  static Settings get development => Settings(
+  static Settings get development => const Settings(
         persistenceEnabled: true,
         cacheSizeBytes: 10 * 1024 * 1024, // 10MB
       );
 
   /// 本番環境用（大きいキャッシュ）
-  static Settings get production => Settings(
+  static Settings get production => const Settings(
         persistenceEnabled: true,
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
       );
 
   /// テスト環境用（キャッシュ無効）
-  static Settings get testing => Settings(
+  static Settings get testing => const Settings(
         persistenceEnabled: false,
         cacheSizeBytes: 1024 * 1024, // 1MB
       );
 
   /// 低メモリデバイス用
-  static Settings get lowMemory => Settings(
+  static Settings get lowMemory => const Settings(
         persistenceEnabled: true,
         cacheSizeBytes: 5 * 1024 * 1024, // 5MB
       );

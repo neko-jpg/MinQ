@@ -1,35 +1,34 @@
 import 'dart:async';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:animations/animations.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/screens/shell_screen.dart';
-import 'package:minq/presentation/screens/home_screen.dart';
-import 'package:minq/presentation/screens/stats_screen.dart';
-import 'package:minq/presentation/screens/quests_screen.dart';
-import 'package:minq/presentation/screens/settings_screen.dart';
-import 'package:minq/presentation/screens/onboarding_screen.dart';
-import 'package:minq/presentation/screens/login_screen.dart';
-import 'package:minq/presentation/screens/record_screen.dart';
-import 'package:minq/presentation/screens/celebration_screen.dart';
-import 'package:minq/presentation/screens/profile_screen.dart';
-import 'package:minq/presentation/screens/policy_viewer_screen.dart';
 import 'package:minq/presentation/common/policy_documents.dart';
-import 'package:minq/presentation/screens/create_quest_screen.dart';
-import 'package:minq/presentation/screens/edit_quest_screen.dart';
-import 'package:minq/presentation/screens/support_screen.dart';
-import 'package:minq/presentation/screens/notification_settings_screen.dart';
-import 'package:minq/presentation/screens/pair/pair_matching_screen.dart';
-import 'package:minq/presentation/screens/pair/buddy_list_screen.dart';
-import 'package:minq/presentation/screens/pair/chat_screen.dart';
 import 'package:minq/presentation/common/sharing/social_sharing_demo.dart';
 import 'package:minq/presentation/screens/account_deletion_screen.dart';
-import 'package:minq/presentation/screens/profile_setting_screen.dart';
+import 'package:minq/presentation/screens/celebration_screen.dart';
+import 'package:minq/presentation/screens/community_board_screen.dart';
+import 'package:minq/presentation/screens/create_quest_screen.dart';
+import 'package:minq/presentation/screens/edit_quest_screen.dart';
+import 'package:minq/presentation/screens/home_screen.dart';
+import 'package:minq/presentation/screens/login_screen.dart';
+import 'package:minq/presentation/screens/notification_settings_screen.dart';
+import 'package:minq/presentation/screens/onboarding_screen.dart';
+import 'package:minq/presentation/screens/pair/buddy_list_screen.dart';
+import 'package:minq/presentation/screens/pair/chat_screen.dart';
+import 'package:minq/presentation/screens/pair/pair_matching_screen.dart';
+import 'package:minq/presentation/screens/policy_viewer_screen.dart';
+import 'package:minq/presentation/screens/profile_screen.dart';
 import 'package:minq/presentation/screens/profile_setting_screen.dart';
 import 'package:minq/presentation/screens/quest_detail_screen.dart';
-import 'package:minq/presentation/screens/community_board_screen.dart';
+import 'package:minq/presentation/screens/quests_screen.dart';
+import 'package:minq/presentation/screens/record_screen.dart';
+import 'package:minq/presentation/screens/settings_screen.dart';
+import 'package:minq/presentation/screens/shell_screen.dart';
+import 'package:minq/presentation/screens/stats_screen.dart';
+import 'package:minq/presentation/screens/support_screen.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -380,7 +379,7 @@ class NavigationUseCase {
   void goToEditQuest(int questId) => _router.go(AppRoutes.editQuest.replaceFirst(':questId', questId.toString()));
   void goToQuestDetail(int questId) =>
       _router.go(AppRoutes.questDetail
-          .replaceFirst(':questId', questId.toString()));
+          .replaceFirst(':questId', questId.toString()),);
   void goToNotificationSettings() => _router.go(AppRoutes.notificationSettings);
   void goToProfileSettings() => _router.go(AppRoutes.profileSettings);
   void goToAccountDeletion() => _router.go(AppRoutes.accountDeletion);

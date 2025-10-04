@@ -99,7 +99,7 @@ class MinqLogger {
         sanitized[key] = value
             .map((dynamic element) => element is Map<String, dynamic>
                 ? _sanitizeMetadata(element)
-                : element)
+                : element,)
             .toList();
       } else {
         sanitized[key] = value;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:minq/presentation/common/onboarding/interactive_tour.dart';
 import 'package:minq/presentation/common/onboarding/onboarding_overlay.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// コンテキスト依存のガイド表示を管理するオンボーディングエンジン
 class OnboardingEngine {

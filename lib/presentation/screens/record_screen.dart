@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:just_audio/just_audio.dart';
-
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/data/services/acr_music_tagging_service.dart';
+import 'package:minq/data/services/focus_music_service.dart';
 import 'package:minq/data/services/image_moderation_service.dart';
 import 'package:minq/data/services/photo_storage_service.dart';
-import 'package:minq/data/services/focus_music_service.dart';
-import 'package:minq/data/services/acr_music_tagging_service.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
@@ -162,6 +161,7 @@ class _RecordForm extends ConsumerWidget {
   final int questId;
   final void Function(RecordErrorType) onError;
 
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
 

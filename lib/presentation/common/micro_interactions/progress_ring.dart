@@ -120,7 +120,7 @@ class _ProgressRingState extends State<ProgressRing>
     ).animate(CurvedAnimation(
       parent: _progressController,
       curve: Curves.easeInOutCubic,
-    ));
+    ),);
 
     // Sparkle animation for completion effect
     _sparkleController = AnimationController(
@@ -133,7 +133,7 @@ class _ProgressRingState extends State<ProgressRing>
     ).animate(CurvedAnimation(
       parent: _sparkleController,
       curve: Curves.easeInOut,
-    ));
+    ),);
 
     // Pulse animation for completion celebration
     _pulseController = AnimationController(
@@ -147,7 +147,7 @@ class _ProgressRingState extends State<ProgressRing>
     ).animate(CurvedAnimation(
       parent: _pulseController,
       curve: Curves.elasticOut,
-    ));
+    ),);
 
     // Rotation animation for sparkles
     _rotationController = AnimationController(
@@ -160,7 +160,7 @@ class _ProgressRingState extends State<ProgressRing>
     ).animate(CurvedAnimation(
       parent: _rotationController,
       curve: Curves.linear,
-    ));
+    ),);
 
     _previousProgress = widget.progress;
   }
@@ -172,7 +172,7 @@ class _ProgressRingState extends State<ProgressRing>
     ).animate(CurvedAnimation(
       parent: _progressController,
       curve: Curves.easeInOutCubic,
-    ));
+    ),);
 
     _progressController.reset();
     _progressController.forward();

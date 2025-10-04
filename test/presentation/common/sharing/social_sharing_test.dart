@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:minq/domain/social/achievement_share.dart';
-import 'package:minq/presentation/common/sharing/progress_share_card.dart';
 import 'package:minq/presentation/common/celebration/celebration_system.dart';
+import 'package:minq/presentation/common/sharing/progress_share_card.dart';
 
 void main() {
   group('Social Sharing & Recognition System Tests', () {

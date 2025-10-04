@@ -16,7 +16,7 @@ class NotificationSettingsScreen extends ConsumerStatefulWidget {
 class _NotificationSettingsScreenState extends ConsumerState<NotificationSettingsScreen> {
   TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 30);
   TimeOfDay _eveningTime = const TimeOfDay(hour: 21, minute: 30);
-  Set<int> _enabledWeekdays = {1, 2, 3, 4, 5}; // 平日デフォルト
+  final Set<int> _enabledWeekdays = {1, 2, 3, 4, 5}; // 平日デフォルト
   bool _notifyOnHolidays = false;
 
   Future<void> _selectTime(BuildContext context, TimeOfDay initialTime, ValueChanged<TimeOfDay> onTimeChanged) async {

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// 複数リマインダーサービス
 class MultipleReminderService {
@@ -45,7 +45,7 @@ class MultipleReminderService {
       AppLogger.info('Reminder added', data: {
         'questId': questId,
         'time': '${time.hour}:${time.minute}',
-      });
+      },);
     } catch (e, stack) {
       AppLogger.error('Failed to add reminder', error: e, stackTrace: stack);
       rethrow;

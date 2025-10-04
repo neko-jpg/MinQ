@@ -1,15 +1,12 @@
 import 'dart:async';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
-import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum PairMatchingStatus { searching, matchFound, noMatch, confirmed, timeout }
 
@@ -239,9 +236,9 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
   }
 
   Widget _buildMatchFoundUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
-    return Padding(
-      key: const ValueKey('matchFound'),
-      padding: const EdgeInsets.all(24.0),
+    return const Padding(
+      key: ValueKey('matchFound'),
+      padding: EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -252,9 +249,9 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
   }
 
   Widget _buildNoMatchUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
-    return Padding(
-      key: const ValueKey('noMatch'),
-      padding: const EdgeInsets.all(24.0),
+    return const Padding(
+      key: ValueKey('noMatch'),
+      padding: EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -265,9 +262,9 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
   }
 
   Widget _buildConfirmedUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
-    return Padding(
-      key: const ValueKey('confirmed'),
-      padding: const EdgeInsets.all(24.0),
+    return const Padding(
+      key: ValueKey('confirmed'),
+      padding: EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

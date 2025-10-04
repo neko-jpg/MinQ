@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:collection';
+
+import 'package:flutter/material.dart';
 
 /// SnackBarグローバルマネージャー
 /// 重複排他、優先度管理、キュー処理

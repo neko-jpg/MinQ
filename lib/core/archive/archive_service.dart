@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// アーカイブサービス
 class ArchiveService {
@@ -21,7 +21,7 @@ class ArchiveService {
         'archivedAt': FieldValue.serverTimestamp(),
       });
 
-      AppLogger.info('Quest archived', data: {'questId': questId});
+      AppLogger.info('Quest archived: $questId');
     } catch (e, stack) {
       AppLogger.error('Failed to archive quest', error: e, stackTrace: stack);
       rethrow;
@@ -41,7 +41,7 @@ class ArchiveService {
         'archivedAt': null,
       });
 
-      AppLogger.info('Quest unarchived', data: {'questId': questId});
+      AppLogger.info('Quest unarchived: $questId');
     } catch (e, stack) {
       AppLogger.error('Failed to unarchive quest', error: e, stackTrace: stack);
       rethrow;
@@ -77,10 +77,9 @@ class ArchiveService {
           .doc(questId)
           .delete();
 
-      AppLogger.info('Archived quest deleted', data: {'questId': questId});
+      AppLogger.info('Archived quest deleted: $questId');
     } catch (e, stack) {
-      AppLogger.error('Failed to delete archived quest',
-          error: e, stackTrace: stack);
+      AppLogger.error('Failed to delete archived quest', error: e, stackTrace: stack);
       rethrow;
     }
   }
@@ -102,11 +101,9 @@ class ArchiveService {
         await doc.reference.delete();
       }
 
-      AppLogger.info('Old archives cleaned',
-          data: {'count': snapshot.docs.length});
+      AppLogger.info('Old archives cleaned: ${snapshot.docs.length} items');
     } catch (e, stack) {
-      AppLogger.error('Failed to clean old archives',
-          error: e, stackTrace: stack);
+      AppLogger.error('Failed to clean old archives', error: e, stackTrace: stack);
     }
   }
 }

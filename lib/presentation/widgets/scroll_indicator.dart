@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/animation_system.dart';
-import '../theme/spacing_system.dart';
+import 'package:minq/presentation/theme/animation_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// スクロール到達インジケータの種類
 enum ScrollIndicatorType {
@@ -207,7 +207,7 @@ class _CustomScrollIndicatorState extends State<CustomScrollIndicator> {
           child: AnimatedOpacity(
             opacity: _showTopIndicator ? 1.0 : 0.0,
             duration: AnimationSystem.fast,
-            child: _ScrollEdgeIndicator(
+            child: const _ScrollEdgeIndicator(
               isTop: true,
             ),
           ),
@@ -220,7 +220,7 @@ class _CustomScrollIndicatorState extends State<CustomScrollIndicator> {
           child: AnimatedOpacity(
             opacity: _showBottomIndicator ? 1.0 : 0.0,
             duration: AnimationSystem.fast,
-            child: _ScrollEdgeIndicator(
+            child: const _ScrollEdgeIndicator(
               isTop: false,
             ),
           ),

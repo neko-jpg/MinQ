@@ -37,7 +37,7 @@ class AnalyticsService {
     await _logEvent('quest_create', parameters: {
       'category': category,
       'estimated_minutes': estimatedMinutes,
-    });
+    },);
   }
 
   Future<void> logQuestEdit(int questId) async {
@@ -52,7 +52,7 @@ class AnalyticsService {
     await _logEvent('quest_complete', parameters: {
       'quest_id': questId,
       'proof_type': proofType,
-    });
+    },);
   }
 
   // Progress Events
@@ -98,7 +98,7 @@ class AnalyticsService {
     await _logEvent('pair_report', parameters: {
       'pair_id': pairId,
       'reason': reason,
-    });
+    },);
   }
 
   // Screen Views
@@ -120,7 +120,7 @@ class AnalyticsService {
     await _logEvent('error_occurred', parameters: {
       'error_type': errorType,
       'message': message,
-    });
+    },);
   }
 
   // Helper method
@@ -131,7 +131,7 @@ class AnalyticsService {
     }
 
     try {
-      await _analytics!.logEvent(name: name, parameters: parameters);
+      await _analytics.logEvent(name: name, parameters: parameters);
       debugPrint('Analytics: $name ${parameters ?? ""}');
     } catch (e) {
       debugPrint('Analytics error: $e');

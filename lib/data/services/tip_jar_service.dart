@@ -26,7 +26,7 @@ class TipJarService {
               id: raw['id'] as String,
               label: raw['label'] as String,
               amount: (raw['amount'] as num).toInt(),
-            ))
+            ),)
         .toList();
   }
 

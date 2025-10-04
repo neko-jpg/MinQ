@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/animation_system.dart';
-import '../theme/minq_theme.dart';
-import '../theme/spacing_system.dart';
+import 'package:minq/presentation/theme/animation_system.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 画像プレースホルダとエラーハンドリングのユーティリティ
 class ImagePlaceholder extends StatelessWidget {

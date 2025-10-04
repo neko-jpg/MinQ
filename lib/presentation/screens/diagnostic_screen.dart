@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 自己診断モード画面
 /// 設定→テスト通知/ストレージ/ネット
@@ -337,7 +337,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   Future<DiagnosticResult> _testNotification() async {
     await Future.delayed(const Duration(seconds: 1));
     // TODO: 実際の通知テスト
-    return DiagnosticResult(
+    return const DiagnosticResult(
       status: DiagnosticStatus.passed,
       message: '通知は正常に動作しています',
     );
@@ -346,7 +346,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   Future<DiagnosticResult> _testStorage() async {
     await Future.delayed(const Duration(seconds: 1));
     // TODO: 実際のストレージテスト
-    return DiagnosticResult(
+    return const DiagnosticResult(
       status: DiagnosticStatus.passed,
       message: 'ストレージは正常に動作しています',
     );
@@ -355,7 +355,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   Future<DiagnosticResult> _testNetwork() async {
     await Future.delayed(const Duration(seconds: 1));
     // TODO: 実際のネットワークテスト
-    return DiagnosticResult(
+    return const DiagnosticResult(
       status: DiagnosticStatus.passed,
       message: 'ネットワーク接続は正常です',
     );
@@ -364,7 +364,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   Future<DiagnosticResult> _testDatabase() async {
     await Future.delayed(const Duration(seconds: 1));
     // TODO: 実際のデータベーステスト
-    return DiagnosticResult(
+    return const DiagnosticResult(
       status: DiagnosticStatus.passed,
       message: 'データベースは正常に動作しています',
     );
@@ -373,7 +373,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   Future<DiagnosticResult> _testPerformance() async {
     await Future.delayed(const Duration(seconds: 2));
     // TODO: 実際のパフォーマンステスト
-    return DiagnosticResult(
+    return const DiagnosticResult(
       status: DiagnosticStatus.passed,
       message: 'パフォーマンスは良好です',
     );

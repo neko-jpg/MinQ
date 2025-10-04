@@ -4,7 +4,6 @@ import 'dart:typed_data';
 // import 'package:miinq_integrations/miinq_integrations.dart';
 
 // Dummy type until integrations package is fixed
-import 'dart:typed_data';
 
 class AIBannerGenerator {
   const AIBannerGenerator();

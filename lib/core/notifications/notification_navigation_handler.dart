@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// 通知ナビゲーションハンドラー
 class NotificationNavigationHandler {
@@ -14,7 +14,7 @@ class NotificationNavigationHandler {
       AppLogger.info('Notification tapped', data: {
         'type': notificationType,
         'payload': payload,
-      });
+      },);
 
       switch (notificationType) {
         case 'quest_reminder':
@@ -54,7 +54,7 @@ class NotificationNavigationHandler {
       }
     } catch (e, stack) {
       AppLogger.error('Failed to handle notification tap',
-          error: e, stackTrace: stack);
+          error: e, stackTrace: stack,);
     }
   }
 

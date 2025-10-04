@@ -44,7 +44,7 @@ class WearableSyncService {
 }
 
 final wearableChannelProvider = Provider<WearableChannel>((ref) {
-  return WearableChannel();
+  return const WearableChannel();
 });
 
 final wearableSyncServiceProvider = Provider<WearableSyncService>((ref) {

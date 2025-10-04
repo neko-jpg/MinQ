@@ -32,10 +32,10 @@ class StripeBillingService {
       'returnUrl': returnUrl.toString(),
     };
 
-    logger.logApiRequest('POST', config.portalEndpoint.toString(), body: {
+    AppLogger.logApiRequest('POST', config.portalEndpoint.toString(), body: {
       'customerId': customerId,
       'returnUrl': returnUrl.toString(),
-    });
+    },);
 
     final response = await client.post(
       config.portalEndpoint,
@@ -43,7 +43,7 @@ class StripeBillingService {
       body: jsonEncode(payload),
     );
 
-    logger.logApiResponse(
+    AppLogger.logApiResponse(
       'POST',
       config.portalEndpoint.toString(),
       response.statusCode,

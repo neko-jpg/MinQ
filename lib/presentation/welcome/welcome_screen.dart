@@ -43,36 +43,36 @@ class WelcomeScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: tokens.textPrimary,
                         ),
-                        children: [
-                          const TextSpan(text: "MinQへようこそ"),
+                        children: const [
+                          TextSpan(text: 'MinQへようこそ'),
                         ],
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      "ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。",
+                      'ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。',
                       textAlign: TextAlign.center,
                       style: textTheme.bodyLarge?.copyWith(
                         color: tokens.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 40),
-                    _FeatureCard(
+                    const _FeatureCard(
                       icon: Icons.touch_app,
-                      title: "3タップで習慣化",
-                      description: "新しい習慣をたった3タップで始められます。とてもシンプルです。",
+                      title: '3タップで習慣化',
+                      description: '新しい習慣をたった3タップで始められます。とてもシンプルです。',
                     ),
                     const SizedBox(height: 16),
-                    _FeatureCard(
+                    const _FeatureCard(
                       icon: Icons.groups,
-                      title: "匿名ペア",
-                      description: "パートナーから、匿名で説明責任とサポートを得られます。",
+                      title: '匿名ペア',
+                      description: 'パートナーから、匿名で説明責任とサポートを得られます。',
                     ),
                     const SizedBox(height: 16),
-                    _FeatureCard(
+                    const _FeatureCard(
                       icon: Icons.explore,
-                      title: "ミニクエスト",
-                      description: "あなたの目標を、達成感のある小さなクエストに変えましょう。",
+                      title: 'ミニクエスト',
+                      description: 'あなたの目標を、達成感のある小さなクエストに変えましょう。',
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -169,7 +169,7 @@ class _BottomNavigation extends StatelessWidget {
                 // TODO: Implement navigation to home screen
               },
               icon: const Icon(Icons.arrow_forward),
-              label: const Text("始める"),
+              label: const Text('始める'),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 textStyle: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -184,7 +184,7 @@ class _BottomNavigation extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "すでにアカウントをお持ちですか？",
+                'すでにアカウントをお持ちですか？',
                 style: textTheme.bodySmall,
               ),
               TextButton(
@@ -192,7 +192,7 @@ class _BottomNavigation extends StatelessWidget {
                   // TODO: Implement login navigation
                 },
                 child: Text(
-                  "ログイン",
+                  'ログイン',
                   style: textTheme.bodySmall?.copyWith(
                     color: tokens.brandPrimary,
                     fontWeight: FontWeight.bold,

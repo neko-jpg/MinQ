@@ -282,7 +282,7 @@ class DataImportService {
       if (value is List && merged[key] is List) {
         // リストの場合はマージ
         final existingList = merged[key] as List;
-        final importedList = value as List;
+        final importedList = value;
         merged[key] = [...existingList, ...importedList];
       } else if (value is Map && merged[key] is Map) {
         // Mapの場合は再帰的にマージ

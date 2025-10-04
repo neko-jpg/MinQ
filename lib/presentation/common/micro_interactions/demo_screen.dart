@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/common/micro_interactions/micro_interactions.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// Demo screen showcasing the micro-interaction components
 /// This is for development and testing purposes

@@ -1,6 +1,6 @@
-import 'package:mocktail/mocktail.dart';
 import 'package:minq/data/repositories/contact_link_repository.dart';
 import 'package:minq/data/services/local_preferences_service.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockPreferences extends Mock implements LocalPreferencesService {}

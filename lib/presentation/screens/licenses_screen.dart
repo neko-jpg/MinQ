@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../theme/spacing_system.dart';
-import '../theme/typography_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/presentation/theme/typography_system.dart';
 
 /// ライセンス表示画面
 class LicensesScreen extends ConsumerWidget {
@@ -33,7 +33,7 @@ class LicensesScreen extends ConsumerWidget {
                     size: 48,
                     color: Colors.red,
                   ),
-                  SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     'ライセンス情報の読み込みに失敗しました',
                     style: AppTypography.body,
@@ -46,10 +46,10 @@ class LicensesScreen extends ConsumerWidget {
           final licenseData = snapshot.data!;
 
           return ListView(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               _buildHeader(context, licenseData),
-              SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
               _buildPackageList(context, licenseData),
             ],
           );
@@ -61,7 +61,7 @@ class LicensesScreen extends ConsumerWidget {
   Widget _buildHeader(BuildContext context, LicenseData data) {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -69,7 +69,7 @@ class LicensesScreen extends ConsumerWidget {
               'このアプリは以下のオープンソースソフトウェアを使用しています',
               style: AppTypography.body,
             ),
-            SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               '合計 ${data.packages.length} パッケージ',
               style: AppTypography.caption.copyWith(
@@ -90,7 +90,7 @@ class LicensesScreen extends ConsumerWidget {
           'パッケージ一覧',
           style: AppTypography.h2,
         ),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         ...data.packages.map((package) => _buildPackageCard(context, package)),
       ],
     );
@@ -98,7 +98,7 @@ class LicensesScreen extends ConsumerWidget {
 
   Widget _buildPackageCard(BuildContext context, LicenseEntry entry) {
     return Card(
-      margin: EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         title: Text(
           entry.packages.join(', '),
@@ -128,7 +128,7 @@ class LicensesScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: entry.paragraphs.map((paragraph) {
               return Padding(
-                padding: EdgeInsets.only(bottom: AppSpacing.sm),
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: Text(
                   paragraph.text,
                   style: AppTypography.bodySmall,

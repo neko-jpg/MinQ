@@ -29,7 +29,7 @@ class UserBehaviorHeatmap extends StatelessWidget {
         borderRadius: 12,
         margin: const EdgeInsets.all(4),
         colorMode: ColorMode.opacity,
-        defaultColor: theme.colorScheme.surfaceVariant,
+        defaultColor: theme.colorScheme.surfaceContainerHighest,
         textColor: theme.colorScheme.onSurface,
         onClick: (value) => onDateSelected?.call(value),
         showText: false,

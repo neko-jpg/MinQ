@@ -118,7 +118,7 @@ class HelpCenterScreen extends ConsumerWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => LicensePage(
+        builder: (_) => const LicensePage(
           applicationName: 'MinQ',
           applicationVersion: '1.0.0',
           applicationLegalese: '© 2025 MinQ Team',

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/spacing_system.dart';
-import '../theme/elevation_system.dart';
+import 'package:minq/presentation/theme/elevation_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// 標準ダイアログ - 統一されたダイアログコンポーネント
 class StandardDialog extends StatelessWidget {
@@ -117,7 +117,7 @@ class StandardDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderSystem.dialogRadius,
       ),
       child: Padding(

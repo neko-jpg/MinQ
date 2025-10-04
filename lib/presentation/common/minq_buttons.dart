@@ -358,7 +358,7 @@ class _MinqTextButtonState extends State<MinqTextButton>
           widget.label,
           style: tokens.typeScale.button.copyWith(color: baseColor),
         ),
-      ));
+      ),);
 
       return Row(
         key: const ValueKey<String>('label'),

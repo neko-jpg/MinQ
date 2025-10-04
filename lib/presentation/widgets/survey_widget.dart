@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/app_theme.dart';
 
 /// アプリ内アンケートウィジェット
 class SurveyWidget extends StatefulWidget {
@@ -387,7 +387,7 @@ class SurveyResponse {
 
 /// サンプルアンケート
 class SampleSurveys {
-  static Survey get userSatisfaction => Survey(
+  static Survey get userSatisfaction => const Survey(
     id: 'user_satisfaction_2025',
     title: 'ユーザー満足度調査',
     description: 'MinQをより良くするため、ご意見をお聞かせください',

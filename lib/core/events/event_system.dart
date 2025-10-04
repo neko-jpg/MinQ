@@ -19,14 +19,14 @@ class EventSystem {
         endDate: DateTime(2025, 1, 31),
         type: EventType.challenge,
         rewards: [
-          EventReward(
+          const EventReward(
             id: 'new_year_badge',
             title: '新年バッジ',
             description: '新年チャレンジ完了',
             icon: '🏆',
           ),
         ],
-        requirements: EventRequirements(
+        requirements: const EventRequirements(
           minCompletions: 21,
           minStreak: 7,
         ),
@@ -41,14 +41,14 @@ class EventSystem {
         type: EventType.seasonal,
         category: 'health',
         rewards: [
-          EventReward(
+          const EventReward(
             id: 'spring_badge',
             title: '春の運動バッジ',
             description: '春の運動習慣完了',
             icon: '🏃',
           ),
         ],
-        requirements: EventRequirements(
+        requirements: const EventRequirements(
           minCompletions: 15,
           categoryRequired: 'health',
         ),
@@ -63,14 +63,14 @@ class EventSystem {
         type: EventType.weekly,
         category: 'learning',
         rewards: [
-          EventReward(
+          const EventReward(
             id: 'reading_badge',
             title: '読書家バッジ',
             description: '読書週間完了',
             icon: '📖',
           ),
         ],
-        requirements: EventRequirements(
+        requirements: const EventRequirements(
           minCompletions: 7,
           minStreak: 7,
           categoryRequired: 'learning',

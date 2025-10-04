@@ -1,11 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:isar/isar.dart';
 import 'package:minq/data/repositories/firebase_auth_repository.dart';
 import 'package:minq/data/repositories/user_repository.dart';
 import 'package:minq/domain/user/user.dart';
-import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
+import 'package:mockito/mockito.dart';
 
 import 'user_repository_test.mocks.dart';
 

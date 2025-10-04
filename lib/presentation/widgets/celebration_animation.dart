@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
 
 /// ペア成立時の祝アニメーション
 /// 軽量で視覚的に楽しい演出

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/app_theme.dart';
 
 /// クエスト属性選択ウィジェット
 /// 難易度、推定時間、場所などの属性を選択

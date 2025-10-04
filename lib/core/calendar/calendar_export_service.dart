@@ -54,7 +54,7 @@ class CalendarExportService {
         duration: quest.duration,
         isRecurring: quest.isRecurring,
         recurrenceRule: quest.recurrenceRule,
-      ));
+      ),);
     }
 
     buffer.writeln('END:VCALENDAR');
@@ -92,7 +92,7 @@ class CalendarExportService {
       duration: duration,
       isRecurring: isRecurring,
       recurrenceRule: recurrenceRule,
-    ));
+    ),);
 
     buffer.writeln('END:VCALENDAR');
 

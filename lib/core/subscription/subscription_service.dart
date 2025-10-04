@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// サブスクリプション管理サービス
 /// 
@@ -19,11 +19,9 @@ class SubscriptionService {
     try {
       // TODO: 実際の課金プラットフォーム（RevenueCat, Purchases等）から状態を取得
       await _loadSubscriptionStatus();
-      AppLogger.info('Subscription service initialized', {
-        'plan': _currentPlan.name,
-      });
+      AppLogger.info('Subscription service initialized: plan=${_currentPlan.name}');
     } catch (e, stack) {
-      AppLogger.error('Failed to initialize subscription service', e, stack);
+      AppLogger.error('Failed to initialize subscription service', error: e, stackTrace: stack);
     }
   }
 
@@ -40,9 +38,7 @@ class SubscriptionService {
   /// サブスクリプションを購入
   Future<bool> purchase(SubscriptionPlan plan) async {
     try {
-      AppLogger.info('Attempting to purchase subscription', {
-        'plan': plan.name,
-      });
+      AppLogger.info('Attempting to purchase subscription: plan=${plan.name}');
 
       // TODO: 実際の購入処理
       // 例: RevenueCat で購入
@@ -54,12 +50,10 @@ class SubscriptionService {
 
       // デモ用: 常に成功
       _currentPlan = plan;
-      AppLogger.info('Subscription purchased successfully', {
-        'plan': plan.name,
-      });
+      AppLogger.info('Subscription purchased successfully: plan=${plan.name}');
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to purchase subscription', e, stack);
+      AppLogger.error('Failed to purchase subscription', error: e, stackTrace: stack);
       return false;
     }
   }
@@ -80,7 +74,7 @@ class SubscriptionService {
       AppLogger.info('Subscription restored successfully');
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to restore subscription', e, stack);
+      AppLogger.error('Failed to restore subscription', error: e, stackTrace: stack);
       return false;
     }
   }
@@ -97,7 +91,7 @@ class SubscriptionService {
       AppLogger.info('Subscription cancellation initiated');
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to cancel subscription', e, stack);
+      AppLogger.error('Failed to cancel subscription', error: e, stackTrace: stack);
       return false;
     }
   }

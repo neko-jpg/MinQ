@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../logging/app_logger.dart';
-import '../config/environment.dart';
+import 'package:http/http.dart' as http;
+import 'package:minq/core/config/environment.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// 重大イベント通知サービス
 /// 
@@ -75,12 +76,11 @@ class NotificationService {
         AppLogger.info('Slack notification sent successfully');
       } else {
         AppLogger.error(
-          'Failed to send Slack notification',
-          'Status: ${response.statusCode}, Body: ${response.body}',
+          'Failed to send Slack notification: Status=${response.statusCode}, Body=${response.body}',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error sending Slack notification', e, stack);
+      AppLogger.error('Error sending Slack notification', error: e, stackTrace: stack);
     }
   }
 
@@ -116,12 +116,11 @@ class NotificationService {
         AppLogger.info('Email notification sent successfully');
       } else {
         AppLogger.error(
-          'Failed to send email notification',
-          'Status: ${response.statusCode}, Body: ${response.body}',
+          'Failed to send email notification: Status=${response.statusCode}, Body=${response.body}',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error sending email notification', e, stack);
+      AppLogger.error('Error sending email notification', error: e, stackTrace: stack);
     }
   }
 
@@ -163,12 +162,11 @@ class NotificationService {
         AppLogger.info('PagerDuty alert sent successfully');
       } else {
         AppLogger.error(
-          'Failed to send PagerDuty alert',
-          'Status: ${response.statusCode}, Body: ${response.body}',
+          'Failed to send PagerDuty alert: Status=${response.statusCode}, Body=${response.body}',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error sending PagerDuty alert', e, stack);
+      AppLogger.error('Error sending PagerDuty alert', error: e, stackTrace: stack);
     }
   }
 
@@ -186,7 +184,7 @@ class NotificationService {
       title: title,
       message: message,
       severity: severity,
-    ));
+    ),);
 
     // メール通知
     if (emailRecipients != null && emailRecipients.isNotEmpty) {
@@ -195,7 +193,7 @@ class NotificationService {
         message: message,
         recipients: emailRecipients,
         severity: severity,
-      ));
+      ),);
     }
 
     // クリティカルな場合はPagerDutyにも通知
@@ -204,7 +202,7 @@ class NotificationService {
         title: title,
         message: message,
         severity: severity,
-      ));
+      ),);
     }
 
     await Future.wait(futures);

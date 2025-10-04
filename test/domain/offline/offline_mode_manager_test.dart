@@ -36,7 +36,7 @@ void main() {
       manager.enqueueAction(OfflineSyncAction(
         type: OfflineActionType.createQuest,
         payload: {'id': 1},
-      ));
+      ),);
 
       final snapshot = manager.snapshot();
       expect(snapshot.quests, hasLength(1));

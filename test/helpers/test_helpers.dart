@@ -50,7 +50,7 @@ Future<void> testTextScaling(
   for (final scale in scales) {
     await tester.pumpWidget(
       MediaQuery(
-        data: MediaQueryData(textScaleFactor: scale),
+        data: MediaQueryData(textScaler: TextScaler.linear(scale)),
         child: widget,
       ),
     );

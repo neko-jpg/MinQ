@@ -66,7 +66,7 @@ class _SmartTooltipState extends State<SmartTooltip>
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
-    ));
+    ),);
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, -0.1),
@@ -74,7 +74,7 @@ class _SmartTooltipState extends State<SmartTooltip>
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeOutBack,
-    ));
+    ),);
   }
 
   Future<void> _checkShouldShow() async {
@@ -267,7 +267,7 @@ class _AutoSmartTooltipState extends State<AutoSmartTooltip>
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.elasticOut,
-    ));
+    ),);
 
     _fadeAnimation = Tween<double>(
       begin: 0.0,
@@ -275,7 +275,7 @@ class _AutoSmartTooltipState extends State<AutoSmartTooltip>
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
-    ));
+    ),);
   }
 
   Future<void> _checkAndShow() async {

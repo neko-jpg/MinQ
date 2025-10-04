@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CelebrationScreen extends ConsumerStatefulWidget {
   const CelebrationScreen({super.key});
@@ -291,7 +290,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
             child: OutlinedButton.icon(
               onPressed: () => _shareAchievement(),
               icon: const Icon(Icons.share),
-              label: Text('達成を共有する'),
+              label: const Text('達成を共有する'),
               style: OutlinedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
                 shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),

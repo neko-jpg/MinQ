@@ -369,7 +369,7 @@ class _SlideInAnimationState extends State<SlideInAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.curve,
-    ));
+    ),);
 
     if (widget.delay == Duration.zero) {
       _controller.forward();
@@ -434,7 +434,7 @@ class _ScaleAnimationState extends State<ScaleAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.curve,
-    ));
+    ),);
 
     if (widget.delay == Duration.zero) {
       _controller.forward();

@@ -1,4 +1,3 @@
-import 'package:firebase_performance/firebase_performance.dart';
 
 /// パフォーマンスモニタリングサービス
 class PerformanceMonitoringService {

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:minq/core/subscription/subscription_service.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-
-import '../../core/subscription/subscription_service.dart';
-import '../theme/spacing_system.dart';
-import '../theme/typography_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/presentation/theme/typography_system.dart';
 
 /// サブスクリプション画面
 class SubscriptionScreen extends ConsumerWidget {
@@ -19,15 +17,15 @@ class SubscriptionScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('プレミアムプラン')),
       body: ListView(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           if (isPremium) _buildCurrentPlanCard(context, currentPlan),
           if (!isPremium) _buildUpgradeHeader(context),
-          SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.lg),
           _buildFeaturesList(context),
-          SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.lg),
           _buildPricingCards(context, ref),
-          SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.lg),
           if (isPremium) _buildManageSubscription(context),
           if (!isPremium) _buildRestoreButton(context, ref),
         ],
@@ -40,13 +38,13 @@ class SubscriptionScreen extends ConsumerWidget {
     return Card(
       color: tokens.surface,
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           children: [
             Icon(Icons.check_circle, size: 48, color: tokens.brandPrimary),
-            SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Text('プレミアム会員', style: AppTypography.h2),
-            SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.xs),
             Text(_getPlanName(plan), style: AppTypography.body),
           ],
         ),
@@ -58,9 +56,9 @@ class SubscriptionScreen extends ConsumerWidget {
     return Column(
       children: [
         Icon(Icons.workspace_premium, size: 64, color: Theme.of(context).colorScheme.primary),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         Text('プレミアムで\nもっと便利に', textAlign: TextAlign.center, style: AppTypography.h1),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           '広告なし・無制限のクエスト・高度な統計',
           textAlign: TextAlign.center,
@@ -83,7 +81,7 @@ class SubscriptionScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('プレミアム機能', style: AppTypography.h2),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         ...features.map((feature) => _buildFeatureItem(context, feature)),
       ],
     );
@@ -91,7 +89,7 @@ class SubscriptionScreen extends ConsumerWidget {
 
   Widget _buildFeatureItem(BuildContext context, _FeatureItem feature) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppSpacing.md),
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         children: [
           Container(
@@ -103,13 +101,13 @@ class SubscriptionScreen extends ConsumerWidget {
             ),
             child: Icon(feature.icon, color: Theme.of(context).colorScheme.primary),
           ),
-          SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(feature.title, style: AppTypography.h4),
-                SizedBox(height: AppSpacing.xxs),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   feature.description,
                   style: AppTypography.caption.copyWith(color: Colors.grey),
@@ -127,7 +125,7 @@ class SubscriptionScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('プランを選択', style: AppTypography.h2),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         _buildPricingCard(
           context,
           ref,
@@ -138,7 +136,7 @@ class SubscriptionScreen extends ConsumerWidget {
           savings: '2ヶ月分お得',
           isRecommended: true,
         ),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         _buildPricingCard(
           context,
           ref,
@@ -164,13 +162,13 @@ class SubscriptionScreen extends ConsumerWidget {
     return Card(
       elevation: isRecommended ? 4 : 1,
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (isRecommended)
               Container(
-                padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xxs),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xxs),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(4),
@@ -183,9 +181,9 @@ class SubscriptionScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-            if (isRecommended) SizedBox(height: AppSpacing.sm),
+            if (isRecommended) const SizedBox(height: AppSpacing.sm),
             Text(title, style: AppTypography.h3),
-            SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.xs),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -193,15 +191,15 @@ class SubscriptionScreen extends ConsumerWidget {
                   price,
                   style: AppTypography.h1.copyWith(color: Theme.of(context).colorScheme.primary),
                 ),
-                SizedBox(width: AppSpacing.xs),
+                const SizedBox(width: AppSpacing.xs),
                 Padding(
-                  padding: EdgeInsets.only(bottom: AppSpacing.xs),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                   child: Text('/ $period', style: AppTypography.body.copyWith(color: Colors.grey)),
                 ),
               ],
             ),
             if (savings != null) ...[
-              SizedBox(height: AppSpacing.xs),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 savings,
                 style: AppTypography.caption.copyWith(
@@ -210,7 +208,7 @@ class SubscriptionScreen extends ConsumerWidget {
                 ),
               ),
             ],
-            SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -231,13 +229,13 @@ class SubscriptionScreen extends ConsumerWidget {
     return Column(
       children: [
         Text('サブスクリプションの管理', style: AppTypography.h3),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'サブスクリプションのキャンセルや変更は、\nApp Store / Google Play Storeの設定から行えます。',
           textAlign: TextAlign.center,
           style: AppTypography.caption.copyWith(color: Colors.grey),
         ),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         OutlinedButton(
           onPressed: () {
             // TODO: ストアの設定画面を開く

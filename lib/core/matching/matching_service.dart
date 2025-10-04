@@ -1,5 +1,3 @@
-import 'dart:math';
-
 /// マッチングサービス
 class MatchingService {
   /// ユーザーをマッチング
@@ -23,7 +21,7 @@ class MatchingService {
           user: user,
           score: score,
           reasons: _getMatchReasons(preferences, user),
-        ));
+        ),);
       }
     }
 

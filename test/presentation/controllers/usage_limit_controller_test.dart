@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:minq/data/services/usage_limit_service.dart';
 import 'package:minq/presentation/controllers/usage_limit_controller.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockUsageLimitService extends Mock implements UsageLimitService {}
 
@@ -11,7 +11,7 @@ void main() {
       dailyLimit: Duration(minutes: 10),
       usedToday: Duration.zero,
       lastReset: DateTime(2024, 1, 1),
-    ));
+    ),);
   });
 
   group('UsageLimitController', () {

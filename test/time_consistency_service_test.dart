@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:minq/data/services/time_consistency_service.dart';
-import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import 'time_consistency_service_test.mocks.dart';
 

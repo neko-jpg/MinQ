@@ -1,6 +1,5 @@
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// PDFエクスポートサービス
 /// 
@@ -50,7 +49,7 @@ class PdfExportService {
       return null;
     } catch (e, stack) {
       AppLogger.error('Failed to export stats PDF',
-          error: e, stackTrace: stack);
+          error: e, stackTrace: stack,);
       return null;
     }
   }

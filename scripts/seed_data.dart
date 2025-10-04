@@ -79,7 +79,7 @@ class DataSeeder {
     required String userId,
     required String achievementId,
   }) {
-    final maxProgress = 100;
+    const maxProgress = 100;
     final current = _random.nextInt(maxProgress);
 
     return {
@@ -131,7 +131,7 @@ class DataSeeder {
           questId: quest['id'] as int,
           userId: user['uid'] as String,
           count: logsPerQuest,
-        ));
+        ),);
       }
     }
 

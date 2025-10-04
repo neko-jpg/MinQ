@@ -1,18 +1,16 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/providers.dart';
 import 'package:minq/domain/social/achievement_share.dart';
 import 'package:minq/presentation/common/feedback/haptic_manager.dart';
-import 'package:minq/presentation/common/celebration/celebration_system.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// 進捗共有カードウィジェット
 class ProgressShareCard extends ConsumerStatefulWidget {
@@ -70,7 +68,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
     ).animate(CurvedAnimation(
       parent: _pulseController,
       curve: Curves.easeInOut,
-    ));
+    ),);
 
     _shareScaleAnimation = Tween<double>(
       begin: 1.0,
@@ -78,7 +76,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
     ).animate(CurvedAnimation(
       parent: _shareController,
       curve: Curves.easeInOut,
-    ));
+    ),);
 
     if (widget.currentStreak >= 7) {
       _pulseController.repeat(reverse: true);

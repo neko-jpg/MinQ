@@ -108,7 +108,7 @@ class _PulsingButtonState extends State<PulsingButton>
     ).animate(CurvedAnimation(
       parent: _pulseController,
       curve: Curves.easeInOut,
-    ));
+    ),);
 
     // Tap animation for press feedback
     _tapController = AnimationController(
@@ -121,7 +121,7 @@ class _PulsingButtonState extends State<PulsingButton>
     ).animate(CurvedAnimation(
       parent: _tapController,
       curve: Curves.easeInOut,
-    ));
+    ),);
 
     // Color animation for press feedback
     _colorController = AnimationController(
@@ -138,7 +138,7 @@ class _PulsingButtonState extends State<PulsingButton>
     ).animate(CurvedAnimation(
       parent: _colorController,
       curve: Curves.easeInOut,
-    ));
+    ),);
   }
 
   void _startPulsingIfNeeded() {

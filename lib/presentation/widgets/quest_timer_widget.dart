@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/app_theme.dart';
 
 /// クエストタイマーウィジェット
 /// 習慣実行時のタイマー機能
@@ -196,7 +196,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
             SizedBox(height: tokens.spacing.md),
             TextButton(
               onPressed: _cancelTimer,
-              child: Text('キャンセル'),
+              child: const Text('キャンセル'),
             ),
           ],
         ],

@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import '../providers/clock_provider.dart';
+import 'package:minq/core/providers/clock_provider.dart';
 
 /// 時刻表現の一貫性を保つフォーマッター
 class TimeFormatter {
@@ -97,7 +97,7 @@ class TimeFormatter {
       return '明日 ${DateFormat('HH:mm').format(dateTime)}';
     } else if (difference < 7 && difference > 0) {
       // 1週間以内
-      return '${difference}日前';
+      return '$difference日前';
     } else if (difference > -7 && difference < 0) {
       // 1週間以内（未来）
       return '${difference.abs()}日後';
@@ -117,7 +117,7 @@ class TimeFormatter {
     } else if (duration.inHours > 0) {
       final minutes = duration.inMinutes % 60;
       if (minutes > 0) {
-        return '${duration.inHours}時間${minutes}分';
+        return '${duration.inHours}時間$minutes分';
       }
       return '${duration.inHours}時間';
     } else if (duration.inMinutes > 0) {

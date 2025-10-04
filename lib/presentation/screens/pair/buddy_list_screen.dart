@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/pair/pair.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';

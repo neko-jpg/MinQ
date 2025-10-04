@@ -1,6 +1,7 @@
 import 'dart:convert';
+
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../logging/app_logger.dart';
 
 /// HTTPキャッシュサービス
 class HttpCacheService {
@@ -76,7 +77,7 @@ class HttpCacheService {
       AppLogger.info('Cache saved', data: {
         'url': url,
         'expiresAt': expiresAt.toIso8601String(),
-      });
+      },);
     } catch (e, stack) {
       AppLogger.error('Failed to save cache', error: e, stackTrace: stack);
     }

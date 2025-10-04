@@ -51,7 +51,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: const Interval(0.0, 0.5, curve: Curves.easeInOut),
-    ));
+    ),);
 
     _scaleAnimation = Tween<double>(
       begin: 0.8,
@@ -59,7 +59,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: const Interval(0.2, 0.8, curve: Curves.elasticOut),
-    ));
+    ),);
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
@@ -67,7 +67,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: const Interval(0.3, 1.0, curve: Curves.easeOutBack),
-    ));
+    ),);
   }
 
   void _dismiss() {
@@ -263,7 +263,7 @@ class SpotlightPainter extends CustomPainter {
       ..addRRect(RRect.fromRectAndRadius(
         spotlightRect,
         const Radius.circular(8),
-      ))
+      ),)
       ..fillType = PathFillType.evenOdd;
 
     canvas.drawPath(path, paint);

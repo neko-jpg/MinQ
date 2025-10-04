@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/version/version_check_service.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../core/version/version_check_service.dart';
-import '../theme/app_theme.dart';
-import '../theme/minq_theme.dart';
 
 /// バージョン更新画面
 class VersionUpdateScreen extends ConsumerWidget {

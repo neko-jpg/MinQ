@@ -47,7 +47,7 @@ class LiveActivityService {
 }
 
 final liveActivityChannelProvider = Provider<LiveActivityChannel>((ref) {
-  return LiveActivityChannel();
+  return const LiveActivityChannel();
 });
 
 final liveActivityServiceProvider = Provider<LiveActivityService>((ref) {

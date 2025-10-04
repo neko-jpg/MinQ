@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// Play Integrity API サービス（改ざん対策）
 /// 
@@ -26,7 +26,7 @@ class PlayIntegrityService {
       _initialized = true;
     } catch (e, stack) {
       AppLogger.error('Failed to initialize PlayIntegrityService', 
-        error: e, stackTrace: stack);
+        error: e, stackTrace: stack,);
     }
   }
 
@@ -50,7 +50,7 @@ class PlayIntegrityService {
       return IntegrityResult.notImplemented();
     } catch (e, stack) {
       AppLogger.error('Failed to request integrity token',
-        error: e, stackTrace: stack);
+        error: e, stackTrace: stack,);
       return IntegrityResult.error(e.toString());
     }
   }

@@ -106,7 +106,7 @@ class ProfileScreen extends ConsumerWidget {
           ),
           SizedBox(height: tokens.spacing(2)),
           Text(
-            "私はソフトウェアエンジニアで、コーディングとものづくりが大好きです。また、生産性向上や習慣化の大ファンでもあり、MinQを使って目標を達成できることを楽しみにしています。",
+            '私はソフトウェアエンジニアで、コーディングとものづくりが大好きです。また、生産性向上や習慣化の大ファンでもあり、MinQを使って目標を達成できることを楽しみにしています。',
             style: tokens.bodySmall.copyWith(
               color: tokens.textMuted,
               height: 1.5,

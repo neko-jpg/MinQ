@@ -153,7 +153,7 @@ class QuestTemplateRepository {
     return getAllTemplates()
         .where((template) =>
             preferredCategories.contains(template.category) &&
-            template.difficulty.index <= maxDifficulty.index)
+            template.difficulty.index <= maxDifficulty.index,)
         .toList();
   }
 

@@ -1,6 +1,7 @@
 
-import 'package:flutter/foundation.dart';
 import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 
 class Debouncer {
   final int milliseconds;
@@ -9,7 +10,7 @@ class Debouncer {
 
   Debouncer({required this.milliseconds});
 
-  run(VoidCallback action) {
+  void run(VoidCallback action) {
     if (_timer != null) {
       _timer!.cancel();
     }

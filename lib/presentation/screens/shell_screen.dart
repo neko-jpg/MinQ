@@ -205,7 +205,7 @@ class _UsageLimitOverlay extends ConsumerWidget {
     if (duration.inHours >= 1) {
       final hours = duration.inHours;
       final minutes = duration.inMinutes.remainder(60);
-      return '${hours}時間${minutes}分';
+      return '$hours時間$minutes分';
     }
     return '${duration.inMinutes}分';
   }
@@ -234,7 +234,7 @@ class _UsageLimitOverlay extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(Icons.lock_clock,
-                    size: tokens.spacing(10), color: tokens.brandPrimary),
+                    size: tokens.spacing(10), color: tokens.brandPrimary,),
                 SizedBox(height: tokens.spacing(3)),
                 Text(
                   '利用時間制限に達しました',

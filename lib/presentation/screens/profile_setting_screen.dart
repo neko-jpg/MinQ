@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/content_moderation_service.dart';
 import 'package:minq/presentation/common/security/sensitive_content.dart';
 import 'package:minq/presentation/screens/pair_screen.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 
 class ProfileSettingScreen extends ConsumerWidget {
   const ProfileSettingScreen({super.key});
@@ -22,7 +22,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
-          "プロフィール", // HTMLに合わせる
+          'プロフィール', // HTMLに合わせる
           style: tokens.titleMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -400,7 +400,7 @@ class ProfileSettingScreen extends ConsumerWidget {
             label: Text(tag),
             backgroundColor: tokens.brandPrimary.withOpacity(0.1),
             labelStyle: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
-          )).toList(),
+          ),).toList(),
         ),
       ],
     );

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// ストリークリカバリーサービス
 class StreakRecoveryService {
@@ -52,7 +52,7 @@ class StreakRecoveryService {
           'userId': userId,
           'questId': questId,
           'remainingTickets': recoveryTickets - 1,
-        });
+        },);
 
         return true;
       });
@@ -81,12 +81,12 @@ class StreakRecoveryService {
       AppLogger.info('Recovery tickets purchased', data: {
         'userId': userId,
         'count': count,
-      });
+      },);
 
       return true;
     } catch (e, stack) {
       AppLogger.error('Failed to purchase recovery ticket',
-          error: e, stackTrace: stack);
+          error: e, stackTrace: stack,);
       return false;
     }
   }
@@ -109,12 +109,12 @@ class StreakRecoveryService {
 
       AppLogger.info('Recovery ticket earned by ad', data: {
         'userId': userId,
-      });
+      },);
 
       return true;
     } catch (e, stack) {
       AppLogger.error('Failed to earn ticket by ad',
-          error: e, stackTrace: stack);
+          error: e, stackTrace: stack,);
       return false;
     }
   }
@@ -131,7 +131,7 @@ class StreakRecoveryService {
       return userDoc.data()?['recoveryTickets'] as int? ?? 0;
     } catch (e, stack) {
       AppLogger.error('Failed to get recovery ticket count',
-          error: e, stackTrace: stack);
+          error: e, stackTrace: stack,);
       return 0;
     }
   }
@@ -173,7 +173,7 @@ class StreakRecoveryService {
       return true;
     } catch (e, stack) {
       AppLogger.error('Failed to check recovery availability',
-          error: e, stackTrace: stack);
+          error: e, stackTrace: stack,);
       return false;
     }
   }

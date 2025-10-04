@@ -1,23 +1,24 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/material.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:minq/config/stripe_config.dart';
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/core/sharing/ai_share_banner_service.dart';
 // TODO: Fix integrations package
 // import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
 import 'package:minq/core/sharing/share_service.dart';
-import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/data/repositories/community_board_repository.dart';
 import 'package:minq/data/repositories/contact_link_repository.dart';
 import 'package:minq/data/repositories/firebase_auth_repository.dart';
@@ -46,7 +47,6 @@ import 'package:minq/data/services/stripe_billing_service.dart';
 import 'package:minq/data/services/time_consistency_service.dart';
 import 'package:minq/data/services/usage_limit_service.dart';
 import 'package:minq/data/services/webhook_dispatch_service.dart';
-import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/pair/pair.dart' as minq_pair;

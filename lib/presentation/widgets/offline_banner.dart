@@ -9,7 +9,7 @@ class OfflineBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: NetworkStatusService のプロバイダーを作成して使用
-    final isOffline = false; // ref.watch(networkStatusProvider).isOffline;
+    const isOffline = false; // ref.watch(networkStatusProvider).isOffline;
 
     if (!isOffline) {
       return const SizedBox.shrink();
@@ -175,7 +175,7 @@ class NetworkDependentWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: NetworkStatusService のプロバイダーを作成して使用
-    final isOffline = false; // ref.watch(networkStatusProvider).isOffline;
+    const isOffline = false; // ref.watch(networkStatusProvider).isOffline;
 
     if (isOffline) {
       return offlineWidget ??

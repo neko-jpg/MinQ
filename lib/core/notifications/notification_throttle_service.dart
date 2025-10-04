@@ -1,6 +1,7 @@
 import 'dart:async';
+
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../logging/app_logger.dart';
 
 /// 通知スロットリングサービス - 連続通知を抑制
 class NotificationThrottleService {
@@ -40,7 +41,7 @@ class NotificationThrottleService {
       AppLogger.info('Notification debounced', data: {
         'type': notificationType,
         'elapsed': elapsed.inSeconds,
-      });
+      },);
       return true; // デバウンス中
     }
 
@@ -79,7 +80,7 @@ class NotificationThrottleService {
         'type': notificationType,
         'count': count,
         'window': _rateLimitWindow.inMinutes,
-      });
+      },);
       return true;
     }
 
@@ -106,7 +107,7 @@ class NotificationThrottleService {
     AppLogger.info('Notification added to batch', data: {
       'batchKey': batchKey,
       'count': _batchedNotifications[batchKey]!.length,
-    });
+    },);
   }
 
   /// バッチ通知を取得
@@ -122,7 +123,7 @@ class NotificationThrottleService {
     AppLogger.info('Sending batched notifications', data: {
       'batchKey': batchKey,
       'count': notifications.length,
-    });
+    },);
 
     // バッチをクリア
     _batchedNotifications.remove(batchKey);

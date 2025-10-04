@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 
-import '../../domain/team/team_habit.dart';
+import 'package:minq/domain/team/team_habit.dart';
 
 /// Repository contract for managing [TeamHabit]s.
 abstract class TeamHabitRepository {

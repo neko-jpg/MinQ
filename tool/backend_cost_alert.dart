@@ -257,7 +257,7 @@ Future<void> _sendOpsgenie(
       'alias': 'minq-backend-cost-${generatedAt.toIso8601String()}',
       'description': findings
           .map((AlertFinding finding) =>
-              '${finding.service}: ${finding.reason}')
+              '${finding.service}: ${finding.reason}',)
           .join('\n'),
       'priority': 'P2',
       'source': 'github-actions',

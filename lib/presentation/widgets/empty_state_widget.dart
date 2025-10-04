@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/spacing_system.dart';
-import '../../core/assets/app_icons.dart';
+import 'package:minq/core/assets/app_icons.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// 空状態ウィジェット - 統一されたスタイル
 class EmptyStateWidget extends StatelessWidget {

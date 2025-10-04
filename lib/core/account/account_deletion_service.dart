@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// アカウント削除サービス
 /// GDPR/個人情報保護法に準拠したデータ削除機能
@@ -28,9 +29,9 @@ class AccountDeletionService {
       // 3. Authenticationを削除
       await user.delete();
 
-      print('✅ Account deleted successfully');
+      AppLogger.info('Account deleted successfully');
     } catch (e) {
-      print('❌ Failed to delete account: $e');
+      AppLogger.error('Failed to delete account', error: e);
       rethrow;
     }
   }
@@ -45,7 +46,7 @@ class AccountDeletionService {
     // クエストを削除
     final questsSnapshot = await _firestore
         .collection('quests')
-        .where('userId', '==', userId)
+        .where('userId', isEqualTo: userId)
         .get();
 
     for (final doc in questsSnapshot.docs) {
@@ -55,7 +56,7 @@ class AccountDeletionService {
     // クエストログを削除
     final logsSnapshot = await _firestore
         .collection('questLogs')
-        .where('userId', '==', userId)
+        .where('userId', isEqualTo: userId)
         .get();
 
     for (final doc in logsSnapshot.docs) {
@@ -65,7 +66,7 @@ class AccountDeletionService {
     // ペアリクエストを削除
     final pairRequestsSnapshot = await _firestore
         .collection('pairRequests')
-        .where('fromUserId', '==', userId)
+        .where('fromUserId', isEqualTo: userId)
         .get();
 
     for (final doc in pairRequestsSnapshot.docs) {
@@ -74,7 +75,7 @@ class AccountDeletionService {
 
     final pairRequestsSnapshot2 = await _firestore
         .collection('pairRequests')
-        .where('toUserId', '==', userId)
+        .where('toUserId', isEqualTo: userId)
         .get();
 
     for (final doc in pairRequestsSnapshot2.docs) {
@@ -84,7 +85,7 @@ class AccountDeletionService {
     // アチーブメントを削除
     final achievementsSnapshot = await _firestore
         .collection('achievements')
-        .where('userId', '==', userId)
+        .where('userId', isEqualTo: userId)
         .get();
 
     for (final doc in achievementsSnapshot.docs) {
@@ -94,7 +95,7 @@ class AccountDeletionService {
     // 通知設定を削除
     final notificationSettingsSnapshot = await _firestore
         .collection('notificationSettings')
-        .where('userId', '==', userId)
+        .where('userId', isEqualTo: userId)
         .get();
 
     for (final doc in notificationSettingsSnapshot.docs) {
@@ -102,7 +103,7 @@ class AccountDeletionService {
     }
 
     await batch.commit();
-    print('✅ Firestore data deleted');
+    AppLogger.info('Firestore data deleted');
   }
 
   /// Storageのユーザーデータを削除
@@ -121,9 +122,9 @@ class AccountDeletionService {
         await _deleteStorageFolder(prefix);
       }
 
-      print('✅ Storage data deleted');
+      AppLogger.info('Storage data deleted');
     } catch (e) {
-      print('⚠️ Failed to delete storage data: $e');
+      AppLogger.warning('Failed to delete storage data', error: e);
       // Storageの削除に失敗してもアカウント削除は続行
     }
   }
@@ -157,21 +158,21 @@ class AccountDeletionService {
     // クエスト情報
     final questsSnapshot = await _firestore
         .collection('quests')
-        .where('userId', '==', userId)
+        .where('userId', isEqualTo: userId)
         .get();
     final quests = questsSnapshot.docs.map((doc) => doc.data()).toList();
 
     // クエストログ
     final logsSnapshot = await _firestore
         .collection('questLogs')
-        .where('userId', '==', userId)
+        .where('userId', isEqualTo: userId)
         .get();
     final logs = logsSnapshot.docs.map((doc) => doc.data()).toList();
 
     // アチーブメント
     final achievementsSnapshot = await _firestore
         .collection('achievements')
-        .where('userId', '==', userId)
+        .where('userId', isEqualTo: userId)
         .get();
     final achievements =
         achievementsSnapshot.docs.map((doc) => doc.data()).toList();
@@ -204,7 +205,7 @@ class AccountDeletionService {
       'deletionDate': DateTime.now().add(const Duration(days: 30)),
     });
 
-    print('✅ Account deletion scheduled for 30 days from now');
+    AppLogger.info('Account deletion scheduled for 30 days from now');
   }
 
   /// 削除予約をキャンセル
@@ -219,6 +220,6 @@ class AccountDeletionService {
       'deletionDate': FieldValue.delete(),
     });
 
-    print('✅ Account deletion cancelled');
+    AppLogger.info('Account deletion cancelled');
   }
 }

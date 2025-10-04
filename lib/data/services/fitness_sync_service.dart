@@ -1,4 +1,3 @@
-import 'package:minq/data/providers.dart';
 import 'package:minq/domain/health/daily_steps_snapshot.dart';
 // TODO: Fix integrations package
 // import 'package:miinq_integrations/miinq_integrations.dart';
@@ -38,7 +37,7 @@ class FitnessSyncService {
 }
 
 final fitnessBridgeProvider = Provider<FitnessBridge>((ref) {
-  return FitnessBridge();
+  return const FitnessBridge();
 });
 
 final fitnessSyncServiceProvider = Provider<FitnessSyncService>((ref) {

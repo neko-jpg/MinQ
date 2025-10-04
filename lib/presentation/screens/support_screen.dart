@@ -20,7 +20,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
   bool _submitted = false;
   DateTime? _recordedAt;
   final List<SupportMessage> _messages = <SupportMessage>[];
-  bool _chatSending = false;
+  final bool _chatSending = false;
   late final String _conversationId;
 
   @override
@@ -188,7 +188,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
 
   Widget _buildSupportBotCard(MinqTheme tokens) {
     // TODO: Implement supportChatServiceProvider
-    final isChatAvailable = false; // ref.watch(supportChatServiceProvider) != null;
+    const isChatAvailable = false; // ref.watch(supportChatServiceProvider) != null;
     return Card(
       elevation: 0,
       color: tokens.surface,

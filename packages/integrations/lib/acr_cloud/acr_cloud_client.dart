@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:meta/meta.dart';
 
-import 'acr_cloud_config.dart';
-import 'models.dart';
+import 'package:miinq_integrations/acr_cloud/acr_cloud_config.dart';
+import 'package:miinq_integrations/acr_cloud/models.dart';
 
 /// A minimal client for the ACR Cloud identify API.
 class ACRCloudClient {
@@ -53,7 +53,7 @@ class ACRCloudClient {
       throw ArgumentError.value(audio, 'audio', 'Audio sample must not be empty');
     }
 
-    final endpoint = '/v1/identify';
+    const endpoint = '/v1/identify';
     final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     const dataType = 'audio';
     const signatureVersion = '1';

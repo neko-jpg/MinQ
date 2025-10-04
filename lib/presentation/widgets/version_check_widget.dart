@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/version/version_check_service.dart';
-import '../screens/version_update_screen.dart';
+import 'package:minq/core/version/version_check_service.dart';
+import 'package:minq/presentation/screens/version_update_screen.dart';
 
 /// バージョンチェックを行い、必要に応じて更新画面を表示するウィジェット
 class VersionCheckWidget extends ConsumerStatefulWidget {

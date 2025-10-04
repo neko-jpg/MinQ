@@ -4,6 +4,6 @@
 /// with platform-specific optimizations and user preference support.
 library;
 
+export 'audio_feedback_manager.dart';
 export 'feedback_manager.dart';
 export 'haptic_manager.dart';
-export 'audio_feedback_manager.dart';

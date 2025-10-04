@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
@@ -32,7 +31,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
   String _selectedIconKey = 'spa';
   static const Color _defaultColor = Color(0xFF37CBFA);
 
-  Color _selectedColor = _defaultColor;
+  final Color _selectedColor = _defaultColor;
   bool _isTimeGoal = true;
   final Set<int> _selectedDays = <int>{..._defaultSelectedDays};
   TimeOfDay _reminderTime = const TimeOfDay(hour: 7, minute: 0);

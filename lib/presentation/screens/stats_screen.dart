@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:minq/data/providers.dart';
@@ -444,7 +444,7 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
 
 Widget _buildWeeklyProgressCard(BuildContext context, WidgetRef ref, MinqTheme tokens) {
   final navigation = ref.read(navigationUseCaseProvider);
-  final hasProgress = true; // Replace with actual data when available
+  const hasProgress = true; // Replace with actual data when available
 
   if (!hasProgress) {
     return _buildZeroChart(

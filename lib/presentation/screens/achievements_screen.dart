@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/achievements/achievement_system.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/core/achievements/achievement_system.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// アチーブメント一覧画面
 class AchievementsScreen extends ConsumerWidget {
@@ -75,9 +75,9 @@ class AchievementsScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          Text(
+          const Text(
             '🏆',
-            style: const TextStyle(fontSize: 48),
+            style: TextStyle(fontSize: 48),
           ),
           SizedBox(height: tokens.spacing.sm),
           Text(

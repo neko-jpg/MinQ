@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// おすすめユーザーサービス
 class RecommendedUsersService {
@@ -62,7 +62,7 @@ class RecommendedUsersService {
           goals: List<String>.from(userData['goals'] ?? []),
           activityScore: userData['activityScore'] as int? ?? 0,
           matchScore: score,
-        ));
+        ),);
       }
 
       // スコア順にソート
@@ -71,7 +71,7 @@ class RecommendedUsersService {
       return recommendations.take(limit).toList();
     } catch (e, stack) {
       AppLogger.error('Failed to get recommended users',
-          error: e, stackTrace: stack);
+          error: e, stackTrace: stack,);
       return [];
     }
   }
@@ -161,7 +161,7 @@ class RecommendedUsersService {
       });
     } catch (e, stack) {
       AppLogger.error('Failed to update activity score',
-          error: e, stackTrace: stack);
+          error: e, stackTrace: stack,);
     }
   }
 }

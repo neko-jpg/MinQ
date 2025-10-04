@@ -208,7 +208,7 @@ class MigrationManager {
   /// ユーザーデータをマイグレート
   Future<void> migrateUserData(String userId) async {
     final currentVersion = await getUserDataVersion(userId);
-    final targetVersion = ModelVersion.current;
+    const targetVersion = ModelVersion.current;
 
     if (currentVersion < targetVersion) {
       print('🔄 Migrating user data from v$currentVersion to v$targetVersion');
@@ -305,7 +305,7 @@ class MigrationStatusProvider {
   Future<MigrationStatus> checkStatus() async {
     try {
       final currentVersion = await _manager.getCurrentDatabaseVersion();
-      final targetVersion = ModelVersion.current;
+      const targetVersion = ModelVersion.current;
 
       if (currentVersion < targetVersion) {
         _status = MigrationStatus.needsMigration;

@@ -175,7 +175,7 @@ class MinqSkeletonList extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.only(bottom: index == itemCount - 1
               ? 0
-              : tokens.spacing(3)),
+              : tokens.spacing(3),),
           child: MinqSkeleton(
             height: height,
             borderRadius: tokens.cornerLarge(),

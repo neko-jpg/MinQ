@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 
-import '../log/quest_log.dart';
-import '../quest/quest.dart';
+import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/domain/quest/quest.dart';
 
 class QuestRecommendation {
   QuestRecommendation({
@@ -142,7 +142,7 @@ class QuestRecommendationService {
       buffer.write('チームの連続達成が伸びています。');
     }
     if (streak >= 3) {
-      buffer.write(' 現在${streak}日連続で達成しています。');
+      buffer.write(' 現在$streak日連続で達成しています。');
     }
     return buffer.toString();
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:minq/presentation/common/onboarding/interactive_tour.dart';
 import 'package:minq/presentation/common/onboarding/onboarding_engine.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   group('InteractiveTourScreen', () {
@@ -166,7 +166,7 @@ void main() {
           .map((element) => element.widget as Container)
           .where((container) => 
               container.decoration is BoxDecoration &&
-              (container.decoration as BoxDecoration).shape == BoxShape.circle)
+              (container.decoration as BoxDecoration).shape == BoxShape.circle,)
           .toList();
 
       expect(indicators.length, greaterThanOrEqualTo(3));

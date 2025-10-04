@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/templates/habit_templates.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/core/templates/habit_templates.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 習慣テンプレート選択画面
 class HabitTemplateScreen extends ConsumerStatefulWidget {

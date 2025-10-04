@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
-import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/data/services/tip_jar_service.dart';
+import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/controllers/integration_settings_controller.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/controllers/usage_limit_controller.dart';
+import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -44,7 +44,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (tapsRemaining > 0) {
       FeedbackMessenger.showInfoToast(
         context,
-        '開発者向けオプションまであと${tapsRemaining}回タップ',
+        '開発者向けオプションまであと$tapsRemaining回タップ',
       );
       return;
     }
@@ -59,8 +59,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (duration.inHours >= 1) {
       final hours = duration.inHours;
       final minutes = duration.inMinutes.remainder(60);
-      if (minutes == 0) return '${hours}時間';
-      return '${hours}時間${minutes}分';
+      if (minutes == 0) return '$hours時間';
+      return '$hours時間$minutes分';
     }
     return '${duration.inMinutes}分';
   }
@@ -121,7 +121,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       }
                     },
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
@@ -176,7 +176,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     },
                     selected: isSelected,
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),

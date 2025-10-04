@@ -111,12 +111,12 @@ void main() {
       expect(lightTheme.meetsWCAGAA(
         lightTheme.textPrimary,
         lightTheme.background,
-      ), isTrue);
+      ), isTrue,);
       
       expect(lightTheme.meetsWCAGAAA(
         lightTheme.highContrastText,
         lightTheme.highContrastBackground,
-      ), isTrue);
+      ), isTrue,);
     });
 
     testWidgets('Error and warning colors are defined', (tester) async {
@@ -149,7 +149,7 @@ void main() {
 
     testWidgets('copyWith works with new properties', (tester) async {
       final originalTheme = MinqTheme.light();
-      final customJoyColor = const Color(0xFF00FF00);
+      const customJoyColor = Color(0xFF00FF00);
       
       final copiedTheme = originalTheme.copyWith(
         joyAccent: customJoyColor,

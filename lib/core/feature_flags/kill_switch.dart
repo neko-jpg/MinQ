@@ -1,13 +1,13 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import '../logging/app_logger.dart';
+import 'package:flutter/widgets.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// Feature Flag Kill Switch
 /// Remote Configのみで機能を即時停止
 class KillSwitch {
   final FirebaseRemoteConfig _remoteConfig;
-  final AppLogger _logger;
 
-  KillSwitch(this._remoteConfig, this._logger);
+  KillSwitch(this._remoteConfig);
 
   /// 機能が有効かチェック
   Future<bool> isFeatureEnabled(String featureKey) async {
@@ -16,12 +16,12 @@ class KillSwitch {
       final enabled = _remoteConfig.getBool('feature_$featureKey');
       
       if (!enabled) {
-        _logger.warning('Feature disabled by kill switch: $featureKey');
+        AppLogger.warning('Feature disabled by kill switch: $featureKey');
       }
       
       return enabled;
     } catch (e, stack) {
-      _logger.error('Kill switch check failed', error: e, stackTrace: stack);
+      AppLogger.error('Kill switch check failed', error: e, stackTrace: stack);
       // エラー時はデフォルトで有効
       return true;
     }
@@ -55,7 +55,7 @@ class KillSwitch {
       
       return defaultValue;
     } catch (e, stack) {
-      _logger.error('Feature config fetch failed', error: e, stackTrace: stack);
+      AppLogger.error('Feature config fetch failed', error: e, stackTrace: stack);
       return defaultValue;
     }
   }
@@ -76,7 +76,7 @@ class KillSwitch {
       
       return features;
     } catch (e, stack) {
-      _logger.error('Failed to get all feature flags', error: e, stackTrace: stack);
+      AppLogger.error('Failed to get all feature flags', error: e, stackTrace: stack);
       return {};
     }
   }

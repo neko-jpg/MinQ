@@ -20,7 +20,7 @@ class MaintenanceScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.construction,
                 size: 80,
                 color: Colors.orange,

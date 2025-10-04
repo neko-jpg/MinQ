@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 
 /// スプラッシュ画面（ライト/ダーク対応）
 class SplashScreen extends StatelessWidget {

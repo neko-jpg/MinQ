@@ -40,18 +40,18 @@ class AIBannerGenerator {
       }
     }
     img.gaussianBlur(overlay, 12);
-    img.drawImage(canvas as img.Image, overlay, dstBlend: img.BlendMode.plus);
+    img.drawImage(canvas, overlay, dstBlend: img.BlendMode.plus);
   }
 
   void _paintBlobs(_ImageLike canvas, _Palette palette, Random rng) {
-    final blobCount = 4;
+    const blobCount = 4;
     for (var i = 0; i < blobCount; i++) {
       final radius = (canvas.width * 0.15 + rng.nextDouble() * canvas.width * 0.1).toInt();
       final centerX = rng.nextInt(canvas.width);
       final centerY = rng.nextInt(canvas.height);
       final color = palette.accents[rng.nextInt(palette.accents.length)];
-      img.drawCircle(canvas as img.Image, centerX, centerY, radius, color,
-          thickness: -1, blend: img.BlendMode.overlay);
+      img.drawCircle(canvas, centerX, centerY, radius, color,
+          thickness: -1, blend: img.BlendMode.overlay,);
     }
   }
 
@@ -62,14 +62,14 @@ class AIBannerGenerator {
     final titleLines = img.wrapText(boldFont, title, canvas.width - 160);
     var offsetY = 160;
     for (final line in titleLines) {
-      img.drawString(canvas as img.Image, line, font: boldFont, x: 80, y: offsetY, color: palette.onBackground);
+      img.drawString(canvas, line, font: boldFont, x: 80, y: offsetY, color: palette.onBackground);
       offsetY += boldFont.height + 12;
     }
 
     final subtitleLines = img.wrapText(regularFont, subtitle, canvas.width - 160);
     offsetY += 24;
     for (final line in subtitleLines) {
-      img.drawString(canvas as img.Image, line, font: regularFont, x: 80, y: offsetY, color: palette.onBackgroundSecondary);
+      img.drawString(canvas, line, font: regularFont, x: 80, y: offsetY, color: palette.onBackgroundSecondary);
       offsetY += regularFont.height + 8;
     }
   }

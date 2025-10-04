@@ -52,7 +52,7 @@ class WebhookDispatchService {
 
     for (final endpoint in endpoints) {
       try {
-        logger.logApiRequest('POST', endpoint.toString(), body: payload);
+        AppLogger.logApiRequest('POST', endpoint.toString(), body: payload);
         final response = await client.post(
           endpoint,
           headers: const {
@@ -61,17 +61,17 @@ class WebhookDispatchService {
           },
           body: jsonEncode(payload),
         );
-        logger.logApiResponse(
+        AppLogger.logApiResponse(
           'POST',
           endpoint.toString(),
           response.statusCode,
           body: response.body,
         );
       } catch (error, stackTrace) {
-        logger.warning(
+        AppLogger.warning(
           'Failed to dispatch webhook',
-          error,
-          stackTrace,
+          error: error,
+          stackTrace: stackTrace,
         );
       }
     }

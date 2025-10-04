@@ -197,7 +197,7 @@ void main() {
       expect(() async {
         await tester.tap(find.byType(AnimatedCheckbox));
         await tester.pump();
-      }, returnsNormally);
+      }, returnsNormally,);
     });
 
     testWidgets('should handle rapid state changes', (tester) async {

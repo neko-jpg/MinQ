@@ -39,89 +39,94 @@ class AppLogger {
   }
 
   /// デバッグログ
-  void debug(String message, [dynamic error, StackTrace? stackTrace]) {
-    _ensureInitialized();
+  static void debug(String message, {dynamic error, StackTrace? stackTrace, Map<String, dynamic>? data}) {
+    _instance._ensureInitialized();
     if (error != null || stackTrace != null) {
-      _logger.d(message, error: error, stackTrace: stackTrace);
+      _instance._logger.d(message, error: error, stackTrace: stackTrace);
     } else {
-      _logger.d(message);
+      _instance._logger.d(message);
     }
   }
 
   /// 情報ログ
-  void info(String message, [dynamic error, StackTrace? stackTrace]) {
-    _ensureInitialized();
+  static void info(String message, {dynamic error, StackTrace? stackTrace, Map<String, dynamic>? data}) {
+    _instance._ensureInitialized();
     if (error != null || stackTrace != null) {
-      _logger.i(message, error: error, stackTrace: stackTrace);
+      _instance._logger.i(message, error: error, stackTrace: stackTrace);
     } else {
-      _logger.i(message);
+      _instance._logger.i(message);
     }
   }
 
   /// 警告ログ
-  void warning(String message, [dynamic error, StackTrace? stackTrace]) {
-    _ensureInitialized();
+  static void warning(String message, {dynamic error, StackTrace? stackTrace, Map<String, dynamic>? data}) {
+    _instance._ensureInitialized();
     if (error != null || stackTrace != null) {
-      _logger.w(message, error: error, stackTrace: stackTrace);
+      _instance._logger.w(message, error: error, stackTrace: stackTrace);
     } else {
-      _logger.w(message);
+      _instance._logger.w(message);
     }
   }
 
   /// エラーログ
-  void error(String message, [dynamic error, StackTrace? stackTrace]) {
-    _ensureInitialized();
+  static void error(String message, {dynamic error, StackTrace? stackTrace, Map<String, dynamic>? data}) {
+    _instance._ensureInitialized();
     if (error != null || stackTrace != null) {
-      _logger.e(message, error: error, stackTrace: stackTrace);
+      _instance._logger.e(message, error: error, stackTrace: stackTrace);
     } else {
-      _logger.e(message);
+      _instance._logger.e(message);
     }
   }
 
   /// 致命的エラーログ
-  void fatal(String message, [dynamic error, StackTrace? stackTrace]) {
-    _ensureInitialized();
+  static void fatal(String message, {dynamic error, StackTrace? stackTrace, Map<String, dynamic>? data}) {
+    _instance._ensureInitialized();
     if (error != null || stackTrace != null) {
-      _logger.f(message, error: error, stackTrace: stackTrace);
+      _instance._logger.f(message, error: error, stackTrace: stackTrace);
     } else {
-      _logger.f(message);
+      _instance._logger.f(message);
     }
   }
 
+  /// クリティカルログ（fatalのエイリアス）
+  static void critical(String message, {dynamic error, StackTrace? stackTrace, Map<String, dynamic>? data}) {
+    fatal(message, error: error, stackTrace: stackTrace, data: data);
+  }
+
   /// JSON構造ログ
-  void logJson(String message, Map<String, dynamic> data, {Level level = Level.info}) {
-    _ensureInitialized();
+  static void logJson(String message, Map<String, dynamic> data, {Level level = Level.info}) {
+    _instance._ensureInitialized();
     final jsonString = const JsonEncoder.withIndent('  ').convert(data);
     final logMessage = '$message\n$jsonString';
 
     switch (level) {
       case Level.debug:
-        _logger.d(logMessage);
+        _instance._logger.d(logMessage);
         break;
       case Level.info:
-        _logger.i(logMessage);
+        _instance._logger.i(logMessage);
         break;
       case Level.warning:
-        _logger.w(logMessage);
+        _instance._logger.w(logMessage);
         break;
       case Level.error:
-        _logger.e(logMessage);
+        _instance._logger.e(logMessage);
         break;
       case Level.fatal:
-        _logger.f(logMessage);
+        _instance._logger.f(logMessage);
         break;
       default:
-        _logger.i(logMessage);
+        _instance._logger.i(logMessage);
     }
   }
 
   /// イベントログ（アナリティクス用）
-  void logEvent(String eventName, Map<String, dynamic> parameters) {
+  static void logEvent(String eventName, Map<String, dynamic> parameters) {
     logJson('Event: $eventName', parameters, level: Level.info);
   }
 
   /// APIリクエストログ
-  void logApiRequest(String method, String url, {Map<String, dynamic>? body}) {
+  static void logApiRequest(String method, String url, {Map<String, dynamic>? body}) {
     logJson(
       'API Request: $method $url',
       {
@@ -135,7 +140,7 @@ class AppLogger {
   }
 
   /// APIレスポンスログ
-  void logApiResponse(
+  static void logApiResponse(
     String method,
     String url,
     int statusCode, {
@@ -157,12 +162,12 @@ class AppLogger {
   }
 
   /// ナビゲーションログ
-  void logNavigation(String from, String to) {
+  static void logNavigation(String from, String to) {
     info('Navigation: $from → $to');
   }
 
   /// ユーザーアクションログ
-  void logUserAction(String action, {Map<String, dynamic>? context}) {
+  static void logUserAction(String action, {Map<String, dynamic>? context}) {
     logJson(
       'User Action: $action',
       {
@@ -175,7 +180,7 @@ class AppLogger {
   }
 
   /// パフォーマンスログ
-  void logPerformance(String operation, Duration duration, {Map<String, dynamic>? metadata}) {
+  static void logPerformance(String operation, Duration duration, {Map<String, dynamic>? metadata}) {
     logJson(
       'Performance: $operation',
       {
@@ -212,7 +217,7 @@ class PerformanceLogger {
   /// 測定を終了してログ出力
   void stop() {
     _stopwatch.stop();
-    logger.logPerformance(
+    AppLogger.logPerformance(
       operation,
       _stopwatch.elapsed,
       metadata: metadata,

@@ -1,10 +1,10 @@
 import 'package:http/http.dart' as http;
-import 'package:mocktail/mocktail.dart';
 import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/data/services/local_preferences_service.dart';
 import 'package:minq/data/services/webhook_dispatch_service.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/quest/quest.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockClient extends Mock implements http.Client {}
@@ -64,7 +64,7 @@ void main() {
     });
 
     test('posts quest completion payload to configured endpoints', () async {
-      final endpoint = 'https://example.com/hook';
+      const endpoint = 'https://example.com/hook';
       when(() => preferences.loadWebhookEndpoints()).thenAnswer(
         (_) async => <String>[endpoint],
       );
@@ -72,7 +72,7 @@ void main() {
             any(),
             headers: any(named: 'headers'),
             body: any(named: 'body'),
-          )).thenAnswer((_) async => http.Response('{}', 200));
+          ),).thenAnswer((_) async => http.Response('{}', 200));
       when(() => logger.logApiRequest(any(), any(), body: any(named: 'body')))
           .thenReturn(null);
       when(() => logger.logApiResponse(any(), any(), any(), body: any(named: 'body')))

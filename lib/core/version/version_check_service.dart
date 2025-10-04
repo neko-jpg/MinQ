@@ -1,14 +1,13 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import '../logging/app_logger.dart';
 
 /// バージョン互換性チェックサービス
 class VersionCheckService {
   final FirebaseRemoteConfig _remoteConfig;
-  final AppLogger _logger;
 
-  VersionCheckService(this._remoteConfig, this._logger);
+  VersionCheckService(this._remoteConfig);
 
   /// 現在のアプリバージョンが最小サポートバージョンを満たしているか確認
   Future<VersionCheckResult> checkVersion() async {
@@ -22,7 +21,7 @@ class VersionCheckService {
       final recommendedVersion = _remoteConfig.getString('recommended_version');
       final forceUpdateEnabled = _remoteConfig.getBool('force_update_enabled');
 
-      _logger.info('Version check: current=$currentVersion, min=$minSupportedVersion, recommended=$recommendedVersion');
+      AppLogger.info('Version check: current=$currentVersion, min=$minSupportedVersion, recommended=$recommendedVersion');
 
       if (minSupportedVersion.isEmpty) {
         return VersionCheckResult.supported(currentVersion);
@@ -47,7 +46,7 @@ class VersionCheckService {
 
       return VersionCheckResult.supported(currentVersion);
     } catch (e, stack) {
-      _logger.error('Version check failed', e, stack);
+      AppLogger.error('Version check failed', error: e, stackTrace: stack);
       // エラー時はサポート済みとして扱う（ユーザー体験を損なわない）
       return VersionCheckResult.error();
     }

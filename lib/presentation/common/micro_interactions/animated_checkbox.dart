@@ -96,7 +96,7 @@ class _AnimatedCheckboxState extends State<AnimatedCheckbox>
     ).animate(CurvedAnimation(
       parent: _scaleController,
       curve: Curves.easeInOut,
-    ));
+    ),);
 
     // Check animation for the checkmark appearance
     _checkController = AnimationController(
@@ -109,7 +109,7 @@ class _AnimatedCheckboxState extends State<AnimatedCheckbox>
     ).animate(CurvedAnimation(
       parent: _checkController,
       curve: Curves.elasticOut,
-    ));
+    ),);
 
     // Glow animation for success feedback
     _glowController = AnimationController(
@@ -122,7 +122,7 @@ class _AnimatedCheckboxState extends State<AnimatedCheckbox>
     ).animate(CurvedAnimation(
       parent: _glowController,
       curve: Curves.easeInOut,
-    ));
+    ),);
 
     // Bounce animation for celebration
     _bounceController = AnimationController(
@@ -135,7 +135,7 @@ class _AnimatedCheckboxState extends State<AnimatedCheckbox>
     ).animate(CurvedAnimation(
       parent: _bounceController,
       curve: Curves.elasticOut,
-    ));
+    ),);
 
     // Set initial state
     if (widget.isChecked) {

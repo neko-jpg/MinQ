@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:minq/domain/pair/pair_reminder.dart';
+import 'package:flutter/foundation.dart';
 import 'package:minq/data/repositories/pair_repository.dart';
 import 'package:minq/data/repositories/user_repository.dart';
 import 'package:minq/data/services/notification_service.dart';
+import 'package:minq/domain/pair/pair_reminder.dart';
 
 /// ペア間の相互リマインド機能を提供するサービス
 class PairReminderService {
@@ -110,7 +110,7 @@ class PairReminderService {
           .map((doc) => PairReminder.fromJson({
                 'id': doc.id,
                 ...doc.data(),
-              }))
+              }),)
           .toList();
     } catch (e) {
       debugPrint('Failed to get reminders for user: $e');

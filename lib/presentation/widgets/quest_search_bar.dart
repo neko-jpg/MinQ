@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 
 /// クエスト検索バー
 class QuestSearchBar extends StatefulWidget {
@@ -326,7 +325,7 @@ class SearchHighlight extends StatelessWidget {
       spans.add(TextSpan(
         text: text.substring(index, index + query.length),
         style: defaultHighlightStyle,
-      ));
+      ),);
 
       start = index + query.length;
     }
