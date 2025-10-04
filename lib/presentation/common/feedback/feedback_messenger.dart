@@ -36,7 +36,7 @@ class FeedbackMessenger {
   static void showErrorSnackBar(
     BuildContext context,
     String message, {
-    String actionLabel = '閉じめE,
+    String actionLabel = '閉じる',
     VoidCallback? onAction,
   }) {
     _showSnackBar(
@@ -44,7 +44,7 @@ class FeedbackMessenger {
       message,
       duration: const Duration(seconds: 3),
       actionLabel: actionLabel,
-      onAction: onAction ?? () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+      onAction: onAction,
     );
   }
 

@@ -1,9 +1,9 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:minq/config/stripe_config.dart';
 import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/data/services/stripe_billing_service.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:test/test.dart';
 
 class MockClient extends Mock implements http.Client {}
 

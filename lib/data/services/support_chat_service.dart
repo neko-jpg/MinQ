@@ -1,6 +1,5 @@
 // TODO: Re-enable when miinq_integrations package is available
 // import 'package:miinq_integrations/miinq_integrations.dart';
-import 'package:minq/data/providers.dart';
 import 'package:minq/domain/support/support_message.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -29,7 +28,7 @@ class SupportChatService {
     // return SupportMessage(role: 'assistant', content: reply);
     
     // Temporary placeholder response
-    return SupportMessage(
+    return const SupportMessage(
       role: 'assistant',
       content: 'Support chat is currently unavailable. Please try again later.',
     );

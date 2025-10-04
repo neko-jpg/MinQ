@@ -1,0 +1,32 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:isar/isar.dart';
+import 'package:minq/data/repositories/firebase_auth_repository.dart';
+import 'package:minq/data/repositories/user_repository.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+
+import 'user_repository_test.mocks.dart';
+
+@GenerateMocks([Isar, IAuthRepository])
+void main() {
+  group('UserRepository', () {
+    late MockIsar mockIsar;
+    late MockIAuthRepository mockAuthRepository;
+    late UserRepository userRepository;
+
+    setUp(() {
+      mockIsar = MockIsar();
+      mockAuthRepository = MockIAuthRepository();
+      userRepository = UserRepository(mockIsar, mockAuthRepository);
+    });
+
+    test('getCurrentUser returns null when firebase user does not exist', () async {
+      when(mockAuthRepository.getCurrentUser()).thenReturn(null);
+
+      final result = await userRepository.getCurrentUser();
+
+      expect(result, isNull);
+      verify(mockAuthRepository.getCurrentUser()).called(1);
+    });
+  });
+}

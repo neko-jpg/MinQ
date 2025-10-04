@@ -160,6 +160,7 @@ class RemoteConfigService {
     return _remoteConfig?.getString(key) ?? _defaultValues[key] as String;
   }
 
+  // ignore: unused_element
   double _getDouble(String key) {
     return _remoteConfig?.getDouble(key) ?? _defaultValues[key] as double;
   }

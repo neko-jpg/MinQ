@@ -63,6 +63,7 @@ class PlayIntegrityService {
   }
 
   /// Nonceを生成
+  // ignore: unused_element
   String _generateNonce() {
     return DateTime.now().millisecondsSinceEpoch.toString();
   }

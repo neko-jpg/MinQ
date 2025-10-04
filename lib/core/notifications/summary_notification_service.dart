@@ -339,10 +339,7 @@ class DailySummaryNotificationService {
 
 /// 通知バッジ管理サービス
 class NotificationBadgeService {
-  final FlutterLocalNotificationsPlugin _notifications;
   int _badgeCount = 0;
-
-  NotificationBadgeService(this._notifications);
 
   /// バッジ数を取得
   int get badgeCount => _badgeCount;

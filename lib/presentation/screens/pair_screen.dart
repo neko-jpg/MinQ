@@ -217,7 +217,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     if (code.isEmpty) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        '招征E��ードを入力してください、E,
+        '招征E��ードを入力してください、E,
       );
       return;
     }
@@ -231,7 +231,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     if (mounted && pairId == null) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        '招征E��ードが無効です、E,
+        '招征E��ードが無効です、E,
       );
     }
   }
@@ -247,7 +247,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     if (mounted && pairId == null) {
       FeedbackMessenger.showInfoToast(
         context,
-        '現在マッチング中です。頁E��をお征E��ください、E,
+        '現在マッチング中です。頁E��をお征E��ください、E,
       );
     }
   }
@@ -277,7 +277,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
           _buildRandomMatchForm(tokens, l10n),
           SizedBox(height: tokens.spacing(8)),
           MinqPrimaryButton(
-            label: 'マッチングを開始すめE,
+            label: 'マッチングを開始する',
             onPressed: () async =>
                 ref.read(navigationUseCaseProvider).goToPairMatching(),
           ),

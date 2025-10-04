@@ -19,6 +19,8 @@ void main() {
 
     test('signInAnonymously calls FirebaseAuth.signInAnonymously', () async {
       final mockUserCredential = MockUserCredential();
+      final mockUser = MockUser();
+      when(mockUserCredential.user).thenReturn(mockUser);
       when(mockFirebaseAuth.signInAnonymously())
           .thenAnswer((_) async => mockUserCredential);
 

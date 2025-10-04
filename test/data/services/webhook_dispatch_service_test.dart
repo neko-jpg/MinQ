@@ -1,3 +1,4 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/data/services/local_preferences_service.dart';
@@ -5,7 +6,6 @@ import 'package:minq/data/services/webhook_dispatch_service.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:test/test.dart';
 
 class MockClient extends Mock implements http.Client {}
 

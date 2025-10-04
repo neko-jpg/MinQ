@@ -140,6 +140,7 @@ class InAppUpdateService {
   }
 
   /// バージョン比較
+  // ignore: unused_element
   bool _isNewerVersion(String storeVersion, String currentVersion) {
     final storeParts = storeVersion.split('.').map(int.parse).toList();
     final currentParts = currentVersion.split('.').map(int.parse).toList();

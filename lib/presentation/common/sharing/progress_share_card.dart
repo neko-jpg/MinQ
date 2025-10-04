@@ -12,7 +12,7 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-/// 進捗�E有カードウィジェチE��
+/// 進捗�E有カードウィジェチE��
 class ProgressShareCard extends ConsumerStatefulWidget {
   final int currentStreak;
   final int bestStreak;
@@ -153,7 +153,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                '習�E化�E記録',
+                '習�E化�E記録',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -233,15 +233,15 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       children: [
         Expanded(
           child: _buildStatItem(
-            '総クエスチE,
-            '${widget.totalQuests}倁E,
+            '総クエスト',
+            '${widget.totalQuests}個',
             Icons.task_alt,
           ),
         ),
         Expanded(
           child: _buildStatItem(
-            '今日完亁E,
-            '${widget.completedToday}倁E,
+            '今日完了',
+            '${widget.completedToday}個',
             Icons.today,
           ),
         ),
@@ -348,7 +348,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
 
       await Share.shareXFiles(
         [XFile(file.path)],
-        text: 'MinQで${widget.currentStreak}日連続で目標達成中�E�E#MinQ #習�E化アプリ',
+        text: 'MinQで${widget.currentStreak}日連続で目標達成中�E�E#MinQ #習�E化アプリ',
       );
 
       // TODO: Implement logEvent
@@ -422,21 +422,21 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
   }
 
   String _getStreakMessage(int streak) {
-    if (streak >= 100) return '伝説の継続老E��E;
-    if (streak >= 50) return '継続�Eスター�E�E;
-    if (streak >= 30) return '習�E化�E功！E;
-    if (streak >= 7) return '素晴らしぁE��続！E;
-    if (streak >= 3) return '良ぁE�Eース�E�E;
-    return '継続中�E�E;
+    if (streak >= 100) return '伝説の継続者！';
+    if (streak >= 50) return '継続のスター！';
+    if (streak >= 30) return '習慣化成功！';
+    if (streak >= 7) return '素晴らしい継続！';
+    if (streak >= 3) return '良いペース！';
+    return '継続中！';
   }
 
   String _getMotivationalMessage() {
     final messages = [
-      '毎日コチE��チE��継続�E力なり！E,
-      '小さな積み重�Eが大きな変化を生む',
-      '今日も一歩前進�E�E,
-      '習�E化で人生が変わめE,
-      '継続こそが最大の才�E',
+      '毎日コツコツ、継続は力なり！',
+      '小さな積み重ねが大きな変化を生む',
+      '今日も一歩前進！',
+      '習慣化で人生が変わる',
+      '継続こそが最大の才能',
     ];
     
     return messages[Random().nextInt(messages.length)];

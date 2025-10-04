@@ -17,7 +17,7 @@ class CreateQuestScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
-  static const List<String> _stepTitles = <String>['基本惁E��', '目標と頻度', 'リマインダー'];
+  static const List<String> _stepTitles = <String>['基本惁E��', '目標と頻度', 'リマインダー'];
   static const Set<int> _defaultSelectedDays = <int>{0, 1, 2, 3, 6};
 
   final _formKey = GlobalKey<FormState>();
@@ -98,7 +98,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         if (mounted) {
           FeedbackMessenger.showErrorSnackBar(
             context,
-            '音声入力を使用できませんでした。�Eイクの権限を確認してください、E,
+            '音声入力を使用できませんでした。�Eイクの権限を確認してください、E,
           );
         }
         return;
@@ -121,7 +121,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         setState(() => _isVoiceListening = false);
         FeedbackMessenger.showErrorSnackBar(
           context,
-          '音声入力�E開始に失敗しました、E,
+          '音声入力�E開始に失敗しました、E,
         );
       }
     }
@@ -157,8 +157,8 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('変更を破棁E��ますか�E�E),
-          content: const Text('入力した�E容は保存されません。画面を閉じてもよろしぁE��すか�E�E),
+          title: const Text('変更を破棁E��ますか�E�E),
+          content: const Text('入力した�E容は保存されません。画面を閉じてもよろしぁE��すか�E�E),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -170,7 +170,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                 foregroundColor: Colors.white,
               ),
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('破棁E��めE),
+              child: const Text('破棁E��めE),
             ),
           ],
         );
@@ -197,7 +197,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     if (uid == null || uid.isEmpty) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        'ユーザーがサインインしてぁE��せん、E,
+        'ユーザーがサインインしてぁE��せん、E,
       );
       return;
     }
@@ -251,7 +251,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     if (mounted) {
       FeedbackMessenger.showSuccessToast(
         context,
-        '新しい習�Eを作�Eしました�E�E,
+        '新しい習�Eを作�Eしました�E�E,
       );
       context.pop();
     }
@@ -261,7 +261,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     return <Widget>[
       _StepPage(
         index: 0,
-        label: 'スチE��チE: 基本惁E��',
+        label: 'スチE��チE: 基本惁E��',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -288,7 +288,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
       ),
       _StepPage(
         index: 1,
-        label: 'スチE��チE: 目標と頻度',
+        label: 'スチE��チE: 目標と頻度',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -317,7 +317,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
       ),
       _StepPage(
         index: 2,
-        label: 'スチE��チE: リマインダー',
+        label: 'スチE��チE: リマインダー',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -426,10 +426,10 @@ class _Header extends StatelessWidget {
         IconButton(
           onPressed: onBack,
           icon: const Icon(Icons.arrow_back_ios_new),
-          tooltip: '前�E画面に戻めE,
+          tooltip: '前�E画面に戻めE,
         ),
         Text(
-          '新しい習�Eを追加',
+          '新しい習�Eを追加',
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(width: 48),
@@ -458,9 +458,9 @@ class _StepIndicator extends StatelessWidget {
         Semantics(
           container: true,
           liveRegion: true,
-          label: 'スチE��チE{currentStep + 1}/$totalSteps: ${titles[currentStep]}',
+          label: 'スチE��チE{currentStep + 1}/$totalSteps: ${titles[currentStep]}',
           child: Text(
-            'スチE��チE{currentStep + 1} / $totalSteps',
+            'スチE��チE{currentStep + 1} / $totalSteps',
             style: tokens.labelSmall.copyWith(color: tokens.textMuted),
           ),
         ),
@@ -526,7 +526,7 @@ class _StepperActions extends StatelessWidget {
         Expanded(
           child: FilledButton(
             onPressed: isLastStep && !canSubmit ? null : () => onNext(),
-            child: Text(isLastStep ? '習�Eを保存すめE : '次へ進む'),
+            child: Text(isLastStep ? '習�Eを保存すめE : '次へ進む'),
           ),
         ),
       ],
@@ -578,14 +578,14 @@ class _HabitNameInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '習�Eの名前',
+          '習�Eの名前',
           style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
         ),
         SizedBox(height: tokens.spacing(2)),
         TextFormField(
           controller: controller,
           validator: (String? value) =>
-              (value == null || value.trim().isEmpty) ? '名前を�E力してください' : null,
+              (value == null || value.trim().isEmpty) ? '名前を�E力してください' : null,
           decoration: InputDecoration(
             hintText: '例：毎朝瞑想する',
             prefixIcon: const Icon(Icons.edit),
@@ -655,7 +655,7 @@ class _ContactLinkInput extends StatelessWidget {
           validator: (String? value) {
             final trimmed = value?.trim() ?? '';
             if (trimmed.isEmpty) return null;
-            return _isValidUrl(trimmed) ? null : '正しいURLを�E力してください';
+            return _isValidUrl(trimmed) ? null : '正しいURLを�E力してください';
           },
         ),
       ],
@@ -664,7 +664,7 @@ class _ContactLinkInput extends StatelessWidget {
 }
 
 class _IconAndColorPicker extends StatelessWidget {
-  const _IconAndColorPicker({
+  _IconAndColorPicker({
     required this.selectedIcon,
     required this.selectedColor,
     required this.onIconSelected,
@@ -776,8 +776,8 @@ class _GoalSetter extends StatelessWidget {
         SizedBox(height: tokens.spacing(2)),
         SegmentedButton<bool>(
           segments: const <ButtonSegment<bool>>[
-            ButtonSegment<bool>(value: true, label: Text('時間で管琁E��めE)),
-            ButtonSegment<bool>(value: false, label: Text('回数で管琁E��めE)),
+            ButtonSegment<bool>(value: true, label: Text('時間で管琁E��めE)),
+            ButtonSegment<bool>(value: false, label: Text('回数で管琁E��めE)),
           ],
           selected: <bool>{isTimeGoal},
           onSelectionChanged: (Set<bool> selection) {

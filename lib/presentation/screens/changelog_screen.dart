@@ -176,7 +176,7 @@ class ChangelogScreen extends ConsumerWidget {
           '進捗統計表示',
           'ペア機�E',
           'プッシュ通知',
-          'チE�Eタエクスポ�EチE,
+          'チE�Eタエクスポ�EチE,,,,,
         ],
       ),
     ];
@@ -219,7 +219,7 @@ class ChangelogScreen extends ConsumerWidget {
         changes: [
           '通知が届かなぁE��題を修正',
           'ダークモードでの表示崩れを修正',
-          'チE�Eタ同期の遁E��を改喁E,
+          'チE�Eタ同期の遁E��を改喁E,,,,,
         ],
       ),
     ];

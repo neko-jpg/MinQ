@@ -31,18 +31,7 @@ class _Category {
 }
 
 class _QuestsScreenState extends ConsumerState<QuestsScreen> {
-  bool _isLoading = true;
   String _selectedCategory = _categoryRecommended;
-
-  @override
-  void initState() {
-    super.initState();
-    Future<void>.delayed(const Duration(milliseconds: 650), () {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

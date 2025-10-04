@@ -1,10 +1,10 @@
 import 'dart:math';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:minq/core/templates/quest_templates.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/recommendation/habit_ai_suggestion_service.dart';
-import 'package:test/test.dart';
 
 void main() {
   group('HabitAiSuggestionService', () {

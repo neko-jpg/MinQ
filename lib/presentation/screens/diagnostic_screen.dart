@@ -248,7 +248,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
             children: [
               _buildSummaryItem('合格', passed, tokens.success, tokens),
               _buildSummaryItem('不合格', failed, tokens.error, tokens),
-              _buildSummaryItem('合訁E, total, tokens.textSecondary, tokens),
+              _buildSummaryItem('合計', total, tokens.textSecondary, tokens),
             ],
           ),
         ],
@@ -339,7 +339,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
     // TODO: 実際の通知チE��チE
     return const DiagnosticResult(
       status: DiagnosticStatus.passed,
-      message: '通知は正常に動作してぁE��ぁE,
+      message: '通知は正常に動作してぁE��ぁE,,,,,
     );
   }
 
@@ -348,7 +348,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
     // TODO: 実際のストレージチE��チE
     return const DiagnosticResult(
       status: DiagnosticStatus.passed,
-      message: 'ストレージは正常に動作してぁE��ぁE,
+      message: 'ストレージは正常に動作してぁE��ぁE,,,,,
     );
   }
 
@@ -357,7 +357,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
     // TODO: 実際のネットワークチE��チE
     return const DiagnosticResult(
       status: DiagnosticStatus.passed,
-      message: 'ネットワーク接続�E正常でぁE,
+      message: 'ネットワーク接続�E正常でぁE,,,,,
     );
   }
 
@@ -366,7 +366,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
     // TODO: 実際のチE�Eタベ�EスチE��チE
     return const DiagnosticResult(
       status: DiagnosticStatus.passed,
-      message: 'チE�Eタベ�Eスは正常に動作してぁE��ぁE,
+      message: 'チE�Eタベ�Eスは正常に動作してぁE��ぁE,,,,,
     );
   }
 
@@ -375,7 +375,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
     // TODO: 実際のパフォーマンスチE��チE
     return const DiagnosticResult(
       status: DiagnosticStatus.passed,
-      message: 'パフォーマンスは良好でぁE,
+      message: 'パフォーマンスは良好でぁE,,,,,
     );
   }
 }

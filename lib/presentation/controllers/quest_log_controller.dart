@@ -29,7 +29,7 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
       final logDay = DateTime(logDate.year, logDate.month, logDate.day);
       
       if (!logDay.isAtSameMomentAs(today)) {
-        state = AsyncValue.error('今日のログのみ取り消しできまぁE, StackTrace.current);
+        state = AsyncValue.error('今日のログのみ取り消しできます', StackTrace.current);
         return false;
       }
 
@@ -64,7 +64,7 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
     try {
       final uid = _ref.read(uidProvider);
       if (uid == null) {
-        state = AsyncValue.error('ユーザーがサインインしてぁE��せん', StackTrace.current);
+        state = AsyncValue.error('ユーザーがサインインしていません', StackTrace.current);
         return false;
       }
 
@@ -74,7 +74,7 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
       final alreadyRecorded = todayLogs.any((log) => log.questId == questId);
       
       if (alreadyRecorded) {
-        state = AsyncValue.error('今日はすでに記録済みでぁE, StackTrace.current);
+        state = AsyncValue.error('今日はすでに記録済みです', StackTrace.current);
         return false;
       }
 

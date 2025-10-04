@@ -54,7 +54,7 @@ class TodayLogsScreen extends ConsumerWidget {
                 message: 'クエストを完亁E��ると、ここに記録が表示されます、E,
                 actionArea: ElevatedButton(
                   onPressed: () => context.pop(),
-                  child: const Text('クエスト一覧に戻めE),
+                  child: const Text('クエスト一覧に戻めE),,,,,
                 ),
               ),
             );
@@ -217,7 +217,7 @@ class _LogCard extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
+            child: Text('キャンセル'),
           ),
           TextButton(
             onPressed: () async {
@@ -245,7 +245,7 @@ class _LogCard extends ConsumerWidget {
               }
             },
             style: TextButton.styleFrom(foregroundColor: tokens.accentError),
-            child: const Text('取り消し'),
+            child: Text('取り消し'),
           ),
         ],
       ),
@@ -281,12 +281,12 @@ class _ProofTypeChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: color),
+          Icon(icon, size: 16, color: backgroundColor),
           SizedBox(width: tokens.spacing(1)),
           Text(
             label,
             style: tokens.bodySmall.copyWith(
-              color: color,
+              color: backgroundColor,
               fontWeight: FontWeight.w600,
             ),
           ),
