@@ -43,7 +43,7 @@ class QuestRecommendationService {
       final recencyBoost = _recencyWeight(completionsByQuest[quest.id]?.lastCompletedAt, now);
       final baseScore = (1 - completionRate) * 0.6 + recencyBoost + streak * 0.05;
       final variance = _categoryDiversityWeight(quest.category, categoryCounts);
-      final totalScore = max(0, baseScore + variance);
+      final totalScore = max(0.0, baseScore + variance).toDouble();
       final reason = _buildReason(
         quest: quest,
         completionRate: completionRate,
@@ -119,8 +119,8 @@ class QuestRecommendationService {
     }
     final occurrences = categoryCounts[category] ?? 0;
     if (occurrences == 0) return 0.2;
-    final average = categoryCounts.values.fold<int>(0, (prev, value) => prev + value) /
-        categoryCounts.values.length;
+    final average = (categoryCounts.values.fold<int>(0, (prev, value) => prev + value) /
+        categoryCounts.values.length).toDouble();
     if (occurrences > average) {
       return -0.1;
     }

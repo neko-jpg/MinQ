@@ -51,7 +51,7 @@ class TodayLogsScreen extends ConsumerWidget {
               child: MinqEmptyState(
                 icon: Icons.today_outlined,
                 title: '今日の記録はありません',
-                message: 'クエストを完亁E��ると、ここに記録が表示されます、E,
+                message: 'クエストを完亁E��ると、ここに記録が表示されます、E,
                 actionArea: ElevatedButton(
                   onPressed: () => context.pop(),
                   child: const Text('クエスト一覧に戻めE),
@@ -154,10 +154,10 @@ class _LogCard extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    _ProofTypeChip(proofType: log.proofType),
+                    _ProofTypeChip(proofType: log.proofType.name),
                   ],
                 ),
-                if (log.proofType == ProofType.photo.name && log.proofValue.isNotEmpty) ...[
+                if (log.proofType == ProofType.photo && (log.proofValue?.isNotEmpty ?? false)) ...[
                   SizedBox(height: tokens.spacing(3)),
                   ClipRRect(
                     borderRadius: tokens.cornerMedium(),
@@ -213,7 +213,7 @@ class _LogCard extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('記録を取り消し'),
-        content: const Text('こ�E記録を取り消しますか�E�この操作�E允E��戻せません、E),
+        content: const Text('こ�E記録を取り消しますか�E�この操作�E允E��戻せません、E),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -263,7 +263,7 @@ class _ProofTypeChip extends StatelessWidget {
     final (icon, label, color) = switch (proofType) {
       'photo' => (Icons.camera_alt, '写真', tokens.brandPrimary),
       'check' => (Icons.check_circle, 'セルチE, tokens.accentSuccess),
-      _ => (Icons.help_outline, '不�E', tokens.textMuted),
+      _ => (Icons.help_outline, '不�E', tokens.textMuted),
     };
 
     return Container(

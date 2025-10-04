@@ -93,7 +93,7 @@ class ReferralService {
 
     try {
       final deepLink = linkData.link;
-      final referrerId = deepLink.queryParameters['referrer'];
+      final referrerId = deepLink.queryParameters['referrer'] as String?;
 
       if (referrerId != null) {
         await _analytics.logEvent(

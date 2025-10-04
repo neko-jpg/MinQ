@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// ネットワークステータスサービス
 class NetworkStatusService {
@@ -87,3 +88,17 @@ enum NetworkStatus {
   /// モバイルデータ接続
   mobile,
 }
+
+/// ネットワークステータスサービスのプロバイダー
+final networkStatusServiceProvider = Provider<NetworkStatusService>((ref) {
+  final service = NetworkStatusService();
+  service.initialize();
+  ref.onDispose(() => service.dispose());
+  return service;
+});
+
+/// ネットワークステータスのプロバイダー（オンライン/オフライン）
+final networkStatusProvider = StreamProvider<bool>((ref) {
+  final service = ref.watch(networkStatusServiceProvider);
+  return service.statusStream.map((status) => status != NetworkStatus.offline);
+});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
-/// クエスト属性選択ウィジェチE��
+/// クエスト属性選択ウィジェチE��
 /// 難易度、推定時間、場所などの属性を選抁E
 class QuestAttributesSelector extends StatelessWidget {
   final String? selectedDifficulty;
@@ -32,48 +32,48 @@ class QuestAttributesSelector extends StatelessWidget {
         if (onDifficultyChanged != null) ...[
           Text(
             '難易度',
-            style: tokens.typography.body.copyWith(
+            style: tokens.typography.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.sm),
           _DifficultySelector(
             selected: selectedDifficulty,
             onChanged: onDifficultyChanged!,
             tokens: tokens,
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.lg),
         ],
 
         // 推定時間選抁E
         if (onEstimatedMinutesChanged != null) ...[
           Text(
             '推定時閁E,
-            style: tokens.typography.body.copyWith(
+            style: tokens.typography.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.sm),
           _DurationSelector(
             selected: estimatedMinutes,
             onChanged: onEstimatedMinutesChanged!,
             tokens: tokens,
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.lg),
         ],
 
         // 場所選抁E
         if (onLocationChanged != null) ...[
           Text(
             '場所',
-            style: tokens.typography.body.copyWith(
+            style: tokens.typography.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.sm),
           _LocationSelector(
             selected: selectedLocation,
             onChanged: onLocationChanged!,
@@ -106,7 +106,7 @@ class _DifficultySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: tokens.spacing.sm,
+      spacing: tokens.sm,
       children: difficulties.map((difficulty) {
         final isSelected = selected == difficulty['value'];
         return ChoiceChip(
@@ -114,7 +114,7 @@ class _DifficultySelector extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(difficulty['icon']!),
-              SizedBox(width: tokens.spacing.xs),
+              SizedBox(width: tokens.xs),
               Text(difficulty['label']!),
             ],
           ),
@@ -153,7 +153,7 @@ class _DurationSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: tokens.spacing.sm,
+      spacing: tokens.sm,
       children: durations.map((duration) {
         final value = duration['value'] as int;
         final isSelected = selected == value;
@@ -185,7 +185,7 @@ class _LocationSelector extends StatelessWidget {
 
   static const locations = [
     {'value': 'home', 'label': '自宁E, 'icon': '🏠'},
-    {'value': 'gym', 'label': 'ジム', 'icon': '🏋�E�E},
+    {'value': 'gym', 'label': 'ジム', 'icon': '🏋�E�E},
     {'value': 'office', 'label': 'オフィス', 'icon': '🏢'},
     {'value': 'outdoor', 'label': '屋夁E, 'icon': '🌳'},
     {'value': 'library', 'label': '図書館', 'icon': '📚'},
@@ -194,8 +194,8 @@ class _LocationSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: tokens.spacing.sm,
-      runSpacing: tokens.spacing.sm,
+      spacing: tokens.sm,
+      runSpacing: tokens.sm,
       children: locations.map((location) {
         final isSelected = selected == location['value'];
         return ChoiceChip(
@@ -203,7 +203,7 @@ class _LocationSelector extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(location['icon']!),
-              SizedBox(width: tokens.spacing.xs),
+              SizedBox(width: tokens.xs),
               Text(location['label']!),
             ],
           ),

@@ -14,12 +14,13 @@ class OfflineModeIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOnline = ref.watch(networkStatusProvider);
+    final isOnlineAsync = ref.watch(networkStatusProvider);
+    final isOnline = isOnlineAsync.valueOrNull ?? true;
     final tokens = context.tokens;
 
     return Stack(
       children: [
-        // メインコンチE��チE��オフライン時�E半透�E�E�E
+        // メインコンチE��チE��オフライン時�E半透�E�E�E
         Opacity(
           opacity: isOnline ? 1.0 : 0.7,
           child: child,
@@ -48,7 +49,7 @@ class OfflineModeIndicator extends ConsumerWidget {
                       SizedBox(width: tokens.spacing(2)),
                       const Expanded(
                         child: Text(
-                          'オフラインモード（読み取り専用�E�E,
+                          'オフラインモード（読み取り専用�E�E,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -72,7 +73,7 @@ class OfflineModeIndicator extends ConsumerWidget {
   }
 }
 
-/// 読み取り専用モードラチE��ー
+/// 読み取り専用モードラチE��ー
 class ReadOnlyModeWrapper extends ConsumerWidget {
   final Widget child;
   final VoidCallback? onTap;
@@ -85,7 +86,8 @@ class ReadOnlyModeWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOnline = ref.watch(networkStatusProvider);
+    final isOnlineAsync = ref.watch(networkStatusProvider);
+    final isOnline = isOnlineAsync.valueOrNull ?? true;
 
     if (!isOnline) {
       return AbsorbPointer(

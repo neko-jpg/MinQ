@@ -116,11 +116,16 @@ class AnalyticsService {
   }
 
   // Error Events
-  Future<void> logError(String errorType, String message) async {
+  Future<void> logError(String errorType, Object error) async {
     await _logEvent('error_occurred', parameters: {
       'error_type': errorType,
-      'message': message,
+      'message': error.toString(),
     },);
+  }
+
+  // Generic event logging
+  Future<void> logEvent(String name, {Map<String, Object>? parameters}) async {
+    await _logEvent(name, parameters: parameters);
   }
 
   // Helper method

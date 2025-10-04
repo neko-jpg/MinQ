@@ -55,55 +55,58 @@ class ChangelogScreen extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
-          Row(
-            children: [
-              _buildTypeChip(item.type),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  item.title,
-                  style: AppTypography.h3,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                _buildTypeChip(item.type),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    item.title,
+                    style: AppTypography.h3,
+                  ),
                 ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              _formatDate(item.date),
+              style: AppTypography.caption.copyWith(
+                color: Colors.grey,
+              ),
+            ),
+            if (item.description != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                item.description!,
+                style: AppTypography.body,
               ),
             ],
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            _formatDate(item.date),
-            style: AppTypography.caption.copyWith(
-              color: Colors.grey,
-            ),
-          ),
-          if (item.description != null) ...[
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              item.description!,
-              style: AppTypography.body,
-            ),
-          ],
-          if (item.changes.isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.sm),
-            ...item.changes.map((change) => Padding(
-                  padding: const EdgeInsets.only(
-                    left: AppSpacing.md,
-                    bottom: AppSpacing.xs,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('• ', style: AppTypography.body),
-                      Expanded(
-                        child: Text(
-                          change,
-                          style: AppTypography.body,
+            if (item.changes.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm),
+              ...item.changes.map((change) => Padding(
+                    padding: const EdgeInsets.only(
+                      left: AppSpacing.md,
+                      bottom: AppSpacing.xs,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('• ', style: AppTypography.body),
+                        Expanded(
+                          child: Text(
+                            change,
+                            style: AppTypography.body,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),),
+                      ],
+                    ),
+                  ),),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -121,7 +124,7 @@ class ChangelogScreen extends ConsumerWidget {
         break;
       case ChangelogType.feature:
         color = Colors.green;
-        label = '新機�E';
+        label = '新機�E';
         icon = Icons.new_releases;
         break;
       case ChangelogType.improvement:
@@ -136,7 +139,7 @@ class ChangelogScreen extends ConsumerWidget {
         break;
       case ChangelogType.maintenance:
         color = Colors.grey;
-        label = 'メンチE��ンス';
+        label = 'メンチE��ンス';
         icon = Icons.build;
         break;
     }
@@ -164,16 +167,16 @@ class ChangelogScreen extends ConsumerWidget {
     return [
       ChangelogItem(
         type: ChangelogType.announcement,
-        title: 'MiniQ v1.0.0 リリース�E�E,
+        title: 'MiniQ v1.0.0 リリース�E�E,
         date: DateTime(2025, 10, 2),
-        description: 'MiniQの最初�Eバ�Eジョンをリリースしました、E
-            '習�Eを楽しく継続できる機�Eが満載です、E,
+        description: 'MiniQの最初�Eバ�Eジョンをリリースしました、E
+            '習�Eを楽しく継続できる機�Eが満載です、E,
         changes: [
-          '習�E管琁E���E',
+          '習�E管琁E���E',
           '進捗統計表示',
-          'ペア機�E',
+          'ペア機�E',
           'プッシュ通知',
-          'チE�Eタエクスポ�EチE,
+          'チE�Eタエクスポ�EチE,
         ],
       ),
     ];
@@ -183,25 +186,25 @@ class ChangelogScreen extends ConsumerWidget {
     return [
       ChangelogItem(
         type: ChangelogType.feature,
-        title: 'バ�Eジョン 1.0.0',
+        title: 'バ�Eジョン 1.0.0',
         date: DateTime(2025, 10, 2),
         description: '初回リリース',
         changes: [
-          '習�E�E�EiniQuest�E��E作�E・編雁E�E削除機�E',
-          '達�E記録とストリーク表示',
-          '週間�E月間の統計グラチE,
-          'ペア機�Eによる励まし合ぁE,
+          '習�E�E�EiniQuest�E��E作�E・編雁E�E削除機�E',
+          '達�E記録とストリーク表示',
+          '週間�E月間の統計グラチE,
+          'ペア機�Eによる励まし合ぁE,
           'カスタマイズ可能な通知設宁E,
-          'ライト�Eダークモード対忁E,
-          'チE�EタのバックアチE�E・復允E,
-          'CSV/JSONエクスポ�EチE,
+          'ライト�Eダークモード対忁E,
+          'チE�EタのバックアチE�E・復允E,
+          'CSV/JSONエクスポ�EチE,
         ],
       ),
       ChangelogItem(
         type: ChangelogType.improvement,
         title: 'パフォーマンス改喁E,
         date: DateTime(2025, 9, 25),
-        description: 'アプリの起動速度とレスポンスを改喁E��ました、E,
+        description: 'アプリの起動速度とレスポンスを改喁E��ました、E,
         changes: [
           '起動時間を30%短縮',
           '画面遷移のアニメーションを最適匁E,
@@ -212,18 +215,18 @@ class ChangelogScreen extends ConsumerWidget {
         type: ChangelogType.bugfix,
         title: 'バグ修正',
         date: DateTime(2025, 9, 20),
-        description: 'ぁE��つか�Eバグを修正しました、E,
+        description: 'ぁE��つか�Eバグを修正しました、E,
         changes: [
-          '通知が届かなぁE��題を修正',
+          '通知が届かなぁE��題を修正',
           'ダークモードでの表示崩れを修正',
-          'チE�Eタ同期の遁E��を改喁E,
+          'チE�Eタ同期の遁E��を改喁E,
         ],
       ),
     ];
   }
 }
 
-/// 変更履歴アイチE��
+/// 変更履歴アイチE��
 class ChangelogItem {
   final ChangelogType type;
   final String title;

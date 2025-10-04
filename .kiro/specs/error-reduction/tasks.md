@@ -17,7 +17,9 @@
   - バックアップコミットを作成
   - _Requirements: 1.1, 9.2_
 
-- [-] 2. Phase 1: 高頻度エラーの一括修正
+- [x] 2. Phase 1: 高頻度エラーの一括修正
+
+
 
 
 
@@ -67,61 +69,83 @@
   - `pubspec.yaml`に不足している依存関係を追加（`riverpod`など）
   - _Requirements: 7.1, 7.2, 7.3_
 
-- [-] 2.7 Phase 1の検証
+- [x] 2.7 Phase 1の検証
+
 
   - `flutter analyze`を実行してエラー数を確認
   - ビルドが成功することを確認
   - Gitコミット
   - _Requirements: 1.4, 9.2_
 
-- [ ] 3. Phase 2: 型安全性の確保
-- [ ] 3.1 referral_serviceの型エラー修正
+- [-] 3. Phase 2: 型安全性の確保
+
+
+- [x] 3.1 referral_serviceの型エラー修正
+
+
   - `lib/data/services/referral_service.dart`の`Object` → `String`変換を修正
   - `as String`または`.toString()`を使用
   - _Requirements: 3.1, 3.3_
 
-- [ ] 3.2 AnalyticsService.logEventの修正
+- [x] 3.2 AnalyticsService.logEventの修正
+
+
   - `lib/data/services/referral_service.dart`の`logEvent`呼び出しを修正
   - メソッドが存在するか確認し、存在しない場合はコメントアウト
   - _Requirements: 3.4_
 
-- [ ] 3.3 quest_recommendation_serviceの型エラー修正
+- [x] 3.3 quest_recommendation_serviceの型エラー修正
+
+
   - `lib/domain/recommendation/quest_recommendation_service.dart`の`num` → `double`変換を修正
   - `.toDouble()`を使用
   - _Requirements: 3.1, 3.3_
 
-- [ ] 3.4 today_logs_screenの型エラー修正
+- [x] 3.4 today_logs_screenの型エラー修正
+
+
   - `lib/presentation/screens/today_logs_screen.dart`の`ProofType` → `String`変換を修正
   - `ProofType`の比較を適切に修正
   - nullable値の安全な使用を確保
   - _Requirements: 3.1, 3.2, 3.3_
 
-- [ ] 3.5 BuildContext.tokensの修正
+- [x] 3.5 BuildContext.tokensの修正
+
+
   - `BuildContext.tokens`を使用しているファイルを特定
   - 適切なアクセス方法に修正（例: `Theme.of(context).extension<TokensExtension>()`）
   - _Requirements: 3.4, 8.1_
 
-- [ ] 3.6 changelog_screenの未定義パラメータ修正
+- [x] 3.6 changelog_screenの未定義パラメータ修正
+
+
   - `lib/presentation/screens/changelog_screen.dart`の`children`パラメータを修正
   - 正しいパラメータ名に変更
   - _Requirements: 3.4_
 
-- [ ] 3.7 quest_attributes_selectorのMinqTheme修正
+- [x] 3.7 quest_attributes_selectorのMinqTheme修正
+
+
   - `lib/presentation/widgets/quest_attributes_selector.dart`のMinqTheme使用箇所を修正
   - 適切なインポートとアクセス方法を使用
   - _Requirements: 3.4, 8.1_
 
-- [ ] 3.8 offline_mode_indicatorのnetworkStatusProvider修正
+- [x] 3.8 offline_mode_indicatorのnetworkStatusProvider修正
+
+
   - `lib/presentation/widgets/offline_mode_indicator.dart`の`networkStatusProvider`を修正
   - 適切にインポートまたは定義
   - _Requirements: 3.4_
 
-- [ ] 3.9 badge_widgetのSpacing修正
+- [x] 3.9 badge_widgetのSpacing修正
+
+
   - `lib/presentation/widgets/badge_widget.dart`の`Spacing`参照を修正
   - 適切にインポート
   - _Requirements: 3.4, 8.2_
 
-- [ ] 3.10 Phase 2の検証
+- [-] 3.10 Phase 2の検証
+
   - `flutter analyze`を実行してエラー数を確認
   - ビルドが成功することを確認
   - Gitコミット
