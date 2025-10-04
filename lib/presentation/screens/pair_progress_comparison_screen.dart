@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// ペアの進捗比較画面
+/// ペアの進捗比輁E��面
 class PairProgressComparisonScreen extends StatelessWidget {
   final String pairId;
 
@@ -13,14 +13,14 @@ class PairProgressComparisonScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('進捗比較'),
+        title: const Text('進捗比輁E),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           _buildComparisonCard(
             context,
-            title: '今週の達成率',
+            title: '今週の達�E玁E,
             myValue: 85,
             pairValue: 72,
           ),
@@ -34,7 +34,7 @@ class PairProgressComparisonScreen extends StatelessWidget {
           const SizedBox(height: 16),
           _buildComparisonCard(
             context,
-            title: '今月の完了数',
+            title: '今月の完亁E��',
             myValue: 45,
             pairValue: 38,
           ),
@@ -67,7 +67,7 @@ class PairProgressComparisonScreen extends StatelessWidget {
                 Expanded(
                   child: _buildValueColumn(
                     context,
-                    label: 'あなた',
+                    label: 'あなぁE,
                     value: myValue,
                     color: Colors.blue,
                   ),
@@ -120,7 +120,7 @@ class PairProgressComparisonScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '週間進捗グラフ',
+              '週間進捗グラチE,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),

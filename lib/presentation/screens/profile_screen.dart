@@ -87,9 +87,9 @@ class ProfileScreen extends ConsumerWidget {
     return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        _StatItem(label: '連続', value: '12'),
+        _StatItem(label: '連綁E, value: '12'),
         _StatItem(label: 'ペア', value: '3'),
-        _StatItem(label: 'クエスト', value: '2'),
+        _StatItem(label: 'クエスチE, value: '2'),
       ],
     );
   }
@@ -101,12 +101,12 @@ class ProfileScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            '概要',
+            '概要E,
             style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
           ),
           SizedBox(height: tokens.spacing(2)),
           Text(
-            '私はソフトウェアエンジニアで、コーディングとものづくりが大好きです。また、生産性向上や習慣化の大ファンでもあり、MinQを使って目標を達成できることを楽しみにしています。',
+            '私�Eソフトウェアエンジニアで、コーチE��ングとも�Eづくりが大好きです。また、生産性向上や習�E化�E大ファンでもあり、MinQを使って目標を達�Eできることを楽しみにしてぁE��す、E,
             style: tokens.bodySmall.copyWith(
               color: tokens.textMuted,
               height: 1.5,
@@ -126,7 +126,7 @@ class ProfileScreen extends ConsumerWidget {
         children: <Widget>[
           ListTile(
             title: Text(
-              'プロフィールを編集',
+              'プロフィールを編雁E,
               style: tokens.bodyMedium.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.w600,
@@ -142,7 +142,7 @@ class ProfileScreen extends ConsumerWidget {
           const Divider(height: 1),
           ListTile(
             title: Text(
-              '設定',
+              '設宁E,
               style: tokens.bodyMedium.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.w600,

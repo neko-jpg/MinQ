@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/feedback/audio_feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 
-/// 祝福演出の種類
+/// 祝福演�Eの種顁E
 enum CelebrationType {
   confetti,
   fireworks,
@@ -14,7 +14,7 @@ enum CelebrationType {
   golden,
 }
 
-/// 祝福演出の設定
+/// 祝福演�Eの設宁E
 class CelebrationConfig {
   final CelebrationType type;
   final Duration duration;
@@ -35,21 +35,21 @@ class CelebrationConfig {
   });
 }
 
-/// ランダム祝福演出システム
+/// ランダム祝福演�EシスチE��
 class CelebrationSystem {
   static final Random _random = Random();
   
-  /// 利用可能な祝福演出のリスト
+  /// 利用可能な祝福演�EのリスチE
   static const List<CelebrationConfig> _celebrations = [
     CelebrationConfig(
       type: CelebrationType.confetti,
-      message: '素晴らしい！🎉',
+      message: '素晴らしぁE��🎁E,
       primaryColor: Color(0xFFFFD700),
       secondaryColor: Color(0xFFFF6B6B),
     ),
     CelebrationConfig(
       type: CelebrationType.fireworks,
-      message: 'やったね！🎆',
+      message: 'めE��た�E�E�🎁E,
       primaryColor: Color(0xFF4ECDC4),
       secondaryColor: Color(0xFFFFD700),
     ),
@@ -61,30 +61,30 @@ class CelebrationSystem {
     ),
     CelebrationConfig(
       type: CelebrationType.trophy,
-      message: 'チャンピオン！🏆',
+      message: 'チャンピオン�E�🏁E,
       primaryColor: Color(0xFFFFD700),
       secondaryColor: Color(0xFFFF8F00),
     ),
     CelebrationConfig(
       type: CelebrationType.mascot,
-      message: 'がんばったね！🐱',
+      message: 'がんばった�E�E�🐱',
       primaryColor: Color(0xFFFF6B6B),
       secondaryColor: Color(0xFFFFD700),
     ),
     CelebrationConfig(
       type: CelebrationType.golden,
-      message: 'ゴールド達成！⭐',
+      message: 'ゴールド達成！⭁E,
       primaryColor: Color(0xFFFFD700),
       secondaryColor: Color(0xFFFFC107),
     ),
   ];
 
-  /// ランダムな祝福演出を取得
+  /// ランダムな祝福演�Eを取征E
   static CelebrationConfig getRandomCelebration() {
     return _celebrations[_random.nextInt(_celebrations.length)];
   }
 
-  /// 特定の種類の祝福演出を取得
+  /// 特定�E種類�E祝福演�Eを取征E
   static CelebrationConfig getCelebration(CelebrationType type) {
     return _celebrations.firstWhere(
       (config) => config.type == type,
@@ -92,7 +92,7 @@ class CelebrationSystem {
     );
   }
 
-  /// 祝福演出を表示
+  /// 祝福演�Eを表示
   static void showCelebration(
     BuildContext context, {
     CelebrationConfig? config,
@@ -100,17 +100,17 @@ class CelebrationSystem {
   }) {
     final celebrationConfig = config ?? getRandomCelebration();
     
-    // ハプティックフィードバック
+    // ハ�EチE��チE��フィードバチE��
     if (celebrationConfig.hapticFeedback) {
       HapticManager.success();
     }
 
-    // 音声フィードバック
+    // 音声フィードバチE��
     if (celebrationConfig.playSound) {
       AudioFeedbackManager.playSuccess();
     }
 
-    // 祝福演出オーバーレイを表示
+    // 祝福演�Eオーバ�Eレイを表示
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -125,30 +125,30 @@ class CelebrationSystem {
     );
   }
 
-  /// 連続達成記録に応じた特別な祝福演出
+  /// 連続達成記録に応じた特別な祝福演�E
   static CelebrationConfig getStreakCelebration(int streak) {
     if (streak >= 100) {
       return const CelebrationConfig(
         type: CelebrationType.golden,
-        message: '100日達成！伝説の継続者🌟',
+        message: '100日達�E�E�伝説の継続老E���E,
         duration: Duration(seconds: 5),
       );
     } else if (streak >= 50) {
       return const CelebrationConfig(
         type: CelebrationType.trophy,
-        message: '50日達成！継続マスター🏆',
+        message: '50日達�E�E�継続�Eスター🏆',
         duration: Duration(seconds: 4),
       );
     } else if (streak >= 30) {
       return const CelebrationConfig(
         type: CelebrationType.fireworks,
-        message: '30日達成！習慣化成功🎆',
+        message: '30日達�E�E�習�E化�E功🎁E,
         duration: Duration(seconds: 4),
       );
     } else if (streak >= 7) {
       return const CelebrationConfig(
         type: CelebrationType.confetti,
-        message: '1週間達成！素晴らしい🎉',
+        message: '1週間達成！素晴らしぁE���E,
         duration: Duration(seconds: 3),
       );
     } else {
@@ -157,7 +157,7 @@ class CelebrationSystem {
   }
 }
 
-/// 祝福演出オーバーレイ
+/// 祝福演�Eオーバ�Eレイ
 class CelebrationOverlay extends StatefulWidget {
   final CelebrationConfig config;
   final VoidCallback onComplete;
@@ -226,10 +226,10 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
         builder: (context, child) {
           return Stack(
             children: [
-              // 背景エフェクト
+              // 背景エフェクチE
               _buildBackgroundEffect(),
               
-              // メインメッセージ
+              // メインメチE��ージ
               Center(
                 child: Transform.scale(
                   scale: _scaleAnimation.value,
@@ -240,7 +240,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
                 ),
               ),
               
-              // パーティクルエフェクト
+              // パ�EチE��クルエフェクチE
               _buildParticleEffect(),
             ],
           );
@@ -274,7 +274,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: widget.config.primaryColor.withOpacity(0.3),
+            color: widget.config.primaryColor.withValues(alpha: 0.3),
             blurRadius: 20,
             spreadRadius: 5,
           ),
@@ -286,7 +286,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
           _buildCelebrationIcon(),
           const SizedBox(height: 16),
           Text(
-            widget.config.message ?? '素晴らしい！',
+            widget.config.message ?? '素晴らしぁE��E,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -312,7 +312,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
       case CelebrationType.mascot:
         return const Text('🐱', style: TextStyle(fontSize: 48));
       case CelebrationType.golden:
-        return const Text('⭐', style: TextStyle(fontSize: 48));
+        return const Text('⭁E, style: TextStyle(fontSize: 48));
     }
   }
 
@@ -328,7 +328,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
   }
 }
 
-/// パーティクルエフェクトペインター
+/// パ�EチE��クルエフェクト�Eインター
 class ParticleEffectPainter extends CustomPainter {
   final Animation<double> animation;
   final CelebrationConfig config;
@@ -339,7 +339,7 @@ class ParticleEffectPainter extends CustomPainter {
     required this.config,
   }) : particles = _generateParticles(config) {
     animation.addListener(() {
-      // アニメーションの更新時にパーティクルを更新
+      // アニメーションの更新時にパ�EチE��クルを更新
     });
   }
 
@@ -385,7 +385,7 @@ class ParticleEffectPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
-/// パーティクル
+/// パ�EチE��クル
 class Particle {
   final double x;
   final double y;

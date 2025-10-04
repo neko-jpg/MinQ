@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/celebration/celebration_system.dart';
 import 'package:minq/presentation/common/sharing/progress_share_card.dart';
 
-/// ソーシャルシェア機能のデモ画面
+/// ソーシャルシェア機�EのチE��画面
 class SocialSharingDemo extends StatefulWidget {
   const SocialSharingDemo({super.key});
 
@@ -20,7 +20,7 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ソーシャルシェア & 祝福システム'),
+        title: const Text('ソーシャルシェア & 祝福シスチE��'),
         backgroundColor: const Color(0xFF4ECDC4),
         foregroundColor: Colors.white,
       ),
@@ -30,7 +30,7 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              '進捗共有カード',
+              '進捗�E有カーチE,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -45,7 +45,7 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
               onShare: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('シェア機能が実行されました！'),
+                    content: Text('シェア機�Eが実行されました�E�E),
                     backgroundColor: Colors.green,
                   ),
                 );
@@ -53,7 +53,7 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
             ),
             const SizedBox(height: 32),
             const Text(
-              '祝福演出システム',
+              '祝福演�EシスチE��',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -65,25 +65,25 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
               runSpacing: 8,
               children: [
                 _buildCelebrationButton(
-                  'ランダム祝福',
+                  'ランダム祝禁E,
                   () => CelebrationSystem.showCelebration(context),
                 ),
                 _buildCelebrationButton(
-                  '7日達成',
+                  '7日達�E',
                   () => CelebrationSystem.showCelebration(
                     context,
                     config: CelebrationSystem.getStreakCelebration(7),
                   ),
                 ),
                 _buildCelebrationButton(
-                  '30日達成',
+                  '30日達�E',
                   () => CelebrationSystem.showCelebration(
                     context,
                     config: CelebrationSystem.getStreakCelebration(30),
                   ),
                 ),
                 _buildCelebrationButton(
-                  '100日達成',
+                  '100日達�E',
                   () => CelebrationSystem.showCelebration(
                     context,
                     config: CelebrationSystem.getStreakCelebration(100),
@@ -120,14 +120,14 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
                       (value) => setState(() => _bestStreak = value.toInt()),
                     ),
                     _buildSlider(
-                      '総クエスト',
+                      '総クエスチE,
                       _totalQuests.toDouble(),
                       0,
                       500,
                       (value) => setState(() => _totalQuests = value.toInt()),
                     ),
                     _buildSlider(
-                      '今日完了',
+                      '今日完亁E,
                       _completedToday.toDouble(),
                       0,
                       10,
@@ -139,7 +139,7 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
             ),
             const SizedBox(height: 32),
             const Text(
-              'ペアリマインダー機能',
+              'ペアリマインダー機�E',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -153,17 +153,17 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'リマインダーテンプレート例:',
+                      'リマインダーチE��プレート侁E',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    _buildReminderExample('💪', '今日のクエスト、一緒に頑張りましょう！'),
-                    _buildReminderExample('🎉', 'お疲れさまでした！今日もよく頑張りましたね'),
-                    _buildReminderExample('😊', '調子はどうですか？一緒に継続していきましょう'),
-                    _buildReminderExample('🌟', 'あなたならできます！応援しています'),
+                    _buildReminderExample('💪', '今日のクエスト、一緒に頑張りましょぁE��E),
+                    _buildReminderExample('🎉', 'お疲れさまでした�E�今日もよく頑張りましたね'),
+                    _buildReminderExample('�E', '調子�EどぁE��すか�E�一緒に継続してぁE��ましょぁE),
+                    _buildReminderExample('🌟', 'あなたならできます！応援してぁE��ぁE),
                   ],
                 ),
               ),

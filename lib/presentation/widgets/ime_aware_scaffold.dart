@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// IME対応Scaffold - キーボード表示時のオーバーラップを防ぐ
+/// IME対応Scaffold - キーボ�Eド表示時�Eオーバ�EラチE�Eを防ぁE
 class IMEAwareScaffold extends StatelessWidget {
   final Widget? appBar;
   final Widget body;
@@ -37,7 +37,7 @@ class IMEAwareScaffold extends StatelessWidget {
   }
 }
 
-/// IME対応フォーム - キーボード表示時に自動スクロール
+/// IME対応フォーム - キーボ�Eド表示時に自動スクロール
 class IMEAwareForm extends StatefulWidget {
   final GlobalKey<FormState>? formKey;
   final List<Widget> children;
@@ -99,7 +99,7 @@ class _IMEAwareFormState extends State<IMEAwareForm> {
   }
 }
 
-/// IME対応テキストフィールド - フォーカス時に自動スクロール
+/// IME対応テキストフィールチE- フォーカス時に自動スクロール
 class IMEAwareTextField extends StatefulWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
@@ -224,7 +224,7 @@ class _IMEAwareTextFieldState extends State<IMEAwareTextField> {
   }
 }
 
-/// キーボード高さ検出ウィジェット
+/// キーボ�Eド高さ検�EウィジェチE��
 class KeyboardHeightDetector extends StatelessWidget {
   final Widget Function(BuildContext context, double keyboardHeight) builder;
 
@@ -240,7 +240,7 @@ class KeyboardHeightDetector extends StatelessWidget {
   }
 }
 
-/// キーボード表示状態検出
+/// キーボ�Eド表示状態検�E
 class KeyboardVisibilityDetector extends StatelessWidget {
   final Widget Function(BuildContext context, bool isKeyboardVisible) builder;
 
@@ -256,21 +256,21 @@ class KeyboardVisibilityDetector extends StatelessWidget {
   }
 }
 
-/// IMEヘルパー関数
+/// IMEヘルパ�E関数
 class IMEHelper {
   const IMEHelper._();
 
-  /// キーボードが表示されているか
+  /// キーボ�Eドが表示されてぁE��ぁE
   static bool isKeyboardVisible(BuildContext context) {
     return MediaQuery.of(context).viewInsets.bottom > 0;
   }
 
-  /// キーボードの高さを取得
+  /// キーボ�Eド�E高さを取征E
   static double getKeyboardHeight(BuildContext context) {
     return MediaQuery.of(context).viewInsets.bottom;
   }
 
-  /// キーボードを閉じる
+  /// キーボ�Eドを閉じめE
   static void hideKeyboard(BuildContext context) {
     FocusScope.of(context).unfocus();
   }
@@ -280,12 +280,12 @@ class IMEHelper {
     FocusScope.of(context).nextFocus();
   }
 
-  /// 前のフィールドにフォーカス
+  /// 前�Eフィールドにフォーカス
   static void focusPreviousField(BuildContext context) {
     FocusScope.of(context).previousFocus();
   }
 
-  /// 安全な余白を計算（キーボード考慮）
+  /// 安�Eな余白を計算（キーボ�Eド老E�E�E�E
   static EdgeInsets getSafeInsets(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     return EdgeInsets.only(
@@ -297,7 +297,7 @@ class IMEHelper {
   }
 }
 
-/// IME対応ボトムシート
+/// IME対応�EトムシーチE
 class IMEAwareBottomSheet extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;

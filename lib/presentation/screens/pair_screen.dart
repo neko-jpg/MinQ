@@ -38,7 +38,7 @@ class PairScreen extends ConsumerWidget {
         ),
         centerTitle: true,
         leading: MinqIconButton(icon: Icons.close, onTap: () => context.pop()),
-        backgroundColor: tokens.background.withOpacity(0.8),
+        backgroundColor: tokens.background.withValues(alpha: 0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -100,7 +100,7 @@ class _PairedView extends ConsumerWidget {
               SizedBox(height: tokens.spacing(5)),
               CircleAvatar(
                 radius: tokens.spacing(16),
-                backgroundColor: tokens.brandPrimary.withOpacity(0.12),
+                backgroundColor: tokens.brandPrimary.withValues(alpha: 0.12),
                 child: Icon(
                   Icons.person_off_outlined,
                   size: tokens.spacing(16),
@@ -188,7 +188,7 @@ class _QuickMessageChip extends StatelessWidget {
       ),
       onPressed: onTap,
       backgroundColor: tokens.surface,
-      side: BorderSide(color: tokens.brandPrimary.withOpacity(0.4)),
+      side: BorderSide(color: tokens.brandPrimary.withValues(alpha: 0.4)),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(tokens.radiusLarge),
       ),
@@ -217,7 +217,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     if (code.isEmpty) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        '招待コードを入力してください。',
+        '招征E��ードを入力してください、E,
       );
       return;
     }
@@ -231,7 +231,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     if (mounted && pairId == null) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        '招待コードが無効です。',
+        '招征E��ードが無効です、E,
       );
     }
   }
@@ -247,7 +247,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     if (mounted && pairId == null) {
       FeedbackMessenger.showInfoToast(
         context,
-        '現在マッチング中です。順番をお待ちください。',
+        '現在マッチング中です。頁E��をお征E��ください、E,
       );
     }
   }
@@ -277,7 +277,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
           _buildRandomMatchForm(tokens, l10n),
           SizedBox(height: tokens.spacing(8)),
           MinqPrimaryButton(
-            label: 'マッチングを開始する',
+            label: 'マッチングを開始すめE,
             onPressed: () async =>
                 ref.read(navigationUseCaseProvider).goToPairMatching(),
           ),
@@ -368,7 +368,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
               ElevatedButton(
                 onPressed: _joinWithInvite,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: tokens.brandPrimary.withOpacity(0.2),
+                  backgroundColor: tokens.brandPrimary.withValues(alpha: 0.2),
                   foregroundColor: tokens.brandPrimary,
                   elevation: 0,
                   shape: RoundedRectangleBorder(

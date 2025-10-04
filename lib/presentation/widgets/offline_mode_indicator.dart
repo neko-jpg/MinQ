@@ -19,7 +19,7 @@ class OfflineModeIndicator extends ConsumerWidget {
 
     return Stack(
       children: [
-        // メインコンテンツ（オフライン時は半透明）
+        // メインコンチE��チE��オフライン時�E半透�E�E�E
         Opacity(
           opacity: isOnline ? 1.0 : 0.7,
           child: child,
@@ -33,7 +33,7 @@ class OfflineModeIndicator extends ConsumerWidget {
             child: Semantics(
               container: true,
               liveRegion: true,
-              label: 'オフラインモード: 読み取り専用',
+              label: 'オフラインモーチE 読み取り専用',
               child: Material(
                 color: Colors.orange,
                 child: Padding(
@@ -48,16 +48,16 @@ class OfflineModeIndicator extends ConsumerWidget {
                       SizedBox(width: tokens.spacing(2)),
                       const Expanded(
                         child: Text(
-                          'オフラインモード（読み取り専用）',
+                          'オフラインモード（読み取り専用�E�E,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
                       TextButton(
                         onPressed: () {
-                          // 再接続を試みる
+                          // 再接続を試みめE
                         },
                         child: const Text(
-                          '再接続',
+                          '再接綁E,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -72,7 +72,7 @@ class OfflineModeIndicator extends ConsumerWidget {
   }
 }
 
-/// 読み取り専用モードラッパー
+/// 読み取り専用モードラチE��ー
 class ReadOnlyModeWrapper extends ConsumerWidget {
   final Widget child;
   final VoidCallback? onTap;

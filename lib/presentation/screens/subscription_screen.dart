@@ -60,7 +60,7 @@ class SubscriptionScreen extends ConsumerWidget {
         Text('プレミアムで\nもっと便利に', textAlign: TextAlign.center, style: AppTypography.h1),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          '広告なし・無制限のクエスト・高度な統計',
+          '庁E��なし�E無制限�Eクエスト�E高度な統訁E,
           textAlign: TextAlign.center,
           style: AppTypography.body.copyWith(color: Colors.grey),
         ),
@@ -70,17 +70,17 @@ class SubscriptionScreen extends ConsumerWidget {
 
   Widget _buildFeaturesList(BuildContext context) {
     final features = [
-      _FeatureItem(icon: Icons.block, title: '広告非表示', description: '広告なしで快適に利用'),
-      _FeatureItem(icon: Icons.all_inclusive, title: '無制限のクエスト', description: 'クエストを無制限に作成'),
-      _FeatureItem(icon: Icons.analytics, title: '高度な統計', description: '詳細なグラフと分析'),
-      _FeatureItem(icon: Icons.palette, title: 'カスタムテーマ', description: 'お好みのカラーテーマ'),
-      _FeatureItem(icon: Icons.support_agent, title: '優先サポート', description: '優先的にサポート対応'),
+      _FeatureItem(icon: Icons.block, title: '庁E��非表示', description: '庁E��なしで快適に利用'),
+      _FeatureItem(icon: Icons.all_inclusive, title: '無制限�EクエスチE, description: 'クエストを無制限に作�E'),
+      _FeatureItem(icon: Icons.analytics, title: '高度な統訁E, description: '詳細なグラフと刁E��'),
+      _FeatureItem(icon: Icons.palette, title: 'カスタムチE�EチE, description: 'お好みのカラーチE�EチE),
+      _FeatureItem(icon: Icons.support_agent, title: '優先サポ�EチE, description: '優先的にサポ�Eト対忁E),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('プレミアム機能', style: AppTypography.h2),
+        Text('プレミアム機�E', style: AppTypography.h2),
         const SizedBox(height: AppSpacing.md),
         ...features.map((feature) => _buildFeatureItem(context, feature)),
       ],
@@ -124,16 +124,16 @@ class SubscriptionScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('プランを選択', style: AppTypography.h2),
+        Text('プランを選抁E, style: AppTypography.h2),
         const SizedBox(height: AppSpacing.md),
         _buildPricingCard(
           context,
           ref,
           plan: SubscriptionPlan.premiumYearly,
-          title: '年間プラン',
+          title: '年間�Eラン',
           price: '¥4,800',
           period: '年',
-          savings: '2ヶ月分お得',
+          savings: '2ヶ月�Eお征E,
           isRecommended: true,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -143,7 +143,7 @@ class SubscriptionScreen extends ConsumerWidget {
           plan: SubscriptionPlan.premiumMonthly,
           title: '月間プラン',
           price: '¥480',
-          period: '月',
+          period: '朁E,
         ),
       ],
     );
@@ -228,17 +228,17 @@ class SubscriptionScreen extends ConsumerWidget {
   Widget _buildManageSubscription(BuildContext context) {
     return Column(
       children: [
-        Text('サブスクリプションの管理', style: AppTypography.h3),
+        Text('サブスクリプションの管琁E, style: AppTypography.h3),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'サブスクリプションのキャンセルや変更は、\nApp Store / Google Play Storeの設定から行えます。',
+          'サブスクリプションのキャンセルめE��更は、\nApp Store / Google Play Storeの設定から行えます、E,
           textAlign: TextAlign.center,
           style: AppTypography.caption.copyWith(color: Colors.grey),
         ),
         const SizedBox(height: AppSpacing.md),
         OutlinedButton(
           onPressed: () {
-            // TODO: ストアの設定画面を開く
+            // TODO: ストアの設定画面を開ぁE
           },
           child: const Text('設定を開く'),
         ),
@@ -248,12 +248,12 @@ class SubscriptionScreen extends ConsumerWidget {
 
   Widget _buildRestoreButton(BuildContext context, WidgetRef ref) {
     return Center(
-      child: TextButton(onPressed: () => _handleRestore(context, ref), child: const Text('購入を復元')),
+      child: TextButton(onPressed: () => _handleRestore(context, ref), child: const Text('購入を復允E)),
     );
   }
 
   Future<void> _handlePurchase(BuildContext context, WidgetRef ref, SubscriptionPlan plan) async {
-    // ローディング表示
+    // ローチE��ング表示
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -265,12 +265,12 @@ class SubscriptionScreen extends ConsumerWidget {
       final success = await service.purchase(plan);
 
       if (!context.mounted) return;
-      Navigator.pop(context); // ローディングを閉じる
+      Navigator.pop(context); // ローチE��ングを閉じる
 
       if (success) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('購入が完了しました'), backgroundColor: Colors.green));
+        ).showSnackBar(const SnackBar(content: Text('購入が完亁E��ました'), backgroundColor: Colors.green));
         Navigator.pop(context); // 画面を閉じる
       } else {
         ScaffoldMessenger.of(
@@ -279,7 +279,7 @@ class SubscriptionScreen extends ConsumerWidget {
       }
     } catch (e) {
       if (!context.mounted) return;
-      Navigator.pop(context); // ローディングを閉じる
+      Navigator.pop(context); // ローチE��ングを閉じる
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('エラーが発生しました: $e'), backgroundColor: Colors.red));
@@ -287,7 +287,7 @@ class SubscriptionScreen extends ConsumerWidget {
   }
 
   Future<void> _handleRestore(BuildContext context, WidgetRef ref) async {
-    // ローディング表示
+    // ローチE��ング表示
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -299,20 +299,20 @@ class SubscriptionScreen extends ConsumerWidget {
       final success = await service.restore();
 
       if (!context.mounted) return;
-      Navigator.pop(context); // ローディングを閉じる
+      Navigator.pop(context); // ローチE��ングを閉じる
 
       if (success) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('購入を復元しました'), backgroundColor: Colors.green));
+        ).showSnackBar(const SnackBar(content: Text('購入を復允E��ました'), backgroundColor: Colors.green));
       } else {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('復元する購入が見つかりませんでした')));
+        ).showSnackBar(const SnackBar(content: Text('復允E��る購入が見つかりませんでした')));
       }
     } catch (e) {
       if (!context.mounted) return;
-      Navigator.pop(context); // ローディングを閉じる
+      Navigator.pop(context); // ローチE��ングを閉じる
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('エラーが発生しました: $e'), backgroundColor: Colors.red));
@@ -322,11 +322,11 @@ class SubscriptionScreen extends ConsumerWidget {
   String _getPlanName(SubscriptionPlan plan) {
     switch (plan) {
       case SubscriptionPlan.free:
-        return '無料プラン';
+        return '無料�Eラン';
       case SubscriptionPlan.premiumMonthly:
         return '月間プラン';
       case SubscriptionPlan.premiumYearly:
-        return '年間プラン';
+        return '年間�Eラン';
     }
   }
 }

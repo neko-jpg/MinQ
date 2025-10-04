@@ -3,7 +3,7 @@ import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// チュートリアルステップ
+/// チュートリアルスチE��チE
 class TutorialStep {
   final String id;
   final String title;
@@ -35,7 +35,7 @@ enum TutorialPosition {
   center,
 }
 
-/// チュートリアルオーバーレイ
+/// チュートリアルオーバ�Eレイ
 class TutorialOverlay extends StatefulWidget {
   final List<TutorialStep> steps;
   final VoidCallback onComplete;
@@ -118,15 +118,15 @@ class _TutorialOverlayState extends State<TutorialOverlay>
       opacity: _fadeAnimation,
       child: Stack(
         children: [
-          // 背景オーバーレイ
+          // 背景オーバ�Eレイ
           GestureDetector(
-            onTap: () {}, // タップを無効化
+            onTap: () {}, // タチE�Eを無効匁E
             child: Container(
               color: Colors.black54,
             ),
           ),
 
-          // ターゲットのハイライト
+          // ターゲチE��のハイライチE
           Positioned(
             left: targetPosition.dx - 8,
             top: targetPosition.dy - 8,
@@ -142,7 +142,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -151,7 +151,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
             ),
           ),
 
-          // 説明カード
+          // 説明カーチE
           _buildDescriptionCard(
             context,
             step,
@@ -172,7 +172,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
     final theme = Theme.of(context);
     final screenSize = MediaQuery.of(context).size;
 
-    // カードの位置を計算
+    // カード�E位置を計箁E
     Offset cardPosition;
     switch (step.position) {
       case TutorialPosition.top:
@@ -207,7 +207,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
         break;
     }
 
-    // 画面外に出ないように調整
+    // 画面外に出なぁE��ぁE��調整
     cardPosition = Offset(
       cardPosition.dx.clamp(16.0, screenSize.width - 316),
       cardPosition.dy.clamp(16.0, screenSize.height - 216),
@@ -226,7 +226,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -260,7 +260,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
 
               SizedBox(height: Spacing.sm),
 
-              // 説明
+              // 説昁E
               Text(
                 step.description,
                 style: theme.textTheme.bodyMedium,
@@ -280,7 +280,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                       shape: BoxShape.circle,
                       color: index == _currentStep
                           ? theme.colorScheme.primary
-                          : theme.colorScheme.onSurface.withOpacity(0.3),
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.3),
                     ),
                   ),
                 ),
@@ -292,10 +292,10 @@ class _TutorialOverlayState extends State<TutorialOverlay>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // スキップボタン
+                  // スキチE�Eボタン
                   TextButton(
                     onPressed: _onSkip,
-                    child: const Text('スキップ'),
+                    child: const Text('スキチE�E'),
                   ),
 
                   // 次へボタン
@@ -303,7 +303,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                     onPressed: _onNext,
                     child: Text(
                       _currentStep == widget.steps.length - 1
-                          ? '完了'
+                          ? '完亁E
                           : '次へ',
                     ),
                   ),
@@ -344,25 +344,25 @@ class _TutorialOverlayState extends State<TutorialOverlay>
 class TutorialManager {
   static const String _keyPrefix = 'tutorial_completed_';
 
-  /// チュートリアルが完了しているかチェック
+  /// チュートリアルが完亁E��てぁE��かチェチE��
   static Future<bool> isCompleted(String tutorialId) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('$_keyPrefix$tutorialId') ?? false;
   }
 
-  /// チュートリアルを完了としてマーク
+  /// チュートリアルを完亁E��してマ�Eク
   static Future<void> markAsCompleted(String tutorialId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('$_keyPrefix$tutorialId', true);
   }
 
-  /// チュートリアルをリセット
+  /// チュートリアルをリセチE��
   static Future<void> reset(String tutorialId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('$_keyPrefix$tutorialId');
   }
 
-  /// 全てのチュートリアルをリセット
+  /// 全てのチュートリアルをリセチE��
   static Future<void> resetAll() async {
     final prefs = await SharedPreferences.getInstance();
     final keys = prefs.getKeys();
@@ -373,7 +373,7 @@ class TutorialManager {
     }
   }
 
-  /// チュートリアルを表示すべきかチェック
+  /// チュートリアルを表示すべきかチェチE��
   static Future<bool> shouldShow(String tutorialId) async {
     return !await isCompleted(tutorialId);
   }
@@ -391,7 +391,7 @@ class TutorialIds {
   static const String settings = 'settings';
 }
 
-/// コーチマーク
+/// コーチ�Eーク
 class CoachMark extends StatelessWidget {
   final String message;
   final Widget child;
@@ -437,7 +437,7 @@ class CoachMark extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -466,7 +466,7 @@ class CoachMark extends StatelessWidget {
   }
 }
 
-/// コーチマーク位置
+/// コーチ�Eーク位置
 enum CoachMarkPosition {
   top,
   bottom,
@@ -474,7 +474,7 @@ enum CoachMarkPosition {
   right,
 }
 
-/// ツールチップ
+/// チE�EルチッチE
 class CustomTooltip extends StatelessWidget {
   final String message;
   final Widget child;

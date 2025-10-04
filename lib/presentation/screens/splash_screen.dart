@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// スプラッシュ画面（ライト/ダーク対応）
+/// スプラチE��ュ画面�E�ライチEダーク対応！E
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
@@ -23,7 +23,7 @@ class SplashScreen extends StatelessWidget {
               width: 120,
               height: 120,
               errorBuilder: (context, error, stackTrace) {
-                // フォールバック: テキストロゴ
+                // フォールバック: チE��ストロゴ
                 return Text(
                   'MinQ',
                   style: TextStyle(
@@ -35,7 +35,7 @@ class SplashScreen extends StatelessWidget {
               },
             ),
             const SizedBox(height: 24),
-            // ローディングインジケーター
+            // ローチE��ングインジケーター
             SizedBox(
               width: 32,
               height: 32,
@@ -51,7 +51,7 @@ class SplashScreen extends StatelessWidget {
   }
 }
 
-/// スプラッシュ画面設定ガイド
+/// スプラチE��ュ画面設定ガイチE
 /// 
 /// Android:
 /// - android/app/src/main/res/drawable/launch_background.xml

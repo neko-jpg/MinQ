@@ -1,43 +1,43 @@
 import 'package:flutter/material.dart';
 
-/// スペーシングシステム - 4/8pxベースライングリッド
-/// すべての余白とサイズはこのシステムに従う
+/// スペ�EシングシスチE�� - 4/8pxベ�EスライングリチE��
+/// すべての余白とサイズはこ�EシスチE��に従う
 class SpacingSystem {
   const SpacingSystem._();
 
   // ========================================
-  // ベースユニット
+  // ベ�EスユニッチE
   // ========================================
 
-  /// 基本単位: 4px
+  /// 基本単佁E 4px
   static const double baseUnit = 4.0;
 
-  /// 8pxグリッド単位
+  /// 8pxグリチE��単佁E
   static const double gridUnit = 8.0;
 
   // ========================================
-  // スペーシングスケール (4pxベース)
+  // スペ�Eシングスケール (4pxベ�Eス)
   // ========================================
 
-  /// 0px - なし
+  /// 0px - なぁE
   static const double none = 0.0;
 
-  /// 2px - 極小
+  /// 2px - 極封E
   static const double xxxs = baseUnit * 0.5;
 
-  /// 4px - 最小
+  /// 4px - 最封E
   static const double xxs = baseUnit * 1;
 
-  /// 6px - 親密な間隔
+  /// 6px - 親寁E��間隔
   static const double xs = baseUnit * 1.5;
 
-  /// 8px - 小
+  /// 8px - 封E
   static const double sm = baseUnit * 2;
 
-  /// 12px - 中小
+  /// 12px - 中封E
   static const double md = baseUnit * 3;
 
-  /// 16px - 中（呼吸できる間隔）
+  /// 16px - 中�E�呼吸できる間隔�E�E
   static const double lg = baseUnit * 4;
 
   /// 20px - 中大
@@ -46,60 +46,60 @@ class SpacingSystem {
   /// 24px - 大
   static const double xxl = baseUnit * 6;
 
-  /// 32px - 敬意ある間隔
+  /// 32px - 敬意ある間隁E
   static const double xxxl = baseUnit * 8;
 
   /// 40px - 特大
   static const double xxxxl = baseUnit * 10;
 
-  /// 48px - 劇的な間隔
+  /// 48px - 劁E��な間隔
   static const double xxxxxl = baseUnit * 12;
 
-  /// 64px - 超特大
+  /// 64px - 趁E��大
   static const double xxxxxxl = baseUnit * 16;
 
   // ========================================
-  // セマンティックスペーシング
+  // セマンチE��チE��スペ�Eシング
   // ========================================
 
-  /// 親密な間隔 - 関連性の高い要素間
+  /// 親寁E��間隔 - 関連性の高い要素閁E
   static const double intimate = xs; // 6px
 
-  /// 呼吸できる間隔 - 通常の要素間
+  /// 呼吸できる間隔 - 通常の要素閁E
   static const double breathing = lg; // 16px
 
-  /// 敬意ある間隔 - セクション間
+  /// 敬意ある間隁E- セクション閁E
   static const double respectful = xxxl; // 32px
 
-  /// 劇的な間隔 - 大きなセクション間
+  /// 劁E��な間隔 - 大きなセクション閁E
   static const double dramatic = xxxxxl; // 48px
 
   // ========================================
-  // コンポーネント固有のスペーシング
+  // コンポ�Eネント固有�Eスペ�Eシング
   // ========================================
 
-  /// カード内部のパディング
+  /// カード�E部のパディング
   static const double cardPadding = lg; // 16px
 
-  /// カード間のマージン
+  /// カード間のマ�Eジン
   static const double cardMargin = md; // 12px
 
-  /// リストアイテム間のスペース
+  /// リストアイチE��間�Eスペ�Eス
   static const double listItemSpacing = sm; // 8px
 
-  /// ボタン内部のパディング（水平）
+  /// ボタン冁E��のパディング�E�水平�E�E
   static const double buttonPaddingH = xl; // 20px
 
-  /// ボタン内部のパディング（垂直）
+  /// ボタン冁E��のパディング�E�垂直�E�E
   static const double buttonPaddingV = md; // 12px
 
-  /// アイコンとテキストの間隔
+  /// アイコンとチE��スト�E間隔
   static const double iconTextGap = sm; // 8px
 
-  /// フォーム要素間の間隔
+  /// フォーム要素間�E間隔
   static const double formFieldSpacing = lg; // 16px
 
-  /// セクション間の間隔
+  /// セクション間�E間隔
   static const double sectionSpacing = xxxl; // 32px
 
   /// 画面端のパディング
@@ -108,29 +108,29 @@ class SpacingSystem {
   /// ダイアログのパディング
   static const double dialogPadding = xxl; // 24px
 
-  /// ボトムシートのパディング
+  /// ボトムシート�Eパディング
   static const double bottomSheetPadding = xxl; // 24px
 
   // ========================================
-  // EdgeInsets ヘルパー
+  // EdgeInsets ヘルパ�E
   // ========================================
 
-  /// すべての辺に同じスペース
+  /// すべての辺に同じスペ�Eス
   static EdgeInsets all(double value) => EdgeInsets.all(value);
 
-  /// 水平方向のスペース
+  /// 水平方向�Eスペ�Eス
   static EdgeInsets horizontal(double value) =>
       EdgeInsets.symmetric(horizontal: value);
 
-  /// 垂直方向のスペース
+  /// 垂直方向�Eスペ�Eス
   static EdgeInsets vertical(double value) =>
       EdgeInsets.symmetric(vertical: value);
 
-  /// 対称的なスペース
+  /// 対称皁E��スペ�Eス
   static EdgeInsets symmetric({double horizontal = 0, double vertical = 0}) =>
       EdgeInsets.symmetric(horizontal: horizontal, vertical: vertical);
 
-  /// 個別指定
+  /// 個別持E��E
   static EdgeInsets only({
     double left = 0,
     double top = 0,
@@ -143,13 +143,13 @@ class SpacingSystem {
   // 定義済みパディング
   // ========================================
 
-  /// 極小パディング
+  /// 極小パチE��ング
   static const EdgeInsets paddingXXS = EdgeInsets.all(xxs);
 
-  /// 最小パディング
+  /// 最小パチE��ング
   static const EdgeInsets paddingXS = EdgeInsets.all(xs);
 
-  /// 小パディング
+  /// 小パチE��ング
   static const EdgeInsets paddingSM = EdgeInsets.all(sm);
 
   /// 中パディング
@@ -161,96 +161,96 @@ class SpacingSystem {
   /// 特大パディング
   static const EdgeInsets paddingXL = EdgeInsets.all(xl);
 
-  /// 超特大パディング
+  /// 趁E��大パディング
   static const EdgeInsets paddingXXL = EdgeInsets.all(xxl);
 
   /// 画面パディング
   static const EdgeInsets screenPaddingAll = EdgeInsets.all(screenPadding);
 
-  /// カードパディング
+  /// カードパチE��ング
   static const EdgeInsets cardPaddingAll = EdgeInsets.all(cardPadding);
 
   /// ダイアログパディング
   static const EdgeInsets dialogPaddingAll = EdgeInsets.all(dialogPadding);
 
   // ========================================
-  // SizedBox ヘルパー
+  // SizedBox ヘルパ�E
   // ========================================
 
-  /// 水平スペーサー
+  /// 水平スペ�Eサー
   static Widget horizontalSpace(double width) => SizedBox(width: width);
 
-  /// 垂直スペーサー
+  /// 垂直スペ�Eサー
   static Widget verticalSpace(double height) => SizedBox(height: height);
 
-  /// 極小垂直スペース
+  /// 極小垂直スペ�Eス
   static Widget get vSpaceXXS => verticalSpace(xxs);
 
-  /// 最小垂直スペース
+  /// 最小垂直スペ�Eス
   static Widget get vSpaceXS => verticalSpace(xs);
 
-  /// 小垂直スペース
+  /// 小垂直スペ�Eス
   static Widget get vSpaceSM => verticalSpace(sm);
 
-  /// 中垂直スペース
+  /// 中垂直スペ�Eス
   static Widget get vSpaceMD => verticalSpace(md);
 
-  /// 大垂直スペース
+  /// 大垂直スペ�Eス
   static Widget get vSpaceLG => verticalSpace(lg);
 
-  /// 特大垂直スペース
+  /// 特大垂直スペ�Eス
   static Widget get vSpaceXL => verticalSpace(xl);
 
-  /// 超特大垂直スペース
+  /// 趁E��大垂直スペ�Eス
   static Widget get vSpaceXXL => verticalSpace(xxl);
 
-  /// 極小水平スペース
+  /// 極小水平スペ�Eス
   static Widget get hSpaceXXS => horizontalSpace(xxs);
 
-  /// 最小水平スペース
+  /// 最小水平スペ�Eス
   static Widget get hSpaceXS => horizontalSpace(xs);
 
-  /// 小水平スペース
+  /// 小水平スペ�Eス
   static Widget get hSpaceSM => horizontalSpace(sm);
 
-  /// 中水平スペース
+  /// 中水平スペ�Eス
   static Widget get hSpaceMD => horizontalSpace(md);
 
-  /// 大水平スペース
+  /// 大水平スペ�Eス
   static Widget get hSpaceLG => horizontalSpace(lg);
 
-  /// 特大水平スペース
+  /// 特大水平スペ�Eス
   static Widget get hSpaceXL => horizontalSpace(xl);
 
-  /// 超特大水平スペース
+  /// 趁E��大水平スペ�Eス
   static Widget get hSpaceXXL => horizontalSpace(xxl);
 
   // ========================================
-  // グリッドアライメントヘルパー
+  // グリチE��アライメント�Eルパ�E
   // ========================================
 
-  /// 値を8pxグリッドにスナップ
+  /// 値めEpxグリチE��にスナッチE
   static double snapToGrid(double value) {
     return (value / gridUnit).round() * gridUnit;
   }
 
-  /// 値を4pxベースにスナップ
+  /// 値めEpxベ�EスにスナッチE
   static double snapToBase(double value) {
     return (value / baseUnit).round() * baseUnit;
   }
 
-  /// グリッド単位から実際の値に変換
+  /// グリチE��単位から実際の値に変換
   static double fromGridUnits(int units) {
     return gridUnit * units;
   }
 
-  /// ベース単位から実際の値に変換
+  /// ベ�Eス単位から実際の値に変換
   static double fromBaseUnits(int units) {
     return baseUnit * units;
   }
 }
 
-/// ベースライングリッドウィジェット（デバッグ用）
+/// ベ�EスライングリチE��ウィジェチE���E�デバッグ用�E�E
 class BaselineGridOverlay extends StatelessWidget {
   final Widget child;
   final bool showGrid;
@@ -287,7 +287,7 @@ class BaselineGridOverlay extends StatelessWidget {
   }
 }
 
-/// グリッド描画
+/// グリチE��描画
 class GridPainter extends CustomPainter {
   final Color gridColor;
   final double gridSize;
@@ -303,7 +303,7 @@ class GridPainter extends CustomPainter {
       ..color = gridColor
       ..strokeWidth = 1;
 
-    // 水平線
+    // 水平緁E
     for (double y = 0; y < size.height; y += gridSize) {
       canvas.drawLine(
         Offset(0, y),
@@ -312,7 +312,7 @@ class GridPainter extends CustomPainter {
       );
     }
 
-    // 垂直線
+    // 垂直緁E
     for (double x = 0; x < size.width; x += gridSize) {
       canvas.drawLine(
         Offset(x, 0),
@@ -329,24 +329,24 @@ class GridPainter extends CustomPainter {
   }
 }
 
-/// スペーシング拡張
+/// スペ�Eシング拡張
 extension SpacingExtension on num {
-  /// この数値をスペーシング単位として使用
+  /// こ�E数値をスペ�Eシング単位として使用
   double get space => SpacingSystem.baseUnit * this;
 
-  /// この数値をグリッド単位として使用
+  /// こ�E数値をグリチE��単位として使用
   double get grid => SpacingSystem.gridUnit * this;
 
-  /// 垂直スペース
+  /// 垂直スペ�Eス
   Widget get vSpace => SizedBox(height: toDouble());
 
-  /// 水平スペース
+  /// 水平スペ�Eス
   Widget get hSpace => SizedBox(width: toDouble());
 }
 
 /// EdgeInsets拡張
 extension EdgeInsetsSpacing on EdgeInsets {
-  /// すべての辺をグリッドにスナップ
+  /// すべての辺をグリチE��にスナッチE
   EdgeInsets snapToGrid() {
     return EdgeInsets.only(
       left: SpacingSystem.snapToGrid(left),
@@ -356,7 +356,7 @@ extension EdgeInsetsSpacing on EdgeInsets {
     );
   }
 
-  /// すべての辺をベースにスナップ
+  /// すべての辺を�EースにスナッチE
   EdgeInsets snapToBase() {
     return EdgeInsets.only(
       left: SpacingSystem.snapToBase(left),
@@ -367,11 +367,11 @@ extension EdgeInsetsSpacing on EdgeInsets {
   }
 }
 
-/// レスポンシブスペーシング
+/// レスポンシブスペ�Eシング
 class ResponsiveSpacing {
   const ResponsiveSpacing._();
 
-  /// 画面サイズに応じたスペーシングを取得
+  /// 画面サイズに応じたスペ�Eシングを取征E
   static double getResponsiveSpacing(
     BuildContext context,
     double baseSpacing,
@@ -379,10 +379,10 @@ class ResponsiveSpacing {
     final width = MediaQuery.of(context).size.width;
 
     if (width < 360) {
-      // 小型端末 - スペースを削減
+      // 小型端末 - スペ�Eスを削渁E
       return baseSpacing * 0.75;
     } else if (width > 600) {
-      // タブレット - スペースを増加
+      // タブレチE�� - スペ�Eスを増加
       return baseSpacing * 1.25;
     }
 
@@ -398,7 +398,7 @@ class ResponsiveSpacing {
     return EdgeInsets.all(spacing);
   }
 
-  /// レスポンシブカードパディング
+  /// レスポンシブカードパチE��ング
   static EdgeInsets cardPadding(BuildContext context) {
     final spacing = getResponsiveSpacing(
       context,
@@ -407,7 +407,7 @@ class ResponsiveSpacing {
     return EdgeInsets.all(spacing);
   }
 
-  /// レスポンシブセクションスペーシング
+  /// レスポンシブセクションスペ�Eシング
   static double sectionSpacing(BuildContext context) {
     return getResponsiveSpacing(
       context,
@@ -469,4 +469,20 @@ class AppSpacing {
         right: right,
         bottom: bottom,
       );
+}
+
+/// Simple Spacing alias for backward compatibility
+class Spacing {
+  const Spacing._();
+
+  static const double none = SpacingSystem.none;
+  static const double xxxs = SpacingSystem.xxxs;
+  static const double xxs = SpacingSystem.xxs;
+  static const double xs = SpacingSystem.xs;
+  static const double sm = SpacingSystem.sm;
+  static const double md = SpacingSystem.md;
+  static const double lg = SpacingSystem.lg;
+  static const double xl = SpacingSystem.xl;
+  static const double xxl = SpacingSystem.xxl;
+  static const double xxxl = SpacingSystem.xxxl;
 }

@@ -170,7 +170,7 @@ class _RecordForm extends ConsumerWidget {
       children: <Widget>[
         SizedBox(height: tokens.spacing(4)),
         Text(
-          'ミニクエスト',
+          'ミニクエスチE,
           style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -182,7 +182,7 @@ class _RecordForm extends ConsumerWidget {
         const _FocusMusicPanel(),
         SizedBox(height: tokens.spacing(8)),
         Text(
-          '証明',
+          '証昁E,
           style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -198,7 +198,7 @@ class _RecordForm extends ConsumerWidget {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withOpacity(0.1),
+        color: tokens.brandPrimary.withValues(alpha: 0.1),
         borderRadius: tokens.cornerLarge(),
       ),
       child: Row(
@@ -207,7 +207,7 @@ class _RecordForm extends ConsumerWidget {
             width: tokens.spacing(14),
             height: tokens.spacing(14),
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withOpacity(0.2),
+              color: tokens.brandPrimary.withValues(alpha: 0.2),
               borderRadius: tokens.cornerLarge(),
             ),
             child: Icon(
@@ -229,7 +229,7 @@ class _RecordForm extends ConsumerWidget {
               ),
               SizedBox(height: tokens.spacing(1)),
               Text(
-                '10分',
+                '10刁E,
                 style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
               ),
             ],
@@ -252,7 +252,7 @@ class _RecordForm extends ConsumerWidget {
           children: <Widget>[
             Expanded(
               child: _ProofButton(
-                text: '写真を撮る',
+                text: '写真を撮めE,
                 icon: Icons.photo_camera,
                 isPrimary: true,
                 onTap: () => _handlePhotoTap(context, ref),
@@ -264,7 +264,7 @@ class _RecordForm extends ConsumerWidget {
             ),
             Expanded(
               child: _ProofButton(
-                text: '自己申告',
+                text: '自己申呁E,
                 icon: Icons.check_circle,
                 isPrimary: false,
                 onTap: () => _handleSelfDeclareTap(context, ref),
@@ -281,7 +281,7 @@ class _RecordForm extends ConsumerWidget {
     if (uid == null || uid.isEmpty) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        'サインインしていないため記録できません。',
+        'サインインしてぁE��ぁE��め記録できません、E,
       );
       onError(RecordErrorType.permissionDenied);
       return;
@@ -293,7 +293,7 @@ class _RecordForm extends ConsumerWidget {
       if (!result.hasFile) {
         FeedbackMessenger.showInfoToast(
           context,
-          '写真の撮影がキャンセルされました。',
+          '写真の撮影がキャンセルされました、E,
         );
         return;
       }
@@ -369,7 +369,7 @@ class _FocusMusicPanel extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '集中BGM',
+          '雁E��BGM',
           style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -377,7 +377,7 @@ class _FocusMusicPanel extends ConsumerWidget {
         ),
         SizedBox(height: tokens.spacing(2)),
         Text(
-          '習慣を実行しながら流す音楽を選べます。ヘッドホン推奨です。',
+          '習�Eを実行しながら流す音楽を選べます。�EチE��ホン推奨です、E,
           style: tokens.bodySmall.copyWith(color: tokens.textMuted),
         ),
         SizedBox(height: tokens.spacing(3)),
@@ -404,7 +404,7 @@ class _FocusMusicPanel extends ConsumerWidget {
                 } catch (error) {
                   FeedbackMessenger.showErrorSnackBar(
                     context,
-                    'BGMの停止に失敗しました。',
+                    'BGMの停止に失敗しました、E,
                   );
                 }
               },
@@ -438,7 +438,7 @@ class _FocusMusicTile extends ConsumerWidget {
     } catch (error) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        'BGMの再生に失敗しました。',
+        'BGMの再生に失敗しました、E,
       );
     }
   }
@@ -446,7 +446,7 @@ class _FocusMusicTile extends ConsumerWidget {
   Future<void> _identifyTrack(BuildContext context, WidgetRef ref) async {
     final taggingService = ref.read(acrMusicTaggingServiceProvider);
     if (taggingService == null) {
-      FeedbackMessenger.showInfoToast(context, 'BGMの識別は現在ご利用いただけません');
+      FeedbackMessenger.showInfoToast(context, 'BGMの識別は現在ご利用ぁE��だけません');
       return;
     }
     try {
@@ -469,9 +469,9 @@ class _FocusMusicTile extends ConsumerWidget {
     final tokens = context.tokens;
     final hasTagging = ref.watch(acrMusicTaggingServiceProvider) != null;
     final Color tileColor =
-        isActive ? tokens.brandPrimary.withOpacity(0.12) : tokens.surface;
+        isActive ? tokens.brandPrimary.withValues(alpha: 0.12) : tokens.surface;
     final borderColor =
-        isActive ? tokens.brandPrimary : tokens.border.withOpacity(0.4);
+        isActive ? tokens.brandPrimary : tokens.border.withValues(alpha: 0.4);
 
     return Material(
       color: Colors.transparent,
@@ -511,7 +511,7 @@ class _FocusMusicTile extends ConsumerWidget {
                           ),
                         ),
                         IconButton(
-                          tooltip: 'BGMを自動タグ付け',
+                          tooltip: 'BGMを�E動タグ付け',
                           icon: const Icon(Icons.music_note),
                           onPressed: hasTagging
                               ? () => _identifyTrack(context, ref)
@@ -554,10 +554,10 @@ Future<bool> _handleModerationWarning(
 
   final tokens = context.tokens;
   final message = switch (result.moderationVerdict) {
-    PhotoModerationVerdict.tooDark => '撮影した写真が非常に暗いようです。パートナーを安心させるために撮り直しますか？',
-    PhotoModerationVerdict.tooBright => '撮影した写真がほとんど真っ白です。鮮明にするために撮り直しますか？',
+    PhotoModerationVerdict.tooDark => '撮影した写真が非常に暗いようです。パートナーを安忁E��せるために撮り直しますか�E�E,
+    PhotoModerationVerdict.tooBright => '撮影した写真がほとんど真っ白です。鮮明にするために撮り直しますか�E�E,
     PhotoModerationVerdict.lowVariance =>
-      '画像がぼやけているか、何も映っていないようです。より鮮明な証明のために撮り直しますか？',
+      '画像がぼめE��てぁE��か、何も映ってぁE��ぁE��ぁE��す。より鮮明な証明�Eために撮り直しますか�E�E,
     PhotoModerationVerdict.ok => '',
   };
 
@@ -579,7 +579,7 @@ Future<bool> _handleModerationWarning(
                     backgroundColor: tokens.brandPrimary,
                     foregroundColor: Colors.white,
                   ),
-                  child: const Text('この写真を使用'),
+                  child: const Text('こ�E写真を使用'),
                 ),
               ],
             ),
@@ -622,7 +622,7 @@ class _ProofButtonState extends State<_ProofButton>
     final Color background =
         widget.isPrimary
             ? tokens.brandPrimary
-            : tokens.brandPrimary.withOpacity(0.1);
+            : tokens.brandPrimary.withValues(alpha: 0.1);
     final Color foreground =
         widget.isPrimary ? Colors.white : tokens.textPrimary;
 
@@ -682,12 +682,12 @@ class _OfflineRecovery extends StatelessWidget {
   Widget build(BuildContext context) {
     return MinqEmptyState(
       icon: Icons.wifi_off,
-      title: 'オフラインです',
-      message: '証明はローカルに保存され、再接続時にアップロードされます。',
+      title: 'オフラインでぁE,
+      message: '証明�Eローカルに保存され、�E接続時にアチE�Eロードされます、E,
       actionArea: Column(
         children: [
           MinqPrimaryButton(
-            label: '再アップロード',
+            label: '再アチE�EローチE,
             onPressed: () async => onRetry(),
             expand: false,
           ),
@@ -711,8 +711,8 @@ class _PermissionRecovery extends StatelessWidget {
   Widget build(BuildContext context) {
     return MinqEmptyState(
       icon: Icons.camera_alt_outlined,
-      title: 'カメラへのアクセスが必要です',
-      message: '写真の証明を撮影するには、MinQがカメラにアクセスする必要があります。',
+      title: 'カメラへのアクセスが忁E��でぁE,
+      message: '写真の証明を撮影するには、MinQがカメラにアクセスする忁E��があります、E,
       actionArea: Column(
         children: [
           MinqPrimaryButton(
@@ -738,16 +738,16 @@ class _CameraRecovery extends StatelessWidget {
     return MinqEmptyState(
       icon: Icons.error_outline,
       title: 'カメラエラー',
-      message: 'カメラで問題が発生しました。もう一度お試しください。',
+      message: 'カメラで問題が発生しました。もぁE��度お試しください、E,
       actionArea: Column(
         children: [
           MinqPrimaryButton(
-            label: '再試行',
+            label: '再試衁E,
             onPressed: () async => onRetry(),
             expand: false,
           ),
           const SizedBox(height: 8),
-          TextButton(onPressed: onSwitchMode, child: const Text('代わりに自己申告する')),
+          TextButton(onPressed: onSwitchMode, child: const Text('代わりに自己申告すめE)),
         ],
       ),
     );

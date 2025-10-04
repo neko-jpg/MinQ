@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
 
-/// クエストタイマーウィジェット
-/// 習慣実行時のタイマー機能
+/// クエストタイマ�EウィジェチE��
+/// 習�E実行時のタイマ�E機�E
 class QuestTimerWidget extends StatefulWidget {
   final int durationMinutes;
   final VoidCallback? onComplete;
@@ -106,7 +106,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // タイマー表示
+          // タイマ�E表示
           Stack(
             alignment: Alignment.center,
             children: [
@@ -147,10 +147,10 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (!_isRunning) ...[
-                // 開始ボタン
+                // 開始�Eタン
                 _TimerButton(
                   icon: Icons.play_arrow,
-                  label: '開始',
+                  label: '開姁E,
                   onPressed: _startTimer,
                   isPrimary: true,
                   tokens: tokens,
@@ -165,10 +165,10 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                   tokens: tokens,
                 ),
                 SizedBox(width: tokens.spacing.md),
-                // リセットボタン
+                // リセチE��ボタン
                 _TimerButton(
                   icon: Icons.refresh,
-                  label: 'リセット',
+                  label: 'リセチE��',
                   onPressed: _resetTimer,
                   tokens: tokens,
                 ),
@@ -181,10 +181,10 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                   tokens: tokens,
                 ),
                 SizedBox(width: tokens.spacing.md),
-                // 完了ボタン
+                // 完亁E�Eタン
                 _TimerButton(
                   icon: Icons.check,
-                  label: '完了',
+                  label: '完亁E,
                   onPressed: _completeTimer,
                   isPrimary: true,
                   tokens: tokens,
@@ -212,18 +212,18 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
 
   String _getStatusText() {
     if (_remainingSeconds == 0) {
-      return '完了！';
+      return '完亁E��E;
     } else if (_isPaused) {
       return '一時停止中';
     } else if (_isRunning) {
       return '実行中';
     } else {
-      return '準備完了';
+      return '準備完亁E;
     }
   }
 }
 
-/// タイマーボタン
+/// タイマ�Eボタン
 class _TimerButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -261,7 +261,7 @@ class _TimerButton extends StatelessWidget {
   }
 }
 
-/// タイマー画面（フルスクリーン）
+/// タイマ�E画面�E�フルスクリーン�E�E
 class QuestTimerScreen extends StatelessWidget {
   final String questTitle;
   final int durationMinutes;
@@ -287,7 +287,7 @@ class QuestTimerScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: Center(
@@ -297,7 +297,7 @@ class QuestTimerScreen extends StatelessWidget {
             durationMinutes: durationMinutes,
             onComplete: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('タイマー完了！')),
+                const SnackBar(content: Text('タイマ�E完亁E��E)),
               );
               Navigator.of(context).pop(true);
             },
@@ -311,7 +311,7 @@ class QuestTimerScreen extends StatelessWidget {
   }
 }
 
-/// ポモドーロタイマー
+/// ポモド�Eロタイマ�E
 class PomodoroTimerWidget extends StatefulWidget {
   final int workMinutes;
   final int breakMinutes;
@@ -345,11 +345,11 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
 
     return Column(
       children: [
-        // セッション表示
+        // セチE��ョン表示
         Container(
           padding: EdgeInsets.all(tokens.spacing.md),
           decoration: BoxDecoration(
-            color: tokens.primary.withOpacity(0.1),
+            color: tokens.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(tokens.radius.md),
           ),
           child: Row(
@@ -361,7 +361,7 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
               ),
               SizedBox(width: tokens.spacing.sm),
               Text(
-                _isWorkSession ? '作業セッション' : '休憩',
+                _isWorkSession ? '作業セチE��ョン' : '休�E',
                 style: tokens.typography.body.copyWith(
                   color: tokens.textPrimary,
                   fontWeight: FontWeight.bold,
@@ -378,7 +378,7 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
           ),
         ),
         SizedBox(height: tokens.spacing.lg),
-        // タイマー
+        // タイマ�E
         QuestTimerWidget(
           durationMinutes: duration,
           onComplete: () {

@@ -51,9 +51,9 @@ class _SensitiveContentState extends State<SensitiveContent>
             child: widget.blur
                 ? BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                    child: Container(color: Colors.black.withOpacity(0.28)),
+                    child: Container(color: Colors.black.withValues(alpha: 0.28)),
                   )
-                : Container(color: Colors.black.withOpacity(0.45)),
+                : Container(color: Colors.black.withValues(alpha: 0.45)),
           ),
       ],
     );

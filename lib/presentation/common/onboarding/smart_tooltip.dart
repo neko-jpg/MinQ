@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/onboarding/onboarding_engine.dart';
 
-/// 一度だけ表示されるユーザー固有のスマートツールチップ
+/// 一度だけ表示されるユーザー固有�Eスマ�EトツールチッチE
 class SmartTooltip extends StatefulWidget {
   final Widget child;
   final String message;
@@ -176,7 +176,7 @@ class _SmartTooltipState extends State<SmartTooltip>
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -200,7 +200,7 @@ class _SmartTooltipState extends State<SmartTooltip>
             child: Icon(
               Icons.close,
               size: 16,
-              color: theme.colorScheme.onInverseSurface.withOpacity(0.7),
+              color: theme.colorScheme.onInverseSurface.withValues(alpha: 0.7),
             ),
           ),
         ],
@@ -209,14 +209,14 @@ class _SmartTooltipState extends State<SmartTooltip>
   }
 }
 
-/// ツールチップのトリガー方法
+/// チE�Eルチップ�Eトリガー方況E
 enum TooltipTrigger {
   tap,
   longPress,
   manual,
 }
 
-/// 自動表示されるスマートツールチップ
+/// 自動表示されるスマ�EトツールチッチE
 class AutoSmartTooltip extends StatefulWidget {
   final Widget child;
   final String message;
@@ -291,7 +291,7 @@ class _AutoSmartTooltipState extends State<AutoSmartTooltip>
       }
     }
 
-    // 遅延後に表示
+    // 遁E��後に表示
     _delayTimer = Timer(widget.delay, () {
       if (mounted && _shouldShow) {
         _showTooltip();
@@ -379,7 +379,7 @@ class _AutoSmartTooltipState extends State<AutoSmartTooltip>
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
               blurRadius: 8,
               spreadRadius: 2,
             ),

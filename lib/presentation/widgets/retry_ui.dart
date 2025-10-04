@@ -26,7 +26,7 @@ class RetryUI extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            message ?? 'サーバーへの接続に失敗しました',
+            message ?? 'サーバ�Eへの接続に失敗しました',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
@@ -37,7 +37,7 @@ class RetryUI extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('再試行'),
+              label: const Text('再試衁E),
             ),
         ],
       ),
@@ -45,7 +45,7 @@ class RetryUI extends StatelessWidget {
   }
 }
 
-/// 自動リトライウィジェット
+/// 自動リトライウィジェチE��
 class AutoRetryWidget extends StatefulWidget {
   final Future<void> Function() onRetry;
   final Widget Function(BuildContext, AsyncSnapshot) builder;

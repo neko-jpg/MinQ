@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/onboarding/onboarding.dart';
 
 /// Progressive Onboarding System の統合デモ画面
-/// 要件6.1-6.6の実装を統合的にテストするためのデモ
+/// 要件6.1-6.6の実裁E��統合的にチE��トするため�EチE��
 class OnboardingIntegrationDemo extends StatefulWidget {
   const OnboardingIntegrationDemo({super.key});
 
@@ -32,7 +32,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
   }
 
   Future<void> _showInitialOnboarding() async {
-    // 初回ユーザー向けのステップバイステップガイド（要件6.4）
+    // 初回ユーザー向けのスチE��プバイスチE��プガイド（要件6.4�E�E
     if (!await OnboardingEngine.hasCompletedOnboarding()) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _startInteractiveTour();
@@ -57,7 +57,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
       }
     });
 
-    // ユーザーの進捗に応じたヒント表示（要件6.2）
+    // ユーザーの進捗に応じたヒント表示�E�要件6.2�E�E
     final progress = UserProgress(
       totalQuests: _questCount,
       completedQuests: _completedQuests,
@@ -79,7 +79,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
           IconButton(
             onPressed: _startInteractiveTour,
             icon: const Icon(Icons.tour),
-            tooltip: 'ツアーを再開',
+            tooltip: 'チE��ーを�E閁E,
           ),
         ],
       ),
@@ -88,27 +88,27 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // オンボーディング状態表示
+            // オンボ�EチE��ング状態表示
             _buildStatusCard(theme),
 
             const SizedBox(height: 24),
 
-            // コンテキスト依存のガイド表示デモ（要件6.1）
+            // コンチE��スト依存�Eガイド表示チE���E�要件6.1�E�E
             _buildContextualGuideDemo(theme),
 
             const SizedBox(height: 24),
 
-            // スマートツールチップデモ（要件6.2）
+            // スマ�Eトツールチップデモ�E�要件6.2�E�E
             _buildSmartTooltipDemo(theme),
 
             const SizedBox(height: 24),
 
-            // プログレッシブヒントデモ（要件6.2）
+            // プログレチE��ブヒントデモ�E�要件6.2�E�E
             _buildProgressiveHintDemo(theme),
 
             const SizedBox(height: 24),
 
-            // インタラクティブツアーデモ（要件6.3）
+            // インタラクチE��ブツアーチE���E�要件6.3�E�E
             _buildInteractiveTourDemo(theme),
           ],
         ),
@@ -124,7 +124,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'オンボーディング状態',
+              'オンボ�EチE��ング状慁E,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -140,16 +140,16 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  _hasCompletedOnboarding ? '完了済み' : '未完了',
+                  _hasCompletedOnboarding ? '完亁E��み' : '未完亁E,
                   style: theme.textTheme.bodyLarge,
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Text(
-              'クエスト数: $_questCount, 完了数: $_completedQuests, 連続記録: $_currentStreak',
+              'クエスト数: $_questCount, 完亁E��: $_completedQuests, 連続記録: $_currentStreak',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -166,16 +166,16 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'コンテキスト依存ガイド',
+              'コンチE��スト依存ガイチE,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              '画面に応じた適切なガイドを表示',
+              '画面に応じた適刁E��ガイドを表示',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 16),
@@ -187,7 +187,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
                   onPressed:
                       () =>
                           OnboardingEngine.showContextualGuide('home', context),
-                  child: const Text('ホーム画面へ移動する'),
+                  child: const Text('ホ�Eム画面へ移動すめE),
                 ),
                 ElevatedButton(
                   onPressed:
@@ -195,7 +195,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
                         'quest_creation',
                         context,
                       ),
-                  child: const Text('クエストを作成する'),
+                  child: const Text('クエストを作�Eする'),
                 ),
                 ElevatedButton(
                   onPressed:
@@ -209,7 +209,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
                   onPressed:
                       () =>
                           OnboardingEngine.showContextualGuide('pair', context),
-                  child: const Text('ペア画面へ移動する'),
+                  child: const Text('ペア画面へ移動すめE),
                 ),
               ],
             ),
@@ -227,23 +227,23 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'スマートツールチップ',
+              'スマ�EトツールチッチE,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              '一度だけ表示されるユーザー固有のツールチップ',
+              '一度だけ表示されるユーザー固有�EチE�EルチッチE,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 16),
             Row(
               children: [
                 SmartTooltip(
-                  message: 'これは長押しで表示されるツールチップです。一度表示されると次回は表示されません。',
+                  message: 'これは長押しで表示されるツールチップです。一度表示されると次回�E表示されません、E,
                   tooltipId: 'demo_longpress_tooltip',
                   child: ElevatedButton(
                     onPressed: () {},
@@ -252,19 +252,19 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
                 ),
                 const SizedBox(width: 16),
                 SmartTooltip(
-                  message: 'これはタップで表示されるツールチップです。',
+                  message: 'これはタチE�Eで表示されるツールチップです、E,
                   tooltipId: 'demo_tap_tooltip',
                   trigger: TooltipTrigger.tap,
                   child: ElevatedButton(
                     onPressed: () {},
-                    child: const Text('タップで表示する'),
+                    child: const Text('タチE�Eで表示する'),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
             AutoSmartTooltip(
-              message: '自動表示されるツールチップ',
+              message: '自動表示されるツールチッチE,
               tooltipId: 'demo_auto_tooltip',
               delay: const Duration(seconds: 2),
               child: Container(
@@ -273,7 +273,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
                   color: theme.colorScheme.secondaryContainer,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text('2秒後に自動でツールチップが表示されます'),
+                child: const Text('2秒後に自動でチE�Eルチップが表示されまぁE),
               ),
             ),
           ],
@@ -290,7 +290,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'プログレッシブヒント',
+              'プログレチE��ブヒンチE,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -299,14 +299,14 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
             Text(
               'ユーザーの進捗に応じたヒント表示',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: _simulateUserProgress,
               icon: const Icon(Icons.trending_up),
-              label: const Text('進捗をシミュレート'),
+              label: const Text('進捗をシミュレーチE),
             ),
           ],
         ),
@@ -322,16 +322,16 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'インタラクティブツアー',
+              'インタラクチE��ブツアー',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'ステップバイステップのガイドツアー',
+              'スチE��プバイスチE��プ�Eガイドツアー',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 16),
@@ -340,13 +340,13 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
                 ElevatedButton.icon(
                   onPressed: _startInteractiveTour,
                   icon: const Icon(Icons.tour),
-                  label: const Text('デフォルトツアー'),
+                  label: const Text('チE��ォルトツアー'),
                 ),
                 const SizedBox(width: 16),
                 ElevatedButton.icon(
                   onPressed: () => _startCustomTour(),
                   icon: const Icon(Icons.assistant),
-                  label: const Text('カスタムツアー'),
+                  label: const Text('カスタムチE��ー'),
                 ),
               ],
             ),
@@ -359,28 +359,28 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
   void _startCustomTour() {
     final customSteps = [
       const TourStep(
-        title: 'カスタムツアーへようこそ',
+        title: 'カスタムチE��ーへようこそ',
         description:
-            'これはカスタマイズされたツアーの例です。'
-            'アプリの特定の機能に焦点を当てたガイドを作成できます。',
+            'これはカスタマイズされたツアーの例です、E
+            'アプリの特定�E機�Eに焦点を当てたガイドを作�Eできます、E,
       ),
       const TourStep(
         title: 'Progressive Onboarding の特徴',
         description:
-            'コンテキスト依存のガイド表示により、'
-            'ユーザーが必要な時に必要な情報だけを提供します。',
+            'コンチE��スト依存�Eガイド表示により、E
+            'ユーザーが忁E��な時に忁E��な惁E��だけを提供します、E,
       ),
       const TourStep(
-        title: 'スマートツールチップ',
+        title: 'スマ�EトツールチッチE,
         description:
-            '一度だけ表示される仕組みにより、'
-            'ユーザーを煩わせることなく適切なタイミングでヒントを提供します。',
+            '一度だけ表示される仕絁E��により、E
+            'ユーザーを�Eわせることなく適刁E��タイミングでヒントを提供します、E,
       ),
       const TourStep(
-        title: 'ツアー完了',
+        title: 'チE��ー完亁E,
         description:
-            'Progressive Onboarding System により、'
-            'ユーザーは段階的にアプリの使い方を学習できます。',
+            'Progressive Onboarding System により、E
+            'ユーザーは段階的にアプリの使ぁE��を学習できます、E,
       ),
     ];
 

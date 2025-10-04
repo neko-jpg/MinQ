@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-/// グリーンダークモード
-/// OLED省電力配色
+/// グリーンダークモーチE
+/// OLED省E��力�E色
 class GreenDarkTheme {
   const GreenDarkTheme._();
 
-  /// OLED最適化ダークテーマ
-  /// 純黒背景で消費電力を削減
+  /// OLED最適化ダークチE�EチE
+  /// 純黒背景で消費電力を削渁E
   static ThemeData get theme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      // 純黒背景（OLED省電力）
+      // 純黒背景�E�ELED省E��力！E
       scaffoldBackgroundColor: Colors.black,
       colorScheme: const ColorScheme.dark(
         primary: Color(0xFF4CAF50), // グリーン
@@ -23,7 +23,7 @@ class GreenDarkTheme {
         onSurface: Color(0xFFE0E0E0),
         onError: Colors.black,
       ),
-      // カード
+      // カーチE
       cardTheme: const CardTheme(
         color: Color(0xFF0A0A0A),
         elevation: 0,
@@ -41,7 +41,7 @@ class GreenDarkTheme {
           foregroundColor: Colors.black,
         ),
       ),
-      // テキスト
+      // チE��スチE
       textTheme: const TextTheme(
         displayLarge: TextStyle(color: Color(0xFFE0E0E0)),
         displayMedium: TextStyle(color: Color(0xFFE0E0E0)),
@@ -62,7 +62,7 @@ class GreenDarkTheme {
     );
   }
 
-  /// 省電力設定
+  /// 省E��力設宁E
   static const powerSavingSettings = {
     'useBlackBackground': true,
     'reduceAnimations': true,
@@ -70,14 +70,14 @@ class GreenDarkTheme {
     'disableHaptics': false,
   };
 
-  /// 推定消費電力削減率（OLED画面の場合）
-  static const estimatedPowerSaving = 0.4; // 40%削減
+  /// 推定消費電力削減率�E�ELED画面の場合！E
+  static const estimatedPowerSaving = 0.4; // 40%削渁E
 
-  /// カラーパレット
+  /// カラーパレチE��
   static const colors = GreenDarkColors();
 }
 
-/// グリーンダークモードのカラーパレット
+/// グリーンダークモード�EカラーパレチE��
 class GreenDarkColors {
   const GreenDarkColors();
 
@@ -91,7 +91,7 @@ class GreenDarkColors {
   final Color primaryLight = const Color(0xFF81C784);
   final Color primaryDark = const Color(0xFF388E3C);
 
-  // テキストカラー
+  // チE��ストカラー
   final Color textPrimary = const Color(0xFFE0E0E0);
   final Color textSecondary = const Color(0xFFB0B0B0);
   final Color textTertiary = const Color(0xFF808080);
@@ -102,12 +102,12 @@ class GreenDarkColors {
   final Color error = const Color(0xFFEF5350);
   final Color info = const Color(0xFF42A5F5);
 
-  // ボーダー
+  // ボ�Eダー
   final Color border = const Color(0xFF2A2A2A);
   final Color divider = const Color(0xFF1A1A1A);
 }
 
-/// 省電力モード設定
+/// 省E��力モード設宁E
 class PowerSavingMode {
   final bool enabled;
   final bool useBlackBackground;
@@ -123,10 +123,10 @@ class PowerSavingMode {
     this.disableHaptics = false,
   });
 
-  /// デフォルト設定
+  /// チE��ォルト設宁E
   static const defaultMode = PowerSavingMode();
 
-  /// 最大省電力モード
+  /// 最大省E��力モーチE
   static const maxPowerSaving = PowerSavingMode(
     enabled: true,
     useBlackBackground: true,
@@ -144,6 +144,6 @@ class PowerSavingMode {
   /// 明るさを調整
   double adjustBrightness(double brightness) {
     if (!enabled || !lowerBrightness) return brightness;
-    return (brightness * 0.7).clamp(0.0, 1.0); // 30%削減
+    return (brightness * 0.7).clamp(0.0, 1.0); // 30%削渁E
   }
 }

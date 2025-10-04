@@ -23,10 +23,10 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     final uid = ref.read(uidProvider);
     if (repo == null || uid == null) return;
 
-    final achievementMap = {0: '✔ 達成', 1: '△ 部分達成', 2: '✘ 未達成'};
+    final achievementMap = {0: '✁E達�E', 1: '△ 部刁E��戁E, 2: '✁E未達�E'};
     final achievementText = achievementMap[_selectedAchievement] ?? '';
 
-    final message = '【進捗共有】\nクエスト「$_selectedQuest」を$achievementTextしました！';
+    final message = '【進捗�E有】\nクエスト、E_selectedQuest」を$achievementTextしました�E�E;
 
     repo.sendMessage(pairId: widget.pairId, senderId: uid, text: message);
 
@@ -38,7 +38,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     showDialog(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('メモを添付'),
+        title: const Text('メモを添仁E),
         content: TextField(
           controller: memoController,
           autofocus: true,
@@ -74,9 +74,9 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
         margin: const EdgeInsets.all(16.0),
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: tokens.surface.withOpacity(0.8),
+          color: tokens.surface.withValues(alpha: 0.8),
           borderRadius: tokens.cornerXLarge(),
-          border: Border.all(color: tokens.border.withOpacity(0.5)),
+          border: Border.all(color: tokens.border.withValues(alpha: 0.5)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -96,7 +96,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('進捗を共有', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+          Text('進捗を共朁E, style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
           IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
         ],
       ),
@@ -128,7 +128,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('クエストを選択', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text('クエストを選抁E, style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
           value: _selectedQuest,
@@ -152,7 +152,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('証拠を添付', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text('証拠を添仁E, style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -169,7 +169,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('達成度', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text('達�E度', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
         const SizedBox(height: 8),
         ToggleButtons(
           isSelected: List.generate(3, (index) => index == _selectedAchievement),
@@ -178,11 +178,11 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
           selectedColor: Colors.white,
           color: tokens.textPrimary,
           fillColor: tokens.brandPrimary,
-          splashColor: tokens.brandPrimary.withOpacity(0.2),
+          splashColor: tokens.brandPrimary.withValues(alpha: 0.2),
           children: const [
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text('✔ 達成')),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text('△ 部分')),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text('✘ 未達')),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text('✁E達�E')),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text('△ 部刁E)),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text('✁E未遁E)),
           ],
         ),
       ],
@@ -216,7 +216,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
       padding: const EdgeInsets.all(16.0),
       child: ElevatedButton.icon(
         icon: const Icon(Icons.send),
-        label: const Text('共有する'),
+        label: const Text('共有すめE),
         onPressed: _shareProgress,
         style: ElevatedButton.styleFrom(
           backgroundColor: tokens.brandPrimary,

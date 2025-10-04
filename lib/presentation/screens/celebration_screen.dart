@@ -91,7 +91,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
       final shareService = ref.read(shareServiceProvider);
 
       await shareService.shareAchievementWithOgp(
-        questTitle: 'クエスト達成',
+        questTitle: 'クエスト達戁E,
         currentStreak: streak,
         totalCompleted: totalCompleted,
       );
@@ -209,7 +209,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
           ),
           SizedBox(height: tokens.spacing(3)),
           Material(
-            color: tokens.brandPrimary.withOpacity(0.1),
+            color: tokens.brandPrimary.withValues(alpha: 0.1),
             borderRadius: tokens.cornerLarge(),
             child: InkWell(
               onTap: () {
@@ -224,7 +224,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
                       width: tokens.spacing(14),
                       height: tokens.spacing(14),
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withOpacity(0.2),
+                        color: tokens.brandPrimary.withValues(alpha: 0.2),
                         borderRadius: tokens.cornerLarge(),
                       ),
                       child: Icon(
@@ -284,13 +284,13 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
       ),
       child: Column(
         children: [
-          // 共有ボタン
+          // 共有�Eタン
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () => _shareAchievement(),
               icon: const Icon(Icons.share),
-              label: const Text('達成を共有する'),
+              label: const Text('達�Eを�E有すめE),
               style: OutlinedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
                 shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
@@ -298,7 +298,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
             ),
           ),
           SizedBox(height: tokens.spacing(3)),
-          // 完了ボタン
+          // 完亁E�Eタン
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -332,7 +332,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
           width: tokens.spacing(12),
           height: tokens.spacing(12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             shape: BoxShape.circle,
             backgroundBlendMode: BlendMode.overlay,
           ),
@@ -455,7 +455,7 @@ class _PingAnimation extends AnimatedWidget {
         height: 288 * animation.value,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
         ),
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// オンボーディング用のオーバーレイコンポーネント
+/// オンボ�EチE��ング用のオーバ�Eレイコンポ�EネンチE
 class OnboardingOverlay extends StatefulWidget {
   final String title;
   final String description;
@@ -94,7 +94,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
         builder: (context, child) {
           return Stack(
             children: [
-              // 背景オーバーレイ
+              // 背景オーバ�Eレイ
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: GestureDetector(
@@ -102,12 +102,12 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
                   child: Container(
                     width: double.infinity,
                     height: double.infinity,
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withValues(alpha: 0.7),
                   ),
                 ),
               ),
               
-              // メインコンテンツ
+              // メインコンチE��チE
               Center(
                 child: FadeTransition(
                   opacity: _fadeAnimation,
@@ -121,7 +121,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
                 ),
               ),
               
-              // スポットライト効果（ターゲットがある場合）
+              // スポットライト効果（ターゲチE��がある場合！E
               if (widget.targetKey != null)
                 _buildSpotlight(theme),
             ],
@@ -144,7 +144,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
         borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -171,7 +171,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
                 onPressed: _dismiss,
                 icon: Icon(
                   Icons.close,
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
@@ -185,14 +185,14 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
           Text(
             widget.description,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.8),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
               height: 1.5,
             ),
           ),
           
           const SizedBox(height: 24),
           
-          // カスタムコンテンツ
+          // カスタムコンチE��チE
           if (widget.customContent != null) ...[
             widget.customContent!,
             const SizedBox(height: 24),
@@ -204,7 +204,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
             children: [
               TextButton(
                 onPressed: _dismiss,
-                child: const Text('スキップ'),
+                child: const Text('スキチE�E'),
               ),
               const SizedBox(width: 12),
               ElevatedButton(
@@ -227,13 +227,13 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
   }
 
   Widget _buildSpotlight(ThemeData theme) {
-    // 実際の実装では、targetKeyを使用してターゲット要素の位置を特定し、
-    // その周りにスポットライト効果を作成する
+    // 実際の実裁E��は、targetKeyを使用してターゲチE��要素の位置を特定し、E
+    // そ�E周りにスポットライト効果を作�Eする
     return Positioned.fill(
       child: CustomPaint(
         painter: SpotlightPainter(
           spotlightRect: const Rect.fromLTWH(100, 200, 200, 100),
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.black.withValues(alpha: 0.8),
         ),
       ),
     );
@@ -268,9 +268,9 @@ class SpotlightPainter extends CustomPainter {
 
     canvas.drawPath(path, paint);
 
-    // スポットライト周りのグロー効果
+    // スポットライト周り�Eグロー効极E
     final glowPaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withValues(alpha: 0.1)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius);
@@ -290,7 +290,7 @@ class SpotlightPainter extends CustomPainter {
   }
 }
 
-/// ステップバイステップガイド用のオーバーレイ
+/// スチE��プバイスチE��プガイド用のオーバ�Eレイ
 class StepByStepOverlay extends StatefulWidget {
   final List<GuideStep> steps;
   final VoidCallback? onComplete;
@@ -338,7 +338,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
       onDismiss: _nextStep,
       customContent: Column(
         children: [
-          // ステップインジケーター
+          // スチE��プインジケーター
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
@@ -351,7 +351,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
                   shape: BoxShape.circle,
                   color: index <= _currentStepIndex
                       ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                      : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                 ),
               ),
             ),
@@ -367,7 +367,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
                 TextButton.icon(
                   onPressed: _previousStep,
                   icon: const Icon(Icons.arrow_back),
-                  label: const Text('戻る'),
+                  label: const Text('戻めE),
                 )
               else
                 const SizedBox.shrink(),
@@ -375,7 +375,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
               Text(
                 '${_currentStepIndex + 1} / ${widget.steps.length}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
               
@@ -388,7 +388,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
                 ),
                 label: Text(
                   _currentStepIndex == widget.steps.length - 1
-                      ? '完了'
+                      ? '完亁E
                       : '次へ',
                 ),
               ),
@@ -400,7 +400,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
   }
 }
 
-/// ガイドステップの定義
+/// ガイドスチE��プ�E定義
 class GuideStep {
   final String title;
   final String description;

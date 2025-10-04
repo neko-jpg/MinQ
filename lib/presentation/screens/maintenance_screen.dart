@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// メンテナンス画面
+/// メンチE��ンス画面
 class MaintenanceScreen extends StatelessWidget {
   final String? message;
   final DateTime? estimatedEndTime;
@@ -27,26 +27,26 @@ class MaintenanceScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                'メンテナンス中',
+                'メンチE��ンス中',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 16),
               Text(
-                message ?? 'ただいまメンテナンス中です。\nしばらくお待ちください。',
+                message ?? 'ただぁE��メンチE��ンス中です、Enし�Eらくお征E��ください、E,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               if (estimatedEndTime != null) ...[
                 const SizedBox(height: 16),
                 Text(
-                  '終了予定: ${_formatDateTime(estimatedEndTime!)}',
+                  '終亁E��宁E ${_formatDateTime(estimatedEndTime!)}',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
               const SizedBox(height: 32),
               ElevatedButton.icon(
                 onPressed: () {
-                  // アプリを再起動
+                  // アプリを�E起勁E
                 },
                 icon: const Icon(Icons.refresh),
                 label: const Text('再読み込み'),
@@ -59,6 +59,6 @@ class MaintenanceScreen extends StatelessWidget {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.month}月${dateTime.day}日 ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+    return '${dateTime.month}朁E{dateTime.day}日 ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 }

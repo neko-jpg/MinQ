@@ -20,7 +20,7 @@ class UserBehaviorHeatmap extends StatelessWidget {
     final theme = Theme.of(context);
     final focusColor = theme.colorScheme.secondary;
     return Semantics(
-      label: '週間達成ヒートマップ',
+      label: '週間達成ヒート�EチE�E',
       child: HeatMap(
         datasets: dataset,
         startDate: startDate ?? DateTime.now().subtract(const Duration(days: 90)),
@@ -35,9 +35,9 @@ class UserBehaviorHeatmap extends StatelessWidget {
         showText: false,
         scrollable: true,
         colorsets: {
-          1: focusColor.withOpacity(0.25),
-          3: focusColor.withOpacity(0.5),
-          5: focusColor.withOpacity(0.7),
+          1: focusColor.withValues(alpha: 0.25),
+          3: focusColor.withValues(alpha: 0.5),
+          5: focusColor.withValues(alpha: 0.7),
           7: focusColor,
         },
       ),

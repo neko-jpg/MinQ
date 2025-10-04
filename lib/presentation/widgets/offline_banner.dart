@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// オフラインバナー
-/// ネットワーク接続がない場合に表示
+/// ネットワーク接続がなぁE��合に表示
 class OfflineBanner extends ConsumerWidget {
   const OfflineBanner({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: NetworkStatusService のプロバイダーを作成して使用
+    // TODO: NetworkStatusService のプロバイダーを作�Eして使用
     const isOffline = false; // ref.watch(networkStatusProvider).isOffline;
 
     if (!isOffline) {
@@ -29,7 +29,7 @@ class OfflineBanner extends ConsumerWidget {
           const SizedBox(width: 12),
           const Expanded(
             child: Text(
-              'オフラインモード - 一部機能が制限されています',
+              'オフラインモーチE- 一部機�Eが制限されてぁE��ぁE,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 14,
@@ -51,18 +51,18 @@ class OfflineBanner extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('オフラインモード'),
+        title: const Text('オフラインモーチE),
         content: const Text(
-          'インターネット接続がありません。\n\n'
-          '利用可能な機能:\n'
-          '• クエストの記録\n'
-          '• 進捗の確認\n'
-          '• 統計の表示\n\n'
-          '制限される機能:\n'
-          '• データの同期\n'
-          '• ペア機能\n'
-          '• 共有機能\n\n'
-          'インターネットに接続すると、自動的にデータが同期されます。',
+          'インターネット接続がありません、En\n'
+          '利用可能な機�E:\n'
+          '• クエスト�E記録\n'
+          '• 進捗�E確認\n'
+          '• 統計�E表示\n\n'
+          '制限される機�E:\n'
+          '• チE�Eタの同期\n'
+          '• ペア機�E\n'
+          '• 共有機�E\n\n'
+          'インターネットに接続すると、�E動的にチE�Eタが同期されます、E,
         ),
         actions: [
           TextButton(
@@ -75,7 +75,7 @@ class OfflineBanner extends ConsumerWidget {
   }
 }
 
-/// オフライン時の空状態ウィジェット
+/// オフライン時�E空状態ウィジェチE��
 class OfflineEmptyState extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
@@ -113,7 +113,7 @@ class OfflineEmptyState extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('再試行'),
+                label: const Text('再試衁E),
               ),
             ],
           ],
@@ -159,7 +159,7 @@ class ReadOnlyModeIndicator extends StatelessWidget {
   }
 }
 
-/// ネットワーク依存機能の無効化ラッパー
+/// ネットワーク依存機�Eの無効化ラチE��ー
 class NetworkDependentWidget extends ConsumerWidget {
   final Widget child;
   final Widget? offlineWidget;
@@ -174,13 +174,13 @@ class NetworkDependentWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: NetworkStatusService のプロバイダーを作成して使用
+    // TODO: NetworkStatusService のプロバイダーを作�Eして使用
     const isOffline = false; // ref.watch(networkStatusProvider).isOffline;
 
     if (isOffline) {
       return offlineWidget ??
           OfflineEmptyState(
-            message: offlineMessage ?? 'この機能はオフラインでは利用できません',
+            message: offlineMessage ?? 'こ�E機�Eはオフラインでは利用できません',
           );
     }
 
@@ -188,7 +188,7 @@ class NetworkDependentWidget extends ConsumerWidget {
   }
 }
 
-/// オフライン時の機能制限ダイアログ
+/// オフライン時�E機�E制限ダイアログ
 void showOfflineDialog(BuildContext context) {
   showDialog(
     context: context,
@@ -201,8 +201,8 @@ void showOfflineDialog(BuildContext context) {
         ],
       ),
       content: const Text(
-        'この機能を使用するにはインターネット接続が必要です。\n\n'
-        'WiFiまたはモバイルデータに接続してから再度お試しください。',
+        'こ�E機�Eを使用するにはインターネット接続が忁E��です、En\n'
+        'WiFiまた�EモバイルチE�Eタに接続してから再度お試しください、E,
       ),
       actions: [
         TextButton(
@@ -214,7 +214,7 @@ void showOfflineDialog(BuildContext context) {
   );
 }
 
-/// オフライン時のスナックバー
+/// オフライン時�Eスナックバ�E
 void showOfflineSnackBar(BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
@@ -223,14 +223,14 @@ void showOfflineSnackBar(BuildContext context) {
           Icon(Icons.cloud_off, color: Colors.white),
           SizedBox(width: 12),
           Expanded(
-            child: Text('オフラインのため、この操作は実行できません'),
+            child: Text('オフラインのため、この操作�E実行できません'),
           ),
         ],
       ),
       backgroundColor: Colors.orange[700],
       duration: const Duration(seconds: 3),
       action: SnackBarAction(
-        label: '設定',
+        label: '設宁E,
         textColor: Colors.white,
         onPressed: () {
           // TODO: ネットワーク設定画面へ遷移

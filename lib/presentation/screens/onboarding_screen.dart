@@ -27,7 +27,7 @@ class OnboardingScreen extends ConsumerWidget {
                       width: 96,
                       height: 96,
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withOpacity(0.1),
+                        color: tokens.brandPrimary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -51,7 +51,7 @@ class OnboardingScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。',
+                      'ミニクエストと匿名サポ�Eトを通じて、最小限の努力で習�Eを築きましょぁE��E,
                       textAlign: TextAlign.center,
                       style: textTheme.bodyLarge?.copyWith(
                         color: tokens.textSecondary,
@@ -60,20 +60,20 @@ class OnboardingScreen extends ConsumerWidget {
                     const SizedBox(height: 40),
                     const _FeatureCard(
                       icon: Icons.touch_app,
-                      title: '3タップで習慣化',
-                      description: '新しい習慣をたった3タップで始められます。とてもシンプルです。',
+                      title: '3タチE�Eで習�E匁E,
+                      description: '新しい習�EをたっぁEタチE�Eで始められます。とてもシンプルです、E,
                     ),
                     const SizedBox(height: 16),
                     const _FeatureCard(
                       icon: Icons.groups,
-                      title: '匿名ペア',
-                      description: 'パートナーから、匿名で説明責任とサポートを得られます。',
+                      title: '匿名�Eア',
+                      description: 'パ�Eトナーから、匿名で説明責任とサポ�Eトを得られます、E,
                     ),
                     const SizedBox(height: 16),
                     const _FeatureCard(
                       icon: Icons.explore,
-                      title: 'ミニクエスト',
-                      description: 'あなたの目標を、達成感のある小さなクエストに変えましょう。',
+                      title: 'ミニクエスチE,
+                      description: 'あなた�E目標を、E��成感のある小さなクエストに変えましょぁE��E,
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -113,7 +113,7 @@ class _FeatureCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: tokens.brandPrimary.withOpacity(0.1),
+                color: tokens.brandPrimary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: tokens.brandPrimary),
@@ -166,7 +166,7 @@ class _BottomNavigation extends ConsumerWidget {
             child: ElevatedButton.icon(
               onPressed: () => ref.read(navigationUseCaseProvider).goToLogin(),
               icon: const Icon(Icons.arrow_forward),
-              label: const Text('始める'),
+              label: const Text('始めめE),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 textStyle: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -181,7 +181,7 @@ class _BottomNavigation extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'すでにアカウントをお持ちですか？',
+                'すでにアカウントをお持ちですか�E�E,
                 style: textTheme.bodySmall,
               ),
               TextButton(

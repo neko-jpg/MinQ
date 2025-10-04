@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 自己診断モード画面
-/// 設定→テスト通知/ストレージ/ネット
+/// 設定�EチE��ト通知/ストレージ/ネッチE
 class DiagnosticScreen extends ConsumerStatefulWidget {
   const DiagnosticScreen({super.key});
 
@@ -35,17 +35,17 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: ListView(
         padding: EdgeInsets.all(tokens.spacing.lg),
         children: [
-          // 説明
+          // 説昁E
           Container(
             padding: EdgeInsets.all(tokens.spacing.md),
             decoration: BoxDecoration(
-              color: tokens.primary.withOpacity(0.1),
+              color: tokens.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(tokens.radius.md),
             ),
             child: Row(
@@ -54,7 +54,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
                 SizedBox(width: tokens.spacing.sm),
                 Expanded(
                   child: Text(
-                    'アプリの動作を診断します。問題がある場合は結果を確認してください。',
+                    'アプリの動作を診断します。問題がある場合�E結果を確認してください、E,
                     style: tokens.typography.body.copyWith(
                       color: tokens.textPrimary,
                     ),
@@ -64,49 +64,49 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
             ),
           ),
           SizedBox(height: tokens.spacing.xl),
-          // 診断項目
+          // 診断頁E��
           _buildDiagnosticItem(
-            title: '通知テスト',
-            description: 'プッシュ通知が正常に動作するか確認',
+            title: '通知チE��チE,
+            description: 'プッシュ通知が正常に動作するか確誁E,
             icon: Icons.notifications_outlined,
             testKey: 'notification',
             onTest: _testNotification,
             tokens: tokens,
           ),
           _buildDiagnosticItem(
-            title: 'ストレージテスト',
-            description: 'ローカルストレージの読み書きを確認',
+            title: 'ストレージチE��チE,
+            description: 'ローカルストレージの読み書きを確誁E,
             icon: Icons.storage_outlined,
             testKey: 'storage',
             onTest: _testStorage,
             tokens: tokens,
           ),
           _buildDiagnosticItem(
-            title: 'ネットワークテスト',
-            description: 'インターネット接続を確認',
+            title: 'ネットワークチE��チE,
+            description: 'インターネット接続を確誁E,
             icon: Icons.wifi_outlined,
             testKey: 'network',
             onTest: _testNetwork,
             tokens: tokens,
           ),
           _buildDiagnosticItem(
-            title: 'データベーステスト',
-            description: 'ローカルデータベースの動作を確認',
-            icon: Icons.database_outlined,
+            title: 'チE�Eタベ�EスチE��チE,
+            description: 'ローカルチE�Eタベ�Eスの動作を確誁E,
+            icon: Icons.storage,
             testKey: 'database',
             onTest: _testDatabase,
             tokens: tokens,
           ),
           _buildDiagnosticItem(
-            title: 'パフォーマンステスト',
-            description: 'アプリの動作速度を確認',
+            title: 'パフォーマンスチE��チE,
+            description: 'アプリの動作速度を確誁E,
             icon: Icons.speed_outlined,
             testKey: 'performance',
             onTest: _testPerformance,
             tokens: tokens,
           ),
           SizedBox(height: tokens.spacing.xl),
-          // すべてテストボタン
+          // すべてチE��ト�Eタン
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
@@ -118,7 +118,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.play_arrow),
-              label: Text(_isRunning ? '診断中...' : 'すべてテスト'),
+              label: Text(_isRunning ? '診断中...' : 'すべてチE��チE),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
                 shape: RoundedRectangleBorder(
@@ -162,7 +162,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: _getStatusColor(result?.status, tokens).withOpacity(0.1),
+                color: _getStatusColor(result?.status, tokens).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
               child: Icon(
@@ -248,7 +248,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
             children: [
               _buildSummaryItem('合格', passed, tokens.success, tokens),
               _buildSummaryItem('不合格', failed, tokens.error, tokens),
-              _buildSummaryItem('合計', total, tokens.textSecondary, tokens),
+              _buildSummaryItem('合訁E, total, tokens.textSecondary, tokens),
             ],
           ),
         ],
@@ -336,46 +336,46 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
 
   Future<DiagnosticResult> _testNotification() async {
     await Future.delayed(const Duration(seconds: 1));
-    // TODO: 実際の通知テスト
+    // TODO: 実際の通知チE��チE
     return const DiagnosticResult(
       status: DiagnosticStatus.passed,
-      message: '通知は正常に動作しています',
+      message: '通知は正常に動作してぁE��ぁE,
     );
   }
 
   Future<DiagnosticResult> _testStorage() async {
     await Future.delayed(const Duration(seconds: 1));
-    // TODO: 実際のストレージテスト
+    // TODO: 実際のストレージチE��チE
     return const DiagnosticResult(
       status: DiagnosticStatus.passed,
-      message: 'ストレージは正常に動作しています',
+      message: 'ストレージは正常に動作してぁE��ぁE,
     );
   }
 
   Future<DiagnosticResult> _testNetwork() async {
     await Future.delayed(const Duration(seconds: 1));
-    // TODO: 実際のネットワークテスト
+    // TODO: 実際のネットワークチE��チE
     return const DiagnosticResult(
       status: DiagnosticStatus.passed,
-      message: 'ネットワーク接続は正常です',
+      message: 'ネットワーク接続�E正常でぁE,
     );
   }
 
   Future<DiagnosticResult> _testDatabase() async {
     await Future.delayed(const Duration(seconds: 1));
-    // TODO: 実際のデータベーステスト
+    // TODO: 実際のチE�Eタベ�EスチE��チE
     return const DiagnosticResult(
       status: DiagnosticStatus.passed,
-      message: 'データベースは正常に動作しています',
+      message: 'チE�Eタベ�Eスは正常に動作してぁE��ぁE,
     );
   }
 
   Future<DiagnosticResult> _testPerformance() async {
     await Future.delayed(const Duration(seconds: 2));
-    // TODO: 実際のパフォーマンステスト
+    // TODO: 実際のパフォーマンスチE��チE
     return const DiagnosticResult(
       status: DiagnosticStatus.passed,
-      message: 'パフォーマンスは良好です',
+      message: 'パフォーマンスは良好でぁE,
     );
   }
 }
@@ -393,7 +393,7 @@ class DiagnosticResult {
   });
 }
 
-/// 診断ステータス
+/// 診断スチE�Eタス
 enum DiagnosticStatus {
   passed,
   failed,

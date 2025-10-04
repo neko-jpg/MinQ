@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// クエスト検索バー
+/// クエスト検索バ�E
 class QuestSearchBar extends StatefulWidget {
   final Function(String) onSearch;
   final Function(List<String>)? onTagsChanged;
@@ -34,7 +34,7 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
 
     return Column(
       children: [
-        // 検索バー
+        // 検索バ�E
         Container(
           padding: EdgeInsets.symmetric(
             horizontal: tokens.spacing.md,
@@ -122,7 +122,7 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                         widget.onTagsChanged?.call(_selectedTags.toList());
                       },
                       backgroundColor: tokens.surface,
-                      selectedColor: tokens.primary.withOpacity(0.2),
+                      selectedColor: tokens.primary.withValues(alpha: 0.2),
                       checkmarkColor: tokens.primary,
                     );
                   }).toList(),
@@ -191,7 +191,7 @@ class QuestSearchService {
     }).toList();
   }
 
-  /// 検索とフィルターを組み合わせ
+  /// 検索とフィルターを絁E��合わぁE
   List<T> searchAndFilter<T>({
     required List<T> quests,
     required String query,
@@ -225,7 +225,7 @@ class QuestSearchService {
     return results;
   }
 
-  /// 検索候補を生成
+  /// 検索候補を生�E
   List<String> generateSuggestions({
     required List<String> titles,
     required String query,
@@ -245,7 +245,7 @@ class QuestSearchService {
   }
 }
 
-/// 検索履歴管理
+/// 検索履歴管琁E
 class SearchHistoryManager {
   final List<String> _history = [];
   static const int _maxHistorySize = 10;
@@ -254,7 +254,7 @@ class SearchHistoryManager {
   void addToHistory(String query) {
     if (query.isEmpty) return;
 
-    _history.remove(query); // 重複を削除
+    _history.remove(query); // 重褁E��削除
     _history.insert(0, query);
 
     if (_history.length > _maxHistorySize) {
@@ -262,7 +262,7 @@ class SearchHistoryManager {
     }
   }
 
-  /// 検索履歴を取得
+  /// 検索履歴を取征E
   List<String> getHistory() {
     return List.unmodifiable(_history);
   }
@@ -278,7 +278,7 @@ class SearchHistoryManager {
   }
 }
 
-/// 検索結果ハイライト
+/// 検索結果ハイライチE
 class SearchHighlight extends StatelessWidget {
   final String text;
   final String query;
@@ -302,7 +302,7 @@ class SearchHighlight extends StatelessWidget {
     final tokens = context.tokens;
     final defaultHighlightStyle = highlightStyle ??
         TextStyle(
-          backgroundColor: tokens.primary.withOpacity(0.3),
+          backgroundColor: tokens.primary.withValues(alpha: 0.3),
           fontWeight: FontWeight.bold,
         );
 

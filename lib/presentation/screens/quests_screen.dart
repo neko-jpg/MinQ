@@ -67,7 +67,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
           message: l10n.back,
           child: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
         ),
-        backgroundColor: tokens.background.withOpacity(0.8),
+        backgroundColor: tokens.background.withValues(alpha: 0.8),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
       ),
@@ -79,7 +79,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                 SliverAppBar(
                   pinned: true,
                   toolbarHeight: 60,
-                  backgroundColor: tokens.background.withOpacity(0.8),
+                  backgroundColor: tokens.background.withValues(alpha: 0.8),
                   surfaceTintColor: Colors.transparent,
                   elevation: 0,
                   flexibleSpace: _buildCategoryTabs(tokens, categories),
@@ -112,11 +112,11 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
           fillColor: tokens.surface,
           border: OutlineInputBorder(
             borderRadius: tokens.cornerFull(),
-            borderSide: BorderSide(color: tokens.border.withOpacity(0.5)),
+            borderSide: BorderSide(color: tokens.border.withValues(alpha: 0.5)),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: tokens.cornerFull(),
-            borderSide: BorderSide(color: tokens.border.withOpacity(0.5)),
+            borderSide: BorderSide(color: tokens.border.withValues(alpha: 0.5)),
           ),
         ),
       ),
@@ -389,7 +389,7 @@ class _AiSuggestionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: tokens.surface,
         borderRadius: tokens.cornerLarge(),
-        border: Border.all(color: tokens.border.withOpacity(0.6)),
+        border: Border.all(color: tokens.border.withValues(alpha: 0.6)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -501,7 +501,7 @@ class _AiSuggestionError extends StatelessWidget {
       decoration: BoxDecoration(
         color: tokens.surface,
         borderRadius: tokens.cornerLarge(),
-        border: Border.all(color: tokens.border.withOpacity(0.5)),
+        border: Border.all(color: tokens.border.withValues(alpha: 0.5)),
       ),
       child: Row(
         children: [
@@ -509,7 +509,7 @@ class _AiSuggestionError extends StatelessWidget {
           SizedBox(width: tokens.spacing(2)),
           Expanded(
             child: Text(
-              'AIおすすめの読み込みに失敗しました。接続状況をご確認ください。',
+              'AIおすすめの読み込みに失敗しました。接続状況をご確認ください、E,
               style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             ),
           ),
@@ -536,7 +536,7 @@ class _QuestCard extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      shadowColor: tokens.background.withOpacity(0.1),
+      shadowColor: tokens.background.withValues(alpha: 0.1),
       color: tokens.surface,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       child: InkWell(

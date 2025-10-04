@@ -105,14 +105,14 @@ class SyncStatusNotifier extends StateNotifier<SyncStatus> {
       await syncService.syncQuestLogs(uid);
       state = state.copyWith(
         phase: SyncPhase.synced,
-        bannerMessage: '同期が完了しました',
+        bannerMessage: '同期が完亁E��ました',
         showBanner: true,
         lastSyncedAt: DateTime.now(),
       );
     } catch (_) {
       state = state.copyWith(
         phase: SyncPhase.error,
-        bannerMessage: 'データの同期に失敗しました',
+        bannerMessage: 'チE�Eタの同期に失敗しました',
         showBanner: true,
       );
     }

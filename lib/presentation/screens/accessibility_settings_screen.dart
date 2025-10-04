@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-/// アクセシビリティ設定画面
-/// 高齢者向けの特大UI・音声読み上げ速度などの設定
+/// アクセシビリチE��設定画面
+/// 高齢老E��け�E特大UI・音声読み上げ速度などの設宁E
 class AccessibilitySettingsScreen extends ConsumerStatefulWidget {
   const AccessibilitySettingsScreen({super.key});
 
@@ -31,7 +31,7 @@ class _AccessibilitySettingsScreenState
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
-          'アクセシビリティ',
+          'アクセシビリチE��',
           style: tokens.typography.h3.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -42,21 +42,21 @@ class _AccessibilitySettingsScreenState
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: ListView(
         padding: EdgeInsets.all(tokens.spacing.lg),
         children: [
-          // 視覚設定
+          // 視覚設宁E
           _buildSection(
-            title: '視覚設定',
+            title: '視覚設宁E,
             icon: Icons.visibility,
             tokens: tokens,
             children: [
               _buildSliderTile(
-                title: 'テキストサイズ',
-                subtitle: '文字の大きさを調整',
+                title: 'チE��ストサイズ',
+                subtitle: '斁E���E大きさを調整',
                 value: _textScale,
                 min: 0.8,
                 max: 2.0,
@@ -66,14 +66,14 @@ class _AccessibilitySettingsScreenState
                 tokens: tokens,
               ),
               _buildSwitchTile(
-                title: '太字テキスト',
-                subtitle: 'すべてのテキストを太字で表示',
+                title: '太字テキスチE,
+                subtitle: 'すべてのチE��ストを太字で表示',
                 value: _boldText,
                 onChanged: (value) => setState(() => _boldText = value),
                 tokens: tokens,
               ),
               _buildSwitchTile(
-                title: '高コントラスト',
+                title: '高コントラスチE,
                 subtitle: '色のコントラストを強調',
                 value: _highContrast,
                 onChanged: (value) => setState(() => _highContrast = value),
@@ -81,7 +81,7 @@ class _AccessibilitySettingsScreenState
               ),
               _buildSwitchTile(
                 title: '大きなボタン',
-                subtitle: 'タップしやすい大きなボタン',
+                subtitle: 'タチE�Eしやすい大きなボタン',
                 value: _largeButtons,
                 onChanged: (value) => setState(() => _largeButtons = value),
                 tokens: tokens,
@@ -89,9 +89,9 @@ class _AccessibilitySettingsScreenState
             ],
           ),
           SizedBox(height: tokens.spacing.xl),
-          // 音声設定
+          // 音声設宁E
           _buildSection(
-            title: '音声設定',
+            title: '音声設宁E,
             icon: Icons.record_voice_over,
             tokens: tokens,
             children: [
@@ -109,14 +109,14 @@ class _AccessibilitySettingsScreenState
             ],
           ),
           SizedBox(height: tokens.spacing.xl),
-          // モーション設定
+          // モーション設宁E
           _buildSection(
-            title: 'モーション設定',
+            title: 'モーション設宁E,
             icon: Icons.animation,
             tokens: tokens,
             children: [
               _buildSwitchTile(
-                title: 'アニメーションを減らす',
+                title: 'アニメーションを減らぁE,
                 subtitle: '画面の動きを最小限に',
                 value: _reduceMotion,
                 onChanged: (value) => setState(() => _reduceMotion = value),
@@ -125,15 +125,15 @@ class _AccessibilitySettingsScreenState
             ],
           ),
           SizedBox(height: tokens.spacing.xl),
-          // UI設定
+          // UI設宁E
           _buildSection(
-            title: 'UI設定',
+            title: 'UI設宁E,
             icon: Icons.dashboard_customize,
             tokens: tokens,
             children: [
               _buildSwitchTile(
                 title: 'シンプルUI',
-                subtitle: '必要最小限の機能のみ表示',
+                subtitle: '忁E��最小限の機�Eのみ表示',
                 value: _simplifiedUI,
                 onChanged: (value) => setState(() => _simplifiedUI = value),
                 tokens: tokens,
@@ -144,7 +144,7 @@ class _AccessibilitySettingsScreenState
           // プレビュー
           _buildPreview(tokens),
           SizedBox(height: tokens.spacing.xl),
-          // 保存ボタン
+          // 保存�Eタン
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -156,7 +156,7 @@ class _AccessibilitySettingsScreenState
                 ),
               ),
               child: Text(
-                '設定を保存',
+                '設定を保孁E,
                 style: tokens.typography.body.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -282,7 +282,7 @@ class _AccessibilitySettingsScreenState
                     vertical: tokens.spacing.xs,
                   ),
                   decoration: BoxDecoration(
-                    color: tokens.primary.withOpacity(0.1),
+                    color: tokens.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(tokens.radius.md),
                   ),
                   child: Text(
@@ -332,7 +332,7 @@ class _AccessibilitySettingsScreenState
           ),
           SizedBox(height: tokens.spacing.md),
           Text(
-            'これは設定のプレビューです。実際の表示を確認できます。',
+            'これは設定�Eプレビューです。実際の表示を確認できます、E,
             style: tokens.typography.body.copyWith(
               color: _highContrast ? Colors.white : tokens.textPrimary,
               fontWeight: _boldText ? FontWeight.w600 : FontWeight.normal,
@@ -362,7 +362,7 @@ class _AccessibilitySettingsScreenState
   }
 
   void _saveSettings() {
-    // TODO: 設定を保存
+    // TODO: 設定を保孁E
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('設定を保存しました')),
     );

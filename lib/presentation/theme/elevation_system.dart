@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Elevationシステム - 影と深度の定義
+/// ElevationシスチE�� - 影と深度の定義
 /// Material Design 3に準拠した影のレベル
 class ElevationSystem {
   const ElevationSystem._();
@@ -9,32 +9,32 @@ class ElevationSystem {
   // Elevation レベル
   // ========================================
 
-  /// Level 0 - 影なし（フラット）
+  /// Level 0 - 影なし（フラチE���E�E
   static const double level0 = 0.0;
 
-  /// Level 1 - 最小の影（カード、チップ）
+  /// Level 1 - 最小�E影�E�カード、チチE�E�E�E
   static const double level1 = 1.0;
 
-  /// Level 2 - 小さな影（ボタン、FAB）
+  /// Level 2 - 小さな影�E��Eタン、FAB�E�E
   static const double level2 = 2.0;
 
-  /// Level 3 - 中程度の影（ダイアログ、メニュー）
+  /// Level 3 - 中程度の影�E�ダイアログ、メニュー�E�E
   static const double level3 = 3.0;
 
-  /// Level 4 - 大きな影（ナビゲーションドロワー）
+  /// Level 4 - 大きな影�E�ナビゲーションドロワー�E�E
   static const double level4 = 4.0;
 
-  /// Level 5 - 最大の影（モーダル、ボトムシート）
+  /// Level 5 - 最大の影�E�モーダル、�Eトムシート！E
   static const double level5 = 5.0;
 
   // ========================================
   // BoxShadow 定義
   // ========================================
 
-  /// 影なし
+  /// 影なぁE
   static const List<BoxShadow> none = [];
 
-  /// 極小の影 - ホバー状態
+  /// 極小�E影 - ホバー状慁E
   static const List<BoxShadow> minimal = [
     BoxShadow(
       color: Color(0x0A000000),
@@ -43,7 +43,7 @@ class ElevationSystem {
     ),
   ];
 
-  /// 小さな影 - カード、チップ
+  /// 小さな影 - カード、チチE�E
   static const List<BoxShadow> small = [
     BoxShadow(
       color: Color(0x0F000000),
@@ -99,7 +99,7 @@ class ElevationSystem {
     ),
   ];
 
-  /// 最大の影 - モーダル、ボトムシート
+  /// 最大の影 - モーダル、�EトムシーチE
   static const List<BoxShadow> maximum = [
     BoxShadow(
       color: Color(0x24000000),
@@ -117,7 +117,7 @@ class ElevationSystem {
   // ダークモード用の影
   // ========================================
 
-  /// ダークモード - 小さな影
+  /// ダークモーチE- 小さな影
   static const List<BoxShadow> darkSmall = [
     BoxShadow(
       color: Color(0x33000000),
@@ -126,7 +126,7 @@ class ElevationSystem {
     ),
   ];
 
-  /// ダークモード - 中程度の影
+  /// ダークモーチE- 中程度の影
   static const List<BoxShadow> darkMedium = [
     BoxShadow(
       color: Color(0x3D000000),
@@ -135,7 +135,7 @@ class ElevationSystem {
     ),
   ];
 
-  /// ダークモード - 大きな影
+  /// ダークモーチE- 大きな影
   static const List<BoxShadow> darkLarge = [
     BoxShadow(
       color: Color(0x47000000),
@@ -145,7 +145,7 @@ class ElevationSystem {
   ];
 
   // ========================================
-  // セマンティックな影
+  // セマンチE��チE��な影
   // ========================================
 
   /// カード用の影
@@ -170,13 +170,13 @@ class ElevationSystem {
   static const List<BoxShadow> appBar = minimal;
 
   // ========================================
-  // カラー付き影（アクセント）
+  // カラー付き影�E�アクセント！E
   // ========================================
 
   /// プライマリカラーの影
   static List<BoxShadow> primaryGlow(Color primaryColor) => [
         BoxShadow(
-          color: primaryColor.withOpacity(0.3),
+          color: primaryColor.withValues(alpha: 0.3),
           blurRadius: 16,
           offset: const Offset(0, 4),
         ),
@@ -185,7 +185,7 @@ class ElevationSystem {
   /// 成功カラーの影
   static List<BoxShadow> successGlow(Color successColor) => [
         BoxShadow(
-          color: successColor.withOpacity(0.3),
+          color: successColor.withValues(alpha: 0.3),
           blurRadius: 16,
           offset: const Offset(0, 4),
         ),
@@ -194,17 +194,17 @@ class ElevationSystem {
   /// エラーカラーの影
   static List<BoxShadow> errorGlow(Color errorColor) => [
         BoxShadow(
-          color: errorColor.withOpacity(0.3),
+          color: errorColor.withValues(alpha: 0.3),
           blurRadius: 16,
           offset: const Offset(0, 4),
         ),
       ];
 
   // ========================================
-  // インナーシャドウ（疑似）
+  // インナ�Eシャドウ�E�疑似�E�E
   // ========================================
 
-  /// インナーシャドウ効果（Containerの内側に配置）
+  /// インナ�Eシャドウ効果！Eontainerの冁E�Eに配置�E�E
   static BoxDecoration innerShadow({
     Color color = const Color(0x1A000000),
     double blurRadius = 8,
@@ -215,7 +215,7 @@ class ElevationSystem {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          color.withOpacity(0.1),
+          color.withValues(alpha: 0.1),
           Colors.transparent,
         ],
         stops: const [0.0, 0.3],
@@ -224,10 +224,10 @@ class ElevationSystem {
   }
 
   // ========================================
-  // ヘルパーメソッド
+  // ヘルパ�EメソチE��
   // ========================================
 
-  /// Brightnessに応じた影を取得
+  /// Brightnessに応じた影を取征E
   static List<BoxShadow> getShadow(
     Brightness brightness,
     List<BoxShadow> lightShadow,
@@ -236,7 +236,7 @@ class ElevationSystem {
     return brightness == Brightness.light ? lightShadow : darkShadow;
   }
 
-  /// レベルから影を取得
+  /// レベルから影を取征E
   static List<BoxShadow> fromLevel(int level) {
     switch (level) {
       case 0:
@@ -257,7 +257,7 @@ class ElevationSystem {
   }
 }
 
-/// Borderシステム - 枠線の定義
+/// BorderシスチE�� - 枠線�E定義
 class BorderSystem {
   const BorderSystem._();
 
@@ -265,26 +265,26 @@ class BorderSystem {
   // Border Width
   // ========================================
 
-  /// 枠線なし
+  /// 枠線なぁE
   static const double none = 0.0;
 
-  /// 極細枠線
+  /// 極細枠緁E
   static const double thin = 1.0;
 
-  /// 標準枠線
+  /// 標準枠緁E
   static const double regular = 1.5;
 
-  /// 太い枠線
+  /// 太ぁE��緁E
   static const double thick = 2.0;
 
-  /// 特太枠線
+  /// 特太枠緁E
   static const double extraThick = 3.0;
 
   // ========================================
   // Border Radius
   // ========================================
 
-  /// 角丸なし
+  /// 角丸なぁE
   static const double radiusNone = 0.0;
 
   /// 極小角丸
@@ -302,17 +302,17 @@ class BorderSystem {
   /// 特大角丸
   static const double radiusXL = 20.0;
 
-  /// 超特大角丸
+  /// 趁E��大角丸
   static const double radiusXXL = 28.0;
 
-  /// 完全な円形
+  /// 完�Eな冁E��
   static const double radiusFull = 999.0;
 
   // ========================================
-  // BorderRadius オブジェクト
+  // BorderRadius オブジェクチE
   // ========================================
 
-  /// 角丸なし
+  /// 角丸なぁE
   static const BorderRadius noRadius = BorderRadius.zero;
 
   /// 極小角丸
@@ -340,79 +340,79 @@ class BorderSystem {
     Radius.circular(radiusXL),
   );
 
-  /// 超特大角丸
+  /// 趁E��大角丸
   static const BorderRadius roundedXXL = BorderRadius.all(
     Radius.circular(radiusXXL),
   );
 
-  /// 完全な円形
+  /// 完�Eな冁E��
   static const BorderRadius roundedFull = BorderRadius.all(
     Radius.circular(radiusFull),
   );
 
   // ========================================
-  // Border オブジェクト
+  // Border オブジェクチE
   // ========================================
 
-  /// 標準枠線
+  /// 標準枠緁E
   static Border standard(Color color) => Border.all(
         color: color,
         width: regular,
       );
 
-  /// 細い枠線
+  /// 細ぁE��緁E
   static Border thinBorder(Color color) => Border.all(
         color: color,
         width: thin,
       );
 
-  /// 太い枠線
+  /// 太ぁE��緁E
   static Border thickBorder(Color color) => Border.all(
         color: color,
         width: thick,
       );
 
-  /// 下部のみの枠線
+  /// 下部のみの枠緁E
   static Border bottomOnly(Color color, {double width = regular}) => Border(
         bottom: BorderSide(color: color, width: width),
       );
 
-  /// 上部のみの枠線
+  /// 上部のみの枠緁E
   static Border topOnly(Color color, {double width = regular}) => Border(
         top: BorderSide(color: color, width: width),
       );
 
-  /// 左側のみの枠線
+  /// 左側のみの枠緁E
   static Border leftOnly(Color color, {double width = regular}) => Border(
         left: BorderSide(color: color, width: width),
       );
 
-  /// 右側のみの枠線
+  /// 右側のみの枠緁E
   static Border rightOnly(Color color, {double width = regular}) => Border(
         right: BorderSide(color: color, width: width),
       );
 
   // ========================================
-  // セマンティックな枠線
+  // セマンチE��チE��な枠緁E
   // ========================================
 
-  /// カード用の枠線
+  /// カード用の枠緁E
   static Border card(Color color) => thinBorder(color);
 
-  /// ボタン用の枠線
+  /// ボタン用の枠緁E
   static Border button(Color color) => standard(color);
 
-  /// 入力フィールド用の枠線
+  /// 入力フィールド用の枠緁E
   static Border input(Color color) => standard(color);
 
-  /// フォーカス時の枠線
+  /// フォーカス時�E枠緁E
   static Border focused(Color color) => thickBorder(color);
 
-  /// エラー時の枠線
+  /// エラー時�E枠緁E
   static Border error(Color errorColor) => thickBorder(errorColor);
 
   // ========================================
-  // セマンティックな角丸
+  // セマンチE��チE��な角丸
   // ========================================
 
   /// カード用の角丸
@@ -427,7 +427,7 @@ class BorderSystem {
   /// ダイアログ用の角丸
   static const BorderRadius dialogRadius = roundedLG;
 
-  /// ボトムシート用の角丸（上部のみ）
+  /// ボトムシート用の角丸�E�上部のみ�E�E
   static const BorderRadius bottomSheetRadius = BorderRadius.only(
     topLeft: Radius.circular(radiusLG),
     topRight: Radius.circular(radiusLG),
@@ -458,7 +458,7 @@ extension ElevationExtension on Widget {
     );
   }
 
-  /// カードの影を追加
+  /// カード�E影を追加
   Widget withCardElevation({
     BorderRadius? borderRadius,
     Color? backgroundColor,

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// タイポグラフィシステム完全定義
-/// H1-H6、Body、Caption、Monoの階層を提供
+/// タイポグラフィシスチE��完�E定義
+/// H1-H6、Body、Caption、Monoの階層を提侁E
 class TypographySystem {
   const TypographySystem._();
 
   // ========================================
-  // Display Styles (最大見出し)
+  // Display Styles (最大見�EぁE
   // ========================================
 
-  /// H1 - 最大の見出し（ランディングページ、重要な画面タイトル）
+  /// H1 - 最大の見�Eし（ランチE��ングペ�Eジ、E��要な画面タイトル�E�E
   static TextStyle h1({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 40,
         fontWeight: FontWeight.w800,
@@ -19,7 +19,7 @@ class TypographySystem {
         color: color,
       );
 
-  /// H2 - 大きな見出し（セクションタイトル）
+  /// H2 - 大きな見�Eし（セクションタイトル�E�E
   static TextStyle h2({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 32,
         fontWeight: FontWeight.w800,
@@ -28,7 +28,7 @@ class TypographySystem {
         color: color,
       );
 
-  /// H3 - 中見出し（カードタイトル、画面サブタイトル）
+  /// H3 - 中見�Eし（カードタイトル、画面サブタイトル�E�E
   static TextStyle h3({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 28,
         fontWeight: FontWeight.w700,
@@ -41,7 +41,7 @@ class TypographySystem {
   // Title Styles (タイトル)
   // ========================================
 
-  /// H4 - 小見出し（セクション内のタイトル）
+  /// H4 - 小見�Eし（セクション冁E�Eタイトル�E�E
   static TextStyle h4({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 24,
         fontWeight: FontWeight.w700,
@@ -50,7 +50,7 @@ class TypographySystem {
         color: color,
       );
 
-  /// H5 - 最小見出し（リストアイテムタイトル）
+  /// H5 - 最小見�Eし（リストアイチE��タイトル�E�E
   static TextStyle h5({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 20,
         fontWeight: FontWeight.w600,
@@ -59,7 +59,7 @@ class TypographySystem {
         color: color,
       );
 
-  /// H6 - 極小見出し（インラインタイトル）
+  /// H6 - 極小見�Eし（インラインタイトル�E�E
   static TextStyle h6({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 16,
         fontWeight: FontWeight.w600,
@@ -69,10 +69,10 @@ class TypographySystem {
       );
 
   // ========================================
-  // Body Styles (本文)
+  // Body Styles (本斁E
   // ========================================
 
-  /// Body Large - 大きな本文（重要な説明文）
+  /// Body Large - 大きな本斁E��重要な説明文�E�E
   static TextStyle bodyLarge({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 16,
         fontWeight: FontWeight.w500,
@@ -81,7 +81,7 @@ class TypographySystem {
         color: color,
       );
 
-  /// Body Medium - 標準本文（通常の説明文）
+  /// Body Medium - 標準本斁E��通常の説明文�E�E
   static TextStyle bodyMedium({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 14,
         fontWeight: FontWeight.w500,
@@ -90,7 +90,7 @@ class TypographySystem {
         color: color,
       );
 
-  /// Body Small - 小さな本文（補足説明）
+  /// Body Small - 小さな本斁E��補足説明！E
   static TextStyle bodySmall({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 12,
         fontWeight: FontWeight.w500,
@@ -103,7 +103,7 @@ class TypographySystem {
   // Caption Styles (キャプション)
   // ========================================
 
-  /// Caption - キャプション（画像説明、メタ情報）
+  /// Caption - キャプション�E�画像説明、メタ惁E���E�E
   static TextStyle caption({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 12,
         fontWeight: FontWeight.w400,
@@ -112,7 +112,7 @@ class TypographySystem {
         color: color,
       );
 
-  /// Overline - オーバーライン（ラベル、カテゴリ）
+  /// Overline - オーバ�Eライン�E�ラベル、カチE��リ�E�E
   static TextStyle overline({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 11,
         fontWeight: FontWeight.w600,
@@ -134,7 +134,7 @@ class TypographySystem {
         color: color,
       );
 
-  /// Button Medium - 標準ボタン
+  /// Button Medium - 標準�Eタン
   static TextStyle buttonMedium({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 14,
         fontWeight: FontWeight.w600,
@@ -153,10 +153,10 @@ class TypographySystem {
       );
 
   // ========================================
-  // Monospace Styles (等幅フォント)
+  // Monospace Styles (等幁E��ォンチE
   // ========================================
 
-  /// Mono Large - 大きな等幅（コード、数値）
+  /// Mono Large - 大きな等幁E��コード、数値�E�E
   static TextStyle monoLarge({Color? color}) => GoogleFonts.robotoMono(
         fontSize: 16,
         fontWeight: FontWeight.w500,
@@ -165,7 +165,7 @@ class TypographySystem {
         color: color,
       );
 
-  /// Mono Medium - 標準等幅
+  /// Mono Medium - 標準等幁E
   static TextStyle monoMedium({Color? color}) => GoogleFonts.robotoMono(
         fontSize: 14,
         fontWeight: FontWeight.w500,
@@ -174,7 +174,7 @@ class TypographySystem {
         color: color,
       );
 
-  /// Mono Small - 小さな等幅
+  /// Mono Small - 小さな等幁E
   static TextStyle monoSmall({Color? color}) => GoogleFonts.robotoMono(
         fontSize: 12,
         fontWeight: FontWeight.w500,
@@ -184,10 +184,10 @@ class TypographySystem {
       );
 
   // ========================================
-  // Emotional Styles (感情的なスタイル)
+  // Emotional Styles (感情皁E��スタイル)
   // ========================================
 
-  /// Celebration - 祝福テキスト
+  /// Celebration - 祝福テキスチE
   static TextStyle celebration({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 24,
         fontWeight: FontWeight.w700,
@@ -196,7 +196,7 @@ class TypographySystem {
         color: color ?? const Color(0xFFFFD700),
       );
 
-  /// Encouragement - 励ましテキスト
+  /// Encouragement - 励ましテキスチE
   static TextStyle encouragement({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 18,
         fontWeight: FontWeight.w600,
@@ -205,7 +205,7 @@ class TypographySystem {
         color: color ?? const Color(0xFFFF6B6B),
       );
 
-  /// Guidance - ガイダンステキスト
+  /// Guidance - ガイダンスチE��スチE
   static TextStyle guidance({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 14,
         fontWeight: FontWeight.w500,
@@ -214,7 +214,7 @@ class TypographySystem {
         color: color ?? const Color(0xFF4ECDC4),
       );
 
-  /// Whisper - ささやきテキスト（控えめなヒント）
+  /// Whisper - ささめE��チE��スト（控えめなヒント！E
   static TextStyle whisper({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 12,
         fontWeight: FontWeight.w400,
@@ -227,7 +227,7 @@ class TypographySystem {
   // Numeric Styles (数値表示)
   // ========================================
 
-  /// Numeric Large - 大きな数値（統計、カウンター）
+  /// Numeric Large - 大きな数値�E�統計、カウンター�E�E
   static TextStyle numericLarge({Color? color}) => GoogleFonts.plusJakartaSans(
         fontSize: 48,
         fontWeight: FontWeight.w800,
@@ -258,7 +258,7 @@ class TypographySystem {
       );
 }
 
-/// タイポグラフィヘルパー拡張
+/// タイポグラフィヘルパ�E拡張
 extension TypographyExtension on TextStyle {
   /// 太字にする
   TextStyle get bold => copyWith(fontWeight: FontWeight.w700);
@@ -269,7 +269,7 @@ extension TypographyExtension on TextStyle {
   /// 通常の太さにする
   TextStyle get regular => copyWith(fontWeight: FontWeight.w400);
 
-  /// イタリック体にする
+  /// イタリチE��体にする
   TextStyle get italic => copyWith(fontStyle: FontStyle.italic);
 
   /// 下線を追加
@@ -281,14 +281,14 @@ extension TypographyExtension on TextStyle {
   /// 色を変更
   TextStyle withColor(Color color) => copyWith(color: color);
 
-  /// 不透明度を変更
+  /// 不透�E度を変更
   TextStyle withOpacity(double opacity) =>
       copyWith(color: color?.withOpacity(opacity));
 
-  /// 行の高さを変更
+  /// 行�E高さを変更
   TextStyle withHeight(double height) => copyWith(height: height);
 
-  /// 文字間隔を変更
+  /// 斁E��間隔を変更
   TextStyle withLetterSpacing(double spacing) =>
       copyWith(letterSpacing: spacing);
 }
@@ -297,7 +297,7 @@ extension TypographyExtension on TextStyle {
 class TypographyScale {
   const TypographyScale._();
 
-  // フォントサイズスケール（4pxベース）
+  // フォントサイズスケール�E�Epxベ�Eス�E�E
   static const double xs = 11.0; // Extra Small
   static const double sm = 12.0; // Small
   static const double base = 14.0; // Base
@@ -310,7 +310,7 @@ class TypographyScale {
   static const double xxxxxl = 40.0; // 5X Large
   static const double xxxxxxl = 48.0; // 6X Large
 
-  // フォントウェイト
+  // フォントウェイチE
   static const FontWeight thin = FontWeight.w100;
   static const FontWeight extraLight = FontWeight.w200;
   static const FontWeight light = FontWeight.w300;
@@ -321,13 +321,13 @@ class TypographyScale {
   static const FontWeight extraBold = FontWeight.w800;
   static const FontWeight black = FontWeight.w900;
 
-  // 行の高さ
+  // 行�E高さ
   static const double tightHeight = 1.2;
   static const double normalHeight = 1.5;
   static const double relaxedHeight = 1.75;
   static const double looseHeight = 2.0;
 
-  // 文字間隔
+  // 斁E��間隁E
   static const double tightSpacing = -0.5;
   static const double normalSpacing = 0.0;
   static const double wideSpacing = 0.5;
@@ -338,7 +338,7 @@ class TypographyScale {
 class ResponsiveTypography {
   const ResponsiveTypography._();
 
-  /// 画面サイズに応じたフォントサイズを取得
+  /// 画面サイズに応じたフォントサイズを取征E
   static double getResponsiveFontSize(
     BuildContext context,
     double baseSize,
@@ -349,7 +349,7 @@ class ResponsiveTypography {
       // 小型端末
       return baseSize * 0.9;
     } else if (width > 600) {
-      // タブレット
+      // タブレチE��
       return baseSize * 1.1;
     }
 

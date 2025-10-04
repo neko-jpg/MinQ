@@ -2,32 +2,32 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-/// コントラスト検証ツール
-/// WCAG 2.1準拠のコントラスト比チェック
+/// コントラスト検証チE�Eル
+/// WCAG 2.1準拠のコントラスト比チェチE��
 class ContrastValidator {
   const ContrastValidator._();
 
   // ========================================
-  // WCAG基準
+  // WCAG基溁E
   // ========================================
 
-  /// WCAG AA 通常テキスト: 4.5:1
+  /// WCAG AA 通常チE��スチE 4.5:1
   static const double wcagAA = 4.5;
 
-  /// WCAG AA 大きなテキスト: 3:1
+  /// WCAG AA 大きなチE��スチE 3:1
   static const double wcagAALarge = 3.0;
 
-  /// WCAG AAA 通常テキスト: 7:1
+  /// WCAG AAA 通常チE��スチE 7:1
   static const double wcagAAA = 7.0;
 
-  /// WCAG AAA 大きなテキスト: 4.5:1
+  /// WCAG AAA 大きなチE��スチE 4.5:1
   static const double wcagAAALarge = 4.5;
 
   // ========================================
-  // コントラスト比計算
+  // コントラスト比計箁E
   // ========================================
 
-  /// 相対輝度を計算
+  /// 相対輝度を計箁E
   static double _relativeLuminance(Color color) {
     final r = _linearize(color.red / 255.0);
     final g = _linearize(color.green / 255.0);
@@ -36,7 +36,7 @@ class ContrastValidator {
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   }
 
-  /// sRGB値を線形化
+  /// sRGB値を線形匁E
   static double _linearize(double channel) {
     if (channel <= 0.03928) {
       return channel / 12.92;
@@ -44,7 +44,7 @@ class ContrastValidator {
     return math.pow((channel + 0.055) / 1.055, 2.4).toDouble();
   }
 
-  /// コントラスト比を計算
+  /// コントラスト比を計箁E
   static double calculateContrastRatio(Color foreground, Color background) {
     final fgLuminance = _relativeLuminance(foreground);
     final bgLuminance = _relativeLuminance(background);
@@ -56,25 +56,25 @@ class ContrastValidator {
   }
 
   // ========================================
-  // WCAG準拠チェック
+  // WCAG準拠チェチE��
   // ========================================
 
-  /// WCAG AA準拠（通常テキスト）
+  /// WCAG AA準拠�E�通常チE��スト！E
   static bool meetsWCAGAA(Color foreground, Color background) {
     return calculateContrastRatio(foreground, background) >= wcagAA;
   }
 
-  /// WCAG AA準拠（大きなテキスト）
+  /// WCAG AA準拠�E�大きなチE��スト！E
   static bool meetsWCAGAALarge(Color foreground, Color background) {
     return calculateContrastRatio(foreground, background) >= wcagAALarge;
   }
 
-  /// WCAG AAA準拠（通常テキスト）
+  /// WCAG AAA準拠�E�通常チE��スト！E
   static bool meetsWCAGAAA(Color foreground, Color background) {
     return calculateContrastRatio(foreground, background) >= wcagAAA;
   }
 
-  /// WCAG AAA準拠（大きなテキスト）
+  /// WCAG AAA準拠�E�大きなチE��スト！E
   static bool meetsWCAGAAALarge(Color foreground, Color background) {
     return calculateContrastRatio(foreground, background) >= wcagAAALarge;
   }
@@ -83,7 +83,7 @@ class ContrastValidator {
   // 色の調整
   // ========================================
 
-  /// 指定したコントラスト比を満たすように色を調整
+  /// 持E��したコントラスト比を満たすように色を調整
   static Color ensureContrast(
     Color foreground,
     Color background, {
@@ -97,7 +97,7 @@ class ContrastValidator {
     final bgLuminance = _relativeLuminance(background);
     final isBackgroundLight = bgLuminance > 0.5;
 
-    // 背景が明るい場合は暗く、暗い場合は明るく調整
+    // 背景が�Eるい場合�E暗く、暗ぁE��合�E明るく調整
     Color adjusted = foreground;
     for (int i = 0; i < maxIterations; i++) {
       if (calculateContrastRatio(adjusted, background) >= minContrast) {
@@ -108,23 +108,23 @@ class ContrastValidator {
         // 暗くする
         adjusted = _darken(adjusted, 0.05);
       } else {
-        // 明るくする
+        // 明るくすめE
         adjusted = _lighten(adjusted, 0.05);
       }
     }
 
-    // 最終手段: 黒または白
+    // 最終手段: 黒また�E白
     return isBackgroundLight ? Colors.black : Colors.white;
   }
 
-  /// 色を明るくする
+  /// 色を�Eるくする
   static Color _lighten(Color color, double amount) {
     final hsl = HSLColor.fromColor(color);
     final lightness = math.min(1.0, hsl.lightness + amount);
     return hsl.withLightness(lightness).toColor();
   }
 
-  /// 色を暗くする
+  /// 色を暗くすめE
   static Color _darken(Color color, double amount) {
     final hsl = HSLColor.fromColor(color);
     final lightness = math.max(0.0, hsl.lightness - amount);
@@ -132,15 +132,15 @@ class ContrastValidator {
   }
 
   // ========================================
-  // テキストサイズ判定
+  // チE��ストサイズ判宁E
   // ========================================
 
-  /// 大きなテキストかどうか（18pt以上、または14pt太字以上）
+  /// 大きなチE��ストかどぁE���E�E8pt以上、また�E14pt太字以上！E
   static bool isLargeText(double fontSize, FontWeight fontWeight) {
     // 18pt = 24px (1pt = 1.333px)
     if (fontSize >= 24) return true;
 
-    // 14pt太字 = 18.67px
+    // 14pt太孁E= 18.67px
     if (fontSize >= 18.67 && fontWeight.index >= FontWeight.w700.index) {
       return true;
     }
@@ -149,10 +149,10 @@ class ContrastValidator {
   }
 
   // ========================================
-  // レポート生成
+  // レポ�Eト生戁E
   // ========================================
 
-  /// コントラストレポートを生成
+  /// コントラストレポ�Eトを生�E
   static ContrastReport generateReport(
     Color foreground,
     Color background, {
@@ -178,7 +178,7 @@ class ContrastValidator {
   // バッチ検証
   // ========================================
 
-  /// 複数の色の組み合わせを検証
+  /// 褁E��の色の絁E��合わせを検証
   static List<ContrastReport> validateColorPairs(
     List<ColorPair> pairs,
   ) {
@@ -192,11 +192,11 @@ class ContrastValidator {
     }).toList();
   }
 
-  /// テーマ全体のコントラストを検証
+  /// チE�Eマ�E体�Eコントラストを検証
   static ThemeContrastReport validateTheme(ThemeData theme) {
     final reports = <String, ContrastReport>{};
 
-    // プライマリテキスト
+    // プライマリチE��スチE
     reports['primary_on_background'] = generateReport(
       theme.colorScheme.onSurface,
       theme.colorScheme.surface,
@@ -246,7 +246,7 @@ class ColorPair {
   });
 }
 
-/// コントラストレポート
+/// コントラストレポ�EチE
 class ContrastReport {
   final Color foreground;
   final Color background;
@@ -264,17 +264,17 @@ class ContrastReport {
     required this.meetsAAA,
   });
 
-  /// レポートを文字列として出力
+  /// レポ�Eトを斁E���Eとして出劁E
   String toReadableString() {
     final buffer = StringBuffer();
     buffer.writeln('Contrast Ratio: ${contrastRatio.toStringAsFixed(2)}:1');
     buffer.writeln('Text Size: ${isLargeText ? "Large" : "Normal"}');
-    buffer.writeln('WCAG AA: ${meetsAA ? "✓ Pass" : "✗ Fail"}');
-    buffer.writeln('WCAG AAA: ${meetsAAA ? "✓ Pass" : "✗ Fail"}');
+    buffer.writeln('WCAG AA: ${meetsAA ? "✁EPass" : "✁EFail"}');
+    buffer.writeln('WCAG AAA: ${meetsAAA ? "✁EPass" : "✁EFail"}');
     return buffer.toString();
   }
 
-  /// 合格レベルを取得
+  /// 合格レベルを取征E
   String get complianceLevel {
     if (meetsAAA) return 'AAA';
     if (meetsAA) return 'AA';
@@ -282,23 +282,23 @@ class ContrastReport {
   }
 }
 
-/// テーマコントラストレポート
+/// チE�Eマコントラストレポ�EチE
 class ThemeContrastReport {
   final Map<String, ContrastReport> reports;
 
   const ThemeContrastReport({required this.reports});
 
-  /// すべてAA準拠か
+  /// すべてAA準拠ぁE
   bool get allMeetAA {
     return reports.values.every((report) => report.meetsAA);
   }
 
-  /// すべてAAA準拠か
+  /// すべてAAA準拠ぁE
   bool get allMeetAAA {
     return reports.values.every((report) => report.meetsAAA);
   }
 
-  /// 不合格の項目
+  /// 不合格の頁E��
   List<String> get failedItems {
     return reports.entries
         .where((entry) => !entry.value.meetsAA)
@@ -306,13 +306,13 @@ class ThemeContrastReport {
         .toList();
   }
 
-  /// レポートを文字列として出力
+  /// レポ�Eトを斁E���Eとして出劁E
   String toReadableString() {
     final buffer = StringBuffer();
     buffer.writeln('=== Theme Contrast Report ===');
-    buffer.writeln('Overall AA Compliance: ${allMeetAA ? "✓ Pass" : "✗ Fail"}');
+    buffer.writeln('Overall AA Compliance: ${allMeetAA ? "✁EPass" : "✁EFail"}');
     buffer.writeln(
-        'Overall AAA Compliance: ${allMeetAAA ? "✓ Pass" : "✗ Fail"}',);
+        'Overall AAA Compliance: ${allMeetAAA ? "✁EPass" : "✁EFail"}',);
     buffer.writeln('');
 
     for (final entry in reports.entries) {
@@ -332,7 +332,7 @@ class ThemeContrastReport {
   }
 }
 
-/// コントラストチェッカーウィジェット（デバッグ用）
+/// コントラストチェチE��ーウィジェチE���E�デバッグ用�E�E
 class ContrastChecker extends StatelessWidget {
   final Color foreground;
   final Color background;
@@ -383,7 +383,7 @@ class ContrastChecker extends StatelessWidget {
             style: const TextStyle(fontSize: 12),
           ),
           Text(
-            'AA: ${report.meetsAA ? "✓" : "✗"} | AAA: ${report.meetsAAA ? "✓" : "✗"}',
+            'AA: ${report.meetsAA ? "✁E : "✁E} | AAA: ${report.meetsAAA ? "✁E : "✁E}',
             style: const TextStyle(fontSize: 12),
           ),
         ],
@@ -394,22 +394,22 @@ class ContrastChecker extends StatelessWidget {
 
 /// Color拡張
 extension ContrastExtension on Color {
-  /// 指定した背景色に対するコントラスト比を計算
+  /// 持E��した背景色に対するコントラスト比を計箁E
   double contrastWith(Color background) {
     return ContrastValidator.calculateContrastRatio(this, background);
   }
 
-  /// 指定した背景色に対してWCAG AA準拠か
+  /// 持E��した背景色に対してWCAG AA準拠ぁE
   bool meetsWCAGAA(Color background) {
     return ContrastValidator.meetsWCAGAA(this, background);
   }
 
-  /// 指定した背景色に対してWCAG AAA準拠か
+  /// 持E��した背景色に対してWCAG AAA準拠ぁE
   bool meetsWCAGAAA(Color background) {
     return ContrastValidator.meetsWCAGAAA(this, background);
   }
 
-  /// 指定した背景色に対して適切なコントラストになるよう調整
+  /// 持E��した背景色に対して適刁E��コントラストになるよぁE��整
   Color ensureContrastWith(Color background, {double minContrast = 4.5}) {
     return ContrastValidator.ensureContrast(
       this,

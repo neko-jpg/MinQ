@@ -59,7 +59,7 @@ class BuddyListScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton.icon(
           icon: const Icon(Icons.search),
-          label: const Text('新しいバディを探す'),
+          label: const Text('新しいバディを探ぁE),
           onPressed:
               () => ref.read(navigationUseCaseProvider).goToPairMatching(),
           style: ElevatedButton.styleFrom(
@@ -107,7 +107,7 @@ class _BuddyCard extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.block, color: Colors.red),
             title: const Text(
-              'バディをブロック',
+              'バディをブロチE��',
               style: TextStyle(color: Colors.red),
             ),
             onTap: () {
@@ -115,9 +115,9 @@ class _BuddyCard extends ConsumerWidget {
               showDialog(
                 context: context,
                 builder: (dialogCtx) => AlertDialog(
-                  title: const Text('バディをブロック'),
+                  title: const Text('バディをブロチE��'),
                   content: const Text(
-                    'ブロックすると、今後このユーザーとマッチングしなくなります。本当によろしいですか？',
+                    'ブロチE��すると、今後このユーザーとマッチングしなくなります。本当によろしいですか�E�E,
                   ),
                   actions: <Widget>[
                     TextButton(
@@ -126,7 +126,7 @@ class _BuddyCard extends ConsumerWidget {
                     ),
                     TextButton(
                       child: const Text(
-                        'ブロック',
+                        'ブロチE��',
                         style: TextStyle(color: Colors.red),
                       ),
                       onPressed: () async {
@@ -134,7 +134,7 @@ class _BuddyCard extends ConsumerWidget {
                           await repo.blockUser(currentUserId, otherMemberId);
                           FeedbackMessenger.showSuccessToast(
                             context,
-                            'バディをブロックしました。',
+                            'バディをブロチE��しました、E,
                           );
                         }
                         if (context.mounted) {
@@ -149,15 +149,15 @@ class _BuddyCard extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
-            title: const Text('ペアを解消', style: TextStyle(color: Colors.red)),
+            title: const Text('ペアを解涁E, style: TextStyle(color: Colors.red)),
             onTap: () {
               Navigator.of(ctx).pop();
               showDialog(
                 context: context,
                 builder: (dialogCtx) => AlertDialog(
-                  title: const Text('ペアを解消'),
+                  title: const Text('ペアを解涁E),
                   content: const Text(
-                    '本当にこのバディとのペアを解消しますか？この操作は取り消せません。',
+                    '本当にこ�Eバディとのペアを解消しますか�E�この操作�E取り消せません、E,
                   ),
                   actions: <Widget>[
                     TextButton(
@@ -166,7 +166,7 @@ class _BuddyCard extends ConsumerWidget {
                     ),
                     TextButton(
                       child: const Text(
-                        '解消する',
+                        '解消すめE,
                         style: TextStyle(color: Colors.red),
                       ),
                       onPressed: () async {
@@ -174,7 +174,7 @@ class _BuddyCard extends ConsumerWidget {
                           await repo.leavePair(pair.id, currentUserId);
                           FeedbackMessenger.showSuccessToast(
                             context,
-                            'ペアを解消しました。',
+                            'ペアを解消しました、E,
                           );
                         }
                         if (context.mounted) {
@@ -231,7 +231,7 @@ class _BuddyCard extends ConsumerWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '目標：${pair.category}',
+                        '目標！E{pair.category}',
                         style: tokens.bodySmall.copyWith(
                           color: tokens.textMuted,
                         ),
@@ -262,7 +262,7 @@ class _BuddyCard extends ConsumerWidget {
                       repo.sendHighFive(pair.id, currentUserId);
                       FeedbackMessenger.showSuccessToast(
                         context,
-                        '👏 拍手を送りました！',
+                        '👏 拍手を送りました�E�E,
                       );
                       FeedbackManager.selected();
                     }
@@ -270,7 +270,7 @@ class _BuddyCard extends ConsumerWidget {
                 ),
                 _ActionItem(
                   icon: Icons.chat_bubble_outline,
-                  label: 'チャット',
+                  label: 'チャチE��',
                   color: Colors.blue.shade400,
                   onTap:
                       () => ref
@@ -279,7 +279,7 @@ class _BuddyCard extends ConsumerWidget {
                 ),
                 _ActionItem(
                   icon: Icons.check_circle_outline,
-                  label: 'チェックイン',
+                  label: 'チェチE��イン',
                   color: Colors.orange.shade400,
                   onTap: () {
                     final repo = ref.read(pairRepositoryProvider);
@@ -287,7 +287,7 @@ class _BuddyCard extends ConsumerWidget {
                       repo.sendCheckIn(pair.id, currentUserId);
                       FeedbackMessenger.showSuccessToast(
                         context,
-                        '✅ 今日の達成を報告しました！',
+                        '✁E今日の達�Eを報告しました�E�E,
                       );
                       FeedbackManager.questCompleted();
                     }
@@ -372,7 +372,7 @@ Future<void> _showReportDialog(
             controller: reasonController,
             maxLines: 3,
             decoration: const InputDecoration(
-              hintText: '内容を記入してください',
+              hintText: '冁E��を記�Eしてください',
               border: OutlineInputBorder(),
             ),
           ),

@@ -8,21 +8,21 @@ enum FocusAccent {
   error,
 }
 
-/// フォーカスシステム - キーボード操作対応
+/// フォーカスシスチE�� - キーボ�Eド操作対忁E
 class FocusSystem {
   const FocusSystem._();
 
   // ========================================
-  // フォーカスリング設定
+  // フォーカスリング設宁E
   // ========================================
 
-  /// フォーカスリングの幅
+  /// フォーカスリングの幁E
   static const double focusRingWidth = 2.0;
 
-  /// フォーカスリングの太い幅（強調時）
+  /// フォーカスリングの太ぁE��E��強調時！E
   static const double focusRingWidthBold = 3.0;
 
-  /// フォーカスリングのオフセット
+  /// フォーカスリングのオフセチE��
   static const double focusRingOffset = 2.0;
 
   /// フォーカスリングの角丸
@@ -65,29 +65,23 @@ class FocusSystem {
   }
 
   // ========================================
-  // フォーカステーマ
+  // フォーカスチE�EチE
   // ========================================
 
-  /// ライトモードのフォーカステーマ
-  static FocusThemeData lightFocusTheme() {
+  /// ライトモード�EフォーカスカラーE
+  static Color lightFocusColor() {
     final tokens = MinqTheme.light();
-    return FocusThemeData(
-      glowColor: tokens.brandPrimary.withOpacity(0.3),
-      glowFactor: 2.0,
-    );
+    return tokens.brandPrimary.withValues(alpha: 0.3);
   }
 
-  /// ダークモードのフォーカステーマ
-  static FocusThemeData darkFocusTheme() {
+  /// ダークモード�EフォーカスカラーE
+  static Color darkFocusColor() {
     final tokens = MinqTheme.dark();
-    return FocusThemeData(
-      glowColor: tokens.brandPrimary.withOpacity(0.3),
-      glowFactor: 2.0,
-    );
+    return tokens.brandPrimary.withValues(alpha: 0.3);
   }
 
   // ========================================
-  // フォーカスデコレーション
+  // フォーカスチE��レーション
   // ========================================
 
   /// フォーカスリングのBoxDecoration
@@ -105,7 +99,7 @@ class FocusSystem {
       borderRadius: BorderRadius.circular(radius),
       boxShadow: [
         BoxShadow(
-          color: highContrast ? focusColor : focusColor.withOpacity(0.3),
+          color: highContrast ? focusColor : focusColor.withValues(alpha: 0.3),
           blurRadius: 4,
           spreadRadius: 1,
         ),
@@ -113,7 +107,7 @@ class FocusSystem {
     );
   }
 
-  /// BuildContextからフォーカスデコレーションを生成
+  /// BuildContextからフォーカスチE��レーションを生戁E
   static BoxDecoration focusDecorationForContext(
     BuildContext context, {
     FocusAccent accent = FocusAccent.neutral,
@@ -136,7 +130,7 @@ class FocusSystem {
     );
   }
 
-  /// フォーカス時のアウトライン
+  /// フォーカス時�Eアウトライン
   static OutlineInputBorder focusedBorder({
     required Color focusColor,
     double width = focusRingWidth,
@@ -152,7 +146,7 @@ class FocusSystem {
   }
 }
 
-/// フォーカス対応ウィジェット
+/// フォーカス対応ウィジェチE��
 class FocusableWidget extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
@@ -246,7 +240,7 @@ class _FocusableWidgetState extends State<FocusableWidget> {
   }
 }
 
-/// キーボードナビゲーション対応リスト
+/// キーボ�Eドナビゲーション対応リスチE
 class KeyboardNavigableList extends StatefulWidget {
   final List<Widget> children;
   final Axis scrollDirection;
@@ -356,7 +350,7 @@ class _KeyboardNavigableListState extends State<KeyboardNavigableList> {
   }
 }
 
-/// フォーカス対応ボタン
+/// フォーカス対応�Eタン
 class FocusableButton extends StatelessWidget {
   final Widget child;
   final VoidCallback? onPressed;
@@ -385,7 +379,7 @@ class FocusableButton extends StatelessWidget {
   }
 }
 
-/// フォーカストラバーサル順序
+/// フォーカストラバ�Eサル頁E��E
 class FocusTraversalOrderWidget extends StatelessWidget {
   final double order;
   final Widget child;
@@ -405,17 +399,17 @@ class FocusTraversalOrderWidget extends StatelessWidget {
   }
 }
 
-/// キーボードショートカットヘルパー
+/// キーボ�EドショートカチE��ヘルパ�E
 class KeyboardShortcuts {
   const KeyboardShortcuts._();
 
-  /// Ctrl/Cmd + S: 保存
+  /// Ctrl/Cmd + S: 保孁E
   static bool isSaveShortcut(RawKeyEvent event) {
     return event.isControlPressed &&
         event.logicalKey == LogicalKeyboardKey.keyS;
   }
 
-  /// Ctrl/Cmd + N: 新規作成
+  /// Ctrl/Cmd + N: 新規作�E
   static bool isNewShortcut(RawKeyEvent event) {
     return event.isControlPressed &&
         event.logicalKey == LogicalKeyboardKey.keyN;
@@ -427,17 +421,17 @@ class KeyboardShortcuts {
         event.logicalKey == LogicalKeyboardKey.keyF;
   }
 
-  /// Esc: キャンセル/閉じる
+  /// Esc: キャンセル/閉じめE
   static bool isEscapeKey(RawKeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.escape;
   }
 
-  /// Enter: 確定
+  /// Enter: 確宁E
   static bool isEnterKey(RawKeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.enter;
   }
 
-  /// Space: 選択/トグル
+  /// Space: 選抁Eトグル
   static bool isSpaceKey(RawKeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.space;
   }
@@ -447,7 +441,7 @@ class KeyboardShortcuts {
     return event.logicalKey == LogicalKeyboardKey.tab;
   }
 
-  /// Shift + Tab: 前のフォーカス
+  /// Shift + Tab: 前�Eフォーカス
   static bool isShiftTabKey(RawKeyEvent event) {
     return event.isShiftPressed &&
         event.logicalKey == LogicalKeyboardKey.tab;

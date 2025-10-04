@@ -125,12 +125,12 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
       BottomNavigationBarItem(
         icon: Icon(Icons.home_outlined),
         activeIcon: Icon(Icons.home),
-        label: 'ホーム',
+        label: 'ホ�Eム',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.bar_chart_outlined),
         activeIcon: Icon(Icons.bar_chart),
-        label: '進捗',
+        label: '進捁E,
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.groups_outlined),
@@ -140,15 +140,15 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
       BottomNavigationBarItem(
         icon: Icon(Icons.checklist_outlined),
         activeIcon: Icon(Icons.checklist),
-        label: 'クエスト',
+        label: 'クエスチE,
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.settings_outlined),
         activeIcon: Icon(Icons.settings),
-        label: '設定',
+        label: '設宁E,
       ),
     ];
-    assert(navItems.length <= 5, 'ボトムナビゲーションのタブ数は5個以下にしてください。');
+    assert(navItems.length <= 5, 'ボトムナビゲーションのタブ数は5個以下にしてください、E);
 
     final scaffold = Scaffold(
       body: PageTransitionSwitcher(
@@ -205,9 +205,9 @@ class _UsageLimitOverlay extends ConsumerWidget {
     if (duration.inHours >= 1) {
       final hours = duration.inHours;
       final minutes = duration.inMinutes.remainder(60);
-      return '$hours時間$minutes分';
+      return '$hours時間$minutes刁E;
     }
-    return '${duration.inMinutes}分';
+    return '${duration.inMinutes}刁E;
   }
 
   @override
@@ -220,7 +220,7 @@ class _UsageLimitOverlay extends ConsumerWidget {
 
     return Positioned.fill(
       child: Material(
-        color: Colors.black.withOpacity(0.55),
+        color: Colors.black.withValues(alpha: 0.55),
         child: Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 360),
@@ -252,7 +252,7 @@ class _UsageLimitOverlay extends ConsumerWidget {
                 SizedBox(height: tokens.spacing(1)),
                 Text(
                   remaining == Duration.zero
-                      ? '今日はこれ以上操作できません。'
+                      ? '今日はこれ以上操作できません、E
                       : '残り時間: ${_formatDuration(remaining)}',
                   style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),

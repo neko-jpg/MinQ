@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/core/achievements/achievement_system.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-/// アチーブメント一覧画面
+/// アチ�Eブメント一覧画面
 class AchievementsScreen extends ConsumerWidget {
   const AchievementsScreen({super.key});
 
@@ -19,7 +19,7 @@ class AchievementsScreen extends ConsumerWidget {
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
-          'アチーブメント',
+          'アチ�EブメンチE,
           style: tokens.typography.h3.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -30,14 +30,14 @@ class AchievementsScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: Column(
         children: [
           // 統計サマリー
           _buildSummary(tokens, unlockedAchievements.length, allAchievements.length),
-          // アチーブメントリスト
+          // アチ�EブメントリスチE
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.all(tokens.spacing.md),
@@ -68,7 +68,7 @@ class AchievementsScreen extends ConsumerWidget {
         gradient: LinearGradient(
           colors: [
             tokens.primary,
-            tokens.primary.withOpacity(0.7),
+            tokens.primary.withValues(alpha: 0.7),
           ],
         ),
         borderRadius: BorderRadius.circular(tokens.radius.lg),
@@ -88,9 +88,9 @@ class AchievementsScreen extends ConsumerWidget {
             ),
           ),
           Text(
-            'アチーブメント達成',
+            'アチ�Eブメント達戁E,
             style: tokens.typography.body.copyWith(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
           SizedBox(height: tokens.spacing.md),
@@ -99,15 +99,15 @@ class AchievementsScreen extends ConsumerWidget {
             child: LinearProgressIndicator(
               value: percentage / 100,
               minHeight: 8,
-              backgroundColor: Colors.white.withOpacity(0.3),
+              backgroundColor: Colors.white.withValues(alpha: 0.3),
               valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
             ),
           ),
           SizedBox(height: tokens.spacing.xs),
           Text(
-            '$percentage% 完了',
+            '$percentage% 完亁E,
             style: tokens.typography.caption.copyWith(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
         ],
@@ -116,7 +116,7 @@ class AchievementsScreen extends ConsumerWidget {
   }
 }
 
-/// アチーブメントカード
+/// アチ�EブメントカーチE
 class _AchievementCard extends StatelessWidget {
   final Achievement achievement;
   final bool isUnlocked;
@@ -151,7 +151,7 @@ class _AchievementCard extends StatelessWidget {
               height: 64,
               decoration: BoxDecoration(
                 color: isUnlocked
-                    ? tokens.primary.withOpacity(0.2)
+                    ? tokens.primary.withValues(alpha: 0.2)
                     : tokens.background,
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
@@ -166,7 +166,7 @@ class _AchievementCard extends StatelessWidget {
               ),
             ),
             SizedBox(width: tokens.spacing.md),
-            // テキスト
+            // チE��スチE
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +195,7 @@ class _AchievementCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(tokens.radius.full),
                           ),
                           child: Text(
-                            '達成',
+                            '達�E',
                             style: tokens.typography.caption.copyWith(
                               color: Colors.white,
                               fontSize: 10,
@@ -213,7 +213,7 @@ class _AchievementCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: tokens.spacing.sm),
-                  // 進捗バー（未達成の場合）
+                  // 進捗バー�E�未達�Eの場合！E
                   if (!isUnlocked) ...[
                     ClipRRect(
                       borderRadius: BorderRadius.circular(tokens.radius.full),
@@ -243,7 +243,7 @@ class _AchievementCard extends StatelessWidget {
   }
 }
 
-/// バッジウィジェット（プロフィールなどで使用）
+/// バッジウィジェチE���E��Eロフィールなどで使用�E�E
 class BadgeWidget extends StatelessWidget {
   final Achievement achievement;
   final double size;
@@ -262,7 +262,7 @@ class BadgeWidget extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: tokens.primary.withOpacity(0.1),
+        color: tokens.primary.withValues(alpha: 0.1),
         shape: BoxShape.circle,
         border: Border.all(
           color: tokens.primary,
@@ -279,7 +279,7 @@ class BadgeWidget extends StatelessWidget {
   }
 }
 
-/// バッジ一覧ウィジェット（プロフィールで使用）
+/// バッジ一覧ウィジェチE���E��Eロフィールで使用�E�E
 class BadgeListWidget extends StatelessWidget {
   final List<Achievement> achievements;
   final int maxDisplay;

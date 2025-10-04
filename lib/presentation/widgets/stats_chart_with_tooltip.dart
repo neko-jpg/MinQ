@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-/// ツールチップ付き統計チャート
+/// チE�Eルチップ付き統計チャーチE
 class StatsChartWithTooltip extends StatefulWidget {
   final List<ChartData> data;
   final String Function(ChartData) tooltipBuilder;
@@ -47,10 +47,10 @@ class _StatsChartWithTooltipState extends State<StatsChartWithTooltip> {
   }
 
   void _handleTap(Offset position) {
-    // タップ位置からデータポイントを特定
-    // 簡易実装
+    // タチE�E位置からチE�Eタポイントを特宁E
+    // 簡易実裁E
     setState(() {
-      _hoveredIndex = 0; // TODO: 実際の計算
+      _hoveredIndex = 0; // TODO: 実際の計箁E
       _tooltipPosition = position;
     });
   }
@@ -80,7 +80,7 @@ class ChartData {
   ChartData({required this.label, required this.value});
 }
 
-/// チャートペインター
+/// チャート�Eインター
 class ChartPainter extends CustomPainter {
   final List<ChartData> data;
   final int? hoveredIndex;
@@ -89,7 +89,7 @@ class ChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: チャート描画実装
+    // TODO: チャート描画実裁E
   }
 
   @override

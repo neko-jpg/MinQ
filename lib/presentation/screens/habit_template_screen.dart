@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/core/templates/habit_templates.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-/// 習慣テンプレート選択画面
+/// 習�EチE��プレート選択画面
 class HabitTemplateScreen extends ConsumerStatefulWidget {
   const HabitTemplateScreen({super.key});
 
@@ -26,7 +26,7 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
-          '習慣テンプレート',
+          '習�EチE��プレーチE,
           style: tokens.typography.h3.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -37,14 +37,14 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: Column(
         children: [
-          // カテゴリーフィルター
+          // カチE��リーフィルター
           _buildCategoryFilter(tokens),
-          // テンプレートリスト
+          // チE��プレートリスチE
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.all(tokens.spacing.md),
@@ -101,15 +101,15 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
       builder: (context) => _TemplateDetailSheet(
         template: template,
         onUse: () {
-          context.pop(); // シートを閉じる
-          context.pop(template); // テンプレートを返す
+          context.pop(); // シートを閉じめE
+          context.pop(template); // チE��プレートを返す
         },
       ),
     );
   }
 }
 
-/// カテゴリーチップ
+/// カチE��リーチッチE
 class _CategoryChip extends StatelessWidget {
   final String label;
   final String icon;
@@ -141,14 +141,14 @@ class _CategoryChip extends StatelessWidget {
         selected: isSelected,
         onSelected: (_) => onTap(),
         backgroundColor: tokens.surface,
-        selectedColor: tokens.primary.withOpacity(0.2),
+        selectedColor: tokens.primary.withValues(alpha: 0.2),
         checkmarkColor: tokens.primary,
       ),
     );
   }
 }
 
-/// テンプレートカード
+/// チE��プレートカーチE
 class _TemplateCard extends StatelessWidget {
   final HabitTemplate template;
   final MinqTheme tokens;
@@ -182,7 +182,7 @@ class _TemplateCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: tokens.primary.withOpacity(0.1),
+                  color: tokens.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(tokens.radius.md),
                 ),
                 child: Center(
@@ -193,7 +193,7 @@ class _TemplateCard extends StatelessWidget {
                 ),
               ),
               SizedBox(width: tokens.spacing.md),
-              // テキスト
+              // チE��スチE
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,7 +219,7 @@ class _TemplateCard extends StatelessWidget {
                       children: [
                         _InfoChip(
                           icon: Icons.timer_outlined,
-                          label: '${template.estimatedMinutes}分',
+                          label: '${template.estimatedMinutes}刁E,
                           tokens: tokens,
                         ),
                         SizedBox(width: tokens.spacing.xs),
@@ -245,7 +245,7 @@ class _TemplateCard extends StatelessWidget {
   }
 }
 
-/// 情報チップ
+/// 惁E��チッチE
 class _InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -286,7 +286,7 @@ class _InfoChip extends StatelessWidget {
   }
 }
 
-/// テンプレート詳細シート
+/// チE��プレート詳細シーチE
 class _TemplateDetailSheet extends StatelessWidget {
   final HabitTemplate template;
   final VoidCallback onUse;
@@ -353,7 +353,7 @@ class _TemplateDetailSheet extends StatelessWidget {
               ],
             ),
             SizedBox(height: tokens.spacing.lg),
-            // 説明
+            // 説昁E
             Text(
               template.description,
               style: tokens.typography.body.copyWith(
@@ -361,11 +361,11 @@ class _TemplateDetailSheet extends StatelessWidget {
               ),
             ),
             SizedBox(height: tokens.spacing.lg),
-            // 詳細情報
+            // 詳細惁E��
             _DetailRow(
               icon: Icons.timer_outlined,
-              label: '推定時間',
-              value: '${template.estimatedMinutes}分',
+              label: '推定時閁E,
+              value: '${template.estimatedMinutes}刁E,
               tokens: tokens,
             ),
             _DetailRow(
@@ -381,11 +381,11 @@ class _TemplateDetailSheet extends StatelessWidget {
               tokens: tokens,
             ),
             SizedBox(height: tokens.spacing.lg),
-            // ヒント
+            // ヒンチE
             Container(
               padding: EdgeInsets.all(tokens.spacing.md),
               decoration: BoxDecoration(
-                color: tokens.primary.withOpacity(0.1),
+                color: tokens.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
               child: Row(
@@ -417,7 +417,7 @@ class _TemplateDetailSheet extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'このテンプレートを使う',
+                  'こ�EチE��プレートを使ぁE,
                   style: tokens.typography.body.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -432,7 +432,7 @@ class _TemplateDetailSheet extends StatelessWidget {
   }
 }
 
-/// 詳細行
+/// 詳細衁E
 class _DetailRow extends StatelessWidget {
   final IconData icon;
   final String label;

@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 /// SnackBarグローバルマネージャー
-/// 重複排他、優先度管理、キュー処理
+/// 重褁E��他、優先度管琁E��キュー処琁E
 class SnackBarManager {
   static final SnackBarManager _instance = SnackBarManager._internal();
   factory SnackBarManager() => _instance;
@@ -38,7 +38,7 @@ class SnackBarManager {
       dismissible: dismissible,
     );
 
-    // 同じメッセージが既にキューにある場合はスキップ
+    // 同じメチE��ージが既にキューにある場合�EスキチE�E
     if (_queue.any((r) => r.message == message)) {
       return;
     }
@@ -47,7 +47,7 @@ class SnackBarManager {
     _processQueue();
   }
 
-  /// 成功メッセージ
+  /// 成功メチE��ージ
   void showSuccess(
     String message, {
     Duration duration = const Duration(seconds: 3),
@@ -63,7 +63,7 @@ class SnackBarManager {
     );
   }
 
-  /// エラーメッセージ
+  /// エラーメチE��ージ
   void showError(
     String message, {
     Duration duration = const Duration(seconds: 4),
@@ -80,7 +80,7 @@ class SnackBarManager {
     );
   }
 
-  /// 警告メッセージ
+  /// 警告メチE��ージ
   void showWarning(
     String message, {
     Duration duration = const Duration(seconds: 3),
@@ -96,7 +96,7 @@ class SnackBarManager {
     );
   }
 
-  /// 情報メッセージ
+  /// 惁E��メチE��ージ
   void showInfo(
     String message, {
     Duration duration = const Duration(seconds: 3),
@@ -126,13 +126,13 @@ class SnackBarManager {
     _isShowing = false;
   }
 
-  /// キューを処理
+  /// キューを�E琁E
   void _processQueue() {
     if (_isShowing || _queue.isEmpty || _messenger == null) {
       return;
     }
 
-    // 優先度順にソート
+    // 優先度頁E��ソーチE
     final sortedQueue = _queue.toList()
       ..sort((a, b) => b.priority.index.compareTo(a.priority.index));
 
@@ -181,7 +181,7 @@ class SnackBarManager {
     });
   }
 
-  /// タイプに応じたアイコンを取得
+  /// タイプに応じたアイコンを取征E
   Widget _getIcon(SnackBarType type) {
     IconData iconData;
     switch (type) {
@@ -202,7 +202,7 @@ class SnackBarManager {
     return Icon(iconData, color: Colors.white, size: 20);
   }
 
-  /// タイプに応じた背景色を取得
+  /// タイプに応じた背景色を取征E
   Color _getBackgroundColor(SnackBarType type) {
     switch (type) {
       case SnackBarType.success:
@@ -217,7 +217,7 @@ class SnackBarManager {
   }
 }
 
-/// SnackBarリクエスト
+/// SnackBarリクエスチE
 class _SnackBarRequest {
   final String message;
   final SnackBarType type;
@@ -238,7 +238,7 @@ class _SnackBarRequest {
   });
 }
 
-/// SnackBarタイプ
+/// SnackBarタイチE
 enum SnackBarType {
   success,
   error,
@@ -258,22 +258,22 @@ extension SnackBarExtension on BuildContext {
   /// SnackBarマネージャーにアクセス
   SnackBarManager get snackBar => SnackBarManager();
 
-  /// 成功メッセージを表示
+  /// 成功メチE��ージを表示
   void showSuccess(String message) {
     SnackBarManager().showSuccess(message);
   }
 
-  /// エラーメッセージを表示
+  /// エラーメチE��ージを表示
   void showError(String message) {
     SnackBarManager().showError(message);
   }
 
-  /// 警告メッセージを表示
+  /// 警告メチE��ージを表示
   void showWarning(String message) {
     SnackBarManager().showWarning(message);
   }
 
-  /// 情報メッセージを表示
+  /// 惁E��メチE��ージを表示
   void showInfo(String message) {
     SnackBarManager().showInfo(message);
   }

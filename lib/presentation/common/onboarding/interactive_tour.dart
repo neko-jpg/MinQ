@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/onboarding/onboarding_engine.dart';
 
-/// インタラクティブツアーを表示するスクリーン
+/// インタラクチE��ブツアーを表示するスクリーン
 class InteractiveTourScreen extends StatefulWidget {
   final List<TourStep> steps;
   final VoidCallback? onComplete;
@@ -68,7 +68,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
         _slideController.reset();
       });
       
-      // カスタムアクションを実行
+      // カスタムアクションを実衁E
       widget.steps[_currentStepIndex].onNext?.call();
     } else {
       _completeTour();
@@ -98,8 +98,8 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('ツアーをスキップしますか？'),
-        content: const Text('後で設定画面からツアーを再開できます。'),
+        title: const Text('チE��ーをスキチE�Eしますか�E�E),
+        content: const Text('後で設定画面からチE��ーを�E開できます、E),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -110,7 +110,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
               Navigator.of(context).pop();
               _completeTour();
             },
-            child: const Text('スキップ'),
+            child: const Text('スキチE�E'),
           ),
         ],
       ),
@@ -130,7 +130,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.8),
+      backgroundColor: Colors.black.withValues(alpha: 0.8),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SafeArea(
@@ -139,7 +139,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
               // ヘッダー
               _buildHeader(theme),
               
-              // メインコンテンツ
+              // メインコンチE��チE
               Expanded(
                 child: SlideTransition(
                   position: _slideAnimation,
@@ -163,7 +163,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'MinQ ツアー',
+            'MinQ チE��ー',
             style: theme.textTheme.headlineSmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -172,9 +172,9 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
           TextButton(
             onPressed: _skipTour,
             child: Text(
-              'スキップ',
+              'スキチE�E',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
               ),
             ),
           ),
@@ -192,7 +192,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -202,7 +202,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ステップインジケーター
+          // スチE��プインジケーター
           _buildStepIndicator(theme),
           
           const SizedBox(height: 24),
@@ -218,24 +218,24 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
           
           const SizedBox(height: 16),
           
-          // 説明
+          // 説昁E
           Text(
             step.description,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.8),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
               height: 1.5,
             ),
           ),
           
           const SizedBox(height: 24),
           
-          // カスタムウィジェット
+          // カスタムウィジェチE��
           if (step.customWidget != null) ...[
             step.customWidget!,
             const SizedBox(height: 24),
           ],
           
-          // インタラクティブ要素
+          // インタラクチE��ブ要素
           _buildInteractiveElement(step, theme),
         ],
       ),
@@ -254,7 +254,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
             shape: BoxShape.circle,
             color: index <= _currentStepIndex
                 ? theme.colorScheme.primary
-                : theme.colorScheme.outline.withOpacity(0.3),
+                : theme.colorScheme.outline.withValues(alpha: 0.3),
           ),
         ),
       ),
@@ -262,7 +262,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
   }
 
   Widget _buildInteractiveElement(TourStep step, ThemeData theme) {
-    // ステップに応じたインタラクティブ要素を表示
+    // スチE��プに応じたインタラクチE��ブ要素を表示
     switch (_currentStepIndex) {
       case 0:
         return _buildWelcomeInteraction(theme);
@@ -279,10 +279,10 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: theme.colorScheme.primary.withOpacity(0.3),
+          color: theme.colorScheme.primary.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -295,7 +295,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
           const SizedBox(width: 16),
           Expanded(
             child: Text(
-              'MinQへようこそ！\n習慣化の旅を始めましょう',
+              'MinQへようこそ�E�\n習�E化�E旁E��始めましょぁE,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurface,
                 fontWeight: FontWeight.w500,
@@ -311,14 +311,14 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.secondaryContainer.withOpacity(0.3),
+        color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'クエスト例：',
+            'クエスト例！E,
             style: theme.textTheme.labelLarge?.copyWith(
               color: theme.colorScheme.onSurface,
               fontWeight: FontWeight.bold,
@@ -326,8 +326,8 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
           ),
           const SizedBox(height: 8),
           _buildQuestExample('毎朝ジョギング', Icons.directions_run, theme),
-          _buildQuestExample('読書30分', Icons.book, theme),
-          _buildQuestExample('水を2L飲む', Icons.local_drink, theme),
+          _buildQuestExample('読書30刁E, Icons.book, theme),
+          _buildQuestExample('水めEL飲む', Icons.local_drink, theme),
         ],
       ),
     );
@@ -358,10 +358,10 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
   Widget _buildCompletionDemo(ThemeData theme) {
     return GestureDetector(
       onTap: () {
-        // デモ用のチェックボックスアニメーション
+        // チE��用のチェチE��ボックスアニメーション
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('素晴らしい！クエスト完了です 🎉'),
+            content: const Text('素晴らしぁE��クエスト完亁E��ぁE🎉'),
             backgroundColor: theme.colorScheme.primary,
             duration: const Duration(seconds: 2),
           ),
@@ -370,10 +370,10 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+          color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: theme.colorScheme.primary.withOpacity(0.3),
+            color: theme.colorScheme.primary.withValues(alpha: 0.3),
           ),
         ),
         child: Row(
@@ -397,7 +397,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
             const SizedBox(width: 16),
             Expanded(
               child: Text(
-                'タップしてクエスト完了を体験',
+                'タチE�Eしてクエスト完亁E��体騁E,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurface,
                 ),
@@ -405,7 +405,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
             ),
             Icon(
               Icons.touch_app,
-              color: theme.colorScheme.primary.withOpacity(0.7),
+              color: theme.colorScheme.primary.withValues(alpha: 0.7),
             ),
           ],
         ),
@@ -419,14 +419,14 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // 戻るボタン
+          // 戻る�Eタン
           if (_currentStepIndex > 0)
             TextButton.icon(
               onPressed: _previousStep,
               icon: const Icon(Icons.arrow_back),
-              label: const Text('戻る'),
+              label: const Text('戻めE),
               style: TextButton.styleFrom(
-                foregroundColor: Colors.white.withOpacity(0.8),
+                foregroundColor: Colors.white.withValues(alpha: 0.8),
               ),
             )
           else
@@ -436,7 +436,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
           Text(
             '${_currentStepIndex + 1} / ${widget.steps.length}',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               fontSize: 16,
             ),
           ),
@@ -451,7 +451,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
             ),
             label: Text(
               _currentStepIndex == widget.steps.length - 1
-                  ? '完了'
+                  ? '完亁E
                   : '次へ',
             ),
             style: ElevatedButton.styleFrom(
@@ -469,39 +469,39 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
   }
 }
 
-/// ツアーステップのビルダー
+/// チE��ースチE��プ�Eビルダー
 class TourStepBuilder {
   static List<TourStep> buildDefaultTour() {
     return [
       const TourStep(
-        title: 'MinQへようこそ！',
-        description: 'MinQは習慣化を楽しく続けるためのアプリです。'
-            'あなたの目標達成をサポートし、継続する喜びを感じられるように設計されています。',
+        title: 'MinQへようこそ�E�E,
+        description: 'MinQは習�E化を楽しく続けるため�Eアプリです、E
+            'あなた�E目標達成をサポ�Eトし、継続する喜びを感じられるように設計されてぁE��す、E,
       ),
       const TourStep(
-        title: 'クエストを作成しましょう',
-        description: '習慣化したいことを「クエスト」として登録します。'
-            '「毎朝ジョギング」「読書30分」など、具体的で実行しやすい内容にしましょう。',
+        title: 'クエストを作�EしましょぁE,
+        description: '習�E化したいことを「クエスト」として登録します、E
+            '「毎朝ジョギング」「読書30刁E��など、�E体的で実行しめE��ぁE�E容にしましょぁE��E,
       ),
       const TourStep(
-        title: 'クエストを完了しましょう',
-        description: 'クエストを実行したら、チェックマークをタップして完了にします。'
-            '完了時には気持ちの良いアニメーションと効果音でお祝いします！',
+        title: 'クエストを完亁E��ましょぁE,
+        description: 'クエストを実行したら、チェチE��マ�EクをタチE�Eして完亁E��します、E
+            '完亁E��には気持ちの良ぁE��ニメーションと効果音でお祝いします！E,
       ),
       const TourStep(
-        title: '進捗を確認しましょう',
-        description: '継続記録や達成状況をグラフで確認できます。'
-            '連続記録が伸びていく様子を見ることで、モチベーションを維持できます。',
+        title: '進捗を確認しましょぁE,
+        description: '継続記録めE��成状況をグラフで確認できます、E
+            '連続記録が伸びてぁE��様子を見ることで、モチ�Eーションを維持できます、E,
       ),
       const TourStep(
-        title: 'ペアと一緒に頑張りましょう',
-        description: '匿名のペアと励まし合いながら習慣化に取り組めます。'
-            'ひとりじゃない安心感で、三日坊主を防げます。',
+        title: 'ペアと一緒に頑張りましょぁE,
+        description: '匿名�Eペアと励まし合ぁE��がら習�E化に取り絁E��ます、E
+            'ひとりじめE��ぁE��忁E��で、三日坊主を防げます、E,
       ),
       const TourStep(
-        title: '準備完了です！',
-        description: 'これでMinQの基本的な使い方がわかりました。'
-            'さっそく最初のクエストを作成して、習慣化の旅を始めましょう！',
+        title: '準備完亁E��す！E,
+        description: 'これでMinQの基本皁E��使ぁE��がわかりました、E
+            'さっそく最初�Eクエストを作�Eして、習�E化�E旁E��始めましょぁE��E,
       ),
     ];
   }

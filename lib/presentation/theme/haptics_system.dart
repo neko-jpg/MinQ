@@ -1,58 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// ハプティクスシステム - 触覚フィードバックの統一規格
+/// ハ�EチE��クスシスチE�� - 触覚フィードバチE��の統一規格
 class HapticsSystem {
   const HapticsSystem._();
 
   // ========================================
-  // 基本ハプティクス
+  // 基本ハ�EチE��クス
   // ========================================
 
-  /// 軽いタップ - ボタンタップ、選択
+  /// 軽ぁE��チE�E - ボタンタチE�E、E��抁E
   static Future<void> lightImpact() async {
     await HapticFeedback.lightImpact();
   }
 
-  /// 中程度のタップ - 重要なアクション
+  /// 中程度のタチE�E - 重要なアクション
   static Future<void> mediumImpact() async {
     await HapticFeedback.mediumImpact();
   }
 
-  /// 重いタップ - 非常に重要なアクション
+  /// 重いタチE�E - 非常に重要なアクション
   static Future<void> heavyImpact() async {
     await HapticFeedback.heavyImpact();
   }
 
-  /// 選択変更 - スライダー、ピッカー
+  /// 選択変更 - スライダー、ピチE��ー
   static Future<void> selectionClick() async {
     await HapticFeedback.selectionClick();
   }
 
-  /// バイブレーション - 通知、アラート
+  /// バイブレーション - 通知、アラーチE
   static Future<void> vibrate() async {
     await HapticFeedback.vibrate();
   }
 
   // ========================================
-  // セマンティックハプティクス
+  // セマンチE��チE��ハ�EチE��クス
   // ========================================
 
-  /// 成功 - タスク完了、保存成功
+  /// 成功 - タスク完亁E��保存�E劁E
   static Future<void> success() async {
     await HapticFeedback.mediumImpact();
     await Future.delayed(const Duration(milliseconds: 50));
     await HapticFeedback.lightImpact();
   }
 
-  /// 警告 - 注意が必要
+  /// 警呁E- 注意が忁E��E
   static Future<void> warning() async {
     await HapticFeedback.mediumImpact();
     await Future.delayed(const Duration(milliseconds: 100));
     await HapticFeedback.mediumImpact();
   }
 
-  /// エラー - 失敗、無効な操作
+  /// エラー - 失敗、無効な操佁E
   static Future<void> error() async {
     await HapticFeedback.heavyImpact();
     await Future.delayed(const Duration(milliseconds: 50));
@@ -61,7 +61,7 @@ class HapticsSystem {
     await HapticFeedback.lightImpact();
   }
 
-  /// 通知 - 新しい情報
+  /// 通知 - 新しい惁E��
   static Future<void> notification() async {
     await HapticFeedback.lightImpact();
     await Future.delayed(const Duration(milliseconds: 100));
@@ -69,55 +69,55 @@ class HapticsSystem {
   }
 
   // ========================================
-  // UI要素別ハプティクス
+  // UI要素別ハ�EチE��クス
   // ========================================
 
-  /// ボタンタップ
+  /// ボタンタチE�E
   static Future<void> buttonTap() async {
     await lightImpact();
   }
 
-  /// プライマリボタンタップ
+  /// プライマリボタンタチE�E
   static Future<void> primaryButtonTap() async {
     await mediumImpact();
   }
 
-  /// スイッチ切り替え
+  /// スイチE��刁E��替ぁE
   static Future<void> switchToggle() async {
     await selectionClick();
   }
 
-  /// チェックボックス切り替え
+  /// チェチE��ボックス刁E��替ぁE
   static Future<void> checkboxToggle() async {
     await lightImpact();
   }
 
-  /// スライダー移動
+  /// スライダー移勁E
   static Future<void> sliderMove() async {
     await selectionClick();
   }
 
-  /// ドラッグ開始
+  /// ドラチE��開姁E
   static Future<void> dragStart() async {
     await mediumImpact();
   }
 
-  /// ドラッグ終了
+  /// ドラチE��終亁E
   static Future<void> dragEnd() async {
     await lightImpact();
   }
 
-  /// ドロップ成功
+  /// ドロチE�E成功
   static Future<void> dropSuccess() async {
     await success();
   }
 
-  /// リフレッシュ
+  /// リフレチE��ュ
   static Future<void> refresh() async {
     await mediumImpact();
   }
 
-  /// ページ遷移
+  /// ペ�Eジ遷移
   static Future<void> pageTransition() async {
     await lightImpact();
   }
@@ -127,21 +127,21 @@ class HapticsSystem {
     await mediumImpact();
   }
 
-  /// モーダル閉じる
+  /// モーダル閉じめE
   static Future<void> modalDismiss() async {
     await lightImpact();
   }
 
   // ========================================
-  // アプリ固有のハプティクス
+  // アプリ固有�Eハ�EチE��クス
   // ========================================
 
-  /// クエスト完了
+  /// クエスト完亁E
   static Future<void> questComplete() async {
     await success();
   }
 
-  /// クエスト作成
+  /// クエスト作�E
   static Future<void> questCreate() async {
     await mediumImpact();
   }
@@ -165,16 +165,16 @@ class HapticsSystem {
     await success();
   }
 
-  /// レベルアップ
+  /// レベルアチE�E
   static Future<void> levelUp() async {
     await pairMatched(); // 同じパターン
   }
 
   // ========================================
-  // ヘルパーメソッド
+  // ヘルパ�EメソチE��
   // ========================================
 
-  /// Reduce Motion設定を考慮してハプティクスを実行
+  /// Reduce Motion設定を老E�Eしてハ�EチE��クスを実衁E
   static Future<void> performIfEnabled(
     BuildContext context,
     Future<void> Function() haptic,
@@ -196,7 +196,7 @@ class HapticsSystem {
   }
 }
 
-/// ハプティクスイベント
+/// ハ�EチE��クスイベンチE
 class HapticEvent {
   final HapticType type;
   final Duration? delay;
@@ -227,7 +227,7 @@ class HapticEvent {
   }
 }
 
-/// ハプティクスタイプ
+/// ハ�EチE��クスタイチE
 enum HapticType {
   light,
   medium,
@@ -236,9 +236,9 @@ enum HapticType {
   vibrate,
 }
 
-/// ハプティクス対応ウィジェット拡張
+/// ハ�EチE��クス対応ウィジェチE��拡張
 extension HapticWidget on Widget {
-  /// タップ時にハプティクスを実行
+  /// タチE�E時にハ�EチE��クスを実衁E
   Widget withHaptic({
     VoidCallback? onTap,
     Future<void> Function()? haptic,
@@ -256,7 +256,7 @@ extension HapticWidget on Widget {
     );
   }
 
-  /// ボタンハプティクス付き
+  /// ボタンハ�EチE��クス付き
   Widget withButtonHaptic(VoidCallback onTap) {
     return withHaptic(
       onTap: onTap,
@@ -265,7 +265,7 @@ extension HapticWidget on Widget {
   }
 }
 
-/// ハプティクス対応ボタン
+/// ハ�EチE��クス対応�Eタン
 class HapticButton extends StatelessWidget {
   final Widget child;
   final VoidCallback? onPressed;
@@ -299,7 +299,7 @@ class HapticButton extends StatelessWidget {
   }
 }
 
-/// ハプティクス対応アイコンボタン
+/// ハ�EチE��クス対応アイコンボタン
 class HapticIconButton extends StatelessWidget {
   final Widget icon;
   final VoidCallback? onPressed;
@@ -330,7 +330,7 @@ class HapticIconButton extends StatelessWidget {
   }
 }
 
-/// ハプティクス対応スイッチ
+/// ハ�EチE��クス対応スイチE��
 class HapticSwitch extends StatelessWidget {
   final bool value;
   final ValueChanged<bool>? onChanged;
@@ -355,7 +355,7 @@ class HapticSwitch extends StatelessWidget {
   }
 }
 
-/// ハプティクス対応チェックボックス
+/// ハ�EチE��クス対応チェチE��ボックス
 class HapticCheckbox extends StatelessWidget {
   final bool? value;
   final ValueChanged<bool?>? onChanged;

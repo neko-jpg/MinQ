@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
 
-/// アプリ内アンケートウィジェット
+/// アプリ冁E��ンケートウィジェチE��
 class SurveyWidget extends StatefulWidget {
   final Survey survey;
   final Function(SurveyResponse) onSubmit;
@@ -109,14 +109,14 @@ class _SurveyWidgetState extends State<SurveyWidget> {
           ),
           SizedBox(height: tokens.spacing.xs),
           Text(
-            '質問 ${_currentQuestionIndex + 1} / ${widget.survey.questions.length}',
+            '質啁E${_currentQuestionIndex + 1} / ${widget.survey.questions.length}',
             style: tokens.typography.caption.copyWith(
               color: tokens.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: tokens.spacing.xl),
-          // 質問
+          // 質啁E
           _buildQuestion(_currentQuestion, tokens),
           SizedBox(height: tokens.spacing.xl),
           // ナビゲーションボタン
@@ -126,7 +126,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: _previousQuestion,
-                    child: const Text('戻る'),
+                    child: const Text('戻めE),
                   ),
                 ),
               if (_currentQuestionIndex > 0) SizedBox(width: tokens.spacing.md),
@@ -156,7 +156,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         ),
         if (question.isRequired)
           Text(
-            ' *必須',
+            ' *忁E��E,
             style: tokens.typography.caption.copyWith(
               color: tokens.error,
             ),
@@ -196,7 +196,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
             child: Container(
               padding: EdgeInsets.all(tokens.spacing.md),
               decoration: BoxDecoration(
-                color: isSelected ? tokens.primary.withOpacity(0.1) : tokens.background,
+                color: isSelected ? tokens.primary.withValues(alpha: 0.1) : tokens.background,
                 borderRadius: BorderRadius.circular(tokens.radius.md),
                 border: Border.all(
                   color: isSelected ? tokens.primary : tokens.border,
@@ -288,11 +288,11 @@ class _SurveyWidgetState extends State<SurveyWidget> {
     return Row(
       children: [
         Expanded(
-          child: _buildYesNoButton('はい', true, tokens),
+          child: _buildYesNoButton('はぁE, true, tokens),
         ),
         SizedBox(width: tokens.spacing.md),
         Expanded(
-          child: _buildYesNoButton('いいえ', false, tokens),
+          child: _buildYesNoButton('ぁE��ぁE, false, tokens),
         ),
       ],
     );
@@ -337,7 +337,7 @@ class Survey {
   });
 }
 
-/// アンケート質問
+/// アンケート質啁E
 class SurveyQuestion {
   final String id;
   final String text;
@@ -356,7 +356,7 @@ class SurveyQuestion {
   });
 }
 
-/// 質問タイプ
+/// 質問タイチE
 enum SurveyQuestionType {
   multipleChoice,
   rating,
@@ -364,7 +364,7 @@ enum SurveyQuestionType {
   yesNo,
 }
 
-/// アンケート回答
+/// アンケート回筁E
 class SurveyResponse {
   final String surveyId;
   final Map<String, dynamic> answers;
@@ -385,7 +385,7 @@ class SurveyResponse {
   }
 }
 
-/// サンプルアンケート
+/// サンプルアンケーチE
 class SampleSurveys {
   static Survey get userSatisfaction => const Survey(
     id: 'user_satisfaction_2025',
@@ -394,30 +394,30 @@ class SampleSurveys {
     questions: [
       SurveyQuestion(
         id: 'q1',
-        text: 'MinQの使いやすさを5段階で評価してください',
+        text: 'MinQの使ぁE��すさめE段階で評価してください',
         type: SurveyQuestionType.rating,
         maxRating: 5,
       ),
       SurveyQuestion(
         id: 'q2',
-        text: '最も気に入っている機能は何ですか？',
+        text: '最も気に入ってぁE��機�Eは何ですか�E�E,
         type: SurveyQuestionType.multipleChoice,
         options: [
-          'クエスト管理',
-          'ペア機能',
-          '統計・グラフ',
-          '通知機能',
-          'その他',
+          'クエスト管琁E,
+          'ペア機�E',
+          '統計�EグラチE,
+          '通知機�E',
+          'そ�E仁E,
         ],
       ),
       SurveyQuestion(
         id: 'q3',
-        text: '友人にMinQを勧めますか？',
+        text: '友人にMinQを勧めますか�E�E,
         type: SurveyQuestionType.yesNo,
       ),
       SurveyQuestion(
         id: 'q4',
-        text: '改善してほしい点があれば教えてください',
+        text: '改喁E��てほしい点があれ�E教えてください',
         type: SurveyQuestionType.text,
         isRequired: false,
       ),

@@ -17,7 +17,7 @@ class CreateQuestScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
-  static const List<String> _stepTitles = <String>['基本情報', '目標と頻度', 'リマインダー'];
+  static const List<String> _stepTitles = <String>['基本惁E��', '目標と頻度', 'リマインダー'];
   static const Set<int> _defaultSelectedDays = <int>{0, 1, 2, 3, 6};
 
   final _formKey = GlobalKey<FormState>();
@@ -98,7 +98,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         if (mounted) {
           FeedbackMessenger.showErrorSnackBar(
             context,
-            '音声入力を使用できませんでした。マイクの権限を確認してください。',
+            '音声入力を使用できませんでした。�Eイクの権限を確認してください、E,
           );
         }
         return;
@@ -121,7 +121,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         setState(() => _isVoiceListening = false);
         FeedbackMessenger.showErrorSnackBar(
           context,
-          '音声入力の開始に失敗しました。',
+          '音声入力�E開始に失敗しました、E,
         );
       }
     }
@@ -157,8 +157,8 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('変更を破棄しますか？'),
-          content: const Text('入力した内容は保存されません。画面を閉じてもよろしいですか？'),
+          title: const Text('変更を破棁E��ますか�E�E),
+          content: const Text('入力した�E容は保存されません。画面を閉じてもよろしぁE��すか�E�E),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -170,7 +170,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                 foregroundColor: Colors.white,
               ),
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('破棄する'),
+              child: const Text('破棁E��めE),
             ),
           ],
         );
@@ -197,7 +197,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     if (uid == null || uid.isEmpty) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        'ユーザーがサインインしていません。',
+        'ユーザーがサインインしてぁE��せん、E,
       );
       return;
     }
@@ -251,7 +251,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     if (mounted) {
       FeedbackMessenger.showSuccessToast(
         context,
-        '新しい習慣を作成しました！',
+        '新しい習�Eを作�Eしました�E�E,
       );
       context.pop();
     }
@@ -261,7 +261,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     return <Widget>[
       _StepPage(
         index: 0,
-        label: 'ステップ1: 基本情報',
+        label: 'スチE��チE: 基本惁E��',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -288,7 +288,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
       ),
       _StepPage(
         index: 1,
-        label: 'ステップ2: 目標と頻度',
+        label: 'スチE��チE: 目標と頻度',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -317,7 +317,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
       ),
       _StepPage(
         index: 2,
-        label: 'ステップ3: リマインダー',
+        label: 'スチE��チE: リマインダー',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -426,10 +426,10 @@ class _Header extends StatelessWidget {
         IconButton(
           onPressed: onBack,
           icon: const Icon(Icons.arrow_back_ios_new),
-          tooltip: '前の画面に戻る',
+          tooltip: '前�E画面に戻めE,
         ),
         Text(
-          '新しい習慣を追加',
+          '新しい習�Eを追加',
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(width: 48),
@@ -458,9 +458,9 @@ class _StepIndicator extends StatelessWidget {
         Semantics(
           container: true,
           liveRegion: true,
-          label: 'ステップ${currentStep + 1}/$totalSteps: ${titles[currentStep]}',
+          label: 'スチE��チE{currentStep + 1}/$totalSteps: ${titles[currentStep]}',
           child: Text(
-            'ステップ${currentStep + 1} / $totalSteps',
+            'スチE��チE{currentStep + 1} / $totalSteps',
             style: tokens.labelSmall.copyWith(color: tokens.textMuted),
           ),
         ),
@@ -469,7 +469,7 @@ class _StepIndicator extends StatelessWidget {
           children: List<Widget>.generate(totalSteps, (int index) {
             final bool isActive = index <= currentStep;
             final Color indicatorColor =
-                isActive ? tokens.brandPrimary : tokens.border.withOpacity(0.6);
+                isActive ? tokens.brandPrimary : tokens.border.withValues(alpha: 0.6);
             final bool reduceMotion =
                 MediaQuery.maybeOf(context)?.disableAnimations ?? false;
             return Expanded(
@@ -519,14 +519,14 @@ class _StepperActions extends StatelessWidget {
         Expanded(
           child: OutlinedButton(
             onPressed: onBack,
-            child: const Text('戻る'),
+            child: const Text('戻めE),
           ),
         ),
         SizedBox(width: tokens.spacing(3)),
         Expanded(
           child: FilledButton(
             onPressed: isLastStep && !canSubmit ? null : () => onNext(),
-            child: Text(isLastStep ? '習慣を保存する' : '次へ進む'),
+            child: Text(isLastStep ? '習�Eを保存すめE : '次へ進む'),
           ),
         ),
       ],
@@ -578,14 +578,14 @@ class _HabitNameInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '習慣の名前',
+          '習�Eの名前',
           style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
         ),
         SizedBox(height: tokens.spacing(2)),
         TextFormField(
           controller: controller,
           validator: (String? value) =>
-              (value == null || value.trim().isEmpty) ? '名前を入力してください' : null,
+              (value == null || value.trim().isEmpty) ? '名前を�E力してください' : null,
           decoration: InputDecoration(
             hintText: '例：毎朝瞑想する',
             prefixIcon: const Icon(Icons.edit),
@@ -597,11 +597,11 @@ class _HabitNameInput extends StatelessWidget {
             suffixIcon: onVoiceInputTap == null
                 ? null
                 : Tooltip(
-                    message: isListening ? '音声入力を停止' : '音声入力',
+                    message: isListening ? '音声入力を停止' : '音声入劁E,
                     child: Semantics(
                       button: true,
                       toggled: isListening,
-                      label: '音声入力',
+                      label: '音声入劁E,
                       child: IconButton(
                         icon: Icon(
                           isListening ? Icons.mic : Icons.mic_none,
@@ -636,7 +636,7 @@ class _ContactLinkInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '連絡先リンク (任意)',
+          '連絡先リンク (任愁E',
           style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
         ),
         SizedBox(height: tokens.spacing(2)),
@@ -655,7 +655,7 @@ class _ContactLinkInput extends StatelessWidget {
           validator: (String? value) {
             final trimmed = value?.trim() ?? '';
             if (trimmed.isEmpty) return null;
-            return _isValidUrl(trimmed) ? null : '正しいURLを入力してください';
+            return _isValidUrl(trimmed) ? null : '正しいURLを�E力してください';
           },
         ),
       ],
@@ -730,7 +730,7 @@ class _IconAndColorPicker extends StatelessWidget {
                         child: Semantics(
                           button: true,
                           selected: selectedColor == color,
-                          label: '色を${color == selectedColor ? '選択済み' : '選択する'}',
+                          label: '色めE{color == selectedColor ? '選択済み' : '選択すめE}',
                           child: Container(
                             width: tokens.spacing(7),
                             height: tokens.spacing(7),
@@ -772,12 +772,12 @@ class _GoalSetter extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('目標タイプ', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text('目標タイチE, style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
         SizedBox(height: tokens.spacing(2)),
         SegmentedButton<bool>(
           segments: const <ButtonSegment<bool>>[
-            ButtonSegment<bool>(value: true, label: Text('時間で管理する')),
-            ButtonSegment<bool>(value: false, label: Text('回数で管理する')),
+            ButtonSegment<bool>(value: true, label: Text('時間で管琁E��めE)),
+            ButtonSegment<bool>(value: false, label: Text('回数で管琁E��めE)),
           ],
           selected: <bool>{isTimeGoal},
           onSelectionChanged: (Set<bool> selection) {
@@ -793,7 +793,7 @@ class _GoalSetter extends StatelessWidget {
           controller: goalValueController,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
-            suffixText: isTimeGoal ? '分' : '回',
+            suffixText: isTimeGoal ? '刁E : '囁E,
             border: OutlineInputBorder(borderRadius: tokens.cornerXLarge()),
           ),
         ),
@@ -811,7 +811,7 @@ class _FrequencyPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    const List<String> days = <String>['月', '火', '水', '木', '金', '土', '日'];
+    const List<String> days = <String>['朁E, '火', '水', '木', '釁E, '圁E, '日'];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -832,7 +832,7 @@ class _FrequencyPicker extends StatelessWidget {
                 return Semantics(
                   button: true,
                   selected: isSelected,
-                  label: '${days[index]}曜日を${isSelected ? '解除' : '選択'}',
+                  label: '${days[index]}曜日めE{isSelected ? '解除' : '選抁E}',
                   child: ChoiceChip(
                     label: Text(days[index]),
                     selected: isSelected,
@@ -917,7 +917,7 @@ class _IconPickerDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return AlertDialog(
-      title: const Text('アイコンを選択'),
+      title: const Text('アイコンを選抁E),
       content: SizedBox(
         width: double.maxFinite,
         child: GridView.builder(
@@ -945,7 +945,7 @@ class _IconPickerDialog extends StatelessWidget {
       actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('閉じる'),
+          child: const Text('閉じめE),
         ),
       ],
     );

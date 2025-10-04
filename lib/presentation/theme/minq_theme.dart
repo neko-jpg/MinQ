@@ -144,7 +144,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
 
   // Additional computed properties
   Color get surfaceVariant => brightness == Brightness.light
-      ? surface.withOpacity(0.8)
+      ? surface.withValues(alpha: 0.8)
       : Color.lerp(surface, Colors.white, 0.05)!;
   
   Color get onPrimary => brightness == Brightness.light
@@ -773,6 +773,27 @@ extension MinqThemeTypography on MinqTheme {
         button: titleSmall.copyWith(letterSpacing: 0.2),
         caption: labelSmall,
       );
+  
+  // Additional typography access
+  MinqTypeScale get typography => typeScale;
+}
+
+extension MinqThemeColors on MinqTheme {
+  // Color shortcuts
+  Color get primary => brandPrimary;
+  Color get success => accentSuccess;
+  Color get error => accentError;
+}
+
+extension MinqThemeSpacing on MinqTheme {
+  // Spacing shortcuts
+  double get xs => spaceSM / 2; // 8
+  double get sm => spaceSM; // 8
+  double get md => spaceMD; // 12
+  double get lg => spaceLG; // 20
+  double get xl => spaceXL; // 24
+  double get xxs => spaceBase; // 4
+  double get full => double.infinity;
 }
 
 extension MinqThemeGetter on BuildContext {

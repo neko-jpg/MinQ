@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-/// 画像プレースホルダとエラーハンドリングのユーティリティ
+/// 画像�EレースホルダとエラーハンドリングのユーチE��リチE��
 class ImagePlaceholder extends StatelessWidget {
   final double? width;
   final double? height;
@@ -48,7 +48,7 @@ class ImagePlaceholder extends StatelessWidget {
   }
 }
 
-/// ネットワーク画像ウィジェット（プレースホルダとエラーハンドリング付き）
+/// ネットワーク画像ウィジェチE���E��Eレースホルダとエラーハンドリング付き�E�E
 class NetworkImageWithFallback extends StatelessWidget {
   final String imageUrl;
   final double? width;
@@ -122,7 +122,7 @@ class NetworkImageWithFallback extends StatelessWidget {
   }
 }
 
-/// アセット画像ウィジェット（エラーハンドリング付き）
+/// アセチE��画像ウィジェチE���E�エラーハンドリング付き�E�E
 class AssetImageWithFallback extends StatelessWidget {
   final String assetPath;
   final double? width;
@@ -164,7 +164,7 @@ class AssetImageWithFallback extends StatelessWidget {
   }
 }
 
-/// アバター画像ウィジェット（プレースホルダとエラーハンドリング付き）
+/// アバター画像ウィジェチE���E��Eレースホルダとエラーハンドリング付き�E�E
 class AvatarImage extends StatelessWidget {
   final String? imageUrl;
   final double radius;
@@ -204,7 +204,7 @@ class AvatarImage extends StatelessWidget {
       backgroundColor: bgColor,
       backgroundImage: NetworkImage(imageUrl!),
       onBackgroundImageError: (exception, stackTrace) {
-        // エラー時はfallbackIconが表示される
+        // エラー時�EfallbackIconが表示されめE
       },
       child: imageUrl!.isEmpty
           ? Icon(
@@ -217,7 +217,7 @@ class AvatarImage extends StatelessWidget {
   }
 }
 
-/// フェードイン画像ウィジェット
+/// フェードイン画像ウィジェチE��
 class FadeInImage extends StatefulWidget {
   final String imageUrl;
   final double? width;
@@ -300,7 +300,7 @@ class _FadeInImageState extends State<FadeInImage> {
   }
 }
 
-/// 画像キャッシュ最適化ヘルパー
+/// 画像キャチE��ュ最適化�Eルパ�E
 class OptimizedImage extends StatelessWidget {
   final String imageUrl;
   final double? width;
@@ -321,7 +321,7 @@ class OptimizedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // デバイスピクセル比を考慮したキャッシュサイズを計算
+    // チE��イスピクセル比を老E�EしたキャチE��ュサイズを計箁E
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
     final calculatedCacheWidth = cacheWidth ??
         (width != null ? (width! * devicePixelRatio).round() : null);

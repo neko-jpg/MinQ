@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// What's New画面（バージョンアップ時の変更点案内）
+/// What's New画面�E�バージョンアチE�E時�E変更点案�E�E�E
 class WhatsNewScreen extends StatelessWidget {
   final String version;
   final List<WhatsNewItem> items;
@@ -15,7 +15,7 @@ class WhatsNewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('新機能のご紹介'),
+        title: const Text('新機�Eのご紹仁E),
       ),
       body: Column(
         children: [
@@ -30,7 +30,7 @@ class WhatsNewScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'バージョン $version',
+                  'バ�Eジョン $version',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ],
@@ -52,7 +52,7 @@ class WhatsNewScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 48),
               ),
-              child: const Text('始める'),
+              child: const Text('始めめE),
             ),
           ),
         ],
@@ -72,7 +72,7 @@ class WhatsNewScreen extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: item.color.withOpacity(0.1),
+                color: item.color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
@@ -104,7 +104,7 @@ class WhatsNewScreen extends StatelessWidget {
   }
 }
 
-/// What's Newアイテム
+/// What's NewアイチE��
 class WhatsNewItem {
   final String title;
   final String description;

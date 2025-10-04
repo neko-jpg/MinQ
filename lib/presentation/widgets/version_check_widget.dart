@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/version/version_check_service.dart';
 import 'package:minq/presentation/screens/version_update_screen.dart';
 
-/// バージョンチェックを行い、必要に応じて更新画面を表示するウィジェット
+/// バ�EジョンチェチE��を行い、忁E��に応じて更新画面を表示するウィジェチE��
 class VersionCheckWidget extends ConsumerStatefulWidget {
   final Widget child;
 
@@ -37,7 +37,7 @@ class _VersionCheckWidgetState extends ConsumerState<VersionCheckWidget> {
 
     switch (result) {
       case VersionForceUpdate():
-        // 強制アップデート: 戻れない画面を表示
+        // 強制アチE�EチE�EチE 戻れなぁE��面を表示
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => VersionUpdateScreen(
@@ -49,15 +49,15 @@ class _VersionCheckWidgetState extends ConsumerState<VersionCheckWidget> {
         break;
 
       case VersionUpdateAvailable():
-        // 推奨アップデート: ダイアログで通知
+        // 推奨アチE�EチE�EチE ダイアログで通知
         await showDialog(
           context: context,
           barrierDismissible: true,
           builder: (context) => AlertDialog(
-            title: const Text('新しいバージョンがあります'),
+            title: const Text('新しいバ�EジョンがありまぁE),
             content: Text(
-              '新しいバージョン（${result.recommendedVersion}）が利用可能です。\n'
-              'より快適にご利用いただくため、アップデートをおすすめします。',
+              '新しいバ�Eジョン�E�E{result.recommendedVersion}�E�が利用可能です、En'
+              'より快適にご利用ぁE��だくため、アチE�EチE�Eトをおすすめします、E,
             ),
             actions: [
               TextButton(
@@ -85,7 +85,7 @@ class _VersionCheckWidgetState extends ConsumerState<VersionCheckWidget> {
 
       case VersionSupported():
       case VersionCheckError():
-        // 何もしない
+        // 何もしなぁE
         break;
     }
   }

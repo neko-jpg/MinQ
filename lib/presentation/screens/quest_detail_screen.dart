@@ -30,7 +30,7 @@ class QuestDetailScreen extends ConsumerWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          tooltip: '戻る',
+          tooltip: '戻めE,
           onPressed: () => context.pop(),
         ),
         backgroundColor: tokens.background,
@@ -91,7 +91,7 @@ class _QuestDetailContent extends ConsumerWidget {
                           width: tokens.spacing(12),
                           height: tokens.spacing(12),
                           decoration: BoxDecoration(
-                            color: tokens.brandPrimary.withOpacity(0.1),
+                            color: tokens.brandPrimary.withValues(alpha: 0.1),
                             borderRadius: tokens.cornerLarge(),
                           ),
                           child: Icon(
@@ -121,7 +121,7 @@ class _QuestDetailContent extends ConsumerWidget {
                                   ),
                                   _QuestInfoChip(
                                     icon: Icons.timer_outlined,
-                                    label: '${quest.estimatedMinutes}分想定',
+                                    label: '${quest.estimatedMinutes}刁E��宁E,
                                   ),
                                 ],
                               ),
@@ -132,7 +132,7 @@ class _QuestDetailContent extends ConsumerWidget {
                     ),
                     SizedBox(height: tokens.spacing(4)),
                     Text(
-                      'このクエストについて',
+                      'こ�EクエストにつぁE��',
                       style: tokens.titleSmall.copyWith(
                         color: tokens.textPrimary,
                         fontWeight: FontWeight.bold,
@@ -140,8 +140,8 @@ class _QuestDetailContent extends ConsumerWidget {
                     ),
                     SizedBox(height: tokens.spacing(2)),
                     Text(
-                      '短い時間で取り組める${quest.category}クエストです。'
-                      '記録するとペアに進捗が共有され、次の継続に向けたリマインダーも届きます。',
+                      '短ぁE��間で取り絁E��めE{quest.category}クエストです、E
+                      '記録するとペアに進捗が共有され、次の継続に向けたリマインダーも届きます、E,
                       style:
                           tokens.bodyMedium.copyWith(color: tokens.textMuted),
                     ),
@@ -172,7 +172,7 @@ class _QuestDetailContent extends ConsumerWidget {
             ),
             const Spacer(),
             MinqPrimaryButton(
-              label: 'このクエストを記録する',
+              label: 'こ�Eクエストを記録する',
               onPressed: () async {
                 navigation.goToRecord(quest.id);
               },
@@ -182,7 +182,7 @@ class _QuestDetailContent extends ConsumerWidget {
               children: [
                 Expanded(
                   child: MinqSecondaryButton(
-                    label: '編集',
+                    label: '編雁E,
                     onPressed: () async {
                       navigation.goToEditQuest(quest.id);
                     },
@@ -191,7 +191,7 @@ class _QuestDetailContent extends ConsumerWidget {
                 SizedBox(width: tokens.spacing(2)),
                 Expanded(
                   child: MinqSecondaryButton(
-                    label: '一覧に戻る',
+                    label: '一覧に戻めE,
                     onPressed: () async {
                       navigation.goToQuests();
                     },
@@ -221,7 +221,7 @@ class _ContactLinkButton extends StatelessWidget {
         if (uri == null) {
           FeedbackMessenger.showErrorSnackBar(
             context,
-            'リンクの形式が正しくありません。',
+            'リンクの形式が正しくありません、E,
           );
           return;
         }
@@ -229,7 +229,7 @@ class _ContactLinkButton extends StatelessWidget {
         if (!launched && context.mounted) {
           FeedbackMessenger.showErrorSnackBar(
             context,
-            'リンクを開けませんでした。',
+            'リンクを開けませんでした、E,
           );
         }
       },
@@ -260,13 +260,13 @@ class _QuestDetailNotFound extends StatelessWidget {
             ),
             SizedBox(height: tokens.spacing(2)),
             Text(
-              'リンクが古い可能性があります。クエスト一覧から探し直してください。',
+              'リンクが古ぁE��能性があります。クエスト一覧から探し直してください、E,
               style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: tokens.spacing(4)),
             MinqSecondaryButton(
-              label: 'クエスト一覧に戻る',
+              label: 'クエスト一覧に戻めE,
               onPressed: () async {
                 GoRouter.of(context).go(AppRoutes.quests);
               },
@@ -301,7 +301,7 @@ class _QuestDetailError extends StatelessWidget {
             ),
             SizedBox(height: tokens.spacing(2)),
             Text(
-              '通信状況を確認してからもう一度お試しください。',
+              '通信状況を確認してからもう一度お試しください、E,
               style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
@@ -327,7 +327,7 @@ class _QuestInfoChip extends StatelessWidget {
         vertical: tokens.spacing(2),
       ),
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withOpacity(0.1),
+        color: tokens.brandPrimary.withValues(alpha: 0.1),
         borderRadius: tokens.cornerLarge(),
       ),
       child: Row(

@@ -36,7 +36,7 @@ class FeedbackMessenger {
   static void showErrorSnackBar(
     BuildContext context,
     String message, {
-    String actionLabel = '閉じる',
+    String actionLabel = '閉じめE,
     VoidCallback? onAction,
   }) {
     _showSnackBar(

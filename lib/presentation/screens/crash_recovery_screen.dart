@@ -26,12 +26,12 @@ class CrashRecoveryScreen extends ConsumerWidget {
                   Icon(Icons.refresh, size: tokens.spacing(12), color: tokens.brandPrimary),
                   SizedBox(height: tokens.spacing(4)),
                   Text(
-                    '前回のセッションを復元しますか？',
+                    '前回のセチE��ョンを復允E��ますか�E�E,
                     style: tokens.typeScale.h3.copyWith(color: tokens.textPrimary),
                   ),
                   SizedBox(height: tokens.spacing(2)),
                   Text(
-                    '前回の起動でアプリが予期せず終了しました。状態を復元すると、保存されていないデータを再読み込みします。',
+                    '前回の起動でアプリが予期せず終亁E��ました。状態を復允E��ると、保存されてぁE��ぁE��ータを�E読み込みします、E,
                     style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
                   ),
                   if (state.report != null) ...[
@@ -60,7 +60,7 @@ class CrashRecoveryScreen extends ConsumerWidget {
                         onPressed: () async {
                           await ref.read(crashRecoveryControllerProvider.notifier).restoreAndResume();
                         },
-                        child: const Text('状態を復元する'),
+                        child: const Text('状態を復允E��めE),
                       ),
                     ),
                     SizedBox(height: tokens.spacing(2)),
@@ -70,7 +70,7 @@ class CrashRecoveryScreen extends ConsumerWidget {
                         onPressed: () async {
                           await ref.read(crashRecoveryControllerProvider.notifier).discardRecovery();
                         },
-                        child: const Text('破棄して起動する'),
+                        child: const Text('破棁E��て起動すめE),
                       ),
                     ),
                   ],

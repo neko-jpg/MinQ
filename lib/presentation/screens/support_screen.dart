@@ -32,7 +32,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     _messages.add(
       const SupportMessage(
         role: 'assistant',
-        content: 'こんにちは！MinQサポートです。ご質問や不具合があれば気軽にメッセージを送ってください。',
+        content: 'こんにちは�E�MinQサポ�Eトです。ご質問や不�E合があれば気軽にメチE��ージを送ってください、E,
       ),
     );
     Future<void>.microtask(() async {
@@ -67,7 +67,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         title: Text(
-          'サポートとFAQ',
+          'サポ�EトとFAQ',
           style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
         ),
       ),
@@ -126,28 +126,28 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   ),
                   SizedBox(height: tokens.spacing(3)),
                   const _FaqItem(
-                    questionJa: '通知が届かないときは？',
+                    questionJa: '通知が届かなぁE��き�E�E�E,
                     questionEn: 'Notifications are missing?',
                     answerJa:
-                        '端末の通知許可とアプリ内の通知時間を確認してください。端末再起動や再ログインで改善する場合があります。',
+                        '端末の通知許可とアプリ冁E�E通知時間を確認してください。端末再起動や再ログインで改喁E��る場合があります、E,
                     answerEn:
                         'Please review device notification permissions and the in-app notification schedule. Restarting the device or re-signing in can help restore delivery.',
                   ),
                   const _FaqItem(
-                    questionJa: 'ペアを変更したい',
+                    questionJa: 'ペアを変更したぁE,
                     questionEn: 'I want to change my pair',
                     answerJa:
-                        'Pair画面のメニューから「再マッチ」を選択すると、現在のペアに通知した上で新しい候補を探します。',
+                        'Pair画面のメニューから「�Eマッチ」を選択すると、現在のペアに通知した上で新しい候補を探します、E,
                     answerEn:
-                        'Use the “Re-match” option from the Pair screen menu. Your current partner will be notified while we look for a new match.',
+                        'Use the “Re-match Eoption from the Pair screen menu. Your current partner will be notified while we look for a new match.',
                   ),
                   const _FaqItem(
-                    questionJa: 'データのエクスポート方法',
+                    questionJa: 'チE�Eタのエクスポ�Eト方況E,
                     questionEn: 'How can I export my data?',
                     answerJa:
-                        '設定 > プライバシー > データをエクスポート から申請すると、登録メールへ安全なダウンロードリンクを送信します。',
+                        '設宁E> プライバシー > チE�Eタをエクスポ�EチEから申請すると、登録メールへ安�Eなダウンロードリンクを送信します、E,
                     answerEn:
-                        'Open Settings → Privacy → Export My Data to request an export. A secure download link will be emailed to you.',
+                        'Open Settings ↁEPrivacy ↁEExport My Data to request an export. A secure download link will be emailed to you.',
                   ),
                 ],
               ),
@@ -164,7 +164,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     Clipboard.setData(ClipboardData(text: text));
     FeedbackMessenger.showSuccessToast(
       context,
-      'コピーしました: $text',
+      'コピ�Eしました: $text',
     );
   }
 
@@ -172,14 +172,14 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     if (_chatSending) return;
     final content = _chatController.text.trim();
     if (content.isEmpty) {
-      FeedbackMessenger.showInfoToast(context, '質問内容を入力してください');
+      FeedbackMessenger.showInfoToast(context, '質問�E容を�E力してください');
       return;
     }
 
     // TODO: Implement supportChatServiceProvider
     // final service = ref.read(supportChatServiceProvider);
     // if (service == null) {
-      FeedbackMessenger.showInfoToast(context, '現在はサポートボットをご利用いただけません');
+      FeedbackMessenger.showInfoToast(context, '現在はサポ�Eト�EチE��をご利用ぁE��だけません');
       return;
     // }
 
@@ -199,7 +199,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'GPT-4o サポートチャット',
+              'GPT-4o サポ�EトチャチE��',
               style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
             ),
             SizedBox(height: tokens.spacing(3)),
@@ -213,7 +213,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   borderRadius: tokens.cornerMedium(),
                 ),
                 child: Text(
-                  '現在はサポートボットへの接続を準備中です。しばらくお待ちください。',
+                  '現在はサポ�Eト�EチE��への接続を準備中です。しばらくお征E��ください、E,
                   style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
               ),
@@ -263,7 +263,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                     maxLines: 3,
                     enabled: isChatAvailable && !_chatSending,
                     decoration: const InputDecoration(
-                      hintText: '例: 通知が届かないのですが…',
+                      hintText: '侁E 通知が届かなぁE�Eですが…',
                     ),
                   ),
                 ),
@@ -300,12 +300,12 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'MinQの使い心地を教えてください',
+              'MinQの使ぁE��E��を教えてください',
               style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
             ),
             SizedBox(height: tokens.spacing(2)),
             Text(
-              '0 = おすすめしたくない / 10 = とてもおすすめしたい',
+              '0 = おすすめしたくなぁE/ 10 = とてもおすすめしたい',
               style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             ),
             SizedBox(height: tokens.spacing(4)),
@@ -333,8 +333,8 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               minLines: 2,
               maxLines: 4,
               decoration: InputDecoration(
-                labelText: 'コメント (任意)',
-                hintText: 'ペア機能や通知タイミングで改善して欲しい点を教えてください',
+                labelText: 'コメンチE(任愁E',
+                hintText: 'ペア機�EめE��知タイミングで改喁E��て欲しい点を教えてください',
                 border: OutlineInputBorder(borderRadius: tokens.cornerMedium()),
               ),
             ),
@@ -343,7 +343,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               Padding(
                 padding: EdgeInsets.only(bottom: tokens.spacing(2)),
                 child: Text(
-                  'ありがとうございます！ ${_recordedAt!.year}/${_recordedAt!.month}/${_recordedAt!.day} に保存しました。',
+                  'ありがとぁE��ざいます！E${_recordedAt!.year}/${_recordedAt!.month}/${_recordedAt!.day} に保存しました、E,
                   style: tokens.bodySmall.copyWith(color: tokens.accentSuccess),
                 ),
               ),
@@ -351,7 +351,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               alignment: Alignment.centerRight,
               child: FilledButton(
                 onPressed: () => _submitNps(tokens),
-                child: Text(_submitted ? 'フィードバックを更新する' : 'フィードバックを送信する'),
+                child: Text(_submitted ? 'フィードバチE��を更新する' : 'フィードバチE��を送信する'),
               ),
             ),
           ],
@@ -376,7 +376,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     }
     FeedbackMessenger.showSuccessToast(
       context,
-      'ご協力ありがとうございます！',
+      'ご協力ありがとぁE��ざいます！E,
     );
   }
 }
@@ -389,9 +389,9 @@ class _BatteryOptimizationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const instructions = <String>[
-      'Android: 設定 > アプリと通知 > 特別なアプリアクセス > 電池の最適化 で MinQ を「最適化しない」に設定してください。',
-      'iOS: 設定 > 一般 > Appのバックグラウンド更新 から MinQ をオンにして通知を維持してください。',
-      'どの端末でも、省電力モードが有効な場合は通知が遅れることがあります。学習時間に合わせて解除することをおすすめします。',
+      'Android: 設宁E> アプリと通知 > 特別なアプリアクセス > 電池の最適匁Eで MinQ を「最適化しなぁE��に設定してください、E,
+      'iOS: 設宁E> 一般 > Appのバックグラウンド更新 から MinQ をオンにして通知を維持してください、E,
+      'どの端末でも、省電力モードが有効な場合�E通知が遅れることがあります。学習時間に合わせて解除することをおすすめします、E,
     ];
 
     return Card(
@@ -404,7 +404,7 @@ class _BatteryOptimizationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              '通知が届かない場合のチェックリスト',
+              '通知が届かなぁE��合�EチェチE��リスチE,
               style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
             ),
             SizedBox(height: tokens.spacing(3)),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
 
-/// クエスト属性選択ウィジェット
-/// 難易度、推定時間、場所などの属性を選択
+/// クエスト属性選択ウィジェチE��
+/// 難易度、推定時間、場所などの属性を選抁E
 class QuestAttributesSelector extends StatelessWidget {
   final String? selectedDifficulty;
   final int? estimatedMinutes;
@@ -28,7 +28,7 @@ class QuestAttributesSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 難易度選択
+        // 難易度選抁E
         if (onDifficultyChanged != null) ...[
           Text(
             '難易度',
@@ -46,10 +46,10 @@ class QuestAttributesSelector extends StatelessWidget {
           SizedBox(height: tokens.spacing.lg),
         ],
 
-        // 推定時間選択
+        // 推定時間選抁E
         if (onEstimatedMinutesChanged != null) ...[
           Text(
-            '推定時間',
+            '推定時閁E,
             style: tokens.typography.body.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
@@ -64,7 +64,7 @@ class QuestAttributesSelector extends StatelessWidget {
           SizedBox(height: tokens.spacing.lg),
         ],
 
-        // 場所選択
+        // 場所選抁E
         if (onLocationChanged != null) ...[
           Text(
             '場所',
@@ -85,7 +85,7 @@ class QuestAttributesSelector extends StatelessWidget {
   }
 }
 
-/// 難易度選択
+/// 難易度選抁E
 class _DifficultySelector extends StatelessWidget {
   final String? selected;
   final ValueChanged<String?> onChanged;
@@ -98,9 +98,9 @@ class _DifficultySelector extends StatelessWidget {
   });
 
   static const difficulties = [
-    {'value': 'easy', 'label': '簡単', 'icon': '⭐'},
-    {'value': 'medium', 'label': '普通', 'icon': '⭐⭐'},
-    {'value': 'hard', 'label': '難しい', 'icon': '⭐⭐⭐'},
+    {'value': 'easy', 'label': '簡十E, 'icon': '⭁E},
+    {'value': 'medium', 'label': '普送E, 'icon': '⭐⭁E},
+    {'value': 'hard', 'label': '難しい', 'icon': '⭐⭐⭁E},
   ];
 
   @override
@@ -123,14 +123,14 @@ class _DifficultySelector extends StatelessWidget {
             onChanged(selected ? difficulty['value'] : null);
           },
           backgroundColor: tokens.surface,
-          selectedColor: tokens.primary.withOpacity(0.2),
+          selectedColor: tokens.primary.withValues(alpha: 0.2),
         );
       }).toList(),
     );
   }
 }
 
-/// 推定時間選択
+/// 推定時間選抁E
 class _DurationSelector extends StatelessWidget {
   final int? selected;
   final ValueChanged<int?> onChanged;
@@ -143,10 +143,10 @@ class _DurationSelector extends StatelessWidget {
   });
 
   static const durations = [
-    {'value': 5, 'label': '5分'},
-    {'value': 10, 'label': '10分'},
-    {'value': 15, 'label': '15分'},
-    {'value': 30, 'label': '30分'},
+    {'value': 5, 'label': '5刁E},
+    {'value': 10, 'label': '10刁E},
+    {'value': 15, 'label': '15刁E},
+    {'value': 30, 'label': '30刁E},
     {'value': 60, 'label': '1時間'},
   ];
 
@@ -164,14 +164,14 @@ class _DurationSelector extends StatelessWidget {
             onChanged(selected ? value : null);
           },
           backgroundColor: tokens.surface,
-          selectedColor: tokens.primary.withOpacity(0.2),
+          selectedColor: tokens.primary.withValues(alpha: 0.2),
         );
       }).toList(),
     );
   }
 }
 
-/// 場所選択
+/// 場所選抁E
 class _LocationSelector extends StatelessWidget {
   final String? selected;
   final ValueChanged<String?> onChanged;
@@ -184,10 +184,10 @@ class _LocationSelector extends StatelessWidget {
   });
 
   static const locations = [
-    {'value': 'home', 'label': '自宅', 'icon': '🏠'},
-    {'value': 'gym', 'label': 'ジム', 'icon': '🏋️'},
+    {'value': 'home', 'label': '自宁E, 'icon': '🏠'},
+    {'value': 'gym', 'label': 'ジム', 'icon': '🏋�E�E},
     {'value': 'office', 'label': 'オフィス', 'icon': '🏢'},
-    {'value': 'outdoor', 'label': '屋外', 'icon': '🌳'},
+    {'value': 'outdoor', 'label': '屋夁E, 'icon': '🌳'},
     {'value': 'library', 'label': '図書館', 'icon': '📚'},
   ];
 
@@ -212,7 +212,7 @@ class _LocationSelector extends StatelessWidget {
             onChanged(selected ? location['value'] : null);
           },
           backgroundColor: tokens.surface,
-          selectedColor: tokens.primary.withOpacity(0.2),
+          selectedColor: tokens.primary.withValues(alpha: 0.2),
         );
       }).toList(),
     );

@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 /// ペア成立時の祝アニメーション
-/// 軽量で視覚的に楽しい演出
+/// 軽量で視覚的に楽しい演�E
 class CelebrationAnimation extends StatefulWidget {
   final Widget child;
   final VoidCallback? onComplete;
@@ -79,7 +79,7 @@ class _CelebrationAnimationState extends State<CelebrationAnimation>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // 紙吹雪エフェクト
+        // 紙吹雪エフェクチE
         Positioned.fill(
           child: AnimatedBuilder(
             animation: _confettiController,
@@ -92,7 +92,7 @@ class _CelebrationAnimationState extends State<CelebrationAnimation>
             },
           ),
         ),
-        // メインコンテンツ
+        // メインコンチE��チE
         Center(
           child: AnimatedBuilder(
             animation: _controller,
@@ -133,7 +133,7 @@ class ConfettiPainter extends CustomPainter {
   }
 }
 
-/// 紙吹雪パーティクル
+/// 紙吹雪パ�EチE��クル
 class ConfettiParticle {
   final int seed;
   late final double startX;
@@ -169,7 +169,7 @@ class ConfettiParticle {
     final x = size.width * (startX + velocityX * progress);
     final y = size.height * (startY + velocityY * progress);
 
-    // 画面外は描画しない
+    // 画面外�E描画しなぁE
     if (y > size.height) return;
 
     final paint = Paint()
@@ -194,7 +194,7 @@ class ConfettiParticle {
   }
 }
 
-/// シンプルな成功アニメーション（チェックマーク）
+/// シンプルな成功アニメーション�E�チェチE��マ�Eク�E�E
 class SuccessCheckAnimation extends StatefulWidget {
   final double size;
   final Color? color;
@@ -271,7 +271,7 @@ class _SuccessCheckAnimationState extends State<SuccessCheckAnimation>
   }
 }
 
-/// チェックマーク描画
+/// チェチE��マ�Eク描画
 class CheckMarkPainter extends CustomPainter {
   final double circleProgress;
   final double checkProgress;
@@ -288,9 +288,9 @@ class CheckMarkPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
 
-    // 円の描画
+    // 冁E�E描画
     final circlePaint = Paint()
-      ..color = color.withOpacity(0.2)
+      ..color = color.withValues(alpha: 0.2)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(
@@ -299,7 +299,7 @@ class CheckMarkPainter extends CustomPainter {
       circlePaint,
     );
 
-    // 円の枠線
+    // 冁E�E枠緁E
     final strokePaint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
@@ -311,7 +311,7 @@ class CheckMarkPainter extends CustomPainter {
       strokePaint,
     );
 
-    // チェックマーク
+    // チェチE��マ�Eク
     if (checkProgress > 0) {
       final checkPaint = Paint()
         ..color = color
@@ -327,7 +327,7 @@ class CheckMarkPainter extends CustomPainter {
 
       path.moveTo(startX, startY);
       
-      // 短い線
+      // 短ぁE��E
       final midX = startX + checkSize * 0.4;
       final midY = startY + checkSize * 0.4;
       
@@ -340,7 +340,7 @@ class CheckMarkPainter extends CustomPainter {
       } else {
         path.lineTo(midX, midY);
         
-        // 長い線
+        // 長ぁE��E
         final endX = startX + checkSize * 1.2;
         final endY = startY - checkSize * 0.6;
         final progress = (checkProgress - 0.5) * 2;
@@ -362,7 +362,7 @@ class CheckMarkPainter extends CustomPainter {
   }
 }
 
-/// パルスアニメーション（ハート等に使用）
+/// パルスアニメーション�E�ハート等に使用�E�E
 class PulseAnimation extends StatefulWidget {
   final Widget child;
   final Duration duration;

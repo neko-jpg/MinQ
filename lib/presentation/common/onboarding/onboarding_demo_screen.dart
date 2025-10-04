@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/onboarding/onboarding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// オンボーディングシステムのデモ画面
+/// オンボ�EチE��ングシスチE��のチE��画面
 class OnboardingDemoScreen extends StatefulWidget {
   const OnboardingDemoScreen({super.key});
 
@@ -38,7 +38,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('オンボーディング状態をリセットしました'),
+        content: Text('オンボ�EチE��ング状態をリセチE��しました'),
         backgroundColor: Colors.green,
       ),
     );
@@ -69,13 +69,13 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('オンボーディングシステム デモ'),
+        title: const Text('オンボ�EチE��ングシスチE�� チE��'),
         backgroundColor: theme.colorScheme.primaryContainer,
         actions: [
           IconButton(
             onPressed: _resetOnboarding,
             icon: const Icon(Icons.refresh),
-            tooltip: 'リセット',
+            tooltip: 'リセチE��',
           ),
         ],
       ),
@@ -89,30 +89,30 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
 
             const SizedBox(height: 24),
 
-            // インタラクティブツアー
-            _buildSectionCard(theme, 'インタラクティブツアー', 'ステップバイステップのガイドツアー', [
+            // インタラクチE��ブツアー
+            _buildSectionCard(theme, 'インタラクチE��ブツアー', 'スチE��プバイスチE��プ�Eガイドツアー', [
               ElevatedButton.icon(
                 onPressed: _startInteractiveTour,
                 icon: const Icon(Icons.tour),
-                label: const Text('ツアーを開始'),
+                label: const Text('チE��ーを開姁E),
               ),
             ]),
 
             const SizedBox(height: 16),
 
-            // コンテキスト依存ガイド
-            _buildSectionCard(theme, 'コンテキスト依存ガイド', '画面に応じたガイドを表示', [
+            // コンチE��スト依存ガイチE
+            _buildSectionCard(theme, 'コンチE��スト依存ガイチE, '画面に応じたガイドを表示', [
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: [
                   ElevatedButton(
                     onPressed: () => _showContextualGuide('home'),
-                    child: const Text('ホームへ移動する'),
+                    child: const Text('ホ�Eムへ移動すめE),
                   ),
                   ElevatedButton(
                     onPressed: () => _showContextualGuide('quest_creation'),
-                    child: const Text('クエストを作成する'),
+                    child: const Text('クエストを作�Eする'),
                   ),
                   ElevatedButton(
                     onPressed: () => _showContextualGuide('stats'),
@@ -120,7 +120,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () => _showContextualGuide('pair'),
-                    child: const Text('ペアを探す'),
+                    child: const Text('ペアを探ぁE),
                   ),
                 ],
               ),
@@ -128,12 +128,12 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
 
             const SizedBox(height: 16),
 
-            // スマートツールチップ
-            _buildSectionCard(theme, 'スマートツールチップ', '一度だけ表示されるツールチップ', [
+            // スマ�EトツールチッチE
+            _buildSectionCard(theme, 'スマ�EトツールチッチE, '一度だけ表示されるツールチッチE, [
               Row(
                 children: [
                   SmartTooltip(
-                    message: 'これは長押しで表示されるツールチップです',
+                    message: 'これは長押しで表示されるツールチップでぁE,
                     tooltipId: 'demo_longpress_tooltip',
                     child: ElevatedButton(
                       onPressed: () {},
@@ -142,19 +142,19 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
                   ),
                   const SizedBox(width: 16),
                   SmartTooltip(
-                    message: 'これはタップで表示されるツールチップです',
+                    message: 'これはタチE�Eで表示されるツールチップでぁE,
                     tooltipId: 'demo_tap_tooltip',
                     trigger: TooltipTrigger.tap,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: const Text('タップで表示する'),
+                      child: const Text('タチE�Eで表示する'),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
               AutoSmartTooltip(
-                message: '自動表示されるツールチップ',
+                message: '自動表示されるツールチッチE,
                 tooltipId: 'demo_auto_tooltip',
                 delay: const Duration(seconds: 1),
                 child: Container(
@@ -163,12 +163,12 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
                     color: theme.colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text('自動ツールチップ付きコンテナ'),
+                  child: const Text('自動ツールチップ付きコンチE��'),
                 ),
               ),
             ]),
 
-            _buildSectionCard(theme, 'プログレッシブヒント', 'ユーザーの進捗に応じたヒント', [
+            _buildSectionCard(theme, 'プログレチE��ブヒンチE, 'ユーザーの進捗に応じたヒンチE, [
               ElevatedButton.icon(
                 onPressed: _showProgressiveHint,
                 icon: const Icon(Icons.lightbulb_outline),
@@ -178,18 +178,18 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
 
             const SizedBox(height: 16),
 
-            // オンボーディングオーバーレイ
-            _buildSectionCard(theme, 'オンボーディングオーバーレイ', 'カスタムオーバーレイガイド', [
+            // オンボ�EチE��ングオーバ�Eレイ
+            _buildSectionCard(theme, 'オンボ�EチE��ングオーバ�Eレイ', 'カスタムオーバ�EレイガイチE, [
               ElevatedButton.icon(
                 onPressed: () => _showCustomOverlay(context),
                 icon: const Icon(Icons.info_outline),
-                label: const Text('オーバーレイを表示する'),
+                label: const Text('オーバ�Eレイを表示する'),
               ),
               const SizedBox(width: 16),
               ElevatedButton.icon(
                 onPressed: () => _showStepByStepGuide(context),
                 icon: const Icon(Icons.assistant),
-                label: const Text('ガイドを開始する'),
+                label: const Text('ガイドを開始すめE),
               ),
             ]),
           ],
@@ -206,7 +206,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'オンボーディング状態',
+              'オンボ�EチE��ング状慁E,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -222,16 +222,16 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  _hasCompletedOnboarding ? '完了済み' : '未完了',
+                  _hasCompletedOnboarding ? '完亁E��み' : '未完亁E,
                   style: theme.textTheme.bodyLarge,
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Text(
-              '現在のステップ: $_currentStep',
+              '現在のスチE��チE $_currentStep',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -262,7 +262,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
             Text(
               description,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 16),
@@ -279,17 +279,17 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
       barrierDismissible: true,
       builder:
           (context) => OnboardingOverlay(
-            title: 'カスタムオーバーレイ',
+            title: 'カスタムオーバ�Eレイ',
             description:
-                'これはカスタムオーバーレイの例です。'
-                'ユーザーに重要な情報を伝えるために使用できます。',
+                'これはカスタムオーバ�Eレイの例です、E
+                'ユーザーに重要な惁E��を伝えるために使用できます、E,
             onDismiss: () => Navigator.of(context).pop(),
             customContent: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Theme.of(
                   context,
-                ).colorScheme.primaryContainer.withOpacity(0.3),
+                ).colorScheme.primaryContainer.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -299,7 +299,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(child: Text('カスタムコンテンツを追加できます')),
+                  const Expanded(child: Text('カスタムコンチE��チE��追加できまぁE)),
                 ],
               ),
             ),
@@ -310,16 +310,16 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
   void _showStepByStepGuide(BuildContext context) {
     final steps = [
       const GuideStep(
-        title: 'ステップ 1',
-        description: 'これは最初のステップです。基本的な操作を説明します。',
+        title: 'スチE��チE1',
+        description: 'これは最初�EスチE��プです。基本皁E��操作を説明します、E,
       ),
       const GuideStep(
-        title: 'ステップ 2',
-        description: 'これは2番目のステップです。より詳細な機能を説明します。',
+        title: 'スチE��チE2',
+        description: 'これは2番目のスチE��プです。より詳細な機�Eを説明します、E,
       ),
       const GuideStep(
-        title: 'ステップ 3',
-        description: 'これは最後のステップです。高度な機能を説明します。',
+        title: 'スチE��チE3',
+        description: 'これは最後�EスチE��プです。高度な機�Eを説明します、E,
       ),
     ];
 
@@ -332,7 +332,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
             onComplete: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('ステップバイステップガイドが完了しました！'),
+                  content: Text('スチE��プバイスチE��プガイドが完亁E��ました�E�E),
                   backgroundColor: Colors.green,
                 ),
               );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-/// データ移行ガイド画面
+/// チE�Eタ移行ガイド画面
 class DataMigrationGuideScreen extends StatelessWidget {
   const DataMigrationGuideScreen({super.key});
 
@@ -10,32 +10,32 @@ class DataMigrationGuideScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Scaffold(
-      appBar: AppBar(title: const Text('データ移行ガイド')),
+      appBar: AppBar(title: const Text('チE�Eタ移行ガイチE)),
       body: ListView(
         padding: EdgeInsets.all(tokens.spacing(4)),
         children: [
           _buildSection(
             context,
-            title: '機種変更前の準備',
+            title: '機種変更前�E準備',
             icon: Icons.backup,
             steps: [
               'MinQアプリを最新版に更新してください',
-              '設定画面から「バックアップ」をタップ',
-              'Google Driveへのバックアップを実行',
-              'バックアップ完了を確認',
+              '設定画面から「バチE��アチE�E」をタチE�E',
+              'Google DriveへのバックアチE�Eを実衁E,
+              'バックアチE�E完亁E��確誁E,
             ],
           ),
           SizedBox(height: tokens.spacing(6)),
           _buildSection(
             context,
-            title: '新しい端末での復元',
+            title: '新しい端末での復允E,
             icon: Icons.restore,
             steps: [
-              '新しい端末にMinQアプリをインストール',
+              '新しい端末にMinQアプリをインスト�Eル',
               '同じGoogleアカウントでログイン',
-              '設定画面から「復元」をタップ',
-              'Google Driveから最新のバックアップを選択',
-              '復元完了を待つ',
+              '設定画面から「復允E��をタチE�E',
+              'Google Driveから最新のバックアチE�Eを選抁E,
+              '復允E��亁E��征E��',
             ],
           ),
           SizedBox(height: tokens.spacing(6)),
@@ -102,8 +102,8 @@ class DataMigrationGuideScreen extends StatelessWidget {
 
   Widget _buildWarningCard(BuildContext context) {
     final tokens = context.tokens;
-    final warningBackground = tokens.accentWarning.withOpacity(0.12);
-    final warningBorder = tokens.accentWarning.withOpacity(0.3);
+    final warningBackground = tokens.accentWarning.withValues(alpha: 0.12);
+    final warningBorder = tokens.accentWarning.withValues(alpha: 0.3);
     return Card(
       color: tokens.surface,
       child: Container(
@@ -120,7 +120,7 @@ class DataMigrationGuideScreen extends StatelessWidget {
             SizedBox(width: tokens.spacing(3)),
             Expanded(
               child: Text(
-                '注意: バックアップを取らずに機種変更すると、データが失われる可能性があります。',
+                '注愁E バックアチE�Eを取らずに機種変更すると、データが失われる可能性があります、E,
                 style: tokens.bodyMedium.copyWith(
                   color: tokens.accentWarning,
                   fontWeight: FontWeight.w600,
@@ -139,21 +139,21 @@ class DataMigrationGuideScreen extends StatelessWidget {
       children: [
         ElevatedButton.icon(
           onPressed: () {
-            // バックアップ画面へ
+            // バックアチE�E画面へ
             Navigator.pop(context);
           },
           icon: const Icon(Icons.backup),
-          label: const Text('バックアップを実行'),
+          label: const Text('バックアチE�Eを実衁E),
           style: ElevatedButton.styleFrom(minimumSize: Size(double.infinity, tokens.spacing(12))),
         ),
         SizedBox(height: tokens.spacing(3)),
         OutlinedButton.icon(
           onPressed: () {
-            // 復元画面へ
+            // 復允E��面へ
             Navigator.pop(context);
           },
           icon: const Icon(Icons.restore),
-          label: const Text('バックアップから復元'),
+          label: const Text('バックアチE�Eから復允E),
           style: OutlinedButton.styleFrom(minimumSize: Size(double.infinity, tokens.spacing(12))),
         ),
       ],

@@ -23,7 +23,7 @@ class CommunityBoardScreen extends ConsumerWidget {
     final textController = ref.read(newCommunityPostControllerProvider);
     final message = textController.text.trim();
     if (message.isEmpty) {
-      FeedbackMessenger.showErrorToast(context, 'メッセージを入力してください');
+      FeedbackMessenger.showErrorToast(context, 'メチE��ージを�E力してください');
       return;
     }
 
@@ -68,7 +68,7 @@ class CommunityBoardScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '仲間の進捗やアイデアをシェアしよう',
+                    '仲間�E進捗やアイチE��をシェアしよぁE,
                     style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: tokens.spacing(2)),
@@ -76,7 +76,7 @@ class CommunityBoardScreen extends ConsumerWidget {
                     controller: controller,
                     maxLines: 3,
                     decoration: InputDecoration(
-                      hintText: '今日取り組んだことや工夫を共有しましょう',
+                      hintText: '今日取り絁E��だことめE��夫を�E有しましょぁE,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(tokens.radius(3)),
                       ),
@@ -107,7 +107,7 @@ class CommunityBoardScreen extends ConsumerWidget {
                             Icon(Icons.groups, size: 64, color: tokens.textMuted),
                             SizedBox(height: tokens.spacing(3)),
                             Text(
-                              'まだ投稿がありません。最初の投稿者になりましょう！',
+                              'まだ投稿がありません。最初�E投稿老E��なりましょぁE��E,
                               style: tokens.bodyLarge,
                               textAlign: TextAlign.center,
                             ),
@@ -195,7 +195,7 @@ class _CommunityPostCard extends ConsumerWidget {
                       ? null
                       : () => repository.report(post.id),
                   icon: const Icon(Icons.flag_outlined),
-                  label: const Text('報告'),
+                  label: const Text('報呁E),
                 ),
               ],
             ),
@@ -209,13 +209,13 @@ class _CommunityPostCard extends ConsumerWidget {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
     if (difference.inMinutes < 1) {
-      return 'たった今';
+      return 'たった仁E;
     }
     if (difference.inHours < 1) {
-      return '${difference.inMinutes}分前';
+      return '${difference.inMinutes}刁E��';
     }
     if (difference.inDays < 1) {
-      return '${difference.inHours}時間前';
+      return '${difference.inHours}時間剁E;
     }
     return '${dateTime.year}/${dateTime.month}/${dateTime.day}';
   }

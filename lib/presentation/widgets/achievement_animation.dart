@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-/// 達成アニメーションウィジェット
+/// 達�EアニメーションウィジェチE��
 class AchievementAnimation extends StatefulWidget {
   final Widget child;
   final VoidCallback? onComplete;
@@ -74,7 +74,7 @@ class _AchievementAnimationState extends State<AchievementAnimation>
             );
           },
         ),
-        // メインコンテンツ
+        // メインコンチE��チE
         Center(
           child: ScaleTransition(
             scale: _scaleAnimation,

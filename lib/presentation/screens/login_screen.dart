@@ -23,7 +23,7 @@ class LoginScreen extends ConsumerWidget {
             content: Text(_getErrorMessage(authState.error!)),
             backgroundColor: tokens.accentError,
             action: SnackBarAction(
-              label: '再試行',
+              label: '再試衁E,
               textColor: Colors.white,
               onPressed: () => authController.clearError(),
             ),
@@ -59,7 +59,7 @@ class LoginScreen extends ConsumerWidget {
                   ),
                   SizedBox(height: tokens.spacing(2)), // mt-2
                   Text(
-                    '1日3タップのミニクエストで習慣化を後押しします。',
+                    '1日3タチE�Eのミニクエストで習�E化を後押しします、E,
                     style: tokens.bodyLarge.copyWith(color: tokens.textMuted),
                     textAlign: TextAlign.center,
                   ),
@@ -67,28 +67,28 @@ class LoginScreen extends ConsumerWidget {
                   _SocialLoginButton(
                     // NOTE: Using a standard icon instead of the image from HTML
                     icon: Icons.g_mobiledata, // Placeholder for Google
-                    text: 'Googleで続行する',
+                    text: 'Googleで続行すめE,
                     isLoading: authState.isLoading,
                     onPressed: () => _handleSignIn(ref, AuthMethod.google),
                   ),
                   SizedBox(height: tokens.spacing(3)), // space-y-3
                   _SocialLoginButton(
                     icon: Icons.apple,
-                    text: 'Appleで続行する',
+                    text: 'Appleで続行すめE,
                     isLoading: authState.isLoading,
                     onPressed: () => _handleSignIn(ref, AuthMethod.apple),
                   ),
                   SizedBox(height: tokens.spacing(3)),
                   _SocialLoginButton(
                     icon: Icons.shield_outlined, // shield_person
-                    text: 'ゲストとして試す',
+                    text: 'ゲストとして試ぁE,
                     isLoading: authState.isLoading,
                     onPressed: () => _handleSignIn(ref, AuthMethod.anonymous),
                   ),
                   SizedBox(height: tokens.spacing(3)),
                   _SocialLoginButton(
                     icon: Icons.mail_outline, // mail
-                    text: 'メールアドレスで続行する',
+                    text: 'メールアドレスで続行すめE,
                     isLoading: authState.isLoading,
                     onPressed: () => _handleSignIn(ref, AuthMethod.email),
                   ),
@@ -102,7 +102,7 @@ class LoginScreen extends ConsumerWidget {
                         children: <TextSpan>[
                           const TextSpan(text: '続行すると、MinQの'),
                           TextSpan(
-                            text: '利用規約',
+                            text: '利用規紁E,
                             style: tokens.labelSmall.copyWith(
                               color: tokens.ensureAccessibleOnBackground(tokens.brandPrimary, tokens.background),
                               fontWeight: FontWeight.bold,
@@ -122,7 +122,7 @@ class LoginScreen extends ConsumerWidget {
                             ),
                             recognizer: TapGestureRecognizer()..onTap = () => context.push('/policy/privacy'),
                           ),
-                          const TextSpan(text: 'に同意したものとみなされます。'),
+                          const TextSpan(text: 'に同意したも�Eとみなされます、E),
                         ],
                       ),
                     ),
@@ -157,25 +157,25 @@ class LoginScreen extends ConsumerWidget {
   String _getErrorMessage(String errorKey) {
     switch (errorKey) {
       case 'authErrorOperationNotAllowed':
-        return 'この認証方法は現在利用できません。';
+        return 'こ�E認証方法�E現在利用できません、E;
       case 'authErrorWeakPassword':
-        return 'パスワードが弱すぎます。';
+        return 'パスワードが弱すぎます、E;
       case 'authErrorEmailAlreadyInUse':
-        return 'このメールアドレスは既に使用されています。';
+        return 'こ�Eメールアドレスは既に使用されてぁE��す、E;
       case 'authErrorInvalidEmail':
-        return 'メールアドレスの形式が正しくありません。';
+        return 'メールアドレスの形式が正しくありません、E;
       case 'authErrorUserDisabled':
-        return 'このアカウントは無効化されています。';
+        return 'こ�Eアカウント�E無効化されてぁE��す、E;
       case 'authErrorUserNotFound':
-        return 'ユーザーが見つかりません。';
+        return 'ユーザーが見つかりません、E;
       case 'authErrorWrongPassword':
-        return 'パスワードが正しくありません。';
+        return 'パスワードが正しくありません、E;
       case 'authErrorAccountExistsWithDifferentCredential':
-        return 'このメールアドレスは別の認証方法で登録されています。';
+        return 'こ�Eメールアドレスは別の認証方法で登録されてぁE��す、E;
       case 'authErrorInvalidCredential':
-        return '認証情報が無効です。';
+        return '認証惁E��が無効です、E;
       default:
-        return '認証に失敗しました。もう一度お試しください。';
+        return '認証に失敗しました。もぁE��度お試しください、E;
     }
   }
 }
@@ -208,7 +208,7 @@ class _SocialLoginButton extends StatelessWidget {
           side: BorderSide(color: tokens.border), // border-slate-300
         ),
         elevation: 1,
-        shadowColor: tokens.border.withOpacity(0.5),
+        shadowColor: tokens.border.withValues(alpha: 0.5),
       ),
       onPressed: isLoading ? null : onPressed,
       child: Row(

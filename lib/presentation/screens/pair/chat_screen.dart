@@ -19,10 +19,10 @@ final chatMessagesProvider =
 });
 
 const List<String> _quickReplyTemplates = <String>[
-  'おつかれさま！',
-  '今から取り組みます！',
-  '今日はこれでおしまいにします。',
-  '助けてくれてありがとう！',
+  'おつかれさま�E�E,
+  '今から取り絁E��ます！E,
+  '今日はこれでおしまぁE��します、E,
+  '助けてくれてありがとぁE��E,
 ];
 
 const List<String> _stampOptions = <String>['👏', '🔥', '💪', '🙌', '✨'];
@@ -59,7 +59,7 @@ class ChatScreen extends ConsumerWidget {
             Text('Buddy#${buddyId?.substring(0, 4) ?? ''}',
                 style: tokens.titleSmall
                     .copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold),),
-            Text('目標: 毎日運動する',
+            Text('目樁E 毎日運動する',
                 style: tokens.bodySmall.copyWith(color: tokens.textMuted),),
           ],
         ),
@@ -377,7 +377,7 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
     if (moderationResult.isBlocked) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        moderationResult.details ?? '不適切な内容が含まれています',
+        moderationResult.details ?? '不適刁E��冁E��が含まれてぁE��ぁE,
       );
       return;
     }
@@ -387,8 +387,8 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
       final shouldSend = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('内容の確認'),
-          content: Text(moderationResult.details ?? 'この内容を送信してもよろしいですか？'),
+          title: const Text('冁E��の確誁E),
+          content: Text(moderationResult.details ?? 'こ�E冁E��を送信してもよろしぁE��すか�E�E),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -640,7 +640,7 @@ class _QuickReplyBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: tokens.background,
                   borderRadius: tokens.cornerFull(),
-                  border: Border.all(color: tokens.border.withOpacity(0.6)),
+                  border: Border.all(color: tokens.border.withValues(alpha: 0.6)),
                 ),
                 child: Text(
                   stamp,

@@ -36,7 +36,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     _versionTapCount++;
 
     if (_developerOptionsUnlocked) {
-      FeedbackMessenger.showInfoToast(context, '開発者向けオプションは表示中です');
+      FeedbackMessenger.showInfoToast(context, '開発老E��けオプションは表示中でぁE);
       return;
     }
 
@@ -44,7 +44,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (tapsRemaining > 0) {
       FeedbackMessenger.showInfoToast(
         context,
-        '開発者向けオプションまであと$tapsRemaining回タップ',
+        '開発老E��けオプションまであと$tapsRemaining回タチE�E',
       );
       return;
     }
@@ -52,7 +52,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() {
       _developerOptionsUnlocked = true;
     });
-    FeedbackMessenger.showSuccessToast(context, '開発者向けオプションを有効化しました');
+    FeedbackMessenger.showSuccessToast(context, '開発老E��けオプションを有効化しました');
   }
 
   String _formatDuration(Duration duration) {
@@ -60,9 +60,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       final hours = duration.inHours;
       final minutes = duration.inMinutes.remainder(60);
       if (minutes == 0) return '$hours時間';
-      return '$hours時間$minutes分';
+      return '$hours時間$minutes刁E;
     }
-    return '${duration.inMinutes}分';
+    return '${duration.inMinutes}刁E;
   }
 
   Future<void> _showUsageLimitSheet(
@@ -91,7 +91,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '1日の利用時間を設定',
+                  '1日の利用時間を設宁E,
                   style: tokens.titleLarge.copyWith(
                     fontWeight: FontWeight.bold,
                     color: tokens.textPrimary,
@@ -102,7 +102,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   final isSelected = (option == null && selected == null) ||
                       (option != null && option == selected);
                   final label = option == null
-                      ? '制限なし'
+                      ? '制限なぁE
                       : _formatDuration(option);
                   return RadioListTile<Duration?>(
                     value: option,
@@ -115,8 +115,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           .setDailyLimit(value);
                       if (mounted) {
                         final message = value == null
-                            ? '利用時間制限をオフにしました。'
-                            : '1日の利用時間を${_formatDuration(value)}に設定しました。';
+                            ? '利用時間制限をオフにしました、E
+                            : '1日の利用時間めE{_formatDuration(value)}に設定しました、E;
                         FeedbackMessenger.showSuccessToast(context, message);
                       }
                     },
@@ -147,7 +147,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '通知サウンドを選択',
+                  '通知サウンドを選抁E,
                   style: tokens.titleLarge.copyWith(
                     fontWeight: FontWeight.bold,
                     color: tokens.textPrimary,
@@ -169,7 +169,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       if (mounted) {
                         FeedbackMessenger.showSuccessToast(
                           context,
-                          '${profile.label}を通知音に設定しました。',
+                          '${profile.label}を通知音に設定しました、E,
                         );
                         ref.invalidate(selectedNotificationSoundProfileProvider);
                       }
@@ -209,7 +209,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'カスタムWebhookエンドポイント',
+                'カスタムWebhookエンド�EインチE,
                 style: tokens.titleLarge.copyWith(
                   fontWeight: FontWeight.bold,
                   color: tokens.textPrimary,
@@ -217,7 +217,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               SizedBox(height: tokens.spacing(2)),
               Text(
-                '1行につき1つのURLを入力してください。クエスト完了時にPOSTリクエストを送信します。',
+                '1行につぁEつのURLを�E力してください。クエスト完亁E��にPOSTリクエストを送信します、E,
                 style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
               SizedBox(height: tokens.spacing(3)),
@@ -245,12 +245,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     Navigator.of(context).pop();
                     FeedbackMessenger.showSuccessToast(
                       context,
-                      'Webhookエンドポイントを更新しました。',
+                      'Webhookエンド�Eイントを更新しました、E,
                     );
                     ref.invalidate(webhookEndpointsProvider);
                   }
                 },
-                child: const Text('保存する'),
+                child: const Text('保存すめE),
               ),
             ],
           ),
@@ -263,7 +263,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _showTipJar(BuildContext context) async {
     final service = ref.read(tipJarServiceProvider);
     if (service == null) {
-      FeedbackMessenger.showInfoToast(context, '現在は投げ銭をご利用いただけません');
+      FeedbackMessenger.showInfoToast(context, '現在は投げ銭をご利用ぁE��だけません');
       return;
     }
     try {
@@ -298,7 +298,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         if (canLaunch) {
                           await launchUrl(checkoutUrl, mode: LaunchMode.externalApplication);
                         } else {
-                          FeedbackMessenger.showErrorToast(context, '購入ページを開けませんでした');
+                          FeedbackMessenger.showErrorToast(context, '購入ペ�Eジを開けませんでした');
                         }
                       },
                     ),
@@ -322,7 +322,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final service = ref.read(stripeBillingServiceProvider);
     if (service == null) {
       if (mounted) {
-        FeedbackMessenger.showInfoToast(context, '現在は請求ポータルをご利用いただけません');
+        FeedbackMessenger.showInfoToast(context, '現在は請求�Eータルをご利用ぁE��だけません');
       }
       return;
     }
@@ -335,14 +335,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       if (!launched && mounted) {
         FeedbackMessenger.showErrorSnackBar(
           context,
-          'ブラウザでポータルを開けませんでした。',
+          'ブラウザでポ�Eタルを開けませんでした、E,
         );
       }
     } catch (error) {
       if (mounted) {
         FeedbackMessenger.showErrorSnackBar(
           context,
-          '請求ポータルの起動に失敗しました。',
+          '請求�Eータルの起動に失敗しました、E,
         );
       }
     }
@@ -382,7 +382,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onPressed: () => context.pop(),
           ),
         ),
-        backgroundColor: tokens.background.withOpacity(0.8),
+        backgroundColor: tokens.background.withValues(alpha: 0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -393,11 +393,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: l10n.settingsSectionGeneral,
             tiles: [
               _SettingsTile(
-                title: '利用時間制限',
+                title: '利用時間制陁E,
                 subtitle: usageLimitState.isLoading
                     ? '読み込み中…'
                     : usageLimitState.dailyLimit == null
-                        ? '制限なし'
+                        ? '制限なぁE
                         : '今日 ${_formatDuration(usageLimitState.usedToday)} / ${_formatDuration(usageLimitState.dailyLimit!)}',
                 onTap: usageLimitState.isLoading
                     ? null
@@ -436,18 +436,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               selectedSoundProfile.when(
                 data: (profile) => _SettingsTile(
-                  title: '通知サウンド',
+                  title: '通知サウンチE,
                   subtitle: profile.label,
                   onTap: () => _showSoundProfileSheet(context, profile),
                 ),
                 loading: () => const _SettingsTile(
-                  title: '通知サウンド',
+                  title: '通知サウンチE,
                   subtitle: '読み込み中…',
                   isStatic: true,
                   staticValue: '',
                 ),
                 error: (_, __) => _SettingsTile(
-                  title: '通知サウンド',
+                  title: '通知サウンチE,
                   subtitle: '読み込みに失敗しました',
                   onTap: () => ref.invalidate(selectedNotificationSoundProfileProvider),
                 ),
@@ -479,8 +479,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 data: (endpoints) => _SettingsTile(
                   title: 'カスタムWebhook',
                   subtitle: endpoints.isEmpty
-                      ? '連携は未設定です'
-                      : '${endpoints.length}件のエンドポイント',
+                      ? '連携は未設定でぁE
+                      : '${endpoints.length}件のエンド�EインチE,
                   onTap: () => _showWebhookEditor(context, endpoints),
                 ),
                 loading: () => const _SettingsTile(
@@ -491,7 +491,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 error: (_, __) => _SettingsTile(
                   title: 'カスタムWebhook',
-                  subtitle: '読み込みに失敗しました。タップして再試行',
+                  subtitle: '読み込みに失敗しました。タチE�Eして再試衁E,
                   onTap: () => ref.invalidate(webhookEndpointsProvider),
                 ),
               ),
@@ -502,49 +502,49 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             tiles: [
               stripeCustomerId.when(
                 data: (customerId) => _SettingsTile(
-                  title: 'Stripe請求ポータル',
+                  title: 'Stripe請求�Eータル',
                   subtitle: !hasStripePortal
-                      ? '現在ご利用いただけません'
+                      ? '現在ご利用ぁE��だけません'
                       : customerId == null
-                          ? '有効なサブスク情報がありません'
-                          : '支払い方法や請求履歴を確認',
+                          ? '有効なサブスク惁E��がありません'
+                          : '支払い方法や請求履歴を確誁E,
                   onTap: !hasStripePortal || customerId == null
                       ? null
                       : () => _openStripePortal(context, customerId),
                 ),
                 loading: () => const _SettingsTile(
-                  title: 'Stripe請求ポータル',
+                  title: 'Stripe請求�Eータル',
                   subtitle: '読み込み中…',
                   isStatic: true,
                   staticValue: '',
                 ),
                 error: (_, __) => _SettingsTile(
-                  title: 'Stripe請求ポータル',
-                  subtitle: '読み込みに失敗しました。タップして再試行',
+                  title: 'Stripe請求�Eータル',
+                  subtitle: '読み込みに失敗しました。タチE�Eして再試衁E,
                   onTap: () => ref.invalidate(stripeCustomerIdProvider),
                 ),
               ),
             ],
           ),
           _SettingsSection(
-            title: 'サポート',
+            title: 'サポ�EチE,
             tiles: [
               _SettingsTile(
-                title: 'GPT-4o サポートチャット',
-                subtitle: '困ったことをAIサポートに質問',
+                title: 'GPT-4o サポ�EトチャチE��',
+                subtitle: '困ったことをAIサポ�Eトに質啁E,
                 onTap: () => context.push(AppRoutes.support),
               ),
               _SettingsTile(
                 title: '投げ銭で応援',
                 subtitle: hasTipJar
-                    ? 'Sponsor Block広告の解除 & 開発支援'
-                    : '現在準備中です',
+                    ? 'Sponsor Block庁E��の解除 & 開発支援'
+                    : '現在準備中でぁE,
                 onTap: hasTipJar ? () => _showTipJar(context) : null,
               ),
             ],
           ),
           _SettingsSection(
-            title: '運用状況',
+            title: '運用状況E,
             tiles: [
               opsSnapshot.when<_SettingsTile>(
                 data: (OperationsSnapshot snapshot) {
@@ -552,10 +552,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       (snapshot.crashFreeRate * 100).clamp(0, 100);
                   final bool meetsTarget = snapshot.meetsCrashFreeTarget(0.995);
                   final String subtitle = meetsTarget
-                      ? '目標達成中（99.5%以上）'
-                      : '目標を下回っています（99.5%未満）';
+                      ? '目標達成中�E�E9.5%以上！E
+                      : '目標を下回ってぁE��す！E9.5%未満�E�E;
                   return _SettingsTile(
-                    title: 'クラッシュフリー率',
+                    title: 'クラチE��ュフリー玁E,
                     subtitle: subtitle,
                     isStatic: true,
                     staticValue: '${crashFreeRate.toStringAsFixed(2)}%',
@@ -563,14 +563,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   );
                 },
                 loading: () => const _SettingsTile(
-                  title: 'クラッシュフリー率',
-                  subtitle: '指標を計測中です…',
+                  title: 'クラチE��ュフリー玁E,
+                  subtitle: '持E��を計測中です…',
                   isStatic: true,
                   staticValue: '--',
                 ),
                 error: (error, _) => _SettingsTile(
-                  title: 'クラッシュフリー率',
-                  subtitle: '指標の読み込みに失敗しました。タップして再試行してください。',
+                  title: 'クラチE��ュフリー玁E,
+                  subtitle: '持E���E読み込みに失敗しました。タチE�Eして再試行してください、E,
                   isStatic: true,
                   staticValue: '--',
                   onTap: () => ref.invalidate(operationsSnapshotProvider),
@@ -583,7 +583,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             tiles: [
               _SettingsTile(
                 title: 'アプリを評価する',
-                subtitle: 'App Storeでレビューを書く',
+                subtitle: 'App Storeでレビューを書ぁE,
                 onTap: () async {
                   final reviewService = ref.read(inAppReviewServiceProvider);
                   await reviewService.openStoreListing();
@@ -621,7 +621,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         .setDummyDataMode(value);
                     FeedbackMessenger.showInfoToast(
                       context,
-                      value ? 'ダミーデータモードを有効にしました' : 'ダミーデータモードを無効にしました',
+                      value ? 'ダミ�EチE�Eタモードを有効にしました' : 'ダミ�EチE�Eタモードを無効にしました',
                     );
                   },
                 ),
@@ -718,7 +718,7 @@ class _SettingsTileState extends State<_SettingsTile> {
 
     return Card(
       elevation: 0,
-      shadowColor: tokens.background.withOpacity(0.1),
+      shadowColor: tokens.background.withValues(alpha: 0.1),
       color: tokens.surface,
       margin: EdgeInsets.symmetric(vertical: tokens.spacing(2)),
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),

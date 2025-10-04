@@ -7,47 +7,68 @@
 
 
 
+
+
+
+
+
   - 現在のエラー数を記録
   - Gitで作業ブランチを作成
   - バックアップコミットを作成
   - _Requirements: 1.1, 9.2_
 
-- [ ] 2. Phase 1: 高頻度エラーの一括修正
-- [ ] 2.1 withOpacityの一括移行
+- [-] 2. Phase 1: 高頻度エラーの一括修正
+
+
+
+
+- [x] 2.1 withOpacityの一括移行
+
   - `lib/presentation`配下のすべての`.dart`ファイルで`.withOpacity(数値)`を`.withValues(alpha: 数値)`に置換
   - 置換後に`flutter analyze`を実行して問題がないか確認
   - ビルドテストを実行
   - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-- [ ] 2.2 MinqThemeの拡張実装
+- [x] 2.2 MinqThemeの拡張実装
+
+
   - `lib/presentation/theme/minq_theme.dart`にextensionを追加
   - `typography`, `primary`, `success`, `error`プロパティを実装
   - `spacing`関数と`xs`, `sm`, `md`, `lg`, `xl`, `xxs`, `full`プロパティを実装
   - _Requirements: 3.4, 8.1_
 
-- [ ] 2.3 Spacingクラスの定義
+
+- [x] 2.3 Spacingクラスの定義
+
   - `lib/presentation/theme/spacing_system.dart`が存在するか確認
   - 存在しない場合は`Spacing`クラスを定義
   - 必要なファイルにインポートを追加
   - _Requirements: 3.4, 8.2_
 
-- [ ] 2.4 FocusThemeDataの修正
+
+- [x] 2.4 FocusThemeDataの修正
+
   - `lib/presentation/theme/focus_system.dart`の`FocusThemeData`参照を修正
   - 適切なクラスに置き換えまたは削除
   - _Requirements: 3.4_
 
-- [ ] 2.5 Icons.database_outlinedの修正
+
+- [x] 2.5 Icons.database_outlinedの修正
+
   - `lib/presentation/screens/diagnostic_screen.dart`の`Icons.database_outlined`を修正
   - 存在するアイコンに置き換え（例: `Icons.storage`）
   - _Requirements: 3.4_
 
-- [ ] 2.6 依存関係の問題解決
+
+- [x] 2.6 依存関係の問題解決
+
   - `lib/data/services/support_chat_service.dart`の`miinq_integrations`インポートをコメントアウト
   - 関連する機能をコメントアウトまたは削除
   - `pubspec.yaml`に不足している依存関係を追加（`riverpod`など）
   - _Requirements: 7.1, 7.2, 7.3_
 
-- [ ] 2.7 Phase 1の検証
+- [-] 2.7 Phase 1の検証
+
   - `flutter analyze`を実行してエラー数を確認
   - ビルドが成功することを確認
   - Gitコミット

@@ -34,7 +34,7 @@ import 'package:minq/presentation/screens/support_screen.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
-/// GoRouterのrefreshListenableとして使用するStreamラッパー
+/// GoRouterのrefreshListenableとして使用するStreamラチE��ー
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
@@ -98,7 +98,7 @@ class AppRoutes {
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
-  // 認証状態を監視
+  // 認証状態を監要E
   final authRepo = ref.watch(authRepositoryProvider);
 
   return GoRouter(
@@ -108,24 +108,24 @@ final routerProvider = Provider<GoRouter>((ref) {
     //   ref.watch(authStateProvider.notifier).stream,
     // ),
     redirect: (context, state) {
-      // マーケティングアトリビューション
+      // マ�EケチE��ングアトリビューション
       unawaited(
         ref.read(marketingAttributionServiceProvider).captureUri(state.uri),
       );
 
-      // 認証ガード
+      // 認証ガーチE
       final isAuthenticated = authRepo.getCurrentUser() != null;
 
       final isOnboardingRoute = state.matchedLocation == AppRoutes.onboarding;
       final isLoginRoute = state.matchedLocation == AppRoutes.login;
       final isPublicRoute = isOnboardingRoute || isLoginRoute;
 
-      // 未認証で保護されたルートにアクセスしようとした場合
+      // 未認証で保護されたルートにアクセスしよぁE��した場吁E
       if (!isAuthenticated && !isPublicRoute) {
         return AppRoutes.onboarding;
       }
 
-      // 認証済みでログイン画面にアクセスしようとした場合
+      // 認証済みでログイン画面にアクセスしよぁE��した場吁E
       if (isAuthenticated && isPublicRoute) {
         return AppRoutes.home;
       }

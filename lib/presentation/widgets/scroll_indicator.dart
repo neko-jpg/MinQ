@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
 
-/// スクロール到達インジケータの種類
+/// スクロール到達インジケータの種顁E
 enum ScrollIndicatorType {
-  /// EdgeGlow（Android標準）
+  /// EdgeGlow�E�Endroid標準！E
   edgeGlow,
 
-  /// Scrollbar（iOS/Desktop標準）
+  /// Scrollbar�E�EOS/Desktop標準！E
   scrollbar,
 
   /// カスタムインジケータ
   custom,
 
-  /// インジケータなし
+  /// インジケータなぁE
   none,
 }
 
-/// スクロール到達インジケータ設定
+/// スクロール到達インジケータ設宁E
 class ScrollIndicatorConfig {
   final ScrollIndicatorType type;
   final Color? glowColor;
@@ -35,7 +35,7 @@ class ScrollIndicatorConfig {
     this.radius = const Radius.circular(4),
   });
 
-  /// プラットフォームに応じたデフォルト設定
+  /// プラチE��フォームに応じたデフォルト設宁E
   factory ScrollIndicatorConfig.platform(BuildContext context) {
     final platform = Theme.of(context).platform;
     switch (platform) {
@@ -60,7 +60,7 @@ class ScrollIndicatorConfig {
   }
 }
 
-/// スクロール到達インジケータウィジェット
+/// スクロール到達インジケータウィジェチE��
 class ScrollIndicatorWrapper extends StatelessWidget {
   final Widget child;
   final ScrollController? controller;
@@ -242,8 +242,8 @@ class _ScrollEdgeIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = [
-      theme.colorScheme.surface.withOpacity(0.0),
-      theme.colorScheme.surface.withOpacity(0.8),
+      theme.colorScheme.surface.withValues(alpha: 0.0),
+      theme.colorScheme.surface.withValues(alpha: 0.8),
     ];
 
     return IgnorePointer(
@@ -261,7 +261,7 @@ class _ScrollEdgeIndicator extends StatelessWidget {
   }
 }
 
-/// スクロール位置インジケータ（ページネーション用）
+/// スクロール位置インジケータ�E��Eージネ�Eション用�E�E
 class ScrollPositionIndicator extends StatefulWidget {
   final ScrollController controller;
   final int itemCount;
@@ -328,7 +328,7 @@ class _ScrollPositionIndicatorState extends State<ScrollPositionIndicator> {
             decoration: BoxDecoration(
               color: isActive
                   ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurface.withOpacity(0.3),
+                  : theme.colorScheme.onSurface.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(4),
             ),
           );

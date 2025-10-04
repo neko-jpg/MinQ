@@ -121,12 +121,12 @@ class ChangelogScreen extends ConsumerWidget {
         break;
       case ChangelogType.feature:
         color = Colors.green;
-        label = '新機能';
+        label = '新機�E';
         icon = Icons.new_releases;
         break;
       case ChangelogType.improvement:
         color = Colors.orange;
-        label = '改善';
+        label = '改喁E;
         icon = Icons.trending_up;
         break;
       case ChangelogType.bugfix:
@@ -136,7 +136,7 @@ class ChangelogScreen extends ConsumerWidget {
         break;
       case ChangelogType.maintenance:
         color = Colors.grey;
-        label = 'メンテナンス';
+        label = 'メンチE��ンス';
         icon = Icons.build;
         break;
     }
@@ -157,23 +157,23 @@ class ChangelogScreen extends ConsumerWidget {
   }
 
   String _formatDate(DateTime date) {
-    return '${date.year}年${date.month}月${date.day}日';
+    return '${date.year}年${date.month}朁E{date.day}日';
   }
 
   List<ChangelogItem> _getAnnouncements() {
     return [
       ChangelogItem(
         type: ChangelogType.announcement,
-        title: 'MiniQ v1.0.0 リリース！',
+        title: 'MiniQ v1.0.0 リリース�E�E,
         date: DateTime(2025, 10, 2),
-        description: 'MiniQの最初のバージョンをリリースしました。'
-            '習慣を楽しく継続できる機能が満載です。',
+        description: 'MiniQの最初�Eバ�Eジョンをリリースしました、E
+            '習�Eを楽しく継続できる機�Eが満載です、E,
         changes: [
-          '習慣管理機能',
+          '習�E管琁E���E',
           '進捗統計表示',
-          'ペア機能',
+          'ペア機�E',
           'プッシュ通知',
-          'データエクスポート',
+          'チE�Eタエクスポ�EチE,
         ],
       ),
     ];
@@ -183,47 +183,47 @@ class ChangelogScreen extends ConsumerWidget {
     return [
       ChangelogItem(
         type: ChangelogType.feature,
-        title: 'バージョン 1.0.0',
+        title: 'バ�Eジョン 1.0.0',
         date: DateTime(2025, 10, 2),
         description: '初回リリース',
         changes: [
-          '習慣（MiniQuest）の作成・編集・削除機能',
-          '達成記録とストリーク表示',
-          '週間・月間の統計グラフ',
-          'ペア機能による励まし合い',
-          'カスタマイズ可能な通知設定',
-          'ライト・ダークモード対応',
-          'データのバックアップ・復元',
-          'CSV/JSONエクスポート',
+          '習�E�E�EiniQuest�E��E作�E・編雁E�E削除機�E',
+          '達�E記録とストリーク表示',
+          '週間�E月間の統計グラチE,
+          'ペア機�Eによる励まし合ぁE,
+          'カスタマイズ可能な通知設宁E,
+          'ライト�Eダークモード対忁E,
+          'チE�EタのバックアチE�E・復允E,
+          'CSV/JSONエクスポ�EチE,
         ],
       ),
       ChangelogItem(
         type: ChangelogType.improvement,
-        title: 'パフォーマンス改善',
+        title: 'パフォーマンス改喁E,
         date: DateTime(2025, 9, 25),
-        description: 'アプリの起動速度とレスポンスを改善しました。',
+        description: 'アプリの起動速度とレスポンスを改喁E��ました、E,
         changes: [
           '起動時間を30%短縮',
-          '画面遷移のアニメーションを最適化',
-          'メモリ使用量を削減',
+          '画面遷移のアニメーションを最適匁E,
+          'メモリ使用量を削渁E,
         ],
       ),
       ChangelogItem(
         type: ChangelogType.bugfix,
         title: 'バグ修正',
         date: DateTime(2025, 9, 20),
-        description: 'いくつかのバグを修正しました。',
+        description: 'ぁE��つか�Eバグを修正しました、E,
         changes: [
-          '通知が届かない問題を修正',
+          '通知が届かなぁE��題を修正',
           'ダークモードでの表示崩れを修正',
-          'データ同期の遅延を改善',
+          'チE�Eタ同期の遁E��を改喁E,
         ],
       ),
     ];
   }
 }
 
-/// 変更履歴アイテム
+/// 変更履歴アイチE��
 class ChangelogItem {
   final ChangelogType type;
   final String title;
@@ -240,7 +240,7 @@ class ChangelogItem {
   });
 }
 
-/// 変更履歴のタイプ
+/// 変更履歴のタイチE
 enum ChangelogType {
   announcement,
   feature,

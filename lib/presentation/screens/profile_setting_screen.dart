@@ -33,7 +33,7 @@ class ProfileSettingScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.8),
+        backgroundColor: tokens.background.withValues(alpha: 0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         actions: [
@@ -41,7 +41,7 @@ class ProfileSettingScreen extends ConsumerWidget {
             IconButton(
               icon: const Icon(Icons.warning, color: Colors.orange),
               onPressed: () => _showDummyModeWarning(context),
-              tooltip: 'ダミーデータモード',
+              tooltip: 'ダミ�EチE�EタモーチE,
             ),
         ],
       ),
@@ -94,8 +94,8 @@ class ProfileSettingScreen extends ConsumerWidget {
     final bio = user?.bio?.isNotEmpty == true 
         ? user!.bio 
         : isDummyMode 
-            ? '自己紹介文がここに入ります。ユーザーの簡単な説明です。'
-            : '習慣化を頑張っています！';
+            ? '自己紹介文がここに入ります。ユーザーの簡単な説明です、E
+            : '習�E化を頑張ってぁE��す！E;
 
     return Column(
       children: [
@@ -168,7 +168,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       width: radius * 2,
       height: radius * 2,
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withOpacity(0.1),
+        color: tokens.brandPrimary.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -184,10 +184,10 @@ class ProfileSettingScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('ダミーデータモード'),
+        title: const Text('ダミ�EチE�EタモーチE),
         content: const Text(
-          'ダミーデータモードが有効になっています。'
-          '実際のデータを使用するには、設定画面でダミーデータモードを無効にしてください。',
+          'ダミ�EチE�Eタモードが有効になってぁE��す、E
+          '実際のチE�Eタを使用するには、設定画面でダミ�EチE�Eタモードを無効にしてください、E,
         ),
         actions: [
           TextButton(
@@ -207,7 +207,7 @@ class ProfileSettingScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('プロフィール編集'),
+        title: const Text('プロフィール編雁E),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -215,7 +215,7 @@ class ProfileSettingScreen extends ConsumerWidget {
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(
-                  labelText: 'ニックネーム',
+                  labelText: 'ニックネ�Eム',
                   hintText: '表示名を入力してください',
                 ),
                 maxLength: 20,
@@ -224,7 +224,7 @@ class ProfileSettingScreen extends ConsumerWidget {
               TextField(
                 controller: bioController,
                 decoration: const InputDecoration(
-                  labelText: '自己紹介',
+                  labelText: '自己紹仁E,
                   hintText: '簡単な自己紹介を入力してください',
                 ),
                 maxLines: 3,
@@ -248,7 +248,7 @@ class ProfileSettingScreen extends ConsumerWidget {
                 final nameResult = ContentModerationService.moderateUsername(name);
                 if (nameResult.isBlocked) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(nameResult.details ?? '不適切なニックネームです')),
+                    SnackBar(content: Text(nameResult.details ?? '不適刁E��ニックネ�EムでぁE)),
                   );
                   return;
                 }
@@ -258,7 +258,7 @@ class ProfileSettingScreen extends ConsumerWidget {
                 final bioResult = ContentModerationService.moderateText(bio);
                 if (bioResult.isBlocked) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(bioResult.details ?? '不適切な自己紹介です')),
+                    SnackBar(content: Text(bioResult.details ?? '不適刁E��自己紹介でぁE)),
                   );
                   return;
                 }
@@ -283,7 +283,7 @@ class ProfileSettingScreen extends ConsumerWidget {
                 );
               }
             },
-            child: const Text('保存'),
+            child: const Text('保孁E),
           ),
         ],
       ),
@@ -309,7 +309,7 @@ class ProfileSettingScreen extends ConsumerWidget {
                 Icon(Icons.warning, color: tokens.accentWarning),
                 SizedBox(width: tokens.spacing(2)),
                 Text(
-                  'ダミーデータモード',
+                  'ダミ�EチE�EタモーチE,
                   style: tokens.titleSmall.copyWith(
                     color: tokens.accentWarning,
                     fontWeight: FontWeight.bold,
@@ -319,7 +319,7 @@ class ProfileSettingScreen extends ConsumerWidget {
             ),
             SizedBox(height: tokens.spacing(2)),
             Text(
-              'ダミーデータモードが有効になっています。実際のデータを使用するには、下のボタンを押してダミーデータを撤去してください。',
+              'ダミ�EチE�Eタモードが有効になってぁE��す。実際のチE�Eタを使用するには、下�Eボタンを押してダミ�EチE�Eタを撤去してください、E,
               style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
             ),
             SizedBox(height: tokens.spacing(3)),
@@ -328,7 +328,7 @@ class ProfileSettingScreen extends ConsumerWidget {
               child: ElevatedButton.icon(
                 onPressed: () => _removeDummyData(context, ref),
                 icon: const Icon(Icons.cleaning_services),
-                label: const Text('ダミーデータを撤去'),
+                label: const Text('ダミ�EチE�Eタを撤去'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: tokens.accentWarning,
                   foregroundColor: Colors.white,
@@ -345,10 +345,10 @@ class ProfileSettingScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('ダミーデータ撤去'),
+        title: const Text('ダミ�EチE�Eタ撤去'),
         content: const Text(
-          'ダミーデータモードを無効にして、実際のデータを使用しますか？'
-          'この操作により、すべての機能が実際のデータで動作するようになります。',
+          'ダミ�EチE�Eタモードを無効にして、実際のチE�Eタを使用しますか�E�E
+          'こ�E操作により、すべての機�Eが実際のチE�Eタで動作するよぁE��なります、E,
         ),
         actions: [
           TextButton(
@@ -364,7 +364,7 @@ class ProfileSettingScreen extends ConsumerWidget {
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('ダミーデータモードを無効にしました。実際のデータで動作します。'),
+                  content: Text('ダミ�EチE�Eタモードを無効にしました。実際のチE�Eタで動作します、E),
                 ),
               );
             },
@@ -382,8 +382,8 @@ class ProfileSettingScreen extends ConsumerWidget {
     final isDummyMode = ref.watch(dummyDataModeProvider);
     
     final tags = isDummyMode 
-        ? ['習慣化', 'ランニング', '読書', '早起き']
-        : user?.tags ?? ['習慣化'];
+        ? ['習�E匁E, 'ランニング', '読書', '早起ぁE]
+        : user?.tags ?? ['習�E匁E];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -398,7 +398,7 @@ class ProfileSettingScreen extends ConsumerWidget {
           runSpacing: 8,
           children: tags.map((tag) => Chip(
             label: Text(tag),
-            backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+            backgroundColor: tokens.brandPrimary.withValues(alpha: 0.1),
             labelStyle: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
           ),).toList(),
         ),
@@ -441,11 +441,11 @@ class ProfileSettingScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Text('今日の完了', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+                  Text('今日の完亁E, style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
                   const SizedBox(height: 8),
                   todayCountAsync.when(
                     data: (count) => Text(
-                      '$count個',
+                      '$count倁E,
                       style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
                     ),
                     loading: () => const CircularProgressIndicator(),
@@ -466,13 +466,13 @@ class ProfileSettingScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'アカウント設定',
+          'アカウント設宁E,
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         ListTile(
           leading: const Icon(Icons.notifications),
-          title: const Text('通知設定'),
+          title: const Text('通知設宁E),
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
             // Navigate to notification settings
@@ -480,7 +480,7 @@ class ProfileSettingScreen extends ConsumerWidget {
         ),
         ListTile(
           leading: const Icon(Icons.privacy_tip),
-          title: const Text('プライバシー設定'),
+          title: const Text('プライバシー設宁E),
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
             // Navigate to privacy settings
@@ -496,7 +496,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'SNS共有',
+          'SNS共朁E,
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
@@ -504,11 +504,11 @@ class ProfileSettingScreen extends ConsumerWidget {
           onPressed: () {
             // Implement SNS sharing
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('SNS共有機能は準備中です')),
+              const SnackBar(content: Text('SNS共有機�Eは準備中でぁE)),
             );
           },
           icon: const Icon(Icons.share),
-          label: const Text('進捗を共有'),
+          label: const Text('進捗を共朁E),
         ),
       ],
     );
@@ -522,7 +522,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'ペア情報',
+          'ペア惁E��',
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
@@ -542,7 +542,7 @@ class ProfileSettingScreen extends ConsumerWidget {
                         onPressed: () {
                           // Navigate to pair screen
                         },
-                        child: const Text('ペアを探す'),
+                        child: const Text('ペアを探ぁE),
                       ),
                     ],
                   ),
@@ -556,7 +556,7 @@ class ProfileSettingScreen extends ConsumerWidget {
                   child: Icon(Icons.person),
                 ),
                 title: Text('ペア: ${pair.id}'),
-                subtitle: const Text('一緒に頑張っています'),
+                subtitle: const Text('一緒に頑張ってぁE��ぁE),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -582,7 +582,7 @@ class ProfileSettingScreen extends ConsumerWidget {
           error: (_, __) => const Card(
             child: Padding(
               padding: EdgeInsets.all(16.0),
-              child: Text('ペア情報の読み込みに失敗しました'),
+              child: Text('ペア惁E��の読み込みに失敗しました'),
             ),
           ),
         ),
@@ -596,13 +596,13 @@ class ProfileSettingScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'その他',
+          'そ�E仁E,
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         ListTile(
           leading: const Icon(Icons.help),
-          title: const Text('ヘルプ'),
+          title: const Text('ヘルチE),
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
             // Navigate to help
@@ -610,7 +610,7 @@ class ProfileSettingScreen extends ConsumerWidget {
         ),
         ListTile(
           leading: const Icon(Icons.info),
-          title: const Text('アプリについて'),
+          title: const Text('アプリにつぁE��'),
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
             // Navigate to about
@@ -618,13 +618,13 @@ class ProfileSettingScreen extends ConsumerWidget {
         ),
         ListTile(
           leading: const Icon(Icons.logout),
-          title: const Text('ログアウト'),
+          title: const Text('ログアウチE),
           onTap: () async {
             final confirmed = await showDialog<bool>(
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text('ログアウト'),
-                content: const Text('ログアウトしますか？'),
+                title: const Text('ログアウチE),
+                content: const Text('ログアウトしますか�E�E),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
@@ -632,7 +632,7 @@ class ProfileSettingScreen extends ConsumerWidget {
                   ),
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('ログアウト'),
+                    child: const Text('ログアウチE),
                   ),
                 ],
               ),
@@ -656,7 +656,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'プレミアム機能',
+          'プレミアム機�E',
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
@@ -667,7 +667,7 @@ class ProfileSettingScreen extends ConsumerWidget {
               children: [
                 const Icon(Icons.star, size: 48, color: Colors.amber),
                 const SizedBox(height: 8),
-                const Text('プレミアム機能は準備中です'),
+                const Text('プレミアム機�Eは準備中でぁE),
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {
@@ -687,7 +687,7 @@ class ProfileSettingScreen extends ConsumerWidget {
     final tokens = context.tokens;
     return Chip(
       label: Text(label),
-      backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+      backgroundColor: tokens.brandPrimary.withValues(alpha: 0.1),
       labelStyle: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
       side: BorderSide.none,
     );

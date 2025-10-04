@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/elevation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
 
-/// 標準ボトムシート - 統一されたボトムシートコンポーネント
+/// 標準�EトムシーチE- 統一された�Eトムシートコンポ�EネンチE
 class StandardBottomSheet extends StatelessWidget {
   final String? title;
   final Widget? titleWidget;
@@ -54,7 +54,7 @@ class StandardBottomSheet extends StatelessWidget {
     );
   }
 
-  /// リスト選択ボトムシート
+  /// リスト選択�EトムシーチE
   static Future<T?> showList<T>({
     required BuildContext context,
     required String title,
@@ -82,7 +82,7 @@ class StandardBottomSheet extends StatelessWidget {
     );
   }
 
-  /// 確認ボトムシート
+  /// 確認�EトムシーチE
   static Future<bool?> showConfirm({
     required BuildContext context,
     required String title,
@@ -130,13 +130,13 @@ class StandardBottomSheet extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // ドラッグハンドル
+            // ドラチE��ハンドル
             if (showDragHandle) _buildDragHandle(),
 
             // タイトル
             if (title != null || titleWidget != null) _buildTitle(context),
 
-            // コンテンツ
+            // コンチE��チE
             Flexible(
               child: Container(
                 constraints: BoxConstraints(
@@ -255,7 +255,7 @@ class BottomSheetAction {
   });
 }
 
-/// ボトムシートリストアイテム
+/// ボトムシートリストアイチE��
 class BottomSheetListItem<T> {
   final String label;
   final String? subtitle;
@@ -294,7 +294,7 @@ extension BottomSheetExtension on BuildContext {
     );
   }
 
-  /// リスト選択ボトムシートを表示
+  /// リスト選択�Eトムシートを表示
   Future<T?> showListBottomSheet<T>({
     required String title,
     required List<BottomSheetListItem<T>> items,
@@ -308,7 +308,7 @@ extension BottomSheetExtension on BuildContext {
     );
   }
 
-  /// 確認ボトムシートを表示
+  /// 確認�Eトムシートを表示
   Future<bool?> showConfirmBottomSheet({
     required String title,
     required String message,

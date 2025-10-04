@@ -149,7 +149,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
                     shape: BoxShape.circle,
                     gradient: SweepGradient(
                       colors: [
-                        tokens.brandPrimary.withOpacity(0.1),
+                        tokens.brandPrimary.withValues(alpha: 0.1),
                         tokens.brandPrimary,
                       ],
                       stops: const [0.5, 1.0],
@@ -163,7 +163,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
         ),
         const SizedBox(height: 32),
         Text(
-          'バディを探しています…',
+          'バディを探してぁE��す…',
           style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -173,7 +173,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Text(
-            'あなたのプライバシーは保護されています。相手にはあなたの年齢層と目標カテゴリのみが共有されます。',
+            'あなた�Eプライバシーは保護されてぁE��す。相手にはあなた�E年齢層と目標カチE��リのみが�E有されます、E,
             textAlign: TextAlign.center,
             style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),

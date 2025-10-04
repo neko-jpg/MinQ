@@ -2,31 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
 import 'package:minq/presentation/theme/typography_system.dart';
 
-/// バッジの種類
+/// バッジの種顁E
 enum BadgeType {
-  /// 数値バッジ（1, 2, 3...）
+  /// 数値バッジ�E�E, 2, 3...�E�E
   numeric,
 
-  /// ドットバッジ（通知点）
+  /// ドットバチE���E�通知点�E�E
   dot,
 
-  /// テキストバッジ（NEW, HOTなど）
+  /// チE��ストバチE���E�EEW, HOTなど�E�E
   text,
 }
 
 /// バッジのサイズ
 enum BadgeSize {
-  /// 小（ドット用）
+  /// 小（ドチE��用�E�E
   small,
 
-  /// 中（数値1桁用）
+  /// 中�E�数値1桁用�E�E
   medium,
 
-  /// 大（数値2桁以上用）
+  /// 大�E�数値2桁以上用�E�E
   large,
 }
 
-/// バッジウィジェット
+/// バッジウィジェチE��
 class BadgeWidget extends StatelessWidget {
   final BadgeType type;
   final int? count;
@@ -47,7 +47,7 @@ class BadgeWidget extends StatelessWidget {
     this.show = true,
   });
 
-  /// 数値バッジを作成
+  /// 数値バッジを作�E
   const BadgeWidget.numeric({
     super.key,
     required int count,
@@ -63,7 +63,7 @@ class BadgeWidget extends StatelessWidget {
         textColor = textColor,
         show = show;
 
-  /// ドットバッジを作成
+  /// ドットバチE��を作�E
   const BadgeWidget.dot({
     super.key,
     Color? backgroundColor,
@@ -76,7 +76,7 @@ class BadgeWidget extends StatelessWidget {
         textColor = null,
         show = show;
 
-  /// テキストバッジを作成
+  /// チE��ストバチE��を作�E
   const BadgeWidget.text({
     super.key,
     required String text,
@@ -205,7 +205,7 @@ class BadgeWidget extends StatelessWidget {
   }
 }
 
-/// バッジ付きウィジェット
+/// バッジ付きウィジェチE��
 class WidgetWithBadge extends StatelessWidget {
   final Widget child;
   final BadgeWidget badge;

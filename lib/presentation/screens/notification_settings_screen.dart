@@ -16,7 +16,7 @@ class NotificationSettingsScreen extends ConsumerStatefulWidget {
 class _NotificationSettingsScreenState extends ConsumerState<NotificationSettingsScreen> {
   TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 30);
   TimeOfDay _eveningTime = const TimeOfDay(hour: 21, minute: 30);
-  final Set<int> _enabledWeekdays = {1, 2, 3, 4, 5}; // 平日デフォルト
+  final Set<int> _enabledWeekdays = {1, 2, 3, 4, 5}; // 平日チE��ォルチE
   bool _notifyOnHolidays = false;
 
   Future<void> _selectTime(BuildContext context, TimeOfDay initialTime, ValueChanged<TimeOfDay> onTimeChanged) async {
@@ -45,7 +45,7 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
     if (mounted) {
       FeedbackMessenger.showSuccessToast(
         context,
-        '通知時間を保存しました！',
+        '通知時間を保存しました�E�E,
       );
       context.pop();
     }
@@ -65,14 +65,14 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
         children: [
           _TimePickerTile(
             tokens: tokens,
-            label: '朝のリマインダー',
+            label: '朝�Eリマインダー',
             time: _morningTime,
             onTap: () => _selectTime(context, _morningTime, (time) => _morningTime = time),
           ),
           SizedBox(height: tokens.spacing(4)),
           _TimePickerTile(
             tokens: tokens,
-            label: '夜のリマインダー',
+            label: '夜�Eリマインダー',
             time: _eveningTime,
             onTap: () => _selectTime(context, _eveningTime, (time) => _eveningTime = time),
           ),
@@ -97,7 +97,7 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
             onChanged: (value) => setState(() => _notifyOnHolidays = value),
           ),
           SizedBox(height: tokens.spacing(8)),
-          MinqPrimaryButton(label: '保存', onPressed: _saveSettings),
+          MinqPrimaryButton(label: '保孁E, onPressed: _saveSettings),
         ],
       ),
     );
@@ -121,7 +121,7 @@ class _TimePickerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         elevation: 0,
-      shadowColor: tokens.background.withOpacity(0.1),
+      shadowColor: tokens.background.withValues(alpha: 0.1),
       color: tokens.surface,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
       clipBehavior: Clip.antiAlias,
@@ -137,7 +137,7 @@ class _TimePickerTile extends StatelessWidget {
   }
 }
 
-/// 曜日選択ウィジェット
+/// 曜日選択ウィジェチE��
 class _WeekdaySelector extends StatelessWidget {
   final MinqTheme tokens;
   final Set<int> enabledWeekdays;
@@ -151,12 +151,12 @@ class _WeekdaySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const weekdayLabels = ['日', '月', '火', '水', '木', '金', '土'];
+    const weekdayLabels = ['日', '朁E, '火', '水', '木', '釁E, '圁E];
     
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List.generate(7, (index) {
-        final weekday = index; // 0=日曜, 6=土曜
+        final weekday = index; // 0=日曁E 6=土曜
         final isEnabled = enabledWeekdays.contains(weekday);
         
         return GestureDetector(

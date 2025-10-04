@@ -70,7 +70,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child = const _HomeScreenSkeleton();
             } else if (hasError) {
               child = const Center(
-                child: Text('データの読み込みに失敗しました。'),
+                child: Text('チE�Eタの読み込みに失敗しました、E),
               );
             } else {
               final tokens = context.tokens;
@@ -204,7 +204,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
     return Text(
-      'ホーム',
+      'ホ�Eム',
       textAlign: TextAlign.center,
       style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
     );
@@ -248,7 +248,7 @@ class _FocusHeroCard extends ConsumerWidget {
               ),
               SizedBox(height: tokens.spacing(4)),
               Text(
-                'クエストを追加すると、毎日の優先タスクがここに表示されます。',
+                'クエストを追加すると、毎日の優先タスクがここに表示されます、E,
                 style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -258,7 +258,7 @@ class _FocusHeroCard extends ConsumerWidget {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () => navigation.goToCreateQuest(),
-                  child: const Text('クエストを作成する'),
+                  child: const Text('クエストを作�Eする'),
                 ),
               ),
             ],
@@ -316,7 +316,7 @@ class _FocusHeroCard extends ConsumerWidget {
                       ),
                       SizedBox(height: tokens.spacing(2)),
                       Text(
-                        '未着手',
+                        '未着扁E,
                         style: tokens.bodySmall.copyWith(
                           color: tokens.textMuted,
                           fontWeight: FontWeight.w600,
@@ -334,7 +334,7 @@ class _FocusHeroCard extends ConsumerWidget {
                       ),
                       SizedBox(height: tokens.spacing(2)),
                       Text(
-                        '達成済み',
+                        '達�E済み',
                         style: tokens.bodySmall.copyWith(
                           color: tokens.brandPrimary,
                           fontWeight: FontWeight.w600,
@@ -349,12 +349,12 @@ class _FocusHeroCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '目安時間',
+                        '目安時閁E,
                         style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                       ),
                       SizedBox(height: tokens.spacing(2)),
                       Text(
-                        '${focusQuest.estimatedMinutes}分',
+                        '${focusQuest.estimatedMinutes}刁E,
                         style: tokens.titleMedium.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -362,8 +362,8 @@ class _FocusHeroCard extends ConsumerWidget {
                       SizedBox(height: tokens.spacing(2)),
                       Text(
                         hasCompletedToday
-                            ? '今日はすでに達成できています。引き続き習慣を続けましょう。'
-                            : 'まだ記録がありません。今すぐ行動して連続日数を伸ばしましょう。',
+                            ? '今日はすでに達�EできてぁE��す。引き続き習�Eを続けましょぁE��E
+                            : 'まだ記録がありません。今すぐ行動して連続日数を伸ばしましょぁE��E,
                         style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -463,11 +463,11 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
           padding: EdgeInsets.all(tokens.spacing(4)),
           child: MinqEmptyState(
             icon: Icons.auto_awesome,
-            title: 'ミニクエストはまだありません',
-            message: 'クエストを作成すると今日取り組む項目がここに表示されます。',
+            title: 'ミニクエスト�Eまだありません',
+            message: 'クエストを作�Eすると今日取り絁E�E頁E��がここに表示されます、E,
             actionArea: ElevatedButton(
               onPressed: () => navigation.goToCreateQuest(),
-              child: const Text('クエストを作成する'),
+              child: const Text('クエストを作�Eする'),
             ),
           ),
         ),
@@ -492,7 +492,7 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'あなたのミニクエスト',
+                  'あなた�EミニクエスチE,
                   style: tokens.titleSmall.copyWith(fontWeight: FontWeight.bold),
                 ),
                 IconButton.filled(
@@ -539,7 +539,7 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () => setState(() => _expanded = false),
-                  child: const Text('閉じる'),
+                  child: const Text('閉じめE),
                 ),
               ),
             ],
@@ -578,7 +578,7 @@ class _QuestSummaryRow extends StatelessWidget {
           width: tokens.spacing(8),
           height: tokens.spacing(8),
           decoration: BoxDecoration(
-            color: tokens.brandPrimary.withOpacity(0.12),
+            color: tokens.brandPrimary.withValues(alpha: 0.12),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -630,21 +630,21 @@ class _StatsSnapshotCard extends StatelessWidget {
         value: (streak % 7) / 7.0,
         label: '継続日数',
         stat: '$streak',
-        emptyLabel: '記録なし',
+        emptyLabel: '記録なぁE,
         emptyIcon: Icons.local_fire_department_outlined,
       ),
       _StatData(
         value: completedToday > 0 ? 1.0 : 0.0,
-        label: 'クエスト完了',
+        label: 'クエスト完亁E,
         stat: '$completedToday',
-        emptyLabel: '未完了',
+        emptyLabel: '未完亁E,
         emptyIcon: Icons.flag_outlined,
       ),
       const _StatData(
         value: 0.0,
-        label: 'ペア進捗',
+        label: 'ペア進捁E,
         stat: '',
-        emptyLabel: 'データなし',
+        emptyLabel: 'チE�EタなぁE,
         emptyIcon: Icons.groups_2_outlined,
       ),
     ];
@@ -662,7 +662,7 @@ class _StatsSnapshotCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '今日の進捗',
+              '今日の進捁E,
               style: tokens.titleSmall.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing(4)),
@@ -786,7 +786,7 @@ class _ProgressRing extends StatelessWidget {
             value: 1,
             strokeWidth: 8,
             valueColor: AlwaysStoppedAnimation<Color>(
-              tokens.border.withOpacity(0.3),
+              tokens.border.withValues(alpha: 0.3),
             ),
             backgroundColor: Colors.transparent,
           ),
@@ -853,7 +853,7 @@ class _WeeklyStreakSection extends StatelessWidget {
     final now = DateTime.now();
     final today = DateUtils.dateOnly(now);
     final startOfWeek = today.subtract(Duration(days: today.weekday - 1));
-    const labels = ['月', '火', '水', '木', '金', '土', '日'];
+    const labels = ['朁E, '火', '水', '木', '釁E, '圁E, '日'];
 
     return List<Widget>.generate(7, (index) {
       final dayToDisplay = startOfWeek.add(Duration(days: index));

@@ -35,7 +35,7 @@ class LicensesScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'ライセンス情報の読み込みに失敗しました',
+                    'ライセンス惁E��の読み込みに失敗しました',
                     style: AppTypography.body,
                   ),
                 ],
@@ -66,12 +66,12 @@ class LicensesScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'このアプリは以下のオープンソースソフトウェアを使用しています',
+              'こ�Eアプリは以下�Eオープンソースソフトウェアを使用してぁE��ぁE,
               style: AppTypography.body,
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              '合計 ${data.packages.length} パッケージ',
+              '合訁E${data.packages.length} パッケージ',
               style: AppTypography.caption.copyWith(
                 color: Colors.grey,
               ),
@@ -140,7 +140,7 @@ class LicensesScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('閉じる'),
+            child: const Text('閉じめE),
           ),
         ],
       ),
@@ -155,7 +155,7 @@ class LicensesScreen extends ConsumerWidget {
     if (text.contains('gpl')) return 'GPL License';
     if (text.contains('lgpl')) return 'LGPL License';
     if (text.contains('mpl')) return 'Mozilla Public License';
-    return 'その他のライセンス';
+    return 'そ�E他�Eライセンス';
   }
 
   Future<LicenseData> _loadLicenses() async {
@@ -165,7 +165,7 @@ class LicensesScreen extends ConsumerWidget {
       packages.add(license);
     }
 
-    // パッケージ名でソート
+    // パッケージ名でソーチE
     packages.sort((a, b) {
       final aName = a.packages.join(', ').toLowerCase();
       final bName = b.packages.join(', ').toLowerCase();
@@ -176,7 +176,7 @@ class LicensesScreen extends ConsumerWidget {
   }
 }
 
-/// ライセンスデータ
+/// ライセンスチE�Eタ
 class LicenseData {
   final List<LicenseEntry> packages;
 

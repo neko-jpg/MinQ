@@ -32,7 +32,7 @@ class TodayLogsScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -51,10 +51,10 @@ class TodayLogsScreen extends ConsumerWidget {
               child: MinqEmptyState(
                 icon: Icons.today_outlined,
                 title: '今日の記録はありません',
-                message: 'クエストを完了すると、ここに記録が表示されます。',
+                message: 'クエストを完亁E��ると、ここに記録が表示されます、E,
                 actionArea: ElevatedButton(
                   onPressed: () => context.pop(),
-                  child: const Text('クエスト一覧に戻る'),
+                  child: const Text('クエスト一覧に戻めE),
                 ),
               ),
             );
@@ -123,7 +123,7 @@ class _LogCard extends ConsumerWidget {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withOpacity(0.1),
+                        color: tokens.brandPrimary.withValues(alpha: 0.1),
                         borderRadius: tokens.cornerMedium(),
                       ),
                       child: Icon(
@@ -168,7 +168,7 @@ class _LogCard extends ConsumerWidget {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Container(
                         height: 120,
-                        color: tokens.border.withOpacity(0.3),
+                        color: tokens.border.withValues(alpha: 0.3),
                         child: const Center(
                           child: Icon(Icons.broken_image_outlined),
                         ),
@@ -213,7 +213,7 @@ class _LogCard extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('記録を取り消し'),
-        content: const Text('この記録を取り消しますか？この操作は元に戻せません。'),
+        content: const Text('こ�E記録を取り消しますか�E�この操作�E允E��戻せません、E),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -262,8 +262,8 @@ class _ProofTypeChip extends StatelessWidget {
     
     final (icon, label, color) = switch (proofType) {
       'photo' => (Icons.camera_alt, '写真', tokens.brandPrimary),
-      'check' => (Icons.check_circle, 'セルフ', tokens.accentSuccess),
-      _ => (Icons.help_outline, '不明', tokens.textMuted),
+      'check' => (Icons.check_circle, 'セルチE, tokens.accentSuccess),
+      _ => (Icons.help_outline, '不�E', tokens.textMuted),
     };
 
     return Container(
@@ -272,9 +272,9 @@ class _ProofTypeChip extends StatelessWidget {
         vertical: tokens.spacing(1),
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: tokens.cornerSmall(),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

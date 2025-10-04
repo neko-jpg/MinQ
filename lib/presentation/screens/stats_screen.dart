@@ -44,7 +44,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
       }
     });
 
-    // Stats画面表示時にレビューリクエストを試行
+    // Stats画面表示時にレビューリクエストを試衁E
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _maybeRequestReview();
     });
@@ -63,7 +63,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
         completedCount: totalCompleted,
       );
     } catch (e) {
-      // エラーは無視（ユーザー体験を損なわない）
+      // エラーは無視（ユーザー体験を損なわなぁE��E
     }
   }
 
@@ -101,13 +101,13 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
-          '進捗',
+          '進捁E,
           style:
               tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         leading: MinqIconButton(icon: Icons.arrow_back, onTap: () => context.pop()),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -212,7 +212,7 @@ Widget _buildStreakCard(
           Text(
             hasStreak
                 ? streakDescription
-                : '今日の最初の習慣を記録して連続日数をスタートしましょう。',
+                : '今日の最初�E習�Eを記録して連続日数をスタートしましょぁE��E,
             style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
@@ -240,19 +240,19 @@ Widget _buildGoalCard(BuildContext context, MinqTheme tokens) {
         width: tokens.spacing(10),
         height: tokens.spacing(10),
         decoration: BoxDecoration(
-          color: tokens.brandPrimary.withOpacity(0.12),
+          color: tokens.brandPrimary.withValues(alpha: 0.12),
           borderRadius: tokens.cornerLarge(),
         ),
         child: Icon(Icons.flag, color: tokens.brandPrimary, size: tokens.spacing(6)),
       ),
       title: Text(
-        '目標設定',
+        '目標設宁E,
         style: tokens.typeScale.h4.copyWith(color: tokens.textPrimary),
       ),
       subtitle: Padding(
         padding: EdgeInsets.only(top: tokens.spacing(1)),
         child: Text(
-          '今月の目標: 5日継続',
+          '今月の目樁E 5日継綁E,
           style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
         ),
       ),
@@ -260,7 +260,7 @@ Widget _buildGoalCard(BuildContext context, MinqTheme tokens) {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '編集する',
+            '編雁E��めE,
             style: tokens.typeScale.bodySmall.copyWith(color: tokens.brandPrimary),
           ),
           SizedBox(width: tokens.spacing(1)),
@@ -293,12 +293,12 @@ void _showGoalBottomSheet(BuildContext context, MinqTheme tokens) {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('目標を編集する', style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold)),
+                Text('目標を編雁E��めE, style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold)),
                 SizedBox(height: tokens.spacing(4)),
                 TextField(
                   decoration: InputDecoration(
-                    labelText: '連続日数の目標',
-                    hintText: '例: 7',
+                    labelText: '連続日数の目樁E,
+                    hintText: '侁E 7',
                     border: OutlineInputBorder(borderRadius: tokens.cornerLarge()),
                   ),
                   keyboardType: TextInputType.number,
@@ -308,7 +308,7 @@ void _showGoalBottomSheet(BuildContext context, MinqTheme tokens) {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('保存する'),
+                    child: const Text('保存すめE),
                   ),
                 ),
               ],
@@ -365,7 +365,7 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
       progress: 0.71,
       color: tokens.brandPrimary,
       icon: Icons.trending_up,
-      semanticsLabel: '今週は5日達成しています',
+      semanticsLabel: '今週は5日達�EしてぁE��ぁE,
     ),
     _ProgressEntry(
       label: '先週',
@@ -374,7 +374,7 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
       progress: 0.86,
       color: tokens.serenity,
       icon: Icons.history,
-      semanticsLabel: '先週は6日達成しました',
+      semanticsLabel: '先週は6日達�Eしました',
     ),
   ];
   final hasProgress = entries.any((entry) => entry.progress > 0);
@@ -384,7 +384,7 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
   if (!hasProgress) {
     return _buildZeroChart(
       tokens,
-      message: 'まだ比較できる進捗データがありません。',
+      message: 'まだ比輁E��きる進捗データがありません、E,
       actionLabel: '記録する',
       onAction: () => navigation.goToQuests(),
     );
@@ -402,7 +402,7 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('進捗を比較する', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+          Text('進捗を比輁E��めE, style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
           SizedBox(height: tokens.spacing(3)),
           Wrap(
             spacing: tokens.spacing(3),
@@ -418,7 +418,7 @@ Widget _buildCompareProgressCard(BuildContext context, WidgetRef ref, MinqTheme 
                       _LegendBadge(color: entry.color, icon: entry.icon),
                       SizedBox(width: tokens.spacing(1.5)),
                       Text(
-                        '${entry.label}（${entry.unit}）',
+                        '${entry.label}�E�E{entry.unit}�E�E,
                         style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
                       ),
                     ],
@@ -449,16 +449,16 @@ Widget _buildWeeklyProgressCard(BuildContext context, WidgetRef ref, MinqTheme t
   if (!hasProgress) {
     return _buildZeroChart(
       tokens,
-      message: '週間の進捗がまだありません。',
-      actionLabel: '習慣を追加する',
+      message: '週間�E進捗がまだありません、E,
+      actionLabel: '習�Eを追加する',
       onAction: () => navigation.goToQuests(),
     );
   }
 
   final metrics = <_RingMetric>[
     const _RingMetric(label: '日数', value: 5, unit: '日', progress: 0.71, delta: 1),
-    const _RingMetric(label: '合計時間', value: 4.2, unit: '時間', progress: 0.6, delta: -0.3),
-    const _RingMetric(label: '平均時間', value: 32, unit: '分', progress: 0.75, delta: 2),
+    const _RingMetric(label: '合計時閁E, value: 4.2, unit: '時間', progress: 0.6, delta: -0.3),
+    const _RingMetric(label: '平坁E��閁E, value: 32, unit: '刁E, progress: 0.75, delta: 2),
   ];
 
   return Card(
@@ -473,7 +473,7 @@ Widget _buildWeeklyProgressCard(BuildContext context, WidgetRef ref, MinqTheme t
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('週間の進捗', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
+          Text('週間�E進捁E, style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
           SizedBox(height: tokens.spacing(4)),
           Row(
             children: [
@@ -512,7 +512,7 @@ Widget _buildZeroChart(
       ),
       child: MinqEmptyState(
         icon: Icons.insights_outlined,
-        title: 'データがありません',
+        title: 'チE�Eタがありません',
         message: message,
         actionArea: ElevatedButton(
           onPressed: onAction,
@@ -530,7 +530,7 @@ Widget _buildProgressBar(
   double? delta,
 }) {
   final progressColor =
-      isPrimary ? entry.color : entry.color.withOpacity(0.7);
+      isPrimary ? entry.color : entry.color.withValues(alpha: 0.7);
   final deltaLabel = delta != null ? _formatDelta(delta, entry.unit) : null;
   final valueText = '${entry.value.toStringAsFixed(entry.value % 1 == 0 ? 0 : 1)}${entry.unit}';
 
@@ -555,7 +555,7 @@ Widget _buildProgressBar(
                   ),
                   if (deltaLabel != null)
                     Text(
-                      '先週比 $deltaLabel',
+                      '先週毁E$deltaLabel',
                       style: tokens.typeScale.bodySmall
                           .copyWith(color: tokens.textMuted),
                     ),
@@ -585,7 +585,7 @@ Widget _buildProgressBar(
             child: LinearProgressIndicator(
               value: entry.progress.clamp(0.0, 1.0),
               minHeight: 10,
-              backgroundColor: tokens.border.withOpacity(0.3),
+              backgroundColor: tokens.border.withValues(alpha: 0.3),
               valueColor: AlwaysStoppedAnimation<Color>(progressColor),
             ),
           ),
@@ -612,7 +612,7 @@ class _LegendBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: tokens.cornerMedium(),
-        border: Border.all(color: tokens.border.withOpacity(0.4)),
+        border: Border.all(color: tokens.border.withValues(alpha: 0.4)),
       ),
       alignment: Alignment.center,
       child: Icon(icon, color: iconColor, size: tokens.spacing(3.5)),
@@ -648,7 +648,7 @@ Widget _buildProgressRing(MinqTheme tokens, _RingMetric metric) {
               CircularProgressIndicator(
                 value: 1,
                 strokeWidth: 8,
-                valueColor: AlwaysStoppedAnimation<Color>(tokens.border.withOpacity(0.3)),
+                valueColor: AlwaysStoppedAnimation<Color>(tokens.border.withValues(alpha: 0.3)),
                 backgroundColor: Colors.transparent,
               ),
               if (hasProgress)
@@ -690,7 +690,7 @@ Widget _buildProgressRing(MinqTheme tokens, _RingMetric metric) {
         if (deltaLabel != null) ...[
           SizedBox(height: tokens.spacing(1)),
           Text(
-            '先週比 $deltaLabel',
+            '先週毁E$deltaLabel',
             style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
           ),
         ],
@@ -715,8 +715,8 @@ Widget _buildCalendarCard(
   if (!hasData) {
     return _buildZeroChart(
       tokens,
-      message: 'カレンダーに表示できる記録がまだありません。',
-      actionLabel: '今日の習慣を記録する',
+      message: 'カレンダーに表示できる記録がまだありません、E,
+      actionLabel: '今日の習�Eを記録する',
       onAction: () => navigation.goToQuests(),
     );
   }
@@ -817,7 +817,7 @@ Widget _buildTodayStatsCard(
             ),
             SizedBox(height: tokens.spacing(2)),
             Text(
-              '最初のクエストを完了して、今日の記録を始めましょう！',
+              '最初�Eクエストを完亁E��て、今日の記録を始めましょぁE��E,
               style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
@@ -845,7 +845,7 @@ Widget _buildTodayStatsCard(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '今日の完了数',
+            '今日の完亁E��',
             style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing(2)),
@@ -868,8 +868,8 @@ Widget _buildTodayStatsCard(
           SizedBox(height: tokens.spacing(2)),
           Text(
             todayCount >= 3 
-                ? '素晴らしい！今日の目標を達成しました。'
-                : '目標まであと${3 - todayCount}個です。',
+                ? '素晴らしぁE��今日の目標を達�Eしました、E
+                : '目標まであと${3 - todayCount}個です、E,
             style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
@@ -918,14 +918,14 @@ Widget _buildWeeklyStatsCard(
             ),
             SizedBox(height: tokens.spacing(2)),
             Text(
-              '今週の習慣を始めて、週間達成率を向上させましょう！',
+              '今週の習�Eを始めて、E��間達成率を向上させましょぁE��E,
               style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: tokens.spacing(4)),
             ElevatedButton(
               onPressed: () => navigation.goToQuests(),
-              child: const Text('今すぐ始める'),
+              child: const Text('今すぐ始めめE),
             ),
           ],
         ),
@@ -946,7 +946,7 @@ Widget _buildWeeklyStatsCard(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '今週の達成率',
+            '今週の達�E玁E,
             style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing(4)),
@@ -959,7 +959,7 @@ Widget _buildWeeklyStatsCard(
                 CircularProgressIndicator(
                   value: 1,
                   strokeWidth: 12,
-                  valueColor: AlwaysStoppedAnimation<Color>(tokens.border.withOpacity(0.3)),
+                  valueColor: AlwaysStoppedAnimation<Color>(tokens.border.withValues(alpha: 0.3)),
                   backgroundColor: Colors.transparent,
                 ),
                 CircularProgressIndicator(
@@ -981,7 +981,7 @@ Widget _buildWeeklyStatsCard(
                       ),
                     ),
                     Text(
-                      '達成',
+                      '達�E',
                       style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                     ),
                   ],
@@ -992,10 +992,10 @@ Widget _buildWeeklyStatsCard(
           SizedBox(height: tokens.spacing(4)),
           Text(
             weeklyRate >= 0.7
-                ? '素晴らしい週間パフォーマンスです！'
+                ? '素晴らしぁE��間パフォーマンスです！E
                 : weeklyRate >= 0.5
-                    ? '良いペースです。継続していきましょう。'
-                    : '今週はもう少し頑張ってみましょう。',
+                    ? '良ぁE�Eースです。継続してぁE��ましょぁE��E
+                    : '今週はもう少し頑張ってみましょぁE��E,
             style: tokens.typeScale.bodyMedium.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),

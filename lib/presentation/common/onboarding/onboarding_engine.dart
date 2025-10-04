@@ -3,7 +3,7 @@ import 'package:minq/presentation/common/onboarding/interactive_tour.dart';
 import 'package:minq/presentation/common/onboarding/onboarding_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// コンテキスト依存のガイド表示を管理するオンボーディングエンジン
+/// コンチE��スト依存�Eガイド表示を管琁E��るオンボ�EチE��ングエンジン
 class OnboardingEngine {
   static const String _keyPrefix = 'onboarding_';
   static const String _keyOnboardingCompleted = '${_keyPrefix}completed';
@@ -15,26 +15,26 @@ class OnboardingEngine {
   
   OnboardingEngine._();
 
-  /// オンボーディングが完了しているかチェック
+  /// オンボ�EチE��ングが完亁E��てぁE��かチェチE��
   static Future<bool> hasCompletedOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_keyOnboardingCompleted) ?? false;
   }
 
-  /// オンボーディング完了をマーク
+  /// オンボ�EチE��ング完亁E��マ�Eク
   static Future<void> markOnboardingCompleted() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyOnboardingCompleted, true);
   }
 
-  /// 特定のツールチップが表示済みかチェック
+  /// 特定�EチE�Eルチップが表示済みかチェチE��
   static Future<bool> hasSeenTooltip(String tooltipId) async {
     final prefs = await SharedPreferences.getInstance();
     final viewedTooltips = prefs.getStringList(_keyViewedTooltips) ?? [];
     return viewedTooltips.contains(tooltipId);
   }
 
-  /// ツールチップを表示済みとしてマーク
+  /// チE�Eルチップを表示済みとしてマ�Eク
   static Future<void> markTooltipSeen(String tooltipId) async {
     final prefs = await SharedPreferences.getInstance();
     final viewedTooltips = prefs.getStringList(_keyViewedTooltips) ?? [];
@@ -44,19 +44,19 @@ class OnboardingEngine {
     }
   }
 
-  /// 現在のオンボーディングステップを取得
+  /// 現在のオンボ�EチE��ングスチE��プを取征E
   static Future<int> getCurrentStep() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt(_keyCurrentStep) ?? 0;
   }
 
-  /// オンボーディングステップを更新
+  /// オンボ�EチE��ングスチE��プを更新
   static Future<void> updateStep(int step) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_keyCurrentStep, step);
   }
 
-  /// コンテキスト依存のガイドを表示
+  /// コンチE��スト依存�Eガイドを表示
   static Future<void> showContextualGuide(
     String screenId, 
     BuildContext context,
@@ -84,18 +84,18 @@ class OnboardingEngine {
     if (await hasCompletedOnboarding()) return;
 
     if (progress.totalQuests == 0) {
-      // 初回ユーザー向けのクエスト作成ヒント
+      // 初回ユーザー向けのクエスト作�EヒンチE
       await _showFirstQuestHint();
     } else if (progress.completedQuests == 0) {
-      // 初回完了ヒント
+      // 初回完亁E��ンチE
       await _showFirstCompletionHint();
     } else if (progress.currentStreak >= 3) {
-      // 連続達成ヒント
+      // 連続達成ヒンチE
       await _showStreakHint();
     }
   }
 
-  /// インタラクティブツアーを開始
+  /// インタラクチE��ブツアーを開姁E
   static Future<void> startInteractiveTour(
     BuildContext context,
     List<TourStep> steps,
@@ -109,17 +109,17 @@ class OnboardingEngine {
     );
   }
 
-  // プライベートメソッド
+  // プライベ�EトメソチE��
   static Future<void> _showHomeScreenGuide(BuildContext context) async {
     const tooltipId = 'home_screen_guide';
     if (await hasSeenTooltip(tooltipId)) return;
 
-    // ホーム画面のガイドを表示
+    // ホ�Eム画面のガイドを表示
     await _showOverlayGuide(
       context,
       tooltipId,
-      'ホーム画面へようこそ！',
-      'ここが今日のクエスト一覧です。まずは新しいクエストを追加してみましょう。',
+      'ホ�Eム画面へようこそ�E�E,
+      'ここが今日のクエスト一覧です。まず�E新しいクエストを追加してみましょぁE��E,
       targetKey: 'quest_list',
     );
   }
@@ -131,8 +131,8 @@ class OnboardingEngine {
     await _showOverlayGuide(
       context,
       tooltipId,
-      'クエストを作成しましょう',
-      'ここから自分のクエストを作成できます。例：「毎朝ジョギング」',
+      'クエストを作�EしましょぁE,
+      'ここから自刁E�Eクエストを作�Eできます。例：「毎朝ジョギング、E,
       targetKey: 'create_quest_fab',
     );
   }
@@ -144,8 +144,8 @@ class OnboardingEngine {
     await _showOverlayGuide(
       context,
       tooltipId,
-      '進捗を確認しましょう',
-      'ここで継続記録や達成状況を確認できます。',
+      '進捗を確認しましょぁE,
+      'ここで継続記録めE��成状況を確認できます、E,
       targetKey: 'stats_progress',
     );
   }
@@ -157,8 +157,8 @@ class OnboardingEngine {
     await _showOverlayGuide(
       context,
       tooltipId,
-      'ペアと一緒に頑張りましょう',
-      'ペアと励まし合いながら習慣化に取り組めます。',
+      'ペアと一緒に頑張りましょぁE,
+      'ペアと励まし合ぁE��がら習�E化に取り絁E��ます、E,
       targetKey: 'pair_matching',
     );
   }
@@ -186,15 +186,15 @@ class OnboardingEngine {
   }
 
   static Future<void> _showFirstQuestHint() async {
-    // 実装は後で追加
+    // 実裁E�E後で追加
   }
 
   static Future<void> _showFirstCompletionHint() async {
-    // 実装は後で追加
+    // 実裁E�E後で追加
   }
 
   static Future<void> _showStreakHint() async {
-    // 実装は後で追加
+    // 実裁E�E後で追加
   }
 }
 
@@ -213,7 +213,7 @@ class UserProgress {
   });
 }
 
-/// ツアーステップの定義
+/// チE��ースチE��プ�E定義
 class TourStep {
   final String title;
   final String description;

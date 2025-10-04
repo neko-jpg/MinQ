@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/elevation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
 
-/// 標準ダイアログ - 統一されたダイアログコンポーネント
+/// 標準ダイアログ - 統一されたダイアログコンポ�EネンチE
 class StandardDialog extends StatelessWidget {
   final String? title;
   final Widget? titleWidget;
@@ -143,7 +143,7 @@ class StandardDialog extends StatelessWidget {
               SpacingSystem.vSpaceMD,
             ],
 
-            // メッセージまたはコンテンツ
+            // メチE��ージまた�EコンチE��チE
             if (message != null)
               Text(
                 message!,
@@ -269,7 +269,7 @@ class DialogAction {
   });
 }
 
-/// ダイアログタイプ
+/// ダイアログタイチE
 enum DialogType {
   normal,
   success,

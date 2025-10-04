@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/core/assets/app_icons.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
 
-/// 空状態ウィジェット - 統一されたスタイル
+/// 空状態ウィジェチE�� - 統一されたスタイル
 class EmptyStateWidget extends StatelessWidget {
   final IconData? icon;
   final String? title;
@@ -21,7 +21,7 @@ class EmptyStateWidget extends StatelessWidget {
     this.type = EmptyStateType.general,
   });
 
-  /// クエストが空の状態
+  /// クエストが空の状慁E
   factory EmptyStateWidget.emptyQuests({
     VoidCallback? onCreateQuest,
   }) {
@@ -29,18 +29,18 @@ class EmptyStateWidget extends StatelessWidget {
       type: EmptyStateType.quests,
       icon: AppIcons.questOutlined,
       title: 'クエストがありません',
-      message: '最初のクエストを作成して\n習慣づくりを始めましょう',
+      message: '最初�Eクエストを作�Eして\n習�Eづくりを始めましょぁE,
       action: onCreateQuest != null
           ? ElevatedButton.icon(
               onPressed: onCreateQuest,
               icon: const Icon(AppIcons.add),
-              label: const Text('クエストを作成'),
+              label: const Text('クエストを作�E'),
             )
           : null,
     );
   }
 
-  /// ログが空の状態
+  /// ログが空の状慁E
   factory EmptyStateWidget.emptyLogs({
     VoidCallback? onStartLogging,
   }) {
@@ -48,7 +48,7 @@ class EmptyStateWidget extends StatelessWidget {
       type: EmptyStateType.logs,
       icon: AppIcons.calendar,
       title: 'まだ記録がありません',
-      message: 'クエストを完了して\n進捗を記録しましょう',
+      message: 'クエストを完亁E��て\n進捗を記録しましょぁE,
       action: onStartLogging != null
           ? ElevatedButton(
               onPressed: onStartLogging,
@@ -58,17 +58,17 @@ class EmptyStateWidget extends StatelessWidget {
     );
   }
 
-  /// 統計が空の状態
+  /// 統計が空の状慁E
   factory EmptyStateWidget.emptyStats() {
     return const EmptyStateWidget(
       type: EmptyStateType.stats,
       icon: AppIcons.chart,
-      title: 'データがありません',
-      message: 'クエストを完了すると\n統計が表示されます',
+      title: 'チE�Eタがありません',
+      message: 'クエストを完亁E��ると\n統計が表示されまぁE,
     );
   }
 
-  /// ペアが空の状態
+  /// ペアが空の状慁E
   factory EmptyStateWidget.emptyPairs({
     VoidCallback? onFindPair,
   }) {
@@ -76,18 +76,18 @@ class EmptyStateWidget extends StatelessWidget {
       type: EmptyStateType.pairs,
       icon: AppIcons.pairOutlined,
       title: 'ペアがいません',
-      message: '一緒に頑張る仲間を\n見つけましょう',
+      message: '一緒に頑張る仲間を\n見つけましょぁE,
       action: onFindPair != null
           ? ElevatedButton.icon(
               onPressed: onFindPair,
               icon: const Icon(AppIcons.search),
-              label: const Text('ペアを探す'),
+              label: const Text('ペアを探ぁE),
             )
           : null,
     );
   }
 
-  /// 検索結果が空の状態
+  /// 検索結果が空の状慁E
   factory EmptyStateWidget.emptySearch({
     String? searchQuery,
   }) {
@@ -96,12 +96,12 @@ class EmptyStateWidget extends StatelessWidget {
       icon: AppIcons.search,
       title: '検索結果がありません',
       message: searchQuery != null
-          ? '「$searchQuery」に一致する\n結果が見つかりませんでした'
+          ? '、EsearchQuery」に一致する\n結果が見つかりませんでした'
           : '検索条件を変更して\n再度お試しください',
     );
   }
 
-  /// エラー状態
+  /// エラー状慁E
   factory EmptyStateWidget.error({
     String? errorMessage,
     VoidCallback? onRetry,
@@ -115,13 +115,13 @@ class EmptyStateWidget extends StatelessWidget {
           ? ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(AppIcons.refresh),
-              label: const Text('再試行'),
+              label: const Text('再試衁E),
             )
           : null,
     );
   }
 
-  /// ネットワークエラー状態
+  /// ネットワークエラー状慁E
   factory EmptyStateWidget.networkError({
     VoidCallback? onRetry,
   }) {
@@ -134,13 +134,13 @@ class EmptyStateWidget extends StatelessWidget {
           ? ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(AppIcons.refresh),
-              label: const Text('再試行'),
+              label: const Text('再試衁E),
             )
           : null,
     );
   }
 
-  /// 権限エラー状態
+  /// 権限エラー状慁E
   factory EmptyStateWidget.permissionDenied({
     String? permissionName,
     VoidCallback? onRequestPermission,
@@ -148,10 +148,10 @@ class EmptyStateWidget extends StatelessWidget {
     return EmptyStateWidget(
       type: EmptyStateType.permissionDenied,
       icon: AppIcons.lock,
-      title: '権限が必要です',
+      title: '権限が忁E��でぁE,
       message: permissionName != null
-          ? '$permissionNameの権限が\n必要です'
-          : 'この機能を使用するには\n権限が必要です',
+          ? '$permissionNameの権限が\n忁E��でぁE
+          : 'こ�E機�Eを使用するには\n権限が忁E��でぁE,
       action: onRequestPermission != null
           ? ElevatedButton(
               onPressed: onRequestPermission,
@@ -173,7 +173,7 @@ class EmptyStateWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // イラストまたはアイコン
+            // イラストまた�Eアイコン
             if (illustration != null)
               illustration!
             else if (icon != null)
@@ -194,12 +194,12 @@ class EmptyStateWidget extends StatelessWidget {
 
             if (title != null && message != null) SpacingSystem.vSpaceSM,
 
-            // メッセージ
+            // メチE��ージ
             if (message != null)
               Text(
                 message!,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -224,7 +224,7 @@ class EmptyStateWidget extends StatelessWidget {
       width: 96,
       height: 96,
       decoration: BoxDecoration(
-        color: iconColor.withOpacity(0.1),
+        color: iconColor.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -246,7 +246,7 @@ class EmptyStateWidget extends StatelessWidget {
       case EmptyStateType.pairs:
         return colorScheme.primary;
       default:
-        return colorScheme.onSurface.withOpacity(0.4);
+        return colorScheme.onSurface.withValues(alpha: 0.4);
     }
   }
 
@@ -261,7 +261,7 @@ class EmptyStateWidget extends StatelessWidget {
   }
 }
 
-/// 空状態のタイプ
+/// 空状態�EタイチE
 enum EmptyStateType {
   general,
   quests,
@@ -274,7 +274,7 @@ enum EmptyStateType {
   permissionDenied,
 }
 
-/// 空状態イラストウィジェット
+/// 空状態イラストウィジェチE��
 class EmptyStateIllustration extends StatelessWidget {
   final String assetPath;
   final double? width;
@@ -306,7 +306,7 @@ class EmptyStateIllustration extends StatelessWidget {
   }
 }
 
-/// 空状態アニメーションウィジェット（Lottie）
+/// 空状態アニメーションウィジェチE���E�Eottie�E�E
 class EmptyStateAnimation extends StatelessWidget {
   final String animationPath;
   final double? width;
@@ -321,8 +321,8 @@ class EmptyStateAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Lottieアニメーションの実装
-    // 実際の実装では lottie パッケージを使用
+    // Lottieアニメーションの実裁E
+    // 実際の実裁E��は lottie パッケージを使用
     return SizedBox(
       width: width ?? 200,
       height: height ?? 200,
@@ -337,7 +337,7 @@ class EmptyStateAnimation extends StatelessWidget {
   }
 }
 
-/// 空状態カードウィジェット
+/// 空状態カードウィジェチE��
 class EmptyStateCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -369,7 +369,7 @@ class EmptyStateCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: colorScheme.primary.withOpacity(0.1),
+                  color: colorScheme.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -391,7 +391,7 @@ class EmptyStateCard extends StatelessWidget {
                     Text(
                       message,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface.withOpacity(0.6),
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   ],
@@ -401,7 +401,7 @@ class EmptyStateCard extends StatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 16,
-                  color: colorScheme.onSurface.withOpacity(0.4),
+                  color: colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
             ],
           ),

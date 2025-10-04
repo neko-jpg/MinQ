@@ -15,7 +15,7 @@ class HelpCenterScreen extends ConsumerWidget {
         children: [
           _buildSection(
             context,
-            title: 'よくある質問',
+            title: 'よくある質啁E,
             icon: Icons.help_outline,
             onTap: () => _navigateToFAQ(context),
           ),
@@ -27,20 +27,20 @@ class HelpCenterScreen extends ConsumerWidget {
           ),
           _buildSection(
             context,
-            title: 'お問い合わせ',
+            title: 'お問ぁE��わせ',
             icon: Icons.email_outlined,
             onTap: () => _navigateToContact(context),
           ),
           _buildSection(
             context,
-            title: 'バグ報告',
+            title: 'バグ報呁E,
             icon: Icons.bug_report_outlined,
             onTap: () => _navigateToBugReport(context),
           ),
           const Divider(),
           _buildSection(
             context,
-            title: '利用規約',
+            title: '利用規紁E,
             icon: Icons.description_outlined,
             onTap: () => _navigateToTerms(context),
           ),
@@ -136,41 +136,41 @@ class FAQScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('よくある質問'),
+        title: const Text('よくある質啁E),
       ),
       body: ListView(
         children: [
           _buildFAQItem(
-            question: 'クエストとは何ですか？',
-            answer: 'クエストは、あなたが継続したい習慣のことです。毎日の運動、読書、瞑想など、どんな習慣でも設定できます。',
+            question: 'クエストとは何ですか�E�E,
+            answer: 'クエスト�E、あなたが継続したい習�Eのことです。毎日の運動、読書、瞑想など、どんな習�Eでも設定できます、E,
           ),
           _buildFAQItem(
-            question: 'ペア機能はどのように使いますか？',
-            answer: 'ペア機能を使うと、他のユーザーと一緒に習慣を継続できます。お互いに励まし合いながら、モチベーションを維持できます。',
+            question: 'ペア機�Eはどのように使ぁE��すか�E�E,
+            answer: 'ペア機�Eを使ぁE��、他�Eユーザーと一緒に習�Eを継続できます。お互いに励まし合ぁE��がら、モチ�Eーションを維持できます、E,
           ),
           _buildFAQItem(
-            question: '連続日数（ストリーク）が途切れてしまいました',
-            answer: 'ストリーク保護機能を使うと、1日だけ記録を忘れても連続日数を維持できます。設定画面から有効化してください。',
+            question: '連続日数�E�ストリーク�E�が途�EれてしまぁE��した',
+            answer: 'ストリーク保護機�Eを使ぁE��、E日だけ記録を忘れても連続日数を維持できます。設定画面から有効化してください、E,
           ),
           _buildFAQItem(
             question: '通知が届きません',
-            answer: '設定アプリで通知が許可されているか確認してください。また、アプリ内の通知設定も確認してください。',
+            answer: '設定アプリで通知が許可されてぁE��か確認してください。また、アプリ冁E�E通知設定も確認してください、E,
           ),
           _buildFAQItem(
-            question: 'データをバックアップできますか？',
-            answer: 'はい、設定画面からデータをエクスポートできます。JSONまたはCSV形式で保存できます。',
+            question: 'チE�EタをバチE��アチE�Eできますか�E�E,
+            answer: 'はぁE��設定画面からチE�Eタをエクスポ�Eトできます、ESONまた�ECSV形式で保存できます、E,
           ),
           _buildFAQItem(
-            question: 'アカウントを削除したい',
-            answer: '設定画面の「アカウント削除」から削除できます。削除されたデータは復元できませんのでご注意ください。',
+            question: 'アカウントを削除したぁE,
+            answer: '設定画面の「アカウント削除」から削除できます。削除されたデータは復允E��きませんのでご注意ください、E,
           ),
           _buildFAQItem(
-            question: '有料プランはありますか？',
-            answer: '現在、MinQは完全無料でご利用いただけます。将来的にプレミアム機能を追加する可能性があります。',
+            question: '有料プランはありますか�E�E,
+            answer: '現在、MinQは完�E無料でご利用ぁE��だけます。封E��皁E��プレミアム機�Eを追加する可能性があります、E,
           ),
           _buildFAQItem(
-            question: 'オフラインでも使えますか？',
-            answer: 'はい、オフラインでも記録できます。インターネットに接続すると自動的に同期されます。',
+            question: 'オフラインでも使えますか�E�E,
+            answer: 'はぁE��オフラインでも記録できます。インターネットに接続すると自動的に同期されます、E,
           ),
         ],
       ),
@@ -196,7 +196,7 @@ class FAQScreen extends StatelessWidget {
   }
 }
 
-/// お問い合わせ画面
+/// お問ぁE��わせ画面
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
 
@@ -222,7 +222,7 @@ class _ContactScreenState extends State<ContactScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('お問い合わせ'),
+        title: const Text('お問ぁE��わせ'),
       ),
       body: Form(
         key: _formKey,
@@ -232,7 +232,7 @@ class _ContactScreenState extends State<ContactScreen> {
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                labelText: 'お名前',
+                labelText: 'お名剁E,
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
@@ -252,10 +252,10 @@ class _ContactScreenState extends State<ContactScreen> {
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'メールアドレスを入力してください';
+                  return 'メールアドレスを�E力してください';
                 }
                 if (!value.contains('@')) {
-                  return '有効なメールアドレスを入力してください';
+                  return '有効なメールアドレスを�E力してください';
                 }
                 return null;
               },
@@ -264,13 +264,13 @@ class _ContactScreenState extends State<ContactScreen> {
             TextFormField(
               controller: _messageController,
               decoration: const InputDecoration(
-                labelText: 'お問い合わせ内容',
+                labelText: 'お問ぁE��わせ冁E��',
                 border: OutlineInputBorder(),
               ),
               maxLines: 5,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'お問い合わせ内容を入力してください';
+                  return 'お問ぁE��わせ冁E��を�E力してください';
                 }
                 return null;
               },
@@ -288,9 +288,9 @@ class _ContactScreenState extends State<ContactScreen> {
 
   Future<void> _submitContact() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: お問い合わせを送信
+      // TODO: お問ぁE��わせを送信
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('お問い合わせを送信しました')),
+        const SnackBar(content: Text('お問ぁE��わせを送信しました')),
       );
       Navigator.pop(context);
     }
@@ -321,7 +321,7 @@ class _BugReportScreenState extends State<BugReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('バグ報告'),
+        title: const Text('バグ報呁E),
       ),
       body: Form(
         key: _formKey,
@@ -329,7 +329,7 @@ class _BugReportScreenState extends State<BugReportScreen> {
           padding: const EdgeInsets.all(16.0),
           children: [
             const Text(
-              'バグを発見された場合は、以下のフォームからご報告ください。',
+              'バグを発見された場合�E、以下�Eフォームからご報告ください、E,
               style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 16),
@@ -341,7 +341,7 @@ class _BugReportScreenState extends State<BugReportScreen> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'タイトルを入力してください';
+                  return 'タイトルを�E力してください';
                 }
                 return null;
               },
@@ -351,13 +351,13 @@ class _BugReportScreenState extends State<BugReportScreen> {
               controller: _descriptionController,
               decoration: const InputDecoration(
                 labelText: '詳細',
-                hintText: '発生した状況、再現手順などを詳しく記載してください',
+                hintText: '発生した状況、�E現手頁E��どを詳しく記載してください',
                 border: OutlineInputBorder(),
               ),
               maxLines: 5,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return '詳細を入力してください';
+                  return '詳細を�E力してください';
                 }
                 return null;
               },
@@ -366,7 +366,7 @@ class _BugReportScreenState extends State<BugReportScreen> {
             OutlinedButton.icon(
               onPressed: _attachScreenshot,
               icon: const Icon(Icons.image),
-              label: const Text('スクリーンショットを添付'),
+              label: const Text('スクリーンショチE��を添仁E),
             ),
             const SizedBox(height: 24),
             ElevatedButton(
@@ -380,7 +380,7 @@ class _BugReportScreenState extends State<BugReportScreen> {
   }
 
   Future<void> _attachScreenshot() async {
-    // TODO: スクリーンショットを添付
+    // TODO: スクリーンショチE��を添仁E
   }
 
   Future<void> _submitBugReport() async {
@@ -394,7 +394,7 @@ class _BugReportScreenState extends State<BugReportScreen> {
   }
 }
 
-/// 利用規約画面
+/// 利用規紁E��面
 class TermsScreen extends StatelessWidget {
   const TermsScreen({super.key});
 
@@ -402,13 +402,13 @@ class TermsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('利用規約'),
+        title: const Text('利用規紁E),
       ),
       body: const SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Text(
           // TODO: assets/legal/terms_of_service_ja.md から読み込む
-          '利用規約の内容がここに表示されます',
+          '利用規紁E�E冁E��がここに表示されまぁE,
         ),
       ),
     );
@@ -429,7 +429,7 @@ class PrivacyScreen extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         child: Text(
           // TODO: assets/legal/privacy_policy_ja.md から読み込む
-          'プライバシーポリシーの内容がここに表示されます',
+          'プライバシーポリシーの冁E��がここに表示されまぁE,
         ),
       ),
     );

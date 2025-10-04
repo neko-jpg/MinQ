@@ -18,7 +18,7 @@ class EditQuestScreen extends ConsumerStatefulWidget {
 }
 
 class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
-  static const List<String> _stepTitles = <String>['基本情報', '目標と頻度', 'リマインダー'];
+  static const List<String> _stepTitles = <String>['基本惁E��', '目標と頻度', 'リマインダー'];
   static const Set<int> _defaultSelectedDays = <int>{0, 1, 2, 3, 6};
 
   final _formKey = GlobalKey<FormState>();
@@ -92,7 +92,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
       } else if (mounted) {
         FeedbackMessenger.showErrorSnackBar(
           context,
-          'クエストが見つかりませんでした。',
+          'クエストが見つかりませんでした、E,
         );
         context.pop();
       }
@@ -100,7 +100,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
       if (mounted) {
         FeedbackMessenger.showErrorSnackBar(
           context,
-          'クエストの読み込みに失敗しました。',
+          'クエスト�E読み込みに失敗しました、E,
         );
         context.pop();
       }
@@ -159,7 +159,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
     if (uid == null || uid.isEmpty) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        'ユーザーがサインインしていません。',
+        'ユーザーがサインインしてぁE��せん、E,
       );
       return;
     }
@@ -209,7 +209,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
     if (mounted) {
       FeedbackMessenger.showSuccessToast(
         context,
-        '習慣を更新しました！',
+        '習�Eを更新しました�E�E,
       );
       context.pop();
     }
@@ -221,8 +221,8 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('習慣を削除'),
-        content: Text('「${_originalQuest!.title}」を削除しますか？この操作は取り消せません。'),
+        title: const Text('習�Eを削除'),
+        content: Text('、E{_originalQuest!.title}」を削除しますか�E�この操作�E取り消せません、E),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -246,7 +246,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
       if (mounted) {
         FeedbackMessenger.showSuccessToast(
           context,
-          '習慣を削除しました',
+          '習�Eを削除しました',
         );
         context.pop();
       }
@@ -336,7 +336,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
     return <Widget>[
       _StepPage(
         index: 0,
-        label: 'ステップ1: 基本情報',
+        label: 'スチE��チE: 基本惁E��',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -357,7 +357,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
       ),
       _StepPage(
         index: 1,
-        label: 'ステップ2: 目標と頻度',
+        label: 'スチE��チE: 目標と頻度',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -385,7 +385,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
       ),
       _StepPage(
         index: 2,
-        label: 'ステップ3: リマインダー',
+        label: 'スチE��チE: リマインダー',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -431,7 +431,7 @@ class _Header extends StatelessWidget {
         SizedBox(width: tokens.spacing(2)),
         Expanded(
           child: Text(
-            '習慣を編集',
+            '習�Eを編雁E,
             style: tokens.titleLarge.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
@@ -541,7 +541,7 @@ class _StepperActions extends StatelessWidget {
           Expanded(
             child: OutlinedButton(
               onPressed: onPrevious,
-              child: const Text('戻る'),
+              child: const Text('戻めE),
             ),
           ),
           SizedBox(width: tokens.spacing(3)),
@@ -563,8 +563,8 @@ class _DiscardChangesDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return AlertDialog(
-      title: const Text('変更を破棄しますか？'),
-      content: const Text('保存されていない変更は失われます。'),
+      title: const Text('変更を破棁E��ますか�E�E),
+      content: const Text('保存されてぁE��ぁE��更は失われます、E),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
@@ -573,7 +573,7 @@ class _DiscardChangesDialog extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
           style: TextButton.styleFrom(foregroundColor: tokens.accentError),
-          child: const Text('破棄'),
+          child: const Text('破棁E),
         ),
       ],
     );
@@ -594,14 +594,14 @@ class _HabitNameInput extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('習慣名', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text('習�E吁E, style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
         SizedBox(height: tokens.spacing(2)),
         TextFormField(
           controller: controller,
           validator: (String? value) =>
-              value?.trim().isEmpty == true ? '習慣名を入力してください' : null,
+              value?.trim().isEmpty == true ? '習�E名を入力してください' : null,
           decoration: InputDecoration(
-            hintText: '例: 朝のランニング',
+            hintText: '侁E 朝�Eランニング',
             border: OutlineInputBorder(borderRadius: tokens.cornerLarge()),
           ),
         ),
@@ -627,7 +627,7 @@ class _ContactLinkInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'ペアへの連絡先リンク (任意)',
+          'ペアへの連絡先リンク (任愁E',
           style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
         ),
         SizedBox(height: tokens.spacing(2)),
@@ -642,7 +642,7 @@ class _ContactLinkInput extends StatelessWidget {
           validator: (String? value) {
             final trimmed = value?.trim() ?? '';
             if (trimmed.isEmpty) return null;
-            return _isValidUrl(trimmed) ? null : '正しいURLを入力してください';
+            return _isValidUrl(trimmed) ? null : '正しいURLを�E力してください';
           },
         ),
       ],
@@ -720,7 +720,7 @@ class _GoalTypeSelector extends StatelessWidget {
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             hintText: '10',
-            suffixText: '分',
+            suffixText: '刁E,
             border: OutlineInputBorder(borderRadius: tokens.cornerLarge()),
           ),
         ),
@@ -741,7 +741,7 @@ class _DaySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    const List<String> days = <String>['月', '火', '水', '木', '金', '土', '日'];
+    const List<String> days = <String>['朁E, '火', '水', '木', '釁E, '圁E, '日'];
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

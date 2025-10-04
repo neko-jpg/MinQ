@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-/// アニメーションシステム - Duration、Curve、パターンの統一規格
+/// アニメーションシスチE�� - Duration、Curve、パターンの統一規格
 class AnimationSystem {
   const AnimationSystem._();
 
   // ========================================
-  // Duration（継続時間）
+  // Duration�E�継続時間！E
   // ========================================
 
-  /// 瞬時 - 50ms
+  /// 瞬晁E- 50ms
   static const Duration instant = Duration(milliseconds: 50);
 
   /// 極短 - 100ms
@@ -17,10 +17,10 @@ class AnimationSystem {
   /// 短 - 150ms
   static const Duration fast = Duration(milliseconds: 150);
 
-  /// 標準 - 200ms
+  /// 標溁E- 200ms
   static const Duration normal = Duration(milliseconds: 200);
 
-  /// やや長 - 300ms
+  /// めE��長 - 300ms
   static const Duration moderate = Duration(milliseconds: 300);
 
   /// 長 - 400ms
@@ -29,20 +29,20 @@ class AnimationSystem {
   /// 極長 - 600ms
   static const Duration verySlow = Duration(milliseconds: 600);
 
-  /// 劇的 - 1000ms
+  /// 劁E�� - 1000ms
   static const Duration dramatic = Duration(milliseconds: 1000);
 
   // ========================================
-  // Curve（イージング）
+  // Curve�E�イージング�E�E
   // ========================================
 
   /// 標準イージング
   static const Curve standard = Curves.easeInOut;
 
-  /// 加速
+  /// 加送E
   static const Curve accelerate = Curves.easeIn;
 
-  /// 減速
+  /// 減送E
   static const Curve decelerate = Curves.easeOut;
 
   /// 強調
@@ -51,23 +51,23 @@ class AnimationSystem {
   /// バウンス
   static const Curve bounce = Curves.bounceOut;
 
-  /// エラスティック
+  /// エラスチE��チE��
   static const Curve elastic = Curves.elasticOut;
 
-  /// オーバーシュート
+  /// オーバ�EシューチE
   static const Curve overshoot = Curves.easeOutBack;
 
   /// スムーズ
   static const Curve smooth = Curves.easeInOutQuart;
 
-  /// シャープ
+  /// シャーチE
   static const Curve sharp = Curves.easeInOutExpo;
 
   // ========================================
-  // セマンティックアニメーション
+  // セマンチE��チE��アニメーション
   // ========================================
 
-  /// ページ遷移
+  /// ペ�Eジ遷移
   static const Duration pageTransition = normal;
   static const Curve pageTransitionCurve = emphasized;
 
@@ -75,11 +75,11 @@ class AnimationSystem {
   static const Duration modalPresent = moderate;
   static const Curve modalPresentCurve = decelerate;
 
-  /// モーダル閉じる
+  /// モーダル閉じめE
   static const Duration modalDismiss = fast;
   static const Curve modalDismissCurve = accelerate;
 
-  /// ボタンタップ
+  /// ボタンタチE�E
   static const Duration buttonTap = veryFast;
   static const Curve buttonTapCurve = standard;
 
@@ -91,11 +91,11 @@ class AnimationSystem {
   static const Duration fadeIn = normal;
   static const Curve fadeInCurve = decelerate;
 
-  /// フェードアウト
+  /// フェードアウチE
   static const Duration fadeOut = fast;
   static const Curve fadeOutCurve = accelerate;
 
-  /// スケールアップ
+  /// スケールアチE�E
   static const Duration scaleUp = normal;
   static const Curve scaleUpCurve = overshoot;
 
@@ -107,15 +107,15 @@ class AnimationSystem {
   static const Duration slideIn = moderate;
   static const Curve slideInCurve = decelerate;
 
-  /// スライドアウト
+  /// スライドアウチE
   static const Duration slideOut = fast;
   static const Curve slideOutCurve = accelerate;
 
   // ========================================
-  // アプリ固有のアニメーション
+  // アプリ固有�Eアニメーション
   // ========================================
 
-  /// クエスト完了
+  /// クエスト完亁E
   static const Duration questComplete = slow;
   static const Curve questCompleteCurve = bounce;
 
@@ -127,7 +127,7 @@ class AnimationSystem {
   static const Duration statsUpdate = moderate;
   static const Curve statsUpdateCurve = emphasized;
 
-  /// 祝福エフェクト
+  /// 祝福エフェクチE
   static const Duration celebration = dramatic;
   static const Curve celebrationCurve = bounce;
 
@@ -139,7 +139,7 @@ class AnimationSystem {
   static const Duration heroTransition = moderate;
   static const Curve heroTransitionCurve = emphasized;
 
-  /// ImplicitアニメーションのデフォルトDuration
+  /// ImplicitアニメーションのチE��ォルチEuration
   static const Duration implicitDefault = normal;
   static const Curve implicitDefaultCurve = standard;
 
@@ -175,14 +175,14 @@ class AnimationSystem {
   static const Duration animatedSwitcher = fast;
   static const Curve animatedSwitcherCurve = standard;
 
-  /// Shimmerアニメーション（Skeletonローディング用）
+  /// Shimmerアニメーション�E�EkeletonローチE��ング用�E�E
   static const Duration shimmer = Duration(milliseconds: 1400);
 
   // ========================================
-  // ヘルパーメソッド
+  // ヘルパ�EメソチE��
   // ========================================
 
-  /// Reduce Motion設定を考慮すべきかどうか
+  /// Reduce Motion設定を老E�EすべきかどぁE��
   static bool shouldReduceMotion(BuildContext context) {
     final mediaQuery = MediaQuery.maybeOf(context);
     if (mediaQuery == null) {
@@ -192,7 +192,7 @@ class AnimationSystem {
     return mediaQuery.disableAnimations || mediaQuery.accessibleNavigation;
   }
 
-  /// Reduce Motion設定を考慮したDurationを取得
+  /// Reduce Motion設定を老E�EしたDurationを取征E
   static Duration getDuration(
     BuildContext context,
     Duration baseDuration,
@@ -200,7 +200,7 @@ class AnimationSystem {
     return shouldReduceMotion(context) ? Duration.zero : baseDuration;
   }
 
-  /// Reduce Motion時に利用するCurveを選択
+  /// Reduce Motion時に利用するCurveを選抁E
   static Curve getCurve(BuildContext context, Curve baseCurve) {
     return shouldReduceMotion(context) ? Curves.linear : baseCurve;
   }
@@ -222,7 +222,7 @@ class AnimationSystem {
     }
   }
 
-  /// アニメーションコントローラーを作成
+  /// アニメーションコントローラーを作�E
   static AnimationController createController({
     required TickerProvider vsync,
     Duration duration = normal,
@@ -237,7 +237,7 @@ class AnimationSystem {
     );
   }
 
-  /// Tweenアニメーションを作成
+  /// Tweenアニメーションを作�E
   static Animation<T> createTween<T>({
     required AnimationController controller,
     required T begin,
@@ -460,7 +460,7 @@ class _ScaleAnimationState extends State<ScaleAnimation>
   }
 }
 
-/// 組み合わせアニメーション（フェード+スライド）
+/// 絁E��合わせアニメーション�E�フェーチEスライド！E
 class FadeSlideAnimation extends StatelessWidget {
   final Widget child;
   final Duration duration;
@@ -599,7 +599,7 @@ extension AnimationExtension on Widget {
     );
   }
 
-  /// フェード+スライドを追加
+  /// フェーチEスライドを追加
   Widget fadeSlide({
     Duration duration = AnimationSystem.normal,
     Curve curve = AnimationSystem.emphasized,
@@ -615,7 +615,7 @@ extension AnimationExtension on Widget {
     );
   }
 
-  /// Reduce Motion対応
+  /// Reduce Motion対忁E
   Widget withAccessibleAnimation(
     Widget Function(BuildContext, Widget) animationBuilder,
   ) {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// テキストオーバーフローポリシー - 統一されたテキスト表示ルール
+/// チE��ストオーバ�Eフローポリシー - 統一されたテキスト表示ルール
 class TextOverflowPolicy {
   const TextOverflowPolicy._();
 
   // ========================================
-  // オーバーフロー設定
+  // オーバ�Eフロー設宁E
   // ========================================
 
   /// タイトル: 1行、省略記号
@@ -18,7 +18,7 @@ class TextOverflowPolicy {
   static const int subtitleMaxLines = 2;
   static const bool subtitleSoftWrap = true;
 
-  /// 本文: 制限なし、折り返し
+  /// 本斁E 制限なし、折り返し
   static const TextOverflow body = TextOverflow.clip;
   static const int? bodyMaxLines = null;
   static const bool bodySoftWrap = true;
@@ -33,7 +33,7 @@ class TextOverflowPolicy {
   static const int captionMaxLines = 1;
   static const bool captionSoftWrap = false;
 
-  /// ラベル: 1行、フェード
+  /// ラベル: 1行、フェーチE
   static const TextOverflow label = TextOverflow.fade;
   static const int labelMaxLines = 1;
   static const bool labelSoftWrap = false;
@@ -43,7 +43,7 @@ class TextOverflowPolicy {
   static const int buttonMaxLines = 1;
   static const bool buttonSoftWrap = false;
 
-  /// リストアイテム: 2行、省略記号
+  /// リストアイチE��: 2行、省略記号
   static const TextOverflow listItem = TextOverflow.ellipsis;
   static const int listItemMaxLines = 2;
   static const bool listItemSoftWrap = true;
@@ -53,23 +53,23 @@ class TextOverflowPolicy {
   static const int cardTitleMaxLines = 2;
   static const bool cardTitleSoftWrap = true;
 
-  /// カード本文: 4行、省略記号
+  /// カード本斁E 4行、省略記号
   static const TextOverflow cardBody = TextOverflow.ellipsis;
   static const int cardBodyMaxLines = 4;
   static const bool cardBodySoftWrap = true;
 
-  /// ツールチップ: 制限なし、折り返し
+  /// チE�EルチッチE 制限なし、折り返し
   static const TextOverflow tooltip = TextOverflow.clip;
   static const int? tooltipMaxLines = null;
   static const bool tooltipSoftWrap = true;
 
-  /// エラーメッセージ: 制限なし、折り返し
+  /// エラーメチE��ージ: 制限なし、折り返し
   static const TextOverflow error = TextOverflow.clip;
   static const int? errorMaxLines = null;
   static const bool errorSoftWrap = true;
 }
 
-/// テキストスタイル拡張 - オーバーフロー設定を簡単に適用
+/// チE��ストスタイル拡張 - オーバ�Eフロー設定を簡単に適用
 extension TextStyleOverflow on TextStyle {
   /// タイトルスタイル
   TextStyle get asTitle => copyWith(
@@ -81,7 +81,7 @@ extension TextStyleOverflow on TextStyle {
         overflow: TextOverflowPolicy.subtitle,
       );
 
-  /// 本文スタイル
+  /// 本斁E��タイル
   TextStyle get asBody => copyWith(
         overflow: TextOverflowPolicy.body,
       );
@@ -102,11 +102,11 @@ extension TextStyleOverflow on TextStyle {
       );
 }
 
-/// 標準化されたテキストウィジェット
+/// 標準化されたテキストウィジェチE��
 class StandardText {
   const StandardText._();
 
-  /// タイトルテキスト
+  /// タイトルチE��スチE
   static Widget title(
     String text, {
     TextStyle? style,
@@ -123,7 +123,7 @@ class StandardText {
     );
   }
 
-  /// サブタイトルテキスト
+  /// サブタイトルチE��スチE
   static Widget subtitle(
     String text, {
     TextStyle? style,
@@ -140,7 +140,7 @@ class StandardText {
     );
   }
 
-  /// 本文テキスト
+  /// 本斁E��キスチE
   static Widget body(
     String text, {
     TextStyle? style,
@@ -158,7 +158,7 @@ class StandardText {
     );
   }
 
-  /// 説明文テキスト
+  /// 説明文チE��スチE
   static Widget description(
     String text, {
     TextStyle? style,
@@ -175,7 +175,7 @@ class StandardText {
     );
   }
 
-  /// キャプションテキスト
+  /// キャプションチE��スチE
   static Widget caption(
     String text, {
     TextStyle? style,
@@ -192,7 +192,7 @@ class StandardText {
     );
   }
 
-  /// ラベルテキスト
+  /// ラベルチE��スチE
   static Widget label(
     String text, {
     TextStyle? style,
@@ -209,7 +209,7 @@ class StandardText {
     );
   }
 
-  /// ボタンテキスト
+  /// ボタンチE��スチE
   static Widget button(
     String text, {
     TextStyle? style,
@@ -226,7 +226,7 @@ class StandardText {
     );
   }
 
-  /// リストアイテムテキスト
+  /// リストアイチE��チE��スチE
   static Widget listItem(
     String text, {
     TextStyle? style,
@@ -243,7 +243,7 @@ class StandardText {
     );
   }
 
-  /// カードタイトルテキスト
+  /// カードタイトルチE��スチE
   static Widget cardTitle(
     String text, {
     TextStyle? style,
@@ -260,7 +260,7 @@ class StandardText {
     );
   }
 
-  /// カード本文テキスト
+  /// カード本斁E��キスチE
   static Widget cardBody(
     String text, {
     TextStyle? style,
@@ -277,7 +277,7 @@ class StandardText {
     );
   }
 
-  /// エラーメッセージテキスト
+  /// エラーメチE��ージチE��スチE
   static Widget error(
     String text, {
     TextStyle? style,
@@ -295,7 +295,7 @@ class StandardText {
   }
 }
 
-/// 展開可能なテキストウィジェット
+/// 展開可能なチE��ストウィジェチE��
 class ExpandableText extends StatefulWidget {
   final String text;
   final TextStyle? style;
@@ -310,7 +310,7 @@ class ExpandableText extends StatefulWidget {
     this.style,
     this.collapsedMaxLines = 3,
     this.expandText = 'もっと見る',
-    this.collapseText = '閉じる',
+    this.collapseText = '閉じめE,
     this.linkColor,
   });
 
@@ -354,7 +354,7 @@ class _ExpandableTextState extends State<ExpandableText> {
   }
 }
 
-/// テキストオーバーフロー検出ウィジェット
+/// チE��ストオーバ�Eフロー検�EウィジェチE��
 class TextOverflowDetector extends StatelessWidget {
   final String text;
   final TextStyle? style;

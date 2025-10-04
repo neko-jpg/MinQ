@@ -32,7 +32,7 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
     if (mounted) {
       FeedbackMessenger.showSuccessToast(
         context,
-        'アカウント削除処理を開始しました。',
+        'アカウント削除処琁E��開始しました、E,
       );
       Navigator.of(context).pop();
       Navigator.of(context).pop();
@@ -81,7 +81,7 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
                     if (!matches) {
                       FeedbackMessenger.showErrorSnackBar(
                         context,
-                        '文言が一致しません。確認して再入力してください。',
+                        '斁E��が一致しません。確認して再�E力してください、E,
                       );
                       return;
                     }
@@ -157,7 +157,7 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
                   ? () {
                       FeedbackMessenger.showInfoToast(
                         context,
-                        '安全のため、ボタンを長押しして確定してください。',
+                        '安�Eのため、�Eタンを長押しして確定してください、E,
                       );
                     }
                   : null,

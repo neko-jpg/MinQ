@@ -96,7 +96,7 @@ final menuBarTimerToggleProvider =
       if (!value) {
         await service.clear();
       } else {
-        await service.updateTimer(title: '次の集中タイム', remaining: const Duration(minutes: 25));
+        await service.updateTimer(title: '次の雁E��タイム', remaining: const Duration(minutes: 25));
       }
     },
   );

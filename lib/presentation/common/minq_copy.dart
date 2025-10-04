@@ -2,32 +2,32 @@ class MinqCopy {
   const MinqCopy._();
 
   static const String valuePropositionHeadline =
-      '匿名のペアと1日3タップで継続する習慣を。';
+      '匿名�Eペアと1日3タチE�Eで継続する習�Eを、E;
 
   static const String valuePropositionSubheadline =
-      '3タップ。1人のパートナー。ついに続く習慣を。';
+      '3タチE�E、E人のパ�Eトナー。つぁE��続く習�Eを、E;
 
   static const String onboardingFeatureMiniQuest =
-      '目標を、今日終えられるやりがいのあるミニクエストに分解します。';
+      '目標を、今日終えられるやりがぁE�Eあるミニクエストに刁E��します、E;
 
   static const String onboardingFeatureAnonymousPair =
-      'プレッシャーなく真の説明責任を果たすために、匿名でマッチングします。';
+      'プレチE��ャーなく真の説明責任を果たすために、匿名でマッチングします、E;
 
   static const String onboardingFeatureNotifications =
-      '選択した時間にのみ通知するため、リマインダーはしつこくなく、役立ちます。';
+      '選択した時間にのみ通知するため、リマインダーはしつこくなく、役立ちます、E;
 
   static const String notificationPrePromptTitle =
-      '通知は控えめに使用します';
+      '通知は控えめに使用しまぁE;
 
   static const String notificationPrePromptBody =
-      'リマインダーを有効にすると、設定した時間に通知が届きます。設定はいつでも変更・無効化できます。';
+      'リマインダーを有効にすると、設定した時間に通知が届きます。設定�EぁE��でも変更・無効化できます、E;
 
   static const String notificationPermissionBannerTitle =
-      'リマインダーを有効にして順調に進めましょう';
+      'リマインダーを有効にして頁E��に進めましょぁE;
   static const String notificationPermissionBannerBody =
-      '現在、通知アクセスはオフになっています。オンにすると、1日最大3回のタイムリーな通知を受け取れます。';
+      '現在、E��知アクセスはオフになってぁE��す。オンにすると、E日最大3回�Eタイムリーな通知を受け取れます、E;
 
-  static const String timeDriftBannerTitle = 'デバイスの時計を確認してください';
+  static const String timeDriftBannerTitle = 'チE��イスの時計を確認してください';
   static const String timeDriftBannerBody =
-      'デバイスの時刻と信頼できるサーバーの時刻の間に大きな差が検出されました。時計を修正すると、連続記録とリマインダーが正確に保たれます。';
+      'チE��イスの時刻と信頼できるサーバ�Eの時刻の間に大きな差が検�Eされました。時計を修正すると、E��続記録とリマインダーが正確に保たれます、E;
 }
