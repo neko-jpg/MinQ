@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
+import 'package:minq/presentation/theme/minq_theme.dart';
+
 /// データ移行ガイド画面
 class DataMigrationGuideScreen extends StatelessWidget {
   const DataMigrationGuideScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('データ移行ガイド'),
-      ),
+      appBar: AppBar(title: const Text('データ移行ガイド')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         children: [
           _buildSection(
             context,
@@ -24,7 +25,7 @@ class DataMigrationGuideScreen extends StatelessWidget {
               'バックアップ完了を確認',
             ],
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: tokens.spacing(6)),
           _buildSection(
             context,
             title: '新しい端末での復元',
@@ -37,9 +38,9 @@ class DataMigrationGuideScreen extends StatelessWidget {
               '復元完了を待つ',
             ],
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: tokens.spacing(6)),
           _buildWarningCard(context),
-          const SizedBox(height: 24),
+          SizedBox(height: tokens.spacing(6)),
           _buildActionButtons(context),
         ],
       ),
@@ -52,51 +53,43 @@ class DataMigrationGuideScreen extends StatelessWidget {
     required IconData icon,
     required List<String> steps,
   }) {
+    final tokens = context.tokens;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(icon, color: Theme.of(context).primaryColor),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Icon(icon, color: tokens.brandPrimary),
+                SizedBox(width: tokens.spacing(2)),
+                Text(title, style: tokens.titleLarge),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: tokens.spacing(4)),
             ...steps.asMap().entries.map((entry) {
               return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: EdgeInsets.only(bottom: tokens.spacing(2)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        shape: BoxShape.circle,
-                      ),
+                      width: tokens.spacing(6),
+                      height: tokens.spacing(6),
+                      decoration: BoxDecoration(color: tokens.brandPrimary, shape: BoxShape.circle),
                       child: Center(
                         child: Text(
                           '${entry.key + 1}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
+                          style: tokens.labelMedium.copyWith(
+                            color: tokens.onPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(entry.value),
-                    ),
+                    SizedBox(width: tokens.spacing(3)),
+                    Expanded(child: Text(entry.value, style: tokens.bodyMedium)),
                   ],
                 ),
               );
@@ -108,18 +101,30 @@ class DataMigrationGuideScreen extends StatelessWidget {
   }
 
   Widget _buildWarningCard(BuildContext context) {
+    final tokens = context.tokens;
+    final warningBackground = tokens.accentWarning.withOpacity(0.12);
+    final warningBorder = tokens.accentWarning.withOpacity(0.3);
     return Card(
-      color: Colors.orange.shade50,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+      color: tokens.surface,
+      child: Container(
+        decoration: BoxDecoration(
+          color: warningBackground,
+          borderRadius: tokens.cornerMedium(),
+          border: Border.all(color: warningBorder),
+        ),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.warning, color: Colors.orange),
-            const SizedBox(width: 12),
+            Icon(Icons.warning, color: tokens.accentWarning),
+            SizedBox(width: tokens.spacing(3)),
             Expanded(
               child: Text(
                 '注意: バックアップを取らずに機種変更すると、データが失われる可能性があります。',
-                style: TextStyle(color: Colors.orange.shade900),
+                style: tokens.bodyMedium.copyWith(
+                  color: tokens.accentWarning,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
@@ -129,6 +134,7 @@ class DataMigrationGuideScreen extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
+    final tokens = context.tokens;
     return Column(
       children: [
         ElevatedButton.icon(
@@ -138,11 +144,9 @@ class DataMigrationGuideScreen extends StatelessWidget {
           },
           icon: const Icon(Icons.backup),
           label: const Text('バックアップを実行'),
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(double.infinity, 48),
-          ),
+          style: ElevatedButton.styleFrom(minimumSize: Size(double.infinity, tokens.spacing(12))),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: tokens.spacing(3)),
         OutlinedButton.icon(
           onPressed: () {
             // 復元画面へ
@@ -150,9 +154,7 @@ class DataMigrationGuideScreen extends StatelessWidget {
           },
           icon: const Icon(Icons.restore),
           label: const Text('バックアップから復元'),
-          style: OutlinedButton.styleFrom(
-            minimumSize: const Size(double.infinity, 48),
-          ),
+          style: OutlinedButton.styleFrom(minimumSize: Size(double.infinity, tokens.spacing(12))),
         ),
       ],
     );

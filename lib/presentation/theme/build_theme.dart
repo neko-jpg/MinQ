@@ -53,12 +53,10 @@ ThemeData buildTheme(MinqTheme tokens) {
     textTheme: textTheme,
     scaffoldBackgroundColor: tokens.background,
     snackBarTheme: const SnackBarThemeData(behavior: SnackBarBehavior.floating),
-    appBarTheme: const AppBarTheme(
-      surfaceTintColor: Colors.transparent,
-      elevation: 0,
-    ),
+    appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent, elevation: 0),
     cardTheme: CardThemeData(
       surfaceTintColor: Colors.transparent,
+      color: tokens.surface,
       shape: RoundedRectangleBorder(
         borderRadius: tokens.cornerMedium(),
         side: BorderSide(color: tokens.border),
