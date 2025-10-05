@@ -13,13 +13,16 @@ ThemeData buildTheme(MinqTheme tokens) {
 
   final colorScheme = baseScheme.copyWith(
     primary: tokens.brandPrimary,
-    onPrimary: tokens.textPrimary,
-    secondary: tokens.accentSuccess,
-    onSecondary: tokens.textPrimary,
+    onPrimary: tokens.onPrimary,
+    secondary: tokens.accentSecondary,
+    onSecondary: tokens.onSecondary,
     error: tokens.accentError,
-    onError: tokens.textPrimary,
+    onError: tokens.onPrimary,
     surface: tokens.surface,
-    onSurface: tokens.textPrimary,
+    onSurface: tokens.onSurface,
+    background: tokens.background,
+    onBackground: tokens.onSurface,
+    outline: tokens.divider,
   );
 
   final buttonShape = WidgetStatePropertyAll<OutlinedBorder>(
@@ -46,24 +49,47 @@ ThemeData buildTheme(MinqTheme tokens) {
     labelSmall: typeScale.caption,
   ).apply(bodyColor: tokens.textPrimary, displayColor: tokens.textPrimary);
 
+  final isLight = tokens.brightness == Brightness.light;
+  const transparent = Color(0x00000000);
+  final cardBorder =
+      isLight ? BorderSide.none : BorderSide(color: tokens.divider);
+  final cardElevation = isLight ? 2.0 : 0.0;
+  final cardShadowColor =
+      isLight ? tokens.onSurface.withOpacity(0.08) : transparent;
+
+  final overlayPrimary = WidgetStatePropertyAll<Color>(
+    tokens.primaryHover.withOpacity(0.12),
+  );
+  final overlaySecondary = WidgetStatePropertyAll<Color>(
+    tokens.accentSecondary.withOpacity(0.12),
+  );
+
   return ThemeData(
     useMaterial3: true,
     brightness: tokens.brightness,
     colorScheme: colorScheme,
     textTheme: textTheme,
     scaffoldBackgroundColor: tokens.background,
-    snackBarTheme: const SnackBarThemeData(behavior: SnackBarBehavior.floating),
-    appBarTheme: const AppBarTheme(
-      surfaceTintColor: Colors.transparent,
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: tokens.surfaceAlt,
+      contentTextStyle: tokens.bodyMedium.copyWith(color: tokens.onSurface),
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: tokens.background,
+      foregroundColor: tokens.onSurface,
+      surfaceTintColor: transparent,
       elevation: 0,
     ),
     cardTheme: CardThemeData(
-      surfaceTintColor: Colors.transparent,
+      color: tokens.surface,
+      shadowColor: cardShadowColor,
+      surfaceTintColor: transparent,
       shape: RoundedRectangleBorder(
         borderRadius: tokens.cornerMedium(),
-        side: BorderSide(color: tokens.border),
+        side: cardBorder,
       ),
-      elevation: 0,
+      elevation: cardElevation,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
@@ -71,6 +97,9 @@ ThemeData buildTheme(MinqTheme tokens) {
         padding: buttonPadding,
         shape: buttonShape,
         tapTargetSize: MaterialTapTargetSize.padded,
+        backgroundColor: WidgetStatePropertyAll<Color>(tokens.brandPrimary),
+        foregroundColor: WidgetStatePropertyAll<Color>(tokens.onPrimary),
+        overlayColor: overlayPrimary,
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -79,6 +108,11 @@ ThemeData buildTheme(MinqTheme tokens) {
         padding: buttonPadding,
         shape: buttonShape,
         tapTargetSize: MaterialTapTargetSize.padded,
+        foregroundColor: WidgetStatePropertyAll<Color>(tokens.accentSecondary),
+        overlayColor: overlaySecondary,
+        side: WidgetStatePropertyAll<BorderSide>(
+          BorderSide(color: tokens.accentSecondary),
+        ),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
@@ -87,19 +121,26 @@ ThemeData buildTheme(MinqTheme tokens) {
         padding: buttonPadding,
         shape: buttonShape,
         tapTargetSize: MaterialTapTargetSize.padded,
+        foregroundColor: WidgetStatePropertyAll<Color>(tokens.brandPrimary),
+        overlayColor: overlayPrimary,
       ),
     ),
-    iconButtonTheme: const IconButtonThemeData(
+    iconButtonTheme: IconButtonThemeData(
       style: ButtonStyle(
         tapTargetSize: MaterialTapTargetSize.padded,
-        minimumSize: WidgetStatePropertyAll<Size>(Size.square(48)),
+        minimumSize: const WidgetStatePropertyAll<Size>(Size.square(48)),
+        foregroundColor: WidgetStatePropertyAll<Color>(tokens.onSurface),
+        overlayColor: overlayPrimary,
       ),
     ),
-    iconTheme: const IconThemeData(
-      weight: 400, // Use "regular" weight, which is visually close to a 2dp stroke.
+    iconTheme: IconThemeData(
+      weight:
+          400, // Use "regular" weight, which is visually close to a 2dp stroke.
+      color: tokens.onSurface,
     ),
     listTileTheme: const ListTileThemeData(
-      minVerticalPadding: 16, // Ensures a minimum height of ~48dp for a single-line tile
+      minVerticalPadding:
+          16, // Ensures a minimum height of ~48dp for a single-line tile
     ),
     extensions: <ThemeExtension<dynamic>>[tokens],
   );
