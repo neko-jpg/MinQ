@@ -12,7 +12,7 @@ import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 import 'package:minq/presentation/common/celebration/celebration_system.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// 進捗共有カードウィジェット
 class ProgressShareCard extends ConsumerStatefulWidget {

@@ -83,7 +83,7 @@ class LoginScreen extends ConsumerWidget {
                     icon: Icons.shield_outlined, // shield_person
                     text: 'ゲストとして試す',
                     isLoading: authState.isLoading,
-                    onPressed: () => _handleSignIn(ref, AuthMethod.anonymous),
+                    onPressed: () => _handleDebugGuestSignIn(ref),
                   ),
                   SizedBox(height: tokens.spacing(3)),
                   _SocialLoginButton(
@@ -94,33 +94,56 @@ class LoginScreen extends ConsumerWidget {
                   ),
                   const Spacer(),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: tokens.spacing(6)), // py-6
+                    padding: EdgeInsets.symmetric(
+                      vertical: tokens.spacing(6),
+                    ), // py-6
                     child: RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
-                        style: tokens.labelSmall.copyWith(color: tokens.textMuted),
+                        style: tokens.labelSmall.copyWith(
+                          color: tokens.textMuted,
+                        ),
                         children: <TextSpan>[
                           const TextSpan(text: '続行すると、MinQの'),
                           TextSpan(
                             text: '利用規約',
                             style: tokens.labelSmall.copyWith(
-                              color: tokens.ensureAccessibleOnBackground(tokens.brandPrimary, tokens.background),
+                              color: tokens.ensureAccessibleOnBackground(
+                                tokens.brandPrimary,
+                                tokens.background,
+                              ),
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
-                              decorationColor: tokens.ensureAccessibleOnBackground(tokens.brandPrimary, tokens.background),
+                              decorationColor: tokens
+                                  .ensureAccessibleOnBackground(
+                                    tokens.brandPrimary,
+                                    tokens.background,
+                                  ),
                             ),
-                            recognizer: TapGestureRecognizer()..onTap = () => context.push('/policy/terms'),
+                            recognizer:
+                                TapGestureRecognizer()
+                                  ..onTap = () => context.push('/policy/terms'),
                           ),
                           const TextSpan(text: 'と'),
                           TextSpan(
                             text: 'プライバシーポリシー',
                             style: tokens.labelSmall.copyWith(
-                              color: tokens.ensureAccessibleOnBackground(tokens.brandPrimary, tokens.background),
+                              color: tokens.ensureAccessibleOnBackground(
+                                tokens.brandPrimary,
+                                tokens.background,
+                              ),
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
-                              decorationColor: tokens.ensureAccessibleOnBackground(tokens.brandPrimary, tokens.background),
+                              decorationColor: tokens
+                                  .ensureAccessibleOnBackground(
+                                    tokens.brandPrimary,
+                                    tokens.background,
+                                  ),
                             ),
-                            recognizer: TapGestureRecognizer()..onTap = () => context.push('/policy/privacy'),
+                            recognizer:
+                                TapGestureRecognizer()
+                                  ..onTap =
+                                      () => context.push('/policy/privacy'),
                           ),
                           const TextSpan(text: 'に同意したものとみなされます。'),
                         ],
@@ -139,18 +162,29 @@ class LoginScreen extends ConsumerWidget {
   Future<void> _handleSignIn(WidgetRef ref, AuthMethod method) async {
     final authController = ref.read(authControllerProvider.notifier);
     final success = await authController.signIn(method);
-    
+
     if (success) {
-      final navigation = ref.read(navigationUseCaseProvider);
-      final authState = ref.read(authControllerProvider);
-      
-      if (authState.isFirstTimeUser) {
-        // Navigate to onboarding for first-time users
-        navigation.goToOnboarding();
-      } else {
-        // Navigate to home for returning users
-        navigation.goHome();
-      }
+      _navigateAfterSignIn(ref);
+    }
+  }
+
+  Future<void> _handleDebugGuestSignIn(WidgetRef ref) async {
+    final authController = ref.read(authControllerProvider.notifier);
+    final success = await authController.startDebugGuestSession();
+
+    if (success) {
+      _navigateAfterSignIn(ref);
+    }
+  }
+
+  void _navigateAfterSignIn(WidgetRef ref) {
+    final navigation = ref.read(navigationUseCaseProvider);
+    final authState = ref.read(authControllerProvider);
+
+    if (authState.isFirstTimeUser) {
+      navigation.goToOnboarding();
+    } else {
+      navigation.goHome();
     }
   }
 

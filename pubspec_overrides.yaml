@@ -1,0 +1,4 @@
+﻿# melos_managed_dependency_overrides: jni
+dependency_overrides:
+  jni:
+    path: packages/vendor/jni

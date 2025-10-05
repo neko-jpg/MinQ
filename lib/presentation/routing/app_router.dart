@@ -101,6 +101,7 @@ class AppRoutes {
 final routerProvider = Provider<GoRouter>((ref) {
   // 認証状態を監視
   final authRepo = ref.watch(authRepositoryProvider);
+  final guestUserId = ref.watch(guestUserIdProvider);
 
   return GoRouter(
     initialLocation: AppRoutes.onboarding,
@@ -115,7 +116,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       );
 
       // 認証ガード
-      final isAuthenticated = authRepo.getCurrentUser() != null;
+      final isAuthenticated =
+          authRepo.getCurrentUser() != null || guestUserId != null;
 
       final isOnboardingRoute = state.matchedLocation == AppRoutes.onboarding;
       final isLoginRoute = state.matchedLocation == AppRoutes.login;

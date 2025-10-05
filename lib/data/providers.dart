@@ -293,6 +293,8 @@ final authRepositoryProvider = Provider<IAuthRepository>((ref) {
   return FirebaseAuthRepository(ref.watch(firebaseAuthProvider));
 });
 
+final guestUserIdProvider = StateProvider<String?>((ref) => null);
+
 QuestRepository _buildQuestRepository(Ref ref) {
   final isar = ref.watch(isarProvider).value;
   if (isar == null) {
@@ -315,7 +317,10 @@ UserRepository _buildUserRepository(Ref ref) {
     throw StateError('Isar instance is not yet initialised');
   }
   final authRepository = ref.watch(authRepositoryProvider);
-  return UserRepository(isar, authRepository);
+  return UserRepository(
+    isar,
+    authRepository,
+  );
 }
 
 final questRepositoryProvider = Provider<QuestRepository>(
@@ -500,12 +505,14 @@ final authStateChangesProvider = StreamProvider<User?>((ref) {
 
 final localUserProvider = FutureProvider<minq_user.User?>((ref) async {
   final authState = ref.watch(authStateChangesProvider);
+  final guestUid = ref.watch(guestUserIdProvider);
   return authState.when(
     data: (firebaseUser) async {
-      if (firebaseUser == null) {
+      final uid = firebaseUser?.uid ?? guestUid;
+      if (uid == null) {
         return null;
       }
-      return ref.watch(userRepositoryProvider).getUserById(firebaseUser.uid);
+      return ref.watch(userRepositoryProvider).getUserById(uid);
     },
     error: (_, __) => Future.value(null),
     loading: () => Future.value(null),
@@ -513,6 +520,10 @@ final localUserProvider = FutureProvider<minq_user.User?>((ref) async {
 });
 
 final uidProvider = Provider<String?>((ref) {
+  final guestUid = ref.watch(guestUserIdProvider);
+  if (guestUid != null) {
+    return guestUid;
+  }
   final authState = ref.watch(authStateChangesProvider);
   return authState.value?.uid;
 });

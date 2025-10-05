@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/content_moderation_service.dart';
-import 'package:minq/presentation/common/security/sensitive_content.dart';
+import 'package:minq/presentation/common/security/sensitive_content.dart' as custom;
 import 'package:minq/presentation/screens/pair_screen.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileSettingScreen extends ConsumerWidget {
@@ -45,7 +45,7 @@ class ProfileSettingScreen extends ConsumerWidget {
             ),
         ],
       ),
-      body: SensitiveContent(
+      body: custom.SensitiveContent(
         child: userAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, _) => Center(
