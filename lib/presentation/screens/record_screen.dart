@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:just_audio/just_audio.dart';
 
 import 'package:minq/data/logging/minq_logger.dart';
@@ -18,6 +17,7 @@ import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/presentation/controllers/quest_log_controller.dart';
+import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -35,6 +35,7 @@ class RecordScreen extends ConsumerStatefulWidget {
 class _RecordScreenState extends ConsumerState<RecordScreen> {
   RecordErrorType _error = RecordErrorType.none;
   bool _isLoading = true;
+  bool _hasUnsavedChanges = true;
 
   @override
   void initState() {
@@ -62,6 +63,38 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   Future<void> _openSettings() async => _handleError(RecordErrorType.none);
   Future<void> _openOfflineQueue() async => _handleError(RecordErrorType.none);
 
+  void _markCompleted() {
+    if (_hasUnsavedChanges) {
+      setState(() => _hasUnsavedChanges = false);
+    }
+  }
+
+  Future<void> _handleBackRequest(WidgetRef ref) async {
+    if (!_hasUnsavedChanges) {
+      _popOrGoHome(ref);
+      return;
+    }
+
+    final shouldLeave = await showDiscardChangesDialog(
+      context,
+      message: '記録を保存せずに終了しますか？',
+      discardLabel: '終了する',
+    );
+    if (shouldLeave) {
+      setState(() => _hasUnsavedChanges = false);
+      _popOrGoHome(ref);
+    }
+  }
+
+  void _popOrGoHome(WidgetRef ref) {
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      navigator.pop();
+    } else {
+      ref.read(navigationUseCaseProvider).goHome();
+    }
+  }
+
   @override
   void dispose() {
     ref.read(focusMusicServiceProvider).stop();
@@ -72,55 +105,58 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
-    return Scaffold(
-      backgroundColor: tokens.background,
-      appBar: AppBar(
-        title: Text(
-          '記録',
-          style: tokens.titleMedium.copyWith(
-            color: tokens.textPrimary,
-            fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: !_hasUnsavedChanges,
+      onPopInvoked: (didPop) async {
+        if (didPop) {
+          return;
+        }
+        await _handleBackRequest(ref);
+      },
+      child: Scaffold(
+        backgroundColor: tokens.background,
+        appBar: AppBar(
+          title: Text(
+            '記録',
+            style: tokens.titleMedium.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          leading: Center(
+            child: MinqIconButton(
+              icon: Icons.close,
+              onTap: () => _handleBackRequest(ref),
+            ),
           ),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        leading: Center(
-          child: MinqIconButton(
-            icon: Icons.close,
-            onTap: () {
-              final navigator = Navigator.of(context);
-              if (navigator.canPop()) {
-                context.pop();
-              } else {
-                ref.read(navigationUseCaseProvider).goHome();
-              }
-            },
-          ),
-        ),
+        body:
+            _isLoading
+                ? _RecordSkeleton(tokens: tokens)
+                : switch (_error) {
+                  RecordErrorType.none => _RecordForm(
+                    questId: widget.questId,
+                    onError: _handleError,
+                    onCompleted: _markCompleted,
+                  ),
+                  RecordErrorType.offline => _OfflineRecovery(
+                    onRetry: _retryUpload,
+                    onOpenQueue: _openOfflineQueue,
+                  ),
+                  RecordErrorType.permissionDenied => _PermissionRecovery(
+                    onRequest: _requestPermissions,
+                    onOpenSettings: _openSettings,
+                  ),
+                  RecordErrorType.cameraFailure => _CameraRecovery(
+                    onRetry: _retryUpload,
+                    onSwitchMode: () => _handleError(RecordErrorType.none),
+                  ),
+                },
       ),
-      body:
-          _isLoading
-              ? _RecordSkeleton(tokens: tokens)
-              : switch (_error) {
-                RecordErrorType.none => _RecordForm(
-                  questId: widget.questId,
-                  onError: _handleError,
-                ),
-                RecordErrorType.offline => _OfflineRecovery(
-                  onRetry: _retryUpload,
-                  onOpenQueue: _openOfflineQueue,
-                ),
-                RecordErrorType.permissionDenied => _PermissionRecovery(
-                  onRequest: _requestPermissions,
-                  onOpenSettings: _openSettings,
-                ),
-                RecordErrorType.cameraFailure => _CameraRecovery(
-                  onRetry: _retryUpload,
-                  onSwitchMode: () => _handleError(RecordErrorType.none),
-                ),
-              },
     );
   }
 }
@@ -167,10 +203,15 @@ class _RecordSkeleton extends StatelessWidget {
 }
 
 class _RecordForm extends ConsumerWidget {
-  const _RecordForm({required this.questId, required this.onError});
+  const _RecordForm({
+    required this.questId,
+    required this.onError,
+    required this.onCompleted,
+  });
 
   final int questId;
   final void Function(RecordErrorType) onError;
+  final VoidCallback onCompleted;
 
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
@@ -314,6 +355,7 @@ class _RecordForm extends ConsumerWidget {
 
       if (success) {
         onError(RecordErrorType.none);
+        onCompleted();
         ref.read(navigationUseCaseProvider).goToCelebration();
         FeedbackManager.questCompleted();
       } else {
@@ -344,6 +386,7 @@ class _RecordForm extends ConsumerWidget {
     );
 
     if (success) {
+      onCompleted();
       ref.read(navigationUseCaseProvider).goToCelebration();
       FeedbackManager.questCompleted();
     } else {
