@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:minq/config/stripe_config.dart';
+import 'package:minq/core/export/data_export_service.dart';
 import 'package:minq/core/sharing/ai_share_banner_service.dart';
 // TODO: Fix integrations package
 // import 'package:miinq_integrations/miinq_integrations.dart';
@@ -100,7 +101,9 @@ final contactLinkRepositoryProvider = Provider<ContactLinkRepository>((ref) {
   return ContactLinkRepository(ref.watch(localPreferencesServiceProvider));
 });
 
-final communityBoardRepositoryProvider = Provider<CommunityBoardRepository?>((ref) {
+final communityBoardRepositoryProvider = Provider<CommunityBoardRepository?>((
+  ref,
+) {
   final firestore = ref.watch(firestoreProvider);
   if (firestore == null) {
     return null;
@@ -154,15 +157,15 @@ final notificationTapStreamProvider = StreamProvider<String>((ref) async* {
 
 final notificationSoundProfilesProvider =
     Provider<List<NotificationSoundProfile>>(
-  (ref) => NotificationSoundProfile.presets,
-);
+      (ref) => NotificationSoundProfile.presets,
+    );
 
 final selectedNotificationSoundProfileProvider =
     FutureProvider<NotificationSoundProfile>((ref) async {
-  final service = ref.watch(notificationServiceProvider);
-  final profileId = await service.getReminderSoundProfileId();
-  return NotificationSoundProfile.byId(profileId);
-});
+      final service = ref.watch(notificationServiceProvider);
+      final profileId = await service.getReminderSoundProfileId();
+      return NotificationSoundProfile.byId(profileId);
+    });
 
 final webhookEndpointsProvider = FutureProvider<List<Uri>>((ref) {
   return ref.watch(webhookDispatchServiceProvider).loadEndpoints();
@@ -182,8 +185,9 @@ final deepLinkStreamProvider = StreamProvider<Uri>((ref) {
   return ref.watch(deepLinkServiceProvider).linkStream;
 });
 
-final timeConsistencyServiceProvider =
-    Provider<TimeConsistencyService>((ref) => TimeConsistencyService());
+final timeConsistencyServiceProvider = Provider<TimeConsistencyService>(
+  (ref) => TimeConsistencyService(),
+);
 
 final imagePickerProvider = Provider<ImagePicker>((ref) => ImagePicker());
 final photoStorageServiceProvider = Provider<PhotoStorageService>((ref) {
@@ -193,8 +197,9 @@ final photoStorageServiceProvider = Provider<PhotoStorageService>((ref) {
   );
 });
 
-final localPreferencesServiceProvider =
-    Provider<LocalPreferencesService>((_) => LocalPreferencesService());
+final localPreferencesServiceProvider = Provider<LocalPreferencesService>(
+  (_) => LocalPreferencesService(),
+);
 
 final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
   return ConnectivityService();
@@ -204,19 +209,25 @@ final crashRecoveryStoreProvider = Provider<CrashRecoveryStore>((ref) {
   throw StateError('CrashRecoveryStore is not initialised');
 });
 
-final operationsMetricsServiceProvider = Provider<OperationsMetricsService>((ref) {
+final operationsMetricsServiceProvider = Provider<OperationsMetricsService>((
+  ref,
+) {
   throw StateError('OperationsMetricsService is not initialised');
 });
 
-final operationsSnapshotProvider = FutureProvider<OperationsSnapshot>((ref) async {
+final operationsSnapshotProvider = FutureProvider<OperationsSnapshot>((
+  ref,
+) async {
   final service = ref.watch(operationsMetricsServiceProvider);
   return service.loadSnapshot();
 });
 
 final marketingAttributionServiceProvider =
     Provider<MarketingAttributionService>((ref) {
-  return MarketingAttributionService(ref.watch(localPreferencesServiceProvider));
-});
+      return MarketingAttributionService(
+        ref.watch(localPreferencesServiceProvider),
+      );
+    });
 
 final inAppReviewServiceProvider = Provider<InAppReviewService>((ref) {
   return InAppReviewService(ref.watch(localPreferencesServiceProvider));
@@ -240,26 +251,25 @@ final shareServiceProvider = Provider<ShareService>((ref) {
 
 final appLocaleControllerProvider =
     StateNotifierProvider<AppLocaleController, Locale?>((ref) {
-  return AppLocaleController(ref.watch(localPreferencesServiceProvider));
-});
+      return AppLocaleController(ref.watch(localPreferencesServiceProvider));
+    });
 
 final firebaseAvailabilityProvider = Provider<bool>((_) => true);
 
 final firebaseAuthProvider = Provider<FirebaseAuth?>(
-  (ref) => ref.watch(firebaseAvailabilityProvider)
-      ? FirebaseAuth.instance
-      : null,
+  (ref) =>
+      ref.watch(firebaseAvailabilityProvider) ? FirebaseAuth.instance : null,
 );
 final firestoreProvider = Provider<FirebaseFirestore?>(
-  (ref) => ref.watch(firebaseAvailabilityProvider)
-      ? FirebaseFirestore.instance
-      : null,
+  (ref) =>
+      ref.watch(firebaseAvailabilityProvider)
+          ? FirebaseFirestore.instance
+          : null,
 );
 
 final firebaseStorageProvider = Provider<FirebaseStorage?>(
-  (ref) => ref.watch(firebaseAvailabilityProvider)
-      ? FirebaseStorage.instance
-      : null,
+  (ref) =>
+      ref.watch(firebaseAvailabilityProvider) ? FirebaseStorage.instance : null,
 );
 
 final remoteConfigProvider = Provider<FirebaseRemoteConfig?>((ref) {
@@ -276,6 +286,10 @@ final firebaseAnalyticsProvider = Provider<FirebaseAnalytics?>((ref) {
 
 final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
   return AnalyticsService(ref.watch(firebaseAnalyticsProvider));
+});
+
+final dataExportServiceProvider = Provider<DataExportService>((ref) {
+  return DataExportService();
 });
 
 // TODO: Implement FeatureFlagsNotifier
@@ -317,10 +331,7 @@ UserRepository _buildUserRepository(Ref ref) {
     throw StateError('Isar instance is not yet initialised');
   }
   final authRepository = ref.watch(authRepositoryProvider);
-  return UserRepository(
-    isar,
-    authRepository,
-  );
+  return UserRepository(isar, authRepository);
 }
 
 final questRepositoryProvider = Provider<QuestRepository>(
@@ -425,9 +436,10 @@ final appStartupProvider = FutureProvider<void>((ref) async {
         localUser.uid,
         currentStreak: currentStreak,
         longestStreak: longestStreak,
-        longestStreakReachedAt: longestStreak > previousLongest
-            ? DateTime.now()
-            : localUser.longestStreakReachedAt,
+        longestStreakReachedAt:
+            longestStreak > previousLongest
+                ? DateTime.now()
+                : localUser.longestStreakReachedAt,
       );
       localUser.currentStreak = currentStreak;
       localUser.longestStreak = longestStreak;
@@ -473,7 +485,9 @@ final appStartupProvider = FutureProvider<void>((ref) async {
 
     try {
       final timeConsistent =
-          await ref.read(timeConsistencyServiceProvider).isDeviceTimeConsistent();
+          await ref
+              .read(timeConsistencyServiceProvider)
+              .isDeviceTimeConsistent();
       final hasDrift = !timeConsistent;
       ref.read(timeDriftDetectedProvider.notifier).state = hasDrift;
       if (hasDrift) {
@@ -561,8 +575,10 @@ final pairStreamProvider =
           .map<DocumentSnapshot<Map<String, dynamic>>?>((snapshot) => snapshot);
     });
 
-final pairByIdProvider =
-    FutureProvider.family<minq_pair.Pair?, String>((ref, pairId) async {
+final pairByIdProvider = FutureProvider.family<minq_pair.Pair?, String>((
+  ref,
+  pairId,
+) async {
   final pairRepository = ref.watch(pairRepositoryProvider);
   if (pairRepository == null) return null;
   return pairRepository.getPairById(pairId);
@@ -595,8 +611,10 @@ final questByIdProvider = FutureProvider.family<Quest?, int>((ref, id) async {
   return ref.read(questRepositoryProvider).getQuestById(id);
 });
 
-final questContactLinkProvider =
-    FutureProvider.family<String?, int>((ref, questId) async {
+final questContactLinkProvider = FutureProvider.family<String?, int>((
+  ref,
+  questId,
+) async {
   return ref.watch(contactLinkRepositoryProvider).getLink(questId);
 });
 
@@ -641,11 +659,13 @@ final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
   return logs.take(30).toList();
 });
 
-final habitAiSuggestionServiceProvider =
-    Provider<HabitAiSuggestionService>((ref) => HabitAiSuggestionService());
+final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>(
+  (ref) => HabitAiSuggestionService(),
+);
 
-final habitAiSuggestionsProvider = FutureProvider<List<HabitAiSuggestion>>(
-    (ref) async {
+final habitAiSuggestionsProvider = FutureProvider<List<HabitAiSuggestion>>((
+  ref,
+) async {
   await _ensureStartup(ref);
   final logs = await ref.watch(recentLogsProvider.future);
   final quests = await ref.watch(userQuestsProvider.future);
