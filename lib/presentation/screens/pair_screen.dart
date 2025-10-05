@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:minq/data/providers.dart';

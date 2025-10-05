@@ -12,21 +12,25 @@ class AuthState {
     this.isLoading = false,
     this.error,
     this.isFirstTimeUser = false,
+    this.isGuestAuthenticated = false,
   });
 
   final bool isLoading;
   final String? error;
   final bool isFirstTimeUser;
+  final bool isGuestAuthenticated;
 
   AuthState copyWith({
     bool? isLoading,
     String? error,
     bool? isFirstTimeUser,
+    bool? isGuestAuthenticated,
   }) {
     return AuthState(
       isLoading: isLoading ?? this.isLoading,
       error: error,
       isFirstTimeUser: isFirstTimeUser ?? this.isFirstTimeUser,
+      isGuestAuthenticated: isGuestAuthenticated ?? this.isGuestAuthenticated,
     );
   }
 }
@@ -34,10 +38,17 @@ class AuthState {
 class AuthController extends StateNotifier<AuthState> {
   AuthController(this._ref) : super(const AuthState());
 
+  static const _guestUserId = 'debug-guest-user';
+
   final Ref _ref;
 
   Future<bool> signIn(AuthMethod method) async {
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(
+      isLoading: true,
+      error: null,
+      isGuestAuthenticated: false,
+    );
+    _clearGuestUser();
 
     try {
       switch (method) {
@@ -82,50 +93,31 @@ class AuthController extends StateNotifier<AuthState> {
   }
 
   Future<bool> _signInAnonymously() async {
-    final authRepository = _ref.read(authRepositoryProvider);
-    final user = await authRepository.signInAnonymously();
-    
-    if (user != null) {
-      // Check if this is a first-time user
-      final userRepository = _ref.read(userRepositoryProvider);
-      final localUser = await userRepository.getUserById(user.uid);
-      final isFirstTime = localUser == null;
-      
-      state = state.copyWith(
-        isLoading: false, 
-        error: null,
-        isFirstTimeUser: isFirstTime,
-      );
-      
-      // Initialize user profile if first time
-      if (isFirstTime) {
-        await _initializeUserProfile(user.uid);
-      }
-      
-      return true;
-    }
-    
-    state = state.copyWith(isLoading: false, error: 'authErrorUnknown');
-    return false;
+    // NOTE: Firebase接続までのデバッグ用ゲストログイン
+    debugPrint(
+      'Bypassing Firebase auth and using local guest session for debugging.',
+    );
+    return _completeGuestSignIn();
   }
 
   Future<void> _initializeUserProfile(String uid) async {
     try {
       final userRepository = _ref.read(userRepositoryProvider);
       final notificationService = _ref.read(notificationServiceProvider);
-      
-      final newUser = minq_user.User()
-        ..uid = uid
-        ..createdAt = DateTime.now()
-        ..notificationTimes = List.of(
-          NotificationService.defaultReminderTimes,
-        )
-        ..privacy = 'private'
-        ..longestStreak = 0
-        ..currentStreak = 0;
-      
+
+      final newUser =
+          minq_user.User()
+            ..uid = uid
+            ..createdAt = DateTime.now()
+            ..notificationTimes = List.of(
+              NotificationService.defaultReminderTimes,
+            )
+            ..privacy = 'private'
+            ..longestStreak = 0
+            ..currentStreak = 0;
+
       await userRepository.saveLocalUser(newUser);
-      
+
       // Initialize notifications
       final permissionGranted = await notificationService.requestPermission();
       if (permissionGranted) {
@@ -133,29 +125,69 @@ class AuthController extends StateNotifier<AuthState> {
           newUser.notificationTimes.take(2).toList(),
         );
       }
-      
+
       debugPrint('User profile initialized for $uid');
     } catch (e) {
       debugPrint('Failed to initialize user profile: $e');
     }
   }
 
+  Future<bool> startDebugGuestSession() async {
+    state = state.copyWith(
+      isLoading: true,
+      error: null,
+      isGuestAuthenticated: false,
+    );
+    _clearGuestUser();
+    return _signInAnonymously();
+  }
+
   Future<void> signOut() async {
-    state = state.copyWith(isLoading: true, error: null);
-    
+    state = state.copyWith(
+      isLoading: true,
+      error: null,
+      isGuestAuthenticated: false,
+    );
+    _clearGuestUser();
+
     try {
       final authRepository = _ref.read(authRepositoryProvider);
       await authRepository.signOut();
-      
+
       // Clear notifications
       final notificationService = _ref.read(notificationServiceProvider);
       await notificationService.cancelAll();
-      
+
       state = const AuthState();
     } catch (e) {
       state = state.copyWith(isLoading: false, error: 'authErrorUnknown');
       debugPrint('Sign out error: $e');
     }
+  }
+
+  Future<bool> _completeGuestSignIn() async {
+    debugPrint('Using local guest session for debugging.');
+
+    final guestUserNotifier = _ref.read(guestUserIdProvider.notifier);
+    guestUserNotifier.state = _guestUserId;
+
+    final userRepository = _ref.read(userRepositoryProvider);
+    final existingUser = await userRepository.getUserById(_guestUserId);
+    if (existingUser == null) {
+      await _initializeUserProfile(_guestUserId);
+    }
+
+    state = state.copyWith(
+      isLoading: false,
+      error: null,
+      isFirstTimeUser: false,
+      isGuestAuthenticated: true,
+    );
+    return true;
+  }
+
+  void _clearGuestUser() {
+    _ref.read(guestUserIdProvider.notifier).state = null;
   }
 
   void clearError() {
@@ -168,6 +200,8 @@ class AuthController extends StateNotifier<AuthState> {
   }
 }
 
-final authControllerProvider = StateNotifierProvider<AuthController, AuthState>((ref) {
-  return AuthController(ref);
-});
+final authControllerProvider = StateNotifierProvider<AuthController, AuthState>(
+  (ref) {
+    return AuthController(ref);
+  },
+);

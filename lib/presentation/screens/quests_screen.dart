@@ -8,7 +8,7 @@ import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 
 class QuestsScreen extends ConsumerStatefulWidget {

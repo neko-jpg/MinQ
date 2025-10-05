@@ -8,9 +8,9 @@ cmake_minimum_required(VERSION 3.10)
 project(jni_library VERSION 0.0.1 LANGUAGES C)
 
 add_library(jni SHARED
-  "dartjni.c"
-  "third_party/global_jni_env.c"
-	"include/dart_api_dl.c"
+  "${CMAKE_CURRENT_SOURCE_DIR}/dartjni.c"
+  "${CMAKE_CURRENT_SOURCE_DIR}/third_party/global_jni_env.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/dart_api_dl.c"
 )
 
 set_target_properties(jni PROPERTIES

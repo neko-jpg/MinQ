@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 class CelebrationScreen extends ConsumerStatefulWidget {
   const CelebrationScreen({super.key});

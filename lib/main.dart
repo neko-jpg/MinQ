@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:minq/data/providers.dart';
@@ -91,7 +91,9 @@ Future<void> main() async {
       overrides: [
         firebaseAvailabilityProvider.overrideWithValue(firebaseInitialized),
         crashRecoveryStoreProvider.overrideWithValue(crashRecoveryStore),
-        operationsMetricsServiceProvider.overrideWithValue(operationsMetricsService),
+        operationsMetricsServiceProvider.overrideWithValue(
+          operationsMetricsService,
+        ),
       ],
       child: const MinQApp(),
     ),
@@ -131,7 +133,7 @@ class MinQApp extends ConsumerStatefulWidget {
 
 class _MinQAppState extends ConsumerState<MinQApp> {
   late final ProviderSubscription<AsyncValue<String>>
-      _notificationTapSubscription;
+  _notificationTapSubscription;
   ProviderSubscription<AsyncValue<Uri>>? _deepLinkSubscription;
 
   @override
@@ -183,8 +185,10 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     if (uri.host == 'quest' && uri.pathSegments.isNotEmpty) {
       final questId = int.tryParse(uri.pathSegments.first);
       if (questId != null) {
-        return AppRoutes.questDetail
-            .replaceFirst(':questId', questId.toString());
+        return AppRoutes.questDetail.replaceFirst(
+          ':questId',
+          questId.toString(),
+        );
       }
     }
 
@@ -257,15 +261,36 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         supportedLocales: const [Locale('ja')],
         builder: (BuildContext context, Widget? child) {
           final mediaQuery = MediaQuery.of(context);
-          final clampedScaler = mediaQuery.textScaler.clamp(
-            minScaleFactor: 1.0,
-            maxScaleFactor: 2.0,
-          );
+          const double minScaleFactor = 1.0;
+          const double maxScaleFactor = 2.0;
+
+          TextScaler effectiveTextScaler = mediaQuery.textScaler;
+          if (maxScaleFactor > minScaleFactor) {
+            final double approxScale = mediaQuery.textScaler.textScaleFactor;
+            if (!approxScale.isFinite || approxScale <= 0) {
+              assert(() {
+                debugPrint('Falling back to minimum text scale because approxScale was $approxScale');
+                return true;
+              }());
+              effectiveTextScaler = TextScaler.linear(minScaleFactor);
+            } else if (approxScale > maxScaleFactor) {
+              assert(() {
+                debugPrint('Clamping text scale down to $maxScaleFactor (was $approxScale)');
+                return true;
+              }());
+              effectiveTextScaler = TextScaler.linear(maxScaleFactor);
+            } else if (approxScale < minScaleFactor) {
+              assert(() {
+                debugPrint('Clamping text scale up to $minScaleFactor (was $approxScale)');
+                return true;
+              }());
+              effectiveTextScaler = TextScaler.linear(minScaleFactor);
+            }
+          }
+
           return MediaQuery(
-            data: mediaQuery.copyWith(textScaler: clampedScaler),
-            child: VersionCheckWidget(
-              child: child ?? const SizedBox.shrink(),
-            ),
+            data: mediaQuery.copyWith(textScaler: effectiveTextScaler),
+            child: VersionCheckWidget(child: child ?? const SizedBox.shrink()),
           );
         },
       ),
