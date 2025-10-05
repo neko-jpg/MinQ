@@ -370,35 +370,37 @@ class NavigationUseCase {
 
   void goToOnboarding() => _router.go(AppRoutes.onboarding);
   void goToLogin() => _router.push(AppRoutes.login);
-  void goToRecord(int questId) =>
-      _router.go(AppRoutes.record.replaceFirst(':questId', questId.toString()));
-  void goToCelebration() => _router.go(AppRoutes.celebration);
-  void goToSocialSharingDemo() => _router.go(AppRoutes.socialSharingDemo);
-  void goToProfile() => _router.go(AppRoutes.profile);
+  void goToRecord(int questId) => _router.push(
+    AppRoutes.record.replaceFirst(':questId', questId.toString()),
+  );
+  void goToCelebration() => _router.push(AppRoutes.celebration);
+  void goToSocialSharingDemo() => _router.push(AppRoutes.socialSharingDemo);
+  void goToProfile() => _router.push(AppRoutes.profile);
   void goToPolicy(PolicyDocumentId documentId) =>
-      _router.go(AppRoutes.policy.replaceFirst(':id', documentId.name));
-  void goToSupport() => _router.go(AppRoutes.support);
-  void goToCommunityBoard() => _router.go(AppRoutes.communityBoard);
-  void goToCreateQuest() => _router.go(AppRoutes.createQuest);
-  void goToEditQuest(int questId) => _router.go(
+      _router.push(AppRoutes.policy.replaceFirst(':id', documentId.name));
+  void goToSupport() => _router.push(AppRoutes.support);
+  void goToCommunityBoard() => _router.push(AppRoutes.communityBoard);
+  void goToCreateQuest() => _router.push(AppRoutes.createQuest);
+  void goToEditQuest(int questId) => _router.push(
     AppRoutes.editQuest.replaceFirst(':questId', questId.toString()),
   );
-  void goToQuestDetail(int questId) => _router.go(
+  void goToQuestDetail(int questId) => _router.push(
     AppRoutes.questDetail.replaceFirst(':questId', questId.toString()),
   );
-  void goToNotificationSettings() => _router.go(AppRoutes.notificationSettings);
-  void goToProfileSettings() => _router.go(AppRoutes.profileSettings);
-  void goToAccountDeletion() => _router.go(AppRoutes.accountDeletion);
+  void goToNotificationSettings() =>
+      _router.push(AppRoutes.notificationSettings);
+  void goToProfileSettings() => _router.push(AppRoutes.profileSettings);
+  void goToAccountDeletion() => _router.push(AppRoutes.accountDeletion);
   void goToPairMatching({String? code}) {
     final uri = Uri(
       path: AppRoutes.pairMatching,
       queryParameters: code != null ? {'code': code} : null,
     );
-    _router.go(uri.toString());
+    _router.push(uri.toString());
   }
 
   void goToPairChat(String pairId) =>
-      _router.go(AppRoutes.pairChat.replaceFirst(':pairId', pairId));
+      _router.push(AppRoutes.pairChat.replaceFirst(':pairId', pairId));
   void goHome() => _router.go(AppRoutes.home);
   void goToStats() => _router.go(AppRoutes.stats);
   void goToPair() => _router.go(AppRoutes.pair);

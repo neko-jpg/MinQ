@@ -383,12 +383,18 @@ class _FocusHeroCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final quests = data.quests;
-    final focusQuest = quests.firstOrNull;
-    final recentLogs = data.recentLogs;
     final navigation = ref.read(navigationUseCaseProvider);
+    final focus = data.focus;
+    final quests = data.quests;
+    final recentLogs = data.recentLogs;
+    final focusQuest =
+        focus != null
+            ? quests.firstWhereOrNull(
+              (HomeQuestItem quest) => quest.id == focus.questId,
+            )
+            : null;
 
-    if (focusQuest == null) {
+    if (focus == null || focusQuest == null) {
       return Card(
         color: tokens.surface,
         shape: RoundedRectangleBorder(
@@ -402,19 +408,21 @@ class _FocusHeroCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '今日のフォーカス',
+                'AI今日のフォーカス',
                 style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
               ),
               SizedBox(height: tokens.spacing(2)),
               Text(
-                'クエストがまだありません',
+                focus == null ? 'AIが学習中です' : '対象のクエストが見つかりません',
                 style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: tokens.spacing(4)),
               Text(
-                'クエストを追加すると、毎日の優先タスクがここに表示されます。',
+                focus == null
+                    ? '進捗データを収集すると、AIが今日取り組むべきクエストを提案します。'
+                    : 'クエストが削除された可能性があります。新しいクエストを追加して提案を再取得してください。',
                 style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
-                maxLines: 2,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: tokens.spacing(4)),
@@ -434,7 +442,7 @@ class _FocusHeroCard extends ConsumerWidget {
     final now = DateTime.now();
     final hasCompletedToday = recentLogs.any(
       (log) =>
-          log.questId == focusQuest.id &&
+          log.questId == focus.questId &&
           log.timestamp.year == now.year &&
           log.timestamp.month == now.month &&
           log.timestamp.day == now.day,
@@ -454,19 +462,32 @@ class _FocusHeroCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '今日のフォーカス',
-              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+              'AI今日のフォーカス',
+              style: tokens.bodyMedium.copyWith(
+                color: tokens.brandPrimary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             SizedBox(height: tokens.spacing(2)),
             Text(
-              focusQuest.title,
+              focus.headline,
               style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
+            SizedBox(height: tokens.spacing(3)),
+            Text(
+              focusQuest.title,
+              style: tokens.titleMedium.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             SizedBox(height: tokens.spacing(4)),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _ProgressRing(
                   progress: progress,
@@ -480,7 +501,7 @@ class _FocusHeroCard extends ConsumerWidget {
                       ),
                       SizedBox(height: tokens.spacing(2)),
                       Text(
-                        '達成済み',
+                        '今日達成',
                         style: tokens.bodySmall.copyWith(
                           color: tokens.brandPrimary,
                           fontWeight: FontWeight.w600,
@@ -498,7 +519,7 @@ class _FocusHeroCard extends ConsumerWidget {
                       ),
                       SizedBox(height: tokens.spacing(2)),
                       Text(
-                        '未着手',
+                        '未完了',
                         style: tokens.bodySmall.copyWith(
                           color: tokens.textMuted,
                           fontWeight: FontWeight.w600,
@@ -513,41 +534,90 @@ class _FocusHeroCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '目安時間',
+                        'カテゴリ・所要時間',
                         style: tokens.bodySmall.copyWith(
                           color: tokens.textMuted,
                         ),
                       ),
-                      SizedBox(height: tokens.spacing(2)),
+                      SizedBox(height: tokens.spacing(1)),
                       Text(
-                        '${focusQuest.estimatedMinutes}分',
-                        style: tokens.titleMedium.copyWith(
-                          fontWeight: FontWeight.bold,
+                        '${focusQuest.category}・${focusQuest.estimatedMinutes}分',
+                        style: tokens.bodyMedium.copyWith(
+                          color: tokens.textPrimary,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(height: tokens.spacing(2)),
+                      SizedBox(height: tokens.spacing(3)),
                       Text(
-                        hasCompletedToday
-                            ? '今日はすでに達成できています。引き続き習慣を続けましょう。'
-                            : 'まだ記録がありません。今すぐ行動して連続日数を伸ばしましょう。',
+                        focus.rationale,
                         style: tokens.bodyMedium.copyWith(
-                          color: tokens.textMuted,
+                          color: tokens.textPrimary,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: tokens.spacing(3)),
+                      Wrap(
+                        spacing: tokens.spacing(2),
+                        runSpacing: tokens.spacing(2),
+                        children: [
+                          ...focus.supportingFacts.map(
+                            (fact) => Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: tokens.spacing(2.5),
+                                vertical: tokens.spacing(1.5),
+                              ),
+                              decoration: BoxDecoration(
+                                color: tokens.surfaceVariant,
+                                borderRadius: tokens.cornerMedium(),
+                              ),
+                              child: Text(
+                                fact,
+                                style: tokens.bodySmall.copyWith(
+                                  color: tokens.textMuted,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: tokens.spacing(2.5),
+                              vertical: tokens.spacing(1.5),
+                            ),
+                            decoration: BoxDecoration(
+                              color: tokens.brandPrimary.withOpacity(0.12),
+                              borderRadius: tokens.cornerMedium(),
+                            ),
+                            child: Text(
+                              'AI信頼度 ${(focus.confidence * 100).round()}%',
+                              style: tokens.bodySmall.copyWith(
+                                color: tokens.brandPrimary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: tokens.spacing(4)),
+                      Row(
+                        children: [
+                          FilledButton.icon(
+                            onPressed:
+                                () => navigation.goToRecord(focus.questId),
+                            icon: const Icon(Icons.play_arrow),
+                            label: const Text('今すぐ記録'),
+                          ),
+                          SizedBox(width: tokens.spacing(2)),
+                          OutlinedButton.icon(
+                            onPressed:
+                                () => navigation.goToQuestDetail(focus.questId),
+                            icon: const Icon(Icons.info_outline),
+                            label: const Text('詳細を見る'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
               ],
-            ),
-            SizedBox(height: tokens.spacing(4)),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () => navigation.goToRecord(focusQuest.id),
-                child: const Text('もっと見る'),
-              ),
             ),
           ],
         ),

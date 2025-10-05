@@ -52,6 +52,7 @@ import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/pair/pair.dart' as minq_pair;
 import 'package:minq/domain/quest/quest.dart';
+import 'package:minq/domain/recommendation/daily_focus_service.dart';
 import 'package:minq/domain/recommendation/habit_ai_suggestion_service.dart';
 import 'package:minq/domain/user/user.dart' as minq_user;
 import 'package:speech_to_text/speech_to_text.dart';
@@ -661,6 +662,10 @@ final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
 
 final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>(
   (ref) => HabitAiSuggestionService(),
+);
+
+final dailyFocusServiceProvider = Provider<DailyFocusService>(
+  (ref) => DailyFocusService(),
 );
 
 final habitAiSuggestionsProvider = FutureProvider<List<HabitAiSuggestion>>((
