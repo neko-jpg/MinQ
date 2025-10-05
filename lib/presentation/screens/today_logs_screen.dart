@@ -38,12 +38,13 @@ class TodayLogsScreen extends ConsumerWidget {
       ),
       body: todayLogsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(
-          child: Text(
-            'エラーが発生しました: $error',
-            style: tokens.bodyMedium.copyWith(color: tokens.accentError),
-          ),
-        ),
+        error:
+            (error, _) => Center(
+              child: Text(
+                'エラーが発生しました: $error',
+                style: tokens.bodyMedium.copyWith(color: tokens.accentError),
+              ),
+            ),
         data: (logs) {
           if (logs.isEmpty) {
             return Padding(
@@ -96,21 +97,23 @@ class _LogCard extends ConsumerWidget {
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing(4)),
         child: questAsync.when(
-          loading: () => const SizedBox(
-            height: 60,
-            child: Center(child: CircularProgressIndicator()),
-          ),
-          error: (error, _) => ListTile(
-            leading: const Icon(Icons.error_outline),
-            title: const Text('クエストが見つかりません'),
-            subtitle: Text('ID: ${log.questId}'),
-          ),
+          loading:
+              () => const SizedBox(
+                height: 60,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+          error:
+              (error, _) => ListTile(
+                leading: const Icon(Icons.error_outline),
+                title: const Text('クエストが見つかりません'),
+                subtitle: _buildDebugSubtitle(log.questId),
+              ),
           data: (quest) {
             if (quest == null) {
               return ListTile(
                 leading: const Icon(Icons.error_outline),
                 title: const Text('クエストが見つかりません'),
-                subtitle: Text('ID: ${log.questId}'),
+                subtitle: _buildDebugSubtitle(log.questId),
               );
             }
 
@@ -157,7 +160,8 @@ class _LogCard extends ConsumerWidget {
                     _ProofTypeChip(proofType: log.proofType),
                   ],
                 ),
-                if (log.proofType == ProofType.photo.name && log.proofValue.isNotEmpty) ...[
+                if (log.proofType == ProofType.photo.name &&
+                    log.proofValue.isNotEmpty) ...[
                   SizedBox(height: tokens.spacing(3)),
                   ClipRRect(
                     borderRadius: tokens.cornerMedium(),
@@ -166,13 +170,14 @@ class _LogCard extends ConsumerWidget {
                       height: 120,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        height: 120,
-                        color: tokens.border.withOpacity(0.3),
-                        child: const Center(
-                          child: Icon(Icons.broken_image_outlined),
-                        ),
-                      ),
+                      errorBuilder:
+                          (context, error, stackTrace) => Container(
+                            height: 120,
+                            color: tokens.border.withOpacity(0.3),
+                            child: const Center(
+                              child: Icon(Icons.broken_image_outlined),
+                            ),
+                          ),
                     ),
                   ),
                 ],
@@ -181,16 +186,20 @@ class _LogCard extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton.icon(
-                      onPressed: logController.isLoading
-                          ? null
-                          : () => _showUndoConfirmation(context, ref),
-                      icon: logController.isLoading
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.undo),
+                      onPressed:
+                          logController.isLoading
+                              ? null
+                              : () => _showUndoConfirmation(context, ref),
+                      icon:
+                          logController.isLoading
+                              ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Icon(Icons.undo),
                       label: const Text('取り消し'),
                       style: TextButton.styleFrom(
                         foregroundColor: tokens.accentError,
@@ -208,46 +217,60 @@ class _LogCard extends ConsumerWidget {
 
   void _showUndoConfirmation(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('記録を取り消し'),
-        content: const Text('この記録を取り消しますか？この操作は元に戻せません。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('記録を取り消し'),
+            content: const Text('この記録を取り消しますか？この操作は元に戻せません。'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  final controller = ref.read(
+                    questLogControllerProvider.notifier,
+                  );
+                  final success = await controller.undoLog(log.id);
+
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('記録を取り消しました'),
+                        backgroundColor: tokens.accentSuccess,
+                      ),
+                    );
+                  } else {
+                    final error = ref.read(questLogControllerProvider).error;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(error?.toString() ?? '取り消しに失敗しました'),
+                        backgroundColor: tokens.accentError,
+                      ),
+                    );
+                  }
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: tokens.accentError,
+                ),
+                child: const Text('取り消し'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              final controller = ref.read(questLogControllerProvider.notifier);
-              final success = await controller.undoLog(log.id);
-              
-              if (success) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('記録を取り消しました'),
-                    backgroundColor: tokens.accentSuccess,
-                  ),
-                );
-              } else {
-                final error = ref.read(questLogControllerProvider).error;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(error?.toString() ?? '取り消しに失敗しました'),
-                    backgroundColor: tokens.accentError,
-                  ),
-                );
-              }
-            },
-            style: TextButton.styleFrom(foregroundColor: tokens.accentError),
-            child: const Text('取り消し'),
-          ),
-        ],
-      ),
     );
+  }
+
+  Widget? _buildDebugSubtitle(int questId) {
+    Widget? subtitle;
+    assert(() {
+      subtitle = Text('ID: $questId');
+      return true;
+    }());
+    return subtitle;
   }
 }
 
@@ -259,7 +282,7 @@ class _ProofTypeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     final (icon, label, color) = switch (proofType) {
       'photo' => (Icons.camera_alt, '写真', tokens.brandPrimary),
       'check' => (Icons.check_circle, 'セルフ', tokens.accentSuccess),

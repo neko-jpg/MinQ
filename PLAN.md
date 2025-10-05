@@ -1,19 +1,20 @@
 # Plan
 
 ## Scope
-- Improve home screen progress cards responsiveness by switching between single-column and two-column layouts with consistent card sizing per `task.md` A.1.
-- Normalize spacing within the home screen sections to align with established design tokens (e.g. 8/12/16dp increments) as requested in `task.md` A.1.
-- Ensure terms of service and privacy policy links open bundled Markdown content through the policy viewer so they remain available offline (`task.md` C.2).
-- Update the onboarding/login flow so transitions use push navigation and provide a visible back affordance on the welcome (onboarding) screen (`task.md` D.1).
-- Align primary buttons with design tokens instead of hardcoded black styles, covering the onboarding call-to-action (`task.md` B.2 "真っ黒ボタンの廃止").
+- Implement distinct UI states on the home screen for loading, error, offline, and empty datasets per `task.md` A.2.
+- Remove developer-only identifiers from the Today logs screen in release builds by guarding them with asserts (`task.md` B.2 デバッグ表示の削除).
+- Disable or relabel unfinished entries in the profile settings experience so that demo features are presented as "準備中" and are non-interactive (`task.md` C.3).
+- Add a safe fallback when closing the record screen so users can always exit even if the navigation stack is compromised (`task.md` E.2 フリーズ対策).
+- Refresh the weekly streak visualization to use intuitive dot indicators with a legend/tooltip for clarity (`task.md` E.3).
 
 ## Steps
-1. Refactor the home highlights widget to use a `LayoutBuilder` that yields a `GridView`-like two-column arrangement when wide and a single full-width column otherwise, ensuring card widths and heights remain consistent.
-2. Audit the home screen paddings and gaps, replacing ad-hoc `SizedBox` heights with `tokens.spacing` values that correspond to standard 8/12/16dp increments, and adjust card padding accordingly.
-3. Extend the policy document model with optional asset metadata, add Markdown support, and load `assets/legal/*.md` within `PolicyViewerScreen`; register the asset folder and dependency updates in `pubspec.yaml`.
-4. Modify the onboarding screen scaffold to include an `AppBar` with a conditional `BackButton`, switch the CTA buttons to brand-aligned `FilledButton` styles, and invoke push navigation to reach the login screen; expose push navigation via `NavigationUseCase.goToLogin()`.
-5. Ensure the login screen reacts to push navigation by showing a top AppBar with a back button when possible, keeping CTA styling consistent with tokens.
-6. Run formatting, static analysis, and the full Flutter test suite to satisfy the CI gate.
+1. Extend `HomeScreen` to watch the sync status and render dedicated empty, error, and offline bodies using `MinqEmptyState`, while retaining the skeleton for loading and showing cached content with optional offline notice.
+2. Introduce helper widgets/utilities for the home empty/offline states and provide actionable buttons (e.g., create quest, retry) wired to navigation or controller refresh.
+3. Wrap the Today logs debug subtitles in assert-only builders so production builds hide quest IDs.
+4. Audit `profile_setting_screen.dart` for placeholder interactions, swap them with disabled tiles or buttons labeled "準備中", and ensure icon actions without implementations are removed.
+5. Update the record screen's close button to pop when possible or route to the home tab otherwise.
+6. Redesign the weekly streak row to use filled/outlined dots, emphasize the current day, add tooltips, and append a legend explaining the symbols.
+7. Run `flutter pub get`, `dart format --set-exit-if-changed .`, `dart analyze --fatal-infos`, and `flutter test --coverage`.
 
 ## Testing
 - `flutter pub get`
