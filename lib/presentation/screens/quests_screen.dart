@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart' as minq_quest;
 import 'package:minq/domain/recommendation/habit_ai_suggestion_service.dart';
@@ -437,6 +436,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
         childAspectRatio: 1.5,
       ),
       delegate: SliverChildBuilderDelegate((context, index) {
+        final navigation = ref.read(navigationUseCaseProvider);
         return AnimationConfiguration.staggeredGrid(
           position: index,
           duration: const Duration(milliseconds: 375),
@@ -450,12 +450,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                   filteredQuests[index].category,
                 ),
                 onTap:
-                    () => context.push(
-                      AppRoutes.questDetail.replaceFirst(
-                        ':questId',
-                        filteredQuests[index].id.toString(),
-                      ),
-                    ),
+                    () => navigation.goToQuestDetail(filteredQuests[index].id),
               ),
             ),
           ),
@@ -513,8 +508,9 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
   }
 
   Widget _buildFab(MinqTheme tokens, AppLocalizations l10n) {
+    final navigation = ref.read(navigationUseCaseProvider);
     return FloatingActionButton.extended(
-      onPressed: () => context.push('/quests/create'),
+      onPressed: navigation.goToCreateQuest,
       label: Text(
         l10n.questsFabLabel,
         style: tokens.bodyLarge.copyWith(

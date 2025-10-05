@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
@@ -10,6 +9,7 @@ import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/data/services/tip_jar_service.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
+import 'package:minq/presentation/common/policy_documents.dart';
 import 'package:minq/presentation/controllers/integration_settings_controller.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/l10n/app_localizations.dart';
@@ -573,7 +573,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               _SettingsTile(
                 title: l10n.settingsNotificationTime,
-                onTap: () => context.push('/settings/notifications'),
+                onTap: navigation.goToNotificationSettings,
               ),
               _SettingsTile(
                 title: l10n.settingsProfile,
@@ -625,7 +625,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               _SettingsTile(
                 title: l10n.settingsDeleteAccount,
                 isDelete: true,
-                onTap: () => context.push('/settings/delete-account'),
+                onTap: navigation.goToAccountDeletion,
               ),
             ],
           ),
@@ -698,7 +698,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               _SettingsTile(
                 title: 'GPT-4o サポートチャット',
                 subtitle: '困ったことをAIサポートに質問',
-                onTap: () => context.push(AppRoutes.support),
+                onTap: navigation.goToSupport,
               ),
               _SettingsTile(
                 title: '投げ銭で応援',
@@ -756,11 +756,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               _SettingsTile(
                 title: l10n.settingsTermsOfService,
-                onTap: () => context.push('/policy/terms'),
+                onTap: () => navigation.goToPolicy(PolicyDocumentId.terms),
               ),
               _SettingsTile(
                 title: l10n.settingsPrivacyPolicy,
-                onTap: () => context.push('/policy/privacy'),
+                onTap: () => navigation.goToPolicy(PolicyDocumentId.privacy),
               ),
               _SettingsTile(
                 title: l10n.settingsAppVersion,
@@ -793,7 +793,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 _SettingsTile(
                   title: l10n.settingsSocialSharingDemo,
                   subtitle: l10n.settingsSocialSharingDemoSubtitle,
-                  onTap: () => context.push('/social-sharing-demo'),
+                  onTap: navigation.goToSocialSharingDemo,
                 ),
               ],
             ),
