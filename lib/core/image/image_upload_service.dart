@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:minq/presentation/theme/color_tokens.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// 画像アップロードサービス
@@ -58,25 +59,24 @@ class ImageUploadService {
         sourcePath: imageFile.path,
         aspectRatio: aspectRatio,
         cropStyle: cropStyle,
-        aspectRatioPresets: aspectRatioPresets ?? [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9,
-        ],
+        aspectRatioPresets:
+            aspectRatioPresets ??
+            [
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio3x2,
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.ratio16x9,
+            ],
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: '画像をクロップ',
-            toolbarColor: Colors.deepOrange,
-            toolbarWidgetColor: Colors.white,
+            toolbarColor: ColorTokens.light.warning,
+            toolbarWidgetColor: ColorTokens.light.onPrimary,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false,
           ),
-          IOSUiSettings(
-            title: '画像をクロップ',
-            minimumAspectRatio: 1.0,
-          ),
+          IOSUiSettings(title: '画像をクロップ', minimumAspectRatio: 1.0),
         ],
       );
 
@@ -97,7 +97,8 @@ class ImageUploadService {
   }) async {
     try {
       final directory = await getTemporaryDirectory();
-      final targetPath = '${directory.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final targetPath =
+          '${directory.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
       final result = await FlutterImageCompress.compressAndGetFile(
         imageFile.absolute.path,
@@ -134,7 +135,8 @@ class ImageUploadService {
   }) async {
     try {
       final directory = await getTemporaryDirectory();
-      final targetPath = '${directory.path}/resized_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final targetPath =
+          '${directory.path}/resized_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
       final result = await FlutterImageCompress.compressAndGetFile(
         imageFile.absolute.path,
@@ -219,10 +221,7 @@ class ImageSize {
   final int width;
   final int height;
 
-  const ImageSize({
-    required this.width,
-    required this.height,
-  });
+  const ImageSize({required this.width, required this.height});
 
   /// アスペクト比
   double get aspectRatio => width / height;
@@ -240,24 +239,25 @@ class ImagePickerDialog {
   static Future<ImageSource?> show(BuildContext context) async {
     return await showDialog<ImageSource>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('画像を選択'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('ギャラリーから選択'),
-              onTap: () => Navigator.of(context).pop(ImageSource.gallery),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('画像を選択'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.photo_library),
+                  title: const Text('ギャラリーから選択'),
+                  onTap: () => Navigator.of(context).pop(ImageSource.gallery),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.camera_alt),
+                  title: const Text('カメラで撮影'),
+                  onTap: () => Navigator.of(context).pop(ImageSource.camera),
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('カメラで撮影'),
-              onTap: () => Navigator.of(context).pop(ImageSource.camera),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 }
@@ -340,7 +340,8 @@ class ImageValidator {
     if (!validateFileSize(file, config.maxFileSizeBytes)) {
       return ImageValidationResult(
         isValid: false,
-        error: 'ファイルサイズが大きすぎます（最大: ${config.maxFileSizeBytes ~/ (1024 * 1024)}MB）',
+        error:
+            'ファイルサイズが大きすぎます（最大: ${config.maxFileSizeBytes ~/ (1024 * 1024)}MB）',
       );
     }
 
@@ -373,10 +374,7 @@ class ImageValidationResult {
   final bool isValid;
   final String? error;
 
-  const ImageValidationResult({
-    required this.isValid,
-    this.error,
-  });
+  const ImageValidationResult({required this.isValid, this.error});
 }
 
 /// 画像アップロード進捗
@@ -384,10 +382,7 @@ class ImageUploadProgress {
   final double progress;
   final ImageUploadStage stage;
 
-  const ImageUploadProgress({
-    required this.progress,
-    required this.stage,
-  });
+  const ImageUploadProgress({required this.progress, required this.stage});
 
   /// 完了したかどうか
   bool get isComplete => progress >= 1.0;
