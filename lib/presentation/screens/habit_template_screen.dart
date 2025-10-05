@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../core/templates/habit_templates.dart';
+import '../routing/navigation_extensions.dart';
 import '../theme/app_theme.dart';
 
 /// 習慣テンプレート選択画面
@@ -35,7 +35,7 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () => context.safePop(),
         ),
         backgroundColor: tokens.background.withOpacity(0.9),
         elevation: 0,
@@ -101,8 +101,8 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
       builder: (context) => _TemplateDetailSheet(
         template: template,
         onUse: () {
-          context.pop(); // シートを閉じる
-          context.pop(template); // テンプレートを返す
+          context.safePop(); // シートを閉じる
+          context.safePop(template); // テンプレートを返す
         },
       ),
     );

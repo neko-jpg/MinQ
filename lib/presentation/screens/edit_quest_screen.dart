@@ -2,12 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:minq/core/reminders/multiple_reminder_service.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class EditQuestScreen extends ConsumerStatefulWidget {
@@ -107,12 +107,12 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
         });
       } else if (mounted) {
         FeedbackMessenger.showErrorSnackBar(context, 'クエストが見つかりませんでした。');
-        context.pop();
+        context.safePop();
       }
     } catch (e) {
       if (mounted) {
         FeedbackMessenger.showErrorSnackBar(context, 'クエストの読み込みに失敗しました。');
-        context.pop();
+        context.safePop();
       }
     }
   }
@@ -280,7 +280,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
   Future<void> _handleBackRequest() async {
     final shouldLeave = await _confirmDiscardChanges();
     if (shouldLeave && mounted) {
-      context.pop();
+      context.safePop();
     }
   }
 
@@ -353,7 +353,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
 
     if (mounted) {
       FeedbackMessenger.showSuccessToast(context, '習慣を更新しました！');
-      context.pop();
+      context.safePop();
     }
   }
 
@@ -388,7 +388,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
 
       if (mounted) {
         FeedbackMessenger.showSuccessToast(context, '習慣を削除しました');
-        context.pop();
+        context.safePop();
       }
     }
   }
@@ -412,7 +412,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
         }
         final shouldLeave = await _confirmDiscardChanges();
         if (shouldLeave && mounted) {
-          context.pop();
+          context.safePop();
         }
       },
       child: Scaffold(
