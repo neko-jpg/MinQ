@@ -44,21 +44,24 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
   String? _originalContactLink;
 
   bool get _reduceMotion =>
-      WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.disableAnimations;
+      WidgetsBinding
+          .instance
+          .platformDispatcher
+          .accessibilityFeatures
+          .disableAnimations;
 
   bool get _isLastStep => _currentStep == _stepTitles.length - 1;
 
   bool get _hasUnsavedChanges {
     if (_originalQuest == null) return false;
-    
+
     return _titleController.text.trim() != _originalQuest!.title ||
         _selectedIconKey != _originalQuest!.iconKey ||
         _isTimeGoal != (_originalQuest!.estimatedMinutes > 0) ||
         (_isTimeGoal &&
             int.tryParse(_goalValueController.text) !=
                 _originalQuest!.estimatedMinutes) ||
-        _contactLinkController.text.trim() !=
-            (_originalContactLink ?? '');
+        _contactLinkController.text.trim() != (_originalContactLink ?? '');
   }
 
   @override
@@ -76,33 +79,29 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
     try {
       final quest = await ref.read(questByIdProvider(widget.questId).future);
       if (quest != null && mounted) {
-        final link =
-            await ref.read(contactLinkRepositoryProvider).getLink(widget.questId);
+        final link = await ref
+            .read(contactLinkRepositoryProvider)
+            .getLink(widget.questId);
         setState(() {
           _originalQuest = quest;
           _titleController.text = quest.title;
           _selectedIconKey = quest.iconKey ?? 'default';
           _isTimeGoal = quest.estimatedMinutes > 0;
-          _goalValueController.text = quest.estimatedMinutes > 0
-              ? quest.estimatedMinutes.toString()
-              : '10';
+          _goalValueController.text =
+              quest.estimatedMinutes > 0
+                  ? quest.estimatedMinutes.toString()
+                  : '10';
           _originalContactLink = link;
           _contactLinkController.text = link ?? '';
           _isLoading = false;
         });
       } else if (mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          'クエストが見つかりませんでした。',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, 'クエストが見つかりませんでした。');
         context.pop();
       }
     } catch (e) {
       if (mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          'クエストの読み込みに失敗しました。',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, 'クエストの読み込みに失敗しました。');
         context.pop();
       }
     }
@@ -158,18 +157,16 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
 
     final uid = ref.read(uidProvider);
     if (uid == null || uid.isEmpty) {
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        'ユーザーがサインインしていません。',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'ユーザーがサインインしていません。');
       return;
     }
 
-    final updatedQuest = _originalQuest!
-      ..title = _titleController.text
-      ..estimatedMinutes =
-          _isTimeGoal ? (int.tryParse(_goalValueController.text) ?? 0) : 0
-      ..iconKey = _selectedIconKey;
+    final updatedQuest =
+        _originalQuest!
+          ..title = _titleController.text
+          ..estimatedMinutes =
+              _isTimeGoal ? (int.tryParse(_goalValueController.text) ?? 0) : 0
+          ..iconKey = _selectedIconKey;
 
     await ref.read(questRepositoryProvider).updateQuest(updatedQuest);
 
@@ -187,8 +184,9 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
     if (_isReminderOn) {
       try {
         final notificationService = ref.read(notificationServiceProvider);
-        final timeString = '${_reminderTime.hour.toString().padLeft(2, '0')}:${_reminderTime.minute.toString().padLeft(2, '0')}';
-        
+        final timeString =
+            '${_reminderTime.hour.toString().padLeft(2, '0')}:${_reminderTime.minute.toString().padLeft(2, '0')}';
+
         final userRepository = ref.read(userRepositoryProvider);
         final user = await userRepository.getUserById(uid);
         if (user != null) {
@@ -197,7 +195,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
             updatedTimes.add(timeString);
             user.notificationTimes = updatedTimes;
             await userRepository.saveLocalUser(user);
-            
+
             // Reschedule all notifications
             await notificationService.scheduleRecurringReminders(updatedTimes);
           }
@@ -208,10 +206,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
     }
 
     if (mounted) {
-      FeedbackMessenger.showSuccessToast(
-        context,
-        '習慣を更新しました！',
-      );
+      FeedbackMessenger.showSuccessToast(context, '習慣を更新しました！');
       context.pop();
     }
   }
@@ -221,21 +216,22 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
 
     final shouldDelete = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('習慣を削除'),
-        content: Text('「${_originalQuest!.title}」を削除しますか？この操作は取り消せません。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('習慣を削除'),
+            content: Text('「${_originalQuest!.title}」を削除しますか？この操作は取り消せません。'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                child: const Text('削除'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('削除'),
-          ),
-        ],
-      ),
     );
 
     if (shouldDelete == true) {
@@ -245,10 +241,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
       await ref.read(questRepositoryProvider).deleteQuest(_originalQuest!.id);
 
       if (mounted) {
-        FeedbackMessenger.showSuccessToast(
-          context,
-          '習慣を削除しました',
-        );
+        FeedbackMessenger.showSuccessToast(context, '習慣を削除しました');
         context.pop();
       }
     }
@@ -286,10 +279,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _Header(
-                    onBack: _handleBackRequest,
-                    onDelete: _deleteQuest,
-                  ),
+                  _Header(onBack: _handleBackRequest, onDelete: _deleteQuest),
                   SizedBox(height: tokens.spacing(4)),
                   _StepIndicator(
                     currentStep: _currentStep,
@@ -313,9 +303,10 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
                   _StepperActions(
                     currentStep: _currentStep,
                     totalSteps: _stepTitles.length,
-                    onPrevious: _currentStep > 0
-                        ? () async => await _goToStep(_currentStep - 1)
-                        : null,
+                    onPrevious:
+                        _currentStep > 0
+                            ? () async => await _goToStep(_currentStep - 1)
+                            : null,
                     onNext: () async {
                       if (_isLastStep) {
                         await _updateQuest();
@@ -412,10 +403,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({
-    required this.onBack,
-    required this.onDelete,
-  });
+  const _Header({required this.onBack, required this.onDelete});
 
   final VoidCallback onBack;
   final VoidCallback onDelete;
@@ -425,10 +413,7 @@ class _Header extends StatelessWidget {
     final tokens = context.tokens;
     return Row(
       children: [
-        IconButton(
-          onPressed: onBack,
-          icon: const Icon(Icons.arrow_back),
-        ),
+        IconButton(onPressed: onBack, icon: const Icon(Icons.arrow_back)),
         SizedBox(width: tokens.spacing(2)),
         Expanded(
           child: Text(
@@ -442,9 +427,7 @@ class _Header extends StatelessWidget {
         IconButton(
           onPressed: onDelete,
           icon: const Icon(Icons.delete_outline),
-          style: IconButton.styleFrom(
-            foregroundColor: tokens.accentError,
-          ),
+          style: IconButton.styleFrom(foregroundColor: tokens.accentError),
         ),
       ],
     );
@@ -599,8 +582,9 @@ class _HabitNameInput extends StatelessWidget {
         SizedBox(height: tokens.spacing(2)),
         TextFormField(
           controller: controller,
-          validator: (String? value) =>
-              value?.trim().isEmpty == true ? '習慣名を入力してください' : null,
+          validator:
+              (String? value) =>
+                  value?.trim().isEmpty == true ? '習慣名を入力してください' : null,
           decoration: InputDecoration(
             hintText: '例: 朝のランニング',
             border: OutlineInputBorder(borderRadius: tokens.cornerLarge()),
@@ -663,36 +647,120 @@ class _IconSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final List<String> iconKeys = ['spa', 'fitness_center', 'book', 'music_note', 'palette'];
-    
+    final icons = questIconCatalog.take(12).toList();
+    final selectedDefinition = questIconByKey(selectedIconKey);
+    if (selectedDefinition != null &&
+        icons.every((definition) => definition.key != selectedDefinition.key)) {
+      icons.insert(0, selectedDefinition);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('アイコン', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text(
+          'アイコン',
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
         SizedBox(height: tokens.spacing(2)),
         Wrap(
-          spacing: tokens.spacing(2),
-          children: iconKeys.map((iconKey) {
-            final isSelected = iconKey == selectedIconKey;
-            return GestureDetector(
-              onTap: () => onIconSelected(iconKey),
-              child: Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: isSelected ? tokens.brandPrimary : tokens.surface,
-                  border: Border.all(color: tokens.border),
-                  borderRadius: tokens.cornerMedium(),
-                ),
-                child: Icon(
-                  iconDataForKey(iconKey),
-                  color: isSelected ? Colors.white : tokens.textPrimary,
-                ),
-              ),
-            );
-          }).toList(),
+          spacing: tokens.spacing(3),
+          runSpacing: tokens.spacing(3),
+          children:
+              icons
+                  .map(
+                    (definition) => _IconChoice(
+                      definition: definition,
+                      isSelected: definition.key == selectedIconKey,
+                      onSelected: () => onIconSelected(definition.key),
+                    ),
+                  )
+                  .toList(),
         ),
       ],
+    );
+  }
+}
+
+class _IconChoice extends StatelessWidget {
+  const _IconChoice({
+    required this.definition,
+    required this.isSelected,
+    required this.onSelected,
+  });
+
+  final QuestIconDefinition definition;
+  final bool isSelected;
+  final VoidCallback onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final backgroundColor =
+        isSelected ? tokens.brandPrimary.withOpacity(0.12) : tokens.surface;
+    final borderColor = isSelected ? tokens.brandPrimary : tokens.border;
+    final iconColor = isSelected ? tokens.brandPrimary : tokens.textPrimary;
+    final textColor = isSelected ? tokens.brandPrimary : tokens.textMuted;
+
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: definition.label,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: tokens.cornerLarge(),
+        child: InkWell(
+          onTap: onSelected,
+          borderRadius: tokens.cornerLarge(),
+          child: AnimatedContainer(
+            duration: tokens.getAnimationDuration(
+              context,
+              const Duration(milliseconds: 200),
+            ),
+            curve: tokens.easeInOutCubic,
+            width: 108,
+            padding: EdgeInsets.symmetric(
+              vertical: tokens.spacing(3),
+              horizontal: tokens.spacing(3),
+            ),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: tokens.cornerLarge(),
+              border: Border.all(color: borderColor, width: isSelected ? 2 : 1),
+              boxShadow:
+                  isSelected
+                      ? [
+                        BoxShadow(
+                          color: tokens.brandPrimary.withOpacity(0.2),
+                          blurRadius: 14,
+                          offset: const Offset(0, 6),
+                        ),
+                      ]
+                      : [],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  definition.icon,
+                  color: iconColor,
+                  size: tokens.spacing(6),
+                ),
+                SizedBox(height: tokens.spacing(2)),
+                Text(
+                  definition.label,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: tokens.bodySmall.copyWith(
+                    color: textColor,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -731,10 +799,7 @@ class _GoalTypeSelector extends StatelessWidget {
 }
 
 class _DaySelector extends StatelessWidget {
-  const _DaySelector({
-    required this.selectedDays,
-    required this.onDaysChanged,
-  });
+  const _DaySelector({required this.selectedDays, required this.onDaysChanged});
 
   final Set<int> selectedDays;
   final ValueChanged<Set<int>> onDaysChanged;
@@ -743,11 +808,14 @@ class _DaySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     const List<String> days = <String>['月', '火', '水', '木', '金', '土', '日'];
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('実行する曜日', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text(
+          '実行する曜日',
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
         SizedBox(height: tokens.spacing(2)),
         Wrap(
           spacing: tokens.spacing(2),
@@ -808,7 +876,10 @@ class _ReminderSettings extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('リマインダー', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text(
+          'リマインダー',
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
         SizedBox(height: tokens.spacing(2)),
         SwitchListTile(
           title: const Text('リマインダーを有効にする'),
@@ -819,7 +890,9 @@ class _ReminderSettings extends StatelessWidget {
           SizedBox(height: tokens.spacing(2)),
           ListTile(
             title: const Text('通知時刻'),
-            subtitle: Text('${reminderTime.hour.toString().padLeft(2, '0')}:${reminderTime.minute.toString().padLeft(2, '0')}'),
+            subtitle: Text(
+              '${reminderTime.hour.toString().padLeft(2, '0')}:${reminderTime.minute.toString().padLeft(2, '0')}',
+            ),
             trailing: const Icon(Icons.access_time),
             onTap: () async {
               final time = await showTimePicker(

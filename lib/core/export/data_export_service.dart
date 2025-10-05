@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:archive/archive.dart';
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -77,7 +79,8 @@ class DataExportService {
     required Map<String, dynamic> allData,
     String? filename,
   }) async {
-    final name = filename ?? 'minq_backup_${DateTime.now().millisecondsSinceEpoch}';
+    final name =
+        filename ?? 'minq_backup_${DateTime.now().millisecondsSinceEpoch}';
     return await _exportAsJson(allData, '$name.json');
   }
 
@@ -99,7 +102,50 @@ class DataExportService {
   ) async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/$filename');
+    await file.writeAsString(_buildQuestsCsv(quests));
+    return file;
+  }
 
+  /// ログをCSV形式でエクスポート
+  Future<File> _exportLogsAsCsv(
+    List<Map<String, dynamic>> logs,
+    String filename,
+  ) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/$filename');
+    await file.writeAsString(_buildLogsCsv(logs));
+    return file;
+  }
+
+  /// 統計をCSV形式でエクスポート
+  Future<File> _exportStatsAsCsv(
+    Map<String, dynamic> stats,
+    String filename,
+  ) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/$filename');
+    await file.writeAsString(_buildStatsCsv(stats));
+    return file;
+  }
+
+  /// テキスト形式でエクスポート
+  Future<File> _exportAsText(dynamic data, String filename) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/$filename');
+    await file.writeAsString(_buildText(data));
+    return file;
+  }
+
+  /// アイテムをフォーマット
+  String _formatItem(Map<String, dynamic> item) {
+    final buffer = StringBuffer();
+    item.forEach((key, value) {
+      buffer.writeln('$key: $value');
+    });
+    return buffer.toString();
+  }
+
+  String _buildQuestsCsv(List<Map<String, dynamic>> quests) {
     final rows = <List<dynamic>>[
       ['ID', 'タイトル', 'カテゴリー', '作成日', '完了回数', 'アクティブ'],
     ];
@@ -115,20 +161,10 @@ class DataExportService {
       ]);
     }
 
-    final csv = const ListToCsvConverter().convert(rows);
-    await file.writeAsString(csv);
-
-    return file;
+    return const ListToCsvConverter().convert(rows);
   }
 
-  /// ログをCSV形式でエクスポート
-  Future<File> _exportLogsAsCsv(
-    List<Map<String, dynamic>> logs,
-    String filename,
-  ) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/$filename');
-
+  String _buildLogsCsv(List<Map<String, dynamic>> logs) {
     final rows = <List<dynamic>>[
       ['ID', 'クエストID', '完了日時', 'メモ'],
     ];
@@ -142,44 +178,43 @@ class DataExportService {
       ]);
     }
 
-    final csv = const ListToCsvConverter().convert(rows);
-    await file.writeAsString(csv);
-
-    return file;
+    return const ListToCsvConverter().convert(rows);
   }
 
-  /// 統計をCSV形式でエクスポート
-  Future<File> _exportStatsAsCsv(
-    Map<String, dynamic> stats,
-    String filename,
-  ) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/$filename');
-
+  String _buildStatsCsv(Map<String, dynamic> stats) {
     final rows = <List<dynamic>>[
       ['指標', '値'],
     ];
 
     stats.forEach((key, value) {
-      rows.add([key, value]);
+      if (key == 'heatmap' && value is Map) {
+        rows.add(['heatmap', '日付別完了数']);
+        final entries =
+            value.entries
+                .map((entry) => MapEntry(entry.key.toString(), entry.value))
+                .toList()
+              ..sort((a, b) => a.key.compareTo(b.key));
+        for (final entry in entries) {
+          rows.add(['  ${entry.key}', entry.value]);
+        }
+      } else {
+        rows.add([key, value]);
+      }
     });
 
-    final csv = const ListToCsvConverter().convert(rows);
-    await file.writeAsString(csv);
-
-    return file;
+    return const ListToCsvConverter().convert(rows);
   }
 
-  /// テキスト形式でエクスポート
-  Future<File> _exportAsText(dynamic data, String filename) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/$filename');
-
+  String _buildText(dynamic data) {
     final buffer = StringBuffer();
 
     if (data is List) {
       for (final item in data) {
-        buffer.writeln(_formatItem(item));
+        if (item is Map) {
+          buffer.writeln(_formatItem(Map<String, dynamic>.from(item as Map)));
+        } else {
+          buffer.writeln(item.toString());
+        }
         buffer.writeln('---');
       }
     } else if (data is Map) {
@@ -190,26 +225,62 @@ class DataExportService {
       buffer.writeln(data.toString());
     }
 
-    await file.writeAsString(buffer.toString());
-
-    return file;
+    return buffer.toString();
   }
 
-  /// アイテムをフォーマット
-  String _formatItem(Map<String, dynamic> item) {
-    final buffer = StringBuffer();
-    item.forEach((key, value) {
-      buffer.writeln('$key: $value');
-    });
-    return buffer.toString();
+  /// すべてのデータをZipにまとめてエクスポート
+  Future<File> exportDataZip({
+    required List<Map<String, dynamic>> quests,
+    required List<Map<String, dynamic>> logs,
+    required Map<String, dynamic> stats,
+    Map<String, dynamic>? metadata,
+    String? filename,
+  }) async {
+    final archive = Archive();
+    final generatedAt = DateTime.now();
+    final manifest = <String, dynamic>{
+      'generatedAt': generatedAt.toIso8601String(),
+      'version': 1,
+      'counts': {'quests': quests.length, 'logs': logs.length},
+      if (metadata != null) 'metadata': metadata,
+    };
+
+    void addJsonFile(String name, dynamic content) {
+      final bytes = utf8.encode(
+        const JsonEncoder.withIndent('  ').convert(content),
+      );
+      archive.addFile(ArchiveFile(name, bytes.length, bytes));
+    }
+
+    void addTextFile(String name, String content) {
+      final bytes = utf8.encode(content);
+      archive.addFile(ArchiveFile(name, bytes.length, bytes));
+    }
+
+    addJsonFile('manifest.json', manifest);
+    addJsonFile('quests.json', quests);
+    addTextFile('quests.csv', _buildQuestsCsv(quests));
+    addJsonFile('logs.json', logs);
+    addTextFile('logs.csv', _buildLogsCsv(logs));
+    addJsonFile('stats.json', stats);
+    addTextFile('stats.csv', _buildStatsCsv(stats));
+
+    final zipBytes = ZipEncoder().encode(archive);
+    if (zipBytes == null) {
+      throw Exception('Failed to encode export archive');
+    }
+
+    final directory = await getApplicationDocumentsDirectory();
+    final exportName =
+        filename ?? 'minq_export_${generatedAt.millisecondsSinceEpoch}.zip';
+    final file = File('${directory.path}/$exportName');
+    await file.writeAsBytes(zipBytes, flush: true);
+    return file;
   }
 
   /// ファイルを共有
   Future<void> shareFile(File file) async {
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      subject: 'MiniQuest データエクスポート',
-    );
+    await Share.shareXFiles([XFile(file.path)], subject: 'MiniQuest データエクスポート');
   }
 }
 
@@ -397,8 +468,8 @@ class BackupManager {
   BackupManager({
     required DataExportService exportService,
     required DataImportService importService,
-  })  : _exportService = exportService,
-        _importService = importService;
+  }) : _exportService = exportService,
+       _importService = importService;
 
   /// バックアップを作成
   Future<File> createBackup(Map<String, dynamic> data) async {
