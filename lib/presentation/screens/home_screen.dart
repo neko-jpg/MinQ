@@ -27,7 +27,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _syncStatusSubscription = ref.listenManual<SyncStatus>(syncStatusProvider, (previous, next) {
+    _syncStatusSubscription = ref.listenManual<SyncStatus>(syncStatusProvider, (
+      previous,
+      next,
+    ) {
       if (!mounted) return;
       if (next.showBanner && next.bannerMessage != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -60,8 +63,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final bool isLoading = homeDataAsync.isLoading && !hasCachedContent;
     final bool hasError = homeDataAsync.hasError && !hasCachedContent;
 
+    final mediaQuery = MediaQuery.of(context);
+
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
             const maxContentWidth = 640.0;
@@ -70,16 +76,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             if (isLoading) {
               child = const _HomeScreenSkeleton();
             } else if (hasError) {
-              child = const Center(
-                child: Text('データの読み込みに失敗しました。'),
-              );
+              child = const Center(child: Text('データの読み込みに失敗しました。'));
             } else {
               final tokens = context.tokens;
               final HomeViewData content = data ?? HomeViewData.empty();
               child = ListView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing(4),
-                  vertical: tokens.spacing(6),
+                padding: EdgeInsets.only(
+                  left: tokens.spacing(4),
+                  right: tokens.spacing(4),
+                  top: tokens.spacing(6),
+                  bottom:
+                      tokens.spacing(6) +
+                      mediaQuery.padding.bottom +
+                      kBottomNavigationBarHeight,
                 ),
                 children: [
                   const _Header(),
@@ -138,10 +147,7 @@ class _HomeScreenSkeleton extends StatelessWidget {
                 ),
               ),
               SizedBox(height: tokens.spacing(6)),
-              MinqSkeleton(
-                height: 180,
-                borderRadius: tokens.cornerXLarge(),
-              ),
+              MinqSkeleton(height: 180, borderRadius: tokens.cornerXLarge()),
               SizedBox(height: tokens.spacing(6)),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -186,10 +192,7 @@ class _HomeScreenSkeleton extends StatelessWidget {
                 },
               ),
               SizedBox(height: tokens.spacing(8)),
-              MinqSkeleton(
-                height: 160,
-                borderRadius: tokens.cornerLarge(),
-              ),
+              MinqSkeleton(height: 160, borderRadius: tokens.cornerLarge()),
             ],
           ),
         ),
@@ -351,7 +354,9 @@ class _FocusHeroCard extends ConsumerWidget {
                     children: [
                       Text(
                         '目安時間',
-                        style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                        style: tokens.bodySmall.copyWith(
+                          color: tokens.textMuted,
+                        ),
                       ),
                       SizedBox(height: tokens.spacing(2)),
                       Text(
@@ -365,7 +370,9 @@ class _FocusHeroCard extends ConsumerWidget {
                         hasCompletedToday
                             ? '今日はすでに達成できています。引き続き習慣を続けましょう。'
                             : 'まだ記録がありません。今すぐ行動して連続日数を伸ばしましょう。',
-                        style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                        style: tokens.bodyMedium.copyWith(
+                          color: tokens.textMuted,
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -378,7 +385,7 @@ class _FocusHeroCard extends ConsumerWidget {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () => navigation.goToQuests(),
+                onPressed: () => navigation.goToRecord(focusQuest.id),
                 child: const Text('もっと見る'),
               ),
             ),
@@ -388,6 +395,7 @@ class _FocusHeroCard extends ConsumerWidget {
     );
   }
 }
+
 class _HomeHighlights extends StatelessWidget {
   const _HomeHighlights({required this.data});
 
@@ -402,10 +410,7 @@ class _HomeHighlights extends StatelessWidget {
         if (constraints.maxWidth < 560) {
           return Column(
             children: [
-              _MiniQuestsCard(
-                quests: data.quests,
-                recentLogs: data.recentLogs,
-              ),
+              _MiniQuestsCard(quests: data.quests, recentLogs: data.recentLogs),
               SizedBox(height: spacing),
               _StatsSnapshotCard(data: data),
             ],
@@ -494,7 +499,9 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
               children: [
                 Text(
                   'あなたのミニクエスト',
-                  style: tokens.titleSmall.copyWith(fontWeight: FontWeight.bold),
+                  style: tokens.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 IconButton.filled(
                   onPressed: () => navigation.goToCreateQuest(),
@@ -515,7 +522,8 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: visibleCount,
-                separatorBuilder: (_, __) => SizedBox(height: tokens.spacing(2)),
+                separatorBuilder:
+                    (_, __) => SizedBox(height: tokens.spacing(2)),
                 itemBuilder: (context, index) {
                   final quest = quests[index];
                   return _QuestSummaryRow(
@@ -562,10 +570,7 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
 }
 
 class _QuestSummaryRow extends StatelessWidget {
-  const _QuestSummaryRow({
-    required this.quest,
-    required this.isCompleted,
-  });
+  const _QuestSummaryRow({required this.quest, required this.isCompleted});
 
   final HomeQuestItem quest;
   final bool isCompleted;
@@ -607,14 +612,16 @@ class _QuestSummaryRow extends StatelessWidget {
               color: isCompleted ? tokens.brandPrimary : tokens.border,
             ),
           ),
-          child: isCompleted
-              ? const Icon(Icons.check, color: Colors.white, size: 18)
-              : null,
+          child:
+              isCompleted
+                  ? const Icon(Icons.check, color: Colors.white, size: 18)
+                  : null,
         ),
       ],
     );
   }
 }
+
 class _StatsSnapshotCard extends StatelessWidget {
   const _StatsSnapshotCard({required this.data});
 
@@ -732,18 +739,25 @@ class _StatCircle extends StatelessWidget {
       children: [
         _ProgressRing(
           progress: data.value,
-          child: hasProgress
-              ? Center(
-                  child: Text(
-                    data.stat.isEmpty ? '--' : data.stat,
-                    style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                )
-              : const SizedBox.shrink(),
+          child:
+              hasProgress
+                  ? Center(
+                    child: Text(
+                      data.stat.isEmpty ? '--' : data.stat,
+                      style: tokens.titleLarge.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                  : const SizedBox.shrink(),
           emptyChild: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(data.emptyIcon, size: tokens.spacing(6), color: tokens.textMuted),
+              Icon(
+                data.emptyIcon,
+                size: tokens.spacing(6),
+                color: tokens.textMuted,
+              ),
               SizedBox(height: tokens.spacing(2)),
               Text(
                 data.emptyLabel,
@@ -807,6 +821,7 @@ class _ProgressRing extends StatelessWidget {
     );
   }
 }
+
 class _WeeklyStreakSection extends StatelessWidget {
   const _WeeklyStreakSection({required this.data});
 
@@ -885,7 +900,8 @@ class _DayItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final backgroundColor = isCompleted ? tokens.brandPrimary : Colors.transparent;
+    final backgroundColor =
+        isCompleted ? tokens.brandPrimary : Colors.transparent;
     final borderColor = isCompleted ? tokens.brandPrimary : tokens.border;
 
     return Column(
@@ -907,9 +923,10 @@ class _DayItem extends StatelessWidget {
             color: backgroundColor,
             border: Border.all(color: borderColor, width: 2),
           ),
-          child: isCompleted
-              ? const Icon(Icons.check, color: Colors.white, size: 18)
-              : null,
+          child:
+              isCompleted
+                  ? const Icon(Icons.check, color: Colors.white, size: 18)
+                  : null,
         ),
       ],
     );
