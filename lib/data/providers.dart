@@ -19,6 +19,7 @@ import 'package:minq/core/sharing/ai_share_banner_service.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
 import 'package:minq/core/sharing/share_service.dart';
 import 'package:minq/core/logging/app_logger.dart';
+import 'package:minq/core/reminders/multiple_reminder_service.dart';
 import 'package:minq/data/repositories/community_board_repository.dart';
 import 'package:minq/data/repositories/contact_link_repository.dart';
 import 'package:minq/data/repositories/firebase_auth_repository.dart';
@@ -141,6 +142,13 @@ final stripeBillingServiceProvider = Provider<StripeBillingService?>((ref) {
 final notificationServiceProvider = Provider<NotificationService>(
   (ref) => NotificationService(),
 );
+
+final multipleReminderServiceProvider = Provider<MultipleReminderService>((
+  ref,
+) {
+  final firestore = ref.watch(firestoreProvider);
+  return MultipleReminderService(firestore: firestore);
+});
 
 final notificationPermissionProvider = StateProvider<bool>((ref) => false);
 final timeDriftDetectedProvider = StateProvider<bool>((ref) => false);
