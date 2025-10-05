@@ -1,16 +1,15 @@
 # Plan
 
 ## Scope
-- Replace all hard-coded color literals with the design token palette so light/dark themes inherit from a single source of truth.
-- Align role-based color usage (primary, surface, border, etc.) with the definitions in `color.md` across shared components and themes.
-- Implement light and dark theme configurations that respect token-specific behaviors such as shadows vs. borders while keeping existing UI stable.
-- Ensure the published color definitions in `color.md` remain the canonical documentation by syncing any new tokens or theme notes there if needed.
+- Close the remaining items in `task.md` by addressing outstanding navigation polish and ensuring documentation reflects the completed state.
+- Implement the missing Welcome screen behavior so its primary and secondary CTAs route through the shared navigation use case and provide an explicit back affordance.
+- Update `task.md` checkboxes once functionality is in place to clearly communicate completion.
 
 ## Steps
-1. Audit the design system layer (`lib/core`, `lib/config`, and shared widgets) to locate color token definitions and plan any missing abstractions (e.g., `AppColorScheme`, semantic tokens) needed for the migration.
-2. Implement or extend the color token source (likely under `lib/core/theme` or similar) to expose the palette from `color.md`, including role mapping for both light and dark modes; update ThemeData builders to consume these tokens and express differences like light shadows vs. dark outlines.
-3. Refactor UI components and styles to remove inline color literals, replacing them with the new semantic tokens or theme lookups so all primary/surface/border usage matches the documented roles.
-4. Verify the entire app builds under both themes by running the required formatting, analysis, and test commands; document any unavoidable gaps in `NEXT_TASKS.md`.
+1. Review `task.md` to confirm which checklist entries remain unchecked and identify the code areas involved (notably the Welcome screen navigation flow).
+2. Refactor `lib/presentation/welcome/welcome_screen.dart` to consume `navigationUseCaseProvider`, wire the buttons to the onboarding/login routes, and surface an always-available back button that safely falls back when the navigator stack cannot pop.
+3. Exercise the updated screen locally (including the fallback back-button path) and update `task.md` to mark the covered tasks as completed.
+4. Run the formatting, static analysis, and test commands required by the repository guidelines.
 
 ## Testing
 - `flutter pub get`

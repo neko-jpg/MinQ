@@ -1,27 +1,47 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final navigation = ref.read(navigationUseCaseProvider);
 
     return Scaffold(
+      backgroundColor: tokens.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: tokens.textPrimary),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onPressed: () {
+            final navigator = Navigator.of(context);
+            if (navigator.canPop()) {
+              navigator.pop();
+            } else {
+              navigation.goToOnboarding();
+            }
+          },
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24.0),
+                padding: EdgeInsets.all(tokens.spacing(6)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 40),
+                    SizedBox(height: tokens.spacing(10)),
                     Container(
                       width: 96,
                       height: 96,
@@ -35,7 +55,7 @@ class WelcomeScreen extends StatelessWidget {
                         size: 56,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: tokens.spacing(6)),
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
@@ -43,12 +63,10 @@ class WelcomeScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: tokens.textPrimary,
                         ),
-                        children: [
-                          const TextSpan(text: "MinQへようこそ"),
-                        ],
+                        children: const [TextSpan(text: "MinQへようこそ")],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: tokens.spacing(4)),
                     Text(
                       "ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。",
                       textAlign: TextAlign.center,
@@ -56,30 +74,34 @@ class WelcomeScreen extends StatelessWidget {
                         color: tokens.textSecondary,
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: tokens.spacing(8)),
                     _FeatureCard(
                       icon: Icons.touch_app,
                       title: "3タップで習慣化",
                       description: "新しい習慣をたった3タップで始められます。とてもシンプルです。",
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: tokens.spacing(4)),
                     _FeatureCard(
                       icon: Icons.groups,
                       title: "匿名ペア",
                       description: "パートナーから、匿名で説明責任とサポートを得られます。",
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: tokens.spacing(4)),
                     _FeatureCard(
                       icon: Icons.explore,
                       title: "ミニクエスト",
                       description: "あなたの目標を、達成感のある小さなクエストに変えましょう。",
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: tokens.spacing(6)),
                   ],
                 ),
               ),
             ),
-            _BottomNavigation(textTheme: textTheme),
+            _BottomNavigation(
+              textTheme: textTheme,
+              onGetStarted: navigation.goToOnboarding,
+              onLogin: navigation.goToLogin,
+            ),
           ],
         ),
       ),
@@ -101,7 +123,7 @@ class _FeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
@@ -151,46 +173,52 @@ class _FeatureCard extends StatelessWidget {
 class _BottomNavigation extends StatelessWidget {
   const _BottomNavigation({
     required this.textTheme,
+    required this.onGetStarted,
+    required this.onLogin,
   });
 
   final TextTheme textTheme;
+  final VoidCallback onGetStarted;
+  final VoidCallback onLogin;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Padding(
-      padding: const EdgeInsets.all(16.0).copyWith(top: 8),
+      padding: EdgeInsets.all(
+        tokens.spacing(4),
+      ).copyWith(top: tokens.spacing(2)),
       child: Column(
         children: [
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                // TODO: Implement navigation to home screen
-              },
+            child: FilledButton.icon(
+              onPressed: onGetStarted,
               icon: const Icon(Icons.arrow_forward),
               label: const Text("始める"),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                textStyle: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              style: FilledButton.styleFrom(
+                backgroundColor: tokens.brandPrimary,
+                foregroundColor: tokens.ensureAccessibleOnBackground(
+                  tokens.textPrimary,
+                  tokens.brandPrimary,
+                ),
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing(3)),
+                textStyle: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: tokens.cornerLarge(),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: tokens.spacing(4)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                "すでにアカウントをお持ちですか？",
-                style: textTheme.bodySmall,
-              ),
+              Text("すでにアカウントをお持ちですか？", style: textTheme.bodySmall),
               TextButton(
-                onPressed: () {
-                  // TODO: Implement login navigation
-                },
+                onPressed: onLogin,
                 child: Text(
                   "ログイン",
                   style: textTheme.bodySmall?.copyWith(
