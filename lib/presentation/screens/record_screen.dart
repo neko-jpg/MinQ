@@ -87,7 +87,17 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: Center(
-          child: MinqIconButton(icon: Icons.close, onTap: () => context.pop()),
+          child: MinqIconButton(
+            icon: Icons.close,
+            onTap: () {
+              final navigator = Navigator.of(context);
+              if (navigator.canPop()) {
+                context.pop();
+              } else {
+                ref.read(navigationUseCaseProvider).goHome();
+              }
+            },
+          ),
         ),
       ),
       body:
@@ -279,10 +289,7 @@ class _RecordForm extends ConsumerWidget {
   Future<void> _handlePhotoTap(BuildContext context, WidgetRef ref) async {
     final uid = ref.read(uidProvider);
     if (uid == null || uid.isEmpty) {
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        'サインインしていないため記録できません。',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'サインインしていないため記録できません。');
       onError(RecordErrorType.permissionDenied);
       return;
     }
@@ -291,10 +298,7 @@ class _RecordForm extends ConsumerWidget {
           .read(photoStorageServiceProvider)
           .captureAndSanitize(ownerUid: uid, questId: questId);
       if (!result.hasFile) {
-        FeedbackMessenger.showInfoToast(
-          context,
-          '写真の撮影がキャンセルされました。',
-        );
+        FeedbackMessenger.showInfoToast(context, '写真の撮影がキャンセルされました。');
         return;
       }
 
@@ -303,11 +307,11 @@ class _RecordForm extends ConsumerWidget {
 
       final controller = ref.read(questLogControllerProvider.notifier);
       final success = await controller.recordProgress(
-        questId, 
-        proofValue: result.path, 
+        questId,
+        proofValue: result.path,
         proofType: ProofType.photo,
       );
-      
+
       if (success) {
         onError(RecordErrorType.none);
         ref.read(navigationUseCaseProvider).goToCelebration();
@@ -334,17 +338,20 @@ class _RecordForm extends ConsumerWidget {
     WidgetRef ref,
   ) async {
     final controller = ref.read(questLogControllerProvider.notifier);
-    final success = await controller.recordProgress(questId, proofType: ProofType.check);
-    
+    final success = await controller.recordProgress(
+      questId,
+      proofType: ProofType.check,
+    );
+
     if (success) {
       ref.read(navigationUseCaseProvider).goToCelebration();
       FeedbackManager.questCompleted();
     } else {
       final error = ref.read(questLogControllerProvider).error;
       if (error != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.toString())));
       }
     }
   }
@@ -356,11 +363,9 @@ class _FocusMusicPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final PlayerState? playerState =
-        ref.watch(focusMusicPlayerStateProvider).maybeWhen(
-              data: (state) => state,
-              orElse: () => null,
-            );
+    final PlayerState? playerState = ref
+        .watch(focusMusicPlayerStateProvider)
+        .maybeWhen(data: (state) => state, orElse: () => null);
     final service = ref.watch(focusMusicServiceProvider);
     final currentTrack = service.currentTrack;
     final isPlaying = playerState?.playing == true;
@@ -436,10 +441,7 @@ class _FocusMusicTile extends ConsumerWidget {
         await service.play(track);
       }
     } catch (error) {
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        'BGMの再生に失敗しました。',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'BGMの再生に失敗しました。');
     }
   }
 
@@ -513,9 +515,10 @@ class _FocusMusicTile extends ConsumerWidget {
                         IconButton(
                           tooltip: 'BGMを自動タグ付け',
                           icon: const Icon(Icons.music_note),
-                          onPressed: hasTagging
-                              ? () => _identifyTrack(context, ref)
-                              : null,
+                          onPressed:
+                              hasTagging
+                                  ? () => _identifyTrack(context, ref)
+                                  : null,
                         ),
                       ],
                     ),
