@@ -80,21 +80,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             } else {
               final tokens = context.tokens;
               final HomeViewData content = data ?? HomeViewData.empty();
+              final verticalGap = tokens.spacing(4);
               child = ListView(
                 padding: EdgeInsets.only(
                   left: tokens.spacing(4),
                   right: tokens.spacing(4),
-                  top: tokens.spacing(6),
+                  top: verticalGap,
                   bottom:
-                      tokens.spacing(6) +
+                      tokens.spacing(4) +
                       mediaQuery.padding.bottom +
                       kBottomNavigationBarHeight,
                 ),
                 children: [
                   const _Header(),
-                  SizedBox(height: tokens.spacing(6)),
+                  SizedBox(height: verticalGap),
                   _FocusHeroCard(data: content),
-                  SizedBox(height: tokens.spacing(6)),
+                  SizedBox(height: verticalGap),
                   _HomeHighlights(data: content),
                   SizedBox(height: tokens.spacing(8)),
                   _WeeklyStreakSection(data: content),
@@ -406,30 +407,31 @@ class _HomeHighlights extends StatelessWidget {
     final tokens = context.tokens;
     return LayoutBuilder(
       builder: (context, constraints) {
-        final spacing = tokens.spacing(4);
-        if (constraints.maxWidth < 560) {
+        final horizontalGap = tokens.spacing(4);
+        final isWide = constraints.maxWidth >= 560;
+
+        final cards = <Widget>[
+          _MiniQuestsCard(quests: data.quests, recentLogs: data.recentLogs),
+          _StatsSnapshotCard(data: data),
+        ];
+
+        if (!isWide) {
           return Column(
             children: [
-              _MiniQuestsCard(quests: data.quests, recentLogs: data.recentLogs),
-              SizedBox(height: spacing),
-              _StatsSnapshotCard(data: data),
+              for (int index = 0; index < cards.length; index++) ...[
+                cards[index],
+                if (index < cards.length - 1) SizedBox(height: horizontalGap),
+              ],
             ],
           );
         }
 
-        final cardWidth = (constraints.maxWidth - spacing) / 2;
-        return Wrap(
-          spacing: spacing,
-          runSpacing: spacing,
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: cardWidth,
-              child: _MiniQuestsCard(
-                quests: data.quests,
-                recentLogs: data.recentLogs,
-              ),
-            ),
-            SizedBox(width: cardWidth, child: _StatsSnapshotCard(data: data)),
+            Expanded(child: cards[0]),
+            SizedBox(width: horizontalGap),
+            Expanded(child: cards[1]),
           ],
         );
       },

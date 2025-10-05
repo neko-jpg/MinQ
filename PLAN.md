@@ -1,20 +1,22 @@
 # Plan
 
 ## Scope
-- Add a dedicated profile navigation tile on the settings screen that routes via `NavigationUseCase.goToProfile()` (task.md C.1).
-- Implement the data export button so it gathers quests/logs/statistics, asks `DataExportService` to bundle them into a zip, and opens the share sheet with success/error toasts (task.md C.2).
-- Refresh the quest edit icon selector to present distinguishable silhouettes with clear selected states using design tokens (task.md B.2 "編集画面のアイコン改善").
-- Update the crash recovery screen to stack actions with a FilledButton primary action for restore and an OutlinedButton secondary action (task.md D.1 "復元画面のコントラスト").
-- Hide the crash recovery technical report behind a disclosure control so details are collapsed by default (task.md D.1 "技術メッセージの非表示").
+- Improve home screen progress cards responsiveness by switching between single-column and two-column layouts with consistent card sizing per `task.md` A.1.
+- Normalize spacing within the home screen sections to align with established design tokens (e.g. 8/12/16dp increments) as requested in `task.md` A.1.
+- Ensure terms of service and privacy policy links open bundled Markdown content through the policy viewer so they remain available offline (`task.md` C.2).
+- Update the onboarding/login flow so transitions use push navigation and provide a visible back affordance on the welcome (onboarding) screen (`task.md` D.1).
+- Align primary buttons with design tokens instead of hardcoded black styles, covering the onboarding call-to-action (`task.md` B.2 "真っ黒ボタンの廃止").
 
 ## Steps
-1. Extend the settings screen state to read the navigation use case and wire the profile tile tap handler through it; ensure design tokens remain consistent.
-2. Provide a `DataExportService` via `data/providers.dart`, add a helper on the service to build a zip archive containing JSON/CSV snapshots, and implement the settings export tap handler to fetch repository data, call the service, share the file, and emit toasts while handling loading UI.
-3. Rebuild the quest icon selector using `questIconCatalog`, adding semantic labels, wrap spacing, and selected styling that relies on tokens for color/shape emphasis.
-4. Convert the crash recovery screen into a stateful widget to toggle detail visibility, switch buttons to `FilledButton`/`OutlinedButton`, and add a disclosure control that animates the technical report container.
-5. Cover code paths with unit/widget tests where feasible or rely on existing coverage, then execute formatting, analysis, and `flutter test --coverage` to satisfy CI expectations.
+1. Refactor the home highlights widget to use a `LayoutBuilder` that yields a `GridView`-like two-column arrangement when wide and a single full-width column otherwise, ensuring card widths and heights remain consistent.
+2. Audit the home screen paddings and gaps, replacing ad-hoc `SizedBox` heights with `tokens.spacing` values that correspond to standard 8/12/16dp increments, and adjust card padding accordingly.
+3. Extend the policy document model with optional asset metadata, add Markdown support, and load `assets/legal/*.md` within `PolicyViewerScreen`; register the asset folder and dependency updates in `pubspec.yaml`.
+4. Modify the onboarding screen scaffold to include an `AppBar` with a conditional `BackButton`, switch the CTA buttons to brand-aligned `FilledButton` styles, and invoke push navigation to reach the login screen; expose push navigation via `NavigationUseCase.goToLogin()`.
+5. Ensure the login screen reacts to push navigation by showing a top AppBar with a back button when possible, keeping CTA styling consistent with tokens.
+6. Run formatting, static analysis, and the full Flutter test suite to satisfy the CI gate.
 
 ## Testing
-- `dart format --set-exit-if-changed lib/presentation/screens/settings_screen.dart lib/presentation/screens/crash_recovery_screen.dart lib/presentation/screens/edit_quest_screen.dart lib/core/export/data_export_service.dart`
+- `flutter pub get`
+- `dart format --set-exit-if-changed .`
 - `dart analyze --fatal-infos`
 - `flutter test --coverage`
