@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/content_moderation_service.dart';
-import 'package:minq/presentation/common/security/sensitive_content.dart' as custom;
+import 'package:minq/presentation/common/security/sensitive_content.dart'
+    as custom;
 import 'package:minq/presentation/screens/pair_screen.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/l10n/app_localizations.dart';
@@ -48,35 +49,37 @@ class ProfileSettingScreen extends ConsumerWidget {
       body: custom.SensitiveContent(
         child: userAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, _) => Center(
-            child: Text(
-              'プロフィールの読み込みに失敗しました',
-              style: tokens.bodyMedium.copyWith(color: tokens.accentError),
-            ),
-          ),
-          data: (user) => ListView(
-            padding: const EdgeInsets.all(16.0),
-            children: [
-              _buildProfileHeader(context, ref, user),
-              const SizedBox(height: 24),
-              _buildTags(context, ref, user),
-              const SizedBox(height: 24),
-              _buildStats(context, ref, user),
-              const SizedBox(height: 24),
-              _buildAccountSettings(context, ref, user),
-              const SizedBox(height: 24),
-              _buildSnsShare(context, ref, user),
-              const SizedBox(height: 24),
-              _buildPairInfo(context, ref, user),
-              const SizedBox(height: 24),
-              if (isDummyMode) _buildDummyDataControls(context, ref),
-              if (isDummyMode) const SizedBox(height: 24),
-              _buildOtherSettings(context, ref, user),
-              const SizedBox(height: 24),
-              _buildPremiumFeatures(context),
-              const SizedBox(height: 24),
-            ],
-          ),
+          error:
+              (error, _) => Center(
+                child: Text(
+                  'プロフィールの読み込みに失敗しました',
+                  style: tokens.bodyMedium.copyWith(color: tokens.accentError),
+                ),
+              ),
+          data:
+              (user) => ListView(
+                padding: const EdgeInsets.all(16.0),
+                children: [
+                  _buildProfileHeader(context, ref, user),
+                  const SizedBox(height: 24),
+                  _buildTags(context, ref, user),
+                  const SizedBox(height: 24),
+                  _buildStats(context, ref, user),
+                  const SizedBox(height: 24),
+                  _buildAccountSettings(context, ref, user),
+                  const SizedBox(height: 24),
+                  _buildSnsShare(context, ref, user),
+                  const SizedBox(height: 24),
+                  _buildPairInfo(context, ref, user),
+                  const SizedBox(height: 24),
+                  if (isDummyMode) _buildDummyDataControls(context, ref),
+                  if (isDummyMode) const SizedBox(height: 24),
+                  _buildOtherSettings(context, ref, user),
+                  const SizedBox(height: 24),
+                  _buildPremiumFeatures(context),
+                  const SizedBox(height: 24),
+                ],
+              ),
         ),
       ),
     );
@@ -85,15 +88,17 @@ class ProfileSettingScreen extends ConsumerWidget {
   Widget _buildProfileHeader(BuildContext context, WidgetRef ref, user) {
     final tokens = context.tokens;
     final isDummyMode = ref.watch(dummyDataModeProvider);
-    
+
     // Generate anonymous username if not set
-    final displayName = user?.displayName?.isNotEmpty == true 
-        ? user!.displayName 
-        : ContentModerationService.generateAnonymousUsername();
-    
-    final bio = user?.bio?.isNotEmpty == true 
-        ? user!.bio 
-        : isDummyMode 
+    final displayName =
+        user?.displayName?.isNotEmpty == true
+            ? user!.displayName
+            : ContentModerationService.generateAnonymousUsername();
+
+    final bio =
+        user?.bio?.isNotEmpty == true
+            ? user!.bio
+            : isDummyMode
             ? '自己紹介文がここに入ります。ユーザーの簡単な説明です。'
             : '習慣化を頑張っています！';
 
@@ -107,10 +112,10 @@ class ProfileSettingScreen extends ConsumerWidget {
                 const radius = 48.0;
                 final pixelRatio = MediaQuery.of(context).devicePixelRatio;
                 final cacheDimension = (radius * 2 * pixelRatio).round();
-                
+
                 // Use avatar URL if available, otherwise show default avatar
                 final avatarUrl = user?.avatarUrl;
-                
+
                 if (avatarUrl?.isNotEmpty == true) {
                   return ClipOval(
                     child: Image.network(
@@ -121,7 +126,9 @@ class ProfileSettingScreen extends ConsumerWidget {
                       cacheHeight: cacheDimension,
                       fit: BoxFit.cover,
                       filterQuality: FilterQuality.high,
-                      errorBuilder: (context, error, stackTrace) => _buildDefaultAvatar(tokens, radius),
+                      errorBuilder:
+                          (context, error, stackTrace) =>
+                              _buildDefaultAvatar(tokens, radius),
                     ),
                   );
                 } else {
@@ -138,11 +145,7 @@ class ProfileSettingScreen extends ConsumerWidget {
                 ),
                 child: const Padding(
                   padding: EdgeInsets.all(6.0),
-                  child: Icon(
-                    Icons.edit,
-                    color: Colors.white,
-                    size: 16,
-                  ),
+                  child: Icon(Icons.edit, color: Colors.white, size: 16),
                 ),
               ),
             ),
@@ -171,11 +174,7 @@ class ProfileSettingScreen extends ConsumerWidget {
         color: tokens.brandPrimary.withOpacity(0.1),
         shape: BoxShape.circle,
       ),
-      child: Icon(
-        Icons.person,
-        size: radius,
-        color: tokens.brandPrimary,
-      ),
+      child: Icon(Icons.person, size: radius, color: tokens.brandPrimary),
     );
   }
 
@@ -183,19 +182,20 @@ class ProfileSettingScreen extends ConsumerWidget {
     final tokens = context.tokens;
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('ダミーデータモード'),
-        content: const Text(
-          'ダミーデータモードが有効になっています。'
-          '実際のデータを使用するには、設定画面でダミーデータモードを無効にしてください。',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('ダミーデータモード'),
+            content: const Text(
+              'ダミーデータモードが有効になっています。'
+              '実際のデータを使用するには、設定画面でダミーデータモードを無効にしてください。',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -206,93 +206,101 @@ class ProfileSettingScreen extends ConsumerWidget {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('プロフィール編集'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'ニックネーム',
-                  hintText: '表示名を入力してください',
-                ),
-                maxLength: 20,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('プロフィール編集'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'ニックネーム',
+                      hintText: '表示名を入力してください',
+                    ),
+                    maxLength: 20,
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: bioController,
+                    decoration: const InputDecoration(
+                      labelText: '自己紹介',
+                      hintText: '簡単な自己紹介を入力してください',
+                    ),
+                    maxLines: 3,
+                    maxLength: 100,
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: bioController,
-                decoration: const InputDecoration(
-                  labelText: '自己紹介',
-                  hintText: '簡単な自己紹介を入力してください',
-                ),
-                maxLines: 3,
-                maxLength: 100,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  final name = nameController.text.trim();
+                  final bio = bioController.text.trim();
+
+                  // Content moderation
+                  if (name.isNotEmpty) {
+                    final nameResult =
+                        ContentModerationService.moderateUsername(name);
+                    if (nameResult.isBlocked) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(nameResult.details ?? '不適切なニックネームです'),
+                        ),
+                      );
+                      return;
+                    }
+                  }
+
+                  if (bio.isNotEmpty) {
+                    final bioResult = ContentModerationService.moderateText(
+                      bio,
+                    );
+                    if (bioResult.isBlocked) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(bioResult.details ?? '不適切な自己紹介です'),
+                        ),
+                      );
+                      return;
+                    }
+                  }
+
+                  // Update user profile
+                  try {
+                    final userRepository = ref.read(userRepositoryProvider);
+                    if (user != null) {
+                      user.displayName = name.isNotEmpty ? name : null;
+                      user.bio = bio.isNotEmpty ? bio : null;
+                      await userRepository.saveLocalUser(user);
+
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('プロフィールを更新しました')),
+                      );
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('プロフィールの更新に失敗しました')),
+                    );
+                  }
+                },
+                child: const Text('保存'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final name = nameController.text.trim();
-              final bio = bioController.text.trim();
-              
-              // Content moderation
-              if (name.isNotEmpty) {
-                final nameResult = ContentModerationService.moderateUsername(name);
-                if (nameResult.isBlocked) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(nameResult.details ?? '不適切なニックネームです')),
-                  );
-                  return;
-                }
-              }
-              
-              if (bio.isNotEmpty) {
-                final bioResult = ContentModerationService.moderateText(bio);
-                if (bioResult.isBlocked) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(bioResult.details ?? '不適切な自己紹介です')),
-                  );
-                  return;
-                }
-              }
-              
-              // Update user profile
-              try {
-                final userRepository = ref.read(userRepositoryProvider);
-                if (user != null) {
-                  user.displayName = name.isNotEmpty ? name : null;
-                  user.bio = bio.isNotEmpty ? bio : null;
-                  await userRepository.saveLocalUser(user);
-                  
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('プロフィールを更新しました')),
-                  );
-                }
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('プロフィールの更新に失敗しました')),
-                );
-              }
-            },
-            child: const Text('保存'),
-          ),
-        ],
-      ),
     );
   }
 
   Widget _buildDummyDataControls(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    
+
     return Card(
       color: tokens.surface,
       shape: RoundedRectangleBorder(
@@ -344,35 +352,38 @@ class ProfileSettingScreen extends ConsumerWidget {
   void _removeDummyData(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('ダミーデータ撤去'),
-        content: const Text(
-          'ダミーデータモードを無効にして、実際のデータを使用しますか？'
-          'この操作により、すべての機能が実際のデータで動作するようになります。',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('ダミーデータ撤去'),
+            content: const Text(
+              'ダミーデータモードを無効にして、実際のデータを使用しますか？'
+              'この操作により、すべての機能が実際のデータで動作するようになります。',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  // Disable dummy data mode
+                  ref.read(dummyDataModeProvider.notifier).state = false;
+                  await ref
+                      .read(localPreferencesServiceProvider)
+                      .setDummyDataMode(false);
+
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('ダミーデータモードを無効にしました。実際のデータで動作します。'),
+                    ),
+                  );
+                },
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                child: const Text('撤去する'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () async {
-              // Disable dummy data mode
-              ref.read(dummyDataModeProvider.notifier).state = false;
-              await ref.read(localPreferencesServiceProvider).setDummyDataMode(false);
-              
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('ダミーデータモードを無効にしました。実際のデータで動作します。'),
-                ),
-              );
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('撤去する'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -380,10 +391,9 @@ class ProfileSettingScreen extends ConsumerWidget {
   Widget _buildTags(BuildContext context, WidgetRef ref, user) {
     final tokens = context.tokens;
     final isDummyMode = ref.watch(dummyDataModeProvider);
-    
-    final tags = isDummyMode 
-        ? ['習慣化', 'ランニング', '読書', '早起き']
-        : user?.tags ?? ['習慣化'];
+
+    final tags =
+        isDummyMode ? ['習慣化', 'ランニング', '読書', '早起き'] : user?.tags ?? ['習慣化'];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,11 +406,18 @@ class ProfileSettingScreen extends ConsumerWidget {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: tags.map((tag) => Chip(
-            label: Text(tag),
-            backgroundColor: tokens.brandPrimary.withOpacity(0.1),
-            labelStyle: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
-          )).toList(),
+          children:
+              tags
+                  .map(
+                    (tag) => Chip(
+                      label: Text(tag),
+                      backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+                      labelStyle: tokens.bodySmall.copyWith(
+                        color: tokens.brandPrimary,
+                      ),
+                    ),
+                  )
+                  .toList(),
         ),
       ],
     );
@@ -410,7 +427,7 @@ class ProfileSettingScreen extends ConsumerWidget {
     final tokens = context.tokens;
     final streakAsync = ref.watch(streakProvider);
     final todayCountAsync = ref.watch(todayCompletionCountProvider);
-    
+
     return Row(
       children: [
         Expanded(
@@ -419,13 +436,19 @@ class ProfileSettingScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Text('ストリーク', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+                  Text(
+                    'ストリーク',
+                    style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                  ),
                   const SizedBox(height: 8),
                   streakAsync.when(
-                    data: (streak) => Text(
-                      '$streak日',
-                      style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
-                    ),
+                    data:
+                        (streak) => Text(
+                          '$streak日',
+                          style: tokens.titleLarge.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                     loading: () => const CircularProgressIndicator(),
                     error: (_, __) => const Text('--'),
                   ),
@@ -441,13 +464,19 @@ class ProfileSettingScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Text('今日の完了', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+                  Text(
+                    '今日の完了',
+                    style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                  ),
                   const SizedBox(height: 8),
                   todayCountAsync.when(
-                    data: (count) => Text(
-                      '$count個',
-                      style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
-                    ),
+                    data:
+                        (count) => Text(
+                          '$count個',
+                          style: tokens.titleLarge.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                     loading: () => const CircularProgressIndicator(),
                     error: (_, __) => const Text('--'),
                   ),
@@ -470,21 +499,15 @@ class ProfileSettingScreen extends ConsumerWidget {
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        ListTile(
-          leading: const Icon(Icons.notifications),
-          title: const Text('通知設定'),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () {
-            // Navigate to notification settings
-          },
+        const _ComingSoonTile(
+          icon: Icons.notifications,
+          title: '通知設定',
+          description: '通知の細かなカスタマイズは現在準備中です。',
         ),
-        ListTile(
-          leading: const Icon(Icons.privacy_tip),
-          title: const Text('プライバシー設定'),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () {
-            // Navigate to privacy settings
-          },
+        const _ComingSoonTile(
+          icon: Icons.privacy_tip,
+          title: 'プライバシー設定',
+          description: '公開範囲の調整機能は近日追加予定です。',
         ),
       ],
     );
@@ -500,15 +523,12 @@ class ProfileSettingScreen extends ConsumerWidget {
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        ElevatedButton.icon(
-          onPressed: () {
-            // Implement SNS sharing
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('SNS共有機能は準備中です')),
-            );
-          },
+        const _ComingSoonPill(),
+        SizedBox(height: tokens.spacing(2)),
+        FilledButton.icon(
+          onPressed: null,
           icon: const Icon(Icons.share),
-          label: const Text('進捗を共有'),
+          label: const Text('進捗を共有（準備中）'),
         ),
       ],
     );
@@ -517,7 +537,7 @@ class ProfileSettingScreen extends ConsumerWidget {
   Widget _buildPairInfo(BuildContext context, WidgetRef ref, user) {
     final tokens = context.tokens;
     final pairAsync = ref.watch(userPairProvider);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -538,53 +558,40 @@ class ProfileSettingScreen extends ConsumerWidget {
                       const SizedBox(height: 8),
                       const Text('ペアが見つかりません'),
                       const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Navigate to pair screen
-                        },
-                        child: const Text('ペアを探す'),
+                      const _ComingSoonPill(),
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: null,
+                        child: const Text('ペアを探す（準備中）'),
                       ),
                     ],
                   ),
                 ),
               );
             }
-            
+
             return Card(
               child: ListTile(
-                leading: const CircleAvatar(
-                  child: Icon(Icons.person),
-                ),
+                leading: const CircleAvatar(child: Icon(Icons.person)),
                 title: Text('ペア: ${pair.id}'),
-                subtitle: const Text('一緒に頑張っています'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.chat),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.block, color: Colors.red),
-                    ),
-                  ],
-                ),
+                subtitle: const _PairStatusSubtitle(),
               ),
             );
           },
-          loading: () => const Card(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Center(child: CircularProgressIndicator()),
-            ),
-          ),
-          error: (_, __) => const Card(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text('ペア情報の読み込みに失敗しました'),
-            ),
-          ),
+          loading:
+              () => const Card(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ),
+          error:
+              (_, __) => const Card(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text('ペア情報の読み込みに失敗しました'),
+                ),
+              ),
         ),
       ],
     );
@@ -600,21 +607,15 @@ class ProfileSettingScreen extends ConsumerWidget {
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        ListTile(
-          leading: const Icon(Icons.help),
-          title: const Text('ヘルプ'),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () {
-            // Navigate to help
-          },
+        const _ComingSoonTile(
+          icon: Icons.help,
+          title: 'ヘルプ',
+          description: 'お問い合わせガイドは只今準備中です。',
         ),
-        ListTile(
-          leading: const Icon(Icons.info),
-          title: const Text('アプリについて'),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () {
-            // Navigate to about
-          },
+        const _ComingSoonTile(
+          icon: Icons.info,
+          title: 'アプリについて',
+          description: 'アプリ概要ページは近日公開予定です。',
         ),
         ListTile(
           leading: const Icon(Icons.logout),
@@ -622,22 +623,23 @@ class ProfileSettingScreen extends ConsumerWidget {
           onTap: () async {
             final confirmed = await showDialog<bool>(
               context: context,
-              builder: (context) => AlertDialog(
-                title: const Text('ログアウト'),
-                content: const Text('ログアウトしますか？'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('キャンセル'),
+              builder:
+                  (context) => AlertDialog(
+                    title: const Text('ログアウト'),
+                    content: const Text('ログアウトしますか？'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text('キャンセル'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: const Text('ログアウト'),
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('ログアウト'),
-                  ),
-                ],
-              ),
             );
-            
+
             if (confirmed == true) {
               await ref.read(authRepositoryProvider).signOut();
               if (context.mounted) {
@@ -669,12 +671,9 @@ class ProfileSettingScreen extends ConsumerWidget {
                 const SizedBox(height: 8),
                 const Text('プレミアム機能は準備中です'),
                 const SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () {
-                    // Navigate to premium features
-                  },
-                  child: const Text('詳細を見る'),
-                ),
+                const _ComingSoonPill(),
+                const SizedBox(height: 12),
+                FilledButton(onPressed: null, child: const Text('詳細を見る（準備中）')),
               ],
             ),
           ),
@@ -699,14 +698,108 @@ class ProfileSettingScreen extends ConsumerWidget {
       height: 48,
       decoration: BoxDecoration(
         color: isGradient ? null : color,
-        gradient: isGradient
-            ? const LinearGradient(
-                colors: [Color(0xFF833AB4), Color(0xFFFD1D1D), Color(0xFFFCAF45)],
-              )
-            : null,
+        gradient:
+            isGradient
+                ? const LinearGradient(
+                  colors: [
+                    Color(0xFF833AB4),
+                    Color(0xFFFD1D1D),
+                    Color(0xFFFCAF45),
+                  ],
+                )
+                : null,
         shape: BoxShape.circle,
       ),
       child: const Icon(Icons.share, color: Colors.white, size: 24),
+    );
+  }
+}
+
+class _ComingSoonPill extends StatelessWidget {
+  const _ComingSoonPill();
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: tokens.spacing(2),
+        vertical: tokens.spacing(1),
+      ),
+      decoration: BoxDecoration(
+        color: tokens.surfaceVariant,
+        borderRadius: tokens.cornerFull(),
+      ),
+      child: Text(
+        '準備中',
+        style: tokens.labelSmall.copyWith(
+          color: tokens.textMuted,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
+class _ComingSoonTile extends StatelessWidget {
+  const _ComingSoonTile({
+    required this.icon,
+    required this.title,
+    this.description,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? description;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return ListTile(
+      enabled: false,
+      leading: Icon(icon, color: tokens.textMuted),
+      title: Text(
+        title,
+        style: tokens.bodyLarge.copyWith(
+          color: tokens.textPrimary,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const _ComingSoonPill(),
+          if (description != null) ...[
+            SizedBox(height: tokens.spacing(1)),
+            Text(
+              description!,
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PairStatusSubtitle extends StatelessWidget {
+  const _PairStatusSubtitle();
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          '一緒に頑張っています',
+          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+        ),
+        SizedBox(height: tokens.spacing(2)),
+        const _ComingSoonPill(),
+      ],
     );
   }
 }
