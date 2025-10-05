@@ -40,8 +40,8 @@ class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
     _subscription = stream.asBroadcastStream().listen(
-          (dynamic _) => notifyListeners(),
-        );
+      (dynamic _) => notifyListeners(),
+    );
   }
 
   late final StreamSubscription<dynamic> _subscription;
@@ -147,12 +147,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.accountDeletion,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const AccountDeletionScreen(),
-          transitionType: SharedAxisTransitionType.vertical,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const AccountDeletionScreen(),
+              transitionType: SharedAxisTransitionType.vertical,
+            ),
       ),
       GoRoute(
         path: AppRoutes.login,
@@ -368,7 +369,7 @@ class NavigationUseCase {
   NavigationUseCase(this._router);
 
   void goToOnboarding() => _router.go(AppRoutes.onboarding);
-  void goToLogin() => _router.go(AppRoutes.login);
+  void goToLogin() => _router.push(AppRoutes.login);
   void goToRecord(int questId) =>
       _router.go(AppRoutes.record.replaceFirst(':questId', questId.toString()));
   void goToCelebration() => _router.go(AppRoutes.celebration);
@@ -379,17 +380,23 @@ class NavigationUseCase {
   void goToSupport() => _router.go(AppRoutes.support);
   void goToCommunityBoard() => _router.go(AppRoutes.communityBoard);
   void goToCreateQuest() => _router.go(AppRoutes.createQuest);
-  void goToEditQuest(int questId) => _router.go(AppRoutes.editQuest.replaceFirst(':questId', questId.toString()));
-  void goToQuestDetail(int questId) =>
-      _router.go(AppRoutes.questDetail
-          .replaceFirst(':questId', questId.toString()));
+  void goToEditQuest(int questId) => _router.go(
+    AppRoutes.editQuest.replaceFirst(':questId', questId.toString()),
+  );
+  void goToQuestDetail(int questId) => _router.go(
+    AppRoutes.questDetail.replaceFirst(':questId', questId.toString()),
+  );
   void goToNotificationSettings() => _router.go(AppRoutes.notificationSettings);
   void goToProfileSettings() => _router.go(AppRoutes.profileSettings);
   void goToAccountDeletion() => _router.go(AppRoutes.accountDeletion);
   void goToPairMatching({String? code}) {
-    final uri = Uri(path: AppRoutes.pairMatching, queryParameters: code != null ? {'code': code} : null);
+    final uri = Uri(
+      path: AppRoutes.pairMatching,
+      queryParameters: code != null ? {'code': code} : null,
+    );
     _router.go(uri.toString());
   }
+
   void goToPairChat(String pairId) =>
       _router.go(AppRoutes.pairChat.replaceFirst(':pairId', pairId));
   void goHome() => _router.go(AppRoutes.home);

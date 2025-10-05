@@ -34,7 +34,17 @@ class LoginScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: tokens.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        leading:
+            Navigator.canPop(context)
+                ? BackButton(color: tokens.textPrimary)
+                : null,
+        automaticallyImplyLeading: false,
+      ),
       body: SafeArea(
+        bottom: false,
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 384), // max-w-sm

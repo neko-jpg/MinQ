@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/common/policy_documents.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -40,7 +41,9 @@ class PolicyViewerScreen extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       document.titleJa,
-                      style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+                      style: tokens.titleMedium.copyWith(
+                        color: tokens.textPrimary,
+                      ),
                     ),
                     SizedBox(height: tokens.spacing(1)),
                     Text(
@@ -78,52 +81,163 @@ class PolicyViewerScreen extends StatelessWidget {
             ),
           ],
           SizedBox(height: tokens.spacing(5)),
-          ...document.sections.map((PolicySection section) {
-            return Card(
-              elevation: 0,
-              margin: EdgeInsets.only(bottom: tokens.spacing(4)),
-              color: tokens.surface,
-              shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
-              child: Padding(
-                padding: EdgeInsets.all(tokens.spacing(4)),
+          if (document.assetPath != null)
+            _PolicyMarkdownCard(document: document)
+          else
+            ...document.sections.map(
+              (PolicySection section) =>
+                  _PolicySectionCard(tokens: tokens, section: section),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PolicyMarkdownCard extends StatelessWidget {
+  const _PolicyMarkdownCard({required this.document});
+
+  final PolicyDocument document;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final assetPath = document.assetPath!;
+    final bundle = DefaultAssetBundle.of(context);
+
+    return FutureBuilder<String>(
+      future: bundle.loadString(assetPath),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Card(
+            elevation: 0,
+            margin: EdgeInsets.only(bottom: tokens.spacing(4)),
+            color: tokens.surface,
+            shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+            child: Padding(
+              padding: EdgeInsets.all(tokens.spacing(6)),
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+          );
+        }
+
+        if (snapshot.hasError ||
+            snapshot.data == null ||
+            snapshot.data!.trim().isEmpty) {
+          return Card(
+            elevation: 0,
+            margin: EdgeInsets.only(bottom: tokens.spacing(4)),
+            color: tokens.surface,
+            shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+            child: Padding(
+              padding: EdgeInsets.all(tokens.spacing(4)),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.error_outline, color: tokens.accentError),
+                  SizedBox(width: tokens.spacing(3)),
+                  Expanded(
+                    child: Text(
+                      'ドキュメントを読み込めませんでした。時間を置いて再度お試しください。',
+                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        final markdownStyle = MarkdownStyleSheet.fromTheme(
+          Theme.of(context),
+        ).copyWith(
+          p: tokens.bodyMedium.copyWith(color: tokens.textPrimary, height: 1.6),
+          h1: tokens.titleLarge.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+          h2: tokens.titleMedium.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+          h3: tokens.titleSmall.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+          listBullet: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
+          blockquote: tokens.bodySmall.copyWith(color: tokens.textSecondary),
+        );
+
+        return Card(
+          elevation: 0,
+          margin: EdgeInsets.only(bottom: tokens.spacing(4)),
+          color: tokens.surface,
+          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+          child: Padding(
+            padding: EdgeInsets.all(tokens.spacing(4)),
+            child: MarkdownBody(
+              data: snapshot.data!,
+              styleSheet: markdownStyle,
+              selectable: false,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PolicySectionCard extends StatelessWidget {
+  const _PolicySectionCard({required this.tokens, required this.section});
+
+  final MinqTheme tokens;
+  final PolicySection section;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      margin: EdgeInsets.only(bottom: tokens.spacing(4)),
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(4)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              section.titleJa,
+              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
+            ),
+            SizedBox(height: tokens.spacing(1.5)),
+            Text(
+              section.titleEn,
+              style: tokens.labelSmall.copyWith(color: tokens.textMuted),
+            ),
+            SizedBox(height: tokens.spacing(3)),
+            ...section.paragraphs.map((PolicyParagraph paragraph) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: tokens.spacing(3)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      section.titleJa,
-                      style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
+                      paragraph.ja,
+                      style: tokens.bodySmall.copyWith(
+                        color: tokens.textPrimary,
+                      ),
                     ),
-                    SizedBox(height: tokens.spacing(1.5)),
+                    SizedBox(height: tokens.spacing(2)),
                     Text(
-                      section.titleEn,
-                      style: tokens.labelSmall.copyWith(color: tokens.textMuted),
+                      paragraph.en,
+                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                     ),
-                    SizedBox(height: tokens.spacing(3)),
-                    ...section.paragraphs.map((PolicyParagraph paragraph) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: tokens.spacing(3)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              paragraph.ja,
-                              style: tokens.bodySmall.copyWith(color: tokens.textPrimary),
-                            ),
-                            SizedBox(height: tokens.spacing(2)),
-                            Text(
-                              paragraph.en,
-                              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
                   ],
                 ),
-              ),
-            );
-          }),
-        ],
+              );
+            }),
+          ],
+        ),
       ),
     );
   }
