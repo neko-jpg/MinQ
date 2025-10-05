@@ -50,7 +50,8 @@ class HomeQuestItem {
   }
 
   @override
-  int get hashCode => Object.hash(id, title, category, estimatedMinutes, iconKey);
+  int get hashCode =>
+      Object.hash(id, title, category, estimatedMinutes, iconKey);
 }
 
 class HomeLogItem {
@@ -103,7 +104,82 @@ class HomeLogItem {
   }
 
   @override
-  int get hashCode => Object.hash(id, questId, timestamp, proofType, proofValue);
+  int get hashCode =>
+      Object.hash(id, questId, timestamp, proofType, proofValue);
+}
+
+class HomeFocusRecommendation {
+  const HomeFocusRecommendation({
+    required this.questId,
+    required this.questTitle,
+    required this.confidence,
+    required this.headline,
+    required this.rationale,
+    required this.supportingFacts,
+    this.lastCompletedAt,
+  });
+
+  factory HomeFocusRecommendation.fromJson(Map<String, dynamic> json) {
+    return HomeFocusRecommendation(
+      questId: json['questId'] as int,
+      questTitle: json['questTitle'] as String,
+      confidence: (json['confidence'] as num?)?.toDouble() ?? 0,
+      headline: json['headline'] as String,
+      rationale: json['rationale'] as String,
+      supportingFacts: (json['supportingFacts'] as List<dynamic>? ??
+              <dynamic>[])
+          .map((dynamic value) => value as String)
+          .toList(growable: false),
+      lastCompletedAt:
+          (json['lastCompletedAt'] as String?) != null
+              ? DateTime.tryParse(json['lastCompletedAt'] as String)?.toLocal()
+              : null,
+    );
+  }
+
+  final int questId;
+  final String questTitle;
+  final double confidence;
+  final String headline;
+  final String rationale;
+  final List<String> supportingFacts;
+  final DateTime? lastCompletedAt;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'questId': questId,
+      'questTitle': questTitle,
+      'confidence': confidence,
+      'headline': headline,
+      'rationale': rationale,
+      'supportingFacts': supportingFacts,
+      'lastCompletedAt': lastCompletedAt?.toUtc().toIso8601String(),
+    };
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is HomeFocusRecommendation &&
+        other.questId == questId &&
+        other.questTitle == questTitle &&
+        other.confidence == confidence &&
+        other.headline == headline &&
+        other.rationale == rationale &&
+        listEquals(other.supportingFacts, supportingFacts) &&
+        other.lastCompletedAt == lastCompletedAt;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    questId,
+    questTitle,
+    confidence,
+    headline,
+    rationale,
+    Object.hashAll(supportingFacts),
+    lastCompletedAt,
+  );
 }
 
 @immutable
@@ -114,6 +190,7 @@ class HomeViewData {
     required this.completionsToday,
     required this.recentLogs,
     required this.updatedAt,
+    this.focus,
   });
 
   factory HomeViewData.empty() {
@@ -123,24 +200,41 @@ class HomeViewData {
       completionsToday: 0,
       recentLogs: const <HomeLogItem>[],
       updatedAt: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal(),
+      focus: null,
     );
   }
 
   factory HomeViewData.fromJson(String jsonString) {
-    final Map<String, dynamic> json = jsonDecode(jsonString) as Map<String, dynamic>;
-    final List<dynamic> questJson = json['quests'] as List<dynamic>? ?? <dynamic>[];
-    final List<dynamic> logJson = json['recentLogs'] as List<dynamic>? ?? <dynamic>[];
+    final Map<String, dynamic> json =
+        jsonDecode(jsonString) as Map<String, dynamic>;
+    final List<dynamic> questJson =
+        json['quests'] as List<dynamic>? ?? <dynamic>[];
+    final List<dynamic> logJson =
+        json['recentLogs'] as List<dynamic>? ?? <dynamic>[];
     return HomeViewData(
       quests: questJson
-          .map((dynamic item) => HomeQuestItem.fromJson(item as Map<String, dynamic>))
+          .map(
+            (dynamic item) =>
+                HomeQuestItem.fromJson(item as Map<String, dynamic>),
+          )
           .toList(growable: false),
       streak: json['streak'] as int? ?? 0,
       completionsToday: json['completionsToday'] as int? ?? 0,
       recentLogs: logJson
-          .map((dynamic item) => HomeLogItem.fromJson(item as Map<String, dynamic>))
+          .map(
+            (dynamic item) =>
+                HomeLogItem.fromJson(item as Map<String, dynamic>),
+          )
           .toList(growable: false),
-      updatedAt: DateTime.tryParse(json['updatedAt'] as String? ?? '')?.toLocal() ??
+      updatedAt:
+          DateTime.tryParse(json['updatedAt'] as String? ?? '')?.toLocal() ??
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal(),
+      focus:
+          json['focus'] == null
+              ? null
+              : HomeFocusRecommendation.fromJson(
+                json['focus'] as Map<String, dynamic>,
+              ),
     );
   }
 
@@ -149,17 +243,26 @@ class HomeViewData {
   final int completionsToday;
   final List<HomeLogItem> recentLogs;
   final DateTime updatedAt;
+  final HomeFocusRecommendation? focus;
 
   bool get hasCachedContent =>
-      quests.isNotEmpty || recentLogs.isNotEmpty || streak > 0 || completionsToday > 0;
+      quests.isNotEmpty ||
+      recentLogs.isNotEmpty ||
+      streak > 0 ||
+      completionsToday > 0;
 
   String toJson() {
     final Map<String, dynamic> json = <String, dynamic>{
-      'quests': quests.map((HomeQuestItem item) => item.toJson()).toList(growable: false),
+      'quests': quests
+          .map((HomeQuestItem item) => item.toJson())
+          .toList(growable: false),
       'streak': streak,
       'completionsToday': completionsToday,
-      'recentLogs': recentLogs.map((HomeLogItem item) => item.toJson()).toList(growable: false),
+      'recentLogs': recentLogs
+          .map((HomeLogItem item) => item.toJson())
+          .toList(growable: false),
       'updatedAt': updatedAt.toUtc().toIso8601String(),
+      if (focus != null) 'focus': focus!.toJson(),
     };
     return jsonEncode(json);
   }
@@ -170,6 +273,7 @@ class HomeViewData {
     int? completionsToday,
     List<HomeLogItem>? recentLogs,
     DateTime? updatedAt,
+    HomeFocusRecommendation? focus,
   }) {
     return HomeViewData(
       quests: quests ?? this.quests,
@@ -177,6 +281,7 @@ class HomeViewData {
       completionsToday: completionsToday ?? this.completionsToday,
       recentLogs: recentLogs ?? this.recentLogs,
       updatedAt: updatedAt ?? this.updatedAt,
+      focus: focus ?? this.focus,
     );
   }
 
@@ -188,15 +293,17 @@ class HomeViewData {
         other.streak == streak &&
         other.completionsToday == completionsToday &&
         listEquals(other.recentLogs, recentLogs) &&
-        other.updatedAt == updatedAt;
+        other.updatedAt == updatedAt &&
+        other.focus == focus;
   }
 
   @override
   int get hashCode => Object.hash(
-        Object.hashAll(quests),
-        streak,
-        completionsToday,
-        Object.hashAll(recentLogs),
-        updatedAt,
-      );
+    Object.hashAll(quests),
+    streak,
+    completionsToday,
+    Object.hashAll(recentLogs),
+    updatedAt,
+    focus,
+  );
 }
