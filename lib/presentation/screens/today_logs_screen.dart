@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/controllers/quest_log_controller.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class TodayLogsScreen extends ConsumerWidget {
@@ -30,7 +30,7 @@ class TodayLogsScreen extends ConsumerWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () => context.safePop(),
         ),
         backgroundColor: tokens.background.withOpacity(0.9),
         elevation: 0,
@@ -54,7 +54,7 @@ class TodayLogsScreen extends ConsumerWidget {
                 title: '今日の記録はありません',
                 message: 'クエストを完了すると、ここに記録が表示されます。',
                 actionArea: ElevatedButton(
-                  onPressed: () => context.pop(),
+                  onPressed: () => context.safePop(),
                   child: const Text('クエスト一覧に戻る'),
                 ),
               ),

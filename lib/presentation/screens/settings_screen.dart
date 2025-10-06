@@ -14,6 +14,7 @@ import 'package:minq/presentation/controllers/integration_settings_controller.da
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import 'package:minq/presentation/controllers/usage_limit_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -522,7 +523,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           message: l10n.back,
           child: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.pop(),
+            onPressed: () => context.safePop(),
           ),
         ),
         backgroundColor: tokens.background.withOpacity(0.8),

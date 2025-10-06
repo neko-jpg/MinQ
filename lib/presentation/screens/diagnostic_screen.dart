@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../theme/app_theme.dart';
+import '../routing/navigation_extensions.dart';
 
 /// 自己診断モード画面
 /// 設定→テスト通知/ストレージ/ネット
@@ -33,7 +33,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () => context.safePop(),
         ),
         backgroundColor: tokens.background.withOpacity(0.9),
         elevation: 0,

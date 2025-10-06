@@ -9,6 +9,7 @@ import 'package:minq/domain/pair/pair.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 final userPairProvider = StreamProvider<Pair?>((ref) {
@@ -38,7 +39,7 @@ class PairScreen extends ConsumerWidget {
           ),
         ),
         centerTitle: true,
-        leading: MinqIconButton(icon: Icons.close, onTap: () => context.pop()),
+        leading: MinqIconButton(icon: Icons.close, onTap: () => context.safePop()),
         backgroundColor: tokens.background.withOpacity(0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,

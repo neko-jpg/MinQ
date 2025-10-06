@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import '../theme/app_theme.dart';
 
 /// アクセシビリティ設定画面
@@ -40,7 +40,7 @@ class _AccessibilitySettingsScreenState
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () => context.safePop(),
         ),
         backgroundColor: tokens.background.withOpacity(0.9),
         elevation: 0,
@@ -366,6 +366,6 @@ class _AccessibilitySettingsScreenState
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('設定を保存しました')),
     );
-    context.pop();
+    context.safePop();
   }
 }

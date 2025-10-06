@@ -12,6 +12,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 
 class QuestsScreen extends ConsumerStatefulWidget {
   const QuestsScreen({super.key});
@@ -237,7 +238,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
           message: l10n.back,
           child: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.pop(),
+            onPressed: () => context.safePop(),
           ),
         ),
         backgroundColor: tokens.background.withOpacity(0.8),

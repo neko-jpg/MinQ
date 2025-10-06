@@ -7,6 +7,7 @@ import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -31,7 +32,7 @@ class QuestDetailScreen extends ConsumerWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           tooltip: '戻る',
-          onPressed: () => context.pop(),
+          onPressed: () => context.safePop(),
         ),
         backgroundColor: tokens.background,
         surfaceTintColor: Colors.transparent,

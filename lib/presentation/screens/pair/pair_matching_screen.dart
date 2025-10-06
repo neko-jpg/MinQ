@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/l10n/app_localizations.dart';
 
@@ -94,9 +94,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     // if (uid != null && repo != null) {
     //   repo.cancelPairingRequest(uid);
     // }
-    if (context.canPop()) {
-      context.pop();
-    }
+    context.safePop();
   }
 
   Future<void> _subscribeToNotifications() async {
@@ -229,7 +227,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           MinqTextButton(
             label: l10n.cancel,
             onTap: () async {
-              context.pop();
+                context.safePop();
             },
           ),
           const SizedBox(height: 24),

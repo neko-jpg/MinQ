@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/common/policy_documents.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class PolicyViewerScreen extends StatelessWidget {
@@ -23,7 +23,7 @@ class PolicyViewerScreen extends StatelessWidget {
         ),
         leading: IconButton(
           icon: Icon(Icons.close, color: tokens.textPrimary),
-          onPressed: () => context.pop(),
+          onPressed: () => context.safePop(),
         ),
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,

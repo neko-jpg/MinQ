@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/repositories/community_board_repository.dart';
 import 'package:minq/domain/community/community_post.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/controllers/community_board_controller.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CommunityBoardScreen extends ConsumerWidget {
@@ -56,7 +56,7 @@ class CommunityBoardScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => context.pop(),
+            onPressed: () => context.safePop(),
           ),
         ],
       ),

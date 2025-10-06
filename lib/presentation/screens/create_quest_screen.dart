@@ -2,11 +2,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CreateQuestScreen extends ConsumerStatefulWidget {
@@ -183,7 +183,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
   Future<void> _handleBackRequest() async {
     final shouldLeave = await _confirmDiscardChanges();
     if (shouldLeave && mounted) {
-      context.pop();
+      context.safePop();
     }
   }
 
@@ -253,7 +253,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         context,
         '新しい習慣を作成しました！',
       );
-      context.pop();
+      context.safePop();
     }
   }
 
@@ -355,7 +355,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         }
         final shouldLeave = await _confirmDiscardChanges();
         if (shouldLeave && mounted) {
-          context.pop();
+          context.safePop();
         }
       },
       child: Scaffold(

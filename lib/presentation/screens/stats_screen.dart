@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/stats/stats_view_data.dart';
@@ -10,6 +9,7 @@ import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/controllers/stats_data_controller.dart';
 import 'package:minq/presentation/controllers/sync_status_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/routing/navigation_extensions.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class StatsScreen extends ConsumerStatefulWidget {
@@ -106,7 +106,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               tokens.titleMedium.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        leading: MinqIconButton(icon: Icons.arrow_back, onTap: () => context.pop()),
+        leading: MinqIconButton(icon: Icons.arrow_back, onTap: () => context.safePop()),
         backgroundColor: tokens.background.withOpacity(0.9),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
