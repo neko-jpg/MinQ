@@ -27,7 +27,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _syncStatusSubscription = ref.listenManual<SyncStatus>(syncStatusProvider, (previous, next) {
+    _syncStatusSubscription = ref.listenManual<SyncStatus>(syncStatusProvider, (
+      previous,
+      next,
+    ) {
       if (!mounted) return;
       if (next.showBanner && next.bannerMessage != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -59,9 +62,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final bool hasCachedContent = data?.hasCachedContent ?? false;
     final bool isLoading = homeDataAsync.isLoading && !hasCachedContent;
     final bool hasError = homeDataAsync.hasError && !hasCachedContent;
+    final SyncStatus syncStatus = ref.watch(syncStatusProvider);
+    final bool isOffline = syncStatus.phase == SyncPhase.offline;
+
+    final mediaQuery = MediaQuery.of(context);
 
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
             const maxContentWidth = 640.0;
@@ -69,28 +77,69 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Widget child;
             if (isLoading) {
               child = const _HomeScreenSkeleton();
+            } else if (isOffline && !hasCachedContent) {
+              child = _HomeStateMessage(
+                icon: Icons.wifi_off,
+                title: 'オフラインになっています',
+                message: 'ネットワーク接続を確認してから再読み込みしてください。',
+                action: FilledButton.icon(
+                  onPressed: () => ref.invalidate(homeDataProvider),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('再読み込み'),
+                ),
+              );
             } else if (hasError) {
-              child = const Center(
-                child: Text('データの読み込みに失敗しました。'),
+              child = _HomeStateMessage(
+                icon: Icons.error_outline,
+                title: 'データの読み込みに失敗しました',
+                message: '時間をおいてから再度お試しください。',
+                action: FilledButton.icon(
+                  onPressed: () => ref.invalidate(homeDataProvider),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('再試行'),
+                ),
               );
             } else {
               final tokens = context.tokens;
               final HomeViewData content = data ?? HomeViewData.empty();
-              child = ListView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing(4),
-                  vertical: tokens.spacing(6),
-                ),
-                children: [
+              final bool isContentEmpty =
+                  content.quests.isEmpty &&
+                  content.recentLogs.isEmpty &&
+                  content.completionsToday == 0;
+
+              if (isContentEmpty) {
+                child = const _HomeEmptyBody();
+              } else {
+                final verticalGap = tokens.spacing(4);
+                final List<Widget> children = <Widget>[
+                  if (isOffline) ...<Widget>[
+                    _HomeOfflineNotice(
+                      onRetry: () => ref.invalidate(homeDataProvider),
+                    ),
+                    SizedBox(height: verticalGap),
+                  ],
                   const _Header(),
-                  SizedBox(height: tokens.spacing(6)),
+                  SizedBox(height: verticalGap),
                   _FocusHeroCard(data: content),
-                  SizedBox(height: tokens.spacing(6)),
+                  SizedBox(height: verticalGap),
                   _HomeHighlights(data: content),
                   SizedBox(height: tokens.spacing(8)),
                   _WeeklyStreakSection(data: content),
-                ],
-              );
+                ];
+
+                child = ListView(
+                  padding: EdgeInsets.only(
+                    left: tokens.spacing(4),
+                    right: tokens.spacing(4),
+                    top: verticalGap,
+                    bottom:
+                        tokens.spacing(4) +
+                        mediaQuery.padding.bottom +
+                        kBottomNavigationBarHeight,
+                  ),
+                  children: children,
+                );
+              }
             }
 
             if (constraints.maxWidth <= maxContentWidth) {
@@ -138,10 +187,7 @@ class _HomeScreenSkeleton extends StatelessWidget {
                 ),
               ),
               SizedBox(height: tokens.spacing(6)),
-              MinqSkeleton(
-                height: 180,
-                borderRadius: tokens.cornerXLarge(),
-              ),
+              MinqSkeleton(height: 180, borderRadius: tokens.cornerXLarge()),
               SizedBox(height: tokens.spacing(6)),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -186,9 +232,126 @@ class _HomeScreenSkeleton extends StatelessWidget {
                 },
               ),
               SizedBox(height: tokens.spacing(8)),
-              MinqSkeleton(
-                height: 160,
-                borderRadius: tokens.cornerLarge(),
+              MinqSkeleton(height: 160, borderRadius: tokens.cornerLarge()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeStateMessage extends StatelessWidget {
+  const _HomeStateMessage({
+    required this.icon,
+    required this.title,
+    required this.message,
+    this.action,
+  });
+
+  final IconData icon;
+  final String title;
+  final String message;
+  final Widget? action;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Center(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: tokens.spacing(4),
+          vertical: tokens.spacing(10),
+        ),
+        child: MinqEmptyState(
+          icon: icon,
+          title: title,
+          message: message,
+          actionArea: action,
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeOfflineNotice extends StatelessWidget {
+  const _HomeOfflineNotice({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Card(
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: tokens.cornerLarge(),
+        side: BorderSide(color: tokens.border),
+      ),
+      elevation: 0,
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing(4)),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.wifi_off, color: tokens.textMuted),
+            SizedBox(width: tokens.spacing(3)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'オフラインで閲覧中',
+                    style: tokens.titleSmall.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: tokens.spacing(1)),
+                  Text(
+                    '接続が戻ると自動的に同期が再開されます。',
+                    style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                  ),
+                ],
+              ),
+            ),
+            TextButton(onPressed: onRetry, child: const Text('再試行')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeEmptyBody extends ConsumerWidget {
+  const _HomeEmptyBody();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+    final navigation = ref.read(navigationUseCaseProvider);
+    return Center(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: tokens.spacing(4),
+          vertical: tokens.spacing(10),
+        ),
+        child: MinqEmptyState(
+          icon: Icons.auto_awesome,
+          title: '今日のフォーカスを設定してみましょう',
+          message: 'クエストを作成すると優先タスクや進捗がここに表示されます。',
+          actionArea: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FilledButton.icon(
+                onPressed: navigation.goToCreateQuest,
+                icon: const Icon(Icons.add_task),
+                label: const Text('クエストを作成する'),
+              ),
+              SizedBox(height: tokens.spacing(2)),
+              OutlinedButton.icon(
+                onPressed: navigation.goToQuests,
+                icon: const Icon(Icons.lightbulb_outline),
+                label: const Text('テンプレートを見る'),
               ),
             ],
           ),
@@ -220,12 +383,18 @@ class _FocusHeroCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final quests = data.quests;
-    final focusQuest = quests.firstOrNull;
-    final recentLogs = data.recentLogs;
     final navigation = ref.read(navigationUseCaseProvider);
+    final focus = data.focus;
+    final quests = data.quests;
+    final recentLogs = data.recentLogs;
+    final focusQuest =
+        focus != null
+            ? quests.firstWhereOrNull(
+              (HomeQuestItem quest) => quest.id == focus.questId,
+            )
+            : null;
 
-    if (focusQuest == null) {
+    if (focus == null || focusQuest == null) {
       return Card(
         color: tokens.surface,
         shape: RoundedRectangleBorder(
@@ -239,19 +408,21 @@ class _FocusHeroCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '今日のフォーカス',
+                'AI今日のフォーカス',
                 style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
               ),
               SizedBox(height: tokens.spacing(2)),
               Text(
-                'クエストがまだありません',
+                focus == null ? 'AIが学習中です' : '対象のクエストが見つかりません',
                 style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: tokens.spacing(4)),
               Text(
-                'クエストを追加すると、毎日の優先タスクがここに表示されます。',
+                focus == null
+                    ? '進捗データを収集すると、AIが今日取り組むべきクエストを提案します。'
+                    : 'クエストが削除された可能性があります。新しいクエストを追加して提案を再取得してください。',
                 style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
-                maxLines: 2,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: tokens.spacing(4)),
@@ -271,7 +442,7 @@ class _FocusHeroCard extends ConsumerWidget {
     final now = DateTime.now();
     final hasCompletedToday = recentLogs.any(
       (log) =>
-          log.questId == focusQuest.id &&
+          log.questId == focus.questId &&
           log.timestamp.year == now.year &&
           log.timestamp.month == now.month &&
           log.timestamp.day == now.day,
@@ -291,19 +462,32 @@ class _FocusHeroCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '今日のフォーカス',
-              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+              'AI今日のフォーカス',
+              style: tokens.bodyMedium.copyWith(
+                color: tokens.brandPrimary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             SizedBox(height: tokens.spacing(2)),
             Text(
-              focusQuest.title,
+              focus.headline,
               style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
+            SizedBox(height: tokens.spacing(3)),
+            Text(
+              focusQuest.title,
+              style: tokens.titleMedium.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             SizedBox(height: tokens.spacing(4)),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _ProgressRing(
                   progress: progress,
@@ -317,7 +501,7 @@ class _FocusHeroCard extends ConsumerWidget {
                       ),
                       SizedBox(height: tokens.spacing(2)),
                       Text(
-                        '達成済み',
+                        '今日達成',
                         style: tokens.bodySmall.copyWith(
                           color: tokens.brandPrimary,
                           fontWeight: FontWeight.w600,
@@ -335,7 +519,7 @@ class _FocusHeroCard extends ConsumerWidget {
                       ),
                       SizedBox(height: tokens.spacing(2)),
                       Text(
-                        '未着手',
+                        '未完了',
                         style: tokens.bodySmall.copyWith(
                           color: tokens.textMuted,
                           fontWeight: FontWeight.w600,
@@ -350,37 +534,90 @@ class _FocusHeroCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '目安時間',
-                        style: tokens.bodySmall.copyWith(color: tokens.textMuted),
-                      ),
-                      SizedBox(height: tokens.spacing(2)),
-                      Text(
-                        '${focusQuest.estimatedMinutes}分',
-                        style: tokens.titleMedium.copyWith(
-                          fontWeight: FontWeight.bold,
+                        'カテゴリ・所要時間',
+                        style: tokens.bodySmall.copyWith(
+                          color: tokens.textMuted,
                         ),
                       ),
-                      SizedBox(height: tokens.spacing(2)),
+                      SizedBox(height: tokens.spacing(1)),
                       Text(
-                        hasCompletedToday
-                            ? '今日はすでに達成できています。引き続き習慣を続けましょう。'
-                            : 'まだ記録がありません。今すぐ行動して連続日数を伸ばしましょう。',
-                        style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        '${focusQuest.category}・${focusQuest.estimatedMinutes}分',
+                        style: tokens.bodyMedium.copyWith(
+                          color: tokens.textPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: tokens.spacing(3)),
+                      Text(
+                        focus.rationale,
+                        style: tokens.bodyMedium.copyWith(
+                          color: tokens.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: tokens.spacing(3)),
+                      Wrap(
+                        spacing: tokens.spacing(2),
+                        runSpacing: tokens.spacing(2),
+                        children: [
+                          ...focus.supportingFacts.map(
+                            (fact) => Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: tokens.spacing(2.5),
+                                vertical: tokens.spacing(1.5),
+                              ),
+                              decoration: BoxDecoration(
+                                color: tokens.surfaceVariant,
+                                borderRadius: tokens.cornerMedium(),
+                              ),
+                              child: Text(
+                                fact,
+                                style: tokens.bodySmall.copyWith(
+                                  color: tokens.textMuted,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: tokens.spacing(2.5),
+                              vertical: tokens.spacing(1.5),
+                            ),
+                            decoration: BoxDecoration(
+                              color: tokens.brandPrimary.withOpacity(0.12),
+                              borderRadius: tokens.cornerMedium(),
+                            ),
+                            child: Text(
+                              'AI信頼度 ${(focus.confidence * 100).round()}%',
+                              style: tokens.bodySmall.copyWith(
+                                color: tokens.brandPrimary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: tokens.spacing(4)),
+                      Row(
+                        children: [
+                          FilledButton.icon(
+                            onPressed:
+                                () => navigation.goToRecord(focus.questId),
+                            icon: const Icon(Icons.play_arrow),
+                            label: const Text('今すぐ記録'),
+                          ),
+                          SizedBox(width: tokens.spacing(2)),
+                          OutlinedButton.icon(
+                            onPressed:
+                                () => navigation.goToQuestDetail(focus.questId),
+                            icon: const Icon(Icons.info_outline),
+                            label: const Text('詳細を見る'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
               ],
-            ),
-            SizedBox(height: tokens.spacing(4)),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () => navigation.goToQuests(),
-                child: const Text('もっと見る'),
-              ),
             ),
           ],
         ),
@@ -388,6 +625,7 @@ class _FocusHeroCard extends ConsumerWidget {
     );
   }
 }
+
 class _HomeHighlights extends StatelessWidget {
   const _HomeHighlights({required this.data});
 
@@ -398,33 +636,31 @@ class _HomeHighlights extends StatelessWidget {
     final tokens = context.tokens;
     return LayoutBuilder(
       builder: (context, constraints) {
-        final spacing = tokens.spacing(4);
-        if (constraints.maxWidth < 560) {
+        final horizontalGap = tokens.spacing(4);
+        final isWide = constraints.maxWidth >= 560;
+
+        final cards = <Widget>[
+          _MiniQuestsCard(quests: data.quests, recentLogs: data.recentLogs),
+          _StatsSnapshotCard(data: data),
+        ];
+
+        if (!isWide) {
           return Column(
             children: [
-              _MiniQuestsCard(
-                quests: data.quests,
-                recentLogs: data.recentLogs,
-              ),
-              SizedBox(height: spacing),
-              _StatsSnapshotCard(data: data),
+              for (int index = 0; index < cards.length; index++) ...[
+                cards[index],
+                if (index < cards.length - 1) SizedBox(height: horizontalGap),
+              ],
             ],
           );
         }
 
-        final cardWidth = (constraints.maxWidth - spacing) / 2;
-        return Wrap(
-          spacing: spacing,
-          runSpacing: spacing,
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: cardWidth,
-              child: _MiniQuestsCard(
-                quests: data.quests,
-                recentLogs: data.recentLogs,
-              ),
-            ),
-            SizedBox(width: cardWidth, child: _StatsSnapshotCard(data: data)),
+            Expanded(child: cards[0]),
+            SizedBox(width: horizontalGap),
+            Expanded(child: cards[1]),
           ],
         );
       },
@@ -494,7 +730,9 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
               children: [
                 Text(
                   'あなたのミニクエスト',
-                  style: tokens.titleSmall.copyWith(fontWeight: FontWeight.bold),
+                  style: tokens.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 IconButton.filled(
                   onPressed: () => navigation.goToCreateQuest(),
@@ -515,7 +753,8 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: visibleCount,
-                separatorBuilder: (_, __) => SizedBox(height: tokens.spacing(2)),
+                separatorBuilder:
+                    (_, __) => SizedBox(height: tokens.spacing(2)),
                 itemBuilder: (context, index) {
                   final quest = quests[index];
                   return _QuestSummaryRow(
@@ -562,10 +801,7 @@ class _MiniQuestsCardState extends ConsumerState<_MiniQuestsCard> {
 }
 
 class _QuestSummaryRow extends StatelessWidget {
-  const _QuestSummaryRow({
-    required this.quest,
-    required this.isCompleted,
-  });
+  const _QuestSummaryRow({required this.quest, required this.isCompleted});
 
   final HomeQuestItem quest;
   final bool isCompleted;
@@ -607,14 +843,16 @@ class _QuestSummaryRow extends StatelessWidget {
               color: isCompleted ? tokens.brandPrimary : tokens.border,
             ),
           ),
-          child: isCompleted
-              ? const Icon(Icons.check, color: Colors.white, size: 18)
-              : null,
+          child:
+              isCompleted
+                  ? const Icon(Icons.check, color: Colors.white, size: 18)
+                  : null,
         ),
       ],
     );
   }
 }
+
 class _StatsSnapshotCard extends StatelessWidget {
   const _StatsSnapshotCard({required this.data});
 
@@ -732,18 +970,25 @@ class _StatCircle extends StatelessWidget {
       children: [
         _ProgressRing(
           progress: data.value,
-          child: hasProgress
-              ? Center(
-                  child: Text(
-                    data.stat.isEmpty ? '--' : data.stat,
-                    style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                )
-              : const SizedBox.shrink(),
+          child:
+              hasProgress
+                  ? Center(
+                    child: Text(
+                      data.stat.isEmpty ? '--' : data.stat,
+                      style: tokens.titleLarge.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                  : const SizedBox.shrink(),
           emptyChild: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(data.emptyIcon, size: tokens.spacing(6), color: tokens.textMuted),
+              Icon(
+                data.emptyIcon,
+                size: tokens.spacing(6),
+                color: tokens.textMuted,
+              ),
               SizedBox(height: tokens.spacing(2)),
               Text(
                 data.emptyLabel,
@@ -807,6 +1052,7 @@ class _ProgressRing extends StatelessWidget {
     );
   }
 }
+
 class _WeeklyStreakSection extends StatelessWidget {
   const _WeeklyStreakSection({required this.data});
 
@@ -816,7 +1062,7 @@ class _WeeklyStreakSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final recentLogs = data.recentLogs;
-    final dayItems = _buildDayItems(recentLogs);
+    final dayItems = _buildDayStatuses(recentLogs);
 
     return Card(
       color: tokens.surface,
@@ -838,32 +1084,34 @@ class _WeeklyStreakSection extends StatelessWidget {
             Row(
               children: [
                 for (int i = 0; i < dayItems.length; i++) ...[
-                  Expanded(child: dayItems[i]),
+                  Expanded(child: _DayItem(status: dayItems[i])),
                   if (i < dayItems.length - 1)
                     SizedBox(width: tokens.spacing(2)),
                 ],
               ],
             ),
+            SizedBox(height: tokens.spacing(4)),
+            const _StreakLegend(),
           ],
         ),
       ),
     );
   }
 
-  List<Widget> _buildDayItems(List<HomeLogItem> logs) {
+  List<_DayStatus> _buildDayStatuses(List<HomeLogItem> logs) {
     final now = DateTime.now();
     final today = DateUtils.dateOnly(now);
     final startOfWeek = today.subtract(Duration(days: today.weekday - 1));
     const labels = ['月', '火', '水', '木', '金', '土', '日'];
 
-    return List<Widget>.generate(7, (index) {
+    return List<_DayStatus>.generate(7, (index) {
       final dayToDisplay = startOfWeek.add(Duration(days: index));
       final isCompleted = logs.any(
         (log) => DateUtils.isSameDay(log.timestamp, dayToDisplay),
       );
 
-      return _DayItem(
-        day: labels[index],
+      return _DayStatus(
+        label: labels[index],
         isCompleted: isCompleted,
         isToday: DateUtils.isSameDay(dayToDisplay, today),
       );
@@ -871,46 +1119,120 @@ class _WeeklyStreakSection extends StatelessWidget {
   }
 }
 
-class _DayItem extends StatelessWidget {
-  const _DayItem({
-    required this.day,
+class _DayStatus {
+  const _DayStatus({
+    required this.label,
     required this.isCompleted,
-    this.isToday = false,
+    required this.isToday,
   });
 
-  final String day;
+  final String label;
   final bool isCompleted;
   final bool isToday;
+}
+
+class _DayItem extends StatelessWidget {
+  const _DayItem({required this.status});
+
+  final _DayStatus status;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final backgroundColor = isCompleted ? tokens.brandPrimary : Colors.transparent;
-    final borderColor = isCompleted ? tokens.brandPrimary : tokens.border;
+    final bool isCompleted = status.isCompleted;
+    final bool isToday = status.isToday;
 
-    return Column(
+    final tooltipLabel = isCompleted ? '達成' : '未達成';
+
+    return Tooltip(
+      message: '${status.label}曜: $tooltipLabel',
+      waitDuration: const Duration(milliseconds: 250),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            status.label,
+            style: tokens.bodyMedium.copyWith(
+              color: isToday ? tokens.textPrimary : tokens.textMuted,
+              fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+          SizedBox(height: tokens.spacing(2)),
+          _StreakDot(isCompleted: isCompleted, highlight: isToday),
+        ],
+      ),
+    );
+  }
+}
+
+class _StreakDot extends StatelessWidget {
+  const _StreakDot({required this.isCompleted, this.highlight = false});
+
+  final bool isCompleted;
+  final bool highlight;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final double size = tokens.spacing(5);
+    final Widget dot = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isCompleted ? tokens.brandPrimary : Colors.transparent,
+        border: isCompleted ? null : Border.all(color: tokens.border, width: 2),
+      ),
+    );
+
+    if (!highlight) {
+      return dot;
+    }
+
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing(1)),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: tokens.brandPrimary, width: 2),
+      ),
+      child: dot,
+    );
+  }
+}
+
+class _StreakLegend extends StatelessWidget {
+  const _StreakLegend();
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Wrap(
+      spacing: tokens.spacing(4),
+      runSpacing: tokens.spacing(2),
+      alignment: WrapAlignment.center,
+      children: const [
+        _LegendEntry(label: '実績あり', isCompleted: true),
+        _LegendEntry(label: '未達成', isCompleted: false),
+      ],
+    );
+  }
+}
+
+class _LegendEntry extends StatelessWidget {
+  const _LegendEntry({required this.label, required this.isCompleted});
+
+  final String label;
+  final bool isCompleted;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          day,
-          style: tokens.bodyMedium.copyWith(
-            color: isToday ? tokens.textPrimary : tokens.textMuted,
-            fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-        SizedBox(height: tokens.spacing(2)),
-        Container(
-          width: tokens.spacing(8),
-          height: tokens.spacing(8),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: backgroundColor,
-            border: Border.all(color: borderColor, width: 2),
-          ),
-          child: isCompleted
-              ? const Icon(Icons.check, color: Colors.white, size: 18)
-              : null,
-        ),
+        _StreakDot(isCompleted: isCompleted),
+        SizedBox(width: tokens.spacing(2)),
+        Text(label, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
       ],
     );
   }

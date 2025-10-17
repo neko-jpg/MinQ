@@ -68,6 +68,7 @@ dependencies:
   flutter_staggered_animations: any
   share_plus: any
   connectivity_plus: any
+  flutter_markdown: any
   in_app_review: any
   app_links: any
   logger: any
@@ -141,6 +142,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/legal/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

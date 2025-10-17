@@ -3,17 +3,26 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'color_tokens.dart';
+
 class MinqTheme extends ThemeExtension<MinqTheme> {
   const MinqTheme({
     required this.brightness,
     required this.brandPrimary,
+    required this.primaryHover,
+    required this.accentSecondary,
     required this.background,
     required this.surface,
+    required this.surfaceAlt,
+    required this.divider,
     required this.textPrimary,
     required this.textSecondary,
     required this.textMuted,
     required this.accentSuccess,
     required this.border,
+    required this.primaryForeground,
+    required this.surfaceForeground,
+    required this.secondaryForeground,
     // Emotional colors
     required this.joyAccent,
     required this.encouragement,
@@ -32,6 +41,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     // Accessibility colors
     required this.highContrastText,
     required this.highContrastBackground,
+    required this.highContrastPrimary,
     required this.radiusSmall,
     required this.radiusMedium,
     required this.radiusLarge,
@@ -71,13 +81,20 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
 
   final Brightness brightness;
   final Color brandPrimary;
+  final Color primaryHover;
+  final Color accentSecondary;
   final Color background;
   final Color surface;
+  final Color surfaceAlt;
+  final Color divider;
   final Color textPrimary;
   final Color textSecondary;
   final Color textMuted;
   final Color accentSuccess;
   final Color border;
+  final Color primaryForeground;
+  final Color surfaceForeground;
+  final Color secondaryForeground;
 
   // Emotional colors
   final Color joyAccent;
@@ -101,6 +118,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   // Accessibility colors
   final Color highContrastText;
   final Color highContrastBackground;
+  final Color highContrastPrimary;
 
   final double radiusSmall;
   final double radiusMedium;
@@ -143,21 +161,22 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   final Curve bounceOut;
 
   // Additional computed properties
-  Color get surfaceVariant => brightness == Brightness.light
-      ? surface.withOpacity(0.8)
-      : Color.lerp(surface, Colors.white, 0.05)!;
-  
-  Color get onPrimary => brightness == Brightness.light
-      ? Colors.white
-      : Colors.black;
-  
-  TextStyle get labelMedium => bodyMedium.copyWith(
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-  );
+  Color get surfaceVariant =>
+      brightness == Brightness.light
+          ? Color.lerp(surface, background, 0.5) ?? surface
+          : Color.lerp(surface, divider, 0.2) ?? surface;
+
+  Color get onPrimary => primaryForeground;
+
+  Color get onSecondary => secondaryForeground;
+
+  Color get onSurface => surfaceForeground;
+
+  TextStyle get labelMedium =>
+      bodyMedium.copyWith(fontSize: 12, fontWeight: FontWeight.w500);
 
   double spacing(double units) => spaceBase * units;
-  
+
   double radius(double units) => radiusSmall * units;
 
   BorderRadius cornerSmall() => BorderRadius.circular(radiusSmall);
@@ -197,7 +216,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     }
 
     final bool isBackgroundLight = background.computeLuminance() >= 0.5;
-    final Color target = isBackgroundLight ? Colors.black : Colors.white;
+    final Color target = isBackgroundLight ? textPrimary : surfaceForeground;
 
     Color candidate = base;
     for (double step = 0.1; step <= 1.0; step += 0.1) {
@@ -244,35 +263,50 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
 
   static MinqTheme light() {
     const base = 4.0;
+    const palette = ColorTokens.light;
+    final muted = Color.lerp(palette.textSecondary, palette.divider, 0.35)!;
+    final pending = Color.lerp(palette.textSecondary, palette.divider, 0.45)!;
+    final joyAccent = Color.lerp(palette.primary, palette.secondary, 0.35)!;
+    final serenity = Color.lerp(palette.secondary, palette.primary, 0.15)!;
+    final warmth = Color.lerp(palette.warning, palette.primary, 0.25)!;
+
     return MinqTheme(
       brightness: Brightness.light,
-      brandPrimary: const Color(0xFF37CBFA),
-      background: const Color(0xFFF6F8F8),
-      surface: Colors.white,
-      textPrimary: const Color(0xFF101D22),
-      textSecondary: const Color(0xFF1F2933),
-      textMuted: const Color(0xFF64748B),
-      accentSuccess: const Color(0xFF10B981),
-      border: const Color(0xFFE5E7EB),
+      brandPrimary: palette.primary,
+      primaryHover: palette.primaryHover,
+      accentSecondary: palette.secondary,
+      background: palette.background,
+      surface: palette.surface,
+      surfaceAlt: palette.surfaceAlt,
+      divider: palette.divider,
+      textPrimary: palette.textPrimary,
+      textSecondary: palette.textSecondary,
+      textMuted: muted,
+      accentSuccess: palette.success,
+      border: palette.border,
+      primaryForeground: palette.onPrimary,
+      surfaceForeground: palette.onSurface,
+      secondaryForeground: palette.onSecondary,
 
       // Emotional colors
-      joyAccent: const Color(0xFFFFD700), // Golden joy
-      encouragement: const Color(0xFFFF6B6B), // Warm encouragement
-      serenity: const Color(0xFF4ECDC4), // Calming serenity
-      warmth: const Color(0xFFFFA726), // Warm orange
+      joyAccent: joyAccent,
+      encouragement: palette.warning,
+      serenity: serenity,
+      warmth: warmth,
       // State colors
-      progressActive: const Color(0xFF13B6EC), // Active blue
-      progressComplete: const Color(0xFF10B981), // Success green
-      progressPending: const Color(0xFF94A3B8), // Muted gray
+      progressActive: palette.primary,
+      progressComplete: palette.success,
+      progressPending: pending,
       // Interaction colors
-      tapFeedback: const Color(0xFFE3F2FD), // Light blue feedback
-      hoverState: const Color(0xFFF5F5F5), // Light gray hover
+      tapFeedback: palette.primary.withOpacity(0.12),
+      hoverState: palette.primaryHover.withOpacity(0.08),
       // Error and warning colors
-      accentError: const Color(0xFFEF4444), // Clear red for errors
-      accentWarning: const Color(0xFFF59E0B), // Amber for warnings
+      accentError: palette.error,
+      accentWarning: palette.warning,
       // Accessibility colors (WCAG AA compliant)
-      highContrastText: const Color(0xFF000000), // Pure black for high contrast
-      highContrastBackground: const Color(0xFFFFFFFF), // Pure white background
+      highContrastText: palette.highContrastOnPrimary,
+      highContrastBackground: palette.highContrastPrimary,
+      highContrastPrimary: palette.highContrastPrimary,
 
       radiusSmall: 8,
       radiusMedium: 12,
@@ -290,18 +324,18 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       respectfulSpace: base * 8, // 32px - respectful distance between sections
       dramaticSpace: base * 12, // 48px - dramatic spacing for emphasis
 
-      shadowSoft: const [
+      shadowSoft: [
         BoxShadow(
-          color: Color(0x14000000),
+          color: palette.textPrimary.withOpacity(0.08),
           blurRadius: 18,
-          offset: Offset(0, 8),
+          offset: const Offset(0, 8),
         ),
       ],
-      shadowStrong: const [
+      shadowStrong: [
         BoxShadow(
-          color: Color(0x1A000000),
+          color: palette.textPrimary.withOpacity(0.12),
           blurRadius: 24,
-          offset: Offset(0, 14),
+          offset: const Offset(0, 14),
         ),
       ],
       displayMedium: GoogleFonts.plusJakartaSans(
@@ -353,25 +387,25 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
         fontSize: 20,
         fontWeight: FontWeight.w700,
         height: 1.3,
-        color: const Color(0xFFFFD700), // Joy accent color
+        color: joyAccent,
       ),
       encouragementText: GoogleFonts.plusJakartaSans(
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.4,
-        color: const Color(0xFFFF6B6B), // Encouragement color
+        color: palette.warning,
       ),
       guidanceText: GoogleFonts.plusJakartaSans(
         fontSize: 14,
         fontWeight: FontWeight.w500,
         height: 1.5,
-        color: const Color(0xFF4ECDC4), // Serenity color
+        color: serenity,
       ),
       whisperText: GoogleFonts.plusJakartaSans(
         fontSize: 12,
         fontWeight: FontWeight.w400,
         height: 1.4,
-        color: const Color(0xFF94A3B8), // Muted color for subtle hints
+        color: muted,
       ),
 
       // Animation curves for delightful interactions
@@ -384,35 +418,52 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
 
   static MinqTheme dark() {
     const base = 4.0;
+    const palette = ColorTokens.dark;
+    final muted = Color.lerp(palette.textSecondary, palette.divider, 0.3)!;
+    final pending = Color.lerp(palette.textSecondary, palette.divider, 0.45)!;
+    final joyAccent = Color.lerp(palette.primary, palette.secondary, 0.25)!;
+    final serenity = Color.lerp(palette.secondary, palette.surface, 0.2)!;
+    final warmth = Color.lerp(palette.warning, palette.primary, 0.35)!;
+    final encouragement =
+        Color.lerp(palette.warning, palette.textPrimary, 0.35)!;
+
     return MinqTheme(
       brightness: Brightness.dark,
-      brandPrimary: const Color(0xFF37CBFA),
-      background: const Color(0xFF0F172A),
-      surface: const Color(0xFF3D444D), // RGB(61,68,77)
-      textPrimary: Colors.white,
-      textSecondary: const Color(0xFFCBD5F5),
-      textMuted: const Color(0xFF94A3B8),
-      accentSuccess: const Color(0xFF22D3A0),
-      border: const Color(0xFF334155),
+      brandPrimary: palette.primary,
+      primaryHover: palette.primaryHover,
+      accentSecondary: palette.secondary,
+      background: palette.background,
+      surface: palette.surface,
+      surfaceAlt: palette.surfaceAlt,
+      divider: palette.divider,
+      textPrimary: palette.textPrimary,
+      textSecondary: palette.textSecondary,
+      textMuted: muted,
+      accentSuccess: palette.success,
+      border: palette.border,
+      primaryForeground: palette.onPrimary,
+      surfaceForeground: palette.onSurface,
+      secondaryForeground: palette.onSecondary,
 
       // Emotional colors (adjusted for dark theme)
-      joyAccent: const Color(0xFFFFC107), // Slightly muted gold for dark theme
-      encouragement: const Color(0xFFFF8A80), // Softer red for dark theme
-      serenity: const Color(0xFF80CBC4), // Muted teal for dark theme
-      warmth: const Color(0xFFFFB74D), // Warm orange for dark theme
+      joyAccent: joyAccent,
+      encouragement: encouragement,
+      serenity: serenity,
+      warmth: warmth,
       // State colors
-      progressActive: const Color(0xFF38CFFE), // Brand primary
-      progressComplete: const Color(0xFF22D3A0), // Success green
-      progressPending: const Color(0xFF64748B), // Darker muted gray
+      progressActive: palette.primary,
+      progressComplete: palette.success,
+      progressPending: pending,
       // Interaction colors
-      tapFeedback: const Color(0xFF1E293B), // Dark blue feedback
-      hoverState: const Color(0xFF1F2937), // Dark gray hover
+      tapFeedback: palette.primary.withOpacity(0.22),
+      hoverState: palette.primaryHover.withOpacity(0.16),
       // Error and warning colors
-      accentError: const Color(0xFFFF5252), // Bright red for dark theme
-      accentWarning: const Color(0xFFFFB74D), // Amber for warnings
+      accentError: palette.error,
+      accentWarning: palette.warning,
       // Accessibility colors (WCAG AA compliant for dark theme)
-      highContrastText: const Color(0xFFFFFFFF), // Pure white for high contrast
-      highContrastBackground: const Color(0xFF000000), // Pure black background
+      highContrastText: palette.highContrastOnPrimary,
+      highContrastBackground: palette.highContrastPrimary,
+      highContrastPrimary: palette.highContrastPrimary,
 
       radiusSmall: 8,
       radiusMedium: 12,
@@ -425,23 +476,23 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       spaceXL: base * 6,
 
       // Enhanced spacing system for emotional design
-      breathingSpace: base * 4, // 16px - comfortable breathing room
-      intimateSpace: base * 1.5, // 6px - close, intimate spacing
-      respectfulSpace: base * 8, // 32px - respectful distance between sections
-      dramaticSpace: base * 12, // 48px - dramatic spacing for emphasis
+      breathingSpace: base * 4,
+      intimateSpace: base * 1.5,
+      respectfulSpace: base * 8,
+      dramaticSpace: base * 12,
 
-      shadowSoft: const [
+      shadowSoft: [
         BoxShadow(
-          color: Color(0x33000000),
+          color: palette.onSurface.withOpacity(0.18),
           blurRadius: 20,
-          offset: Offset(0, 6),
+          offset: const Offset(0, 6),
         ),
       ],
-      shadowStrong: const [
+      shadowStrong: [
         BoxShadow(
-          color: Color(0x3D000000),
+          color: palette.onSurface.withOpacity(0.22),
           blurRadius: 28,
-          offset: Offset(0, 16),
+          offset: const Offset(0, 16),
         ),
       ],
       displayMedium: GoogleFonts.plusJakartaSans(
@@ -493,25 +544,25 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
         fontSize: 20,
         fontWeight: FontWeight.w700,
         height: 1.3,
-        color: const Color(0xFFFFC107), // Joy accent color
+        color: joyAccent,
       ),
       encouragementText: GoogleFonts.plusJakartaSans(
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.4,
-        color: const Color(0xFFFF8A80), // Encouragement color
+        color: encouragement,
       ),
       guidanceText: GoogleFonts.plusJakartaSans(
         fontSize: 14,
         fontWeight: FontWeight.w500,
         height: 1.5,
-        color: const Color(0xFF80CBC4), // Serenity color
+        color: serenity,
       ),
       whisperText: GoogleFonts.plusJakartaSans(
         fontSize: 12,
         fontWeight: FontWeight.w400,
         height: 1.4,
-        color: const Color(0xFF64748B), // Muted color for subtle hints
+        color: muted,
       ),
 
       // Animation curves for delightful interactions
@@ -526,13 +577,20 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   MinqTheme copyWith({
     Brightness? brightness,
     Color? brandPrimary,
+    Color? primaryHover,
+    Color? accentSecondary,
     Color? background,
     Color? surface,
+    Color? surfaceAlt,
+    Color? divider,
     Color? textPrimary,
     Color? textSecondary,
     Color? textMuted,
     Color? accentSuccess,
     Color? border,
+    Color? primaryForeground,
+    Color? surfaceForeground,
+    Color? secondaryForeground,
     Color? joyAccent,
     Color? encouragement,
     Color? serenity,
@@ -546,6 +604,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     Color? accentWarning,
     Color? highContrastText,
     Color? highContrastBackground,
+    Color? highContrastPrimary,
     double? radiusSmall,
     double? radiusMedium,
     double? radiusLarge,
@@ -582,13 +641,20 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     return MinqTheme(
       brightness: brightness ?? this.brightness,
       brandPrimary: brandPrimary ?? this.brandPrimary,
+      primaryHover: primaryHover ?? this.primaryHover,
+      accentSecondary: accentSecondary ?? this.accentSecondary,
       background: background ?? this.background,
       surface: surface ?? this.surface,
+      surfaceAlt: surfaceAlt ?? this.surfaceAlt,
+      divider: divider ?? this.divider,
       textPrimary: textPrimary ?? this.textPrimary,
       textSecondary: textSecondary ?? this.textSecondary,
       textMuted: textMuted ?? this.textMuted,
       accentSuccess: accentSuccess ?? this.accentSuccess,
       border: border ?? this.border,
+      primaryForeground: primaryForeground ?? this.primaryForeground,
+      surfaceForeground: surfaceForeground ?? this.surfaceForeground,
+      secondaryForeground: secondaryForeground ?? this.secondaryForeground,
       joyAccent: joyAccent ?? this.joyAccent,
       encouragement: encouragement ?? this.encouragement,
       serenity: serenity ?? this.serenity,
@@ -603,6 +669,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       highContrastText: highContrastText ?? this.highContrastText,
       highContrastBackground:
           highContrastBackground ?? this.highContrastBackground,
+      highContrastPrimary: highContrastPrimary ?? this.highContrastPrimary,
       radiusSmall: radiusSmall ?? this.radiusSmall,
       radiusMedium: radiusMedium ?? this.radiusMedium,
       radiusLarge: radiusLarge ?? this.radiusLarge,
@@ -648,8 +715,15 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       brightness: t < 0.5 ? brightness : other.brightness,
       brandPrimary:
           Color.lerp(brandPrimary, other.brandPrimary, t) ?? brandPrimary,
+      primaryHover:
+          Color.lerp(primaryHover, other.primaryHover, t) ?? primaryHover,
+      accentSecondary:
+          Color.lerp(accentSecondary, other.accentSecondary, t) ??
+          accentSecondary,
       background: Color.lerp(background, other.background, t) ?? background,
       surface: Color.lerp(surface, other.surface, t) ?? surface,
+      surfaceAlt: Color.lerp(surfaceAlt, other.surfaceAlt, t) ?? surfaceAlt,
+      divider: Color.lerp(divider, other.divider, t) ?? divider,
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t) ?? textPrimary,
       textSecondary:
           Color.lerp(textSecondary, other.textSecondary, t) ?? textSecondary,
@@ -657,6 +731,15 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       accentSuccess:
           Color.lerp(accentSuccess, other.accentSuccess, t) ?? accentSuccess,
       border: Color.lerp(border, other.border, t) ?? border,
+      primaryForeground:
+          Color.lerp(primaryForeground, other.primaryForeground, t) ??
+          primaryForeground,
+      surfaceForeground:
+          Color.lerp(surfaceForeground, other.surfaceForeground, t) ??
+          surfaceForeground,
+      secondaryForeground:
+          Color.lerp(secondaryForeground, other.secondaryForeground, t) ??
+          secondaryForeground,
       joyAccent: Color.lerp(joyAccent, other.joyAccent, t) ?? joyAccent,
       encouragement:
           Color.lerp(encouragement, other.encouragement, t) ?? encouragement,
@@ -681,6 +764,9 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       highContrastBackground:
           Color.lerp(highContrastBackground, other.highContrastBackground, t) ??
           highContrastBackground,
+      highContrastPrimary:
+          Color.lerp(highContrastPrimary, other.highContrastPrimary, t) ??
+          highContrastPrimary,
       radiusSmall: lerpDouble(radiusSmall, other.radiusSmall, t) ?? radiusSmall,
       radiusMedium:
           lerpDouble(radiusMedium, other.radiusMedium, t) ?? radiusMedium,
@@ -762,17 +848,17 @@ class MinqTypeScale {
 
 extension MinqThemeTypography on MinqTheme {
   MinqTypeScale get typeScale => MinqTypeScale(
-        h1: displayMedium,
-        h2: displaySmall,
-        h3: titleLarge,
-        h4: titleMedium,
-        h5: titleSmall,
-        bodyLarge: bodyLarge,
-        bodyMedium: bodyMedium,
-        bodySmall: bodySmall,
-        button: titleSmall.copyWith(letterSpacing: 0.2),
-        caption: labelSmall,
-      );
+    h1: displayMedium,
+    h2: displaySmall,
+    h3: titleLarge,
+    h4: titleMedium,
+    h5: titleSmall,
+    bodyLarge: bodyLarge,
+    bodyMedium: bodyMedium,
+    bodySmall: bodySmall,
+    button: titleSmall.copyWith(letterSpacing: 0.2),
+    caption: labelSmall,
+  );
 }
 
 extension MinqThemeGetter on BuildContext {

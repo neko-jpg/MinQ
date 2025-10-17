@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/controllers/auth_controller.dart';
+import 'package:minq/presentation/common/policy_documents.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -34,7 +34,17 @@ class LoginScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: tokens.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        leading:
+            Navigator.canPop(context)
+                ? BackButton(color: tokens.textPrimary)
+                : null,
+        automaticallyImplyLeading: false,
+      ),
       body: SafeArea(
+        bottom: false,
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 384), // max-w-sm
@@ -122,7 +132,10 @@ class LoginScreen extends ConsumerWidget {
                             ),
                             recognizer:
                                 TapGestureRecognizer()
-                                  ..onTap = () => context.push('/policy/terms'),
+                                  ..onTap =
+                                      () => ref
+                                          .read(navigationUseCaseProvider)
+                                          .goToPolicy(PolicyDocumentId.terms),
                           ),
                           const TextSpan(text: 'と'),
                           TextSpan(
@@ -143,7 +156,9 @@ class LoginScreen extends ConsumerWidget {
                             recognizer:
                                 TapGestureRecognizer()
                                   ..onTap =
-                                      () => context.push('/policy/privacy'),
+                                      () => ref
+                                          .read(navigationUseCaseProvider)
+                                          .goToPolicy(PolicyDocumentId.privacy),
                           ),
                           const TextSpan(text: 'に同意したものとみなされます。'),
                         ],
