@@ -1,8 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// TODO: This should be managed by a proper theme provider
-final selectedColorProvider = StateProvider<Color>((ref) => Colors.blue);
+const String _themeColorKey = 'theme_color';
+
+class ThemeNotifier extends StateNotifier<Color> {
+  ThemeNotifier() : super(Colors.blue) {
+    _loadTheme();
+  }
+
+  Future<void> _loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    final colorValue = prefs.getInt(_themeColorKey);
+    if (colorValue != null) {
+      state = Color(colorValue);
+    }
+  }
+
+  Future<void> setTheme(Color color) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_themeColorKey, color.value);
+    state = color;
+  }
+}
+
+final themeProvider = StateNotifierProvider<ThemeNotifier, Color>((ref) {
+  return ThemeNotifier();
+});
 
 class ThemeSelectionScreen extends ConsumerWidget {
   const ThemeSelectionScreen({super.key});
@@ -17,7 +41,7 @@ class ThemeSelectionScreen extends ConsumerWidget {
       Colors.purple,
       Colors.teal,
     ];
-    final selectedColor = ref.watch(selectedColorProvider);
+    final selectedColor = ref.watch(themeProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -36,15 +60,14 @@ class ThemeSelectionScreen extends ConsumerWidget {
             final color = availableColors[index];
             return GestureDetector(
               onTap: () {
-                ref.read(selectedColorProvider.notifier).state = color;
-                // TODO: Persist the selected theme color.
+                ref.read(themeProvider.notifier).setTheme(color);
               },
               child: Container(
                 decoration: BoxDecoration(
                   color: color,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: selectedColor == color
+                    color: selectedColor.value == color.value
                         ? Theme.of(context).colorScheme.onSurface
                         : Colors.transparent,
                     width: 3,
