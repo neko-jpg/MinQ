@@ -88,6 +88,8 @@ dependencies:
   crypto: any
   just_audio: any
   speech_to_text: any
+  flutter_gemma: any
+  health: any
   # TODO: Fix integrations package
   # miinq_integrations:
   #   path: packages/integrations
