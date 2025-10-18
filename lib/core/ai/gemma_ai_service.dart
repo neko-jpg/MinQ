@@ -1,5 +1,6 @@
 import 'package:flutter_gemma/flutter_gemma.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 // Provider for the service
 final gemmaAIServiceProvider = Provider<GemmaAIService>((ref) {
@@ -16,16 +17,20 @@ class GemmaAIService {
 
   Future<void> _initialize() async {
     try {
-      // TODO: Add logic to download and manage the model file.
-      // For now, this assumes a model file is bundled with the app.
+      // For now, we assume the model is bundled. A real app might download it.
       _gemma = FlutterGemma();
-      // NOTE: The model path will need to be configured correctly.
-      // This might involve bundling a model or downloading it post-install.
-      // await _gemma.loadModel(modelPath: 'assets/models/gemma-2b-it.bin');
+      // NOTE: Ensure 'gemma-2b-it-cpu.bin' is present in 'assets/models/'
+      // and that 'assets/models/' is listed in pubspec.yaml
+      await _gemma.loadModel(
+        modelPath: 'assets/models/gemma-2b-it-cpu.bin',
+        modelType: GemmaModelType.gemma2b, // Specify model type
+        // Add other configurations as needed, e.g., numThreads
+      );
       _isInitialized = true;
-      print("Gemma AI Service Initialized.");
-    } catch (e) {
+      print("Gemma AI Service Initialized successfully.");
+    } catch (e, s) {
       print("Error initializing Gemma AI Service: $e");
+      Sentry.captureException(e, stackTrace: s);
       _isInitialized = false;
     }
   }
@@ -33,14 +38,19 @@ class GemmaAIService {
   /// Generates text using the loaded Gemma model.
   Future<String> generateText(String prompt) async {
     if (!_isInitialized) {
-      return "AI service is not available.";
+      print("Gemma not initialized. Returning fallback message.");
+      return "AI service is currently unavailable. Please try again later.";
     }
     try {
-      // TODO: Implement actual text generation with proper error handling.
-      // final result = await _gemma.generate(prompt);
-      return "Generated response for: $prompt"; // Placeholder
-    } catch (e) {
+      final result = await _gemma.generate(
+        prompt,
+        maxLength: 250,
+        temperature: 0.7,
+      );
+      return result ?? "I'm sorry, I couldn't generate a response.";
+    } catch (e, s) {
       print("Error generating text with Gemma: $e");
+      Sentry.captureException(e, stackTrace: s);
       return "An error occurred while generating the AI response.";
     }
   }

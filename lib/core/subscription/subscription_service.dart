@@ -1,10 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../logging/app_logger.dart';
+import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
+
 
 /// サブスクリプション管理サービス
-/// 
+///
 /// ユーザーの課金状態を管理し、機能へのアクセス権限を制御する
 class SubscriptionService {
+  final FirebaseFirestore _firestore;
+
   /// 現在のサブスクリプションプラン
   SubscriptionPlan _currentPlan = SubscriptionPlan.free;
 
@@ -14,10 +19,11 @@ class SubscriptionService {
   /// プレミアムユーザーかどうか
   bool get isPremium => _currentPlan != SubscriptionPlan.free;
 
+  SubscriptionService(this._firestore);
+
   /// 初期化
   Future<void> initialize() async {
     try {
-      // TODO: 実際の課金プラットフォーム（RevenueCat, Purchases等）から状態を取得
       await _loadSubscriptionStatus();
       AppLogger.info('Subscription service initialized', {
         'plan': _currentPlan.name,
@@ -29,34 +35,49 @@ class SubscriptionService {
 
   /// サブスクリプション状態を読み込み
   Future<void> _loadSubscriptionStatus() async {
-    // TODO: 実装
-    // 例: RevenueCat から購入情報を取得
-    // final purchaserInfo = await Purchases.getPurchaserInfo();
-    // if (purchaserInfo.entitlements.active.containsKey('premium')) {
-    //   _currentPlan = SubscriptionPlan.premium;
-    // }
+    try {
+      final userDoc = await _firestore.collection('users').doc(_userId).get();
+      final data = userDoc.data();
+      if (data != null && data.containsKey('subscription')) {
+        final sub = data['subscription'] as Map<String, dynamic>;
+        final planName = sub['plan'] as String;
+        final expiry = (sub['expiryDate'] as Timestamp).toDate();
+
+        if (expiry.isAfter(DateTime.now())) {
+          _currentPlan = SubscriptionPlan.values.firstWhere((p) => p.name == planName, orElse: () => SubscriptionPlan.free);
+        } else {
+          _currentPlan = SubscriptionPlan.free;
+        }
+      } else {
+        _currentPlan = SubscriptionPlan.free;
+      }
+    } catch (e, stack) {
+      AppLogger.error('Failed to load subscription status', e, stack);
+      _currentPlan = SubscriptionPlan.free;
+    }
   }
 
   /// サブスクリプションを購入
   Future<bool> purchase(SubscriptionPlan plan) async {
+    if (plan == SubscriptionPlan.free) return false;
     try {
-      AppLogger.info('Attempting to purchase subscription', {
-        'plan': plan.name,
+      AppLogger.info('Attempting to purchase subscription', {'plan': plan.name});
+
+      final now = DateTime.now();
+      final expiryDate = plan == SubscriptionPlan.premiumMonthly
+          ? DateTime(now.year, now.month + 1, now.day)
+          : DateTime(now.year + 1, now.month, now.day);
+
+      await _firestore.collection('users').doc(_userId).update({
+        'subscription': {
+          'plan': plan.name,
+          'purchaseDate': Timestamp.now(),
+          'expiryDate': Timestamp.fromDate(expiryDate),
+        }
       });
 
-      // TODO: 実際の購入処理
-      // 例: RevenueCat で購入
-      // final purchaserInfo = await Purchases.purchasePackage(package);
-      // if (purchaserInfo.entitlements.active.containsKey('premium')) {
-      //   _currentPlan = plan;
-      //   return true;
-      // }
-
-      // デモ用: 常に成功
       _currentPlan = plan;
-      AppLogger.info('Subscription purchased successfully', {
-        'plan': plan.name,
-      });
+      AppLogger.info('Subscription purchased successfully', {'plan': plan.name});
       return true;
     } catch (e, stack) {
       AppLogger.error('Failed to purchase subscription', e, stack);
@@ -68,16 +89,8 @@ class SubscriptionService {
   Future<bool> restore() async {
     try {
       AppLogger.info('Attempting to restore subscription');
-
-      // TODO: 実際の復元処理
-      // 例: RevenueCat で復元
-      // final purchaserInfo = await Purchases.restoreTransactions();
-      // if (purchaserInfo.entitlements.active.containsKey('premium')) {
-      //   _currentPlan = SubscriptionPlan.premium;
-      //   return true;
-      // }
-
-      AppLogger.info('Subscription restored successfully');
+      await _loadSubscriptionStatus();
+      AppLogger.info('Subscription restored successfully', {'plan': _currentPlan.name});
       return true;
     } catch (e, stack) {
       AppLogger.error('Failed to restore subscription', e, stack);
@@ -265,7 +278,7 @@ class FeatureLimit {
 
 /// サブスクリプションサービスのProvider
 final subscriptionServiceProvider = Provider<SubscriptionService>((ref) {
-  final service = SubscriptionService();
+  final service = SubscriptionService(FirebaseFirestore.instance);
   service.initialize();
   return service;
 });
