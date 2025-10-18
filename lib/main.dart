@@ -19,13 +19,24 @@ import 'package:minq/presentation/screens/crash_recovery_screen.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
 import 'package:minq/presentation/widgets/version_check_widget.dart';
 import 'package:minq/config/flavor.dart';
+import 'package:minq/features/settings/presentation/screens/theme_selection_screen.dart';
 import 'package:minq/firebase_options_dev.dart' as dev;
 import 'package:minq/firebase_options_stg.dart' as stg;
 import 'package:minq/firebase_options_prod.dart' as prod;
 
+import 'package:sentry_flutter/sentry_flutter.dart';
+
 Future<void> main() async {
-  final binding = WidgetsFlutterBinding.ensureInitialized();
-  GestureBinding.instance.resamplingEnabled = true;
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://examplePublicKey@o0.ingest.sentry.io/0'; // Replace with your DSN
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: () async {
+      final binding = WidgetsFlutterBinding.ensureInitialized();
+      GestureBinding.instance.resamplingEnabled = true;
 
   final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
   final crashRecoveryStore = CrashRecoveryStore(sharedPrefs);
@@ -97,6 +108,8 @@ Future<void> main() async {
       ],
       child: const MinQApp(),
     ),
+  );
+    },
   );
 }
 
@@ -248,8 +261,8 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         debugShowCheckedModeBanner: false,
         routerConfig: router,
         title: 'MinQ',
-        theme: lightTheme,
-        darkTheme: darkTheme,
+        theme: dynamicLightTheme,
+        darkTheme: dynamicDarkTheme,
         themeMode: ThemeMode.system,
         locale: locale ?? const Locale('ja'),
         localizationsDelegates: const [

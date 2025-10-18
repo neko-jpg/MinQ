@@ -27,17 +27,90 @@ class MoodTrackingService {
       rating: rating,
       createdAt: DateTime.now(),
     );
-    // TODO: Save the moodState object to the 'moodLogs' collection in Firestore.
-    print("Recorded mood for user $userId: $mood ($rating/5)");
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('mood_logs')
+          .doc(moodState.id)
+          .set(moodState.toJson());
+      print("Recorded mood for user $userId: $mood ($rating/5)");
+    } catch (e) {
+      print("Error recording mood: $e");
+    }
   }
 
   /// Analyzes the correlation between a user's mood and their habit success rates.
   Future<void> analyzeMoodHabitCorrelation(String userId) async {
-    // TODO: Implement logic to:
-    // 1. Fetch user's mood logs.
-    // 2. Fetch user's quest completion logs.
-    // 3. Calculate correlations between moods and habit success.
-    // 4. Save the correlation results.
-    print("Analyzing mood-habit correlation for user $userId.");
+    try {
+      // 1. Fetch user's mood logs and quest logs
+      final moodLogsSnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('mood_logs')
+          .orderBy('createdAt', descending: true)
+          .limit(100) // Limit to recent data for performance
+          .get();
+      final questLogsSnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('quest_logs')
+          .orderBy('completedAt', descending: true)
+          .limit(300) // Limit to recent data
+          .get();
+
+      if (moodLogsSnapshot.docs.isEmpty || questLogsSnapshot.docs.isEmpty) {
+        print("Not enough data to analyze correlation.");
+        return;
+      }
+
+      final moodLogs = moodLogsSnapshot.docs.map((doc) => MoodState.fromJson(doc.data())).toList();
+      final questLogs = questLogsSnapshot.docs.map((doc) => doc.data()['completedAt'] as Timestamp).toList();
+
+      // 2. Group quests by date
+      final questsByDate = <DateTime, int>{};
+      for (final ts in questLogs) {
+        final date = DateTime(ts.toDate().year, ts.toDate().month, ts.toDate().day);
+        questsByDate.update(date, (count) => count + 1, ifAbsent: () => 1);
+      }
+
+      // 3. Calculate correlation
+      final correlationData = <String, Map<String, double>>{};
+      final uniqueMoods = moodLogs.map((log) => log.mood).toSet();
+
+      for (final mood in uniqueMoods) {
+        int daysWithMood = 0;
+        int questsOnMoodDays = 0;
+
+        final moodDays = moodLogs
+            .where((log) => log.mood == mood)
+            .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day))
+            .toSet();
+
+        daysWithMood = moodDays.length;
+
+        for (final day in moodDays) {
+          questsOnMoodDays += questsByDate[day] ?? 0;
+        }
+
+        final avgQuestsOnMoodDay = (daysWithMood > 0) ? questsOnMoodDays / daysWithMood : 0.0;
+
+        correlationData[mood] = {
+          'average_quests': avgQuestsOnMoodDay,
+          'mood_day_count': daysWithMood.toDouble(),
+        };
+      }
+
+      // 4. Save the correlation results
+      await _firestore.collection('users').doc(userId).update({
+        'moodHabitCorrelation': correlationData,
+        'lastCorrelationAnalysis': FieldValue.serverTimestamp(),
+      });
+
+      print("Successfully analyzed and saved mood-habit correlation for user $userId.");
+
+    } catch (e) {
+      print("Error analyzing mood-habit correlation: $e");
+    }
   }
 }

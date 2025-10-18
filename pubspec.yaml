@@ -1,4 +1,4 @@
-﻿name: minq
+name: minq
 description: "MinQ - 3繧ｿ繝・・縺ｧ邯壹￥蛹ｿ蜷阪・繧｢鄙呈・蛹悶い繝励Μ"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -91,8 +91,8 @@ dependencies:
   flutter_gemma: any
   health: any
   # TODO: Fix integrations package
-  # miinq_integrations:
-  #   path: packages/integrations
+  miinq_integrations:
+    path: packages/integrations
   equatable: any
 
   # Code Generation
@@ -105,6 +105,8 @@ dependencies:
   shared_preferences: any
   flutter_localizations:
     sdk: flutter
+  pdf: ^3.11.3
+  printing: ^5.14.2
 
 dev_dependencies:
   flutter_test:
@@ -145,6 +147,7 @@ flutter:
   assets:
     - assets/images/
     - assets/legal/
+    - assets/models/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

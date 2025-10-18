@@ -29,16 +29,55 @@ class TimeCapsuleService {
       createdAt: DateTime.now(),
       deliveryDate: deliveryDate,
     );
-    // TODO: Save the capsule to the 'timeCapsules' collection in Firestore.
-    // TODO: Schedule a delivery notification for the deliveryDate.
-    print("Created time capsule for user $userId to be delivered on $deliveryDate.");
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('time_capsules')
+          .doc(capsule.id)
+          .set(capsule.toJson());
+
+      // In a real app, you would schedule a push notification here using a service
+      // like Firebase Functions + Cloud Scheduler, or a local notification service.
+      print("Created and saved time capsule ${capsule.id} for user $userId to be delivered on $deliveryDate.");
+    } catch (e) {
+      print("Error creating time capsule: $e");
+    }
   }
 
   /// Delivers a time capsule to the user.
-  Future<void> deliverTimeCapsule(String capsuleId) async {
-    // TODO: This would be triggered by a scheduled function.
-    // It would send a notification to the user that their time capsule is ready.
-    print("Delivering time capsule $capsuleId.");
+  Future<void> deliverTimeCapsule({required String userId, required String capsuleId}) async {
+    // This function would typically be triggered by a scheduled background job.
+    // It marks the capsule as ready to be opened by the user.
+    try {
+      final capsuleRef = _firestore.collection('users').doc(userId).collection('time_capsules').doc(capsuleId);
+      await capsuleRef.update({'delivered': true});
+
+      final notificationPayload = {
+        'title': 'A Message From Your Past Self!',
+        'body': 'A time capsule you created is ready to be opened.',
+        'type': 'time_capsule',
+        'capsuleId': capsuleId,
+      };
+
+      // It would also send a notification to the user.
+      await _firestore.collection('users').doc(userId).collection('notifications').add({
+        ...notificationPayload,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      // Trigger the backend function
+      await _firestore.collection('notifications_to_send').add({
+        'targetUserId': userId,
+        'title': notificationPayload['title'],
+        'body': notificationPayload['body'],
+        'data': { 'type': 'time_capsule', 'capsuleId': capsuleId }
+      });
+
+      print("Queued delivery notification for time capsule $capsuleId.");
+    } catch (e) {
+      print("Error delivering time capsule: $e");
+    }
   }
 
   /// Generates a reflection comparing the user's past expectations with their current reality.
@@ -46,9 +85,14 @@ class TimeCapsuleService {
     required TimeCapsule capsule,
     required String currentReality, // User's input about their current situation
   }) {
-    // TODO: Create a formatted string that compares the past and present.
-    return "Back on ${capsule.createdAt.toLocal()}, you predicted: '${capsule.prediction}'.\n\n"
-           "Today, you've shared: '$currentReality'.\n\n"
-           "How do you feel about the journey?";
+    final createdDate = capsule.createdAt.toLocal().toString().split(' ')[0];
+    return "## A Look Back... and a Look Forward\n\n"
+           "**On $createdDate, you sent a message to your future self:**\n"
+           "> *${capsule.message}*\n\n"
+           "**You predicted your life would be like this:**\n"
+           "> *${capsule.prediction}*\n\n"
+           "**And here's where you are today:**\n"
+           "> *${currentReality}*\n\n"
+           "Take a moment to reflect on the journey. What has changed? What has stayed the same? What have you learned?";
   }
 }

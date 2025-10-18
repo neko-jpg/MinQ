@@ -108,18 +108,24 @@ class AgeVerificationService {
   Future<void> notifyParent({
     required String userId,
     required String parentEmail,
-    required String message,
+    required String subject,
+    required String body,
   }) async {
-    // TODO: メール送信機能を実装
-    await _firestore.collection('parentNotifications').add({
-      'userId': userId,
-      'parentEmail': parentEmail,
-      'message': message,
-      'sentAt': FieldValue.serverTimestamp(),
-      'read': false,
-    });
-
-    print('✅ Parent notification sent to: $parentEmail');
+    // This queues up an email to be sent by a backend service (e.g., Firebase Functions with SendGrid)
+    try {
+      await _firestore.collection('mail_to_send').add({
+        'to': parentEmail,
+        'message': {
+          'subject': subject,
+          'html': body, // Using html for richer formatting
+        },
+        'userId': userId,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      print('✅ Queued parental consent email to: $parentEmail');
+    } catch (e) {
+      print("Error queuing email: $e");
+    }
   }
 
   /// 年齢確認が必要かチェック
