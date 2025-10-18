@@ -1,839 +1,140 @@
-プロジェクトタスクチェックリスト (リセット版)
-このリストは、全てのタスクを未完了（[]）の状態に戻し、プロジェクトの新たな出発点とするために作成されました。
-
-- [ ] 🔧 Lint-zeroキャンペーン (2,000件以上の解析エラーを修正)
-
-P0 (必須・不具合/統一) - マストハブ
-[ ] 色統一: カード背景を tokens.surface に統一（Darkは RGB(61,68,77)）。直指定色を撤去。
-
-[ ] Onboarding: ColorScheme 直参照 → すべて context.tokens に置換。_FeatureCard は CardTheme 準拠。
-
-[ ] Riverpodエラー対策: ref.listen → ref.listenManual に変更し ProviderSubscription を dispose() で close()。
-
-[ ] BOTTOM OVERFLOWED対策: SafeArea、SingleChildScrollView+viewInsets余白、ConstrainedBox(minHeight)、Expanded/Flexible 徹底。
-
-[ ] 認証フロー完成: Google/Apple/Email、失敗/再試行、初回プロフィール初期化。
-
-[ ] MiniQuest CRUD: 作成/編集/削除/並び替え、通知スケジュール。
-
-[ ] 進捗ログ: 記録/取り消し、日跨ぎ・タイムゾーン処理。
-
-[ ] Stats確定: 連続日数・7日達成率・当日完了数、0件時の行動喚起カード。
-
-[ ] ペア機能の安全: 匿名、通報/ブロック、NGワード基本フィルタ。
-
-[ ] プロフィール実データ化: Firestore連携、ダミー撤去ボタンを押したときにしっかりとすべての機能がつかえるようにする。
-
-[ ] 同期バナー: 表示条件整理、表示後 acknowledgeBanner()。
-
-[ ] エラーUX標準化: SnackBar/Dialog/EmptyState のガイド適用。
-
-[ ] 戻るボタンや、×ボタンが機能するか確認さらにAndoroidアプリでの戻るボタンでも確認、Appleユーザように戻るボタンも配置かつ機能しているかも確認
-
-[ ] 'package:flutter_riverpod/src/consumer.dart': Failed assertion: line 600 pos 7: 'debugDoingBuild': ref.listen can only be used within the build method of a ConsumerWidget See also: https://docs.flutter.dev/testing/errors　このエラーを直してhome画面と進捗画面が表示されるようにし色統一がされていることを確認する。
-
-P1 (体験磨き) - UX改善
-[ ] ボタン規格統一: minq_buttons.dart にVariant集約（Elevated/Outlined/Text）。
-
-[ ] カード様式統一: 枠線/角丸トークン統一。
-
-[ ] ローディング: リスト=スケルトン、ボタン=スピナー、グラフ=フェード。
-
-[ ] i18n: ハードコード文言抽出→.arb、ja完了/en雛形。
-
-[ ] Onboarding短縮: 最大3枚、通知許可→初回クエスト作成へ直行。
-
-[ ] 共有カード調整: 余白/フォント/エクスポート解像度統一。
-
-[ ] DeepLink/Push: 通知タップで対象画面へ遷移。
-
-[ ] 設定: バックアップ/JSONエクスポート、複数リマインド時刻。
-
-[ ] 空状態コピー統一: 次アクション提示。
-
-[ ] アクセシビリティ: Semantics、48dpタップ、TextScale 1.3対応。
-
-[ ] 画像最適化: cacheWidth/Height 指定の徹底。
-
-[ ] ナビ/コピー統一: 肯定=右、否定=左、CTA表現統一。
-
-P2 (成長/収益/運用/技術負債) - 拡張性と安定性
-P2-1. アナリティクスと収益
-[ ] Analytics設計: Auth→Onboard→QuestCreate→Complete→Share のイベント定義。
-
-[ ] Remote Config/A-B: コピー/CTA配置の実験基盤。
-
-[ ] モネタイズ方針: AdMobの配置ポリシー（実行導線では非表示）、サブスク権限の下準備。
-
-[ ] 招待/リファラ: 招待リンク、導線計測。
-
-P2-2. デザインシステムとアクセシビリティ
-[ ] 祝アニメーション: ペア成立時の軽量アニメ。
-
-[ ] 高度統計/CSV出力: 期間比較、エクスポート。
-
-[ ] QAチェック: 端末サイズ/ダーク・ライト/オフライン動作の回帰テスト。
-
-[ ] テーマトークン監査: Spacing/Radius/Elevation/Border を定義・未使用色削除。
-
-[ ] タイポグラフィ階層定義:（H1–H6、Body、Caption、Mono）。
-
-[ ] ベースライングリッド適用:（4/8px）とマージン統一。
-
-[ ] コントラスト検証:（WCAG AA/AAA）と不適合箇所修正。
-
-[ ] Magic Number撤去:→全てトークン化。
-
-[ ] EdgeInsets直書き撤去:→Spacingトークンへ置換。
-
-[ ] アセットアイコン統一:（アイコンセット固定・不要削除・ツリーシェイク）。
-
-[ ] Reduce Motion対応:（OS設定でアニメ無効）。
-
-[ ] ハプティクス規格:（成功/警告/軽タップの統一）。
-
-[ ] フォーカスリング/アクセント色: のキーボード操作対応。
-
-P2-3. UIコンポーネントとエラー処理
-[ ] SnackBarグローバルマネージャ導入:（重複排他）。
-
-[ ] ダイアログ/ボトムシートの標準コンポーネント化。
-
-[ ] 空状態イラスト/アイコンのスタイル統一。
-
-[ ] フォームValidationメッセージ統一:（行内/下部どちらかに統一）。
-
-[ ] IMEオーバーラップ検証:（長文入力・日本語変換中）。
-
-[ ] TextOverflowポリシー統一:（ellipsis/softWrap）。
-
-[ ] 画像プレースホルダ/失敗時のFallback実装。
-
-[ ] Hero/ImplicitアニメのEasing/Duration規格化。
-
-[ ] タブ/BottomNavのバッジ規格:（数値/点表示）。
-
-[ ] スクロール到達インジケータ:（EdgeGlow/Scrollbar統一）。
-
-P2-4. アーキテクチャとテスト
-[ ] ProviderObserver導入:（Riverpod遷移ログ）。
-
-[ ] AsyncValue.guard の標準化:（例外→UI表現変換）。
-
-[ ] Repositoryインターフェース化＋Fake実装。
-
-[ ] Now/Clock Provider導入:（時刻依存のテスト容易化）。
-
-[ ] AutoDispose/keepAlive の方針整理。
-
-[ ] 依存循環検知:（import_lint設定）。
-
-[ ] Navigatorガード:（未ログイン時の保護）。
-
-[ ] flutter_lints強化＋analyzer拡張:（prefer_const/avoid_print等）。
-
-[ ] import順序/未使用警告ゼロ化:（lint-staged）。
-
-[ ] pre-commitフック:（format/lint/test）。
-
-[ ] Dart-defineで環境切替:（dev/stg/prod）。
-
-[ ] Flavor別Firebaseプロジェクト分離。
-
-[ ] Logger導入:（JSON構造ログ）。
-
-[ ] Crashlytics導入:（非致命ログ＋キー/パンくず）。
-
-[ ] Performance Monitoring:（起動/描画/HTTPトレース）。
-
-[ ] Sentryオプション:（リリースビルドのみ）。
-
-[ ] Renovate/Dependabot設定:（依存更新）。
-
-[ ] GitHub Actions: Lint/Test/Build/Artifacts。
-
-[ ] CIでgoldenテスト差分チェック。
-
-[ ] Fastlane:（署名/ビルド番号/配布自動化）。
-
-[ ] コードカバレッジ収集:（閾値設定）。
-
-[ ] Conventional Commits:＋自動CHANGELOG生成。
-
-[ ] CODEOWNERS/レビュー規約。
-
-[ ] ユニットテスト:（Notifier/Repo）。
-
-[ ] ウィジェットテスト:（主要画面の状態分岐）。
-
-[ ] ゴールデンテスト:（デバイス3種・ライト/ダーク）。
-
-[ ] integration_test:（認証→作成→達成→共有フロー）。
-
-[ ] パフォーマンステスト:（初回描画/フレームドロップ）。
-
-[ ] 回帰テストシナリオ表作成:（手動QA）。
-
-P2-5. Firebase/インフラストラクチャ
-[ ] Firestoreルールv2整理:（最小権限・ロール分離）。
-
-[ ] ルールユニットテスト:（エミュレータ）。
-
-[ ] インデックス/複合インデックス定義。
-
-[ ] TTL/ソフトデリート方針。
-
-[ ] 一意制約:（Cloud Functionsで強制）。
-
-[ ] オフライン永続化/キャッシュ上限設定。
-
-[ ] 競合解決ポリシー:（last-write-win/merge）。
-
-[ ] リトライ/バックオフ:（ネット不安定時）。
-
-[ ] 書込レート制御:（料金最適化）。
-
-[ ] データモデル版管理/移行スクリプト。
-
-[ ] BigQueryエクスポート有効化。
-
-P2-6. 通知とディープリンク
-[ ] 通知チャンネル定義:（Android：重要/通常/消音）。
-
-[ ] 通知アクション:（完了/スヌーズ）。
-
-[ ] まとめ通知:（デイリーサマリ）。
-
-[ ] iOS provisional許可対応:（静かに配信）。
-
-[ ] DeepLinkパラメタ検証/サニタイズ。
-
-[ ] Android App Links/ iOS Universal Links整備。
-
-[ ] Webフォールバックページ:（DeepLink失敗時）。
-
-P2-7. App Storeとプラットフォーム連携
-[ ] In-App Review導線。
-
-[ ] In-App Update:（Android柔軟更新）。
-
-[ ] Widget対応:（iOS/Androidホームウィジェット）。
-
-[ ] Quick Actions / App Shortcuts。
-
-[ ] 共有シートエクスポート:（画像/テキスト）。
-
-[ ] アバターアップロード:（Crop/圧縮）。
-
-[ ] 画像ストレージリサイズ:（Functionsで生成）。
-
-[ ] CSV/JSONエクスポート/インポート。
-
-[ ] カレンダー連携:（ICS出力）。
-
-[ ] バックアップ/リストア:（Drive/Files）。
-
-P2-8. ペア機能の高度化とモデレーション
-[ ] モデレーション方針:（ペア機能：通報→審査→措置）。
-
-[ ] NGワード辞書更新フロー。
-
-[ ] レート制限/スパム対策:（Cloud Functions）。
-
-[ ] ブロック/ミュート実装拡張:（期間/解除）。
-
-[ ] マッチング設定:（時間帯/言語/目的）。
-
-[ ] 再マッチ回避/クールダウン。
-
-P2-9. ユーザ体験の磨き込み
-[ ] Onboarding計測:（ステップ別離脱）。
-
-[ ] コーチマーク/チュートリアル。
-
-[ ] ライフログのテンプレ/おすすめ導線。
-
-[ ] 習慣の一時停止/スキップ/凍結日:（Streak保護）。
-
-[ ] スヌーズ/Do Not Disturb時間帯。
-
-[ ] スマート提案:（過去実績→通知時刻提案）。
-
-[ ] バッジ/実績/週次チャレンジ。
-
-[ ] ペアスコアボード/軽量ランキング。
-
-[ ] 多言語整形:（日時/数値/通貨/単位）。
-
-[ ] Bidi対応:（RTL検証）。
-
-[ ] 日本語固有表記:（全角/半角/長音）方針。
-
-[ ] 曜日/祝日表示:（ロケール準拠）。
-
-P2-10. 端末対応とパフォーマンス
-[ ] 端末マトリクスQA:（小/中/大/折りたたみ/タブ）。
-
-[ ] セーフエリア/ノッチ/ホームインジケータ検証。
-
-[ ] 画面回転/ランドスケープ制御。
-
-[ ] 低速端末/低メモリ耐性。
-
-[ ] 起動時間短縮:（遅延初期化/画像プリフェッチ）。
-
-[ ] ABI別分割/圧縮:（Android App Bundle最適化）。
-
-[ ] 未使用アセット/フォント削除。
-
-[ ] ベクター化:（PNG→SVG/PNGW）。
-
-[ ] 背景Isolateで重処理:（集計/書き出し）。
-
-P2-11. 法務とリリース運用
-[ ] 法務: 利用規約/プライバシーポリシー整備。
-
-[ ] データセーフティフォーム:（Play Console）。
-
-[ ] アカウント削除/データ削除導線:（GDPR/個人情報保護法）。
-
-[ ] 年齢配慮/ペア機能の年少者保護。
-
-[ ] 追跡拒否トグル:（Do Not Track）。
-
-[ ] メタデータ多言語化/ASOキーワード。
-
-[ ] 内部テスト/クローズドテスト/オープンβ運用。
-
-[ ] プレローンチレポート対応:（クラッシュ/互換）。
-
-[ ] バグ報告機能:（スクショ添付/ログ同梱）。
-
-[ ] ストア素材作成:（スクショ/動画/アイコン/説明文）。
-
-[ ] インアプリFAQ/ヘルプ/問い合わせ。
-
-[ ] 稼働監視ダッシュボード:（障害/指標）。
-
-[ ] Slack/メール通知:（重大イベント）。
-
-[ ] リモートフラグのキルスイッチ。
-
-[ ] 実験テンプレ:（対象/指標/期間）。
-
-[ ] 料金/権限のフェンス:（無料/有料機能切替）。
-
-[ ] リファラ計測:（招待リンク/詐欺対策）。
-
-[ ] 変更履歴/お知らせセンター。
-
-[ ] テックドキュメント整備:（ARCHITECTURE.md/RUNBOOK.md）。
-
-[ ] デザインシステムガイド:（色/タイポ/モーション）。
-
-[ ] TODO/DEBT棚卸しと優先度付け。
-
-[ ] 依存パッケージのライセンス表記。
-
-P2-12. その他高度な機能・改善
-[ ] FCMトピック設計:（ニュース/週次まとめ）。
-
-[ ] バックグラウンド同期の窓口:（WorkManager等）。
-
-[ ] タイムゾーン異常/うるう年/月末処理の境界テスト。
-
-[ ] DND中の通知延期ロジック。
-
-[ ] 連続通知抑制:（デバウンス/バッチ）。
-
-[ ] 例外セーフガード:（エラーバウンダリ相当の画面）。
-
-[ ] ネットワーク断/機内モード時のデグレード表示。
-
-[ ] CDN/HTTPキャッシュ戦略:（外部静的アセット用）。
-
-[ ] 入力サニタイズ:（DeepLink/外部入力全般）。
-
-[ ] Play Integrity APIの検討:（改ざん対策）。
-
-[ ] アプリ内時刻表現の一貫性:（相対/絶対の規則）。
-
-[ ] アプリ起動スプラッシュ画面の統一:（ライト/ダーク/ロゴ解像度）。
-
-[ ] ダークモード切替を即時反映:（再起動不要）。
-
-[ ] アクセントカラーをユーザ設定で切替可能に:（青/緑/紫系など）。
-
-[ ] フォントサイズ変更UI:（ユーザが調整可能）。
-
-[ ] プロフィールのニックネーム重複検証。
-
-[ ] ペア機能での「おすすめユーザ」表示:（条件：アクティブ度・時間帯）。
-
-[ ] タスク/習慣のタグ機能:（分類・検索用）。
-
-[ ] クエストのアーカイブ機能:（削除せず非表示）。
-
-[ ] クエストのリマインド複数設定:（朝・昼・夜）。
-
-[ ] クエストの優先度ラベル:（高/中/低）。
-
-[ ] 達成画面のアニメーション追加:（祝福演出）。
-
-[ ] Statsでの週単位・月単位切替。
-
-[ ] Statsのグラフにツールチップ追加:（正確な数値表示）。
-
-[ ] データエクスポートをPDF形式でも提供。
-
-[ ] サーバーメンテナンス時のメッセージ画面。
-
-[ ] オフラインモード時のUI表示改善:（読み取り専用モード）。
-
-[ ] 通知タップで直接「今日のクエスト一覧」へ遷移。
-
-[ ] 機種変更時のデータ移行ガイド:（Google Driveバックアップ）。
-
-[ ] ストリーク途切れ時のリカバリー機能:（課金や広告視聴で保護）。
-
-[ ] ペアの進捗比較画面:（自分と相手のグラフ並列）。
-
-[ ] ペア解消機能:（トラブル時に一方解除可）。
-
-[ ] ペアリマインド通知:（相手が未達成ならプッシュ）。
-
-[ ] サーバーレスポンス遅延時のリトライUI。
-
-[ ] バージョンアップ時の変更点案内:（What’s New画面）。
-
-[ ] バージョン互換チェック:（古いクライアントを警告）。
-
-[ ] ストア評価リクエスト導線:（一定利用後に表示）。
-
-[ ] SNSシェア時のOGP画像生成:（クエスト達成バナー）。
-
-[ ] ユーザ削除時の二重確認:（誤操作防止）。
-
-[ ] 通知の曜日/祝日カスタム:（休みの日は通知しない）。
-
-[ ] 習慣テンプレート集:（例：朝ラン・読書・日記）。
-
-[ ] 習慣提案AI:（過去の記録から推奨）。
-
-[ ] 習慣に「難易度」属性追加:（簡単/普通/難しい）。
-
-[ ] 習慣に「推定時間」属性追加:（5分/15分/30分）。
-
-[ ] 習慣の「場所」属性:（ジム/自宅/図書館）。
-
-[ ] 習慣の「連絡先」リンク:（例：ペアのLINE）。
-
-[ ] 音声入力でクエスト作成。
-
-[ ] 習慣実行時のタイマー機能。
-
-[ ] 習慣実行中のBGM:（集中モード）。
-
-[ ] ペア同士の軽いチャット:（スタンプ/定型文のみ）。
-
-[ ] 不正利用検出:（短時間で大量クエスト完了→警告）。
-
-[ ] 利用時間制限:（親子モード）。
-
-[ ] デバイス通知音のカスタム。
-
-[ ] アプリ内での「よくある質問」ヘルプセンター。
-
-[ ] フィードバック投稿フォーム:（Googleフォーム連携）。
-
-[ ] アプリ内アンケート:（UI改善用）。
-
-[ ] バッジシステム:（7日連続達成・30日達成）。
-
-[ ] アチーブメント一覧画面。
-
-[ ] プロフィールに「獲得バッジ数」表示。
-
-[ ] イベントモード:（期間限定クエスト）。
-
-[ ] チーム習慣:（ペア以上＝複数人での達成競争）。
-
-[ ] イベントランキング:（習慣数で競う）。
-
-[ ] ISO 27001/SOC 2準拠のセキュリティポリシー策定。
-
-[ ] 差分バックアップ+暗号化ZIPのユーザ直接DL機能。
-
-[ ] マルチリージョンFirestore→Datastoreレプリケーション設計。
-
-[ ] CDNヘッダ最適化:（Cache-Control/Etag/ Brotli自動）。
-
-[ ] アプリ起動時プリロード戦略:（Warm-up isolate／DWU削減）。
-
-[ ] Chaos Testing:（ネット断・メモリ圧迫・時刻改変）。
-
-[ ] Fuzz Testing:（フォーム入力の異常系自動生成）。
-
-[ ] ライブラリアップデート自動PR:（Renovate Bot）。
-
-[ ] 開発用データシードスクリプト:（faker付き）。
-
-[ ] Monorepo化＋Melos/Very Good CLI導入。
-
-[ ] Dart API docs → pub.dev公開自動生成。
-
-[ ] タグ/検索バー搭載:（習慣名・タグ・説明全文検索）。
-
-[ ] AIレコメンド:（達成率・時間帯で次の習慣提案）。
-
-[ ] パーソナライズPush:（RFM分析で送信頻度調整）。
-
-[ ] ACR Cloud連携でBGM自動タグ付け:（集中曲提案）。
-
-[ ] スクリーンリーダー最適化:（ロール/ヒント/読み順確認）。
-
-[ ] カラーコントラスト自動検証CI:（WCAG 2.2 AA）。
-
-[ ] 日本語漢字変換中のIME候補被りテスト。
-
-[ ] 祝日API同期:（各国ローカル通知自動スキップ）。
-
-[ ] DST/うるう秒/閏年パスケース単体テスト。
-
-[ ] オフライン完全モード:（IndexedDB＋PWA用）。
-
-[ ] PWAインストールバナー＆Add to Home Screen対応。
-
-[ ] Mac/Winネイティブビルド:（Flutter Desktop、menu bar timer）。
-
-[ ] Wear OS/Apple Watchクイックチェックアプリ。
-
-[ ] HealthKit/Google Fit連携:（歩数→習慣自動達成）。
-
-[ ] GPT-4o埋め込みチャットサポートBot:（問い合わせ自動回答）。
-
-[ ] アプリ内コミュニティ掲示板:（モデレーション付き）。
-
-[ ] カスタムWebhook IFTTT/Zapier連携。
-
-[ ] Carbon footprint計測:（CI/CD & ランタイム）。
-
-[ ] グリーンダークモード:（OLED省電力配色）。
-
-[ ] 動画チュートリアル生成パイプライン:（Lottie＋TTS）。
-
-[ ] Live Activity / Android Live Widget:（進捗リアルタイム表示）。
-
-[ ] Stripe Billing Portal統合:（サブスク管理セルフサービス）。
-
-[ ] アプリ内投げ銭:（Sponsor block ads 解除）。
-
-[ ] Referral Code deep link:（友達招待→報酬）。
-
-[ ] ユーザートークン制Rate Limiter:（機能乱用対策）。
-
-[ ] 地理的位置連動通知:（ジオフェンス：ジム到着→習慣リマインド）。
-
-[ ] 画像生成AIでSNS共有バナー自動作成。
-
-[ ] 高齢者向けアクセシビリティ設定:（特大UI・音声読み上げ速度）。
-
-[ ] プログレッシブオンボーディング:（機能解放レベル制）。
-
-[ ] Feature flag kill-switch即時反映:（Remote Configのみで停止）。
-
-[ ] KPIダッシュボード自動Snapshot→Slack送信。
-
-[ ] バックエンドコストアラート:（Firestore/Functions超過時）。
-
-[ ] ユーザー行動ヒートマップ:（RepaintBoundary＋解析）。
-
-[ ] 自己診断モード:（設定→テスト通知/ストレージ/ネット）。
-
-[ ] 脆弱性SCA:（Software Composition Analysis）定期実行。
-
-[ ] 法域別プライバシーコンプライアンス:（COPPA/CCPA/OHCA）。
-
-2024-02-09 追加対応メモ (リセット)
-[ ] Reduce Motion対応: animation_system.dart と Skeleton/チャット送信UIで MediaQuery.disableAnimations を尊重し、動きを抑制しました。
-
-[ ] フォーカスリング/アクセント色: focus_system.dart をトークンベースのカラー解決とセマンティクス強化に更新しました。
-
-[ ] コントラスト検証: contrast_validator_test.dart を追加し、WCAG準拠の閾値を自動テストしました。
-
-[ ] TextOverflowポリシー統一: text_overflow_policy_test.dart でタイトル/本文のオーバーフロールールを検証しました。
-
-[ ] 画像プレースホルダ/失敗時のFallback: image_placeholder.dart にセマンティクスとトークン半径、Reduce Motion対応のアニメーション調整を追加しました。
-
-[ ] アクセシビリティ: Semantics: フォーカス可能ウィジェットとオフラインバナーにセマンティクスを付与しスクリーンリーダー対応を強化しました。
-
-[ ] Magic Number撤去: シェアカードやチャット入力などの余白・サイズを context.tokens に置き換えました。
-
-[ ] EdgeInsets直書き撤去: offline_mode_indicator.dart などでSpacingトークンへ置換しました。
-
-[ ] ローディング: Skeletonローダーに静的フォールバックを追加し、Reduce Motion時はアニメーションを停止するようにしました。
-
-[ ] QAチェック: test/presentation/theme 配下のユニット/ウィジェットテストを追加し、UIトークン周りの回帰を防止しました。
-
-習慣継続率 (LTV) 向上戦略 
-
-
-通知・リマインダー 
-
-[ ] 適切なタイミング（ユーザーの行動に合わせる）でのプッシュ通知・アプリ内メッセージ実装 
-
-[ ] 日々の実行を促す軽いプッシュ通知（例：「今日のクエストを記録しよう！」）を設計 
-
-
-チャレンジ機能 
-
-[ ] デイリー・ウィークリーチャレンジ（例：「7日間連続挑戦」）を導入 
-
-[ ] チャレンジ達成時の報酬（バッジ、ご褒美コンテンツ）を実装 
-
-[ ] 既存のミニクエストと連携した期間限定イベントを企画 
-
-
-進捗の可視化 
-
-[ ] 連続達成日数（ストリーク）のUIを強化し、途切れさせたくない心理を刺激する 
-
-[ ] クエストカードに進捗バー（目標達成まであと少し）を表示 
-
-[ ] マイルストーン達成時（例：7日、30日）のお祝い演出や称賛メッセージを実装 
-
-
-ソーシャル機能 
-
-[ ] （将来的）ペア以外のコミュニティ機能（共通目標の掲示板、グループイベント）を検討 
-
-[ ] （推奨）ランキング形式より、小規模グループで励まし合える仕組みを検討 
-
-
-ゲーミフィケーション 
-
-[ ] ポイント、バッジ、ランクアップ制度の導入を検討 
-
-[ ] 報酬制度（例：ポイントでアイテム交換）の導入を検討 
-
-[ ] 具体的な報酬（例：「○日連続達成で限定アイコン」）を設定 
-
-
-パーソナライズ 
-
-[ ] ユーザーデータに基づき「おすすめのミニクエスト」を表示する機能 
-
-[ ] 利用状況に応じたアドバイス（例：停滞ユーザーへの目標見直しレコメンド）機能 
-
-2. 低コスト志向ユーザーへのアプローチ 
-
-
-価値の訴求 
-
-[ ] 無料機能（ペア、トラッキング）で「お金をかけずに続けられる」点を訴求 
-
-[ ] AIアシスタントや仲間からの励ましが得られる点をアピール 
-
-[ ] 継続によるメリット（成功事例、健康改善など）を具体的に提示 
-
-
-機能改善 
-
-
-[ ] 初期設定で無理のない目標値を提案する仕組み 
-
-[ ] 段階的ステップアップ（例：「週1回から」）を可能にする機能 
-
-[ ] 簡易な分析とフィードバック（例：「夜より朝の方が継続率が高い」）を提供する機能 
-
-
-コンテンツ 
-
-[ ] 関連する良質な無料動画や記事（習慣化のコツなど）へのリンクを紹介 
-
-3. MinQの強みを伸ばす（匿名ペア・ミニクエスト） 
-
-
-
-
-匿名ペア機能の強化 
-
-[ ] ペアマッチングの最適化（趣味・目標・活動時間帯）アルゴリズム強化 
-
-[ ] ペア内コミュニケーション支援（例：初回の会話きっかけを自動提供） 
-
-[ ] ペアチャットで簡単なやり取り（ステッカー等）を促す仕組み 
-
-[ ] 相手が離脱した場合の「再マッチ機能」を検討 
-
-
-ミニクエストとゲーミフィケーションの強化 
-
-[ ] ストーリー性や「章立ての目標」の導入（例：クエストのシリーズ化） 
-
-[ ] ユーザー主体のクエスト共有機能（ユーザー作成クエストに他者が参加）を検討 
-
-[ ] ご褒美コンテンツの充実（例：限定コンテンツ閲覧、アイテムアンロック） 
-
-
-使いやすさ (UI/UX) の追求 
-
-[ ] ホーム画面からの「ワンタップ記録」実現を検討 
-
-[ ] 初回設定の簡略化（デフォルト値やおすすめ設定の提示） 
-
-[ ] テンプレート選択時のアイコン・色自動セット（後から編集可能）機能 
-
-[ ] 質的・ポジティブなフィードバックメッセージ（例：「先週より+2回達成」）の実装 
-
-
-4. UI/UXの全体改善 
-
-
-記録の簡略化 
-
-[ ] 記録時の画面遷移やタップ数を最小限にする 
-
-[ ] チェックボックス方式、スワイプ操作、一括入力などのUIを検討 
-
-[ ] ボタンの大型化など、入力しやすいUIパターンを模索 
-
-
-ナビゲーション 
-
-[ ] ホーム画面を「ハブ」化（今日やるべきこと、通知などを集約） 
-
-[ ] タブやアイコンにラベルを併記し、直感的に理解できるようにする 
-
-
-ビジュアル・モチベーション 
-
-[ ] ポジティブな配色や達成時の華やかなエフェクトを使用 
-
-[ ] テーマカラー選択制や背景画像設定機能の導入を検討 
-
-[ ] ホームに名言や画像を表示できるウィジェット的要素を検討 
-
-
-フィードバック 
-
-[ ] 記録時の即時フィードバック（例：進捗バーが伸びる）を実装 
-
-[ ] プロフィール画面へのバッジ表示など、実績を称えるUIを実装 
-
-
-負荷軽減の設計 
-
-[ ] 未達成項目への過度な警告色や、ストリーク切れのネガティブな表示を避ける 
-
-[ ] ユーザーを追い詰めず前向きに支援するトーン（例：「また今日から続けましょう！」）を維持 
-
-5. Al (Gemma) の活用 
-
-
-AIコーチ・チャットボット 
-
-[ ] 気軽に質問・相談できるAIチャット機能（24時間対応）を実装 
-
-[ ] 人間らしい温かみのある応答を生成するよう調整 
-
-
-パーソナライズ機能 
-
-[ ] AIによるパーソナライズされた新習慣や改善点（目標値調整など）の提案機能 
-
-
-分析とフィードバック 
-
-[ ] AIによる習慣データの解析とレポート（例：「週末より平日が20%高い」）生成機能 
-
-[ ] （可能なら）他の匿名ユーザーの成功パターンを提示する機能 
-
-
-コンテンツ自動生成 
-
-[ ] ユーザー専用の「今日の励ましメッセージ」などをAIが自動生成する機能 
-
-
-画像認識 
-
-[ ] 証拠写真の解析とコメント生成機能（※精度・リスクの慎重な検討要） 
-
-
-導入時の留意点 
-
-[ ] AI機能へのアクセス（ボタン、メニュー）を目立つ場所に配置 
-
-[ ] ユーザーへの新機能周知 
-
-[ ] オンデバイスAI (Gemma) の利点（プライバシー保護、オフライン動作）をアピール 
-
-[ ] AIを「頼れる補助輪」と位置付け、強制的な提案を避ける
-
-MinQ強化戦略チェックリスト（2025年トレンド版）
-
-1. ウェアラブル＆ヘルスエコシステム連携
-
-[ ] プラットフォーム連携: Apple Health、Google Fitとの連携機能を実装する。
-
-[ ] 自動データ取得: 歩数、睡眠データなどを自動で取得し、該当クエストに反映させる。
-
-[ ] 整合性チェック: 連携データと自己申告データを比較し、記録の信頼性を高める仕組みを検討する。
-
-[ ] プライバシー保護: データ連携は必ずオプトイン形式とし、ユーザーに許可を求めるフローを設計する。
-
-[ ] オンデバイス処理: 可能な範囲で、デバイス内でデータを処理する方針を検討する。
-
-関連画面: home_screen.dart, stats_screen.dart
-
-2. 次世代のゲーミフィケーション
-
-[ ] AR/VR機能の検討: 拡張現実(AR)による進捗の可視化（3Dアバター、バーチャルマーカー等）を検討する。
-
-[ ] インタラクティブな報酬: 達成後のアニメーションを、簡単なミニゲームやパズルに進化させる。
-
-[ ] 可変報酬の導入: 報酬（バッジ等）をランダム化し、ユーザーの期待感を高める仕組みを導入する。
-
-関連画面: celebration_screen.dart
-
-3. AIによる予測・適応機能の強化
-
-[ ] 失敗予測モデル: ユーザーデータに基づき、習慣の失敗を予測する機械学習モデルを開発する。
-
-[ ] 予防的な介入: 失敗予測時に、リマインダー調整や代替クエスト提案などの介入を行う機能を実装する。
-
-[ ] ライフイベント対応: 旅行などの「ストリーク崩壊」の危機に対し、AIが代替習慣（例：「旅行モード」）を提案する機能を実装する。
-
-関連画面: create_quest_screen.dart, quests_screen.dart
-
-4. ソーシャル・コラボレーションモードの拡張
-
-[ ] グループクエスト機能: オプションとして、信頼できる仲間との「グループクエスト」機能を実装する。
-
-[ ] テーマ別チャレンジ: 期間限定のテーマ別イベント（例：「30日間マインドフルネスチャレンジ」）を企画・実装する。
-
-[ ] プレミアム機能の検討: 大規模グループ作成やリーダーボードなどを、収益化のためのプレミアム機能として検討する。
-
-関連画面: pair_screen.dart
-
-5. マルチメディア・感覚的な強化
-
-[ ] 音声ログ機能: Speech-to-Text技術を活用し、声で習慣達成を記録できる機能を実装する。
-
-[ ] 環境音/BGM機能: 集中セッション中などに再生できるアンビエントサウンドやBGM機能を追加する。
-
-[ ] AI画像生成の活用: 達成時にAIが生成したユニークな画像をバナーとして作成し、SNS共有を促す機能を検討する。
-
-[ ] アクセシビリティ向上: 高齢者や視覚障害を持つユーザー向けに、大きなフォントや音声ガイダンスモードを強化する。
-
-関連画面: record_screen.dart, create_quest_screen.dart
-
-6. 持続可能性と長期定着戦略
-
-[ ] 「一時停止」モード: ストリークを維持したまま、クエストを一時的に休めるモードを実装する。
-
-[ ] 適応型難易度: ユーザーの達成度に応じて、目標の難易度を自動調整する機能を導入する。
-
-[ ] データエクスポート拡充: データのエクスポート形式にPDFやCSVを追加する。
-
-関連画面: stats_screen.dart, settings_screen.dart
+# MinQ Enhancement 2025 - Implementation Phase
+
+## Overview
+This task list outlines the concrete implementation steps required to bring the scaffolded features of the MinQ Enhancement 2025 plan to life. Each item corresponds to a `TODO` left in the codebase during the initial scaffolding phase.
+
+---
+
+## Phase 1: Core Service Implementation
+
+### 1.1 Gamification Engine (`lib/core/gamification/gamification_engine.dart`)
+- [ ] Implement badge awarding logic based on user progress (streaks, milestones, etc.).
+- [ ] Implement rank calculation logic based on user's total points.
+
+### 1.2 Reward System (`lib/core/gamification/reward_system.dart`)
+- [ ] Implement logic to fetch the reward catalog from Firestore.
+- [ ] Implement the full reward redemption flow:
+  - [ ] Check if user has enough points.
+  - [ ] Deduct points from user.
+  - [ ] Add reward to user's inventory.
+  - [ ] Handle potential transaction failures.
+- [ ] Implement the variable reward generation logic with rarity tiers.
+
+### 1.3 Challenge Service (`lib/core/challenges/challenge_service.dart`)
+- [ ] Implement logic to create and store daily challenge instances.
+- [ ] Implement logic to create and store weekly challenge instances.
+- [ ] Implement logic to fetch challenge progress from Firestore.
+- [ ] Implement logic to update challenge progress in Firestore.
+- [ ] Implement challenge completion flow:
+  - [ ] Mark challenge as complete.
+  - [ ] Award points and/or badges using the `GamificationEngine`.
+
+### 1.4 Event Manager (`lib/core/challenges/event_manager.dart`)
+- [ ] Implement logic to save new events to Firestore.
+- [ ] Implement logic to query for currently active events.
+- [ ] Implement logic to register a user for an event.
+
+### 1.5 Progress Visualization Service (`lib/core/progress/progress_visualization_service.dart`)
+- [ ] Implement streak calculation logic by analyzing `quest_logs`.
+- [ ] Implement milestone detection logic (e.g., 7, 30, 100-day streaks).
+- [ ] Implement streak-at-risk detection logic.
+
+---
+
+## Phase 2: AI & Health Integration
+
+### 2.1 Gemma AI Service (`lib/core/ai/gemma_ai_service.dart`)
+- [ ] Implement logic to download and manage the Gemma model file.
+- [ ] Implement the actual text generation call to the Gemma model with proper error handling.
+
+### 2.2 Health Sync Service (`lib/core/health/health_sync_service.dart`)
+- [ ] Implement quest auto-updating logic based on fetched health data:
+  - [ ] Map health data types to quest types.
+  - [ ] Check if health data meets quest completion thresholds.
+  - [ ] Mark corresponding quests as complete.
+
+---
+
+## Phase 3: Revolutionary Features Implementation
+
+### 3.1 Mood Tracking Service (`lib/core/mood/mood_tracking_service.dart`)
+- [ ] Implement logic to save `MoodState` objects to the `moodLogs` collection in Firestore.
+- [ ] Implement mood-habit correlation analysis:
+  - [ ] Fetch user's mood logs.
+  - [ ] Fetch user's quest completion logs.
+  - [ ] Calculate and store correlation scores.
+
+### 3.2 Habit DNA Service (`lib/core/habit_dna/habit_dna_service.dart`)
+- [ ] Implement the full archetype determination algorithm by analyzing user behavior patterns.
+- [ ] Implement logic to return personalized, actionable strategies based on a user's archetype.
+
+### 3.3 Micro-Commitment Service (`lib/core/micro_commitment/micro_commitment_service.dart`)
+- [ ] Implement logic to create and save quests with a "micro" flag.
+- [ ] Implement logic to analyze micro-quest consistency and suggest expansion.
+- [ ] Implement the UI trigger to offer a micro-quest as a fallback for a failed regular quest.
+
+### 3.4 Reverse Accountability Service (`lib/core/pair/reverse_accountability_service.dart`)
+- [ ] Implement the logic to send a push notification to a user's pair upon quest completion.
+- [ ] Implement the "resonance bonus" logic: check if both pair members have completed daily quests and award a bonus.
+- [ ] Implement the UI trigger to prompt a user to send a supportive message to a struggling partner.
+
+### 3.5 Time Capsule Service (`lib/core/time_capsule/time_capsule_service.dart`)
+- [ ] Implement logic to save a new `TimeCapsule` to Firestore.
+- [ ] Implement logic to schedule a push notification for the capsule's delivery date.
+- [ ] Implement the server-side or background function to trigger the `deliverTimeCapsule` method.
+- [ ] Implement the logic to generate a formatted reflection string comparing past and present self.
+
+### 3.6 Ecosystem Mapping Service (`lib/core/ecosystem/ecosystem_mapping_service.dart`)
+- [ ] Implement the full ecosystem analysis logic to find and store correlations between habits.
+- [ ] Implement the keystone habit identification algorithm.
+- [ ] Implement logic to generate and return contextual optimization suggestions based on the ecosystem map.
+
+---
+
+## Phase 4: UI & UX Implementation
+
+### 4.1 Conversation Starter Widget (`lib/features/pair/presentation/widgets/conversation_starter_widget.dart`)
+- [ ] Implement logic to fetch conversation starter prompts from a service or remote config.
+- [ ] Implement the logic to send the selected prompt to the pair chat.
+
+### 4.2 Sticker Picker Widget (`lib/features/pair/presentation/widgets/sticker_picker_widget.dart`)
+- [ ] Implement logic to fetch sticker packs from a service or asset bundle.
+- [ ] Implement the logic to send the selected sticker to the pair chat.
+
+### 4.3 Home Screen V2 (`lib/features/home/presentation/screens/home_screen_v2.dart`)
+- [ ] Connect the AI Encouragement card to the `GemmaAIService`.
+- [ ] Connect the Streak & Progress section to the `ProgressVisualizationService`.
+- [ ] Implement the one-tap quest completion logic in the Today's Quests section.
+- [ ] Connect the Active Challenges section to the `ChallengeService`.
+
+### 4.4 Quest Recommendation Widget (`lib/features/recommendations/presentation/widgets/quest_recommendation_widget.dart`)
+- [ ] Implement logic to fetch quest recommendations from the appropriate service.
+- [ ] Implement the logic to add a recommended quest to the user's quest list.
+
+### 4.5 Theme Selection Screen (`lib/features/settings/presentation/screens/theme_selection_screen.dart`)
+- [ ] Implement logic to persist the selected theme color to user preferences.
+- [ ] Connect the `selectedColorProvider` to a proper theme management service.
+
+### 4.6 Guided Quest Creation Screen (`lib/features/onboarding/presentation/screens/guided_quest_creation_screen.dart`)
+- [ ] Implement logic to fetch quest templates from a service.
+- [ ] Implement navigation to a pre-filled quest creation form.
+- [ ] Implement navigation to the regular, non-templated quest creation screen.
+
+### 4.7 Voice Input Widget (`lib/features/home/presentation/widgets/voice_input_widget.dart`)
+- [ ] Implement the logic to parse the recognized speech and complete the corresponding quest.
+
+### 4.8 Pause Mode Screen (`lib/features/settings/presentation/screens/pause_mode_screen.dart`)
+- [ ] Implement logic to persist the pause mode setting and update the backend state accordingly.
+
+---
+
+## Phase 5: Miscellaneous & Refinements
+
+- [ ] **Push Notifications:** Implement a push notification service (e.g., Firebase Cloud Messaging) and integrate it with the `ReEngagementService`, `ReverseAccountabilityService`, and `TimeCapsuleService`.
+- [ ] **Sentry Integration:** Implement the actual calls to the Sentry service for error and performance monitoring.
+- [ ] **Fix Integrations:** Resolve the `miinq_integrations` package path issue and integrate its services.
+- [ ] **Localization:** Implement the actual localization logic in `i18n/formatters.dart`.
+- [ ] **Age Verification:** Implement email sending for parental consent in `AgeVerificationService`.
+- [ ] **In-App Purchases:** Implement the actual purchase, restore, and cancellation flows in `MonetizationService` and `SubscriptionService`.
+- [ ] **In-App Updates & Reviews:** Implement the native platform integrations for in-app updates and reviews.
+- [ ] **Data Export:** Implement PDF generation and export functionality.
