@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/ai/gemma_ai_service.dart';
 import 'package:minq/domain/ai/ai_coach_state.dart';
 import 'package:minq/domain/ai/chat_message.dart';
 import 'package:uuid/uuid.dart';

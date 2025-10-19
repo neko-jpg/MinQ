@@ -69,21 +69,13 @@ class FocusSystem {
   // ========================================
 
   /// ライトモードのフォーカステーマ
-  static FocusThemeData lightFocusTheme() {
-    final tokens = MinqTheme.light();
-    return FocusThemeData(
-      glowColor: tokens.brandPrimary.withOpacity(0.3),
-      glowFactor: 2.0,
-    );
+  static Color lightFocusColor() {
+    return Colors.blue.withOpacity(0.3);
   }
 
   /// ダークモードのフォーカステーマ
-  static FocusThemeData darkFocusTheme() {
-    final tokens = MinqTheme.dark();
-    return FocusThemeData(
-      glowColor: tokens.brandPrimary.withOpacity(0.3),
-      glowFactor: 2.0,
-    );
+  static Color darkFocusColor() {
+    return Colors.blue.withOpacity(0.3);
   }
 
   // ========================================

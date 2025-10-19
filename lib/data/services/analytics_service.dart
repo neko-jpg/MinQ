@@ -123,6 +123,11 @@ class AnalyticsService {
     });
   }
 
+  // Generic event logging
+  Future<void> logEvent(String eventName, {Map<String, Object>? parameters}) async {
+    await _logEvent(eventName, parameters: parameters);
+  }
+
   // Helper method
   Future<void> _logEvent(String name, {Map<String, Object>? parameters}) async {
     if (_analytics == null) {

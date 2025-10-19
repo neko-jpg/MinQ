@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/subscription/subscription_service.dart';
-import '../theme/spacing_system.dart';
-import '../theme/typography_system.dart';
+import '../theme/app_spacing.dart';
+import '../theme/app_typography.dart';
 
 /// サブスクリプション画面
 class SubscriptionScreen extends ConsumerWidget {

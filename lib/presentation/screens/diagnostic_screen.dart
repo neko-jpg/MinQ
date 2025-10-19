@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 自己診断モード画面
 /// 設定→テスト通知/ストレージ/ネット

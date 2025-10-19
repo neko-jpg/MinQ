@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/ai/gemma_ai_service.dart';
 import 'package:minq/core/progress/progress_visualization_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';

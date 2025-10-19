@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:minq/core/ai/gemma_ai_service.dart';
 import 'package:minq/presentation/controllers/ai_concierge_chat_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import '../../data/providers/gemma_ai_provider.dart';
 
 enum _ConciergeMenuOption { insights, clearHistory, diagnostics, toggleAI }
 

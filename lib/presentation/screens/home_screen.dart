@@ -11,6 +11,10 @@ import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/ai_concierge_card.dart';
 import 'package:minq/presentation/widgets/gamification_status_card.dart';
+import 'package:minq/presentation/widgets/referral_card.dart';
+import 'package:minq/presentation/widgets/level_progress_widget.dart';
+import 'package:minq/presentation/widgets/failure_prediction_widget.dart';
+import 'package:minq/presentation/widgets/live_activity_widget.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -135,6 +139,8 @@ class _HomeContent extends StatelessWidget {
         ],
         const _Header(),
         SizedBox(height: tokens.spacing(4)),
+        const LiveActivityWidget(compact: true),
+        SizedBox(height: tokens.spacing(4)),
         _TodayFocusCard(data: data),
         SizedBox(height: tokens.spacing(4)),
         _MiniQuestsSection(miniQuests: miniQuests),
@@ -144,6 +150,12 @@ class _HomeContent extends StatelessWidget {
         _WeeklyStreakCard(recentLogs: data.recentLogs),
         SizedBox(height: tokens.spacing(4)),
         const GamificationStatusCard(),
+        SizedBox(height: tokens.spacing(4)),
+        const ReferralCard(),
+        SizedBox(height: tokens.spacing(4)),
+        const LevelProgressWidget(isCompact: true),
+        SizedBox(height: tokens.spacing(4)),
+        const FailurePredictionWidget(),
         SizedBox(height: tokens.spacing(8)),
       ],
     );

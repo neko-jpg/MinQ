@@ -4,14 +4,16 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_gemma/flutter_gemma.dart';
+// import 'package:flutter_gemma/flutter_gemma.dart'; // TensorFlow Liteに移行
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/core/ai/gemma_ai_service.dart';
+import 'package:minq/data/providers/gemma_ai_provider.dart';
+import 'package:minq/presentation/controllers/progressive_onboarding_controller.dart';
+import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/services/crash_recovery_store.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
@@ -48,13 +50,7 @@ Future<void> main() async {
 
 Future<void> _bootstrapApplication() async {
   final binding = WidgetsFlutterBinding.ensureInitialized();
-  // Gemmaの初期化（トークンは環境変数またはconfig.jsonから取得）
-  final huggingFaceToken = await loadHuggingFaceToken();
-
-  FlutterGemma.initialize(
-    huggingFaceToken: huggingFaceToken,
-    maxDownloadRetries: 10,
-  );
+  // TensorFlow Lite AIサービスは必要に応じて初期化される
   GestureBinding.instance.resamplingEnabled = true;
 
   final SharedPreferences sharedPrefs =
@@ -174,12 +170,22 @@ class _MinQAppState extends ConsumerState<MinQApp> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      final gemmaAsync = ref.read(gemmaAIServiceProvider);
-      final gemma = gemmaAsync.valueOrNull;
-      if (gemma != null) {
-        await gemma.warmUp();
+      try {
+        final gemma = await ref.read(gemmaAIServiceProvider.future);
+        await gemma.initialize();
+      } catch (e) {
+        // Gemma AIの初期化に失敗した場合はログに記録
+        print('Gemma AI initialization failed: $e');
       }
     });
+    
+    // レベルアップイベントリスナー
+    ref.listen<LevelUpEvent?>(levelUpEventProvider, (previous, next) {
+      if (next != null && mounted) {
+        _showLevelUpScreen(next);
+      }
+    });
+    
     // React to notification taps emitted by the native layer.
     _notificationTapSubscription = ref.listenManual<AsyncValue<String>>(
       notificationTapStreamProvider,
@@ -234,6 +240,27 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     }
 
     return null;
+  }
+
+  void _showLevelUpScreen(LevelUpEvent event) {
+    // レベルアップ画面を表示
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = ref.read(routerProvider).routerDelegate.navigatorKey.currentContext;
+      if (context != null) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => LevelUpScreen(
+            newLevel: event.newLevel,
+            levelInfo: event.levelInfo,
+            onContinue: () {
+              // レベルアップイベントをクリア
+              ref.read(levelUpEventProvider.notifier).state = null;
+            },
+          ),
+        );
+      }
+    });
   }
 
   @override

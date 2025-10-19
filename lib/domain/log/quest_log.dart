@@ -19,4 +19,8 @@ class QuestLog {
   late bool synced;
 
   QuestLog(); // Empty constructor for Isar
+
+  // Computed properties for compatibility
+  bool get isCompleted => true; // All logs represent completed quests
+  DateTime get completedAt => ts;
 }

@@ -222,6 +222,10 @@ class QuestLogRepository {
       for (final entry in logsByDay.entries) entry.key: entry.value.length,
     };
   }
+
+  Future<List<QuestLog>> getQuestLogs(String uid) async {
+    return getLogsForUser(uid);
+  }
 }
 
 

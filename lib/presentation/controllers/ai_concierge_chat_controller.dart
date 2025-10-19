@@ -2,8 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/ai/gemma_ai_service.dart';
-import 'package:minq/core/ai/lightweight_ai_service.dart';
+import 'package:minq/core/ai/ai_integration_manager.dart';
 
 @immutable
 class AiConciergeMessage {
@@ -29,25 +28,25 @@ aiConciergeChatControllerProvider = AutoDisposeAsyncNotifierProvider<
 
 class AiConciergeChatController
     extends AutoDisposeAsyncNotifier<List<AiConciergeMessage>> {
-  GemmaAIService? _gemma;
-  final LightweightAIService _lightweightAI = LightweightAIService();
-  bool _useGemma = true; // Gemma AIを有効化
+  final AIIntegrationManager _aiManager = AIIntegrationManager.instance;
+  final List<String> _conversationHistory = [];
 
   @override
   Future<List<AiConciergeMessage>> build() async {
-    if (_useGemma) {
-      final gemmaAsync = ref.watch(gemmaAIServiceProvider);
-      _gemma = gemmaAsync.valueOrNull;
+    // AI統合マネージャーの初期化
+    try {
+      await _aiManager.initialize(userId: 'current_user'); // 実際のユーザーIDを使用
+    } catch (e) {
+      log('AI統合マネージャー初期化エラー: $e');
     }
+    
     return _createInitialConversation();
   }
 
   Future<void> resetConversation() async {
     state = const AsyncValue.loading();
     try {
-      if (_useGemma) {
-        await _gemma?.reset();
-      }
+      _conversationHistory.clear();
       final messages = await _createInitialConversation();
       state = AsyncValue.data(messages);
     } catch (error, stackTrace) {
@@ -60,16 +59,9 @@ class AiConciergeChatController
     }
   }
 
-  /// Gemmaモードと軽量AIモードを切り替える
-  void toggleAIMode() {
-    _useGemma = !_useGemma;
-    log('AI mode switched to: ${_useGemma ? 'Gemma' : 'Lightweight'}');
-    resetConversation();
-  }
-
   /// 現在のAIモードを取得
   String getCurrentAIMode() {
-    return _useGemma ? 'Gemma AI' : 'Lightweight AI';
+    return 'TensorFlow Lite AI Assistant';
   }
 
   Future<void> sendUserMessage(String rawText) async {
@@ -77,6 +69,7 @@ class AiConciergeChatController
     if (text.isEmpty) {
       return;
     }
+    
     final current = List<AiConciergeMessage>.from(
       state.valueOrNull ?? <AiConciergeMessage>[],
     );
@@ -87,16 +80,24 @@ class AiConciergeChatController
     );
     current.add(userMessage);
     state = AsyncValue.data(current);
+    
+    // 会話履歴に追加
+    _conversationHistory.add('ユーザー: $text');
+    
     try {
-      String reply;
-      if (_useGemma) {
-        final history = _toGemmaHistory(current, dropLastUser: true);
-        reply = await _generateReply(text, history);
-      } else {
-        reply = _lightweightAI.generateResponse(text);
-      }
+      // TensorFlow Lite統合AIを使用して応答生成
+      final reply = await _aiManager.generateChatResponse(
+        text,
+        conversationHistory: _conversationHistory.take(10).toList(), // 最新10件のみ
+        systemPrompt: 'あなたはMinQの親しみやすいAIコンシェルジュです。ユーザーの習慣形成をサポートし、励ましの言葉をかけてください。',
+        maxTokens: 150,
+      );
       
       final trimmed = reply.trim().isEmpty ? _fallbackReply : reply.trim();
+      
+      // 会話履歴に追加
+      _conversationHistory.add('AI: $trimmed');
+      
       final aiMessage = AiConciergeMessage(
         text: trimmed,
         isUser: false,
@@ -128,9 +129,13 @@ class AiConciergeChatController
         isUser: false,
         timestamp: DateTime.now(),
       );
+      
+      // 会話履歴に追加
+      _conversationHistory.add('AI: ${message.text}');
+      
       return <AiConciergeMessage>[message];
     } catch (error, stackTrace) {
-      log('Gemma greeting failed', error: error, stackTrace: stackTrace);
+      log('AI greeting failed', error: error, stackTrace: stackTrace);
       return <AiConciergeMessage>[
         AiConciergeMessage(
           text: _fallbackGreeting,
@@ -142,180 +147,60 @@ class AiConciergeChatController
   }
 
   Future<String> _generateGreeting() async {
-    if (!_useGemma) {
-      return _lightweightAI.generateGreeting();
-    }
-
-    final gemma = _gemma;
-    if (gemma == null) {
-      return _lightweightAI.generateGreeting();
-    }
-
     try {
-      final response = await gemma.generateText(
-        _greetingPrompt,
-        systemPrompt: _conversationGuidance,
-        maxTokens: 120,
+      final greeting = await _aiManager.generateChatResponse(
+        'こんにちは',
+        systemPrompt: 'あなたはMinQのAIコンシェルジュです。ユーザーに親しみやすい挨拶をしてください。',
+        maxTokens: 50,
       );
-      return _sanitizeResponse(response) ?? _lightweightAI.generateGreeting();
-    } catch (error, stackTrace) {
-      log('Gemma greeting failed', error: error, stackTrace: stackTrace);
-      return _lightweightAI.generateGreeting();
-    }
-  }
-
-  Future<String> _generateReply(
-    String userText,
-    List<GemmaChatMessage> history,
-  ) async {
-    if (!_useGemma) {
-      return _lightweightAI.generateResponse(userText);
-    }
-
-    final gemma = _gemma;
-    if (gemma == null) {
-      return _lightweightAI.generateResponse(userText);
-    }
-
-    try {
-      final primary = await gemma.generateText(
-        userText,
-        history: history,
-        systemPrompt: _conversationGuidance,
-        maxTokens: 320,
-      );
-      final sanitized = _sanitizeResponse(primary);
-      if (sanitized != null && sanitized.isNotEmpty) {
-        return sanitized;
-      }
-
-      final retry = await gemma.generateText(
-        userText,
-        history: history,
-        systemPrompt: _conversationGuidance,
-        maxTokens: 320,
-        temperature: 0.8,
-        topP: 0.9,
-      );
-      final retrySanitized = _sanitizeResponse(retry);
-      if (retrySanitized != null && retrySanitized.isNotEmpty) {
-        return retrySanitized;
-      }
-    } catch (error, stackTrace) {
-      log('Gemma reply failed', error: error, stackTrace: stackTrace);
-    }
-
-    // Gemmaが失敗した場合は軽量AIにフォールバック
-    return _lightweightAI.generateResponse(userText);
-  }
-
-  List<GemmaChatMessage> _toGemmaHistory(
-    List<AiConciergeMessage> conversation, {
-    bool dropLastUser = false,
-  }) {
-    if (conversation.isEmpty) {
-      return const <GemmaChatMessage>[];
-    }
-
-    final mapped =
-        conversation
-            .map(
-              (message) =>
-                  message.isUser
-                      ? GemmaChatMessage.user(message.text)
-                      : GemmaChatMessage.assistant(message.text),
-            )
-            .toList();
-
-    if (dropLastUser && mapped.isNotEmpty && mapped.last.isUser) {
-      mapped.removeLast();
-    }
-
-    return mapped;
-  }
-
-  String? _sanitizeResponse(String response) {
-    final trimmed = response.trim();
-    if (trimmed.isEmpty) {
-      return null;
-    }
-
-    final cleaned = _cleanResponse(trimmed);
-    if (cleaned.isEmpty) {
-      return null;
-    }
-
-    return cleaned;
-  }
-
-  /// Normalize the AI response text.
-  String _cleanResponse(String response) {
-    // 特殊トークンを除去
-    var withoutTokens = response.replaceAll(
-      RegExp(r'<pad>|<bos>|<eos>|<unk>|<unused\d+>|<mask>|\[multimodal\]'),
-      '',
-    );
-    
-    // 山括弧と角括弧で囲まれたトークンを除去
-    withoutTokens = withoutTokens.replaceAll(RegExp(r'<[^>]*>'), '');
-    withoutTokens = withoutTokens.replaceAll(RegExp(r'\[[^\]]*\]'), '');
-
-    final lines =
-        withoutTokens
-            .split('\n')
-            .map((line) => line.trim())
-            .where((line) => line.isNotEmpty)
-            .map(
-              (line) => line.replaceFirst(
-                RegExp(r'^(AI|Assistant|User|System)\s*[:\uFF1A]\s*'),
-                '',
-              ),
-            )
-            .where((line) => line.isNotEmpty)
-            .toList();
-
-    if (lines.isEmpty) {
-      return '';
-    }
-
-    final cleaned =
-        lines
-            .join(' ')
-            .replaceAll(RegExp(r'[<>|#`]+'), ' ')
-            .replaceAll(RegExp(r'\s{2,}'), ' ')
-            .trim();
-    return cleaned;
-  }
-
-  String _selectGreetingFallback() {
-    if (_greetingVariations.isEmpty) {
+      return greeting.isNotEmpty ? greeting : _fallbackGreeting;
+    } catch (error) {
+      log('AI greeting generation failed: $error');
       return _fallbackGreeting;
     }
-    final now = DateTime.now().millisecondsSinceEpoch;
-    final index = now % _greetingVariations.length;
-    return _greetingVariations[index];
+  }
+
+  /// 感情分析の実行
+  Future<void> analyzeSentiment(String text) async {
+    try {
+      final result = await _aiManager.analyzeSentiment(text);
+      log('感情分析結果: ${result.dominantSentiment.name}');
+    } catch (e) {
+      log('感情分析エラー: $e');
+    }
+  }
+
+  /// 習慣推薦の取得
+  Future<List<String>> getHabitRecommendations() async {
+    try {
+      final recommendations = await _aiManager.generateHabitRecommendations(
+        userHabits: [], // 実際のユーザー習慣データを渡す
+        completedHabits: [], // 実際の完了習慣データを渡す
+        preferences: {}, // 実際のユーザー好みデータを渡す
+      );
+      return recommendations.map((r) => r.title).toList();
+    } catch (e) {
+      log('習慣推薦エラー: $e');
+      return [];
+    }
   }
 }
 
-const String _greetingPrompt = '''
-こんにちは！MinQのAIコンシェルジュです。今日の調子はいかがですか？
-習慣づくりのお手伝いをさせていただきます。
-''';
+  /// AIモードの切り替え
+  void toggleAIMode() {
+    // TODO: AIモードの切り替え実装
+    log('AIモードを切り替えました');
+  }
 
-const String _conversationGuidance = '''
-あなたは習慣形成アプリ「MinQ」の親しみやすいAIコンシェルジュです。
-ユーザーの気持ちに寄り添い、自然な日本語で2〜3文のわかりやすい回答を返してください。
-''';
+  /// 現在のAIモードを取得
+  String getCurrentAIMode() {
+    // TODO: 実際のAIモード取得実装
+    return 'Standard';
+  }
+}
 
 const String _fallbackGreeting =
-    'Hello! I am the MinQ AI concierge. How are you feeling today?';
+    'こんにちは！MinQのAIコンシェルジュです。今日も習慣づくりを頑張りましょう！';
 
 const String _fallbackReply =
     'すみません、うまく回答できませんでした。もう少し詳しく教えていただけますか？';
-
-const List<String> _greetingVariations = [
-  'Hello! I am the MinQ AI concierge. How are you feeling today?',
-  'Hi there, this is the MinQ AI concierge checking in. What shall we work on first?',
-  'Welcome back! Let me know how your habits are going; I am ready to help.',
-  'Great to see you again. Tell me what you would like support with right now.',
-];

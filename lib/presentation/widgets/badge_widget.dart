@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/spacing_system.dart';
-import '../theme/typography_system.dart';
 
 /// バッジの種類
 enum BadgeType {
@@ -145,8 +143,8 @@ class BadgeWidget extends StatelessWidget {
         minHeight: isLarge ? 20 : 16,
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: isLarge ? Spacing.xs : Spacing.xxs,
-        vertical: Spacing.xxs,
+        horizontal: isLarge ? 8.0 : 4.0,
+        vertical: 4.0,
       ),
       decoration: BoxDecoration(
         color: bgColor,
@@ -180,9 +178,9 @@ class BadgeWidget extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Spacing.xs,
-        vertical: Spacing.xxs,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8.0,
+        vertical: 4.0,
       ),
       decoration: BoxDecoration(
         color: bgColor,
@@ -310,7 +308,7 @@ class BadgedLabel extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(label, style: textStyle),
-        SizedBox(width: Spacing.xs),
+        const SizedBox(width: 8),
         showDot
             ? const BadgeWidget.dot()
             : BadgeWidget.numeric(count: badgeCount ?? 0),

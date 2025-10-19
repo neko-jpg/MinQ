@@ -125,6 +125,14 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
         // ランク計算
         await gamificationEngine.calculateRank(uid);
         
+        // 新しいバッジがあれば通知を表示
+        if (newBadges.isNotEmpty) {
+          // 最初のバッジのみ表示（複数ある場合は順次表示）
+          final badge = newBadges.first;
+          // バッジ通知は呼び出し元で表示する
+          debugPrint('New badge earned: ${badge.name}');
+        }
+        
         debugPrint('Gamification: Awarded points and checked badges. New badges: ${newBadges.length}');
       } catch (e) {
         debugPrint('Gamification error: $e');

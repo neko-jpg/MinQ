@@ -82,9 +82,10 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
   int _calculateSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).uri.toString();
     if (location.startsWith(AppRoutes.stats)) return 1;
-    if (location.startsWith(AppRoutes.pair)) return 2;
-    if (location.startsWith(AppRoutes.quests)) return 3;
-    if (location.startsWith(AppRoutes.settings)) return 4;
+    if (location.startsWith(AppRoutes.challenges)) return 2;
+    if (location.startsWith(AppRoutes.pair)) return 3;
+    if (location.startsWith(AppRoutes.quests)) return 4;
+    if (location.startsWith(AppRoutes.settings)) return 5;
     return 0;
   }
 
@@ -103,12 +104,15 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
         navigation.goToStats();
         break;
       case 2:
-        navigation.goToPair();
+        navigation.goToChallenges();
         break;
       case 3:
-        navigation.goToQuests();
+        navigation.goToPair();
         break;
       case 4:
+        navigation.goToQuests();
+        break;
+      case 5:
         navigation.goToSettings();
         break;
     }
@@ -133,6 +137,11 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
         label: '進捗',
       ),
       BottomNavigationBarItem(
+        icon: Icon(Icons.emoji_events_outlined),
+        activeIcon: Icon(Icons.emoji_events),
+        label: 'チャレンジ',
+      ),
+      BottomNavigationBarItem(
         icon: Icon(Icons.groups_outlined),
         activeIcon: Icon(Icons.groups),
         label: 'ペア',
@@ -148,7 +157,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
         label: '設定',
       ),
     ];
-    assert(navItems.length <= 5, 'ボトムナビゲーションのタブ数は5個以下にしてください。');
+    assert(navItems.length <= 6, 'ボトムナビゲーションのタブ数は6個以下にしてください。');
 
     final scaffold = Scaffold(
       body: PageTransitionSwitcher(

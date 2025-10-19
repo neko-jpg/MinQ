@@ -28,6 +28,7 @@ analyzer:
     - "AI/**"
     - "flutter_gemma-0.11.5/**"
     - "scripts/**"
+    - "packages/vendor/**"
     - "tool/**"
     - "test/**"
 

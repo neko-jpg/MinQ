@@ -57,7 +57,7 @@ class ReferralService {
 
       return shortLink.shortUrl.toString();
     } catch (e) {
-      await _analytics.logError('referral_link_generation_failed', e);
+      await _analytics.logError('referral_link_generation_failed', e.toString());
       rethrow;
     }
   }
@@ -82,7 +82,7 @@ class ReferralService {
         parameters: {'user_id': userId},
       );
     } catch (e) {
-      await _analytics.logError('referral_share_failed', e);
+      await _analytics.logError('referral_share_failed', e.toString());
       rethrow;
     }
   }
@@ -104,7 +104,7 @@ class ReferralService {
 
       return referrerId;
     } catch (e) {
-      await _analytics.logError('dynamic_link_handling_failed', e);
+      await _analytics.logError('dynamic_link_handling_failed', e.toString());
       return null;
     }
   }
@@ -153,7 +153,7 @@ class ReferralService {
         },
       );
     } catch (e) {
-      await _analytics.logError('referral_recording_failed', e);
+      await _analytics.logError('referral_recording_failed', e.toString());
       rethrow;
     }
   }
@@ -203,7 +203,7 @@ class ReferralService {
         },
       );
     } catch (e) {
-      await _analytics.logError('referral_reward_failed', e);
+      await _analytics.logError('referral_reward_failed', e.toString());
       rethrow;
     }
   }
@@ -236,7 +236,7 @@ class ReferralService {
         rewardedReferrals: rewarded,
       );
     } catch (e) {
-      await _analytics.logError('referral_stats_fetch_failed', e);
+      await _analytics.logError('referral_stats_fetch_failed', e.toString());
       rethrow;
     }
   }
@@ -267,7 +267,7 @@ class ReferralService {
         },
       );
     } catch (e) {
-      await _analytics.logError('campaign_creation_failed', e);
+      await _analytics.logError('campaign_creation_failed', e.toString());
       rethrow;
     }
   }
@@ -285,7 +285,7 @@ class ReferralService {
 
       return snapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {
-      await _analytics.logError('active_campaigns_fetch_failed', e);
+      await _analytics.logError('active_campaigns_fetch_failed', e.toString());
       return [];
     }
   }

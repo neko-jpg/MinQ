@@ -43,6 +43,7 @@ dependencies:
   isar_flutter_libs: any
   path_provider: any
   image_picker: any
+  image: any
   path: any
 
   # Firebase
@@ -55,12 +56,12 @@ dependencies:
   firebase_analytics: any
   firebase_crashlytics: any
   firebase_performance: any
+  firebase_dynamic_links: any
 
   # Utilities
   intl: any
   collection: any
   uuid: any
-  image: any
   flutter_heatmap_calendar: any
   flutter_local_notifications: any
   timezone: any
@@ -78,6 +79,7 @@ dependencies:
   flutter_image_compress: any
   sentry_flutter: any
   quick_actions: any
+  fl_chart: any
   workmanager: any
   package_info_plus: any
   url_launcher: any
@@ -88,7 +90,9 @@ dependencies:
   crypto: any
   just_audio: any
   speech_to_text: any
-  flutter_gemma: ^0.11.6
+  # flutter_gemma: ^0.11.6 # 問題があるため無効化
+  tflite_flutter: ^0.11.0
+  flutter_tts: ^4.2.0
   health: any
   # TODO: Fix integrations package
   miinq_integrations:
@@ -147,8 +151,8 @@ flutter:
   assets:
     - assets/images/
     - assets/legal/
+    - assets/sounds/
     - assets/models/
-    - config.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

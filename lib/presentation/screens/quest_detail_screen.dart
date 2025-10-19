@@ -175,7 +175,7 @@ class _QuestDetailContent extends ConsumerWidget {
               label: '今すぐ開始',
               icon: Icons.play_arrow,
               onPressed: () async {
-                navigation.goToRecord(quest.id);
+                navigation.goToQuestTimer(quest.id);
               },
             ),
             SizedBox(height: tokens.spacing(2)),

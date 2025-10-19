@@ -12,8 +12,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:minq/config/stripe_config.dart';
-import 'package:minq/core/ai/gemma_ai_service.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service_provider.dart';
+import 'package:minq/core/notifications/smart_notification_service.dart';
+import 'package:minq/core/notifications/notification_personalization_engine.dart';
+import 'package:minq/core/notifications/re_engagement_service.dart';
+import 'package:minq/core/network/network_status_service.dart';
 import 'package:minq/core/export/data_export_service.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/core/gamification/reward_system.dart';
@@ -46,7 +50,11 @@ import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/data/services/photo_storage_service.dart';
 import 'package:minq/data/services/remote_config_service.dart';
+import 'package:minq/data/services/referral_service.dart';
 import 'package:minq/data/services/speech_input_service.dart';
+import 'package:minq/core/time_capsule/time_capsule_service.dart';
+import 'package:minq/presentation/controllers/progressive_onboarding_controller.dart';
+import 'package:minq/core/ai/failure_prediction_service.dart';
 import 'package:minq/data/services/stripe_billing_service.dart';
 import 'package:minq/data/services/time_consistency_service.dart';
 import 'package:minq/data/services/usage_limit_service.dart';
@@ -298,6 +306,36 @@ final firebaseAnalyticsProvider = Provider<FirebaseAnalytics?>((ref) {
 
 final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
   return AnalyticsService(ref.watch(firebaseAnalyticsProvider));
+});
+
+final referralServiceProvider = Provider<ReferralService>((ref) {
+  return ReferralService(
+    analytics: ref.watch(analyticsServiceProvider),
+  );
+});
+
+final failurePredictionServiceProvider = Provider<FailurePredictionService>((ref) {
+  return FailurePredictionService(
+    questLogRepository: ref.watch(questLogRepositoryProvider),
+    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
+    analytics: ref.watch(analyticsServiceProvider),
+  );
+});
+
+final smartNotificationServiceProvider = Provider<SmartNotificationService>((ref) {
+  return SmartNotificationService(
+    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
+  );
+});
+
+final notificationPersonalizationEngineProvider = Provider<NotificationPersonalizationEngine>((ref) {
+  return NotificationPersonalizationEngine(
+    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
+  );
+});
+
+final reEngagementServiceProvider = Provider<ReEngagementService>((ref) {
+  return ReEngagementService();
 });
 
 final dataExportServiceProvider = Provider<DataExportService?>((ref) {
@@ -677,10 +715,16 @@ final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
 
 final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>(
   (ref) {
-    final gemmaAsync = ref.watch(gemmaAIServiceProvider);
-    return HabitAiSuggestionService(gemmaService: gemmaAsync.valueOrNull);
+    return HabitAiSuggestionService();
   },
 );
+
+// UID provider removed - already exists above
+
+// Network status provider
+final networkStatusProvider = Provider<NetworkStatusService>((ref) {
+  return NetworkStatusService();
+});
 
 final dailyFocusServiceProvider = Provider<DailyFocusService>(
   (ref) => DailyFocusService(),
