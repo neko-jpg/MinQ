@@ -1,0 +1,3 @@
+C:/dev/minq/packages/vendor/jni/android/.cxx/Debug/1h2klvwo/arm64-v8a/CMakeFiles/jni.dir
+C:/dev/minq/packages/vendor/jni/android/.cxx/Debug/1h2klvwo/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/dev/minq/packages/vendor/jni/android/.cxx/Debug/1h2klvwo/arm64-v8a/CMakeFiles/rebuild_cache.dir

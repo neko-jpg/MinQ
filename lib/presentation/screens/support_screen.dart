@@ -6,6 +6,7 @@ import 'package:minq/domain/support/support_message.dart';
 import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/data/services/support_chat_service.dart';
 
 class SupportScreen extends ConsumerStatefulWidget {
   const SupportScreen({super.key});
@@ -326,7 +327,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'GPT-4o サポートチャット',
+              'Gemma AI サポートチャット',
               style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
             ),
             SizedBox(height: tokens.spacing(3)),

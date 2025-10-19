@@ -30,6 +30,9 @@ import 'package:minq/presentation/screens/profile_setting_screen.dart';
 import 'package:minq/presentation/screens/profile_setting_screen.dart';
 import 'package:minq/presentation/screens/quest_detail_screen.dart';
 import 'package:minq/presentation/screens/community_board_screen.dart';
+import 'package:minq/presentation/screens/ai_concierge_chat_screen.dart';
+import 'package:minq/presentation/screens/ai_insights_screen.dart';
+import 'package:minq/presentation/screens/create_mini_quest_screen.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -91,6 +94,9 @@ class AppRoutes {
   static const pairChat = '/pair/chat/:pairId';
   static const accountDeletion = '/settings/delete-account';
   static const communityBoard = '/community-board';
+  static const aiConciergeChat = '/ai-concierge-chat';
+  static const aiInsights = '/ai-insights';
+  static const createMiniQuest = '/mini-quest/create';
   static const home = '/';
   static const stats = '/stats';
   static const pair = '/pair';
@@ -319,6 +325,42 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
         },
       ),
+      GoRoute(
+        path: AppRoutes.aiConciergeChat,
+        pageBuilder: (context, state) {
+          return buildPageWithTransition<void>(
+            context: context,
+            state: state,
+            child: const AiConciergeChatScreen(),
+            transitionType: SharedAxisTransitionType.vertical,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.aiInsights,
+        pageBuilder: (context, state) {
+          return buildPageWithTransition<void>(
+            context: context,
+            state: state,
+            child: Scaffold(
+              appBar: AppBar(title: const Text('AIインサイト')),
+              body: const Center(child: Text('AIインサイト画面（準備中）')),
+            ),
+            transitionType: SharedAxisTransitionType.horizontal,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.createMiniQuest,
+        pageBuilder: (context, state) {
+          return buildPageWithTransition<void>(
+            context: context,
+            state: state,
+            child: const CreateMiniQuestScreen(),
+            transitionType: SharedAxisTransitionType.vertical,
+          );
+        },
+      ),
       // Main navigation shell
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
@@ -401,6 +443,9 @@ class NavigationUseCase {
 
   void goToPairChat(String pairId) =>
       _router.push(AppRoutes.pairChat.replaceFirst(':pairId', pairId));
+  void goToAiConciergeChat() => _router.push(AppRoutes.aiConciergeChat);
+  void goToAiInsights() => _router.push(AppRoutes.aiInsights);
+  void goToCreateMiniQuest() => _router.push(AppRoutes.createMiniQuest);
   void goHome() => _router.go(AppRoutes.home);
   void goToStats() => _router.go(AppRoutes.stats);
   void goToPair() => _router.go(AppRoutes.pair);

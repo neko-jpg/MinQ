@@ -98,6 +98,38 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
         currentStreak: currentStreak,
         longestStreak: longestStreak,
       );
+
+      // ゲーミフィケーション: ポイント付与とバッジチェック
+      try {
+        final gamificationEngine = _ref.read(gamificationEngineProvider);
+        
+        // クエスト完了でポイント付与
+        await gamificationEngine.awardPoints(
+          userId: uid,
+          basePoints: 50, // 基本ポイント
+          reason: 'クエスト完了',
+        );
+        
+        // ストリークボーナス
+        if (currentStreak >= 7) {
+          await gamificationEngine.awardPoints(
+            userId: uid,
+            basePoints: currentStreak * 10,
+            reason: '$currentStreak日連続達成ボーナス',
+          );
+        }
+        
+        // バッジ獲得チェック
+        final newBadges = await gamificationEngine.checkAndAwardBadges(uid);
+        
+        // ランク計算
+        await gamificationEngine.calculateRank(uid);
+        
+        debugPrint('Gamification: Awarded points and checked badges. New badges: ${newBadges.length}');
+      } catch (e) {
+        debugPrint('Gamification error: $e');
+        // ゲーミフィケーションエラーでもクエスト記録は成功とする
+      }
       
       // Cancel auxiliary reminder if daily goal is reached
       final completedToday = await logRepository.countLogsForDay(uid, DateTime.now());

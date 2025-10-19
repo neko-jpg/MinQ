@@ -172,6 +172,14 @@ class _QuestDetailContent extends ConsumerWidget {
             ),
             const Spacer(),
             MinqPrimaryButton(
+              label: '今すぐ開始',
+              icon: Icons.play_arrow,
+              onPressed: () async {
+                navigation.goToRecord(quest.id);
+              },
+            ),
+            SizedBox(height: tokens.spacing(2)),
+            MinqSecondaryButton(
               label: 'このクエストを記録する',
               onPressed: () async {
                 navigation.goToRecord(quest.id);

@@ -12,10 +12,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:minq/config/stripe_config.dart';
+import 'package:minq/core/ai/gemma_ai_service.dart';
+import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/export/data_export_service.dart';
+import 'package:minq/core/gamification/gamification_engine.dart';
+import 'package:minq/core/gamification/reward_system.dart';
 import 'package:minq/core/sharing/ai_share_banner_service.dart';
-// TODO: Fix integrations package
-// import 'package:miinq_integrations/miinq_integrations.dart';
+import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
 import 'package:minq/core/sharing/share_service.dart';
 import 'package:minq/core/logging/app_logger.dart';
@@ -297,8 +300,12 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
   return AnalyticsService(ref.watch(firebaseAnalyticsProvider));
 });
 
-final dataExportServiceProvider = Provider<DataExportService>((ref) {
-  return DataExportService();
+final dataExportServiceProvider = Provider<DataExportService?>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    return null;
+  }
+  return DataExportService(firestore);
 });
 
 // TODO: Implement FeatureFlagsNotifier
@@ -669,7 +676,10 @@ final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
 });
 
 final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>(
-  (ref) => HabitAiSuggestionService(),
+  (ref) {
+    final gemmaAsync = ref.watch(gemmaAIServiceProvider);
+    return HabitAiSuggestionService(gemmaService: gemmaAsync.valueOrNull);
+  },
 );
 
 final dailyFocusServiceProvider = Provider<DailyFocusService>(
@@ -683,7 +693,7 @@ final habitAiSuggestionsProvider = FutureProvider<List<HabitAiSuggestion>>((
   final logs = await ref.watch(recentLogsProvider.future);
   final quests = await ref.watch(userQuestsProvider.future);
   final service = ref.watch(habitAiSuggestionServiceProvider);
-  return service.generateSuggestions(
+  return await service.generateSuggestions(
     userQuests: quests,
     logs: logs,
     now: DateTime.now(),
@@ -697,3 +707,31 @@ final heatmapDataProvider = FutureProvider<Map<DateTime, int>>((ref) async {
   }
   return ref.read(questLogRepositoryProvider).getHeatmapData(user.uid);
 });
+
+// Gamification providers
+final gamificationEngineProvider = Provider<GamificationEngine>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    throw StateError('Firestore is not available');
+  }
+  return GamificationEngine(firestore);
+});
+
+final rewardSystemProvider = Provider<RewardSystem>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    throw StateError('Firestore is not available');
+  }
+  return RewardSystem(firestore);
+});
+
+final challengeServiceProvider = Provider<ChallengeService>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    throw StateError('Firestore is not available');
+  }
+  final gamificationEngine = ref.watch(gamificationEngineProvider);
+  return ChallengeService(firestore, gamificationEngine);
+});
+
+// AI providers - 既にgemma_ai_service.dartで定義されているので削除

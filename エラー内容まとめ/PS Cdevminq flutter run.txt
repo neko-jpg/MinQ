@@ -1,0 +1,497 @@
+PS C:\dev\minq> flutter run
+Launching lib\main.dart on A401OP in debug mode...
+Running Gradle task 'assembleDebug'...                             29.1s
+✓ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...          13.3s
+D/FlutterJNI( 6543): Beginning load of flutter...
+D/FlutterJNI( 6543): flutter (null) was loaded normally!
+I/flutter ( 6543): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+W/FlutterJNI( 6543): FlutterJNI.loadLibrary called more than once
+D/FlutterJNI( 6543): Beginning load of flutter...
+D/FlutterJNI( 6543): flutter (null) was loaded normally!
+W/FlutterJNI( 6543): FlutterJNI.prefetchDefaultFontManager called more than once
+W/FlutterJNI( 6543): FlutterJNI.init called more than once
+I/flutter ( 6543): Skipping Firebase initialization: Unsupported operation: Firebase is not configured for dev. Run `flutterfire configure` to generate firebase_options_dev.dart.
+I/om.example.minq( 6543): Compiler allocated 6951KB to compile void android.view.ViewRootImpl.performTraversals()
+Syncing files to device A401OP...                                  232ms
+
+Flutter run key commands.
+r Hot reload. 🔥🔥🔥
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+A Dart VM Service on A401OP is available at: http://127.0.0.1:55004/YbH1ncTe3Ks=/
+I/Choreographer( 6543): Skipped 91 frames!  The application may be doing too much work on its main thread.
+W/VRI[MainActivity]( 6543): performTraversals: cancelAndRedraw, mLastPerformTraversalsSkipDrawReasonpredraw_io.flutter.embedding.android.FlutterActivityAndFragmentDelegate$2
+I/GrallocExtra( 6543): gralloc_extra_query:is_SW3D 0
+I/GrallocExtra( 6543): gralloc_extra_query:is_SW3D 0
+D/BLASTBufferQueue( 6543): [SurfaceView[com.example.minq/com.example.minq.MainActivity]#1](f:0,a:1) acquireNextBufferLocked size=1080x2412 mFrameNumber=1 applyTransaction=true mTimestamp=1764574231736406(auto) mPendingTransactions.size=0 graphicBufferId=28101971017738 transform=0
+W/libc    ( 6543): Access denied finding property "ro.vendor.mbrain.mode"
+D/om.example.minq( 6543): Can't load libmbrainSDK
+The Flutter DevTools debugger and profiler on A401OP is available at: http://127.0.0.1:9100?uri=http://127.0.0.1:55004/YbH1ncTe3Ks=/
+D/SurfaceView( 6543): 147865335 finishedDrawing
+D/SurfaceView( 6543): 147865335 performDrawFinished mAttachedToWindow true
+I/SurfaceControl( 6543):  setExtendedRangeBrightness sc=Surface(name=com.example.minq/com.example.minq.MainActivity)/@0x15df92c,currentBufferRatio=1.0,desiredRatio=1.0
+D/SurfaceView( 6543): 147865335 dispatchDraw mDrawFinished true isAboveParent false (mPrivateFlags & PFLAG_SKIP_DRAW) 128
+D/SurfaceView( 6543): 147865335 clearSurfaceViewPort mCornerRadius 0.0
+D/BLASTBufferQueue( 6543): [VRI[MainActivity]#0](f:0,a:1) acquireNextBufferLocked size=1080x2412 mFrameNumber=1 applyTransaction=true mTimestamp=1764574558027176(auto) mPendingTransactions.size=0 graphicBufferId=28101971017745 transform=0
+D/VRI[MainActivity]( 6543): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+D/VRI[MainActivity]( 6543): draw finished. seqId=0
+D/VRI[MainActivity]( 6543): onFocusEvent true
+I/flutter ( 6543): ╔══════════════════════════════════════════════════════╗
+I/flutter ( 6543): ║                 ISAR CONNECT STARTED                 ║
+I/flutter ( 6543): ╟──────────────────────────────────────────────────────╢
+I/flutter ( 6543): ║         Open the link to connect to the Isar         ║
+I/flutter ( 6543): ║        Inspector while this build is running.        ║
+I/flutter ( 6543): ╟──────────────────────────────────────────────────────╢
+I/flutter ( 6543): ║ https://inspect.isar.dev/3.1.0+1/#/55004/YbH1ncTe3Ks ║
+I/flutter ( 6543): ╚══════════════════════════════════════════════════════╝
+D/OplusScrollToTopManager( 6543): com.example.minq/com.example.minq.MainActivity,This com.android.internal.policy.DecorView{17b73dc V.E...... R....... 0,0-1080,2412 aid=0 alpha=1.0 viewInfo = }[MainActivity] change focus to true
+D/ProfileInstaller( 6543): Installing profile for com.example.minq
+V/AutofillManager( 6543): requestHideFillUi(null): anchor = null
+D/OplusInputMethodManagerInternal( 6543): get inputMethodManager extension: com.android.internal.view.IInputMethodManager$Stub$Proxy@f25b630
+D/ViewRootImplExtImpl( 6543): the up motion event handled by client, just return
+V/AutofillManager( 6543): requestHideFillUi(null): anchor = null
+D/ViewRootImplExtImpl( 6543): the up motion event handled by client, just return
+D/callGcSupression( 6543): java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.Object java.lang.reflect.Method.invoke(java.lang.Object, java.lang.Object[])' on a null object reference
+D/callGcSupression( 6543): java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.Object java.lang.reflect.Method.invoke(java.lang.Object, java.lang.Object[])' on a null object reference
+D/ResourcesManagerExtImpl( 6543): applyConfigurationToAppResourcesLocked app.getDisplayId() return callback.displayId:0
+V/AutofillManager( 6543): requestHideFillUi(null): anchor = null
+D/ViewRootImplExtImpl( 6543): the up motion event handled by client, just return
+V/AutofillManager( 6543): requestHideFillUi(null): anchor = null
+D/ViewRootImplExtImpl( 6543): the up motion event handled by client, just return
+I/flutter ( 6543): ┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+I/flutter ( 6543): │ #0   AppLogger.info (package:minq/core/logging/app_logger.dart:57:15)
+I/flutter ( 6543): │ #1   VersionCheckService.checkVersion (package:minq/core/version/version_check_service.dart:29:17)
+I/flutter ( 6543): ├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+I/flutter ( 6543): │ 15:01:48.297 (+0:00:00.002958)
+I/flutter ( 6543): ├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+I/flutter ( 6543): │ 💡 Skipping version check because Firebase Remote Config is unavailable.
+I/flutter ( 6543): └───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+V/AutofillManager( 6543): requestHideFillUi(null): anchor = null
+D/ViewRootImplExtImpl( 6543): the up motion event handled by client, just return
+W/WindowOnBackDispatcher( 6543): OnBackInvokedCallback is not enabled for the application.
+W/WindowOnBackDispatcher( 6543): Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+V/AutofillManager( 6543): requestHideFillUi(null): anchor = null
+D/ViewRootImplExtImpl( 6543): the up motion event handled by client, just return
+I/flutter ( 6543): Bypassing Firebase auth and using local guest session for debugging.
+I/flutter ( 6543): Using local guest session for debugging.
+I/flutter ( 6543): ℹ️  Model already installed: gemma3-270m-it-q8.task (skipping download)
+I/flutter ( 6543): ✅ Set active inference model: gemma3-270m-it-q8
+I/flutter ( 6543): ✅ Inference model installed and set as active: gemma3-270m-it-q8
+I/flutter ( 6543): UnifiedModelManager initialized successfully
+I/flutter ( 6543): UnifiedModelManager: Model gemma3-270m-it-q8 installed: true
+W/WindowOnBackDispatcher( 6543): OnBackInvokedCallback is not enabled for the application.
+W/WindowOnBackDispatcher( 6543): Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+I/flutter ( 6543): UnifiedModelManager: Model gemma3-270m-it-q8 installed: true
+I/flutter ( 6543): Using unified model file: /data/data/com.example.minq/app_flutter/gemma3-270m-it-q8.task
+D/nativeloader( 6543): Load /data/app/~~5MMbFi7vjMe-DFvOVKTF3A==/com.example.minq-1zpoH2F7gPzkYdPjI2si_Q==/base.apk!/lib/arm64-v8a/libllm_inference_engine_jni.so using class loader ns clns-7 (caller=/data/app/~~5MMbFi7vjMe-DFvOVKTF3A==/com.example.minq-1zpoH2F7gPzkYdPjI2si_Q==/base.apk!classes23.dex): ok
+I/tflite  ( 6543): Initialized TensorFlow Lite runtime.
+W/libc    ( 6543): Access denied finding property "ro.hardware.chipname"
+D/OPENCL_ICD_LOADER( 6543): initCLTraceLevel sCLTraceLevel = 0
+D/OPENCL_ICD_LOADER( 6543): initCLTraceLevel CL_TARGET_OPENCL_VERSION = 300
+D/OPENCL_ICD_LOADER( 6543): Init clImportMemoryARM_fptr 0x7d84f26a70
+I/tflite  ( 6543): Replacing 1537 out of 1537 node(s) with delegate (ML_DRIFT_CL) node, yielding 1 partitions for subgraph 0.
+I/tflite  ( 6543): Found serialized data for model gemma3-270m-it-q8.task (1777960 B) at /data/user/0/com.example.minq/cache/gemma3-270m-it-q8.task_1668767143485141859.bin
+I/tflite  ( 6543): Replacing 1667 out of 1667 node(s) with delegate (ML_DRIFT_CL) node, yielding 1 partitions for subgraph 1.
+I/tflite  ( 6543): Found serialized data for model gemma3-270m-it-q8.task (2545704 B) at /data/user/0/com.example.minq/cache/gemma3-270m-it-q8.task_2521259120633675023.bin
+V/AutofillManager( 6543): requestHideFillUi(null): anchor = null
+I/tflite  ( 6543): Replacing 1667 out of 1667 node(s) with delegate (ML_DRIFT_CL) node, yielding 1 partitions for subgraph 2.
+I/tflite  ( 6543): Found serialized data for model gemma3-270m-it-q8.task (2525008 B) at /data/user/0/com.example.minq/cache/gemma3-270m-it-q8.task_13809920932521909231.bin
+I/ScrollIdentify( 6543): on fling
+D/ViewRootImplExtImpl( 6543): the up motion event handled by client, just return
+I/om.example.minq( 6543): NativeAlloc concurrent mark compact GC freed 7925KB AllocSpace bytes, 28(864KB) LOS objects, 55% free, 4885KB/10MB, paused 951us,1.831ms total 316.164ms
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~uaFuOQDTpUVwFPo2uLs4Vg==/com.google.android.marvin.talkback-GIA2kvmRsH1rEpjrRW4x-w==/base.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~uaFuOQDTpUVwFPo2uLs4Vg==/com.google.android.marvin.talkback-GIA2kvmRsH1rEpjrRW4x-w==/split_config.arm64_v8a.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/base.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_ExoPlayerDF.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_ExoPlayerDF.config.ja.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_FASOpenCVDF.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_FASOpenCVDF.config.arm64_v8a.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_LMCODModelDF.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_LMCODModelDF.config.arm64_v8a.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_OCRCoreDF.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_OCRCoreDF.config.arm64_v8a.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_PDFEditFontsDF.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_ScanSDKDF.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_ScanSDKDF.config.arm64_v8a.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_ScanSDKDF.config.ja.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_VADYamnetDF.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_VADYamnetDF.config.arm64_v8a.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_config.arm64_v8a.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_config.ja.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~n6h-qkIkVNKufv0AF88OKA==/com.adobe.reader-eybgB_E9G1d1S2kNz6GhUQ==/split_config.xxhdpi.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~t8csGAdzeCw0Erv3ZbMypA==/com.anthropic.claude-BONYtllCrIcoFtU--sphtQ==/base.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~t8csGAdzeCw0Erv3ZbMypA==/com.anthropic.claude-BONYtllCrIcoFtU--sphtQ==/split_config.arm64_v8a.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~t8csGAdzeCw0Erv3ZbMypA==/com.anthropic.claude-BONYtllCrIcoFtU--sphtQ==/split_config.ja.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~t8csGAdzeCw0Erv3ZbMypA==/com.anthropic.claude-BONYtllCrIcoFtU--sphtQ==/split_config.xxhdpi.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/OppoNote2/OppoNote2.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~HjEDIx8U5BMpSUoU4GRTLA==/com.openai.chatgpt-K4qwF_HPlG0aSMMURlfV1Q==/base.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~HjEDIx8U5BMpSUoU4GRTLA==/com.openai.chatgpt-K4qwF_HPlG0aSMMURlfV1Q==/split_config.arm64_v8a.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~HjEDIx8U5BMpSUoU4GRTLA==/com.openai.chatgpt-K4qwF_HPlG0aSMMURlfV1Q==/split_config.ja.apk' with 1 weak references
+W/om.example.minq( 6543): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~HjEDIx8U5BMpSUoU4GRTLA==/com.openai.chatgpt-K4qwF_HPlG0aSMMURlfV1Q==/split_config.xxhdpi.apk' with 1 weak references
+
+══╡ EXCEPTION CAUGHT BY WIDGETS LIBRARY ╞═══════════════════════════════════════════════════════════
+The following StateError was thrown building GamificationStatusCard(dirty, dependencies:
+[InheritedCupertinoTheme, UncontrolledProviderScope, _InheritedTheme,
+_LocalizationsScope-[GlobalKey#f7474]], state: _ConsumerState#112af):
+Bad state: Firestore is not available
+
+The relevant error-causing widget was:
+  GamificationStatusCard
+  GamificationStatusCard:file:///C:/dev/minq/lib/presentation/screens/home_screen.dart:146:15
+
+When the exception was thrown, this was the stack:
+#1      _ProviderStateSubscription.read (package:riverpod/src/framework/provider_base.dart:181:28)
+#2      ConsumerStatefulElement.watch (package:flutter_riverpod/src/consumer.dart:568:8)
+#3      GamificationStatusCard.build (package:minq/presentation/widgets/gamification_status_card.dart:21:36)
+#4      _ConsumerState.build (package:flutter_riverpod/src/consumer.dart:476:19)
+#5      StatefulElement.build (package:flutter/src/widgets/framework.dart:5833:27)
+#6      ConsumerStatefulElement.build (package:flutter_riverpod/src/consumer.dart:539:20)
+#7      ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5723:15)
+#8      StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5884:11)
+#9      Element.rebuild (package:flutter/src/widgets/framework.dart:5435:7)
+#10     ComponentElement._firstBuild (package:flutter/src/widgets/framework.dart:5705:5)
+#11     StatefulElement._firstBuild (package:flutter/src/widgets/framework.dart:5875:11)
+#12     ComponentElement.mount (package:flutter/src/widgets/framework.dart:5699:5)
+...     Normal element mounting (41 frames)
+#53     Element.inflateWidget (package:flutter/src/widgets/framework.dart:4548:16)
+#54     Element.updateChild (package:flutter/src/widgets/framework.dart:4004:18)
+#55     SliverMultiBoxAdaptorElement.updateChild (package:flutter/src/widgets/sliver.dart:1001:37)
+#56     SliverMultiBoxAdaptorElement.createChild.<anonymous closure> (package:flutter/src/widgets/sliver.dart:985:20)
+#57     BuildOwner.buildScope (package:flutter/src/widgets/framework.dart:3046:19)
+#58     SliverMultiBoxAdaptorElement.createChild (package:flutter/src/widgets/sliver.dart:975:12)
+#59     RenderSliverMultiBoxAdaptor._createOrObtainChild.<anonymous closure> (package:flutter/src/rendering/sliver_multi_box_adaptor.dart:372:23)
+#60     RenderObject.invokeLayoutCallback.<anonymous closure> (package:flutter/src/rendering/object.dart:2881:17)
+#61     PipelineOwner._enableMutationsToDirtySubtrees (package:flutter/src/rendering/object.dart:1206:15)
+#62     RenderObject.invokeLayoutCallback (package:flutter/src/rendering/object.dart:2880:14)
+#63     RenderSliverMultiBoxAdaptor._createOrObtainChild (package:flutter/src/rendering/sliver_multi_box_adaptor.dart:360:5)
+#64     RenderSliverMultiBoxAdaptor.insertAndLayoutChild (package:flutter/src/rendering/sliver_multi_box_adaptor.dart:523:5)
+#65     RenderSliverList.performLayout.advance (package:flutter/src/rendering/sliver_list.dart:242:19)
+#66     RenderSliverList.performLayout (package:flutter/src/rendering/sliver_list.dart:283:12)
+#67     RenderObject.layout (package:flutter/src/rendering/object.dart:2762:7)
+#68     RenderSliverEdgeInsetsPadding.performLayout (package:flutter/src/rendering/sliver_padding.dart:133:12)
+#69     RenderSliverPadding.performLayout (package:flutter/src/rendering/sliver_padding.dart:371:11)
+#70     RenderObject.layout (package:flutter/src/rendering/object.dart:2762:7)
+#71     RenderViewportBase.layoutChildSequence (package:flutter/src/rendering/viewport.dart:673:13)
+#72     RenderViewport._attemptLayout (package:flutter/src/rendering/viewport.dart:1684:12)
+#73     RenderViewport.performLayout (package:flutter/src/rendering/viewport.dart:1575:20)
+#74     RenderObject._layoutWithoutResize (package:flutter/src/rendering/object.dart:2610:7)
+#75     PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1157:18)
+#76     PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1170:15)
+#77     RendererBinding.drawFrame (package:flutter/src/rendering/binding.dart:629:23)
+#78     WidgetsBinding.drawFrame (package:flutter/src/widgets/binding.dart:1261:13)
+#79     RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:495:5)
+#80     SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1434:15)
+#81     SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1347:9)
+#82     SchedulerBinding._handleDrawFrame (package:flutter/src/scheduler/binding.dart:1200:5)
+#83     _invoke (dart:ui/hooks.dart:330:13)
+#84     PlatformDispatcher._drawFrame (dart:ui/platform_dispatcher.dart:444:5)
+#85     _drawFrame (dart:ui/hooks.dart:302:31)
+#86     gamificationEngineProvider.<anonymous closure> (package:minq/data/providers.dart:715:5)
+#87     ProviderContainer.listen (package:riverpod/src/framework/container.dart:280:21)
+#88     ConsumerStatefulElement.watch.<anonymous closure> (package:flutter_riverpod/src/consumer.dart:564:25)
+#89     _LinkedHashMapMixin.putIfAbsent (dart:_compact_hash:674:23)
+#90     ConsumerStatefulElement.watch (package:flutter_riverpod/src/consumer.dart:557:26)
+#91     GamificationStatusCard.build (package:minq/presentation/widgets/gamification_status_card.dart:21:36)
+#92     _ConsumerState.build (package:flutter_riverpod/src/consumer.dart:476:19)
+#93     StatefulElement.build (package:flutter/src/widgets/framework.dart:5833:27)
+#94     ConsumerStatefulElement.build (package:flutter_riverpod/src/consumer.dart:539:20)
+#95     ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5723:15)
+#96     StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5884:11)
+#97     Element.rebuild (package:flutter/src/widgets/framework.dart:5435:7)
+#98     ComponentElement._firstBuild (package:flutter/src/widgets/framework.dart:5705:5)
+#99     StatefulElement._firstBuild (package:flutter/src/widgets/framework.dart:5875:11)
+#100    ComponentElement.mount (package:flutter/src/widgets/framework.dart:5699:5)
+...     Normal element mounting (41 frames)
+#141    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4548:16)
+#142    Element.updateChild (package:flutter/src/widgets/framework.dart:4004:18)
+#143    SliverMultiBoxAdaptorElement.updateChild (package:flutter/src/widgets/sliver.dart:1001:37)
+#144    SliverMultiBoxAdaptorElement.createChild.<anonymous closure> (package:flutter/src/widgets/sliver.dart:985:20)
+#145    BuildOwner.buildScope (package:flutter/src/widgets/framework.dart:3046:19)
+#146    SliverMultiBoxAdaptorElement.createChild (package:flutter/src/widgets/sliver.dart:975:12)
+#147    RenderSliverMultiBoxAdaptor._createOrObtainChild.<anonymous closure> (package:flutter/src/rendering/sliver_multi_box_adaptor.dart:372:23)
+#148    RenderObject.invokeLayoutCallback.<anonymous closure> (package:flutter/src/rendering/object.dart:2881:17)
+#149    PipelineOwner._enableMutationsToDirtySubtrees (package:flutter/src/rendering/object.dart:1206:15)
+#150    RenderObject.invokeLayoutCallback (package:flutter/src/rendering/object.dart:2880:14)
+#151    RenderSliverMultiBoxAdaptor._createOrObtainChild (package:flutter/src/rendering/sliver_multi_box_adaptor.dart:360:5)
+#152    RenderSliverMultiBoxAdaptor.insertAndLayoutChild (package:flutter/src/rendering/sliver_multi_box_adaptor.dart:523:5)
+#153    RenderSliverList.performLayout.advance (package:flutter/src/rendering/sliver_list.dart:242:19)
+#154    RenderSliverList.performLayout (package:flutter/src/rendering/sliver_list.dart:283:12)
+#155    RenderObject.layout (package:flutter/src/rendering/object.dart:2762:7)
+#156    RenderSliverEdgeInsetsPadding.performLayout (package:flutter/src/rendering/sliver_padding.dart:133:12)
+#157    RenderSliverPadding.performLayout (package:flutter/src/rendering/sliver_padding.dart:371:11)
+#158    RenderObject.layout (package:flutter/src/rendering/object.dart:2762:7)
+#159    RenderViewportBase.layoutChildSequence (package:flutter/src/rendering/viewport.dart:673:13)
+#160    RenderViewport._attemptLayout (package:flutter/src/rendering/viewport.dart:1684:12)
+#161    RenderViewport.performLayout (package:flutter/src/rendering/viewport.dart:1575:20)
+#162    RenderObject._layoutWithoutResize (package:flutter/src/rendering/object.dart:2610:7)
+#163    PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1157:18)
+#164    PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1170:15)
+#165    RendererBinding.drawFrame (package:flutter/src/rendering/binding.dart:629:23)
+#166    WidgetsBinding.drawFrame (package:flutter/src/widgets/binding.dart:1261:13)
+#167    RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:495:5)
+#168    SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1434:15)
+#169    SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1347:9)
+#170    SchedulerBinding._handleDrawFrame (package:flutter/src/scheduler/binding.dart:1200:5)
+#171    _invoke (dart:ui/hooks.dart:330:13)
+#172    PlatformDispatcher._drawFrame (dart:ui/platform_dispatcher.dart:444:5)
+#173    _drawFrame (dart:ui/hooks.dart:302:31)
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+V/AutofillManager( 6543): requestHideFillUi(null): anchor = null
+I/tflite  ( 6543): Replacing 1667 out of 1667 node(s) with delegate (ML_DRIFT_CL) node, yielding 1 partitions for subgraph 3.
+I/ScrollIdentify( 6543): on fling
+D/ViewRootImplExtImpl( 6543): the up motion event handled by client, just return
+I/tflite  ( 6543): Found serialized data for model gemma3-270m-it-q8.task (2546096 B) at /data/user/0/com.example.minq/cache/gemma3-270m-it-q8.task_3914021241277052517.bin
+I/tflite  ( 6543): Replacing 1667 out of 1667 node(s) with delegate (ML_DRIFT_CL) node, yielding 1 partitions for subgraph 4.
+V/AutofillManager( 6543): requestHideFillUi(null): anchor = null
+I/tflite  ( 6543): Found serialized data for model gemma3-270m-it-q8.task (2532912 B) at /data/user/0/com.example.minq/cache/gemma3-270m-it-q8.task_12737265776313417362.bin
+I/tflite  ( 6543): Replacing 1667 out of 1667 node(s) with delegate (ML_DRIFT_CL) node, yielding 1 partitions for subgraph 5.
+I/ScrollIdentify( 6543): on fling
+D/ViewRootImplExtImpl( 6543): the up motion event handled by client, just return
+I/tflite  ( 6543): Found serialized data for model gemma3-270m-it-q8.task (2545680 B) at /data/user/0/com.example.minq/cache/gemma3-270m-it-q8.task_7348354115626097302.bin
+I/flutter ( 6543): --- Sending to Native ---
+I/flutter ( 6543): History:
+I/flutter ( 6543):
+I/flutter ( 6543): Current Message:
+I/flutter ( 6543): あなたは習慣形成アプリ「MinQ」のAIコンシェルジュです。
+I/flutter ( 6543): ユーザーとの初回会話の導入として、自然な日本語で1〜2文の挨拶を返してください。
+I/flutter ( 6543): 挨拶の中で、習慣作りを優しくサポートする姿勢を伝えてください。
+I/flutter ( 6543): 敬語を使い、絵文字や顔文字は含めないでください。
+I/flutter ( 6543): -------------------------
+I/flutter ( 6543): InferenceChat: Starting async stream generation
+I/flutter ( 6543): InferenceChat: Starting to iterate over native tokens...
+V/AutofillManager( 6543): requestHideFillUi(null): anchor = null
+I/VelocityTracker( 6543): LSQ2 speed rezero
+I/VelocityTracker( 6543): LSQ2 speed rezero
+I/ScrollIdentify( 6543): on fling
+D/ViewRootImplExtImpl( 6543): the up motion event handled by client, just return
+I/om.example.minq( 6543): Waiting for a blocking GC NativeAlloc
+I/om.example.minq( 6543): NativeAlloc concurrent mark compact GC freed 456KB AllocSpace bytes, 9(432KB) LOS objects, 56% free, 4821KB/10MB, paused 1.575ms,12.911ms total 87.566ms
+I/om.example.minq( 6543): WaitForGcToComplete blocked NativeAlloc on NativeAlloc for 82.302ms
+I/flutter ( 6543): InferenceChat: Received filtered token: "<pad>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<pad>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<bos>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<bos>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused9>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused9>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused16>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused16>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused18>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused18>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<mask>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<mask>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused7>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused7>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused4>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused4>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused0>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused0>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused12>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused12>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<bos>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<bos>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused8>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused8>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused8>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused8>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused14>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused14>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused9>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused9>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused7>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused7>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused16>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused16>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused19>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused19>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused12>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused12>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused18>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused18>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused1>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused1>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused4>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused4>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused16>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused16>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused10>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused10>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused16>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused16>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused18>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused18>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<mask>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<mask>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused15>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused15>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused17>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused17>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused1>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused1>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused17>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused17>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused4>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused4>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused1>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused1>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused7>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused7>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused4>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused4>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused14>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused14>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused11>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused11>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused7>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused7>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused9>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused9>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<bos>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<bos>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused9>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused9>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused5>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused5>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused9>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused9>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused15>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused15>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused6>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused6>"
+I/flutter ( 6543): InferenceChat: Received filtered token: "<unused13>"
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: "<unused13>"
+I/flutter ( 6543): InferenceChat: Received filtered token: ""
+I/flutter ( 6543): InferenceChat: No function processing, emitting token as text: ""
+I/flutter ( 6543): InferenceChat: Native token stream ended
+I/flutter ( 6543): InferenceChat: Complete response accumulated: "<pad><bos><unused9><unused16><unused18><mask><unused7><unused4><unused0><unused12><bos><unused8><unused8><unused14><unused9><unused7><unused16><unused19><unused12><unused18><unused1><unused4><unused16><unused10><unused16><unused18><mask><unused15><unused17><unused1><unused17><unused4><unused1><unused7><unused4><unused14><unused11><unused7><unused9><bos><unused9><unused5><unused9><unused15><unused6><unused13>"
+I/flutter ( 6543): InferenceChat: Calculating response tokens...
+I/flutter ( 6543): InferenceChat: Response tokens: 53
+I/flutter ( 6543): InferenceChat: Current total tokens: 53
+I/flutter ( 6543): InferenceChat: Adding message to history...
+I/flutter ( 6543): InferenceChat: Created message object: <pad><bos><unused9><unused16><unused18><mask><unused7><unused4><unused0><unused12><bos><unused8><unused8><unused14><unused9><unused7><unused16><unused19><unused12><unused18><unused1><unused4><unused16><unused10><unused16><unused18><mask><unused15><unused17><unused1><unused17><unused4><unused1><unused7><unused4><unused14><unused11><unused7><unused9><bos><unused9><unused5><unused9><unused15><unused6><unused13>
+I/flutter ( 6543): InferenceChat: Added to full history
+I/flutter ( 6543): InferenceChat: Added to model history
+I/flutter ( 6543): InferenceChat: Message added to history successfully
+I/flutter ( 6543): InferenceChat: generateChatResponseAsync completed successfully
+I/flutter ( 6543): InferenceChat: Getting response from native model...
+E/native  ( 6543): E0000 00:00:1760853718.977151    7276 llm_litert_executor.cc:428] INTERNAL: RET_CHECK failure (third_party/odml/infra/genai/inference/executor/llm_litert_executor.cc:428) processed_context().processed_tokens().TokenCount() > internal_step (131 vs. 131)
+E/native  ( 6543): Stack trace:
+E/native  ( 6543): E0000 00:00:1760853718.977571    7276 llm_inference_engine.cc:264] INTERNAL: Calculator::Process() for node "odml.infra.LlmExecutorCalculator" failed: RET_CHECK failure (third_party/odml/infra/genai/inference/executor/llm_litert_executor.cc:428) processed_context().processed_tokens().TokenCount() > internal_step (131 vs. 131)
+E/native  ( 6543): === Source Location Trace: ===
+E/native  ( 6543): third_party/odml/infra/genai/inference/executor/llm_litert_executor.cc:428
+E/native  ( 6543): third_party/odml/infra/genai/inference/calculators/llm_executor_calculator.cc:346
+E/native  ( 6543): third_party/mediapipe/framework/calculator_node.cc:1012
+E/native  ( 6543): E0000 00:00:1760853718.977624    7276 llm_inference_engine.cc:265] Please create a new Session and start over.
+E/native  ( 6543): E0000 00:00:1760853718.977881    7235 calculator_graph.cc:959] INTERNAL: CalculatorGraph::Run() failed:
+E/native  ( 6543): Calculator::Process() for node "odml.infra.LlmExecutorCalculator" failed: RET_CHECK failure (third_party/odml/infra/genai/inference/executor/llm_litert_executor.cc:428) processed_context().processed_tokens().TokenCount() > internal_step (131 vs. 131)
+E/native  ( 6543): === Source Location Trace: ===
+E/native  ( 6543): third_party/odml/infra/genai/inference/executor/llm_litert_executor.cc:428
+E/native  ( 6543): third_party/odml/infra/genai/inference/calculators/llm_executor_calculator.cc:346
+E/native  ( 6543): third_party/mediapipe/framework/calculator_node.cc:1012
+F/libc    ( 6543): Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x0 in tid 7235 (DefaultDispatch), pid 6543 (om.example.minq)
+Process name is com.example.minq, uid is 10451, not key_process
+keyProcess: 0
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Build fingerprint: 'OPPO/A401OP/OP5A0BL1:15/AP3A.240617.008/U.R4T2.1efdd39-4459:user/release-keys'
+Revision: '0'
+ABI: 'arm64'
+Timestamp: 2025-10-19 15:01:59.256909307+0900
+Process uptime: 24s
+Cmdline: com.example.minq
+pid: 6543, tid: 7235, name: DefaultDispatch  >>> com.example.minq <<<
+uid: 10451
+tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x0000000000000000
+Cause: null pointer dereference
+    x0  b400007c21517060  x1  0000000000000000  x2  0000007c56b55310  x3  0000000000000002
+    x4  000000000000002e  x5  0000007ddaa9ce7e  x6  0000000000000080  x7  7f7f7f7f7f7f7f7f
+    x8  00000000000000b4  x9  a80f72a4935a1ef8  x10 0000000000000005  x11 00000000ffffffff
+    x12 0000007c53f8a5e8  x13 0000000040c00000  x14 0000000040c00000  x15 0110000000000000
+    x16 0000007e85385e78  x17 0000007e85315720  x18 0000007c38c10000  x19 0000000000000000
+    x20 0000007c56b55380  x21 0000007c56b552f8  x22 0000000000000000  x23 0000000000000000
+    x24 0000000000000000  x25 0000000000000002  x26 0000000000000002  x27 0000007cc0353190
+    x28 0000007c56b55430  x29 0000007c56b55520
+    lr  0000007c35d43198  sp  0000007c56b552d0  pc  0000007c35d43198  pst 0000000060001000
+73 total frames
+backtrace:
+      #00 pc 00000000003e7198  /data/app/~~5MMbFi7vjMe-DFvOVKTF3A==/com.example.minq-1zpoH2F7gPzkYdPjI2si_Q==/base.apk!libllm_inference_engine_jni.so (offset 0x6cfc000) (BuildId: e7cb5ebafd0742adcf5f96a67ef2c6f6)
+      #01 pc 00000000003e6858  /data/app/~~5MMbFi7vjMe-DFvOVKTF3A==/com.example.minq-1zpoH2F7gPzkYdPjI2si_Q==/base.apk!libllm_inference_engine_jni.so (offset 0x6cfc000) (BuildId: e7cb5ebafd0742adcf5f96a67ef2c6f6)
+      #02 pc 00000000003e67dc  /data/app/~~5MMbFi7vjMe-DFvOVKTF3A==/com.example.minq-1zpoH2F7gPzkYdPjI2si_Q==/base.apk!libllm_inference_engine_jni.so (offset 0x6cfc000) (Java_com_google_mediapipe_tasks_genai_llminference_LlmTaskRunner_nativePredictSync+148) (BuildId: e7cb5ebafd0742adcf5f96a67ef2c6f6)
+      #03 pc 0000000000344500  /apex/com.android.art/lib64/libart.so (art_quick_generic_jni_trampoline+144) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #04 pc 000000000032d460  /apex/com.android.art/lib64/libart.so (art_quick_invoke_static_stub+640) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #05 pc 0000000000679208  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2088) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #06 pc 00000000005c976c  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+1280) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #07 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #08 pc 0000000000560030  <anonymous:7d34f47000> (com.google.mediapipe.tasks.genai.llminference.LlmTaskRunner.predictSync+0)
+      #09 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #10 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #11 pc 00000000005c95d0  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+868) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #12 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #13 pc 000000000055f2ac  <anonymous:7d34f47000> (com.google.mediapipe.tasks.genai.llminference.LlmInferenceSession.generateResponse+0)
+      #14 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #15 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #16 pc 00000000005c95d0  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+868) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #17 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #18 pc 0000000000005a70  <anonymous:7e88e03000> (dev.flutterberlin.flutter_gemma.InferenceModelSession.generateResponse+0)
+      #19 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #20 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #21 pc 00000000005c95d0  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+868) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #22 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #23 pc 0000000000009b6c  <anonymous:7e88e03000> (dev.flutterberlin.flutter_gemma.PlatformServiceImpl$generateResponse$1.invokeSuspend+0)
+      #24 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #25 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #26 pc 00000000005c95d0  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+868) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #27 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #28 pc 00000000007bf09c  <anonymous:7d34f47000> (kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith+0)
+      #29 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #30 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #31 pc 00000000005c9d1c  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+2736) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #32 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #33 pc 0000000000083bb8  <anonymous:7d34f47000> (kotlinx.coroutines.DispatchedTask.run+0)
+      #34 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #35 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #36 pc 00000000005c9d1c  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+2736) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #37 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #38 pc 00000000000befd8  <anonymous:7d34f47000> (kotlinx.coroutines.internal.LimitedDispatcher$Worker.run+0)
+      #39 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #40 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #41 pc 00000000005c9d1c  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+2736) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #42 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #43 pc 00000000000c645c  <anonymous:7d34f47000> (kotlinx.coroutines.scheduling.TaskImpl.run+0)
+      #44 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #45 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #46 pc 00000000005c95d0  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+868) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #47 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #48 pc 00000000000c5b84  <anonymous:7d34f47000> (kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely+0)
+      #49 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #50 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #51 pc 00000000005c95d0  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+868) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #52 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #53 pc 00000000000c4664  <anonymous:7d34f47000> (kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask+0)
+      #54 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #55 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #56 pc 00000000005c95d0  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+868) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #57 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #58 pc 00000000000c47d8  <anonymous:7d34f47000> (kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker+0)
+      #59 pc 000000000031c3b0  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame*, art::JValue*)+412) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #60 pc 00000000006791f4  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall<false>(art::ArtMethod*, art::Thread*, art::ShadowFrame&, art::Instruction const*, unsigned short, bool, art::JValue*)+2068) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #61 pc 00000000005c95d0  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp<false>(art::interpreter::SwitchImplContext*)+868) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #62 pc 000000000031c9b8  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #63 pc 00000000000c47c0  <anonymous:7d34f47000> (kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run+0)
+      #64 pc 00000000002dc564  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&, art::ShadowFrame&, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238.llvm.7923196258099814811)+332) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #65 pc 00000000002dbd98  /apex/com.android.art/lib64/libart.so (artQuickToInterpreterBridge+888) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #66 pc 0000000000344638  /apex/com.android.art/lib64/libart.so (art_quick_to_interpreter_bridge+88) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #67 pc 000000000032d194  /apex/com.android.art/lib64/libart.so (art_quick_invoke_stub+612) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #68 pc 00000000002de270  /apex/com.android.art/lib64/libart.so (art::ArtMethod::Invoke(art::Thread*, unsigned int*, unsigned int, art::JValue*, char const*)+216) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #69 pc 00000000004bfcf4  /apex/com.android.art/lib64/libart.so (art::Thread::CreateCallback(void*)+932) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #70 pc 00000000004bf940  /apex/com.android.art/lib64/libart.so (art::Thread::CreateCallbackWithUffdGc(void*)+8) (BuildId: 80d2ab18f9d259d8e546c1e6bae752b1)
+      #71 pc 00000000000a6524  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*)+196) (BuildId: 5144907d23fac121cc594696acde97e0)
+      #72 pc 00000000000978a0  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+64) (BuildId: 5144907d23fac121cc594696acde97e0)
+Lost connection to device.
+PS C:\dev\minq>

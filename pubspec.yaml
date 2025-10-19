@@ -88,7 +88,7 @@ dependencies:
   crypto: any
   just_audio: any
   speech_to_text: any
-  flutter_gemma: any
+  flutter_gemma: ^0.11.6
   health: any
   # TODO: Fix integrations package
   miinq_integrations:
@@ -148,6 +148,7 @@ flutter:
     - assets/images/
     - assets/legal/
     - assets/models/
+    - config.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

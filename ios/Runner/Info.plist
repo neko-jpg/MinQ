@@ -45,6 +45,10 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Gemmaモデルをローカルで利用するためにネットワーク越しのデバイス探索が必要です / Local network access is required to prepare on-device Gemma models.</string>
         <key>NSCameraUsageDescription</key>
         <string>習慣達成の証跡写真を撮影するためにカメラを利用します / We use the camera to capture proof of your completed quests.</string>
         <key>NSUserNotificationUsageDescription</key>

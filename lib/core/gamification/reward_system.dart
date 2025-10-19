@@ -1,21 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/data/providers.dart';
 import 'package:minq/domain/gamification/reward.dart';
 
 // Provider for the system
 final rewardSystemProvider = Provider<RewardSystem>((ref) {
-  return RewardSystem(FirebaseFirestore.instance);
+  final firestore = ref.watch(firestoreProvider);
+  return RewardSystem(firestore);
 });
 
 class RewardSystem {
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _firestore;
 
   RewardSystem(this._firestore);
 
   /// Fetches the list of available rewards.
   Future<List<Reward>> getAvailableRewards() async {
+    // Firestoreが利用できない場合は空のリストを返す
+    if (_firestore == null) {
+      print('Rewards unavailable (offline mode)');
+      return [];
+    }
+
     try {
-      final snapshot = await _firestore.collection('rewards').get();
+      final snapshot = await _firestore!.collection('rewards').get();
       return snapshot.docs
           .map((doc) => Reward.fromJson(doc.data()))
           .toList();
@@ -30,11 +38,17 @@ class RewardSystem {
     required String userId,
     required String rewardId,
   }) async {
-    final userRef = _firestore.collection('users').doc(userId);
-    final rewardRef = _firestore.collection('rewards').doc(rewardId);
+    // Firestoreが利用できない場合は失敗
+    if (_firestore == null) {
+      print('Reward redemption unavailable (offline mode)');
+      return false;
+    }
+
+    final userRef = _firestore!.collection('users').doc(userId);
+    final rewardRef = _firestore!.collection('rewards').doc(rewardId);
 
     try {
-      return await _firestore.runTransaction((transaction) async {
+      return await _firestore!.runTransaction((transaction) async {
         // 1. Get current user points and the reward details
         final rewardSnapshot = await transaction.get(rewardRef);
         if (!rewardSnapshot.exists) {
@@ -42,9 +56,10 @@ class RewardSystem {
         }
         final reward = Reward.fromJson(rewardSnapshot.data()!);
 
-        final pointsSnapshot = await transaction
-            .get(userRef.collection('points_transactions'));
-        final currentPoints = pointsSnapshot.docs
+        final pointsCollectionSnapshot = await userRef
+            .collection('points_transactions')
+            .get();
+        final currentPoints = pointsCollectionSnapshot.docs
             .map((doc) => doc.data()['value'] as int)
             .fold(0, (prev, el) => prev + el);
 
@@ -96,10 +111,16 @@ class RewardSystem {
     }
 
     try {
+      // Firestoreが利用できない場合はローカルログのみ
+      if (_firestore == null) {
+        print('Surprise reward generated (offline mode): ${selectedReward.name}');
+        return selectedReward;
+      }
+
       // For consumable point pouches, directly award points instead of adding to inventory
       if(selectedReward.type == 'consumable') {
          final points = selectedReward.name.contains('Small') ? 25 : 50;
-         await _firestore.collection('users').doc(userId).collection('points_transactions').add({
+         await _firestore!.collection('users').doc(userId).collection('points_transactions').add({
            'value': points,
            'reason': 'Surprise Reward: ${selectedReward.name}',
            'createdAt': FieldValue.serverTimestamp(),
@@ -107,7 +128,7 @@ class RewardSystem {
          });
          print('Awarded $points surprise points to user $userId');
       } else {
-        await _firestore.collection('users').doc(userId).collection('user_rewards').doc(selectedReward.id).set(selectedReward.toJson());
+        await _firestore!.collection('users').doc(userId).collection('user_rewards').doc(selectedReward.id).set(selectedReward.toJson());
         print('Awarded surprise reward ${selectedReward.name} to user $userId');
       }
       return selectedReward;

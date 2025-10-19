@@ -64,12 +64,18 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     }
 
     String? pairId;
-    if (widget.code != null) {
-      // pairId = await repo.joinPairWithCode(uid, widget.code!);
-      pairId = 'mock_pair_id_from_code'; // Placeholder
-    } else {
-      const category = 'Fitness';
-      pairId = await repo.requestRandomPair(uid, category);
+    try {
+      if (widget.code != null) {
+        // 招待コードでペアに参加
+        pairId = await repo.joinByInvitation(widget.code!, uid);
+      } else {
+        // ランダムマッチング
+        const category = 'Fitness';
+        pairId = await repo.requestRandomPair(uid, category);
+      }
+    } catch (e) {
+      // エラー時はマッチング失敗として処理
+      pairId = null;
     }
 
     _pairingTimer?.cancel();
@@ -245,7 +251,41 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ... (existing implementation, can be localized later if needed)
+          const Spacer(),
+          Icon(
+            Icons.celebration,
+            color: tokens.accentSuccess,
+            size: 72,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'マッチング成功！',
+            textAlign: TextAlign.center,
+            style: tokens.titleLarge.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'バディが見つかりました。一緒に習慣を続けていきましょう！',
+            textAlign: TextAlign.center,
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          const Spacer(),
+          MinqPrimaryButton(
+            label: 'ペア画面へ',
+            icon: Icons.arrow_forward,
+            onPressed: () async {
+              if (_foundPairId != null) {
+                await _subscribeToNotifications();
+                if (context.mounted) {
+                  context.go(AppRoutes.pair);
+                }
+              }
+            },
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );
@@ -258,7 +298,41 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ... (existing implementation, can be localized later if needed)
+          const Spacer(),
+          Icon(
+            Icons.search_off,
+            color: tokens.textMuted,
+            size: 72,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'マッチングできませんでした',
+            textAlign: TextAlign.center,
+            style: tokens.titleLarge.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            '現在マッチング可能なバディがいません。時間をおいて再度お試しください。',
+            textAlign: TextAlign.center,
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          const Spacer(),
+          MinqPrimaryButton(
+            label: l10n.retry,
+            icon: Icons.refresh,
+            onPressed: _startPairing,
+          ),
+          const SizedBox(height: 16),
+          MinqTextButton(
+            label: l10n.cancel,
+            onTap: () async {
+              context.pop();
+            },
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );
@@ -271,7 +345,36 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ... (existing implementation, can be localized later if needed)
+          const Spacer(),
+          Icon(
+            Icons.check_circle,
+            color: tokens.accentSuccess,
+            size: 72,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'ペアリング完了',
+            textAlign: TextAlign.center,
+            style: tokens.titleLarge.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'バディとのペアリングが完了しました。',
+            textAlign: TextAlign.center,
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          const Spacer(),
+          MinqPrimaryButton(
+            label: 'ペア画面へ',
+            icon: Icons.arrow_forward,
+            onPressed: () async {
+              context.go(AppRoutes.pair);
+            },
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );

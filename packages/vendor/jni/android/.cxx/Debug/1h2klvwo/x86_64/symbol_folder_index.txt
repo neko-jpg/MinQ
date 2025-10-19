@@ -1,0 +1,1 @@
+C:\minq_android_build\android\jni\intermediates\cxx\Debug\1h2klvwo\obj\x86_64

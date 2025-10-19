@@ -1,26 +1,29 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/ai/gemma_ai_service.dart';
 import 'package:minq/domain/ai/ai_coach_state.dart';
 import 'package:minq/domain/ai/chat_message.dart';
-import 'package:minq/core/ai/gemma_ai_service.dart';
 import 'package:uuid/uuid.dart';
 
 // Provider for the controller
-final aiCoachControllerProvider = StateNotifierProvider<AICoachController, AICoachState>((ref) {
-  final gemmaService = ref.watch(gemmaAIServiceProvider);
-  return AICoachController(gemmaService);
-});
+final aiCoachControllerProvider =
+    StateNotifierProvider<AICoachController, AICoachState>((ref) {
+      final gemmaAsync = ref.watch(gemmaAIServiceProvider);
+      return AICoachController(gemmaAsync.valueOrNull);
+    });
 
 class AICoachController extends StateNotifier<AICoachState> {
-  final GemmaAIService _gemmaService;
+  final GemmaAIService? _gemmaService;
   final Uuid _uuid = const Uuid();
 
   AICoachController(this._gemmaService)
-      : super(AICoachState(
+    : super(
+        AICoachState(
           userId: '', // This should be initialized with the actual user ID
           conversationHistory: [],
           isTyping: false,
           lastInteraction: DateTime.now(),
-        ));
+        ),
+      );
 
   /// Handles a new message sent by the user.
   Future<void> sendMessage(String text) async {
@@ -36,8 +39,16 @@ class AICoachController extends StateNotifier<AICoachState> {
       isTyping: true,
     );
 
-    // Get AI response
-    final aiResponseText = await _gemmaService.generateText(text);
+    final gemma = _gemmaService;
+    var aiResponseText = _coachUnavailableMessage;
+    if (gemma != null) {
+      aiResponseText = await gemma.generateText(
+        text,
+        history: _buildHistoryWithoutLatest(),
+        systemPrompt: _coachSystemPrompt,
+        maxTokens: 320,
+      );
+    }
 
     // Add AI message to history
     final aiMessage = ChatMessage(
@@ -52,4 +63,38 @@ class AICoachController extends StateNotifier<AICoachState> {
       lastInteraction: DateTime.now(),
     );
   }
+
+  List<GemmaChatMessage> _buildHistoryWithoutLatest() {
+    final messages = state.conversationHistory;
+    if (messages.isEmpty) {
+      return const <GemmaChatMessage>[];
+    }
+
+    final mapped =
+        messages
+            .map(
+              (message) => GemmaChatMessage(
+                role:
+                    message.sender == 'user'
+                        ? GemmaChatRole.user
+                        : GemmaChatRole.assistant,
+                text: message.text,
+              ),
+            )
+            .toList();
+
+    if (mapped.isNotEmpty && mapped.last.isUser) {
+      mapped.removeLast();
+    }
+
+    return mapped;
+  }
 }
+
+const String _coachSystemPrompt =
+    'You are a supportive habit coach. Provide actionable, upbeat guidance '
+    'in Japanese. Keep responses within two short paragraphs.';
+
+const String _coachUnavailableMessage =
+    '申し訳ありません。AIコーチを利用できませんでした。少し時間を置いてから'
+    'もう一度お試しください。';

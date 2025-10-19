@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Habit Tracker</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#007AFF",
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#121212",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#1E1E1E",
+                        "text-light-primary": "#111827",
+                        "text-light-secondary": "#6B7280",
+                        "text-dark-primary": "#FFFFFF",
+                        "text-dark-secondary": "#9CA3AF",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem",
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark dark:bg-background-dark text-text-dark-primary dark:text-text-dark-primary">
+<div class="flex flex-col min-h-screen">
+<main class="flex-grow p-6 space-y-8">
+<header class="text-center">
+<h1 class="text-4xl font-bold">Welcome Home</h1>
+</header>
+<section class="bg-card-dark p-6 rounded-lg">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm text-text-dark-secondary">Today's Focus</p>
+<h2 class="text-3xl font-bold mt-1">Meditate</h2>
+<p class="text-text-dark-secondary">10 minutes</p>
+</div>
+<div class="relative w-20 h-20">
+<svg class="w-full h-full" viewBox="0 0 36 36">
+<path class="text-gray-700" d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-primary" d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="70, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-icons text-primary text-3xl">spa</span>
+</div>
+</div>
+</div>
+</section>
+<section>
+<h3 class="text-2xl font-bold mb-4">Your Mini-Quests</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-primary p-4 rounded-lg flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<span class="material-icons text-white">directions_run</span>
+<div>
+<p class="font-semibold text-white">Go for a Run</p>
+<p class="text-sm text-blue-200">30m</p>
+</div>
+</div>
+<div class="bg-white/30 rounded-full w-6 h-6 flex items-center justify-center">
+<span class="material-icons text-white text-lg">check</span>
+</div>
+</div>
+<div class="bg-primary p-4 rounded-lg flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<span class="material-icons text-white">menu_book</span>
+<div>
+<p class="font-semibold text-white">Read 10 Pages</p>
+</div>
+</div>
+<div class="bg-white/30 rounded-full w-6 h-6 flex items-center justify-center">
+<span class="material-icons text-white text-lg">check</span>
+</div>
+</div>
+</div>
+</section>
+<section>
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-2xl font-bold">AI Concierge</h3>
+<span class="material-icons text-text-dark-secondary">more_horiz</span>
+</div>
+<div class="bg-card-dark p-4 rounded-lg">
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-primary flex-shrink-0 flex items-center justify-center">
+<span class="material-icons text-white">psychology</span>
+</div>
+<div class="bg-gray-700 rounded-lg p-3 max-w-[80%]">
+<p class="text-sm">こんにちは！何かお困りのことはありますか？目標達成に向けてサポートしますよ。</p>
+</div>
+</div>
+<div class="flex items-start gap-3 justify-end">
+<div class="bg-primary rounded-lg p-3 max-w-[80%]">
+<p class="text-sm text-white">最近、モチベーションが上がらないんだ...</p>
+</div>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-2">
+<input class="flex-grow bg-gray-700 border-none rounded-full px-4 py-2 text-sm placeholder-text-dark-secondary focus:ring-primary focus:ring-2" placeholder="メッセージを入力..." type="text"/>
+<button class="bg-primary rounded-full w-10 h-10 flex items-center justify-center">
+<span class="material-icons text-white">send</span>
+</button>
+</div>
+</div>
+</section>
+<section>
+<h3 class="text-2xl font-bold mb-4">Weekly Streak</h3>
+<div class="bg-card-dark p-4 rounded-lg flex justify-between items-center">
+<div class="flex flex-col items-center">
+<p class="text-sm text-text-dark-secondary">Mon</p>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center mt-2">
+<span class="material-icons text-white text-base">check</span>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<p class="text-sm text-text-dark-secondary">Tue</p>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center mt-2">
+<span class="material-icons text-white text-base">check</span>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<p class="text-sm text-text-dark-secondary">Wed</p>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center mt-2">
+<span class="material-icons text-white text-base">check</span>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<p class="text-sm text-text-dark-primary font-semibold">Thu</p>
+<div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center mt-2">
+</div>
+</div>
+<div class="flex flex-col items-center">
+<p class="text-sm text-text-dark-secondary">Fri</p>
+<div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center mt-2">
+</div>
+</div>
+<div class="flex flex-col items-center">
+<p class="text-sm text-text-dark-secondary">Sat</p>
+<div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center mt-2">
+</div>
+</div>
+<div class="flex flex-col items-center">
+<p class="text-sm text-text-dark-secondary">Sun</p>
+<div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center mt-2">
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="sticky bottom-0 bg-card-dark shadow-lg">
+<nav class="flex justify-around py-3">
+<a class="flex flex-col items-center text-primary w-1/5" href="#">
+<span class="material-icons">home</span>
+<span class="text-xs">Home</span>
+</a>
+<a class="flex flex-col items-center text-text-dark-secondary hover:text-primary w-1/5" href="#">
+<span class="material-icons">bar_chart</span>
+<span class="text-xs">Stats</span>
+</a>
+<a class="flex flex-col items-center text-text-dark-secondary hover:text-primary w-1/5" href="#">
+<span class="material-icons">people</span>
+<span class="text-xs">Pair</span>
+</a>
+<a class="flex flex-col items-center text-text-dark-secondary hover:text-primary w-1/5" href="#">
+<span class="material-icons">checklist</span>
+<span class="text-xs">Quests</span>
+</a>
+<a class="flex flex-col items-center text-text-dark-secondary hover:text-primary w-1/5" href="#">
+<span class="material-icons">settings</span>
+<span class="text-xs">Settings</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

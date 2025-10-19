@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Insights Summary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#007AFF",
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#121212",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#1E1E1E",
+                        "text-light-primary": "#111827",
+                        "text-light-secondary": "#6B7280",
+                        "text-dark-primary": "#FFFFFF",
+                        "text-dark-secondary": "#9CA3AF",
+                        "accent-purple": "#A78BFA",
+                        "accent-green": "#34D399",
+                        "accent-orange": "#FDBA74",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem",
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark dark:bg-background-dark text-text-dark-primary dark:text-text-dark-primary">
+<div class="flex flex-col h-screen">
+<header class="bg-card-dark p-4 flex items-center justify-between shadow-md z-10 sticky top-0">
+<button>
+<span class="material-icons">arrow_back_ios</span>
+</button>
+<div class="text-center flex-grow">
+<h1 class="text-xl font-bold">AIからのインサイト</h1>
+</div>
+<div class="w-8"></div>
+</header>
+<main class="flex-grow p-6 overflow-y-auto space-y-8">
+<div class="text-center">
+<div class="w-20 h-20 rounded-full bg-primary mx-auto flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-white text-4xl">psychology</span>
+</div>
+<h2 class="text-2xl font-bold">会話のまとめ</h2>
+<p class="text-text-dark-secondary mt-2">AIコンシェルジュとの対話から得られた、あなただけのインサイトです。</p>
+</div>
+<div class="space-y-6">
+<div class="bg-card-dark rounded-xl p-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-accent-purple/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-accent-purple text-3xl">lightbulb</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">主要な洞察</h3>
+<p class="text-sm text-text-dark-secondary">モチベーション低下の根本原因</p>
+</div>
+</div>
+<p class="mt-4 text-text-dark-secondary leading-relaxed">
+            最近の会話から、<span class="text-text-dark-primary font-medium">仕事の多忙さ</span>と<span class="text-text-dark-primary font-medium">プライベートな時間の不足</span>が、モチベーション低下の主な原因である可能性が示唆されました。疲労が蓄積し、新しいことに挑戦する意欲が湧きにくくなっているようです。
+          </p>
+</div>
+<div class="bg-card-dark rounded-xl p-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-accent-green/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-accent-green text-3xl">task_alt</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">パーソナライズされたアドバイス</h3>
+<p class="text-sm text-text-dark-secondary">今すぐ試せる小さな一歩</p>
+</div>
+</div>
+<ul class="mt-4 space-y-3 text-text-dark-secondary">
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary mt-1">check_circle_outline</span>
+<span>まずは<span class="text-text-dark-primary font-medium">1日5分</span>、意識的にリラックスする時間を作りましょう。好きな音楽を聴いたり、温かい飲み物を楽しむのがおすすめです。</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary mt-1">check_circle_outline</span>
+<span>週末に<span class="text-text-dark-primary font-medium">30分程度の散歩</span>を取り入れてみましょう。軽い運動は気分転換に効果的です。</span>
+</li>
+</ul>
+</div>
+<div class="bg-card-dark rounded-xl p-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-accent-orange/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-accent-orange text-3xl">track_changes</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">今後の目標設定</h3>
+<p class="text-sm text-text-dark-secondary">次のステップへの提案</p>
+</div>
+</div>
+<p class="mt-4 text-text-dark-secondary leading-relaxed">
+            今の状況が少し改善されたら、次は<span class="text-text-dark-primary font-medium">「週に1時間、趣味の時間を確保する」</span>という新しい目標を設定してみてはいかがでしょうか？小さな成功体験を積み重ねることが、自信回復に繋がります。
+          </p>
+<button class="mt-4 w-full bg-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-primary/90 transition-colors">
+            この目標を設定する
+          </button>
+</div>
+</div>
+</main>
+<footer class="bg-card-dark p-4 shadow-inner sticky bottom-0">
+<button class="w-full bg-gray-700 text-text-dark-primary font-bold py-3 px-4 rounded-lg hover:bg-gray-600 transition-colors">
+            チャットに戻る
+        </button>
+</footer>
+</div>
+
+</body></html>

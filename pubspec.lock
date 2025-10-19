@@ -663,10 +663,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_gemma
-      sha256: "12146fa9bb9584d535263272759901f85ab3acdf74eb9874c050fe5e87c10576"
+      sha256: a1163daf70cfc6dd6e43b7fdd834c36779d09d4ab5daf3a66e70ccf11c89389f
       url: "https://pub.dev"
     source: hosted
-    version: "0.11.5"
+    version: "0.11.6"
   flutter_heatmap_calendar:
     dependency: "direct main"
     description:

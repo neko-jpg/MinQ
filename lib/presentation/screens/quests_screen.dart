@@ -12,6 +12,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:go_router/go_router.dart';
 
 class QuestsScreen extends ConsumerStatefulWidget {
   const QuestsScreen({super.key});
@@ -626,7 +627,11 @@ class _AiSuggestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final template = suggestion.template;
-    final icon = template.icon ?? Icons.star;
+    final icon = template.icon is IconData 
+        ? template.icon as IconData 
+        : (template.icon is String 
+            ? iconDataForKey(template.icon as String, fallback: Icons.star)
+            : Icons.star);
     final confidence = (suggestion.confidence * 100).clamp(0, 100).round();
 
     return Container(
@@ -642,7 +647,7 @@ class _AiSuggestionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon as IconData, size: 32, color: tokens.brandPrimary),
+              Icon(icon, size: 32, color: tokens.brandPrimary),
               SizedBox(width: tokens.spacing(2)),
               Expanded(
                 child: Text(

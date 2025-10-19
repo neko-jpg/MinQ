@@ -1,11 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:archive/archive_io.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
-import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
 
 final dataExportServiceProvider = Provider((ref) {
   return DataExportService(FirebaseFirestore.instance);
@@ -16,11 +17,46 @@ class DataExportService {
 
   DataExportService(this._firestore);
 
-  Future<void> exportQuestHistoryAsPdf() async {
+  Future<File> exportDataZip({
+    required List<Map<String, dynamic>> quests,
+    required List<Map<String, dynamic>> logs,
+    required Map<String, dynamic> stats,
+    required Map<String, dynamic> metadata,
+  }) async {
+    final encoder = JsonEncoder.withIndent('  ');
+    final archive = Archive();
+
+    final questsData = utf8.encode(encoder.convert(quests));
+    archive.addFile(ArchiveFile('quests.json', questsData.length, questsData));
+
+    final logsData = utf8.encode(encoder.convert(logs));
+    archive.addFile(ArchiveFile('logs.json', logsData.length, logsData));
+
+    final statsData = utf8.encode(encoder.convert(stats));
+    archive.addFile(ArchiveFile('stats.json', statsData.length, statsData));
+
+    final metadataData = utf8.encode(encoder.convert(metadata));
+    archive.addFile(ArchiveFile('metadata.json', metadataData.length, metadataData));
+
+    final outputDir = await getTemporaryDirectory();
+    final outputFile = File('${outputDir.path}/minq_export.zip');
+
+    final zipEncoder = ZipEncoder();
+    final outputStream = OutputFileStream(outputFile.path);
+    zipEncoder.encode(archive, output: outputStream);
+
+    return outputFile;
+  }
+
+  Future<void> shareFile(File file) async {
+    await Share.shareXFiles([XFile(file.path)], text: 'My MinQ Data Export');
+  }
+
+  Future<void> exportQuestHistoryAsPdf(String userId) async {
     // 1. Fetch data
     final questLogsSnapshot = await _firestore
         .collection('users')
-        .doc(_userId)
+        .doc(userId)
         .collection('quest_logs')
         .orderBy('completedAt', descending: true)
         .get();

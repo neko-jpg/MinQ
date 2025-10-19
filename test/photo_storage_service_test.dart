@@ -57,7 +57,8 @@ void main() {
     expect(result.hasFile, isTrue);
     expect(File(result.path).existsSync(), isTrue);
     expect(result.path, isNot(contains('original.jpg')));
-    expect(result.path, contains('proof_photos/user123'));
+    final userDirectorySegment = p.joinAll(['proof_photos', 'user123']);
+    expect(result.path, contains(userDirectorySegment));
     expect(await File(result.path).length(), greaterThan(0));
     expect(originalFile.existsSync(), isFalse);
     expect(result.moderationVerdict, PhotoModerationVerdict.lowVariance);

@@ -14,6 +14,7 @@ import 'package:minq/presentation/controllers/integration_settings_controller.da
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/controllers/usage_limit_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -300,6 +301,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _exportData(BuildContext context) async {
     if (_isExporting) return;
 
+    final exportService = ref.read(dataExportServiceProvider);
+    if (exportService == null) {
+      FeedbackMessenger.showErrorToast(context, 'エクスポート機能は現在ご利用いただけません。');
+      return;
+    }
+
     final uid = ref.read(uidProvider);
     if (uid == null || uid.isEmpty) {
       FeedbackMessenger.showErrorToast(context, 'サインインしてからエクスポートをご利用ください。');
@@ -324,7 +331,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     try {
       final questRepository = ref.read(questRepositoryProvider);
       final logRepository = ref.read(questLogRepositoryProvider);
-      final exportService = ref.read(dataExportServiceProvider);
       final localUser = await ref.read(localUserProvider.future);
 
       final quests = await questRepository.getQuestsForOwner(uid);
@@ -388,7 +394,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           'データのエクスポートが完了しました。共有シートから保存または送信できます。',
         );
       } else if (failureMessage != null) {
-        FeedbackMessenger.showErrorToast(context, failureMessage!);
+        FeedbackMessenger.showErrorToast(context, failureMessage);
       }
     }
   }
@@ -696,7 +702,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: 'サポート',
             tiles: [
               _SettingsTile(
-                title: 'GPT-4o サポートチャット',
+                title: 'Gemma AI サポートチャット',
                 subtitle: '困ったことをAIサポートに質問',
                 onTap: navigation.goToSupport,
               ),
