@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:minq/data/models/mini_quest.dart';
-import 'package:minq/data/models/quest_log.dart';
+import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/domain/quest/quest.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -30,16 +30,16 @@ class ExportService {
 
     // データ行
     for (final log in logs) {
-      final date = log.date;
+      final date = log.completedAt;
       if (startDate != null && date.isBefore(startDate)) continue;
       if (endDate != null && date.isAfter(endDate)) continue;
 
       rows.add([
-        _formatDate(log.date),
-        log.questId,
+        _formatDate(log.completedAt),
+        log.questId.toString(),
         log.questTitle ?? '',
-        log.completed ? 'Yes' : 'No',
-        log.completedAt != null ? _formatDateTime(log.completedAt!) : '',
+        log.isCompleted ? 'Yes' : 'No',
+        log.completedAt != null ? _formatDateTime(log.completedAt) : '',
         log.notes ?? '',
       ]);
     }
@@ -49,7 +49,7 @@ class ExportService {
   }
 
   /// クエストをCSVエクスポート
-  Future<File> exportQuestsToCSV(List<MiniQuest> quests) async {
+  Future<File> exportQuestsToCSV(List<Quest> quests) async {
     final rows = <List<String>>[];
 
     // ヘッダー行
@@ -66,13 +66,13 @@ class ExportService {
     // データ行
     for (final quest in quests) {
       rows.add([
-        quest.id,
+        quest.id.toString(),
         quest.title,
-        quest.description ?? '',
-        quest.reminderTime ?? '',
-        quest.isActive ? 'Yes' : 'No',
+        '', // Questにdescriptionがない
+        '', // QuestにreminderTimeがない
+        quest.status == QuestStatus.active ? 'Yes' : 'No',
         _formatDateTime(quest.createdAt),
-        quest.order.toString(),
+        '', // Questにorderがない
       ]);
     }
 
@@ -114,7 +114,7 @@ class ExportService {
 
   /// データをJSONエクスポート
   Future<File> exportToJSON({
-    required List<MiniQuest> quests,
+    required List<Quest> quests,
     required List<QuestLog> logs,
     Map<String, dynamic>? metadata,
   }) async {
@@ -135,14 +135,12 @@ class ExportService {
     try {
       final data = jsonDecode(jsonString) as Map<String, dynamic>;
 
-      final quests =
-          (data['quests'] as List?)
-              ?.map((q) => MiniQuest.fromJson(q as Map<String, dynamic>))
+      final quests = (data['quests'] as List?)
+              ?.map((q) => Quest.fromJson(q as Map<String, dynamic>))
               .toList() ??
           [];
 
-      final logs =
-          (data['logs'] as List?)
+      final logs = (data['logs'] as List?)
               ?.map((l) => QuestLog.fromJson(l as Map<String, dynamic>))
               .toList() ??
           [];
@@ -176,21 +174,17 @@ class ExportService {
     required DateTime period2End,
     required List<QuestLog> allLogs,
   }) async {
-    final period1Logs =
-        allLogs.where((log) {
-          return log.date.isAfter(
-                period1Start.subtract(const Duration(days: 1)),
-              ) &&
-              log.date.isBefore(period1End.add(const Duration(days: 1)));
-        }).toList();
+    final period1Logs = allLogs.where((log) {
+      return log.completedAt
+              .isAfter(period1Start.subtract(const Duration(days: 1))) &&
+          log.completedAt.isBefore(period1End.add(const Duration(days: 1)));
+    }).toList();
 
-    final period2Logs =
-        allLogs.where((log) {
-          return log.date.isAfter(
-                period2Start.subtract(const Duration(days: 1)),
-              ) &&
-              log.date.isBefore(period2End.add(const Duration(days: 1)));
-        }).toList();
+    final period2Logs = allLogs.where((log) {
+      return log.completedAt
+              .isAfter(period2Start.subtract(const Duration(days: 1))) &&
+          log.completedAt.isBefore(period2End.add(const Duration(days: 1)));
+    }).toList();
 
     final rows = <List<String>>[];
 
@@ -206,8 +200,8 @@ class ExportService {
     ]);
 
     // 総完了数
-    final p1Completed = period1Logs.where((l) => l.completed).length;
-    final p2Completed = period2Logs.where((l) => l.completed).length;
+    final p1Completed = period1Logs.where((l) => l.isCompleted).length;
+    final p2Completed = period2Logs.where((l) => l.isCompleted).length;
     final completedChange = p2Completed - p1Completed;
     final completedChangePercent =
         p1Completed > 0 ? (completedChange / p1Completed * 100) : 0.0;
@@ -221,14 +215,12 @@ class ExportService {
     ]);
 
     // 平均完了率
-    final p1Rate =
-        period1Logs.isEmpty
-            ? 0.0
-            : period1Logs.where((l) => l.completed).length / period1Logs.length;
-    final p2Rate =
-        period2Logs.isEmpty
-            ? 0.0
-            : period2Logs.where((l) => l.completed).length / period2Logs.length;
+    final p1Rate = period1Logs.isEmpty
+        ? 0.0
+        : period1Logs.where((l) => l.isCompleted).length / period1Logs.length;
+    final p2Rate = period2Logs.isEmpty
+        ? 0.0
+        : period2Logs.where((l) => l.isCompleted).length / period2Logs.length;
     final rateChange = (p2Rate - p1Rate) * 100;
 
     rows.add([
@@ -284,7 +276,7 @@ class ExportService {
 
 /// インポート結果
 class ImportResult {
-  final List<MiniQuest> quests;
+  final List<Quest> quests;
   final List<QuestLog> logs;
   final Map<String, dynamic>? metadata;
   final bool success;

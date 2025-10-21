@@ -38,7 +38,7 @@ class SupportChatService {
                 )
                 .toList();
 
-        final reply = await gemma.generateText(
+        final reply = await gemma.generateResponse(
           content,
           history: historyMessages,
           systemPrompt: _supportSystemPrompt,
