@@ -1,5 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'notification_channels.dart';
+import 'package:minq/core/notifications/notification_channels.dart';
 
 /// まとめ通知サービス
 class SummaryNotificationService {
@@ -193,7 +193,7 @@ class DailySummaryNotificationService {
     required int currentStreak,
     required double achievementRate,
   }) async {
-    final title = '今日の振り返り';
+    const title = '今日の振り返り';
     final body = _buildSummaryBody(
       completedQuests: completedQuests,
       totalQuests: totalQuests,
@@ -209,7 +209,7 @@ class DailySummaryNotificationService {
       styleInformation: BigTextStyleInformation(body),
     );
 
-    final iosDetails = const DarwinNotificationDetails(
+    const iosDetails = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: false,
       presentSound: false,
@@ -265,7 +265,7 @@ class DailySummaryNotificationService {
     required double weeklyAchievementRate,
     required List<String> topQuests,
   }) async {
-    final title = '今週の振り返り';
+    const title = '今週の振り返り';
     final body = _buildWeeklySummaryBody(
       totalCompletedQuests: totalCompletedQuests,
       totalQuests: totalQuests,
@@ -282,7 +282,7 @@ class DailySummaryNotificationService {
       styleInformation: BigTextStyleInformation(body),
     );
 
-    final iosDetails = const DarwinNotificationDetails(
+    const iosDetails = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: false,
       presentSound: false,
@@ -394,7 +394,7 @@ class NotificationScheduler {
       priority: Priority.defaultPriority,
     );
 
-    final iosDetails = const DarwinNotificationDetails();
+    const iosDetails = DarwinNotificationDetails();
 
     final details = NotificationDetails(
       android: androidDetails,

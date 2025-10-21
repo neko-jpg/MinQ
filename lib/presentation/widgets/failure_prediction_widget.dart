@@ -15,7 +15,7 @@ class FailurePredictionWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final uid = ref.watch(uidProvider);
-    
+
     if (uid == null) {
       return const SizedBox.shrink();
     }
@@ -40,7 +40,7 @@ class FailurePredictionWidget extends ConsumerWidget {
     List<String> highRiskHabits,
   ) {
     final navigation = ref.read(navigationUseCaseProvider);
-    
+
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -53,10 +53,7 @@ class FailurePredictionWidget extends ConsumerWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: tokens.cornerLarge(),
-        border: Border.all(
-          color: Colors.red.withOpacity(0.3),
-          width: 2,
-        ),
+        border: Border.all(color: Colors.red.withOpacity(0.3), width: 2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,9 +74,9 @@ class FailurePredictionWidget extends ConsumerWidget {
                   size: tokens.spacing(6),
                 ),
               ),
-              
+
               SizedBox(width: tokens.spacing(3)),
-              
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +98,7 @@ class FailurePredictionWidget extends ConsumerWidget {
                   ],
                 ),
               ),
-              
+
               Icon(
                 Icons.arrow_forward_ios,
                 color: Colors.red.shade600,
@@ -109,14 +106,14 @@ class FailurePredictionWidget extends ConsumerWidget {
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           // リスク習慣リスト
           ...highRiskHabits.take(3).map((habitId) {
             return _buildRiskHabitItem(tokens, habitId, navigation);
-          }).toList(),
-          
+          }),
+
           if (highRiskHabits.length > 3) ...[
             SizedBox(height: tokens.spacing(2)),
             Text(
@@ -127,9 +124,9 @@ class FailurePredictionWidget extends ConsumerWidget {
               ),
             ),
           ],
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           // アクションボタン
           Row(
             children: [
@@ -151,9 +148,9 @@ class FailurePredictionWidget extends ConsumerWidget {
                   child: const Text('詳細分析'),
                 ),
               ),
-              
+
               SizedBox(width: tokens.spacing(3)),
-              
+
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
@@ -181,7 +178,7 @@ class FailurePredictionWidget extends ConsumerWidget {
   ) {
     // TODO: 実際の習慣名を取得
     final habitName = 'クエスト #$habitId';
-    
+
     return GestureDetector(
       onTap: () => navigation.goToHabitAnalysis(habitId, habitName),
       child: Container(
@@ -190,9 +187,7 @@ class FailurePredictionWidget extends ConsumerWidget {
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.7),
           borderRadius: tokens.cornerMedium(),
-          border: Border.all(
-            color: Colors.red.withOpacity(0.2),
-          ),
+          border: Border.all(color: Colors.red.withOpacity(0.2)),
         ),
         child: Row(
           children: [
@@ -201,18 +196,16 @@ class FailurePredictionWidget extends ConsumerWidget {
               color: Colors.red.shade600,
               size: tokens.spacing(4),
             ),
-            
+
             SizedBox(width: tokens.spacing(2)),
-            
+
             Expanded(
               child: Text(
                 habitName,
-                style: tokens.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
-            
+
             Container(
               padding: EdgeInsets.symmetric(
                 horizontal: tokens.spacing(2),
@@ -239,62 +232,63 @@ class FailurePredictionWidget extends ConsumerWidget {
   void _showImprovementSuggestions(BuildContext context, MinqTokens tokens) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(
-              Icons.lightbulb_outline,
-              color: Colors.orange,
-              size: tokens.spacing(6),
+      builder:
+          (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(
+                  Icons.lightbulb_outline,
+                  color: Colors.orange,
+                  size: tokens.spacing(6),
+                ),
+                SizedBox(width: tokens.spacing(2)),
+                const Text('AI改善提案'),
+              ],
             ),
-            SizedBox(width: tokens.spacing(2)),
-            const Text('AI改善提案'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSuggestionItem(
-              tokens,
-              '時間帯を変更',
-              '成功率の高い朝の時間帯に変更してみましょう',
-              Icons.schedule,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSuggestionItem(
+                  tokens,
+                  '時間帯を変更',
+                  '成功率の高い朝の時間帯に変更してみましょう',
+                  Icons.schedule,
+                ),
+
+                SizedBox(height: tokens.spacing(3)),
+
+                _buildSuggestionItem(
+                  tokens,
+                  '習慣を簡単に',
+                  'より小さく、達成しやすい目標に調整しましょう',
+                  Icons.tune,
+                ),
+
+                SizedBox(height: tokens.spacing(3)),
+
+                _buildSuggestionItem(
+                  tokens,
+                  'リマインダー設定',
+                  '忘れないように通知を設定しましょう',
+                  Icons.notifications,
+                ),
+              ],
             ),
-            
-            SizedBox(height: tokens.spacing(3)),
-            
-            _buildSuggestionItem(
-              tokens,
-              '習慣を簡単に',
-              'より小さく、達成しやすい目標に調整しましょう',
-              Icons.tune,
-            ),
-            
-            SizedBox(height: tokens.spacing(3)),
-            
-            _buildSuggestionItem(
-              tokens,
-              'リマインダー設定',
-              '忘れないように通知を設定しましょう',
-              Icons.notifications,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('閉じる'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('閉じる'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // 詳細分析画面に遷移
+                },
+                child: const Text('詳細を見る'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // 詳細分析画面に遷移
-            },
-            child: const Text('詳細を見る'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -307,30 +301,22 @@ class FailurePredictionWidget extends ConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          icon,
-          color: Colors.orange,
-          size: tokens.spacing(5),
-        ),
-        
+        Icon(icon, color: Colors.orange, size: tokens.spacing(5)),
+
         SizedBox(width: tokens.spacing(2)),
-        
+
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: tokens.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: tokens.spacing(1)),
               Text(
                 description,
-                style: tokens.bodySmall.copyWith(
-                  color: tokens.textMuted,
-                ),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ],
           ),
@@ -357,7 +343,7 @@ class CompactFailurePredictionWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final uid = ref.watch(uidProvider);
-    
+
     if (uid == null) {
       return const SizedBox.shrink();
     }
@@ -370,15 +356,12 @@ class CompactFailurePredictionWidget extends ConsumerWidget {
         }
 
         final riskCount = snapshot.data!.length;
-        
+
         return GestureDetector(
           onTap: () {
             final navigation = ref.read(navigationUseCaseProvider);
             if (snapshot.data!.isNotEmpty) {
-              navigation.goToHabitAnalysis(
-                snapshot.data!.first,
-                'リスク習慣',
-              );
+              navigation.goToHabitAnalysis(snapshot.data!.first, 'リスク習慣');
             }
           },
           child: Container(
@@ -388,10 +371,7 @@ class CompactFailurePredictionWidget extends ConsumerWidget {
             ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Colors.red.shade400,
-                  Colors.orange.shade500,
-                ],
+                colors: [Colors.red.shade400, Colors.orange.shade500],
               ),
               borderRadius: tokens.cornerMedium(),
             ),

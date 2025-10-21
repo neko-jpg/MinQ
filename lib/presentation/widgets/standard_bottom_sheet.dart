@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/spacing_system.dart';
-import '../theme/elevation_system.dart';
+import 'package:minq/presentation/theme/elevation_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// 標準ボトムシート - 統一されたボトムシートコンポーネント
 class StandardBottomSheet extends StatelessWidget {
@@ -42,15 +42,16 @@ class StandardBottomSheet extends StatelessWidget {
       isDismissible: isDismissible,
       enableDrag: enableDrag,
       backgroundColor: Colors.transparent,
-      builder: (context) => StandardBottomSheet(
-        title: title,
-        titleWidget: titleWidget,
-        content: content,
-        actions: actions,
-        showDragHandle: showDragHandle,
-        height: height,
-        scrollable: scrollable,
-      ),
+      builder:
+          (context) => StandardBottomSheet(
+            title: title,
+            titleWidget: titleWidget,
+            content: content,
+            actions: actions,
+            showDragHandle: showDragHandle,
+            height: height,
+            scrollable: scrollable,
+          ),
     );
   }
 
@@ -66,17 +67,18 @@ class StandardBottomSheet extends StatelessWidget {
       title: title,
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: items.map((item) {
-          final isSelected = item.value == selectedValue;
-          return ListTile(
-            leading: item.icon,
-            title: Text(item.label),
-            subtitle: item.subtitle != null ? Text(item.subtitle!) : null,
-            trailing: isSelected ? const Icon(Icons.check) : null,
-            selected: isSelected,
-            onTap: () => Navigator.of(context).pop(item.value),
-          );
-        }).toList(),
+        children:
+            items.map((item) {
+              final isSelected = item.value == selectedValue;
+              return ListTile(
+                leading: item.icon,
+                title: Text(item.label),
+                subtitle: item.subtitle != null ? Text(item.subtitle!) : null,
+                trailing: isSelected ? const Icon(Icons.check) : null,
+                selected: isSelected,
+                onTap: () => Navigator.of(context).pop(item.value),
+              );
+            }).toList(),
       ),
       scrollable: false,
     );
@@ -139,18 +141,17 @@ class StandardBottomSheet extends StatelessWidget {
             // コンテンツ
             Flexible(
               child: Container(
-                constraints: BoxConstraints(
-                  maxHeight: contentHeight,
-                ),
-                child: scrollable
-                    ? SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: content,
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: content,
-                      ),
+                constraints: BoxConstraints(maxHeight: contentHeight),
+                child:
+                    scrollable
+                        ? SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: content,
+                        )
+                        : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: content,
+                        ),
               ),
             ),
 
@@ -180,11 +181,9 @@ class StandardBottomSheet extends StatelessWidget {
   Widget _buildTitle(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
-      child: titleWidget ??
-          Text(
-            title!,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+      child:
+          titleWidget ??
+          Text(title!, style: Theme.of(context).textTheme.titleLarge),
     );
   }
 
@@ -193,12 +192,13 @@ class StandardBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: actions!.map((action) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: _buildActionButton(context, action),
-          );
-        }).toList(),
+        children:
+            actions!.map((action) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _buildActionButton(context, action),
+              );
+            }).toList(),
       ),
     );
   }
@@ -208,9 +208,10 @@ class StandardBottomSheet extends StatelessWidget {
       return ElevatedButton(
         onPressed: () => action.onPressed(context),
         style: ElevatedButton.styleFrom(
-          backgroundColor: action.isDestructive
-              ? const Color(0xFFEF4444)
-              : Theme.of(context).colorScheme.primary,
+          backgroundColor:
+              action.isDestructive
+                  ? const Color(0xFFEF4444)
+                  : Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(48),
         ),
@@ -221,18 +222,14 @@ class StandardBottomSheet extends StatelessWidget {
     if (action.isCancel) {
       return OutlinedButton(
         onPressed: () => action.onPressed(context),
-        style: OutlinedButton.styleFrom(
-          minimumSize: const Size.fromHeight(48),
-        ),
+        style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
         child: Text(action.label),
       );
     }
 
     return TextButton(
       onPressed: () => action.onPressed(context),
-      style: TextButton.styleFrom(
-        minimumSize: const Size.fromHeight(48),
-      ),
+      style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)),
       child: Text(action.label),
     );
   }

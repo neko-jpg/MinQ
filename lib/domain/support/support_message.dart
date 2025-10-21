@@ -1,10 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class SupportMessage extends Equatable {
-  const SupportMessage({
-    required this.role,
-    required this.content,
-  });
+  const SupportMessage({required this.role, required this.content});
 
   final String role;
   final String content;

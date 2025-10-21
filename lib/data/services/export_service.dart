@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:csv/csv.dart';
+import 'package:minq/data/models/mini_quest.dart';
+import 'package:minq/data/models/quest_log.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import '../models/quest_log.dart';
-import '../models/mini_quest.dart';
 
 /// データエクスポートサービス
 /// CSV、JSON形式でのデータ出力
@@ -94,7 +95,7 @@ class ExportService {
     rows.add(['Longest Streak', longestStreak.toString()]);
     rows.add([
       'Weekly Achievement Rate',
-      '${(weeklyAchievementRate * 100).toStringAsFixed(1)}%'
+      '${(weeklyAchievementRate * 100).toStringAsFixed(1)}%',
     ]);
     rows.add([]); // 空行
 
@@ -104,10 +105,7 @@ class ExportService {
 
     final sortedDates = dailyCompletions.keys.toList()..sort();
     for (final date in sortedDates) {
-      rows.add([
-        _formatDate(date),
-        dailyCompletions[date].toString(),
-      ]);
+      rows.add([_formatDate(date), dailyCompletions[date].toString()]);
     }
 
     final csv = const ListToCsvConverter().convert(rows);
@@ -137,12 +135,14 @@ class ExportService {
     try {
       final data = jsonDecode(jsonString) as Map<String, dynamic>;
 
-      final quests = (data['quests'] as List?)
+      final quests =
+          (data['quests'] as List?)
               ?.map((q) => MiniQuest.fromJson(q as Map<String, dynamic>))
               .toList() ??
           [];
 
-      final logs = (data['logs'] as List?)
+      final logs =
+          (data['logs'] as List?)
               ?.map((l) => QuestLog.fromJson(l as Map<String, dynamic>))
               .toList() ??
           [];
@@ -165,10 +165,7 @@ class ExportService {
 
   /// ファイルをシェア
   Future<void> shareFile(File file) async {
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      subject: 'MiniQuest Export',
-    );
+    await Share.shareXFiles([XFile(file.path)], subject: 'MiniQuest Export');
   }
 
   /// 期間比較レポートを生成
@@ -179,15 +176,21 @@ class ExportService {
     required DateTime period2End,
     required List<QuestLog> allLogs,
   }) async {
-    final period1Logs = allLogs.where((log) {
-      return log.date.isAfter(period1Start.subtract(const Duration(days: 1))) &&
-          log.date.isBefore(period1End.add(const Duration(days: 1)));
-    }).toList();
+    final period1Logs =
+        allLogs.where((log) {
+          return log.date.isAfter(
+                period1Start.subtract(const Duration(days: 1)),
+              ) &&
+              log.date.isBefore(period1End.add(const Duration(days: 1)));
+        }).toList();
 
-    final period2Logs = allLogs.where((log) {
-      return log.date.isAfter(period2Start.subtract(const Duration(days: 1))) &&
-          log.date.isBefore(period2End.add(const Duration(days: 1)));
-    }).toList();
+    final period2Logs =
+        allLogs.where((log) {
+          return log.date.isAfter(
+                period2Start.subtract(const Duration(days: 1)),
+              ) &&
+              log.date.isBefore(period2End.add(const Duration(days: 1)));
+        }).toList();
 
     final rows = <List<String>>[];
 
@@ -218,12 +221,14 @@ class ExportService {
     ]);
 
     // 平均完了率
-    final p1Rate = period1Logs.isEmpty
-        ? 0.0
-        : period1Logs.where((l) => l.completed).length / period1Logs.length;
-    final p2Rate = period2Logs.isEmpty
-        ? 0.0
-        : period2Logs.where((l) => l.completed).length / period2Logs.length;
+    final p1Rate =
+        period1Logs.isEmpty
+            ? 0.0
+            : period1Logs.where((l) => l.completed).length / period1Logs.length;
+    final p2Rate =
+        period2Logs.isEmpty
+            ? 0.0
+            : period2Logs.where((l) => l.completed).length / period2Logs.length;
     final rateChange = (p2Rate - p1Rate) * 100;
 
     rows.add([
@@ -252,10 +257,7 @@ class ExportService {
     ]);
 
     final csv = const ListToCsvConverter().convert(rows);
-    return _writeToFile(
-      csv,
-      'comparison_report_${_getTimestamp()}.csv',
-    );
+    return _writeToFile(csv, 'comparison_report_${_getTimestamp()}.csv');
   }
 
   // ヘルパーメソッド

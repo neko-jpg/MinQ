@@ -112,6 +112,9 @@ dependencies:
   pdf: ^3.11.3
   printing: ^5.14.2
 
+  geolocator: any
+  riverpod: any
+  lottie: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

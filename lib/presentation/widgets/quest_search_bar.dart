@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 
 /// クエスト検索バー
 class QuestSearchBar extends StatefulWidget {
@@ -49,15 +48,16 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                   decoration: InputDecoration(
                     hintText: 'クエストを検索...',
                     prefixIcon: const Icon(Icons.search),
-                    suffixIcon: _controller.text.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _controller.clear();
-                              widget.onSearch('');
-                            },
-                          )
-                        : null,
+                    suffixIcon:
+                        _controller.text.isNotEmpty
+                            ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _controller.clear();
+                                widget.onSearch('');
+                              },
+                            )
+                            : null,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(tokens.radius.full),
                     ),
@@ -107,26 +107,27 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                 Wrap(
                   spacing: tokens.spacing.sm,
                   runSpacing: tokens.spacing.sm,
-                  children: widget.availableTags.map((tag) {
-                    final isSelected = _selectedTags.contains(tag);
-                    return FilterChip(
-                      label: Text(tag),
-                      selected: isSelected,
-                      onSelected: (selected) {
-                        setState(() {
-                          if (selected) {
-                            _selectedTags.add(tag);
-                          } else {
-                            _selectedTags.remove(tag);
-                          }
-                        });
-                        widget.onTagsChanged?.call(_selectedTags.toList());
-                      },
-                      backgroundColor: tokens.surface,
-                      selectedColor: tokens.primary.withOpacity(0.2),
-                      checkmarkColor: tokens.primary,
-                    );
-                  }).toList(),
+                  children:
+                      widget.availableTags.map((tag) {
+                        final isSelected = _selectedTags.contains(tag);
+                        return FilterChip(
+                          label: Text(tag),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            setState(() {
+                              if (selected) {
+                                _selectedTags.add(tag);
+                              } else {
+                                _selectedTags.remove(tag);
+                              }
+                            });
+                            widget.onTagsChanged?.call(_selectedTags.toList());
+                          },
+                          backgroundColor: tokens.surface,
+                          selectedColor: tokens.primary.withOpacity(0.2),
+                          checkmarkColor: tokens.primary,
+                        );
+                      }).toList(),
                 ),
                 if (_selectedTags.isNotEmpty) ...[
                   SizedBox(height: tokens.spacing.sm),
@@ -171,8 +172,8 @@ class QuestSearchService {
       final tags = getTags(quest).map((t) => t.toLowerCase()).toList();
 
       return title.contains(lowerQuery) ||
-             description.contains(lowerQuery) ||
-             tags.any((tag) => tag.contains(lowerQuery));
+          description.contains(lowerQuery) ||
+          tags.any((tag) => tag.contains(lowerQuery));
     }).toList();
   }
 
@@ -237,10 +238,11 @@ class QuestSearchService {
     }
 
     final lowerQuery = query.toLowerCase();
-    final suggestions = titles
-        .where((title) => title.toLowerCase().contains(lowerQuery))
-        .take(maxSuggestions)
-        .toList();
+    final suggestions =
+        titles
+            .where((title) => title.toLowerCase().contains(lowerQuery))
+            .take(maxSuggestions)
+            .toList();
 
     return suggestions;
   }
@@ -301,7 +303,8 @@ class SearchHighlight extends StatelessWidget {
     }
 
     final tokens = context.tokens;
-    final defaultHighlightStyle = highlightStyle ??
+    final defaultHighlightStyle =
+        highlightStyle ??
         TextStyle(
           backgroundColor: tokens.primary.withOpacity(0.3),
           fontWeight: FontWeight.bold,
@@ -323,16 +326,16 @@ class SearchHighlight extends StatelessWidget {
         spans.add(TextSpan(text: text.substring(start, index)));
       }
 
-      spans.add(TextSpan(
-        text: text.substring(index, index + query.length),
-        style: defaultHighlightStyle,
-      ));
+      spans.add(
+        TextSpan(
+          text: text.substring(index, index + query.length),
+          style: defaultHighlightStyle,
+        ),
+      );
 
       start = index + query.length;
     }
 
-    return RichText(
-      text: TextSpan(style: style, children: spans),
-    );
+    return RichText(text: TextSpan(style: style, children: spans));
   }
 }

@@ -34,7 +34,7 @@ class HealthSyncService {
       bool requested = await _health.requestAuthorization(types, permissions: permissions);
       return requested;
     } catch (e) {
-      print("Error requesting health permissions: $e");
+      print('Error requesting health permissions: $e');
       return false;
     }
   }
@@ -53,7 +53,7 @@ class HealthSyncService {
       healthData = HealthFactory.removeDuplicates(healthData);
       return healthData;
     } catch (e) {
-      print("Error fetching health data: $e");
+      print('Error fetching health data: $e');
       return [];
     }
   }
@@ -61,7 +61,7 @@ class HealthSyncService {
   /// Auto-updates quests based on the fetched health data.
   Future<void> autoUpdateQuestsFromHealthData(String userId, List<HealthDataPoint> healthData) async {
     if (healthData.isEmpty) {
-      print("No new health data to process.");
+      print('No new health data to process.');
       return;
     }
 
@@ -71,7 +71,7 @@ class HealthSyncService {
       final value = (point.value as NumericHealthValue).numericValue;
       aggregatedData.update(point.type, (sum) => sum + value, ifAbsent: () => value);
     }
-    print("Aggregated health data: $aggregatedData");
+    print('Aggregated health data: $aggregatedData');
 
     // 2. Fetch user's active, uncompleted, health-related quests
     final questSnapshot = await _firestore
@@ -83,7 +83,7 @@ class HealthSyncService {
         .get();
 
     if (questSnapshot.docs.isEmpty) {
-      print("No relevant health quests to update.");
+      print('No relevant health quests to update.');
       return;
     }
 

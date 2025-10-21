@@ -80,7 +80,7 @@ class ProgressVisualizationService {
     if (streak >= 30) milestones.add('30-day-streak');
     if (streak >= 100) milestones.add('100-day-streak');
 
-    print("Detected milestones for user $userId: $milestones");
+    print('Detected milestones for user $userId: $milestones');
     return milestones;
   }
 

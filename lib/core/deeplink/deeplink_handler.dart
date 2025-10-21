@@ -384,7 +384,9 @@ class DeepLinkValidator {
   }
 
   /// パラメータをサニタイズ
-  static Map<String, String> sanitizeParameters(Map<String, String> parameters) {
+  static Map<String, String> sanitizeParameters(
+    Map<String, String> parameters,
+  ) {
     final sanitized = <String, String>{};
 
     for (final entry in parameters.entries) {

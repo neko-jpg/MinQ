@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:minq/domain/pair/pair_reminder.dart';
+import 'package:flutter/foundation.dart';
 import 'package:minq/data/repositories/pair_repository.dart';
 import 'package:minq/data/repositories/user_repository.dart';
 import 'package:minq/data/services/notification_service.dart';
+import 'package:minq/domain/pair/pair_reminder.dart';
 
 /// ペア間の相互リマインド機能を提供するサービス
 class PairReminderService {
@@ -17,10 +17,10 @@ class PairReminderService {
     required UserRepository userRepository,
     required NotificationService notificationService,
     FirebaseFirestore? firestore,
-  })  : _pairRepository = pairRepository,
-        _userRepository = userRepository,
-        _notificationService = notificationService,
-        _firestore = firestore ?? FirebaseFirestore.instance;
+  }) : _pairRepository = pairRepository,
+       _userRepository = userRepository,
+       _notificationService = notificationService,
+       _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// ペアにリマインダーを送信
   Future<bool> sendReminderToPair({
@@ -76,12 +76,13 @@ class PairReminderService {
       final pair = await _pairRepository.getPairById(currentUser!.pairId!);
       if (pair == null) return;
 
-      final partnerId = pair.user1Id == currentUser.uid ? pair.user2Id : pair.user1Id;
+      final partnerId =
+          pair.user1Id == currentUser.uid ? pair.user2Id : pair.user1Id;
       if (partnerId == null) return;
-      
+
       // パートナーの今日の進捗をチェック
       final partnerProgress = await _checkPartnerProgress(partnerId);
-      
+
       // 条件に応じて自動リマインダーを送信
       if (_shouldSendAutoReminder(partnerProgress)) {
         await sendReminderToPair(
@@ -98,19 +99,17 @@ class PairReminderService {
   /// ペアからのリマインダーを取得
   Future<List<PairReminder>> getRemindersForUser(String userId) async {
     try {
-      final querySnapshot = await _firestore
-          .collection('pair_reminders')
-          .where('receiverId', isEqualTo: userId)
-          .where('isRead', isEqualTo: false)
-          .orderBy('sentAt', descending: true)
-          .limit(10)
-          .get();
+      final querySnapshot =
+          await _firestore
+              .collection('pair_reminders')
+              .where('receiverId', isEqualTo: userId)
+              .where('isRead', isEqualTo: false)
+              .orderBy('sentAt', descending: true)
+              .limit(10)
+              .get();
 
       return querySnapshot.docs
-          .map((doc) => PairReminder.fromJson({
-                'id': doc.id,
-                ...doc.data(),
-              }))
+          .map((doc) => PairReminder.fromJson({'id': doc.id, ...doc.data()}))
           .toList();
     } catch (e) {
       debugPrint('Failed to get reminders for user: $e');
@@ -121,10 +120,10 @@ class PairReminderService {
   /// リマインダーを既読にする
   Future<bool> markReminderAsRead(String reminderId) async {
     try {
-      await _firestore
-          .collection('pair_reminders')
-          .doc(reminderId)
-          .update({'isRead': true, 'readAt': FieldValue.serverTimestamp()});
+      await _firestore.collection('pair_reminders').doc(reminderId).update({
+        'isRead': true,
+        'readAt': FieldValue.serverTimestamp(),
+      });
       return true;
     } catch (e) {
       debugPrint('Failed to mark reminder as read: $e');
@@ -135,15 +134,17 @@ class PairReminderService {
   /// リマインダーの統計を取得
   Future<ReminderStats> getReminderStats(String userId) async {
     try {
-      final sentQuery = await _firestore
-          .collection('pair_reminders')
-          .where('senderId', isEqualTo: userId)
-          .get();
+      final sentQuery =
+          await _firestore
+              .collection('pair_reminders')
+              .where('senderId', isEqualTo: userId)
+              .get();
 
-      final receivedQuery = await _firestore
-          .collection('pair_reminders')
-          .where('receiverId', isEqualTo: userId)
-          .get();
+      final receivedQuery =
+          await _firestore
+              .collection('pair_reminders')
+              .where('receiverId', isEqualTo: userId)
+              .get();
 
       return ReminderStats(
         sentCount: sentQuery.docs.length,
@@ -153,10 +154,7 @@ class PairReminderService {
       );
     } catch (e) {
       debugPrint('Failed to get reminder stats: $e');
-      return const ReminderStats(
-        sentCount: 0,
-        receivedCount: 0,
-      );
+      return const ReminderStats(sentCount: 0, receivedCount: 0);
     }
   }
 
@@ -238,17 +236,20 @@ class PairReminderService {
   }
 
   /// 最後のリマインダー日時を取得
-  DateTime? _getLastReminderDate(List<QueryDocumentSnapshot> docs, String field) {
+  DateTime? _getLastReminderDate(
+    List<QueryDocumentSnapshot> docs,
+    String field,
+  ) {
     if (docs.isEmpty) return null;
-    
+
     final lastDoc = docs.first;
     final timestamp = lastDoc.data() as Map<String, dynamic>;
     final fieldValue = timestamp[field];
-    
+
     if (fieldValue is Timestamp) {
       return fieldValue.toDate();
     }
-    
+
     return null;
   }
 }

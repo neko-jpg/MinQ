@@ -23,7 +23,7 @@ class RewardSystem {
     }
 
     try {
-      final snapshot = await _firestore!.collection('rewards').get();
+      final snapshot = await _firestore.collection('rewards').get();
       return snapshot.docs
           .map((doc) => Reward.fromJson(doc.data()))
           .toList();
@@ -44,11 +44,11 @@ class RewardSystem {
       return false;
     }
 
-    final userRef = _firestore!.collection('users').doc(userId);
-    final rewardRef = _firestore!.collection('rewards').doc(rewardId);
+    final userRef = _firestore.collection('users').doc(userId);
+    final rewardRef = _firestore.collection('rewards').doc(rewardId);
 
     try {
-      return await _firestore!.runTransaction((transaction) async {
+      return await _firestore.runTransaction((transaction) async {
         // 1. Get current user points and the reward details
         final rewardSnapshot = await transaction.get(rewardRef);
         if (!rewardSnapshot.exists) {
@@ -94,9 +94,9 @@ class RewardSystem {
   Future<Reward?> generateVariableReward(String userId) async {
     // This is a simplified example. A real implementation might fetch these from a remote config.
     final potentialRewards = [
-      Reward(id: 'surprise_1', name: 'Small Point Pouch', description: 'A little bonus!', cost: 0, type: 'consumable'),
-      Reward(id: 'surprise_2', name: 'Medium Point Pouch', description: 'A nice bonus!', cost: 0, type: 'consumable'),
-      Reward(id: 'surprise_3', name: 'Exclusive Icon', description: 'A rare profile icon!', cost: 0, type: 'icon'),
+      const Reward(id: 'surprise_1', name: 'Small Point Pouch', description: 'A little bonus!', cost: 0, type: 'consumable'),
+      const Reward(id: 'surprise_2', name: 'Medium Point Pouch', description: 'A nice bonus!', cost: 0, type: 'consumable'),
+      const Reward(id: 'surprise_3', name: 'Exclusive Icon', description: 'A rare profile icon!', cost: 0, type: 'icon'),
     ];
 
     // Simple rarity simulation
@@ -120,7 +120,7 @@ class RewardSystem {
       // For consumable point pouches, directly award points instead of adding to inventory
       if(selectedReward.type == 'consumable') {
          final points = selectedReward.name.contains('Small') ? 25 : 50;
-         await _firestore!.collection('users').doc(userId).collection('points_transactions').add({
+         await _firestore.collection('users').doc(userId).collection('points_transactions').add({
            'value': points,
            'reason': 'Surprise Reward: ${selectedReward.name}',
            'createdAt': FieldValue.serverTimestamp(),
@@ -128,7 +128,7 @@ class RewardSystem {
          });
          print('Awarded $points surprise points to user $userId');
       } else {
-        await _firestore!.collection('users').doc(userId).collection('user_rewards').doc(selectedReward.id).set(selectedReward.toJson());
+        await _firestore.collection('users').doc(userId).collection('user_rewards').doc(selectedReward.id).set(selectedReward.toJson());
         print('Awarded surprise reward ${selectedReward.name} to user $userId');
       }
       return selectedReward;

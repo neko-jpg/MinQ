@@ -193,10 +193,7 @@ class AnimationSystem {
   }
 
   /// Reduce Motion設定を考慮したDurationを取得
-  static Duration getDuration(
-    BuildContext context,
-    Duration baseDuration,
-  ) {
+  static Duration getDuration(BuildContext context, Duration baseDuration) {
     return shouldReduceMotion(context) ? Duration.zero : baseDuration;
   }
 
@@ -244,9 +241,10 @@ class AnimationSystem {
     required T end,
     Curve curve = standard,
   }) {
-    return Tween<T>(begin: begin, end: end).animate(
-      CurvedAnimation(parent: controller, curve: curve),
-    );
+    return Tween<T>(
+      begin: begin,
+      end: end,
+    ).animate(CurvedAnimation(parent: controller, curve: curve));
   }
 }
 
@@ -297,14 +295,8 @@ class _FadeInAnimationState extends State<FadeInAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: widget.curve);
 
     if (widget.delay == Duration.zero) {
       _controller.forward();
@@ -323,10 +315,7 @@ class _FadeInAnimationState extends State<FadeInAnimation>
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _animation,
-      child: widget.child,
-    );
+    return FadeTransition(opacity: _animation, child: widget.child);
   }
 }
 
@@ -359,17 +348,11 @@ class _SlideInAnimationState extends State<SlideInAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _animation = Tween<Offset>(
       begin: widget.begin,
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     if (widget.delay == Duration.zero) {
       _controller.forward();
@@ -388,10 +371,7 @@ class _SlideInAnimationState extends State<SlideInAnimation>
 
   @override
   Widget build(BuildContext context) {
-    return SlideTransition(
-      position: _animation,
-      child: widget.child,
-    );
+    return SlideTransition(position: _animation, child: widget.child);
   }
 }
 
@@ -424,17 +404,11 @@ class _ScaleAnimationState extends State<ScaleAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _animation = Tween<double>(
       begin: widget.begin,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     if (widget.delay == Duration.zero) {
       _controller.forward();
@@ -453,10 +427,7 @@ class _ScaleAnimationState extends State<ScaleAnimation>
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _animation,
-      child: widget.child,
-    );
+    return ScaleTransition(scale: _animation, child: widget.child);
   }
 }
 
@@ -518,9 +489,10 @@ class StaggeredListAnimation extends StatelessWidget {
         return FadeSlideAnimation(
           duration: itemDuration,
           delay: itemDelay * index,
-          slideBegin: scrollDirection == Axis.vertical
-              ? const Offset(0, 0.2)
-              : const Offset(0.2, 0),
+          slideBegin:
+              scrollDirection == Axis.vertical
+                  ? const Offset(0, 0.2)
+                  : const Offset(0.2, 0),
           child: children[index],
         );
       },
@@ -619,9 +591,6 @@ extension AnimationExtension on Widget {
   Widget withAccessibleAnimation(
     Widget Function(BuildContext, Widget) animationBuilder,
   ) {
-    return AccessibleAnimation(
-      animationBuilder: animationBuilder,
-      child: this,
-    );
+    return AccessibleAnimation(animationBuilder: animationBuilder, child: this);
   }
 }

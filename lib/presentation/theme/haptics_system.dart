@@ -1,5 +1,5 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// ハプティクスシステム - 触覚フィードバックの統一規格
 class HapticsSystem {
@@ -201,10 +201,7 @@ class HapticEvent {
   final HapticType type;
   final Duration? delay;
 
-  const HapticEvent({
-    required this.type,
-    this.delay,
-  });
+  const HapticEvent({required this.type, this.delay});
 
   Future<void> execute() async {
     switch (type) {
@@ -228,21 +225,12 @@ class HapticEvent {
 }
 
 /// ハプティクスタイプ
-enum HapticType {
-  light,
-  medium,
-  heavy,
-  selection,
-  vibrate,
-}
+enum HapticType { light, medium, heavy, selection, vibrate }
 
 /// ハプティクス対応ウィジェット拡張
 extension HapticWidget on Widget {
   /// タップ時にハプティクスを実行
-  Widget withHaptic({
-    VoidCallback? onTap,
-    Future<void> Function()? haptic,
-  }) {
+  Widget withHaptic({VoidCallback? onTap, Future<void> Function()? haptic}) {
     return GestureDetector(
       onTap: () async {
         if (haptic != null) {
@@ -258,10 +246,7 @@ extension HapticWidget on Widget {
 
   /// ボタンハプティクス付き
   Widget withButtonHaptic(VoidCallback onTap) {
-    return withHaptic(
-      onTap: onTap,
-      haptic: HapticsSystem.buttonTap,
-    );
+    return withHaptic(onTap: onTap, haptic: HapticsSystem.buttonTap);
   }
 }
 
@@ -284,16 +269,17 @@ class HapticButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: style,
-      onPressed: onPressed == null
-          ? null
-          : () async {
-              if (haptic != null) {
-                await haptic!();
-              } else {
-                await HapticsSystem.buttonTap();
-              }
-              onPressed!();
-            },
+      onPressed:
+          onPressed == null
+              ? null
+              : () async {
+                if (haptic != null) {
+                  await haptic!();
+                } else {
+                  await HapticsSystem.buttonTap();
+                }
+                onPressed!();
+              },
       child: child,
     );
   }
@@ -316,16 +302,17 @@ class HapticIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: icon,
-      onPressed: onPressed == null
-          ? null
-          : () async {
-              if (haptic != null) {
-                await haptic!();
-              } else {
-                await HapticsSystem.buttonTap();
-              }
-              onPressed!();
-            },
+      onPressed:
+          onPressed == null
+              ? null
+              : () async {
+                if (haptic != null) {
+                  await haptic!();
+                } else {
+                  await HapticsSystem.buttonTap();
+                }
+                onPressed!();
+              },
     );
   }
 }
@@ -335,22 +322,19 @@ class HapticSwitch extends StatelessWidget {
   final bool value;
   final ValueChanged<bool>? onChanged;
 
-  const HapticSwitch({
-    super.key,
-    required this.value,
-    this.onChanged,
-  });
+  const HapticSwitch({super.key, required this.value, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     return Switch(
       value: value,
-      onChanged: onChanged == null
-          ? null
-          : (newValue) async {
-              await HapticsSystem.switchToggle();
-              onChanged!(newValue);
-            },
+      onChanged:
+          onChanged == null
+              ? null
+              : (newValue) async {
+                await HapticsSystem.switchToggle();
+                onChanged!(newValue);
+              },
     );
   }
 }
@@ -360,22 +344,19 @@ class HapticCheckbox extends StatelessWidget {
   final bool? value;
   final ValueChanged<bool?>? onChanged;
 
-  const HapticCheckbox({
-    super.key,
-    required this.value,
-    this.onChanged,
-  });
+  const HapticCheckbox({super.key, required this.value, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     return Checkbox(
       value: value,
-      onChanged: onChanged == null
-          ? null
-          : (newValue) async {
-              await HapticsSystem.checkboxToggle();
-              onChanged!(newValue);
-            },
+      onChanged:
+          onChanged == null
+              ? null
+              : (newValue) async {
+                await HapticsSystem.checkboxToggle();
+                onChanged!(newValue);
+              },
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/screens/mood_tracking_screen.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 class MoodSelectorWidget extends StatelessWidget {
   const MoodSelectorWidget({
@@ -32,53 +32,58 @@ class MoodSelectorWidget extends StatelessWidget {
             // 5段階評価の横並び
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: moodOptions.entries.map((entry) {
-                final moodKey = entry.key;
-                final moodData = entry.value;
-                final isSelected = selectedMood == moodKey;
+              children:
+                  moodOptions.entries.map((entry) {
+                    final moodKey = entry.key;
+                    final moodData = entry.value;
+                    final isSelected = selectedMood == moodKey;
 
-                return GestureDetector(
-                  onTap: () => onMoodSelected(moodKey),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: EdgeInsets.all(tokens.spacing(2)),
-                    decoration: BoxDecoration(
-                      color: isSelected 
-                          ? moodData.color.withOpacity(0.2)
-                          : Colors.transparent,
-                      borderRadius: tokens.cornerLarge(),
-                      border: isSelected
-                          ? Border.all(color: moodData.color, width: 2)
-                          : null,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AnimatedScale(
-                          scale: isSelected ? 1.2 : 1.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: Text(
-                            moodData.emoji,
-                            style: const TextStyle(fontSize: 32),
-                          ),
+                    return GestureDetector(
+                      onTap: () => onMoodSelected(moodKey),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: EdgeInsets.all(tokens.spacing(2)),
+                        decoration: BoxDecoration(
+                          color:
+                              isSelected
+                                  ? moodData.color.withOpacity(0.2)
+                                  : Colors.transparent,
+                          borderRadius: tokens.cornerLarge(),
+                          border:
+                              isSelected
+                                  ? Border.all(color: moodData.color, width: 2)
+                                  : null,
                         ),
-                        SizedBox(height: tokens.spacing(1)),
-                        Text(
-                          moodData.label,
-                          style: tokens.bodySmall.copyWith(
-                            color: isSelected 
-                                ? moodData.color 
-                                : tokens.textMuted,
-                            fontWeight: isSelected 
-                                ? FontWeight.bold 
-                                : FontWeight.normal,
-                          ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedScale(
+                              scale: isSelected ? 1.2 : 1.0,
+                              duration: const Duration(milliseconds: 200),
+                              child: Text(
+                                moodData.emoji,
+                                style: const TextStyle(fontSize: 32),
+                              ),
+                            ),
+                            SizedBox(height: tokens.spacing(1)),
+                            Text(
+                              moodData.label,
+                              style: tokens.bodySmall.copyWith(
+                                color:
+                                    isSelected
+                                        ? moodData.color
+                                        : tokens.textMuted,
+                                fontWeight:
+                                    isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
+                      ),
+                    );
+                  }).toList(),
             ),
 
             SizedBox(height: tokens.spacing(3)),
@@ -154,31 +159,31 @@ class CompactMoodSelector extends StatelessWidget {
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: _quickMoods.entries.map((entry) {
-          final moodKey = entry.key;
-          final emoji = entry.value;
-          final isSelected = selectedMood == moodKey;
+        children:
+            _quickMoods.entries.map((entry) {
+              final moodKey = entry.key;
+              final emoji = entry.value;
+              final isSelected = selectedMood == moodKey;
 
-          return GestureDetector(
-            onTap: () => onMoodSelected(moodKey),
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: tokens.spacing(1)),
-              padding: EdgeInsets.all(tokens.spacing(1)),
-              decoration: BoxDecoration(
-                color: isSelected 
-                    ? tokens.brandPrimary.withOpacity(0.2)
-                    : Colors.transparent,
-                borderRadius: tokens.cornerMedium(),
-              ),
-              child: Text(
-                emoji,
-                style: TextStyle(
-                  fontSize: isSelected ? 24 : 20,
+              return GestureDetector(
+                onTap: () => onMoodSelected(moodKey),
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: tokens.spacing(1)),
+                  padding: EdgeInsets.all(tokens.spacing(1)),
+                  decoration: BoxDecoration(
+                    color:
+                        isSelected
+                            ? tokens.brandPrimary.withOpacity(0.2)
+                            : Colors.transparent,
+                    borderRadius: tokens.cornerMedium(),
+                  ),
+                  child: Text(
+                    emoji,
+                    style: TextStyle(fontSize: isSelected ? 24 : 20),
+                  ),
                 ),
-              ),
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -242,10 +247,7 @@ class MoodHistoryItem extends StatelessWidget {
                   color: color.withOpacity(0.1),
                   borderRadius: tokens.cornerMedium(),
                 ),
-                child: Text(
-                  emoji,
-                  style: const TextStyle(fontSize: 24),
-                ),
+                child: Text(emoji, style: const TextStyle(fontSize: 24)),
               ),
 
               SizedBox(width: tokens.spacing(3)),
@@ -280,9 +282,7 @@ class MoodHistoryItem extends StatelessWidget {
                     SizedBox(height: tokens.spacing(1)),
                     Text(
                       _formatTime(timestamp),
-                      style: tokens.bodySmall.copyWith(
-                        color: tokens.textMuted,
-                      ),
+                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                     ),
                   ],
                 ),
@@ -367,10 +367,8 @@ class MoodStatsWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${period}の統計',
-              style: tokens.titleMedium.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              '$periodの統計',
+              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing(3)),
             Row(
@@ -383,11 +381,7 @@ class MoodStatsWidget extends StatelessWidget {
                     color: tokens.brandPrimary,
                   ),
                 ),
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: tokens.border,
-                ),
+                Container(width: 1, height: 40, color: tokens.border),
                 Expanded(
                   child: _StatItem(
                     icon: Icons.calendar_today,
@@ -424,11 +418,7 @@ class _StatItem extends StatelessWidget {
 
     return Column(
       children: [
-        Icon(
-          icon,
-          color: color,
-          size: 24,
-        ),
+        Icon(icon, color: color, size: 24),
         SizedBox(height: tokens.spacing(1)),
         Text(
           value,
@@ -437,12 +427,7 @@ class _StatItem extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(
-          label,
-          style: tokens.bodySmall.copyWith(
-            color: tokens.textMuted,
-          ),
-        ),
+        Text(label, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
       ],
     );
   }

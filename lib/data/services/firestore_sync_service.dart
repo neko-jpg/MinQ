@@ -26,24 +26,25 @@ class FirestoreSyncService {
     }
 
     final logIds = unsyncedLogs.map((log) => log.id).toList();
-    final payloads = unsyncedLogs
-        .map(
-          (QuestLog log) => _PendingLog(
-            docRef: _firestore
-                .collection('users')
-                .doc(uid)
-                .collection('quest_logs')
-                .doc(log.id.toString()),
-            data: {
-              'questId': log.questId,
-              'ts': log.ts,
-              'proofType': log.proofType.name,
-              'proofValue': log.proofValue,
-              'updatedAt': FieldValue.serverTimestamp(),
-            },
-          ),
-        )
-        .toList();
+    final payloads =
+        unsyncedLogs
+            .map(
+              (QuestLog log) => _PendingLog(
+                docRef: _firestore
+                    .collection('users')
+                    .doc(uid)
+                    .collection('quest_logs')
+                    .doc(log.id.toString()),
+                data: {
+                  'questId': log.questId,
+                  'ts': log.ts,
+                  'proofType': log.proofType.name,
+                  'proofValue': log.proofValue,
+                  'updatedAt': FieldValue.serverTimestamp(),
+                },
+              ),
+            )
+            .toList();
 
     const maxAttempts = 5;
     for (var attempt = 0; attempt < maxAttempts; attempt++) {
@@ -70,8 +71,12 @@ class FirestoreSyncService {
   }
 
   bool _isRetryable(String code) {
-    return <String>{'aborted', 'cancelled', 'unknown', 'deadline-exceeded'}
-        .contains(code);
+    return <String>{
+      'aborted',
+      'cancelled',
+      'unknown',
+      'deadline-exceeded',
+    }.contains(code);
   }
 }
 

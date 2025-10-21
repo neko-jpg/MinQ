@@ -4,12 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 
 /// サウンドエフェクトサービス
-/// 
+///
 /// アプリ全体で使用するサウンドエフェクトを管理
 class SoundEffectsService {
   static SoundEffectsService? _instance;
-  static SoundEffectsService get instance => _instance ??= SoundEffectsService._();
-  
+  static SoundEffectsService get instance =>
+      _instance ??= SoundEffectsService._();
+
   SoundEffectsService._();
 
   final Map<SoundType, AudioPlayer> _players = {};
@@ -20,7 +21,7 @@ class SoundEffectsService {
   Future<void> initialize() async {
     try {
       log('SoundEffectsService: 初期化開始');
-      
+
       // 各サウンドタイプのプレイヤーを初期化
       for (final soundType in SoundType.values) {
         final player = AudioPlayer();
@@ -28,7 +29,7 @@ class SoundEffectsService {
         await player.setVolume(_volume);
         _players[soundType] = player;
       }
-      
+
       log('SoundEffectsService: 初期化完了');
     } catch (e) {
       log('SoundEffectsService: 初期化エラー - $e');
@@ -38,7 +39,7 @@ class SoundEffectsService {
   /// サウンドの再生
   Future<void> play(SoundType soundType) async {
     if (!_isEnabled) return;
-    
+
     try {
       final player = _players[soundType];
       if (player != null) {
@@ -58,7 +59,7 @@ class SoundEffectsService {
   /// 音量を設定
   Future<void> setVolume(double volume) async {
     _volume = volume.clamp(0.0, 1.0);
-    
+
     for (final player in _players.values) {
       await player.setVolume(_volume);
     }
@@ -101,16 +102,16 @@ class SoundEffectsService {
 
 /// サウンドタイプ
 enum SoundType {
-  tap,           // タップ音
-  success,       // 成功音
-  error,         // エラー音
-  notification,  // 通知音
-  levelUp,       // レベルアップ音
-  achievement,   // 達成音
-  coin,          // コイン音
-  whoosh,        // スワイプ音
-  pop,           // ポップ音
-  chime,         // チャイム音
+  tap, // タップ音
+  success, // 成功音
+  error, // エラー音
+  notification, // 通知音
+  levelUp, // レベルアップ音
+  achievement, // 達成音
+  coin, // コイン音
+  whoosh, // スワイプ音
+  pop, // ポップ音
+  chime, // チャイム音
 }
 
 /// サウンドエフェクト付きウィジェット

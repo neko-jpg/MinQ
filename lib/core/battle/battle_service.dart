@@ -10,18 +10,18 @@ import 'package:flutter/foundation.dart';
 class BattleService {
   static BattleService? _instance;
   static BattleService get instance => _instance ??= BattleService._();
-  
+
   BattleService._();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  
+
   StreamSubscription<QuerySnapshot>? _battleSubscription;
   StreamSubscription<DocumentSnapshot>? _currentBattleSubscription;
-  
+
   final ValueNotifier<List<Battle>> _activeBattles = ValueNotifier([]);
   final ValueNotifier<Battle?> _currentBattle = ValueNotifier(null);
   final ValueNotifier<List<BattleResult>> _battleHistory = ValueNotifier([]);
-  
+
   ValueListenable<List<Battle>> get activeBattles => _activeBattles;
   ValueListenable<Battle?> get currentBattle => _currentBattle;
   ValueListenable<List<BattleResult>> get battleHistory => _battleHistory;
@@ -30,7 +30,7 @@ class BattleService {
   Future<void> initialize(String userId) async {
     try {
       log('BattleService: 初期化開始 - $userId');
-      
+
       // アクティブなバトルを監視
       _battleSubscription = _firestore
           .collection('battles')
@@ -38,10 +38,10 @@ class BattleService {
           .where('participants', arrayContains: userId)
           .snapshots()
           .listen(_onActiveBattlesChanged);
-      
+
       // バトル履歴を読み込み
       await _loadBattleHistory(userId);
-      
+
       log('BattleService: 初期化完了');
     } catch (e) {
       log('BattleService: 初期化エラー - $e');
@@ -68,13 +68,13 @@ class BattleService {
   }) async {
     try {
       log('BattleService: バトル作成開始');
-      
+
       final battleId = _generateBattleId();
       final now = DateTime.now();
-      
+
       final battle = Battle(
         id: battleId,
-        title: title ?? '${habitCategory}バトル',
+        title: title ?? '$habitCategoryバトル',
         description: description ?? '$habitCategory習慣で対戦しましょう！',
         category: habitCategory,
         creatorId: creatorId,
@@ -90,9 +90,9 @@ class BattleService {
         rules: BattleRules.defaultRules(),
         leaderboard: [],
       );
-      
+
       await _firestore.collection('battles').doc(battleId).set(battle.toMap());
-      
+
       log('BattleService: バトル作成完了 - $battleId');
       return battle;
     } catch (e) {
@@ -105,49 +105,50 @@ class BattleService {
   Future<void> joinBattle(String battleId, String userId) async {
     try {
       log('BattleService: バトル参加開始 - $battleId');
-      
+
       final battleDoc = _firestore.collection('battles').doc(battleId);
-      
+
       await _firestore.runTransaction((transaction) async {
         final snapshot = await transaction.get(battleDoc);
-        
+
         if (!snapshot.exists) {
           throw Exception('バトルが見つかりません');
         }
-        
+
         final battle = Battle.fromMap(snapshot.data()!);
-        
+
         if (battle.status != BattleStatus.waiting) {
           throw Exception('このバトルは参加できません');
         }
-        
+
         if (battle.participants.contains(userId)) {
           throw Exception('既に参加しています');
         }
-        
+
         if (battle.participants.length >= battle.maxParticipants) {
           throw Exception('参加者数が上限に達しています');
         }
-        
+
         final updatedParticipants = [...battle.participants, userId];
         final updatedPrize = battle.totalPrize + battle.entryFee;
-        
+
         transaction.update(battleDoc, {
           'participants': updatedParticipants,
           'totalPrize': updatedPrize,
           'updatedAt': FieldValue.serverTimestamp(),
         });
-        
+
         // 参加者が揃ったら自動開始
         if (updatedParticipants.length >= 2) {
           transaction.update(battleDoc, {
             'status': 'active',
             'startTime': FieldValue.serverTimestamp(),
-            'endTime': DateTime.now().add(battle.duration).millisecondsSinceEpoch,
+            'endTime':
+                DateTime.now().add(battle.duration).millisecondsSinceEpoch,
           });
         }
       });
-      
+
       log('BattleService: バトル参加完了');
     } catch (e) {
       log('BattleService: バトル参加エラー - $e');
@@ -159,43 +160,42 @@ class BattleService {
   Future<void> leaveBattle(String battleId, String userId) async {
     try {
       log('BattleService: バトル退出開始 - $battleId');
-      
+
       final battleDoc = _firestore.collection('battles').doc(battleId);
-      
+
       await _firestore.runTransaction((transaction) async {
         final snapshot = await transaction.get(battleDoc);
-        
+
         if (!snapshot.exists) {
           throw Exception('バトルが見つかりません');
         }
-        
+
         final battle = Battle.fromMap(snapshot.data()!);
-        
+
         if (battle.status == BattleStatus.finished) {
           throw Exception('終了したバトルからは退出できません');
         }
-        
+
         if (!battle.participants.contains(userId)) {
           throw Exception('このバトルに参加していません');
         }
-        
-        final updatedParticipants = battle.participants.where((id) => id != userId).toList();
+
+        final updatedParticipants =
+            battle.participants.where((id) => id != userId).toList();
         final refundAmount = battle.entryFee;
-        
+
         transaction.update(battleDoc, {
           'participants': updatedParticipants,
           'totalPrize': battle.totalPrize - refundAmount,
           'updatedAt': FieldValue.serverTimestamp(),
         });
-        
+
         // 参加者がいなくなったらキャンセル
         if (updatedParticipants.isEmpty) {
-          transaction.update(battleDoc, {
-            'status': 'cancelled',
-          });
+          transaction.update(battleDoc, {'status': 'cancelled'});
         }
       });
-      
+
       log('BattleService: バトル退出完了');
     } catch (e) {
       log('BattleService: バトル退出エラー - $e');
@@ -213,9 +213,9 @@ class BattleService {
   }) async {
     try {
       log('BattleService: 習慣完了記録開始');
-      
+
       final completionId = _generateCompletionId();
-      
+
       final completion = BattleCompletion(
         id: completionId,
         battleId: battleId,
@@ -225,15 +225,15 @@ class BattleService {
         points: _calculatePoints(completedAt, metadata),
         metadata: metadata ?? {},
       );
-      
+
       await _firestore
           .collection('battle_completions')
           .doc(completionId)
           .set(completion.toMap());
-      
+
       // リーダーボードを更新
       await _updateLeaderboard(battleId, userId, completion.points);
-      
+
       log('BattleService: 習慣完了記録完了');
     } catch (e) {
       log('BattleService: 習慣完了記録エラー - $e');
@@ -245,32 +245,35 @@ class BattleService {
   Future<BattleResult> getBattleResult(String battleId) async {
     try {
       log('BattleService: バトル結果取得開始 - $battleId');
-      
-      final battleDoc = await _firestore.collection('battles').doc(battleId).get();
-      
+
+      final battleDoc =
+          await _firestore.collection('battles').doc(battleId).get();
+
       if (!battleDoc.exists) {
         throw Exception('バトルが見つかりません');
       }
-      
+
       final battle = Battle.fromMap(battleDoc.data()!);
-      
+
       if (battle.status != BattleStatus.finished) {
         throw Exception('バトルがまだ終了していません');
       }
-      
+
       // 完了記録を取得
-      final completionsQuery = await _firestore
-          .collection('battle_completions')
-          .where('battleId', isEqualTo: battleId)
-          .get();
-      
-      final completions = completionsQuery.docs
-          .map((doc) => BattleCompletion.fromMap(doc.data()))
-          .toList();
-      
+      final completionsQuery =
+          await _firestore
+              .collection('battle_completions')
+              .where('battleId', isEqualTo: battleId)
+              .get();
+
+      final completions =
+          completionsQuery.docs
+              .map((doc) => BattleCompletion.fromMap(doc.data()))
+              .toList();
+
       // 結果を計算
       final result = _calculateBattleResult(battle, completions);
-      
+
       log('BattleService: バトル結果取得完了');
       return result;
     } catch (e) {
@@ -287,33 +290,34 @@ class BattleService {
   }) async {
     try {
       log('BattleService: バトル検索開始');
-      
+
       Query query = _firestore
           .collection('battles')
           .where('status', isEqualTo: 'waiting')
           .orderBy('createdAt', descending: true)
           .limit(20);
-      
+
       if (category != null) {
         query = query.where('category', isEqualTo: category);
       }
-      
+
       if (maxEntryFee != null) {
         query = query.where('entryFee', isLessThanOrEqualTo: maxEntryFee);
       }
-      
+
       final snapshot = await query.get();
-      
-      final battles = snapshot.docs
-          .map((doc) => Battle.fromMap(doc.data() as Map<String, dynamic>))
-          .where((battle) {
-            if (maxDuration != null && battle.duration > maxDuration) {
-              return false;
-            }
-            return battle.participants.length < battle.maxParticipants;
-          })
-          .toList();
-      
+
+      final battles =
+          snapshot.docs
+              .map((doc) => Battle.fromMap(doc.data() as Map<String, dynamic>))
+              .where((battle) {
+                if (maxDuration != null && battle.duration > maxDuration) {
+                  return false;
+                }
+                return battle.participants.length < battle.maxParticipants;
+              })
+              .toList();
+
       log('BattleService: バトル検索完了 - ${battles.length}件');
       return battles;
     } catch (e) {
@@ -329,7 +333,7 @@ class BattleService {
   }) async {
     try {
       log('BattleService: ランキング取得開始');
-      
+
       // 期間の計算
       DateTime? startDate;
       switch (period) {
@@ -346,7 +350,7 @@ class BattleService {
           startDate = null;
           break;
       }
-      
+
       // TODO: 実際の実装では、ユーザーの統計データを集計
       // ここでは簡略化してサンプルデータを返す
       final rankings = <BattleRanking>[
@@ -369,7 +373,7 @@ class BattleService {
           rank: 2,
         ),
       ];
-      
+
       log('BattleService: ランキング取得完了');
       return rankings;
     } catch (e) {
@@ -382,12 +386,13 @@ class BattleService {
 
   void _onActiveBattlesChanged(QuerySnapshot snapshot) {
     try {
-      final battles = snapshot.docs
-          .map((doc) => Battle.fromMap(doc.data() as Map<String, dynamic>))
-          .toList();
-      
+      final battles =
+          snapshot.docs
+              .map((doc) => Battle.fromMap(doc.data() as Map<String, dynamic>))
+              .toList();
+
       _activeBattles.value = battles;
-      
+
       // 現在のバトルを更新
       if (battles.isNotEmpty) {
         _currentBattle.value = battles.first;
@@ -396,7 +401,7 @@ class BattleService {
         _currentBattle.value = null;
         _currentBattleSubscription?.cancel();
       }
-      
+
       log('BattleService: アクティブバトル更新 - ${battles.length}件');
     } catch (e) {
       log('BattleService: アクティブバトル更新エラー - $e');
@@ -405,55 +410,61 @@ class BattleService {
 
   void _subscribeToCurrentBattle(String battleId) {
     _currentBattleSubscription?.cancel();
-    
+
     _currentBattleSubscription = _firestore
         .collection('battles')
         .doc(battleId)
         .snapshots()
         .listen((snapshot) {
-      if (snapshot.exists) {
-        final battle = Battle.fromMap(snapshot.data()!);
-        _currentBattle.value = battle;
-      }
-    });
+          if (snapshot.exists) {
+            final battle = Battle.fromMap(snapshot.data()!);
+            _currentBattle.value = battle;
+          }
+        });
   }
 
   Future<void> _loadBattleHistory(String userId) async {
     try {
-      final snapshot = await _firestore
-          .collection('battle_results')
-          .where('participants', arrayContains: userId)
-          .orderBy('endTime', descending: true)
-          .limit(50)
-          .get();
-      
-      final history = snapshot.docs
-          .map((doc) => BattleResult.fromMap(doc.data()))
-          .toList();
-      
+      final snapshot =
+          await _firestore
+              .collection('battle_results')
+              .where('participants', arrayContains: userId)
+              .orderBy('endTime', descending: true)
+              .limit(50)
+              .get();
+
+      final history =
+          snapshot.docs.map((doc) => BattleResult.fromMap(doc.data())).toList();
+
       _battleHistory.value = history;
-      
+
       log('BattleService: バトル履歴読み込み完了 - ${history.length}件');
     } catch (e) {
       log('BattleService: バトル履歴読み込みエラー - $e');
     }
   }
 
-  Future<void> _updateLeaderboard(String battleId, String userId, int points) async {
+  Future<void> _updateLeaderboard(
+    String battleId,
+    String userId,
+    int points,
+  ) async {
     try {
       final battleDoc = _firestore.collection('battles').doc(battleId);
-      
+
       await _firestore.runTransaction((transaction) async {
         final snapshot = await transaction.get(battleDoc);
-        
+
         if (!snapshot.exists) return;
-        
+
         final battle = Battle.fromMap(snapshot.data()!);
         final leaderboard = List<LeaderboardEntry>.from(battle.leaderboard);
-        
+
         // 既存のエントリを更新または新規追加
-        final existingIndex = leaderboard.indexWhere((entry) => entry.userId == userId);
-        
+        final existingIndex = leaderboard.indexWhere(
+          (entry) => entry.userId == userId,
+        );
+
         if (existingIndex >= 0) {
           leaderboard[existingIndex] = leaderboard[existingIndex].copyWith(
             totalPoints: leaderboard[existingIndex].totalPoints + points,
@@ -461,21 +472,23 @@ class BattleService {
             lastUpdate: DateTime.now(),
           );
         } else {
-          leaderboard.add(LeaderboardEntry(
-            userId: userId,
-            totalPoints: points,
-            completions: 1,
-            rank: 0, // 後で計算
-            lastUpdate: DateTime.now(),
-          ));
+          leaderboard.add(
+            LeaderboardEntry(
+              userId: userId,
+              totalPoints: points,
+              completions: 1,
+              rank: 0, // 後で計算
+              lastUpdate: DateTime.now(),
+            ),
+          );
         }
-        
+
         // ランキングを再計算
         leaderboard.sort((a, b) => b.totalPoints.compareTo(a.totalPoints));
         for (int i = 0; i < leaderboard.length; i++) {
           leaderboard[i] = leaderboard[i].copyWith(rank: i + 1);
         }
-        
+
         transaction.update(battleDoc, {
           'leaderboard': leaderboard.map((entry) => entry.toMap()).toList(),
           'updatedAt': FieldValue.serverTimestamp(),
@@ -488,7 +501,7 @@ class BattleService {
 
   int _calculatePoints(DateTime completedAt, Map<String, dynamic>? metadata) {
     int basePoints = 100;
-    
+
     // 時間ボーナス（早朝や深夜は追加ポイント）
     final hour = completedAt.hour;
     if (hour >= 5 && hour <= 7) {
@@ -496,13 +509,13 @@ class BattleService {
     } else if (hour >= 22 || hour <= 4) {
       basePoints += 10; // 深夜ボーナス
     }
-    
+
     // 連続ボーナス
     if (metadata?['streak'] != null) {
       final streak = metadata!['streak'] as int;
       basePoints += math.min(streak * 5, 50); // 最大50ポイント
     }
-    
+
     // 難易度ボーナス
     if (metadata?['difficulty'] != null) {
       final difficulty = metadata!['difficulty'] as String;
@@ -517,38 +530,46 @@ class BattleService {
           break;
       }
     }
-    
+
     return basePoints;
   }
 
-  BattleResult _calculateBattleResult(Battle battle, List<BattleCompletion> completions) {
+  BattleResult _calculateBattleResult(
+    Battle battle,
+    List<BattleCompletion> completions,
+  ) {
     // 参加者ごとの統計を計算
     final participantStats = <String, ParticipantStats>{};
-    
+
     for (final participant in battle.participants) {
-      final userCompletions = completions.where((c) => c.userId == participant).toList();
+      final userCompletions =
+          completions.where((c) => c.userId == participant).toList();
       final totalPoints = userCompletions.fold(0, (sum, c) => sum + c.points);
-      
+
       participantStats[participant] = ParticipantStats(
         userId: participant,
         totalPoints: totalPoints,
         completions: userCompletions.length,
-        averagePoints: userCompletions.isNotEmpty ? totalPoints / userCompletions.length : 0,
+        averagePoints:
+            userCompletions.isNotEmpty
+                ? totalPoints / userCompletions.length
+                : 0,
         rank: 0, // 後で計算
       );
     }
-    
+
     // ランキングを計算
-    final sortedStats = participantStats.values.toList()
-      ..sort((a, b) => b.totalPoints.compareTo(a.totalPoints));
-    
+    final sortedStats =
+        participantStats.values.toList()
+          ..sort((a, b) => b.totalPoints.compareTo(a.totalPoints));
+
     for (int i = 0; i < sortedStats.length; i++) {
       sortedStats[i] = sortedStats[i].copyWith(rank: i + 1);
     }
-    
+
     // 勝者を決定
     final winner = sortedStats.isNotEmpty ? sortedStats.first : null;
-    
+
     return BattleResult(
       battleId: battle.id,
       title: battle.title,
@@ -651,27 +672,26 @@ class Battle {
         orElse: () => BattleStatus.waiting,
       ),
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ?? 0),
-      startTime: map['startTime'] != null 
-          ? DateTime.fromMillisecondsSinceEpoch(map['startTime'])
-          : null,
-      endTime: map['endTime'] != null 
-          ? DateTime.fromMillisecondsSinceEpoch(map['endTime'])
-          : null,
+      startTime:
+          map['startTime'] != null
+              ? DateTime.fromMillisecondsSinceEpoch(map['startTime'])
+              : null,
+      endTime:
+          map['endTime'] != null
+              ? DateTime.fromMillisecondsSinceEpoch(map['endTime'])
+              : null,
       rules: BattleRules.fromMap(map['rules'] ?? {}),
-      leaderboard: (map['leaderboard'] as List<dynamic>?)
-          ?.map((entry) => LeaderboardEntry.fromMap(entry))
-          .toList() ?? [],
+      leaderboard:
+          (map['leaderboard'] as List<dynamic>?)
+              ?.map((entry) => LeaderboardEntry.fromMap(entry))
+              .toList() ??
+          [],
     );
   }
 }
 
 /// バトルステータス
-enum BattleStatus {
-  waiting,
-  active,
-  finished,
-  cancelled,
-}
+enum BattleStatus { waiting, active, finished, cancelled }
 
 /// バトルルール
 class BattleRules {
@@ -852,7 +872,8 @@ class BattleResult {
       'title': title,
       'category': category,
       'participants': participants,
-      'participantStats': participantStats.map((stats) => stats.toMap()).toList(),
+      'participantStats':
+          participantStats.map((stats) => stats.toMap()).toList(),
       'winner': winner?.toMap(),
       'totalPrize': totalPrize,
       'durationMinutes': duration.inMinutes,
@@ -868,10 +889,15 @@ class BattleResult {
       title: map['title'] ?? '',
       category: map['category'] ?? '',
       participants: List<String>.from(map['participants'] ?? []),
-      participantStats: (map['participantStats'] as List<dynamic>?)
-          ?.map((stats) => ParticipantStats.fromMap(stats))
-          .toList() ?? [],
-      winner: map['winner'] != null ? ParticipantStats.fromMap(map['winner']) : null,
+      participantStats:
+          (map['participantStats'] as List<dynamic>?)
+              ?.map((stats) => ParticipantStats.fromMap(stats))
+              .toList() ??
+          [],
+      winner:
+          map['winner'] != null
+              ? ParticipantStats.fromMap(map['winner'])
+              : null,
       totalPrize: map['totalPrize'] ?? 0,
       duration: Duration(minutes: map['durationMinutes'] ?? 60),
       startTime: DateTime.fromMillisecondsSinceEpoch(map['startTime'] ?? 0),
@@ -980,9 +1006,4 @@ class BattleRanking {
 }
 
 /// ランキング期間
-enum RankingPeriod {
-  daily,
-  weekly,
-  monthly,
-  allTime,
-}
+enum RankingPeriod { daily, weekly, monthly, allTime }

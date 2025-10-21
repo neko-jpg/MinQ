@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// ペアリマインド通知サービス
 class PairReminderService {
@@ -60,7 +60,7 @@ class PairReminderService {
 
     // 簡易的な進捗計算
     final completedCount = snapshot.docs.length;
-    final totalQuests = 10; // TODO: 実際のクエスト数を取得
+    const totalQuests = 10; // TODO: 実際のクエスト数を取得
 
     return ((completedCount / totalQuests) * 100).toInt();
   }
@@ -88,7 +88,7 @@ class PairReminderService {
     await _notifications.show(
       userId.hashCode,
       'ペアからの応援',
-      'ペアの進捗は${partnerProgress}%です。一緒に頑張りましょう！',
+      'ペアの進捗は$partnerProgress%です。一緒に頑張りましょう！',
       details,
     );
 

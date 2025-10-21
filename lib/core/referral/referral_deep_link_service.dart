@@ -42,7 +42,7 @@ class ReferralDeepLinkService {
     required String newUserId,
   }) async {
     // TODO: Firestoreに記録
-    return ReferralResult(
+    return const ReferralResult(
       success: true,
       referrerId: 'referrer_user_id',
       reward: ReferralReward.standard,

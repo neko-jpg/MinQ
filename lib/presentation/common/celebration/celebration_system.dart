@@ -1,17 +1,11 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 import 'package:minq/presentation/common/feedback/audio_feedback_manager.dart';
+import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 
 /// 祝福演出の種類
-enum CelebrationType {
-  confetti,
-  fireworks,
-  sparkles,
-  trophy,
-  mascot,
-  golden,
-}
+enum CelebrationType { confetti, fireworks, sparkles, trophy, mascot, golden }
 
 /// 祝福演出の設定
 class CelebrationConfig {
@@ -37,7 +31,7 @@ class CelebrationConfig {
 /// ランダム祝福演出システム
 class CelebrationSystem {
   static final Random _random = Random();
-  
+
   /// 利用可能な祝福演出のリスト
   static const List<CelebrationConfig> _celebrations = [
     CelebrationConfig(
@@ -98,7 +92,7 @@ class CelebrationSystem {
     VoidCallback? onComplete,
   }) {
     final celebrationConfig = config ?? getRandomCelebration();
-    
+
     // ハプティックフィードバック
     if (celebrationConfig.hapticFeedback) {
       HapticManager.success();
@@ -114,13 +108,14 @@ class CelebrationSystem {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
-      builder: (context) => CelebrationOverlay(
-        config: celebrationConfig,
-        onComplete: () {
-          Navigator.of(context).pop();
-          onComplete?.call();
-        },
-      ),
+      builder:
+          (context) => CelebrationOverlay(
+            config: celebrationConfig,
+            onComplete: () {
+              Navigator.of(context).pop();
+              onComplete?.call();
+            },
+          ),
     );
   }
 
@@ -188,18 +183,11 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
     _scaleAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.0, 0.3),
-    ));
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.3)),
+    );
 
     _controller.forward().then((_) {
       Future.delayed(const Duration(milliseconds: 500), () {
@@ -227,7 +215,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
             children: [
               // 背景エフェクト
               _buildBackgroundEffect(),
-              
+
               // メインメッセージ
               Center(
                 child: Transform.scale(
@@ -238,7 +226,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
                   ),
                 ),
               ),
-              
+
               // パーティクルエフェクト
               _buildParticleEffect(),
             ],
@@ -257,7 +245,9 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
           center: Alignment.center,
           radius: 1.0,
           colors: [
-            widget.config.primaryColor.withOpacity(0.1 * _opacityAnimation.value),
+            widget.config.primaryColor.withOpacity(
+              0.1 * _opacityAnimation.value,
+            ),
             Colors.transparent,
           ],
         ),
@@ -333,10 +323,8 @@ class ParticleEffectPainter extends CustomPainter {
   final CelebrationConfig config;
   final List<Particle> particles;
 
-  ParticleEffectPainter({
-    required this.animation,
-    required this.config,
-  }) : particles = _generateParticles(config) {
+  ParticleEffectPainter({required this.animation, required this.config})
+    : particles = _generateParticles(config) {
     animation.addListener(() {
       // アニメーションの更新時にパーティクルを更新
     });
@@ -345,29 +333,32 @@ class ParticleEffectPainter extends CustomPainter {
   static List<Particle> _generateParticles(CelebrationConfig config) {
     final random = Random();
     final particles = <Particle>[];
-    
+
     for (int i = 0; i < 50; i++) {
-      particles.add(Particle(
-        x: random.nextDouble(),
-        y: random.nextDouble(),
-        vx: (random.nextDouble() - 0.5) * 2,
-        vy: (random.nextDouble() - 0.5) * 2,
-        color: i % 2 == 0 ? config.primaryColor : config.secondaryColor,
-        size: random.nextDouble() * 4 + 2,
-      ));
+      particles.add(
+        Particle(
+          x: random.nextDouble(),
+          y: random.nextDouble(),
+          vx: (random.nextDouble() - 0.5) * 2,
+          vy: (random.nextDouble() - 0.5) * 2,
+          color: i % 2 == 0 ? config.primaryColor : config.secondaryColor,
+          size: random.nextDouble() * 4 + 2,
+        ),
+      );
     }
-    
+
     return particles;
   }
 
   @override
   void paint(Canvas canvas, Size size) {
     final progress = animation.value;
-    
+
     for (final particle in particles) {
-      final paint = Paint()
-        ..color = particle.color.withOpacity((1 - progress) * 0.8)
-        ..style = PaintingStyle.fill;
+      final paint =
+          Paint()
+            ..color = particle.color.withOpacity((1 - progress) * 0.8)
+            ..style = PaintingStyle.fill;
 
       final x = (particle.x + particle.vx * progress) * size.width;
       final y = (particle.y + particle.vy * progress) * size.height;

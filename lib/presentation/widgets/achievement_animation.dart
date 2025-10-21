@@ -1,16 +1,13 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
 
 /// 達成アニメーションウィジェット
 class AchievementAnimation extends StatefulWidget {
   final Widget child;
   final VoidCallback? onComplete;
 
-  const AchievementAnimation({
-    super.key,
-    required this.child,
-    this.onComplete,
-  });
+  const AchievementAnimation({super.key, required this.child, this.onComplete});
 
   @override
   State<AchievementAnimation> createState() => _AchievementAnimationState();
@@ -66,19 +63,14 @@ class _AchievementAnimationState extends State<AchievementAnimation>
           animation: _confettiController,
           builder: (context, child) {
             return CustomPaint(
-              painter: ConfettiPainter(
-                progress: _confettiController.value,
-              ),
+              painter: ConfettiPainter(progress: _confettiController.value),
               child: Container(),
             );
           },
         ),
         // メインコンテンツ
         Center(
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: widget.child,
-          ),
+          child: ScaleTransition(scale: _scaleAnimation, child: widget.child),
         ),
       ],
     );
@@ -91,7 +83,7 @@ class ConfettiPainter extends CustomPainter {
   final List<Confetti> confetti;
 
   ConfettiPainter({required this.progress})
-      : confetti = List.generate(50, (index) => Confetti());
+    : confetti = List.generate(50, (index) => Confetti());
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -115,11 +107,11 @@ class Confetti {
   final double size;
 
   Confetti()
-      : x = math.Random().nextDouble(),
-        y = math.Random().nextDouble() * 0.3,
-        rotation = math.Random().nextDouble() * math.pi * 2,
-        color = _randomColor(),
-        size = math.Random().nextDouble() * 8 + 4;
+    : x = math.Random().nextDouble(),
+      y = math.Random().nextDouble() * 0.3,
+      rotation = math.Random().nextDouble() * math.pi * 2,
+      color = _randomColor(),
+      size = math.Random().nextDouble() * 8 + 4;
 
   static Color _randomColor() {
     final colors = [

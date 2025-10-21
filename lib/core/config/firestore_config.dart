@@ -36,7 +36,7 @@ class FirestoreConfig {
   /// キャッシュ設定
   static void _configureCacheSettings(FirebaseFirestore firestore) {
     // キャッシュサイズの設定（デフォルト: 40MB、最大: 100MB）
-    firestore.settings = Settings(
+    firestore.settings = const Settings(
       persistenceEnabled: true,
       cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED, // 無制限（推奨）
       // または具体的なサイズを指定
@@ -227,7 +227,9 @@ class CacheManagementService {
   }
 
   /// 古いキャッシュを削除
-  Future<void> clearOldCache({Duration maxAge = const Duration(days: 7)}) async {
+  Future<void> clearOldCache({
+    Duration maxAge = const Duration(days: 7),
+  }) async {
     // Firestoreは自動的に古いキャッシュを削除するため、
     // 手動での実装は不要
     print('ℹ️ Firestore automatically manages old cache');
@@ -252,11 +254,14 @@ class OfflineStatusMonitor {
   void initialize() {
     // ネットワーク状態の監視
     // connectivity_plusパッケージを使用することを推奨
-    FirebaseFirestore.instance.snapshotsInSync().listen((_) {
-      _controller.add(true);
-    }, onError: (_) {
-      _controller.add(false);
-    });
+    FirebaseFirestore.instance.snapshotsInSync().listen(
+      (_) {
+        _controller.add(true);
+      },
+      onError: (_) {
+        _controller.add(false);
+      },
+    );
   }
 
   void dispose() {
@@ -269,26 +274,26 @@ class CachePresets {
   const CachePresets._();
 
   /// 開発環境用（小さいキャッシュ）
-  static Settings get development => Settings(
-        persistenceEnabled: true,
-        cacheSizeBytes: 10 * 1024 * 1024, // 10MB
-      );
+  static Settings get development => const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: 10 * 1024 * 1024, // 10MB
+  );
 
   /// 本番環境用（大きいキャッシュ）
-  static Settings get production => Settings(
-        persistenceEnabled: true,
-        cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
-      );
+  static Settings get production => const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+  );
 
   /// テスト環境用（キャッシュ無効）
-  static Settings get testing => Settings(
-        persistenceEnabled: false,
-        cacheSizeBytes: 1024 * 1024, // 1MB
-      );
+  static Settings get testing => const Settings(
+    persistenceEnabled: false,
+    cacheSizeBytes: 1024 * 1024, // 1MB
+  );
 
   /// 低メモリデバイス用
-  static Settings get lowMemory => Settings(
-        persistenceEnabled: true,
-        cacheSizeBytes: 5 * 1024 * 1024, // 5MB
-      );
+  static Settings get lowMemory => const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: 5 * 1024 * 1024, // 5MB
+  );
 }

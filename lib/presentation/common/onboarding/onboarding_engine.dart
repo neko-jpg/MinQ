@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:minq/presentation/common/onboarding/interactive_tour.dart';
 import 'package:minq/presentation/common/onboarding/onboarding_overlay.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// コンテキスト依存のガイド表示を管理するオンボーディングエンジン
 class OnboardingEngine {
@@ -12,7 +12,7 @@ class OnboardingEngine {
 
   static OnboardingEngine? _instance;
   static OnboardingEngine get instance => _instance ??= OnboardingEngine._();
-  
+
   OnboardingEngine._();
 
   /// オンボーディングが完了しているかチェック
@@ -58,7 +58,7 @@ class OnboardingEngine {
 
   /// コンテキスト依存のガイドを表示
   static Future<void> showContextualGuide(
-    String screenId, 
+    String screenId,
     BuildContext context,
   ) async {
     if (await hasCompletedOnboarding()) return;
@@ -173,15 +173,16 @@ class OnboardingEngine {
     await showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context) => OnboardingOverlay(
-        title: title,
-        description: description,
-        targetKey: targetKey,
-        onDismiss: () async {
-          await markTooltipSeen(tooltipId);
-          Navigator.of(context).pop();
-        },
-      ),
+      builder:
+          (context) => OnboardingOverlay(
+            title: title,
+            description: description,
+            targetKey: targetKey,
+            onDismiss: () async {
+              await markTooltipSeen(tooltipId);
+              Navigator.of(context).pop();
+            },
+          ),
     );
   }
 

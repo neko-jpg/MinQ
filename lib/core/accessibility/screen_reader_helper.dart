@@ -65,15 +65,8 @@ class ScreenReaderHelper {
   }
 
   /// 画像のセマンティクス
-  static Semantics image({
-    required Widget child,
-    required String description,
-  }) {
-    return Semantics(
-      image: true,
-      label: description,
-      child: child,
-    );
+  static Semantics image({required Widget child, required String description}) {
+    return Semantics(image: true, label: description, child: child);
   }
 
   /// ヘッダーのセマンティクス
@@ -82,11 +75,7 @@ class ScreenReaderHelper {
     required String text,
     int level = 1,
   }) {
-    return Semantics(
-      header: true,
-      label: 'レベル$level見出し、$text',
-      child: child,
-    );
+    return Semantics(header: true, label: 'レベル$level見出し、$text', child: child);
   }
 
   /// リンクのセマンティクス
@@ -166,8 +155,14 @@ class ScreenReaderHelper {
       value: value.toStringAsFixed(1),
       increasedValue: (value + 1).clamp(min, max).toStringAsFixed(1),
       decreasedValue: (value - 1).clamp(min, max).toStringAsFixed(1),
-      onIncrease: onChanged != null ? () => onChanged((value + 1).clamp(min, max)) : null,
-      onDecrease: onChanged != null ? () => onChanged((value - 1).clamp(min, max)) : null,
+      onIncrease:
+          onChanged != null
+              ? () => onChanged((value + 1).clamp(min, max))
+              : null,
+      onDecrease:
+          onChanged != null
+              ? () => onChanged((value - 1).clamp(min, max))
+              : null,
       child: child,
     );
   }
@@ -190,10 +185,7 @@ class ScreenReaderHelper {
   }
 
   /// ダイアログのセマンティクス
-  static Semantics dialog({
-    required Widget child,
-    required String title,
-  }) {
+  static Semantics dialog({required Widget child, required String title}) {
     return Semantics(
       label: '$title、ダイアログ',
       scopesRoute: true,
@@ -216,15 +208,8 @@ class ScreenReaderHelper {
   }
 
   /// ローディングのセマンティクス
-  static Semantics loading({
-    required Widget child,
-    String? message,
-  }) {
-    return Semantics(
-      label: message ?? '読み込み中',
-      liveRegion: true,
-      child: child,
-    );
+  static Semantics loading({required Widget child, String? message}) {
+    return Semantics(label: message ?? '読み込み中', liveRegion: true, child: child);
   }
 
   /// カードのセマンティクス
@@ -250,21 +235,12 @@ class ScreenReaderHelper {
     int? count,
   }) {
     final badgeLabel = count != null ? '$label、$count件' : label;
-    return Semantics(
-      label: badgeLabel,
-      child: child,
-    );
+    return Semantics(label: badgeLabel, child: child);
   }
 
   /// ツールチップのセマンティクス
-  static Semantics tooltip({
-    required Widget child,
-    required String message,
-  }) {
-    return Semantics(
-      tooltip: message,
-      child: child,
-    );
+  static Semantics tooltip({required Widget child, required String message}) {
+    return Semantics(tooltip: message, child: child);
   }
 }
 
@@ -327,9 +303,10 @@ class ReadingOrderGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       sortKey: const OrdinalSortKey(0),
-      child: direction == Axis.vertical
-          ? Column(children: children)
-          : Row(children: children),
+      child:
+          direction == Axis.vertical
+              ? Column(children: children)
+              : Row(children: children),
     );
   }
 }

@@ -27,10 +27,7 @@ class IsarService {
     ];
 
     final directoryPath = directory?.path ?? 'isar_web';
-    isar = await Isar.open(
-      schemas,
-      directory: directoryPath,
-    );
+    isar = await Isar.open(schemas, directory: directoryPath);
 
     return isar;
   }

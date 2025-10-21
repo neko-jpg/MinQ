@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share_plus/share_plus.dart';
-
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/referral_service.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/points_display_widget.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// リファラル画面
 /// 友達招待機能とリファラル統計を表示
@@ -45,7 +44,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     try {
       final referralService = ref.read(referralServiceProvider);
       final link = await referralService.generateInviteLink(userId: uid);
-      
+
       setState(() {
         _inviteLink = link;
         _isLoading = false;
@@ -54,12 +53,9 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
       setState(() {
         _isLoading = false;
       });
-      
+
       if (mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          '招待リンクの生成に失敗しました',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, '招待リンクの生成に失敗しました');
       }
     }
   }
@@ -67,7 +63,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('友達招待'),
@@ -75,21 +71,16 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: '招待する'),
-            Tab(text: '招待履歴'),
-          ],
+          tabs: const [Tab(text: '招待する'), Tab(text: '招待履歴')],
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-              controller: _tabController,
-              children: [
-                _buildInviteTab(tokens),
-                _buildHistoryTab(tokens),
-              ],
-            ),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : TabBarView(
+                controller: _tabController,
+                children: [_buildInviteTab(tokens), _buildHistoryTab(tokens)],
+              ),
     );
   }
 
@@ -101,19 +92,19 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
         children: [
           // ヘッダーカード
           _buildHeaderCard(tokens),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 招待リンクカード
           _buildInviteLinkCard(tokens),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 招待方法
           _buildInviteMethods(tokens),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 報酬説明
           _buildRewardExplanation(tokens),
         ],
@@ -123,11 +114,9 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
 
   Widget _buildHistoryTab(MinqTokens tokens) {
     final uid = ref.watch(uidProvider);
-    
+
     if (uid == null) {
-      return const Center(
-        child: Text('ログインが必要です'),
-      );
+      return const Center(child: Text('ログインが必要です'));
     }
 
     return FutureBuilder<ReferralStats>(
@@ -136,7 +125,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (snapshot.hasError) {
           return Center(
             child: Column(
@@ -150,9 +139,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
                 SizedBox(height: tokens.spacing(4)),
                 Text(
                   'データの読み込みに失敗しました',
-                  style: tokens.bodyMedium.copyWith(
-                    color: tokens.textMuted,
-                  ),
+                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                 ),
                 SizedBox(height: tokens.spacing(4)),
                 ElevatedButton(
@@ -163,7 +150,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
             ),
           );
         }
-        
+
         final stats = snapshot.data!;
         return _buildHistoryContent(tokens, stats);
       },
@@ -176,10 +163,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
       padding: EdgeInsets.all(tokens.spacing(6)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.brandPrimary,
-            tokens.brandPrimary.withOpacity(0.8),
-          ],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -194,11 +178,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.people,
-            size: tokens.spacing(16),
-            color: Colors.white,
-          ),
+          Icon(Icons.people, size: tokens.spacing(16), color: Colors.white),
           SizedBox(height: tokens.spacing(3)),
           Text(
             '友達を招待しよう！',
@@ -233,12 +213,10 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
         children: [
           Text(
             'あなたの招待リンク',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: tokens.spacing(3)),
-          
+
           // リンク表示
           Container(
             width: double.infinity,
@@ -265,9 +243,9 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
               ],
             ),
           ),
-          
+
           SizedBox(height: tokens.spacing(3)),
-          
+
           // シェアボタン
           SizedBox(
             width: double.infinity,
@@ -292,12 +270,10 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
       children: [
         Text(
           '招待方法',
-          style: tokens.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: tokens.spacing(3)),
-        
+
         // LINE招待
         _buildInviteMethodCard(
           tokens,
@@ -307,9 +283,9 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
           color: Colors.green,
           onTap: _shareToLine,
         ),
-        
+
         SizedBox(height: tokens.spacing(3)),
-        
+
         // Twitter招待
         _buildInviteMethodCard(
           tokens,
@@ -319,9 +295,9 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
           color: Colors.blue,
           onTap: _shareToSocial,
         ),
-        
+
         SizedBox(height: tokens.spacing(3)),
-        
+
         // その他の方法
         _buildInviteMethodCard(
           tokens,
@@ -361,11 +337,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
                 color: color.withOpacity(0.1),
                 borderRadius: tokens.cornerMedium(),
               ),
-              child: Icon(
-                icon,
-                color: color,
-                size: tokens.spacing(6),
-              ),
+              child: Icon(icon, color: color, size: tokens.spacing(6)),
             ),
             SizedBox(width: tokens.spacing(3)),
             Expanded(
@@ -381,9 +353,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
                   SizedBox(height: tokens.spacing(1)),
                   Text(
                     description,
-                    style: tokens.bodySmall.copyWith(
-                      color: tokens.textMuted,
-                    ),
+                    style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                   ),
                 ],
               ),
@@ -428,31 +398,16 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
             ],
           ),
           SizedBox(height: tokens.spacing(3)),
-          
-          _buildRewardItem(
-            tokens,
-            '友達が登録完了',
-            '500ポイント',
-            'あなたと友達の両方がもらえます',
-          ),
-          
+
+          _buildRewardItem(tokens, '友達が登録完了', '500ポイント', 'あなたと友達の両方がもらえます'),
+
           SizedBox(height: tokens.spacing(2)),
-          
-          _buildRewardItem(
-            tokens,
-            '友達が初回クエスト完了',
-            '1000ポイント',
-            'さらにボーナスポイント！',
-          ),
-          
+
+          _buildRewardItem(tokens, '友達が初回クエスト完了', '1000ポイント', 'さらにボーナスポイント！'),
+
           SizedBox(height: tokens.spacing(2)),
-          
-          _buildRewardItem(
-            tokens,
-            '友達が7日継続',
-            '2000ポイント',
-            '継続ボーナスで大量ポイント！',
-          ),
+
+          _buildRewardItem(tokens, '友達が7日継続', '2000ポイント', '継続ボーナスで大量ポイント！'),
         ],
       ),
     );
@@ -499,9 +454,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
               ),
               Text(
                 description,
-                style: tokens.bodySmall.copyWith(
-                  color: tokens.textMuted,
-                ),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ],
           ),
@@ -518,23 +471,21 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
         children: [
           // 統計カード
           _buildStatsCards(tokens, stats),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 成功率表示
           _buildConversionRate(tokens, stats),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 最近の招待履歴
           Text(
             '招待履歴',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: tokens.spacing(3)),
-          
+
           if (stats.totalReferrals == 0)
             _buildEmptyHistory(tokens)
           else
@@ -596,11 +547,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
       ),
       child: Column(
         children: [
-          Icon(
-            icon,
-            color: color,
-            size: tokens.spacing(6),
-          ),
+          Icon(icon, color: color, size: tokens.spacing(6)),
           SizedBox(height: tokens.spacing(2)),
           Text(
             value,
@@ -612,9 +559,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
           SizedBox(height: tokens.spacing(1)),
           Text(
             title,
-            style: tokens.bodySmall.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -624,7 +569,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
 
   Widget _buildConversionRate(MinqTokens tokens, ReferralStats stats) {
     final rate = (stats.conversionRate * 100).toStringAsFixed(1);
-    
+
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -634,11 +579,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.trending_up,
-            color: Colors.green,
-            size: tokens.spacing(6),
-          ),
+          Icon(Icons.trending_up, color: Colors.green, size: tokens.spacing(6)),
           SizedBox(width: tokens.spacing(3)),
           Expanded(
             child: Column(
@@ -679,16 +620,12 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
           SizedBox(height: tokens.spacing(4)),
           Text(
             'まだ招待履歴がありません',
-            style: tokens.titleMedium.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.titleMedium.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing(2)),
           Text(
             '友達を招待して、一緒にMinQを楽しみましょう！',
-            style: tokens.bodyMedium.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -700,9 +637,21 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     // 実際の履歴データを表示する場合は、ここでFirestoreから取得
     return Column(
       children: [
-        _buildHistoryItem(tokens, 'pending', DateTime.now().subtract(const Duration(days: 1))),
-        _buildHistoryItem(tokens, 'completed', DateTime.now().subtract(const Duration(days: 3))),
-        _buildHistoryItem(tokens, 'rewarded', DateTime.now().subtract(const Duration(days: 7))),
+        _buildHistoryItem(
+          tokens,
+          'pending',
+          DateTime.now().subtract(const Duration(days: 1)),
+        ),
+        _buildHistoryItem(
+          tokens,
+          'completed',
+          DateTime.now().subtract(const Duration(days: 3)),
+        ),
+        _buildHistoryItem(
+          tokens,
+          'rewarded',
+          DateTime.now().subtract(const Duration(days: 7)),
+        ),
       ],
     );
   }
@@ -711,7 +660,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     Color statusColor;
     IconData statusIcon;
     String statusText;
-    
+
     switch (status) {
       case 'completed':
         statusColor = Colors.green;
@@ -766,9 +715,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
                 SizedBox(height: tokens.spacing(1)),
                 Text(
                   '${date.month}/${date.day} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-                  style: tokens.bodySmall.copyWith(
-                    color: tokens.textMuted,
-                  ),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
               ],
             ),
@@ -781,17 +728,14 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
   // アクションメソッド
   void _copyInviteLink() {
     if (_inviteLink == null) return;
-    
+
     Clipboard.setData(ClipboardData(text: _inviteLink!));
-    FeedbackMessenger.showSuccessToast(
-      context,
-      '招待リンクをコピーしました',
-    );
+    FeedbackMessenger.showSuccessToast(context, '招待リンクをコピーしました');
   }
 
   void _shareInviteLink() {
     if (_inviteLink == null) return;
-    
+
     final uid = ref.read(uidProvider);
     if (uid != null) {
       final referralService = ref.read(referralServiceProvider);

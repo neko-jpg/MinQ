@@ -23,7 +23,7 @@ class DataExportService {
     required Map<String, dynamic> stats,
     required Map<String, dynamic> metadata,
   }) async {
-    final encoder = JsonEncoder.withIndent('  ');
+    const encoder = JsonEncoder.withIndent('  ');
     final archive = Archive();
 
     final questsData = utf8.encode(encoder.convert(quests));
@@ -70,7 +70,7 @@ class DataExportService {
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
           return [
-            pw.Header(level: 0, child: pw.Text("Quest Completion History", style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold))),
+            pw.Header(level: 0, child: pw.Text('Quest Completion History', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold))),
             pw.Table.fromTextArray(
               headers: ['Date', 'Quest Name'],
               data: questLogs.map((doc) {
@@ -87,7 +87,7 @@ class DataExportService {
 
     // 3. Save and share
     final output = await getTemporaryDirectory();
-    final file = File("${output.path}/quest_history.pdf");
+    final file = File('${output.path}/quest_history.pdf');
     await file.writeAsBytes(await pdf.save());
 
     await Share.shareXFiles([XFile(file.path)], text: 'Here is my quest history from MinQ!');

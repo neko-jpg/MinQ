@@ -33,8 +33,9 @@ class SmartSuggestionService {
 
   /// 上位の時刻を抽出
   List<TimeOfDay> _extractTopTimes(Map<int, int> distribution, int count) {
-    final sorted = distribution.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sorted =
+        distribution.entries.toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
 
     return sorted
         .take(count)
@@ -56,10 +57,11 @@ class SmartSuggestionService {
     required List<QuestWithStats> quests,
   }) async {
     // 優先度スコアを計算
-    final scored = quests.map((quest) {
-      final score = _calculatePriorityScore(quest);
-      return _ScoredQuest(quest.id, score);
-    }).toList();
+    final scored =
+        quests.map((quest) {
+          final score = _calculatePriorityScore(quest);
+          return _ScoredQuest(quest.id, score);
+        }).toList();
 
     // スコアでソート
     scored.sort((a, b) => b.score.compareTo(a.score));
@@ -79,7 +81,8 @@ class SmartSuggestionService {
 
     // 期限が近いほど優先
     if (quest.deadline != null) {
-      final daysUntilDeadline = quest.deadline!.difference(DateTime.now()).inDays;
+      final daysUntilDeadline =
+          quest.deadline!.difference(DateTime.now()).inDays;
       if (daysUntilDeadline <= 7) {
         score += (7 - daysUntilDeadline) * 20.0;
       }
@@ -94,10 +97,7 @@ class CompletionRecord {
   final DateTime completedAt;
   final String questId;
 
-  const CompletionRecord({
-    required this.completedAt,
-    required this.questId,
-  });
+  const CompletionRecord({required this.completedAt, required this.questId});
 }
 
 /// 統計付きクエスト

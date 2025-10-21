@@ -1,4 +1,4 @@
-﻿import 'package:collection/collection.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/presentation/controllers/ai_concierge_chat_controller.dart';
@@ -36,21 +36,24 @@ class AiConciergeCard extends ConsumerWidget {
                 children: [
                   Text(
                     'AIコンシェルジュ',
-                    style: tokens.titleSmall.copyWith(fontWeight: FontWeight.bold),
+                    style: tokens.titleSmall.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const Spacer(),
                   PopupMenuButton<_ConciergeMenuOption>(
                     icon: Icon(Icons.more_horiz, color: tokens.textMuted),
-                    itemBuilder: (context) => const [
-                      PopupMenuItem<_ConciergeMenuOption>(
-                        value: _ConciergeMenuOption.insights,
-                        child: Text('AIからのインサイト'),
-                      ),
-                      PopupMenuItem<_ConciergeMenuOption>(
-                        value: _ConciergeMenuOption.clearHistory,
-                        child: Text('チャット履歴を削除'),
-                      ),
-                    ],
+                    itemBuilder:
+                        (context) => const [
+                          PopupMenuItem<_ConciergeMenuOption>(
+                            value: _ConciergeMenuOption.insights,
+                            child: Text('AIからのインサイト'),
+                          ),
+                          PopupMenuItem<_ConciergeMenuOption>(
+                            value: _ConciergeMenuOption.clearHistory,
+                            child: Text('チャット履歴を削除'),
+                          ),
+                        ],
                     onSelected: (option) async {
                       switch (option) {
                         case _ConciergeMenuOption.insights:
@@ -59,25 +62,29 @@ class AiConciergeCard extends ConsumerWidget {
                         case _ConciergeMenuOption.clearHistory:
                           final confirmed = await showDialog<bool>(
                             context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('チャット履歴を削除'),
-                              content: const Text(
-                                'すべてのチャット履歴を削除しますか？この操作は取り消せません。',
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.of(context).pop(false),
-                                  child: const Text('キャンセル'),
-                                ),
-                                FilledButton(
-                                  onPressed: () => Navigator.of(context).pop(true),
-                                  style: FilledButton.styleFrom(
-                                    backgroundColor: Colors.red,
+                            builder:
+                                (context) => AlertDialog(
+                                  title: const Text('チャット履歴を削除'),
+                                  content: const Text(
+                                    'すべてのチャット履歴を削除しますか？この操作は取り消せません。',
                                   ),
-                                  child: const Text('削除'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed:
+                                          () =>
+                                              Navigator.of(context).pop(false),
+                                      child: const Text('キャンセル'),
+                                    ),
+                                    FilledButton(
+                                      onPressed:
+                                          () => Navigator.of(context).pop(true),
+                                      style: FilledButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                      ),
+                                      child: const Text('削除'),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
                           );
                           if (confirmed == true) {
                             await notifier.resetConversation();
@@ -101,27 +108,35 @@ class AiConciergeCard extends ConsumerWidget {
               SizedBox(height: tokens.spacing(3)),
               chatState.when(
                 data: (messages) => _ConversationPreview(messages: messages),
-                loading: () => Row(
-                  children: [
-                    SizedBox(
-                      width: tokens.spacing(6),
-                      height: tokens.spacing(6),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
+                loading:
+                    () => Row(
+                      children: [
+                        SizedBox(
+                          width: tokens.spacing(6),
+                          height: tokens.spacing(6),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation(
+                              tokens.brandPrimary,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: tokens.spacing(3)),
+                        Text(
+                          'Gemmaが準備中です...',
+                          style: tokens.bodyMedium.copyWith(
+                            color: tokens.textMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                error:
+                    (_, __) => Text(
+                      'AIコンシェルジュを読み込めませんでした。',
+                      style: tokens.bodyMedium.copyWith(
+                        color: tokens.textMuted,
                       ),
                     ),
-                    SizedBox(width: tokens.spacing(3)),
-                    Text(
-                      'Gemmaが準備中です...',
-                      style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
-                    ),
-                  ],
-                ),
-                error: (_, __) => Text(
-                  'AIコンシェルジュを読み込めませんでした。',
-                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
-                ),
               ),
               SizedBox(height: tokens.spacing(4)),
               _InputPlaceholderRow(tokens: tokens),
@@ -143,13 +158,15 @@ class _ConversationPreview extends StatelessWidget {
     final tokens = context.tokens;
     final latestAi = messages.lastWhere(
       (message) => !message.isUser,
-      orElse: () => messages.isNotEmpty
-          ? messages.last
-          : AiConciergeMessage(
-              text: 'Gemmaが今日のインサイトを準備中です。',
-              isUser: false,
-              timestamp: DateTime.now(),
-            ),
+      orElse:
+          () =>
+              messages.isNotEmpty
+                  ? messages.last
+                  : AiConciergeMessage(
+                    text: 'Gemmaが今日のインサイトを準備中です。',
+                    isUser: false,
+                    timestamp: DateTime.now(),
+                  ),
     );
     final latestUser = messages.lastWhereOrNull((message) => message.isUser);
 
@@ -211,7 +228,9 @@ class _ConversationPreview extends StatelessWidget {
                     ),
                     child: Text(
                       latestUser.text,
-                      style: tokens.bodyMedium.copyWith(color: tokens.brandPrimary),
+                      style: tokens.bodyMedium.copyWith(
+                        color: tokens.brandPrimary,
+                      ),
                       textAlign: TextAlign.right,
                     ),
                   ),

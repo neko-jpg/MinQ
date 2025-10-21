@@ -102,13 +102,9 @@ class _PulsingButtonState extends State<PulsingButton>
       duration: widget.pulseDuration,
       vsync: this,
     );
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.05,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
 
     // Tap animation for press feedback
     _tapController = AnimationController(
@@ -118,10 +114,7 @@ class _PulsingButtonState extends State<PulsingButton>
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.tapScale,
-    ).animate(CurvedAnimation(
-      parent: _tapController,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _tapController, curve: Curves.easeInOut));
 
     // Color animation for press feedback
     _colorController = AnimationController(
@@ -135,10 +128,9 @@ class _PulsingButtonState extends State<PulsingButton>
     _colorAnimation = ColorTween(
       begin: widget.backgroundColor ?? theme.brandPrimary,
       end: widget.pressedColor ?? theme.tapFeedback,
-    ).animate(CurvedAnimation(
-      parent: _colorController,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _colorController, curve: Curves.easeInOut),
+    );
   }
 
   void _startPulsingIfNeeded() {
@@ -150,7 +142,7 @@ class _PulsingButtonState extends State<PulsingButton>
   @override
   void didUpdateWidget(PulsingButton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     if (oldWidget.isPulsing != widget.isPulsing) {
       if (widget.isPulsing && widget.onPressed != null) {
         _pulseController.repeat(reverse: true);
@@ -163,11 +155,11 @@ class _PulsingButtonState extends State<PulsingButton>
 
   void _handleTapDown(TapDownDetails details) {
     if (widget.onPressed == null) return;
-    
+
     setState(() {
       _isPressed = true;
     });
-    
+
     _tapController.forward();
     _colorController.forward();
   }
@@ -182,11 +174,11 @@ class _PulsingButtonState extends State<PulsingButton>
 
   void _handleTapEnd() {
     if (!mounted) return;
-    
+
     setState(() {
       _isPressed = false;
     });
-    
+
     _tapController.reverse();
     _colorController.reverse();
   }
@@ -217,7 +209,7 @@ class _PulsingButtonState extends State<PulsingButton>
   Widget build(BuildContext context) {
     final theme = MinqTheme.of(context);
     _initializeColorAnimation(context);
-    
+
     return GestureDetector(
       onTapDown: _handleTapDown,
       onTapUp: _handleTapUp,
@@ -243,15 +235,23 @@ class _PulsingButtonState extends State<PulsingButton>
                 minHeight: widget.minSize.height,
               ),
               decoration: BoxDecoration(
-                color: _colorAnimation.value ?? 
-                       (widget.backgroundColor ?? theme.brandPrimary),
-                borderRadius: widget.borderRadius ?? 
-                           BorderRadius.circular(theme.radiusMedium),
+                color:
+                    _colorAnimation.value ??
+                    (widget.backgroundColor ?? theme.brandPrimary),
+                borderRadius:
+                    widget.borderRadius ??
+                    BorderRadius.circular(theme.radiusMedium),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
-                    blurRadius: _isPressed ? widget.pressedElevation : widget.elevation,
-                    offset: Offset(0, _isPressed ? widget.pressedElevation / 2 : widget.elevation / 2),
+                    blurRadius:
+                        _isPressed ? widget.pressedElevation : widget.elevation,
+                    offset: Offset(
+                      0,
+                      _isPressed
+                          ? widget.pressedElevation / 2
+                          : widget.elevation / 2,
+                    ),
                   ),
                 ],
               ),
@@ -259,9 +259,7 @@ class _PulsingButtonState extends State<PulsingButton>
                 color: Colors.transparent,
                 child: Padding(
                   padding: widget.padding ?? EdgeInsets.all(theme.spaceMD),
-                  child: Center(
-                    child: widget.child,
-                  ),
+                  child: Center(child: widget.child),
                 ),
               ),
             ),

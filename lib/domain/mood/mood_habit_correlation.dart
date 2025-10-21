@@ -13,5 +13,6 @@ class MoodHabitCorrelation with _$MoodHabitCorrelation {
     required double correlationScore, // -1.0 to 1.0
   }) = _MoodHabitCorrelation;
 
-  factory MoodHabitCorrelation.fromJson(Map<String, dynamic> json) => _$MoodHabitCorrelationFromJson(json);
+  factory MoodHabitCorrelation.fromJson(Map<String, dynamic> json) =>
+      _$MoodHabitCorrelationFromJson(json);
 }

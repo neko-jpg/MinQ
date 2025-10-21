@@ -1,4 +1,3 @@
-import 'package:minq/data/providers.dart';
 import 'package:minq/domain/health/daily_steps_snapshot.dart';
 // TODO: Fix integrations package
 // import 'package:miinq_integrations/miinq_integrations.dart';
@@ -9,7 +8,11 @@ class FitnessBridge {
   const FitnessBridge();
   Future<bool> isAvailable() async => false;
   Future<int> fetchDailySteps(DateTime day) async => 0;
-  Future<void> syncHabitCompletion({required String habitId, required DateTime completionDate, required int steps}) async {}
+  Future<void> syncHabitCompletion({
+    required String habitId,
+    required DateTime completionDate,
+    required int steps,
+  }) async {}
 }
 
 class FitnessSyncService {
@@ -38,11 +41,9 @@ class FitnessSyncService {
 }
 
 final fitnessBridgeProvider = Provider<FitnessBridge>((ref) {
-  return FitnessBridge();
+  return const FitnessBridge();
 });
 
 final fitnessSyncServiceProvider = Provider<FitnessSyncService>((ref) {
-  return FitnessSyncService(
-    bridge: ref.watch(fitnessBridgeProvider),
-  );
+  return FitnessSyncService(bridge: ref.watch(fitnessBridgeProvider));
 });

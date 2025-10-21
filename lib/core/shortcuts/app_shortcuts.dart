@@ -1,5 +1,5 @@
-import 'package:quick_actions/quick_actions.dart';
 import 'package:flutter/material.dart';
+import 'package:quick_actions/quick_actions.dart';
 
 /// アプリショートカットの種類
 enum AppShortcutType {

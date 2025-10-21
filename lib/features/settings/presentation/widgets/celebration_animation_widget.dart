@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:animations/animations.dart';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
 
 class CelebrationAnimationWidget extends StatefulWidget {
   final bool isVisible;
   const CelebrationAnimationWidget({super.key, required this.isVisible});
 
   @override
-  State<CelebrationAnimationWidget> createState() => _CelebrationAnimationWidgetState();
+  State<CelebrationAnimationWidget> createState() =>
+      _CelebrationAnimationWidgetState();
 }
 
 class _CelebrationAnimationWidgetState extends State<CelebrationAnimationWidget>
@@ -63,16 +64,19 @@ class _ConfettiPainter extends CustomPainter {
   final List<Offset> _particles;
 
   _ConfettiPainter(this.progress)
-      : _paints = [
-          Paint()..color = Colors.blue,
-          Paint()..color = Colors.green,
-          Paint()..color = Colors.pink,
-          Paint()..color = Colors.orange,
-        ],
-        _particles = List.generate(100, (index) => Offset(
+    : _paints = [
+        Paint()..color = Colors.blue,
+        Paint()..color = Colors.green,
+        Paint()..color = Colors.pink,
+        Paint()..color = Colors.orange,
+      ],
+      _particles = List.generate(
+        100,
+        (index) => Offset(
           Random().nextDouble(), // x position (0.0 to 1.0)
           Random().nextDouble() * -1.5, // initial y position (above screen)
-        ));
+        ),
+      );
 
   @override
   void paint(Canvas canvas, Size size) {

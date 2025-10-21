@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:path_provider/path_provider.dart';
-import '../logging/app_logger.dart';
 
 /// OGP画像生成サービス
 /// クエスト達成バナーをSNSシェア用の画像として生成
@@ -51,7 +52,7 @@ class OgpImageGenerator {
     final repaintBoundary = RenderRepaintBoundary();
     
     final view = ui.PlatformDispatcher.instance.views.first;
-    final logicalSize = const Size(1200, 630); // OGP標準サイズ
+    const logicalSize = Size(1200, 630); // OGP標準サイズ
     final devicePixelRatio = view.devicePixelRatio;
 
     final renderView = RenderView(
@@ -109,13 +110,13 @@ class _AchievementBannerWidget extends StatelessWidget {
     return Container(
       width: 1200,
       height: 630,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFF6366F1),
-            const Color(0xFF8B5CF6),
+            Color(0xFF6366F1),
+            Color(0xFF8B5CF6),
           ],
         ),
       ),

@@ -33,7 +33,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('チャレンジ'),
@@ -67,23 +67,23 @@ class _ActiveChallengesTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final challengeService = ref.watch(challengeServiceProvider);
-    
+
     return FutureBuilder<List<Challenge>>(
       future: challengeService.getActiveChallenges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (snapshot.hasError) {
           return _ErrorWidget(
             message: 'チャレンジの読み込みに失敗しました',
             onRetry: () => setState(() {}),
           );
         }
-        
+
         final challenges = snapshot.data ?? [];
-        
+
         if (challenges.isEmpty) {
           return const _EmptyStateWidget(
             icon: Icons.emoji_events,
@@ -91,15 +91,12 @@ class _ActiveChallengesTab extends ConsumerWidget {
             message: '新しいチャレンジに参加して、特別な報酬を獲得しましょう！',
           );
         }
-        
+
         return ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: challenges.length,
           itemBuilder: (context, index) {
-            return _ChallengeCard(
-              challenge: challenges[index],
-              isActive: true,
-            );
+            return _ChallengeCard(challenge: challenges[index], isActive: true);
           },
         );
       },
@@ -114,23 +111,23 @@ class _AvailableChallengesTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final challengeService = ref.watch(challengeServiceProvider);
-    
+
     return FutureBuilder<List<Challenge>>(
       future: challengeService.getAvailableChallenges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (snapshot.hasError) {
           return _ErrorWidget(
             message: 'チャレンジの読み込みに失敗しました',
             onRetry: () => setState(() {}),
           );
         }
-        
+
         final challenges = snapshot.data ?? [];
-        
+
         if (challenges.isEmpty) {
           return const _EmptyStateWidget(
             icon: Icons.schedule,
@@ -138,7 +135,7 @@ class _AvailableChallengesTab extends ConsumerWidget {
             message: '新しいチャレンジが追加されるまでお待ちください。',
           );
         }
-        
+
         return ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: challenges.length,
@@ -161,23 +158,23 @@ class _CompletedChallengesTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final challengeService = ref.watch(challengeServiceProvider);
-    
+
     return FutureBuilder<List<Challenge>>(
       future: challengeService.getCompletedChallenges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (snapshot.hasError) {
           return _ErrorWidget(
             message: 'チャレンジの読み込みに失敗しました',
             onRetry: () => setState(() {}),
           );
         }
-        
+
         final challenges = snapshot.data ?? [];
-        
+
         if (challenges.isEmpty) {
           return const _EmptyStateWidget(
             icon: Icons.check_circle_outline,
@@ -185,7 +182,7 @@ class _CompletedChallengesTab extends ConsumerWidget {
             message: 'チャレンジに参加して、達成の喜びを味わいましょう！',
           );
         }
-        
+
         return ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: challenges.length,
@@ -217,7 +214,7 @@ class _ChallengeCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    
+
     return Card(
       margin: EdgeInsets.only(bottom: tokens.spacing(3)),
       elevation: 0,
@@ -282,9 +279,9 @@ class _ChallengeCard extends ConsumerWidget {
                     ),
                 ],
               ),
-              
+
               SizedBox(height: tokens.spacing(3)),
-              
+
               // 進捗バー
               if (isActive || isCompleted) ...[
                 Row(
@@ -317,7 +314,7 @@ class _ChallengeCard extends ConsumerWidget {
                 ),
                 SizedBox(height: tokens.spacing(3)),
               ],
-              
+
               // 報酬情報
               Row(
                 children: [
@@ -334,7 +331,7 @@ class _ChallengeCard extends ConsumerWidget {
                     ),
                   ),
                   const Spacer(),
-                  if (challenge.endDate != null) ...[
+                  ...[
                     Icon(
                       Icons.schedule,
                       color: Colors.white.withOpacity(0.9),
@@ -342,7 +339,7 @@ class _ChallengeCard extends ConsumerWidget {
                     ),
                     SizedBox(width: tokens.spacing(1)),
                     Text(
-                      _formatEndDate(challenge.endDate!),
+                      _formatEndDate(challenge.endDate),
                       style: tokens.bodySmall.copyWith(
                         color: Colors.white.withOpacity(0.9),
                       ),
@@ -350,9 +347,9 @@ class _ChallengeCard extends ConsumerWidget {
                   ],
                 ],
               ),
-              
+
               SizedBox(height: tokens.spacing(3)),
-              
+
               // アクションボタン
               if (!isCompleted)
                 SizedBox(
@@ -384,31 +381,22 @@ class _ChallengeCard extends ConsumerWidget {
   LinearGradient _getGradient(MinqTokens tokens) {
     if (isCompleted) {
       return LinearGradient(
-        colors: [
-          Colors.green,
-          Colors.green.withOpacity(0.8),
-        ],
+        colors: [Colors.green, Colors.green.withOpacity(0.8)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
     }
-    
+
     if (isActive) {
       return LinearGradient(
-        colors: [
-          tokens.brandPrimary,
-          tokens.brandPrimary.withOpacity(0.8),
-        ],
+        colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
     }
-    
+
     return LinearGradient(
-      colors: [
-        Colors.grey.shade600,
-        Colors.grey.shade500,
-      ],
+      colors: [Colors.grey.shade600, Colors.grey.shade500],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     );
@@ -434,7 +422,7 @@ class _ChallengeCard extends ConsumerWidget {
   String _formatEndDate(DateTime endDate) {
     final now = DateTime.now();
     final difference = endDate.difference(now);
-    
+
     if (difference.inDays > 0) {
       return '残り${difference.inDays}日';
     } else if (difference.inHours > 0) {
@@ -446,9 +434,12 @@ class _ChallengeCard extends ConsumerWidget {
     }
   }
 
-  Future<void> _handleChallengeAction(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleChallengeAction(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final challengeService = ref.read(challengeServiceProvider);
-    
+
     try {
       if (isActive) {
         // チャレンジ詳細画面に遷移
@@ -456,7 +447,7 @@ class _ChallengeCard extends ConsumerWidget {
       } else {
         // チャレンジに参加
         await challengeService.joinChallenge(challenge.id);
-        
+
         // 成功通知
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -500,7 +491,7 @@ class _ChallengeDetailsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
       padding: EdgeInsets.all(tokens.spacing(4)),
@@ -518,29 +509,25 @@ class _ChallengeDetailsSheet extends StatelessWidget {
               ),
             ),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           // タイトル
           Text(
             challenge.title,
-            style: tokens.titleLarge.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(2)),
-          
+
           // 説明
           Text(
             challenge.description,
-            style: tokens.bodyMedium.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           // 進捗情報
           Container(
             padding: EdgeInsets.all(tokens.spacing(3)),
@@ -589,9 +576,9 @@ class _ChallengeDetailsSheet extends StatelessWidget {
               ],
             ),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           // 報酬情報
           Container(
             padding: EdgeInsets.all(tokens.spacing(3)),
@@ -632,9 +619,9 @@ class _ChallengeDetailsSheet extends StatelessWidget {
               ],
             ),
           ),
-          
+
           const Spacer(),
-          
+
           // 閉じるボタン
           SizedBox(
             width: double.infinity,
@@ -651,10 +638,7 @@ class _ChallengeDetailsSheet extends StatelessWidget {
 
 /// エラーウィジェット
 class _ErrorWidget extends StatelessWidget {
-  const _ErrorWidget({
-    required this.message,
-    required this.onRetry,
-  });
+  const _ErrorWidget({required this.message, required this.onRetry});
 
   final String message;
   final VoidCallback onRetry;
@@ -662,7 +646,7 @@ class _ErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return Center(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing(6)),
@@ -677,9 +661,7 @@ class _ErrorWidget extends StatelessWidget {
             SizedBox(height: tokens.spacing(4)),
             Text(
               message,
-              style: tokens.titleMedium.copyWith(
-                color: tokens.textMuted,
-              ),
+              style: tokens.titleMedium.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: tokens.spacing(4)),
@@ -710,32 +692,24 @@ class _EmptyStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return Center(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing(6)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: tokens.spacing(16),
-              color: tokens.textMuted,
-            ),
+            Icon(icon, size: tokens.spacing(16), color: tokens.textMuted),
             SizedBox(height: tokens.spacing(4)),
             Text(
               title,
-              style: tokens.titleMedium.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: tokens.spacing(2)),
             Text(
               message,
-              style: tokens.bodyMedium.copyWith(
-                color: tokens.textMuted,
-              ),
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
           ],

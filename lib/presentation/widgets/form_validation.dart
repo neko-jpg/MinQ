@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/spacing_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// フォームバリデーションシステム - 統一されたバリデーションメッセージ
 class FormValidation {
@@ -208,8 +208,8 @@ class ValidatedTextField extends StatelessWidget {
         // ヘルパーテキストとエラーテキストのスタイル統一
         helperStyle: Theme.of(context).textTheme.bodySmall,
         errorStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.error,
-            ),
+          color: Theme.of(context).colorScheme.error,
+        ),
       ),
       validator: validator,
       keyboardType: keyboardType,
@@ -283,24 +283,30 @@ class _InlineValidatedTextFieldState extends State<InlineValidatedTextField> {
             labelText: widget.label,
             hintText: widget.hint,
             prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.showValidationIcon && _hasInteracted
-                ? _isValid
-                    ? Icon(Icons.check_circle, color: colorScheme.primary)
-                    : _errorMessage != null
+            suffixIcon:
+                widget.showValidationIcon && _hasInteracted
+                    ? _isValid
+                        ? Icon(Icons.check_circle, color: colorScheme.primary)
+                        : _errorMessage != null
                         ? Icon(Icons.error, color: colorScheme.error)
                         : widget.suffixIcon
-                : widget.suffixIcon,
+                    : widget.suffixIcon,
             // エラー時の枠線色
-            enabledBorder: _errorMessage != null
-                ? OutlineInputBorder(
-                    borderSide: BorderSide(color: colorScheme.error),
-                  )
-                : null,
-            focusedBorder: _errorMessage != null
-                ? OutlineInputBorder(
-                    borderSide: BorderSide(color: colorScheme.error, width: 2),
-                  )
-                : null,
+            enabledBorder:
+                _errorMessage != null
+                    ? OutlineInputBorder(
+                      borderSide: BorderSide(color: colorScheme.error),
+                    )
+                    : null,
+            focusedBorder:
+                _errorMessage != null
+                    ? OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: colorScheme.error,
+                        width: 2,
+                      ),
+                    )
+                    : null,
           ),
           keyboardType: widget.keyboardType,
           obscureText: widget.obscureText,
@@ -311,11 +317,7 @@ class _InlineValidatedTextFieldState extends State<InlineValidatedTextField> {
           SpacingSystem.vSpaceXS,
           Row(
             children: [
-              Icon(
-                Icons.error_outline,
-                size: 16,
-                color: colorScheme.error,
-              ),
+              Icon(Icons.error_outline, size: 16, color: colorScheme.error),
               SpacingSystem.hSpaceXS,
               Expanded(
                 child: Text(
@@ -363,10 +365,7 @@ class FormFieldWrapper extends StatelessWidget {
         if (label != null) ...[
           Row(
             children: [
-              Text(
-                label!,
-                style: theme.textTheme.titleSmall,
-              ),
+              Text(label!, style: theme.textTheme.titleSmall),
               if (required) ...[
                 SpacingSystem.hSpaceXS,
                 Text(
@@ -391,11 +390,7 @@ class FormFieldWrapper extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (errorMessage != null)
-                Icon(
-                  Icons.error_outline,
-                  size: 16,
-                  color: colorScheme.error,
-                )
+                Icon(Icons.error_outline, size: 16, color: colorScheme.error)
               else if (helperText != null)
                 Icon(
                   Icons.info_outline,
@@ -407,9 +402,10 @@ class FormFieldWrapper extends StatelessWidget {
                 child: Text(
                   errorMessage ?? helperText!,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: errorMessage != null
-                        ? colorScheme.error
-                        : colorScheme.onSurface.withOpacity(0.6),
+                    color:
+                        errorMessage != null
+                            ? colorScheme.error
+                            : colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
               ),

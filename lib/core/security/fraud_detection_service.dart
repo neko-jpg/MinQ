@@ -1,12 +1,11 @@
-import 'package:flutter/foundation.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 
 /// 不正利用検出サービス
 /// 短時間での大量クエスト完了などの異常な行動を検出
 class FraudDetectionService {
-  final AppLogger _logger;
+  final MinqLogger _logger;
 
-  FraudDetectionService(this._logger);
+  FraudDetectionService({MinqLogger? logger}) : _logger = logger ?? MinqLogger.instance;
 
   // 検出閾値
   static const int _maxQuestsPerHour = 20;
@@ -28,7 +27,7 @@ class FraudDetectionService {
           .length;
 
       if (lastHourCompletions > _maxQuestsPerHour) {
-        _logger.warning(
+        _logger.warn(
           'Suspicious activity detected: $lastHourCompletions quests in 1 hour',
           metadata: {'userId': userId},
         );
@@ -45,7 +44,7 @@ class FraudDetectionService {
           .length;
 
       if (lastDayCompletions > _maxQuestsPerDay) {
-        _logger.warning(
+        _logger.warn(
           'Suspicious activity detected: $lastDayCompletions quests in 1 day',
           metadata: {'userId': userId},
         );
@@ -59,7 +58,7 @@ class FraudDetectionService {
       // 短時間での連続完了をチェック
       final suspiciousPattern = _detectSuspiciousPattern(recentCompletions);
       if (suspiciousPattern != null) {
-        _logger.warning(
+        _logger.warn(
           'Suspicious pattern detected',
           metadata: {'userId': userId, 'pattern': suspiciousPattern},
         );
@@ -72,7 +71,7 @@ class FraudDetectionService {
 
       return FraudDetectionResult.clean();
     } catch (e, stack) {
-      _logger.error('Fraud detection failed', error: e, stackTrace: stack);
+      _logger.error('Fraud detection failed', exception: e, stackTrace: stack);
       return FraudDetectionResult.clean(); // エラー時は通常動作を許可
     }
   }
@@ -108,7 +107,7 @@ class FraudDetectionService {
     try {
       // 使い捨てメールアドレスのチェック
       if (_isDisposableEmail(email)) {
-        _logger.warning('Disposable email detected: $email');
+        _logger.warn('Disposable email detected: $email');
         return FraudDetectionResult.suspicious(
           reason: '使い捨てメールアドレスが検出されました',
           severity: FraudSeverity.low,
@@ -121,7 +120,7 @@ class FraudDetectionService {
 
       return FraudDetectionResult.clean();
     } catch (e, stack) {
-      _logger.error('Account fraud detection failed', error: e, stackTrace: stack);
+      _logger.error('Account fraud detection failed', exception: e, stackTrace: stack);
       return FraudDetectionResult.clean();
     }
   }
@@ -152,7 +151,7 @@ class FraudDetectionService {
       const checkWindow = Duration(days: 1);
 
       if (timeWindow < checkWindow && pairChangeCount > maxPairChanges) {
-        _logger.warning(
+        _logger.warn(
           'Suspicious pair activity: $pairChangeCount changes in ${timeWindow.inHours} hours',
           metadata: {'userId': userId},
         );
@@ -165,7 +164,7 @@ class FraudDetectionService {
 
       return FraudDetectionResult.clean();
     } catch (e, stack) {
-      _logger.error('Pair fraud detection failed', error: e, stackTrace: stack);
+      _logger.error('Pair fraud detection failed', exception: e, stackTrace: stack);
       return FraudDetectionResult.clean();
     }
   }

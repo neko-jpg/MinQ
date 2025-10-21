@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../logging/app_logger.dart';
-import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
-
+import 'package:minq/data/logging/minq_logger.dart';
 
 /// サブスクリプション管理サービス
 ///
 /// ユーザーの課金状態を管理し、機能へのアクセス権限を制御する
 class SubscriptionService {
   final FirebaseFirestore _firestore;
+  late final String _userId;
 
   /// 現在のサブスクリプションプラン
   SubscriptionPlan _currentPlan = SubscriptionPlan.free;
@@ -22,14 +21,15 @@ class SubscriptionService {
   SubscriptionService(this._firestore);
 
   /// 初期化
-  Future<void> initialize() async {
+  Future<void> initialize(String userId) async {
+    _userId = userId;
     try {
       await _loadSubscriptionStatus();
-      AppLogger.info('Subscription service initialized', {
+      MinqLogger.instance.info('Subscription service initialized', metadata: {
         'plan': _currentPlan.name,
       });
     } catch (e, stack) {
-      AppLogger.error('Failed to initialize subscription service', e, stack);
+      MinqLogger.instance.error('Failed to initialize subscription service', exception: e, stackTrace: stack);
     }
   }
 
@@ -52,7 +52,7 @@ class SubscriptionService {
         _currentPlan = SubscriptionPlan.free;
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to load subscription status', e, stack);
+      MinqLogger.instance.error('Failed to load subscription status', exception: e, stackTrace: stack);
       _currentPlan = SubscriptionPlan.free;
     }
   }
@@ -61,7 +61,7 @@ class SubscriptionService {
   Future<bool> purchase(SubscriptionPlan plan) async {
     if (plan == SubscriptionPlan.free) return false;
     try {
-      AppLogger.info('Attempting to purchase subscription', {'plan': plan.name});
+      MinqLogger.instance.info('Attempting to purchase subscription', metadata: {'plan': plan.name});
 
       final now = DateTime.now();
       final expiryDate = plan == SubscriptionPlan.premiumMonthly
@@ -77,10 +77,10 @@ class SubscriptionService {
       });
 
       _currentPlan = plan;
-      AppLogger.info('Subscription purchased successfully', {'plan': plan.name});
+      MinqLogger.instance.info('Subscription purchased successfully', metadata: {'plan': plan.name});
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to purchase subscription', e, stack);
+      MinqLogger.instance.error('Failed to purchase subscription', exception: e, stackTrace: stack);
       return false;
     }
   }
@@ -88,12 +88,12 @@ class SubscriptionService {
   /// サブスクリプションを復元
   Future<bool> restore() async {
     try {
-      AppLogger.info('Attempting to restore subscription');
+      MinqLogger.instance.info('Attempting to restore subscription');
       await _loadSubscriptionStatus();
-      AppLogger.info('Subscription restored successfully', {'plan': _currentPlan.name});
+      MinqLogger.instance.info('Subscription restored successfully', metadata: {'plan': _currentPlan.name});
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to restore subscription', e, stack);
+      MinqLogger.instance.error('Failed to restore subscription', exception: e, stackTrace: stack);
       return false;
     }
   }
@@ -101,16 +101,16 @@ class SubscriptionService {
   /// サブスクリプションをキャンセル
   Future<bool> cancel() async {
     try {
-      AppLogger.info('Attempting to cancel subscription');
+      MinqLogger.instance.info('Attempting to cancel subscription');
 
       // TODO: 実際のキャンセル処理
       // 注: iOS/Androidではアプリ内でキャンセルできないため、
       // ストアの設定画面に誘導する
 
-      AppLogger.info('Subscription cancellation initiated');
+      MinqLogger.instance.info('Subscription cancellation initiated');
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to cancel subscription', e, stack);
+      MinqLogger.instance.error('Failed to cancel subscription', exception: e, stackTrace: stack);
       return false;
     }
   }
@@ -278,9 +278,7 @@ class FeatureLimit {
 
 /// サブスクリプションサービスのProvider
 final subscriptionServiceProvider = Provider<SubscriptionService>((ref) {
-  final service = SubscriptionService(FirebaseFirestore.instance);
-  service.initialize();
-  return service;
+  return SubscriptionService(FirebaseFirestore.instance);
 });
 
 /// 現在のプランのProvider

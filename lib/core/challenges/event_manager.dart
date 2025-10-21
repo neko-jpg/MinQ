@@ -15,13 +15,10 @@ class EventManager {
   /// Creates a new event.
   Future<void> createEvent(Event event) async {
     try {
-      await _firestore
-          .collection('events')
-          .doc(event.id)
-          .set(event.toJson());
+      await _firestore.collection('events').doc(event.id).set(event.toJson());
       print("Event '${event.name}' created successfully.");
     } catch (e) {
-      print("Error creating event: $e");
+      print('Error creating event: $e');
     }
   }
 
@@ -29,15 +26,16 @@ class EventManager {
   Future<List<Event>> getActiveEvents() async {
     try {
       final now = DateTime.now();
-      final snapshot = await _firestore
-          .collection('events')
-          .where('startDate', isLessThanOrEqualTo: now)
-          .where('endDate', isGreaterThanOrEqualTo: now)
-          .get();
+      final snapshot =
+          await _firestore
+              .collection('events')
+              .where('startDate', isLessThanOrEqualTo: now)
+              .where('endDate', isGreaterThanOrEqualTo: now)
+              .get();
 
       return snapshot.docs.map((doc) => Event.fromJson(doc.data())).toList();
     } catch (e) {
-      print("Error fetching active events: $e");
+      print('Error fetching active events: $e');
       return [];
     }
   }
@@ -54,9 +52,9 @@ class EventManager {
           .collection('participants')
           .doc(userId)
           .set({'registeredAt': FieldValue.serverTimestamp()});
-      print("User $userId registered for event $eventId.");
+      print('User $userId registered for event $eventId.');
     } catch (e) {
-      print("Error registering user for event: $e");
+      print('Error registering user for event: $e');
     }
   }
 }

@@ -8,7 +8,7 @@ class UsageLimitViewState {
   const UsageLimitViewState.loading() : this._(null, true);
 
   const UsageLimitViewState.ready(UsageLimitSnapshot snapshot)
-      : this._(snapshot, false);
+    : this._(snapshot, false);
 
   final UsageLimitSnapshot? snapshot;
   final bool isLoading;
@@ -21,13 +21,13 @@ class UsageLimitViewState {
 
 final usageLimitControllerProvider =
     StateNotifierProvider<UsageLimitController, UsageLimitViewState>((ref) {
-  final service = ref.watch(usageLimitServiceProvider);
-  return UsageLimitController(service);
-});
+      final service = ref.watch(usageLimitServiceProvider);
+      return UsageLimitController(service);
+    });
 
 class UsageLimitController extends StateNotifier<UsageLimitViewState> {
   UsageLimitController(this._service)
-      : super(const UsageLimitViewState.loading()) {
+    : super(const UsageLimitViewState.loading()) {
     _load();
   }
 

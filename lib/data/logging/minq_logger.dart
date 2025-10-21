@@ -5,7 +5,9 @@ import 'package:flutter/foundation.dart';
 class MinqLogger {
   MinqLogger._();
 
-  static const Set<String> _blockedKeys = <String>{
+  static final MinqLogger instance = MinqLogger._();
+
+  final Set<String> _blockedKeys = <String>{
     'uid', // Added as per checklist
     'email',
     'mail',
@@ -29,21 +31,21 @@ class MinqLogger {
     'buddyId', // Added for safety
   };
 
-  static void debug(String event, {Map<String, dynamic>? metadata}) {
+  void debug(String event, {Map<String, dynamic>? metadata}) {
     if (kDebugMode) {
       _log(level: 'DEBUG', event: event, metadata: metadata, levelValue: 700);
     }
   }
 
-  static void info(String event, {Map<String, dynamic>? metadata}) {
+  void info(String event, {Map<String, dynamic>? metadata}) {
     _log(level: 'INFO', event: event, metadata: metadata);
   }
 
-  static void warn(String event, {Map<String, dynamic>? metadata}) {
+  void warn(String event, {Map<String, dynamic>? metadata}) {
     _log(level: 'WARN', event: event, metadata: metadata, levelValue: 900);
   }
 
-  static void error(
+  void error(
     String event, {
     Map<String, dynamic>? metadata,
     Object? exception,
@@ -59,7 +61,7 @@ class MinqLogger {
     );
   }
 
-  static void _log({
+  void _log({
     required String level,
     required String event,
     Map<String, dynamic>? metadata,
@@ -82,7 +84,9 @@ class MinqLogger {
     );
   }
 
-  static Map<String, dynamic> _sanitizeMetadata(Map<String, dynamic>? metadata) {
+  Map<String, dynamic> _sanitizeMetadata(
+    Map<String, dynamic>? metadata,
+  ) {
     if (metadata == null || metadata.isEmpty) {
       return const <String, dynamic>{};
     }
@@ -96,11 +100,15 @@ class MinqLogger {
       } else if (value is Map<String, dynamic>) {
         sanitized[key] = _sanitizeMetadata(value);
       } else if (value is Iterable) {
-        sanitized[key] = value
-            .map((dynamic element) => element is Map<String, dynamic>
-                ? _sanitizeMetadata(element)
-                : element)
-            .toList();
+        sanitized[key] =
+            value
+                .map(
+                  (dynamic element) =>
+                      element is Map<String, dynamic>
+                          ? _sanitizeMetadata(element)
+                          : element,
+                )
+                .toList();
       } else {
         sanitized[key] = value;
       }
@@ -108,7 +116,7 @@ class MinqLogger {
     return sanitized;
   }
 
-  static bool _containsBlockedKeyword(String key) {
+  bool _containsBlockedKeyword(String key) {
     final lowerKey = key.toLowerCase();
     return _blockedKeys.any((String blocked) => lowerKey.contains(blocked));
   }

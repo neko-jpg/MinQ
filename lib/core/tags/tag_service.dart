@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 
 /// タグサービス
 class TagService {
@@ -28,10 +28,10 @@ class TagService {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      AppLogger.info('Tag created', data: {'tagId': tagRef.id, 'name': name});
+      MinqLogger.instance.info('Tag created', metadata: {'tagId': tagRef.id, 'name': name});
       return tagRef.id;
     } catch (e, stack) {
-      AppLogger.error('Failed to create tag', error: e, stackTrace: stack);
+      MinqLogger.instance.error('Failed to create tag', exception: e, stackTrace: stack);
       return null;
     }
   }
@@ -66,9 +66,9 @@ class TagService {
           .doc(tagId)
           .delete();
 
-      AppLogger.info('Tag deleted', data: {'tagId': tagId});
+      MinqLogger.instance.info('Tag deleted', metadata: {'tagId': tagId});
     } catch (e, stack) {
-      AppLogger.error('Failed to delete tag', error: e, stackTrace: stack);
+      MinqLogger.instance.error('Failed to delete tag', exception: e, stackTrace: stack);
     }
   }
 }

@@ -13,16 +13,16 @@ class RemoteConfigService {
     if (_remoteConfig == null) return;
 
     try {
-      await _remoteConfig!.setConfigSettings(
+      await _remoteConfig.setConfigSettings(
         RemoteConfigSettings(
           fetchTimeout: _fetchTimeout,
           minimumFetchInterval: _minimumFetchInterval,
         ),
       );
 
-      await _remoteConfig!.setDefaults(_defaultValues);
-      await _remoteConfig!.fetchAndActivate();
-      
+      await _remoteConfig.setDefaults(_defaultValues);
+      await _remoteConfig.fetchAndActivate();
+
       debugPrint('Remote Config initialized');
     } catch (e) {
       debugPrint('Remote Config initialization failed: $e');
@@ -35,36 +35,36 @@ class RemoteConfigService {
     'min_supported_version': '0.9.0',
     'recommended_version': '0.9.0',
     'force_update_enabled': false,
-    
+
     // Feature flags
     'feature_pair_enabled': true,
     'feature_photo_proof_enabled': true,
     'feature_share_enabled': true,
     'feature_premium_enabled': false,
-    
+
     // UI/UX configs
     'onboarding_max_steps': 3,
     'daily_goal_default': 3,
     'max_quests_per_user': 20,
-    
+
     // Copy variations for A/B testing
     'cta_create_quest': 'クエストを作成する',
     'cta_start_now': '今すぐ始める',
     'cta_record_progress': '記録する',
-    
+
     // Notification configs
     'notification_default_times': '07:30,18:30,21:30',
     'notification_snooze_minutes': '10,60,1440',
-    
+
     // Pair matching configs
     'pair_matching_timeout_seconds': 30,
     'pair_rematch_cooldown_hours': 24,
-    
+
     // Moderation configs
     'content_moderation_enabled': true,
     'max_message_length': 500,
     'max_username_length': 20,
-    
+
     // Monetization
     'show_ads': false,
     'ad_frequency_minutes': 30,
@@ -93,13 +93,16 @@ class RemoteConfigService {
   String get ctaRecordProgress => _getString('cta_record_progress');
 
   // Notification configs
-  List<String> get notificationDefaultTimes => 
+  List<String> get notificationDefaultTimes =>
       _getString('notification_default_times').split(',');
-  List<int> get notificationSnoozeMinutes => 
-      _getString('notification_snooze_minutes').split(',').map(int.parse).toList();
+  List<int> get notificationSnoozeMinutes =>
+      _getString(
+        'notification_snooze_minutes',
+      ).split(',').map(int.parse).toList();
 
   // Pair matching configs
-  int get pairMatchingTimeoutSeconds => _getInt('pair_matching_timeout_seconds');
+  int get pairMatchingTimeoutSeconds =>
+      _getInt('pair_matching_timeout_seconds');
   int get pairRematchCooldownHours => _getInt('pair_rematch_cooldown_hours');
 
   // Moderation configs

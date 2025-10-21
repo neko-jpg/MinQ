@@ -4,12 +4,13 @@ import 'package:flutter/services.dart';
 
 /// Platform channel facade for managing Live Activities / Android Live Widgets.
 class LiveActivityChannel {
-  LiveActivityChannel({
-    MethodChannel? channel,
-  }) : _channel = channel ?? const MethodChannel('miinq/live_activity');
+  /// Creates a new [LiveActivityChannel].
+  LiveActivityChannel({MethodChannel? channel})
+      : _channel = channel ?? const MethodChannel('miinq/live_activity');
 
   final MethodChannel _channel;
 
+  /// Starts a new progress-based Live Activity.
   Future<void> startProgressActivity({
     required String questId,
     required String title,
@@ -24,6 +25,7 @@ class LiveActivityChannel {
     });
   }
 
+  /// Updates an existing progress-based Live Activity.
   Future<void> updateProgress({
     required String questId,
     required int completed,
@@ -36,9 +38,8 @@ class LiveActivityChannel {
     });
   }
 
+  /// Ends a progress-based Live Activity.
   Future<void> endProgress(String questId) async {
-    await _channel.invokeMethod<void>('end', {
-      'questId': questId,
-    });
+    await _channel.invokeMethod<void>('end', {'questId': questId});
   }
 }

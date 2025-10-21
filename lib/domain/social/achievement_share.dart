@@ -108,7 +108,9 @@ class ShareImageConfig {
     return ShareImageConfig(
       width: json['width'] as int? ?? 800,
       height: json['height'] as int? ?? 600,
-      backgroundImage: json['backgroundImage'] as String? ?? 'assets/images/share_background.png',
+      backgroundImage:
+          json['backgroundImage'] as String? ??
+          'assets/images/share_background.png',
       primaryColor: json['primaryColor'] as String? ?? '#4ECDC4',
       accentColor: json['accentColor'] as String? ?? '#FFD700',
     );

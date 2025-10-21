@@ -3,11 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class SensitiveContent extends StatefulWidget {
-  const SensitiveContent({
-    super.key,
-    required this.child,
-    this.blur = true,
-  });
+  const SensitiveContent({super.key, required this.child, this.blur = true});
 
   final Widget child;
   final bool blur;
@@ -34,7 +30,8 @@ class _SensitiveContentState extends State<SensitiveContent>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
       setState(() => _obscured = true);
     } else if (state == AppLifecycleState.resumed) {
       setState(() => _obscured = false);
@@ -48,12 +45,13 @@ class _SensitiveContentState extends State<SensitiveContent>
         widget.child,
         if (_obscured)
           Positioned.fill(
-            child: widget.blur
-                ? BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                    child: Container(color: Colors.black.withOpacity(0.28)),
-                  )
-                : Container(color: Colors.black.withOpacity(0.45)),
+            child:
+                widget.blur
+                    ? BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                      child: Container(color: Colors.black.withOpacity(0.28)),
+                    )
+                    : Container(color: Colors.black.withOpacity(0.45)),
           ),
       ],
     );

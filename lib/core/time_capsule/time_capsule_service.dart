@@ -39,9 +39,9 @@ class TimeCapsuleService {
 
       // In a real app, you would schedule a push notification here using a service
       // like Firebase Functions + Cloud Scheduler, or a local notification service.
-      print("Created and saved time capsule ${capsule.id} for user $userId to be delivered on $deliveryDate.");
+      print('Created and saved time capsule ${capsule.id} for user $userId to be delivered on $deliveryDate.');
     } catch (e) {
-      print("Error creating time capsule: $e");
+      print('Error creating time capsule: $e');
     }
   }
 
@@ -74,9 +74,9 @@ class TimeCapsuleService {
         'data': { 'type': 'time_capsule', 'capsuleId': capsuleId }
       });
 
-      print("Queued delivery notification for time capsule $capsuleId.");
+      print('Queued delivery notification for time capsule $capsuleId.');
     } catch (e) {
-      print("Error delivering time capsule: $e");
+      print('Error delivering time capsule: $e');
     }
   }
 
@@ -86,13 +86,13 @@ class TimeCapsuleService {
     required String currentReality, // User's input about their current situation
   }) {
     final createdDate = capsule.createdAt.toLocal().toString().split(' ')[0];
-    return "## A Look Back... and a Look Forward\n\n"
-           "**On $createdDate, you sent a message to your future self:**\n"
-           "> *${capsule.message}*\n\n"
-           "**You predicted your life would be like this:**\n"
-           "> *${capsule.prediction}*\n\n"
+    return '## A Look Back... and a Look Forward\n\n'
+           '**On $createdDate, you sent a message to your future self:**\n'
+           '> *${capsule.message}*\n\n'
+           '**You predicted your life would be like this:**\n'
+           '> *${capsule.prediction}*\n\n'
            "**And here's where you are today:**\n"
-           "> *${currentReality}*\n\n"
-           "Take a moment to reflect on the journey. What has changed? What has stayed the same? What have you learned?";
+           '> *$currentReality*\n\n'
+           'Take a moment to reflect on the journey. What has changed? What has stayed the same? What have you learned?';
   }
 }

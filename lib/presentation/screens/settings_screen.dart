@@ -1,15 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/quest/quest.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -19,14 +19,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-
   bool _isExporting = false;
-
-
-
-
-
-
 
   Future<void> _showSoundProfileSheet(
     BuildContext context,
@@ -76,7 +69,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     },
                     selected: isSelected,
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
@@ -84,8 +77,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       },
     );
   }
-
-
 
   Map<String, dynamic> _questToExportMap(Quest quest) {
     return {
@@ -217,8 +208,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
@@ -305,7 +294,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               _SettingsTile(
                 title: 'ストリーク保護',
                 subtitle: 'ストリークの保護と回復機能',
-                onTap: () => navigation.goToStreakRecovery(1), // TODO: 適切なquestIdを渡す
+                onTap:
+                    () =>
+                        navigation.goToStreakRecovery(1), // TODO: 適切なquestIdを渡す
               ),
               _SettingsTile(
                 title: 'イベント',

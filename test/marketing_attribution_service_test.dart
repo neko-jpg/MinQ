@@ -13,7 +13,11 @@ void main() {
   test('captures UTM parameters from incoming URI', () async {
     final prefs = LocalPreferencesService(now: () => DateTime.utc(2024, 5, 1));
     final service = MarketingAttributionService(prefs);
-    await service.captureUri(Uri.parse('minq://record?utm_source=ad&utm_medium=cpc&utm_campaign=habit&utm_content=copy&utm_term=morning'));
+    await service.captureUri(
+      Uri.parse(
+        'minq://record?utm_source=ad&utm_medium=cpc&utm_campaign=habit&utm_content=copy&utm_term=morning',
+      ),
+    );
 
     final snapshot = await prefs.loadAttribution();
     expect(snapshot, isNotNull);

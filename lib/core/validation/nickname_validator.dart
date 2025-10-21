@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 
 /// ニックネーム検証サービス
 class NicknameValidator {
@@ -43,7 +43,7 @@ class NicknameValidator {
 
       return NicknameValidationResult.success();
     } catch (e, stack) {
-      AppLogger.error('Failed to validate nickname', error: e, stackTrace: stack);
+      MinqLogger.instance.error('Failed to validate nickname', exception: e, stackTrace: stack);
       return NicknameValidationResult.error('検証中にエラーが発生しました');
     }
   }

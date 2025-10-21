@@ -8,9 +8,7 @@ class HelpCenterScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ヘルプセンター'),
-      ),
+      appBar: AppBar(title: const Text('ヘルプセンター')),
       body: ListView(
         children: [
           _buildSection(
@@ -118,11 +116,12 @@ class HelpCenterScreen extends ConsumerWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => LicensePage(
-          applicationName: 'MinQ',
-          applicationVersion: '1.0.0',
-          applicationLegalese: '© 2025 MinQ Team',
-        ),
+        builder:
+            (_) => const LicensePage(
+              applicationName: 'MinQ',
+              applicationVersion: '1.0.0',
+              applicationLegalese: '© 2025 MinQ Team',
+            ),
       ),
     );
   }
@@ -135,9 +134,7 @@ class FAQScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('よくある質問'),
-      ),
+      appBar: AppBar(title: const Text('よくある質問')),
       body: ListView(
         children: [
           _buildFAQItem(
@@ -177,20 +174,14 @@ class FAQScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFAQItem({
-    required String question,
-    required String answer,
-  }) {
+  Widget _buildFAQItem({required String question, required String answer}) {
     return ExpansionTile(
       title: Text(
         question,
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(answer),
-        ),
+        Padding(padding: const EdgeInsets.all(16.0), child: Text(answer)),
       ],
     );
   }
@@ -221,9 +212,7 @@ class _ContactScreenState extends State<ContactScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('お問い合わせ'),
-      ),
+      appBar: AppBar(title: const Text('お問い合わせ')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -276,10 +265,7 @@ class _ContactScreenState extends State<ContactScreen> {
               },
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _submitContact,
-              child: const Text('送信'),
-            ),
+            ElevatedButton(onPressed: _submitContact, child: const Text('送信')),
           ],
         ),
       ),
@@ -289,9 +275,9 @@ class _ContactScreenState extends State<ContactScreen> {
   Future<void> _submitContact() async {
     if (_formKey.currentState!.validate()) {
       // TODO: お問い合わせを送信
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('お問い合わせを送信しました')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('お問い合わせを送信しました')));
       Navigator.pop(context);
     }
   }
@@ -320,9 +306,7 @@ class _BugReportScreenState extends State<BugReportScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('バグ報告'),
-      ),
+      appBar: AppBar(title: const Text('バグ報告')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -386,9 +370,9 @@ class _BugReportScreenState extends State<BugReportScreen> {
   Future<void> _submitBugReport() async {
     if (_formKey.currentState!.validate()) {
       // TODO: バグ報告を送信
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('バグ報告を送信しました')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('バグ報告を送信しました')));
       Navigator.pop(context);
     }
   }
@@ -401,9 +385,7 @@ class TermsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('利用規約'),
-      ),
+      appBar: AppBar(title: const Text('利用規約')),
       body: const SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Text(
@@ -422,9 +404,7 @@ class PrivacyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('プライバシーポリシー'),
-      ),
+      appBar: AppBar(title: const Text('プライバシーポリシー')),
       body: const SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Text(

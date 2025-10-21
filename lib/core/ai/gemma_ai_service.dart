@@ -6,11 +6,11 @@ import 'dart:developer';
 class GemmaAIService {
   static GemmaAIService? _instance;
   static GemmaAIService get instance => _instance ??= GemmaAIService._();
-  
+
   GemmaAIService._();
 
   bool _isInitialized = false;
-  
+
   /// サービスの初期化
   Future<void> initialize() async {
     try {
@@ -51,7 +51,7 @@ class GemmaAIService {
     if (!_isInitialized) {
       await initialize();
     }
-    
+
     // TODO: 実際のGemmaモデルでの応答生成
     return 'これはGemma AIからの応答です: $message';
   }
@@ -63,10 +63,7 @@ class GemmaAIService {
 }
 
 /// チャットメッセージのロール
-enum GemmaChatRole {
-  user,
-  assistant,
-}
+enum GemmaChatRole { user, assistant }
 
 /// チャットメッセージ
 class GemmaChatMessage {

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 
 /// ストリークリカバリーサービス
 class StreakRecoveryService {
@@ -32,7 +32,7 @@ class StreakRecoveryService {
         // リカバリーチケット数を確認
         final recoveryTickets = userData['recoveryTickets'] as int? ?? 0;
         if (recoveryTickets <= 0) {
-          AppLogger.warning('No recovery tickets available');
+          MinqLogger.instance.warn('No recovery tickets available');
           return false;
         }
 
@@ -48,7 +48,7 @@ class StreakRecoveryService {
           'recoveryTickets': recoveryTickets - 1,
         });
 
-        AppLogger.info('Streak recovered', data: {
+        MinqLogger.instance.info('Streak recovered', metadata: {
           'userId': userId,
           'questId': questId,
           'remainingTickets': recoveryTickets - 1,
@@ -57,7 +57,7 @@ class StreakRecoveryService {
         return true;
       });
     } catch (e, stack) {
-      AppLogger.error('Failed to recover streak', error: e, stackTrace: stack);
+      MinqLogger.instance.error('Failed to recover streak', exception: e, stackTrace: stack);
       return false;
     }
   }
@@ -78,15 +78,15 @@ class StreakRecoveryService {
         'recoveryTickets': FieldValue.increment(count),
       });
 
-      AppLogger.info('Recovery tickets purchased', data: {
+      MinqLogger.instance.info('Recovery tickets purchased', metadata: {
         'userId': userId,
         'count': count,
       });
 
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to purchase recovery ticket',
-          error: e, stackTrace: stack);
+      MinqLogger.instance.error('Failed to purchase recovery ticket',
+          exception: e, stackTrace: stack);
       return false;
     }
   }
@@ -107,14 +107,14 @@ class StreakRecoveryService {
         'lastAdWatchedAt': FieldValue.serverTimestamp(),
       });
 
-      AppLogger.info('Recovery ticket earned by ad', data: {
+      MinqLogger.instance.info('Recovery ticket earned by ad', metadata: {
         'userId': userId,
       });
 
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to earn ticket by ad',
-          error: e, stackTrace: stack);
+      MinqLogger.instance.error('Failed to earn ticket by ad',
+          exception: e, stackTrace: stack);
       return false;
     }
   }
@@ -130,8 +130,8 @@ class StreakRecoveryService {
 
       return userDoc.data()?['recoveryTickets'] as int? ?? 0;
     } catch (e, stack) {
-      AppLogger.error('Failed to get recovery ticket count',
-          error: e, stackTrace: stack);
+      MinqLogger.instance.error('Failed to get recovery ticket count',
+          exception: e, stackTrace: stack);
       return 0;
     }
   }
@@ -172,8 +172,8 @@ class StreakRecoveryService {
 
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to check recovery availability',
-          error: e, stackTrace: stack);
+      MinqLogger.instance.error('Failed to check recovery availability',
+          exception: e, stackTrace: stack);
       return false;
     }
   }

@@ -2,17 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class SpeechInputService {
-  SpeechInputService(SpeechToText speechToText)
-      : _speech = speechToText;
+  SpeechInputService(SpeechToText speechToText) : _speech = speechToText;
 
   final SpeechToText _speech;
   bool _initialised = false;
 
   Future<bool> ensureInitialized() async {
     if (_initialised) return true;
-    _initialised = await _speech.initialize(
-      debugLogging: false,
-    );
+    _initialised = await _speech.initialize(debugLogging: false);
     return _initialised;
   }
 

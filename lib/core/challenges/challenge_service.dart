@@ -19,7 +19,9 @@ class ChallengeService {
   ChallengeService(this._firestore, this._gamificationEngine);
 
   Future<void> _createOrUpdateChallengeProgress(
-      String userId, Challenge challenge) async {
+    String userId,
+    Challenge challenge,
+  ) async {
     final progressRef = _firestore
         .collection('users')
         .doc(userId)
@@ -55,7 +57,7 @@ class ChallengeService {
         .set(challenge.toJson(), SetOptions(merge: true));
     // Create progress tracker for the user
     await _createOrUpdateChallengeProgress(userId, challenge);
-    print("Generated daily challenge for user $userId.");
+    print('Generated daily challenge for user $userId.');
     return challenge;
   }
 
@@ -63,7 +65,8 @@ class ChallengeService {
   Future<Challenge> generateWeeklyChallenge(String userId) async {
     final today = DateTime.now();
     final weekStart = today.subtract(Duration(days: today.weekday - 1));
-    final challengeId = 'weekly_${weekStart.year}_${weekStart.month}_${weekStart.day}';
+    final challengeId =
+        'weekly_${weekStart.year}_${weekStart.month}_${weekStart.day}';
     final challenge = Challenge(
       id: challengeId,
       name: 'Weekly Warrior',
@@ -78,7 +81,7 @@ class ChallengeService {
         .doc(challenge.id)
         .set(challenge.toJson(), SetOptions(merge: true));
     await _createOrUpdateChallengeProgress(userId, challenge);
-    print("Generated weekly challenge for user $userId.");
+    print('Generated weekly challenge for user $userId.');
     return challenge;
   }
 
@@ -88,12 +91,13 @@ class ChallengeService {
     required String challengeId,
   }) async {
     try {
-      final doc = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('challenge_progress')
-          .doc(challengeId)
-          .get();
+      final doc =
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('challenge_progress')
+              .doc(challengeId)
+              .get();
       return doc.exists ? ChallengeProgress.fromJson(doc.data()!) : null;
     } catch (e) {
       print('Error getting challenge progress: $e');
@@ -130,10 +134,14 @@ class ChallengeService {
       await progressRef.update({'progress': newProgress});
 
       if (newProgress >= challenge.goal) {
-        await completeChallenge(userId: userId, challengeId: challengeId, challenge: challenge);
+        await completeChallenge(
+          userId: userId,
+          challengeId: challengeId,
+          challenge: challenge,
+        );
       }
     } catch (e) {
-      print("Error updating progress for challenge $challengeId: $e");
+      print('Error updating progress for challenge $challengeId: $e');
     }
   }
 
@@ -150,8 +158,11 @@ class ChallengeService {
         .doc(challengeId);
 
     try {
-      await progressRef.update({'completed': true, 'progress': challenge?.goal ?? FieldValue.increment(0)});
-      print("Completing challenge $challengeId for user $userId.");
+      await progressRef.update({
+        'completed': true,
+        'progress': challenge?.goal ?? FieldValue.increment(0),
+      });
+      print('Completing challenge $challengeId for user $userId.');
 
       await _gamificationEngine.awardPoints(
         userId: userId,
@@ -166,11 +177,11 @@ class ChallengeService {
         final InAppReview inAppReview = InAppReview.instance;
         if (await inAppReview.isAvailable()) {
           inAppReview.requestReview();
-          print("Requested in-app review after weekly challenge completion.");
+          print('Requested in-app review after weekly challenge completion.');
         }
       }
     } catch (e) {
-      print("Error completing challenge $challengeId: $e");
+      print('Error completing challenge $challengeId: $e');
     }
   }
 }

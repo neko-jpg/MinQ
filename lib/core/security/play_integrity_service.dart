@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 
 /// Play Integrity API サービス（改ざん対策）
 /// 
@@ -22,11 +22,11 @@ class PlayIntegrityService {
       // TODO: play_integrity パッケージを追加して実装
       // pubspec.yaml に追加: play_integrity: ^1.0.0
       
-      AppLogger.info('PlayIntegrityService initialized');
+      MinqLogger.instance.info('PlayIntegrityService initialized');
       _initialized = true;
     } catch (e, stack) {
-      AppLogger.error('Failed to initialize PlayIntegrityService', 
-        error: e, stackTrace: stack);
+      MinqLogger.instance.error('Failed to initialize PlayIntegrityService',
+        exception: e, stackTrace: stack);
     }
   }
 
@@ -49,8 +49,8 @@ class PlayIntegrityService {
 
       return IntegrityResult.notImplemented();
     } catch (e, stack) {
-      AppLogger.error('Failed to request integrity token',
-        error: e, stackTrace: stack);
+      MinqLogger.instance.error('Failed to request integrity token',
+        exception: e, stackTrace: stack);
       return IntegrityResult.error(e.toString());
     }
   }

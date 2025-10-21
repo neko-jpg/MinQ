@@ -160,7 +160,7 @@ class SpamDetector {
   Future<SpamCheckResult> check(String text, String userId) async {
     // 同じメッセージの連投チェック
     if (_isDuplicateMessage(text, userId)) {
-      return SpamCheckResult(
+      return const SpamCheckResult(
         isSpam: true,
         reason: 'Duplicate message',
         confidence: 1.0,
@@ -169,7 +169,7 @@ class SpamDetector {
 
     // 短時間での大量投稿チェック
     if (_isRapidPosting(userId)) {
-      return SpamCheckResult(
+      return const SpamCheckResult(
         isSpam: true,
         reason: 'Rapid posting',
         confidence: 0.9,
@@ -178,7 +178,7 @@ class SpamDetector {
 
     // URLスパムチェック
     if (_containsSuspiciousUrls(text)) {
-      return SpamCheckResult(
+      return const SpamCheckResult(
         isSpam: true,
         reason: 'Suspicious URLs',
         confidence: 0.8,
@@ -188,7 +188,7 @@ class SpamDetector {
     // メッセージ履歴を記録
     _recordMessage(userId);
 
-    return SpamCheckResult(
+    return const SpamCheckResult(
       isSpam: false,
       reason: '',
       confidence: 0.0,

@@ -3,22 +3,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/data/services/acr_music_tagging_service.dart';
+import 'package:minq/data/services/focus_music_service.dart';
 import 'package:minq/data/services/image_moderation_service.dart';
 import 'package:minq/data/services/photo_storage_service.dart';
-import 'package:minq/data/services/focus_music_service.dart';
-import 'package:minq/data/services/acr_music_tagging_service.dart';
 import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
-import 'package:minq/presentation/controllers/quest_log_controller.dart';
-import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
+import 'package:minq/presentation/controllers/quest_log_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -220,17 +219,19 @@ class _RecordForm extends ConsumerWidget {
     final questAsync = ref.watch(questByIdProvider(questId));
 
     return questAsync.when(
-      loading: () => Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
-        ),
-      ),
-      error: (error, _) => Center(
-        child: Text(
-          'クエスト情報の読み込みに失敗しました',
-          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
-        ),
-      ),
+      loading:
+          () => Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
+            ),
+          ),
+      error:
+          (error, _) => Center(
+            child: Text(
+              'クエスト情報の読み込みに失敗しました',
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+            ),
+          ),
       data: (quest) {
         if (quest == null) {
           return Center(

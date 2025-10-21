@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 
-import '../log/quest_log.dart';
-import '../quest/quest.dart';
+import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/domain/quest/quest.dart';
 
 class QuestRecommendation {
   QuestRecommendation({
@@ -34,16 +34,28 @@ class QuestRecommendationService {
     final streakByQuest = _buildStreakMap(logs);
     final categoryCounts = <String, int>{};
     for (final quest in quests) {
-      categoryCounts.update(quest.category, (value) => value + 1, ifAbsent: () => 1);
+      categoryCounts.update(
+        quest.category,
+        (value) => value + 1,
+        ifAbsent: () => 1,
+      );
     }
 
     final scored =
         quests.map((quest) {
-          final completionRate = completionsByQuest[quest.id]?.completionRate ?? 0;
+          final completionRate =
+              completionsByQuest[quest.id]?.completionRate ?? 0;
           final streak = streakByQuest[quest.id] ?? 0;
-          final recencyBoost = _recencyWeight(completionsByQuest[quest.id]?.lastCompletedAt, now);
-          final baseScore = (1 - completionRate) * 0.6 + recencyBoost + streak * 0.05;
-          final variance = _categoryDiversityWeight(quest.category, categoryCounts);
+          final recencyBoost = _recencyWeight(
+            completionsByQuest[quest.id]?.lastCompletedAt,
+            now,
+          );
+          final baseScore =
+              (1 - completionRate) * 0.6 + recencyBoost + streak * 0.05;
+          final variance = _categoryDiversityWeight(
+            quest.category,
+            categoryCounts,
+          );
           final totalScore = max(0.0, baseScore + variance);
           final reason = _buildReason(
             quest: quest,
@@ -68,7 +80,9 @@ class QuestRecommendationService {
     return grouped.map((key, entries) {
       entries.sort((a, b) => a.ts.compareTo(b.ts));
       final completedDays =
-          entries.map((e) => DateTime.utc(e.ts.year, e.ts.month, e.ts.day)).toSet();
+          entries
+              .map((e) => DateTime.utc(e.ts.year, e.ts.month, e.ts.day))
+              .toSet();
       final firstTs = entries.first.ts;
       final lastTs = entries.last.ts;
       final summary = _QuestCompletionSummary(
@@ -111,7 +125,10 @@ class QuestRecommendationService {
     return min(0.4, days * 0.05);
   }
 
-  double _categoryDiversityWeight(String category, Map<String, int> categoryCounts) {
+  double _categoryDiversityWeight(
+    String category,
+    Map<String, int> categoryCounts,
+  ) {
     final totalCategories = categoryCounts.length;
     if (totalCategories <= 1) {
       return 0;
@@ -142,7 +159,7 @@ class QuestRecommendationService {
       buffer.write('チームの連続達成が伸びています。');
     }
     if (streak >= 3) {
-      buffer.write(' 現在${streak}日連続で達成しています。');
+      buffer.write(' 現在$streak日連続で達成しています。');
     }
     return buffer.toString();
   }

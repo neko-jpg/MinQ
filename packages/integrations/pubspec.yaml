@@ -4,27 +4,27 @@ version: 0.1.0
 publish_to: 'none'
 
 environment:
-  sdk: ^3.7.2
-  flutter: '>=3.24.0'
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.10.0'
 
 dependencies:
+  collection: ^1.17.0
+  convert: ^3.1.0
+  crypto: ^3.0.0
   flutter:
     sdk: flutter
-  http: any
-  crypto: any
-  meta: any
-  collection: any
-  convert: any
-  json_annotation: any
-  http_parser: any
-  image: any
+  http: ^1.1.0
+  http_parser: ^4.0.0
+  image: ^4.0.0
+  json_annotation: ^4.8.0
+  meta: ^1.9.0
 
 dev_dependencies:
+  build_runner: ^2.4.0
   flutter_test:
     sdk: flutter
-  test: any
-  json_serializable: any
-  build_runner: any
+  json_serializable: ^6.7.0
+  test: ^1.24.0
   very_good_analysis: ^6.0.0
 
 flutter:

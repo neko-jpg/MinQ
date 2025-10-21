@@ -4,28 +4,28 @@ import 'package:minq/domain/habit_dna/habit_archetype.dart';
 
 // Predefined Archetypes
 final _archetypes = {
-  'the_planner': HabitArchetype(
+  'the_planner': const HabitArchetype(
     id: 'the_planner',
     name: 'The Planner',
     description: 'You thrive on structure and planning. Your habits are most successful when scheduled in advance.',
     strengths: ['Consistency', 'Forward-thinking', 'Organization'],
     challenges: ['Spontaneity', 'Adapting to unexpected changes'],
   ),
-  'the_sprinter': HabitArchetype(
+  'the_sprinter': const HabitArchetype(
     id: 'the_sprinter',
     name: 'The Sprinter',
     description: 'You work best in short, intense bursts of energy. You are great at starting new things but may lose momentum.',
     strengths: ['High energy', 'Initiative', 'Enthusiasm'],
     challenges: ['Long-term consistency', 'Pacing yourself'],
   ),
-  'the_marathoner': HabitArchetype(
+  'the_marathoner': const HabitArchetype(
     id: 'the_marathoner',
     name: 'The Marathoner',
     description: 'Slow and steady wins the race. You excel at building habits over the long term through consistent, daily effort.',
     strengths: ['Endurance', 'Patience', 'Reliability'],
     challenges: ['Getting started on new, big goals', 'Quick bursts of activity'],
   ),
-  'the_explorer': HabitArchetype(
+  'the_explorer': const HabitArchetype(
     id: 'the_explorer',
     name: 'The Explorer',
     description: 'You love variety and trying new things. You are motivated by novelty and may get bored with repetitive tasks.',
@@ -46,7 +46,7 @@ class HabitDNAService {
 
   /// Determines the user's habit archetype based on their behavior patterns.
   Future<HabitArchetype?> determineArchetype(String userId) async {
-    print("Determining habit archetype for user $userId.");
+    print('Determining habit archetype for user $userId.');
     try {
       final questLogsSnapshot = await _firestore
           .collection('users')
@@ -56,7 +56,7 @@ class HabitDNAService {
           .get();
 
       if (questLogsSnapshot.docs.length < 10) {
-        print("Not enough data to determine archetype.");
+        print('Not enough data to determine archetype.');
         return null; // Need at least 10 completed quests
       }
 
@@ -78,7 +78,7 @@ class HabitDNAService {
         return (varietyRatio > 0.5) ? _archetypes['the_sprinter'] : _archetypes['the_marathoner'];
       }
     } catch (e) {
-      print("Error determining archetype: $e");
+      print('Error determining archetype: $e');
       return null;
     }
   }
@@ -86,23 +86,23 @@ class HabitDNAService {
   /// Provides personalized strategies based on the user's archetype.
   List<String> getArchetypeStrategies(HabitArchetype archetype) {
     final strategies = <String>[];
-    strategies.add("You are The ${archetype.name}!");
+    strategies.add('You are The ${archetype.name}!');
     strategies.add("Strengths to leverage: ${archetype.strengths.join(', ')}.");
     strategies.add("Watch out for these challenges: ${archetype.challenges.join(', ')}.");
 
     // Add custom tips
     switch(archetype.id) {
       case 'the_planner':
-        strategies.add("Tip: Set aside time each Sunday to plan your quests for the week.");
+        strategies.add('Tip: Set aside time each Sunday to plan your quests for the week.');
         break;
       case 'the_sprinter':
-        strategies.add("Tip: Break down large goals into smaller, exciting challenges you can tackle in a day.");
+        strategies.add('Tip: Break down large goals into smaller, exciting challenges you can tackle in a day.');
         break;
       case 'the_marathoner':
          strategies.add("Tip: Don't be afraid of slow progress. Your consistency is your superpower.");
         break;
       case 'the_explorer':
-        strategies.add("Tip: Rotate your habits every few weeks to keep things fresh and exciting.");
+        strategies.add('Tip: Rotate your habits every few weeks to keep things fresh and exciting.');
         break;
     }
     return strategies;

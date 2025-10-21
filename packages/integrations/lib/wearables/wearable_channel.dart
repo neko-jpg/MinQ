@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 
 /// Bridge for Wear OS / Apple Watch quick progress sync.
 class WearableChannel {
+  /// Creates a new [WearableChannel].
   WearableChannel({MethodChannel? channel})
       : _channel = channel ?? const MethodChannel('miinq/wearables');
 
   final MethodChannel _channel;
 
+  /// Syncs a snapshot of the user's quests to the wearable.
   Future<void> syncSnapshot({
     required String userId,
     required List<Map<String, dynamic>> quests,
@@ -19,6 +21,7 @@ class WearableChannel {
     });
   }
 
+  /// Registers a quick action on the wearable.
   Future<void> registerQuickAction({
     required String questId,
     required String label,

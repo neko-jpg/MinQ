@@ -5,18 +5,12 @@ class WhatsNewScreen extends StatelessWidget {
   final String version;
   final List<WhatsNewItem> items;
 
-  const WhatsNewScreen({
-    super.key,
-    required this.version,
-    required this.items,
-  });
+  const WhatsNewScreen({super.key, required this.version, required this.items});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('新機能のご紹介'),
-      ),
+      appBar: AppBar(title: const Text('新機能のご紹介')),
       body: Column(
         children: [
           Padding(
@@ -75,10 +69,7 @@ class WhatsNewScreen extends StatelessWidget {
                 color: item.color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(
-                item.icon,
-                color: item.color,
-              ),
+              child: Icon(item.icon, color: item.color),
             ),
             const SizedBox(width: 16),
             Expanded(

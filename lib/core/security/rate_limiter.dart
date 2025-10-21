@@ -1,4 +1,3 @@
-import 'dart:collection';
 
 /// ユーザートークン制Rate Limiter
 /// 機能乱用対策

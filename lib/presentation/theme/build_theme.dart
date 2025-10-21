@@ -20,8 +20,6 @@ ThemeData buildTheme(MinqTheme tokens) {
     onError: tokens.onPrimary,
     surface: tokens.surface,
     onSurface: tokens.onSurface,
-    background: tokens.background,
-    onBackground: tokens.onSurface,
     outline: tokens.divider,
   );
 

@@ -72,34 +72,23 @@ class TextOverflowPolicy {
 /// テキストスタイル拡張 - オーバーフロー設定を簡単に適用
 extension TextStyleOverflow on TextStyle {
   /// タイトルスタイル
-  TextStyle get asTitle => copyWith(
-        overflow: TextOverflowPolicy.title,
-      );
+  TextStyle get asTitle => copyWith(overflow: TextOverflowPolicy.title);
 
   /// サブタイトルスタイル
-  TextStyle get asSubtitle => copyWith(
-        overflow: TextOverflowPolicy.subtitle,
-      );
+  TextStyle get asSubtitle => copyWith(overflow: TextOverflowPolicy.subtitle);
 
   /// 本文スタイル
-  TextStyle get asBody => copyWith(
-        overflow: TextOverflowPolicy.body,
-      );
+  TextStyle get asBody => copyWith(overflow: TextOverflowPolicy.body);
 
   /// 説明文スタイル
-  TextStyle get asDescription => copyWith(
-        overflow: TextOverflowPolicy.description,
-      );
+  TextStyle get asDescription =>
+      copyWith(overflow: TextOverflowPolicy.description);
 
   /// キャプションスタイル
-  TextStyle get asCaption => copyWith(
-        overflow: TextOverflowPolicy.caption,
-      );
+  TextStyle get asCaption => copyWith(overflow: TextOverflowPolicy.caption);
 
   /// ラベルスタイル
-  TextStyle get asLabel => copyWith(
-        overflow: TextOverflowPolicy.label,
-      );
+  TextStyle get asLabel => copyWith(overflow: TextOverflowPolicy.label);
 }
 
 /// 標準化されたテキストウィジェット

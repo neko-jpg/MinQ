@@ -2,14 +2,15 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:math' as math;
 
-import 'tflite_unified_ai_service.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service.dart';
 
 /// AIパーソナリティ診断サービス
 /// ユーザーの習慣データから性格タイプを分析し、最適な習慣を提案
 class PersonalityDiagnosisService {
   static PersonalityDiagnosisService? _instance;
-  static PersonalityDiagnosisService get instance => _instance ??= PersonalityDiagnosisService._();
-  
+  static PersonalityDiagnosisService get instance =>
+      _instance ??= PersonalityDiagnosisService._();
+
   PersonalityDiagnosisService._();
 
   final TFLiteUnifiedAIService _aiService = TFLiteUnifiedAIService.instance;
@@ -25,10 +26,13 @@ class PersonalityDiagnosisService {
 
     try {
       // データ分析
-      final behaviorAnalysis = _analyzeBehaviorPatterns(habitHistory, completionPatterns);
+      final behaviorAnalysis = _analyzeBehaviorPatterns(
+        habitHistory,
+        completionPatterns,
+      );
       final preferenceAnalysis = _analyzePreferences(preferences);
       final timeAnalysis = _analyzeTimePatterns(completionPatterns);
-      
+
       // アーキタイプの決定
       final archetype = await _determineArchetype(
         behaviorAnalysis,
@@ -38,13 +42,19 @@ class PersonalityDiagnosisService {
       );
 
       // 詳細分析の生成
-      final detailedAnalysis = await _generateDetailedAnalysis(archetype, behaviorAnalysis);
-      
+      final detailedAnalysis = await _generateDetailedAnalysis(
+        archetype,
+        behaviorAnalysis,
+      );
+
       // 相性分析
       final compatibility = _calculateCompatibility(archetype);
-      
+
       // 推奨習慣の生成
-      final recommendations = await _generateHabitRecommendations(archetype, behaviorAnalysis);
+      final recommendations = await _generateHabitRecommendations(
+        archetype,
+        behaviorAnalysis,
+      );
 
       return PersonalityDiagnosis(
         archetype: archetype,
@@ -69,16 +79,16 @@ class PersonalityDiagnosisService {
   ) {
     // 一貫性の分析
     final consistency = _calculateConsistency(completionPatterns);
-    
+
     // 多様性の分析
     final diversity = _calculateDiversity(habitHistory);
-    
+
     // 持続性の分析
     final persistence = _calculatePersistence(completionPatterns);
-    
+
     // 適応性の分析
     final adaptability = _calculateAdaptability(habitHistory);
-    
+
     // 社会性の分析
     final sociability = _calculateSociability(habitHistory);
 
@@ -113,7 +123,7 @@ class PersonalityDiagnosisService {
 
     final variance = totalVariance / values.length;
     final consistency = 1.0 - (variance / (mean + 1));
-    
+
     return consistency.clamp(0.0, 1.0);
   }
 
@@ -123,7 +133,7 @@ class PersonalityDiagnosisService {
 
     final categories = habitHistory.map((h) => h.category).toSet();
     final maxCategories = HabitCategory.values.length;
-    
+
     return (categories.length / maxCategories).clamp(0.0, 1.0);
   }
 
@@ -135,10 +145,12 @@ class PersonalityDiagnosisService {
     var currentStreak = 0;
     DateTime? lastDate;
 
-    final sortedPatterns = patterns..sort((a, b) => a.completedAt.compareTo(b.completedAt));
+    final sortedPatterns =
+        patterns..sort((a, b) => a.completedAt.compareTo(b.completedAt));
 
     for (final pattern in sortedPatterns) {
-      if (lastDate == null || pattern.completedAt.difference(lastDate).inDays == 1) {
+      if (lastDate == null ||
+          pattern.completedAt.difference(lastDate).inDays == 1) {
         currentStreak++;
       } else {
         if (currentStreak > 0) streaks.add(currentStreak);
@@ -146,7 +158,7 @@ class PersonalityDiagnosisService {
       }
       lastDate = pattern.completedAt;
     }
-    
+
     if (currentStreak > 0) streaks.add(currentStreak);
     if (streaks.isEmpty) return 0.5;
 
@@ -185,9 +197,12 @@ class PersonalityDiagnosisService {
   /// 好みの分析
   PreferenceAnalysis _analyzePreferences(UserPreferences preferences) {
     return PreferenceAnalysis(
-      morningPreference: preferences.preferredTimes.contains(TimeOfDay.morning) ? 1.0 : 0.0,
-      eveningPreference: preferences.preferredTimes.contains(TimeOfDay.evening) ? 1.0 : 0.0,
-      shortSessionPreference: preferences.preferredDuration.inMinutes <= 15 ? 1.0 : 0.0,
+      morningPreference:
+          preferences.preferredTimes.contains(TimeOfDay.morning) ? 1.0 : 0.0,
+      eveningPreference:
+          preferences.preferredTimes.contains(TimeOfDay.evening) ? 1.0 : 0.0,
+      shortSessionPreference:
+          preferences.preferredDuration.inMinutes <= 15 ? 1.0 : 0.0,
       challengePreference: preferences.difficultyPreference / 5.0,
       socialPreference: preferences.socialPreference ? 1.0 : 0.0,
     );
@@ -196,7 +211,7 @@ class PersonalityDiagnosisService {
   /// 時間パターンの分析
   TimeAnalysis _analyzeTimePatterns(List<CompletionPattern> patterns) {
     final hourCounts = <int, int>{};
-    
+
     for (final pattern in patterns) {
       final hour = pattern.completedAt.hour;
       hourCounts[hour] = (hourCounts[hour] ?? 0) + 1;
@@ -251,7 +266,12 @@ class PersonalityDiagnosisService {
       var score = 0.0;
 
       // 行動パターンによるスコア
-      score += _calculateArchetypeScore(archetype, behavior, preference, timeAnalysis);
+      score += _calculateArchetypeScore(
+        archetype,
+        behavior,
+        preference,
+        timeAnalysis,
+      );
 
       // アンケート結果による調整
       if (questionnaire != null) {
@@ -262,8 +282,8 @@ class PersonalityDiagnosisService {
     }
 
     // 最高スコアのアーキタイプを選択
-    final sortedScores = scores.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedScores =
+        scores.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     return sortedScores.first.key;
   }
@@ -277,82 +297,85 @@ class PersonalityDiagnosisService {
   ) {
     switch (archetype) {
       case HabitArchetype.disciplinedAchiever:
-        return behavior.consistency * 0.4 + 
-               behavior.persistence * 0.4 + 
-               preference.challengePreference * 0.2;
+        return behavior.consistency * 0.4 +
+            behavior.persistence * 0.4 +
+            preference.challengePreference * 0.2;
 
       case HabitArchetype.flexibleExplorer:
-        return behavior.diversity * 0.4 + 
-               behavior.adaptability * 0.4 + 
-               (1.0 - behavior.consistency) * 0.2;
+        return behavior.diversity * 0.4 +
+            behavior.adaptability * 0.4 +
+            (1.0 - behavior.consistency) * 0.2;
 
       case HabitArchetype.socialConnector:
-        return behavior.sociability * 0.5 + 
-               preference.socialPreference * 0.3 + 
-               behavior.diversity * 0.2;
+        return behavior.sociability * 0.5 +
+            preference.socialPreference * 0.3 +
+            behavior.diversity * 0.2;
 
       case HabitArchetype.mindfulReflector:
-        return timeAnalysis.morningRatio * 0.3 + 
-               timeAnalysis.eveningRatio * 0.3 + 
-               preference.shortSessionPreference * 0.4;
+        return timeAnalysis.morningRatio * 0.3 +
+            timeAnalysis.eveningRatio * 0.3 +
+            preference.shortSessionPreference * 0.4;
 
       case HabitArchetype.energeticOptimizer:
-        return behavior.persistence * 0.3 + 
-               behavior.adaptability * 0.3 + 
-               preference.challengePreference * 0.4;
+        return behavior.persistence * 0.3 +
+            behavior.adaptability * 0.3 +
+            preference.challengePreference * 0.4;
 
       case HabitArchetype.balancedHarmonizer:
-        return (behavior.consistency + behavior.diversity + behavior.sociability) / 3.0;
+        return (behavior.consistency +
+                behavior.diversity +
+                behavior.sociability) /
+            3.0;
 
       case HabitArchetype.creativeInnovator:
-        return behavior.diversity * 0.4 + 
-               behavior.adaptability * 0.4 + 
-               (1.0 - behavior.persistence) * 0.2;
+        return behavior.diversity * 0.4 +
+            behavior.adaptability * 0.4 +
+            (1.0 - behavior.persistence) * 0.2;
 
       case HabitArchetype.steadyBuilder:
-        return behavior.consistency * 0.5 + 
-               behavior.persistence * 0.3 + 
-               preference.shortSessionPreference * 0.2;
+        return behavior.consistency * 0.5 +
+            behavior.persistence * 0.3 +
+            preference.shortSessionPreference * 0.2;
 
       case HabitArchetype.analyticalPlanner:
-        return behavior.consistency * 0.3 + 
-               (1.0 - behavior.sociability) * 0.3 + 
-               preference.challengePreference * 0.4;
+        return behavior.consistency * 0.3 +
+            (1.0 - behavior.sociability) * 0.3 +
+            preference.challengePreference * 0.4;
 
       case HabitArchetype.adaptiveNavigator:
-        return behavior.adaptability * 0.5 + 
-               behavior.diversity * 0.3 + 
-               (1.0 - behavior.consistency) * 0.2;
+        return behavior.adaptability * 0.5 +
+            behavior.diversity * 0.3 +
+            (1.0 - behavior.consistency) * 0.2;
 
       case HabitArchetype.inspirationalLeader:
-        return behavior.sociability * 0.4 + 
-               behavior.persistence * 0.3 + 
-               preference.challengePreference * 0.3;
+        return behavior.sociability * 0.4 +
+            behavior.persistence * 0.3 +
+            preference.challengePreference * 0.3;
 
       case HabitArchetype.peacefulGardener:
-        return preference.shortSessionPreference * 0.4 + 
-               behavior.consistency * 0.3 + 
-               timeAnalysis.morningRatio * 0.3;
+        return preference.shortSessionPreference * 0.4 +
+            behavior.consistency * 0.3 +
+            timeAnalysis.morningRatio * 0.3;
 
       case HabitArchetype.dynamicChallenger:
-        return preference.challengePreference * 0.5 + 
-               behavior.persistence * 0.3 + 
-               behavior.adaptability * 0.2;
+        return preference.challengePreference * 0.5 +
+            behavior.persistence * 0.3 +
+            behavior.adaptability * 0.2;
 
       case HabitArchetype.wisdomSeeker:
-        return behavior.diversity * 0.4 + 
-               (1.0 - preference.socialPreference) * 0.3 + 
-               behavior.persistence * 0.3;
+        return behavior.diversity * 0.4 +
+            (1.0 - preference.socialPreference) * 0.3 +
+            behavior.persistence * 0.3;
 
       case HabitArchetype.joyfulCelebrator:
-        return behavior.sociability * 0.4 + 
-               behavior.diversity * 0.3 + 
-               (1.0 - behavior.consistency) * 0.3;
+        return behavior.sociability * 0.4 +
+            behavior.diversity * 0.3 +
+            (1.0 - behavior.consistency) * 0.3;
 
       case HabitArchetype.resilientSurvivor:
-        return behavior.persistence * 0.5 + 
-               behavior.adaptability * 0.3 + 
-               (1.0 - preference.socialPreference) * 0.2;
+        return behavior.persistence * 0.5 +
+            behavior.adaptability * 0.3 +
+            (1.0 - preference.socialPreference) * 0.2;
     }
   }
 
@@ -362,7 +385,7 @@ class PersonalityDiagnosisService {
     List<QuestionnaireAnswer> answers,
   ) {
     var score = 0.0;
-    
+
     for (final answer in answers) {
       final archetypeAnswers = _getArchetypeAnswers(archetype);
       if (archetypeAnswers.containsKey(answer.questionId)) {
@@ -372,7 +395,7 @@ class PersonalityDiagnosisService {
         }
       }
     }
-    
+
     return score;
   }
 
@@ -383,13 +406,13 @@ class PersonalityDiagnosisService {
       case HabitArchetype.disciplinedAchiever:
         return {
           'consistency': 4, // 一貫性を重視
-          'challenge': 4,   // 挑戦を好む
-          'planning': 4,    // 計画性がある
+          'challenge': 4, // 挑戦を好む
+          'planning': 4, // 計画性がある
         };
       case HabitArchetype.flexibleExplorer:
         return {
           'consistency': 2, // 一貫性より柔軟性
-          'variety': 4,     // 多様性を好む
+          'variety': 4, // 多様性を好む
           'spontaneity': 4, // 自発性がある
         };
       // 他のアーキタイプも同様に定義
@@ -491,26 +514,33 @@ class PersonalityDiagnosisService {
           maxTokens: 100,
         );
 
-        personalizedRecommendations.add(PersonalizedHabitRecommendation(
-          title: base.title,
-          description: base.description,
-          customization: customization.isNotEmpty ? customization : base.defaultCustomization,
-          difficulty: base.difficulty,
-          estimatedTime: base.estimatedTime,
-          category: base.category,
-          personalityFit: _calculatePersonalityFit(archetype, base),
-        ));
+        personalizedRecommendations.add(
+          PersonalizedHabitRecommendation(
+            title: base.title,
+            description: base.description,
+            customization:
+                customization.isNotEmpty
+                    ? customization
+                    : base.defaultCustomization,
+            difficulty: base.difficulty,
+            estimatedTime: base.estimatedTime,
+            category: base.category,
+            personalityFit: _calculatePersonalityFit(archetype, base),
+          ),
+        );
       } catch (e) {
         log('PersonalityDiagnosis: 習慣カスタマイズエラー - $e');
-        personalizedRecommendations.add(PersonalizedHabitRecommendation(
-          title: base.title,
-          description: base.description,
-          customization: base.defaultCustomization,
-          difficulty: base.difficulty,
-          estimatedTime: base.estimatedTime,
-          category: base.category,
-          personalityFit: _calculatePersonalityFit(archetype, base),
-        ));
+        personalizedRecommendations.add(
+          PersonalizedHabitRecommendation(
+            title: base.title,
+            description: base.description,
+            customization: base.defaultCustomization,
+            difficulty: base.difficulty,
+            estimatedTime: base.estimatedTime,
+            category: base.category,
+            personalityFit: _calculatePersonalityFit(archetype, base),
+          ),
+        );
       }
     }
 
@@ -518,7 +548,9 @@ class PersonalityDiagnosisService {
   }
 
   /// ベース推奨習慣の取得
-  List<BaseHabitRecommendation> _getBaseRecommendations(HabitArchetype archetype) {
+  List<BaseHabitRecommendation> _getBaseRecommendations(
+    HabitArchetype archetype,
+  ) {
     switch (archetype) {
       case HabitArchetype.disciplinedAchiever:
         return [
@@ -555,24 +587,32 @@ class PersonalityDiagnosisService {
   }
 
   /// パーソナリティ適合度の計算
-  double _calculatePersonalityFit(HabitArchetype archetype, BaseHabitRecommendation habit) {
+  double _calculatePersonalityFit(
+    HabitArchetype archetype,
+    BaseHabitRecommendation habit,
+  ) {
     // アーキタイプと習慣の相性を計算
     // 簡略化された実装
     return 0.8 + math.Random().nextDouble() * 0.2;
   }
 
   /// 相性の計算
-  Map<HabitArchetype, double> _calculateCompatibility(HabitArchetype userArchetype) {
+  Map<HabitArchetype, double> _calculateCompatibility(
+    HabitArchetype userArchetype,
+  ) {
     final compatibility = <HabitArchetype, double>{};
-    
+
     for (final archetype in HabitArchetype.values) {
       if (archetype == userArchetype) {
         compatibility[archetype] = 1.0;
       } else {
-        compatibility[archetype] = _getCompatibilityScore(userArchetype, archetype);
+        compatibility[archetype] = _getCompatibilityScore(
+          userArchetype,
+          archetype,
+        );
       }
     }
-    
+
     return compatibility;
   }
 
@@ -588,21 +628,24 @@ class PersonalityDiagnosisService {
       },
       // 他の組み合わせも定義
     };
-    
+
     return compatibilityMatrix[type1]?[type2] ?? 0.5;
   }
 
   /// 信頼度の計算
-  double _calculateConfidence(BehaviorAnalysis behavior, PreferenceAnalysis preference) {
+  double _calculateConfidence(
+    BehaviorAnalysis behavior,
+    PreferenceAnalysis preference,
+  ) {
     // データの豊富さと一貫性に基づいて信頼度を計算
     var confidence = 0.5; // ベース信頼度
-    
+
     // 行動データの一貫性が高いほど信頼度アップ
     confidence += behavior.consistency * 0.3;
-    
+
     // データの多様性があるほど信頼度アップ
     confidence += behavior.diversity * 0.2;
-    
+
     return confidence.clamp(0.0, 1.0);
   }
 
@@ -611,7 +654,8 @@ class PersonalityDiagnosisService {
     return PersonalityDiagnosis(
       archetype: HabitArchetype.balancedHarmonizer,
       confidence: 0.5,
-      detailedAnalysis: 'データが不足しているため、バランス型として診断しました。より多くの習慣データが蓄積されると、より正確な診断が可能になります。',
+      detailedAnalysis:
+          'データが不足しているため、バランス型として診断しました。より多くの習慣データが蓄積されると、より正確な診断が可能になります。',
       strengths: ['バランス感覚', '適応力', '柔軟性'],
       challenges: ['特化した強みの発見', '一貫性の維持'],
       recommendations: [
@@ -797,10 +841,7 @@ class QuestionnaireAnswer {
   final String questionId;
   final int selectedOption;
 
-  QuestionnaireAnswer({
-    required this.questionId,
-    required this.selectedOption,
-  });
+  QuestionnaireAnswer({required this.questionId, required this.selectedOption});
 }
 
 /// 習慣アーキタイプ
@@ -839,9 +880,4 @@ enum HabitCategory {
 }
 
 /// 時間帯
-enum TimeOfDay {
-  morning,
-  afternoon,
-  evening,
-  night,
-}
+enum TimeOfDay { morning, afternoon, evening, night }

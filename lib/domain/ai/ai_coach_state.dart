@@ -13,5 +13,6 @@ class AICoachState with _$AICoachState {
     required DateTime lastInteraction,
   }) = _AICoachState;
 
-  factory AICoachState.fromJson(Map<String, dynamic> json) => _$AICoachStateFromJson(json);
+  factory AICoachState.fromJson(Map<String, dynamic> json) =>
+      _$AICoachStateFromJson(json);
 }

@@ -33,7 +33,7 @@ class MicroCommitmentService {
       });
       print("Creating micro-quest '$title' for user $userId.");
     } catch (e) {
-      print("Error creating micro-quest: $e");
+      print('Error creating micro-quest: $e');
     }
   }
 
@@ -68,7 +68,7 @@ class MicroCommitmentService {
         return suggestion;
       }
     } catch (e) {
-      print("Error suggesting expansion for $microQuestName: $e");
+      print('Error suggesting expansion for $microQuestName: $e');
     }
     return null;
   }
@@ -85,6 +85,6 @@ class MicroCommitmentService {
     print("Suggestion: 'Feeling stuck on $failedQuestName? How about trying a 1-minute version instead?'");
 
     // For demonstration, we can directly create the micro-quest.
-    createMicroQuest(userId: userId, title: "1-minute $failedQuestName");
+    createMicroQuest(userId: userId, title: '1-minute $failedQuestName');
   }
 }

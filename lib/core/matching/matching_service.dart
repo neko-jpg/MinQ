@@ -1,4 +1,3 @@
-import 'dart:math';
 
 /// マッチングサービス
 class MatchingService {

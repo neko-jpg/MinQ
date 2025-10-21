@@ -45,29 +45,29 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.5, curve: Curves.easeInOut),
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeInOut),
+      ),
+    );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.2, 0.8, curve: Curves.elasticOut),
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.2, 0.8, curve: Curves.elasticOut),
+      ),
+    );
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.3, 1.0, curve: Curves.easeOutBack),
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.3, 1.0, curve: Curves.easeOutBack),
+      ),
+    );
   }
 
   void _dismiss() {
@@ -106,7 +106,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
                   ),
                 ),
               ),
-              
+
               // メインコンテンツ
               Center(
                 child: FadeTransition(
@@ -120,10 +120,9 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
                   ),
                 ),
               ),
-              
+
               // スポットライト効果（ターゲットがある場合）
-              if (widget.targetKey != null)
-                _buildSpotlight(theme),
+              if (widget.targetKey != null) _buildSpotlight(theme),
             ],
           );
         },
@@ -178,9 +177,9 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 説明文
           Text(
             widget.description,
@@ -189,23 +188,20 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
               height: 1.5,
             ),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // カスタムコンテンツ
           if (widget.customContent != null) ...[
             widget.customContent!,
             const SizedBox(height: 24),
           ],
-          
+
           // アクションボタン
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton(
-                onPressed: _dismiss,
-                child: const Text('スキップ'),
-              ),
+              TextButton(onPressed: _dismiss, child: const Text('スキップ')),
               const SizedBox(width: 12),
               ElevatedButton(
                 onPressed: _dismiss,
@@ -254,26 +250,28 @@ class SpotlightPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
 
-    final path = Path()
-      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..addRRect(RRect.fromRectAndRadius(
-        spotlightRect,
-        const Radius.circular(8),
-      ))
-      ..fillType = PathFillType.evenOdd;
+    final path =
+        Path()
+          ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
+          ..addRRect(
+            RRect.fromRectAndRadius(spotlightRect, const Radius.circular(8)),
+          )
+          ..fillType = PathFillType.evenOdd;
 
     canvas.drawPath(path, paint);
 
     // スポットライト周りのグロー効果
-    final glowPaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius);
+    final glowPaint =
+        Paint()
+          ..color = Colors.white.withOpacity(0.1)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius);
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -295,11 +293,7 @@ class StepByStepOverlay extends StatefulWidget {
   final List<GuideStep> steps;
   final VoidCallback? onComplete;
 
-  const StepByStepOverlay({
-    super.key,
-    required this.steps,
-    this.onComplete,
-  });
+  const StepByStepOverlay({super.key, required this.steps, this.onComplete});
 
   @override
   State<StepByStepOverlay> createState() => _StepByStepOverlayState();
@@ -349,16 +343,19 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: index <= _currentStepIndex
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                  color:
+                      index <= _currentStepIndex
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(
+                            context,
+                          ).colorScheme.outline.withOpacity(0.3),
                 ),
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // ナビゲーションボタン
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -371,14 +368,16 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
                 )
               else
                 const SizedBox.shrink(),
-              
+
               Text(
                 '${_currentStepIndex + 1} / ${widget.steps.length}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.7),
                 ),
               ),
-              
+
               TextButton.icon(
                 onPressed: _nextStep,
                 icon: Icon(
@@ -387,9 +386,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
                       : Icons.arrow_forward,
                 ),
                 label: Text(
-                  _currentStepIndex == widget.steps.length - 1
-                      ? '完了'
-                      : '次へ',
+                  _currentStepIndex == widget.steps.length - 1 ? '完了' : '次へ',
                 ),
               ),
             ],

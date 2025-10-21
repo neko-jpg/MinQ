@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:minq/domain/social/achievement_share.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// ソーシャルシェア機能を提供するサービス
 class SocialSharingService {
@@ -16,7 +17,7 @@ class SocialSharingService {
       if (imageFile == null) return false;
 
       final shareText = _generateShareText(achievement);
-      
+
       // シェア機能のシミュレーション（実際のシェアは後で実装）
       debugPrint('Achievement shared: $shareText');
       debugPrint('Image saved at: ${imageFile.path}');
@@ -35,7 +36,7 @@ class SocialSharingService {
       if (imageFile == null) return false;
 
       final shareText = _generateProgressShareText(progress);
-      
+
       // シェア機能のシミュレーション（実際のシェアは後で実装）
       debugPrint('Progress shared: $shareText');
       debugPrint('Image saved at: ${imageFile.path}');
@@ -56,19 +57,22 @@ class SocialSharingService {
 
       // 背景を描画
       final backgroundPaint = Paint()..color = const Color(0xFF4ECDC4);
-      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+      canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        backgroundPaint,
+      );
 
       // グラデーション背景
       final gradient = ui.Gradient.linear(
         const Offset(0, 0),
         Offset(size.width, size.height),
-        [
-          const Color(0xFF4ECDC4),
-          const Color(0xFF44A08D),
-        ],
+        [const Color(0xFF4ECDC4), const Color(0xFF44A08D)],
       );
       final gradientPaint = Paint()..shader = gradient;
-      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), gradientPaint);
+      canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        gradientPaint,
+      );
 
       // タイトルを描画
       final titlePainter = TextPainter(
@@ -89,10 +93,7 @@ class SocialSharingService {
       final descriptionPainter = TextPainter(
         text: TextSpan(
           text: achievement.description,
-          style: const TextStyle(
-            fontSize: 24,
-            color: Colors.white70,
-          ),
+          style: const TextStyle(fontSize: 24, color: Colors.white70),
         ),
         textDirection: TextDirection.ltr,
       );
@@ -102,7 +103,8 @@ class SocialSharingService {
       // 統計情報を描画
       final statsPainter = TextPainter(
         text: TextSpan(
-          text: '連続記録: ${achievement.currentStreak}日\n総クエスト: ${achievement.totalQuests}個',
+          text:
+              '連続記録: ${achievement.currentStreak}日\n総クエスト: ${achievement.totalQuests}個',
           style: const TextStyle(
             fontSize: 20,
             color: Colors.white,
@@ -130,12 +132,18 @@ class SocialSharingService {
       brandPainter.paint(canvas, Offset(size.width - 120, size.height - 60));
 
       final picture = recorder.endRecording();
-      final img = await picture.toImage(size.width.toInt(), size.height.toInt());
+      final img = await picture.toImage(
+        size.width.toInt(),
+        size.height.toInt(),
+      );
       final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
-      
+
       if (byteData == null) return null;
 
-      return await _saveImageToFile(byteData.buffer.asUint8List(), 'achievement_${achievement.achievementId}');
+      return await _saveImageToFile(
+        byteData.buffer.asUint8List(),
+        'achievement_${achievement.achievementId}',
+      );
     } catch (e) {
       debugPrint('Failed to generate achievement image: $e');
       return null;
@@ -153,13 +161,13 @@ class SocialSharingService {
       final gradient = ui.Gradient.linear(
         const Offset(0, 0),
         Offset(size.width, size.height),
-        [
-          const Color(0xFFFFD700),
-          const Color(0xFFFFA726),
-        ],
+        [const Color(0xFFFFD700), const Color(0xFFFFA726)],
       );
       final gradientPaint = Paint()..shader = gradient;
-      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), gradientPaint);
+      canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        gradientPaint,
+      );
 
       // メインタイトル
       final titlePainter = TextPainter(
@@ -189,7 +197,10 @@ class SocialSharingService {
         textDirection: TextDirection.ltr,
       );
       streakPainter.layout();
-      streakPainter.paint(canvas, Offset((size.width - streakPainter.width) / 2, 180));
+      streakPainter.paint(
+        canvas,
+        Offset((size.width - streakPainter.width) / 2, 180),
+      );
 
       // 「日連続」ラベル
       final daysPainter = TextPainter(
@@ -204,12 +215,16 @@ class SocialSharingService {
         textDirection: TextDirection.ltr,
       );
       daysPainter.layout();
-      daysPainter.paint(canvas, Offset((size.width - daysPainter.width) / 2, 320));
+      daysPainter.paint(
+        canvas,
+        Offset((size.width - daysPainter.width) / 2, 320),
+      );
 
       // その他の統計
       final statsPainter = TextPainter(
         text: TextSpan(
-          text: 'ベスト記録: ${progress.bestStreak}日\n総クエスト: ${progress.totalQuests}個\n今日完了: ${progress.completedToday}個',
+          text:
+              'ベスト記録: ${progress.bestStreak}日\n総クエスト: ${progress.totalQuests}個\n今日完了: ${progress.completedToday}個',
           style: const TextStyle(
             fontSize: 20,
             color: Colors.white,
@@ -220,7 +235,10 @@ class SocialSharingService {
         textAlign: TextAlign.center,
       );
       statsPainter.layout(maxWidth: size.width - 80);
-      statsPainter.paint(canvas, Offset((size.width - statsPainter.width) / 2, 400));
+      statsPainter.paint(
+        canvas,
+        Offset((size.width - statsPainter.width) / 2, 400),
+      );
 
       // MinQブランディング
       final brandPainter = TextPainter(
@@ -238,12 +256,18 @@ class SocialSharingService {
       brandPainter.paint(canvas, Offset(size.width - 100, size.height - 50));
 
       final picture = recorder.endRecording();
-      final img = await picture.toImage(size.width.toInt(), size.height.toInt());
+      final img = await picture.toImage(
+        size.width.toInt(),
+        size.height.toInt(),
+      );
       final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
-      
+
       if (byteData == null) return null;
 
-      return await _saveImageToFile(byteData.buffer.asUint8List(), 'progress_${DateTime.now().millisecondsSinceEpoch}');
+      return await _saveImageToFile(
+        byteData.buffer.asUint8List(),
+        'progress_${DateTime.now().millisecondsSinceEpoch}',
+      );
     } catch (e) {
       debugPrint('Failed to generate progress image: $e');
       return null;
@@ -254,7 +278,7 @@ class SocialSharingService {
   Future<File> _saveImageToFile(Uint8List imageBytes, String fileName) async {
     final directory = await getTemporaryDirectory();
     final shareDir = Directory('${directory.path}/$_shareDirectory');
-    
+
     if (!await shareDir.exists()) {
       await shareDir.create(recursive: true);
     }
@@ -295,9 +319,7 @@ class SocialSharingService {
       messages.add(progress.motivationalMessage!);
     }
 
-    messages.addAll([
-      '#MinQ #習慣化 #継続は力なり #毎日コツコツ',
-    ]);
+    messages.addAll(['#MinQ #習慣化 #継続は力なり #毎日コツコツ']);
 
     return messages.join('\n');
   }
@@ -307,7 +329,7 @@ class SocialSharingService {
     try {
       final directory = await getTemporaryDirectory();
       final shareDir = Directory('${directory.path}/$_shareDirectory');
-      
+
       if (await shareDir.exists()) {
         await shareDir.delete(recursive: true);
       }

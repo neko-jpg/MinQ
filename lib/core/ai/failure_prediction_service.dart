@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:minq/core/ai/tflite_unified_ai_service.dart';
 import 'package:minq/data/repositories/quest_log_repository.dart';
@@ -23,10 +22,10 @@ class FailurePredictionService {
     required QuestLogRepository questLogRepository,
     required TFLiteUnifiedAIService aiService,
     required AnalyticsService analytics,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _questLogRepository = questLogRepository,
-        _aiService = aiService,
-        _analytics = analytics;
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _questLogRepository = questLogRepository,
+       _aiService = aiService,
+       _analytics = analytics;
 
   /// 失敗リスクを予測
   Future<FailurePredictionResult> predictFailureRisk({
@@ -36,26 +35,26 @@ class FailurePredictionService {
   }) async {
     try {
       targetDate ??= DateTime.now();
-      
+
       // 習慣分析データを取得
       final analysis = await _getHabitAnalysis(userId, habitId);
-      
+
       // 予測スコアを計算
       final predictionScore = await _calculatePredictionScore(
         analysis,
         targetDate,
       );
-      
+
       // リスクレベルを判定
       final riskLevel = _determineRiskLevel(predictionScore);
-      
+
       // 改善提案を生成
       final suggestions = await _generateSuggestions(
         analysis,
         riskLevel,
         targetDate,
       );
-      
+
       // 予測結果を保存
       final prediction = FailurePredictionModel(
         id: _generatePredictionId(),
@@ -64,9 +63,9 @@ class FailurePredictionService {
         predictionScore: predictionScore,
         createdAt: DateTime.now(),
       );
-      
+
       await _savePrediction(prediction);
-      
+
       // 分析結果を記録
       await _analytics.logEvent(
         'failure_prediction_generated',
@@ -77,14 +76,14 @@ class FailurePredictionService {
           'risk_level': riskLevel.name,
         },
       );
-      
+
       return FailurePredictionResult(
         prediction: prediction,
         riskLevel: riskLevel,
         suggestions: suggestions,
         analysis: analysis,
       );
-    } catch (e, stack) {
+    } catch (e) {
       await _analytics.logError('failure_prediction_failed', e.toString());
       rethrow;
     }
@@ -93,25 +92,30 @@ class FailurePredictionService {
   /// 習慣分析データを取得
   Future<HabitAnalysis> _getHabitAnalysis(String userId, String habitId) async {
     // 既存の分析データを取得
-    final doc = await _firestore
-        .collection('habit_analyses')
-        .doc('${userId}_$habitId')
-        .get();
-    
+    final doc =
+        await _firestore
+            .collection('habit_analyses')
+            .doc('${userId}_$habitId')
+            .get();
+
     if (doc.exists) {
       return HabitAnalysis.fromJson(doc.data()!);
     }
-    
+
     // 分析データが存在しない場合は新規作成
     return await _createHabitAnalysis(userId, habitId);
   }
 
   /// 新規習慣分析を作成
-  Future<HabitAnalysis> _createHabitAnalysis(String userId, String habitId) async {
+  Future<HabitAnalysis> _createHabitAnalysis(
+    String userId,
+    String habitId,
+  ) async {
     // クエストログを取得
     final logs = await _questLogRepository.getQuestLogs(userId);
-    final habitLogs = logs.where((log) => log.questId.toString() == habitId).toList();
-    
+    final habitLogs =
+        logs.where((log) => log.questId.toString() == habitId).toList();
+
     if (habitLogs.isEmpty) {
       // データが不足している場合のデフォルト分析
       return HabitAnalysis(
@@ -124,16 +128,16 @@ class FailurePredictionService {
         lastUpdated: DateTime.now(),
       );
     }
-    
+
     // 実際のデータから分析を計算
     final analysis = _calculateAnalysisFromLogs(habitLogs, userId, habitId);
-    
+
     // Firestoreに保存
     await _firestore
         .collection('habit_analyses')
         .doc(analysis.id)
         .set(analysis.toJson());
-    
+
     return analysis;
   }
 
@@ -146,28 +150,42 @@ class FailurePredictionService {
     final totalLogs = logs.length;
     final successfulLogs = logs.where((log) => log.isCompleted).length;
     final successRate = totalLogs > 0 ? successfulLogs / totalLogs : 0.5;
-    
+
     // 曜日別成功率を計算
     final successByDay = <String, double>{};
-    final dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    
+    final dayNames = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+
     for (final dayName in dayNames) {
       final dayIndex = dayNames.indexOf(dayName) + 1;
-      final dayLogs = logs.where((log) => log.completedAt.weekday == dayIndex).toList();
+      final dayLogs =
+          logs.where((log) => log.completedAt.weekday == dayIndex).toList();
       final daySuccessful = dayLogs.where((log) => log.isCompleted).length;
-      successByDay[dayName] = dayLogs.isNotEmpty ? daySuccessful / dayLogs.length : 0.5;
+      successByDay[dayName] =
+          dayLogs.isNotEmpty ? daySuccessful / dayLogs.length : 0.5;
     }
-    
+
     // 時間帯別成功率を計算
     final successByTime = <String, double>{};
     final timeSlots = ['Morning', 'Afternoon', 'Evening', 'Night'];
-    
+
     for (final timeSlot in timeSlots) {
-      final timeLogs = logs.where((log) => _getTimeSlot(log.completedAt) == timeSlot).toList();
+      final timeLogs =
+          logs
+              .where((log) => _getTimeSlot(log.completedAt) == timeSlot)
+              .toList();
       final timeSuccessful = timeLogs.where((log) => log.isCompleted).length;
-      successByTime[timeSlot] = timeLogs.isNotEmpty ? timeSuccessful / timeLogs.length : 0.5;
+      successByTime[timeSlot] =
+          timeLogs.isNotEmpty ? timeSuccessful / timeLogs.length : 0.5;
     }
-    
+
     return HabitAnalysis(
       id: '${userId}_$habitId',
       userId: userId,
@@ -186,51 +204,54 @@ class FailurePredictionService {
   ) async {
     // 基本成功率
     double baseScore = 1.0 - analysis.successRate;
-    
+
     // 曜日による調整
     final dayName = _getDayName(targetDate.weekday);
     final daySuccessRate = analysis.successByDay[dayName] ?? 0.5;
     final dayAdjustment = 1.0 - daySuccessRate;
-    
+
     // 時間帯による調整
     final timeSlot = _getTimeSlot(targetDate);
     final timeSuccessRate = analysis.successByTime[timeSlot] ?? 0.5;
     final timeAdjustment = 1.0 - timeSuccessRate;
-    
+
     // 最近のトレンドを考慮
     final trendAdjustment = await _calculateTrendAdjustment(analysis);
-    
+
     // 季節性を考慮
     final seasonalAdjustment = _calculateSeasonalAdjustment(targetDate);
-    
+
     // 総合スコアを計算（重み付き平均）
-    final totalScore = (baseScore * 0.4) +
-                      (dayAdjustment * 0.25) +
-                      (timeAdjustment * 0.2) +
-                      (trendAdjustment * 0.1) +
-                      (seasonalAdjustment * 0.05);
-    
+    final totalScore =
+        (baseScore * 0.4) +
+        (dayAdjustment * 0.25) +
+        (timeAdjustment * 0.2) +
+        (trendAdjustment * 0.1) +
+        (seasonalAdjustment * 0.05);
+
     return totalScore.clamp(0.0, 1.0);
   }
 
   /// トレンド調整を計算
   Future<double> _calculateTrendAdjustment(HabitAnalysis analysis) async {
     // 最近7日間のトレンドを分析
-    final recentDays = 7;
-    final cutoffDate = DateTime.now().subtract(Duration(days: recentDays));
-    
+    const recentDays = 7;
+    final cutoffDate = DateTime.now().subtract(
+      const Duration(days: recentDays),
+    );
+
     try {
       // 最近のログを取得（簡略化）
       final recentSuccessRate = analysis.successRate; // 実際は最近のデータを計算
       final overallSuccessRate = analysis.successRate;
-      
+
       // トレンドが下降している場合はリスクが高い
       if (recentSuccessRate < overallSuccessRate) {
         return 0.3; // リスク増加
       } else if (recentSuccessRate > overallSuccessRate) {
         return -0.2; // リスク減少
       }
-      
+
       return 0.0; // 変化なし
     } catch (e) {
       return 0.0; // エラー時はニュートラル
@@ -240,17 +261,17 @@ class FailurePredictionService {
   /// 季節性調整を計算
   double _calculateSeasonalAdjustment(DateTime date) {
     final month = date.month;
-    
+
     // 1月（新年の決意）、9月（新学期）はモチベーションが高い
     if (month == 1 || month == 9) {
       return -0.1; // リスク減少
     }
-    
+
     // 12月（年末）、8月（夏休み）はモチベーションが低い
     if (month == 12 || month == 8) {
       return 0.1; // リスク増加
     }
-    
+
     return 0.0; // 通常
   }
 
@@ -272,16 +293,19 @@ class FailurePredictionService {
     DateTime targetDate,
   ) async {
     final suggestions = <FailureSuggestion>[];
-    
+
     try {
       // AI提案を生成
       final aiSuggestions = await _generateAISuggestions(analysis, riskLevel);
       suggestions.addAll(aiSuggestions);
-      
+
       // ルールベース提案を追加
-      final ruleSuggestions = _generateRuleBasedSuggestions(analysis, targetDate);
+      final ruleSuggestions = _generateRuleBasedSuggestions(
+        analysis,
+        targetDate,
+      );
       suggestions.addAll(ruleSuggestions);
-      
+
       // 重複を除去し、優先度順にソート
       return _deduplicateAndSort(suggestions);
     } catch (e) {
@@ -296,13 +320,13 @@ class FailurePredictionService {
     FailureRiskLevel riskLevel,
   ) async {
     final prompt = _buildSuggestionPrompt(analysis, riskLevel);
-    
+
     try {
       final response = await _aiService.generateHabitSuggestion(
         habitData: analysis.toJson(),
         context: prompt,
       );
-      
+
       return _parseSuggestionsFromAI(response);
     } catch (e) {
       // AI生成に失敗した場合は空のリストを返す
@@ -316,49 +340,56 @@ class FailurePredictionService {
     DateTime targetDate,
   ) {
     final suggestions = <FailureSuggestion>[];
-    
+
     // 曜日別の提案
     final dayName = _getDayName(targetDate.weekday);
     final daySuccessRate = analysis.successByDay[dayName] ?? 0.5;
-    
+
     if (daySuccessRate < 0.5) {
-      suggestions.add(FailureSuggestion(
-        id: 'day_specific',
-        type: SuggestionType.timing,
-        title: '${_getDayDisplayName(dayName)}は要注意',
-        description: '${_getDayDisplayName(dayName)}の成功率が低めです。特別な準備をしましょう。',
-        priority: SuggestionPriority.high,
-        actionable: true,
-      ));
+      suggestions.add(
+        FailureSuggestion(
+          id: 'day_specific',
+          type: SuggestionType.timing,
+          title: '${_getDayDisplayName(dayName)}は要注意',
+          description: '${_getDayDisplayName(dayName)}の成功率が低めです。特別な準備をしましょう。',
+          priority: SuggestionPriority.high,
+          actionable: true,
+        ),
+      );
     }
-    
+
     // 時間帯別の提案
     final timeSlot = _getTimeSlot(targetDate);
     final timeSuccessRate = analysis.successByTime[timeSlot] ?? 0.5;
-    
+
     if (timeSuccessRate < 0.5) {
-      suggestions.add(FailureSuggestion(
-        id: 'time_specific',
-        type: SuggestionType.timing,
-        title: '${_getTimeDisplayName(timeSlot)}の対策',
-        description: '${_getTimeDisplayName(timeSlot)}の成功率が低めです。時間を変更することを検討してみてください。',
-        priority: SuggestionPriority.medium,
-        actionable: true,
-      ));
+      suggestions.add(
+        FailureSuggestion(
+          id: 'time_specific',
+          type: SuggestionType.timing,
+          title: '${_getTimeDisplayName(timeSlot)}の対策',
+          description:
+              '${_getTimeDisplayName(timeSlot)}の成功率が低めです。時間を変更することを検討してみてください。',
+          priority: SuggestionPriority.medium,
+          actionable: true,
+        ),
+      );
     }
-    
+
     // 全体的な成功率による提案
     if (analysis.successRate < 0.3) {
-      suggestions.add(FailureSuggestion(
-        id: 'overall_low',
-        type: SuggestionType.strategy,
-        title: '習慣を簡単にしましょう',
-        description: '成功率が低いようです。習慣をより小さく、簡単にすることから始めてみませんか？',
-        priority: SuggestionPriority.high,
-        actionable: true,
-      ));
+      suggestions.add(
+        const FailureSuggestion(
+          id: 'overall_low',
+          type: SuggestionType.strategy,
+          title: '習慣を簡単にしましょう',
+          description: '成功率が低いようです。習慣をより小さく、簡単にすることから始めてみませんか？',
+          priority: SuggestionPriority.high,
+          actionable: true,
+        ),
+      );
     }
-    
+
     return suggestions;
   }
 
@@ -366,33 +397,42 @@ class FailurePredictionService {
   List<FailureSuggestion> _parseSuggestionsFromAI(String aiResponse) {
     // 簡略化された解析（実際はより高度な自然言語処理を使用）
     final suggestions = <FailureSuggestion>[];
-    
+
     if (aiResponse.contains('時間') || aiResponse.contains('タイミング')) {
-      suggestions.add(FailureSuggestion(
-        id: 'ai_timing',
-        type: SuggestionType.timing,
-        title: 'タイミングの最適化',
-        description: aiResponse.length > 100 ? aiResponse.substring(0, 100) + '...' : aiResponse,
-        priority: SuggestionPriority.medium,
-        actionable: true,
-      ));
+      suggestions.add(
+        FailureSuggestion(
+          id: 'ai_timing',
+          type: SuggestionType.timing,
+          title: 'タイミングの最適化',
+          description:
+              aiResponse.length > 100
+                  ? '${aiResponse.substring(0, 100)}...'
+                  : aiResponse,
+          priority: SuggestionPriority.medium,
+          actionable: true,
+        ),
+      );
     }
-    
+
     return suggestions;
   }
 
   /// 提案の重複除去とソート
-  List<FailureSuggestion> _deduplicateAndSort(List<FailureSuggestion> suggestions) {
+  List<FailureSuggestion> _deduplicateAndSort(
+    List<FailureSuggestion> suggestions,
+  ) {
     // IDで重複除去
     final uniqueSuggestions = <String, FailureSuggestion>{};
     for (final suggestion in suggestions) {
       uniqueSuggestions[suggestion.id] = suggestion;
     }
-    
+
     // 優先度順にソート
     final sortedSuggestions = uniqueSuggestions.values.toList();
-    sortedSuggestions.sort((a, b) => b.priority.index.compareTo(a.priority.index));
-    
+    sortedSuggestions.sort(
+      (a, b) => b.priority.index.compareTo(a.priority.index),
+    );
+
     return sortedSuggestions.take(5).toList(); // 最大5個まで
   }
 
@@ -405,33 +445,42 @@ class FailurePredictionService {
   }
 
   /// ユーザーの最新予測を取得
-  Future<List<FailurePredictionResult>> getRecentPredictions(String userId) async {
+  Future<List<FailurePredictionResult>> getRecentPredictions(
+    String userId,
+  ) async {
     try {
-      final snapshot = await _firestore
-          .collection('failure_predictions')
-          .where('userId', isEqualTo: userId)
-          .orderBy('createdAt', descending: true)
-          .limit(10)
-          .get();
-      
+      final snapshot =
+          await _firestore
+              .collection('failure_predictions')
+              .where('userId', isEqualTo: userId)
+              .orderBy('createdAt', descending: true)
+              .limit(10)
+              .get();
+
       final results = <FailurePredictionResult>[];
-      
+
       for (final doc in snapshot.docs) {
         final prediction = FailurePredictionModel.fromJson(doc.data());
         final analysis = await _getHabitAnalysis(userId, prediction.habitId);
         final riskLevel = _determineRiskLevel(prediction.predictionScore);
-        final suggestions = await _generateSuggestions(analysis, riskLevel, DateTime.now());
-        
-        results.add(FailurePredictionResult(
-          prediction: prediction,
-          riskLevel: riskLevel,
-          suggestions: suggestions,
-          analysis: analysis,
-        ));
+        final suggestions = await _generateSuggestions(
+          analysis,
+          riskLevel,
+          DateTime.now(),
+        );
+
+        results.add(
+          FailurePredictionResult(
+            prediction: prediction,
+            riskLevel: riskLevel,
+            suggestions: suggestions,
+            analysis: analysis,
+          ),
+        );
       }
-      
+
       return results;
-    } catch (e, stack) {
+    } catch (e) {
       await _analytics.logError('get_recent_predictions_failed', e.toString());
       return [];
     }
@@ -440,14 +489,15 @@ class FailurePredictionService {
   /// 高リスク習慣を取得
   Future<List<String>> getHighRiskHabits(String userId) async {
     try {
-      final snapshot = await _firestore
-          .collection('failure_predictions')
-          .where('userId', isEqualTo: userId)
-          .where('predictionScore', isGreaterThan: 0.7)
-          .orderBy('predictionScore', descending: true)
-          .limit(5)
-          .get();
-      
+      final snapshot =
+          await _firestore
+              .collection('failure_predictions')
+              .where('userId', isEqualTo: userId)
+              .where('predictionScore', isGreaterThan: 0.7)
+              .orderBy('predictionScore', descending: true)
+              .limit(5)
+              .get();
+
       return snapshot.docs
           .map((doc) => doc.data()['habitId'] as String)
           .toList();
@@ -461,7 +511,10 @@ class FailurePredictionService {
     return '${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(1000)}';
   }
 
-  String _buildSuggestionPrompt(HabitAnalysis analysis, FailureRiskLevel riskLevel) {
+  String _buildSuggestionPrompt(
+    HabitAnalysis analysis,
+    FailureRiskLevel riskLevel,
+  ) {
     return '''
 習慣分析データ:
 - 全体成功率: ${(analysis.successRate * 100).toStringAsFixed(1)}%
@@ -474,7 +527,15 @@ class FailurePredictionService {
   }
 
   String _getDayName(int weekday) {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
     return days[weekday - 1];
   }
 
@@ -522,12 +583,7 @@ class FailurePredictionService {
   }
 
   Map<String, double> _getDefaultSuccessByTime() {
-    return {
-      'Morning': 0.6,
-      'Afternoon': 0.5,
-      'Evening': 0.4,
-      'Night': 0.3,
-    };
+    return {'Morning': 0.6, 'Afternoon': 0.5, 'Evening': 0.4, 'Night': 0.3};
   }
 }
 
@@ -547,11 +603,7 @@ class FailurePredictionResult {
 }
 
 /// 失敗リスクレベル
-enum FailureRiskLevel {
-  low,
-  medium,
-  high,
-}
+enum FailureRiskLevel { low, medium, high }
 
 /// 失敗予防提案
 class FailureSuggestion {
@@ -573,16 +625,7 @@ class FailureSuggestion {
 }
 
 /// 提案タイプ
-enum SuggestionType {
-  timing,
-  strategy,
-  environment,
-  motivation,
-}
+enum SuggestionType { timing, strategy, environment, motivation }
 
 /// 提案優先度
-enum SuggestionPriority {
-  low,
-  medium,
-  high,
-}
+enum SuggestionPriority { low, medium, high }

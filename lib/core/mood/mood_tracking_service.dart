@@ -34,9 +34,9 @@ class MoodTrackingService {
           .collection('mood_logs')
           .doc(moodState.id)
           .set(moodState.toJson());
-      print("Recorded mood for user $userId: $mood ($rating/5)");
+      print('Recorded mood for user $userId: $mood ($rating/5)');
     } catch (e) {
-      print("Error recording mood: $e");
+      print('Error recording mood: $e');
     }
   }
 
@@ -60,7 +60,7 @@ class MoodTrackingService {
           .get();
 
       if (moodLogsSnapshot.docs.isEmpty || questLogsSnapshot.docs.isEmpty) {
-        print("Not enough data to analyze correlation.");
+        print('Not enough data to analyze correlation.');
         return;
       }
 
@@ -107,10 +107,10 @@ class MoodTrackingService {
         'lastCorrelationAnalysis': FieldValue.serverTimestamp(),
       });
 
-      print("Successfully analyzed and saved mood-habit correlation for user $userId.");
+      print('Successfully analyzed and saved mood-habit correlation for user $userId.');
 
     } catch (e) {
-      print("Error analyzing mood-habit correlation: $e");
+      print('Error analyzing mood-habit correlation: $e');
     }
   }
 }

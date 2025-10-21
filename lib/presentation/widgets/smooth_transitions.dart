@@ -10,11 +10,7 @@ class SmoothTransitions {
     Duration duration = const Duration(milliseconds: 300),
     Curve curve = Curves.easeInOut,
   }) {
-    return _FadeTransition(
-      duration: duration,
-      curve: curve,
-      child: child,
-    );
+    return _FadeTransition(duration: duration, curve: curve, child: child);
   }
 
   /// スライドトランジション
@@ -76,7 +72,13 @@ class SmoothTransitions {
   }) {
     return Hero(
       tag: tag,
-      flightShuttleBuilder: (context, animation, direction, fromContext, toContext) {
+      flightShuttleBuilder: (
+        context,
+        animation,
+        direction,
+        fromContext,
+        toContext,
+      ) {
         return AnimatedBuilder(
           animation: animation,
           builder: (context, child) {
@@ -131,10 +133,7 @@ class SmoothTransitions {
 
     switch (type) {
       case TransitionType.fade:
-        return FadeTransition(
-          opacity: curvedAnimation,
-          child: child,
-        );
+        return FadeTransition(opacity: curvedAnimation, child: child);
 
       case TransitionType.slide:
         return SlideTransition(
@@ -146,16 +145,10 @@ class SmoothTransitions {
         );
 
       case TransitionType.scale:
-        return ScaleTransition(
-          scale: curvedAnimation,
-          child: child,
-        );
+        return ScaleTransition(scale: curvedAnimation, child: child);
 
       case TransitionType.rotation:
-        return RotationTransition(
-          turns: curvedAnimation,
-          child: child,
-        );
+        return RotationTransition(turns: curvedAnimation, child: child);
 
       case TransitionType.slideUp:
         return SlideTransition(
@@ -179,7 +172,10 @@ class SmoothTransitions {
         return ScaleTransition(
           scale: curvedAnimation,
           child: RotationTransition(
-            turns: Tween<double>(begin: 0.0, end: 0.125).animate(curvedAnimation),
+            turns: Tween<double>(
+              begin: 0.0,
+              end: 0.125,
+            ).animate(curvedAnimation),
             child: child,
           ),
         );
@@ -236,10 +232,7 @@ class _FadeTransitionState extends State<_FadeTransition>
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _animation,
-      child: widget.child,
-    );
+    return FadeTransition(opacity: _animation, child: widget.child);
   }
 }
 
@@ -287,10 +280,7 @@ class _SlideTransitionState extends State<_SlideTransition>
 
   @override
   Widget build(BuildContext context) {
-    return SlideTransition(
-      position: _animation,
-      child: widget.child,
-    );
+    return SlideTransition(position: _animation, child: widget.child);
   }
 }
 
@@ -338,10 +328,7 @@ class _ScaleTransitionState extends State<_ScaleTransition>
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _animation,
-      child: widget.child,
-    );
+    return ScaleTransition(scale: _animation, child: widget.child);
   }
 }
 
@@ -388,10 +375,7 @@ class _RotationTransitionState extends State<_RotationTransition>
 
   @override
   Widget build(BuildContext context) {
-    return RotationTransition(
-      turns: _animation,
-      child: widget.child,
-    );
+    return RotationTransition(turns: _animation, child: widget.child);
   }
 }
 
@@ -431,15 +415,14 @@ class _StagedAnimationState extends State<StagedAnimation>
   void _initializeAnimations() {
     _controllers = List.generate(
       widget.children.length,
-      (index) => AnimationController(
-        duration: widget.itemDuration,
-        vsync: this,
-      ),
+      (index) =>
+          AnimationController(duration: widget.itemDuration, vsync: this),
     );
 
-    _animations = _controllers.map((controller) {
-      return CurvedAnimation(parent: controller, curve: widget.curve);
-    }).toList();
+    _animations =
+        _controllers.map((controller) {
+          return CurvedAnimation(parent: controller, curve: widget.curve);
+        }).toList();
   }
 
   void _startAnimations() {
@@ -463,12 +446,8 @@ class _StagedAnimationState extends State<StagedAnimation>
   @override
   Widget build(BuildContext context) {
     return widget.direction == Axis.vertical
-        ? Column(
-            children: _buildAnimatedChildren(),
-          )
-        : Row(
-            children: _buildAnimatedChildren(),
-          );
+        ? Column(children: _buildAnimatedChildren())
+        : Row(children: _buildAnimatedChildren());
   }
 
   List<Widget> _buildAnimatedChildren() {
@@ -477,9 +456,10 @@ class _StagedAnimationState extends State<StagedAnimation>
         animation: _animations[index],
         builder: (context, child) {
           return Transform.translate(
-            offset: widget.direction == Axis.vertical
-                ? Offset(0, 50 * (1 - _animations[index].value))
-                : Offset(50 * (1 - _animations[index].value), 0),
+            offset:
+                widget.direction == Axis.vertical
+                    ? Offset(0, 50 * (1 - _animations[index].value))
+                    : Offset(50 * (1 - _animations[index].value), 0),
             child: Opacity(
               opacity: _animations[index].value,
               child: widget.children[index],
@@ -581,9 +561,10 @@ class _ParallaxWidgetState extends State<ParallaxWidget> {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: widget.direction == Axis.vertical
-          ? Offset(0, -_offset)
-          : Offset(-_offset, 0),
+      offset:
+          widget.direction == Axis.vertical
+              ? Offset(0, -_offset)
+              : Offset(-_offset, 0),
       child: widget.child,
     );
   }

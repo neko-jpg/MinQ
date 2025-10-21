@@ -3,7 +3,7 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'color_tokens.dart';
+import 'package:minq/presentation/theme/color_tokens.dart';
 
 class MinqTheme extends ThemeExtension<MinqTheme> {
   const MinqTheme({

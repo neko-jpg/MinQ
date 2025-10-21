@@ -52,7 +52,10 @@ void main() {
       documentsDirectoryBuilder: () async => tempDir,
     );
 
-    final result = await service.captureAndSanitize(ownerUid: 'user123', questId: 7);
+    final result = await service.captureAndSanitize(
+      ownerUid: 'user123',
+      questId: 7,
+    );
 
     expect(result.hasFile, isTrue);
     expect(File(result.path).existsSync(), isTrue);
@@ -79,7 +82,10 @@ void main() {
       moderationService: const ImageModerationService(),
     );
 
-    final result = await service.captureAndSanitize(ownerUid: 'user123', questId: 8);
+    final result = await service.captureAndSanitize(
+      ownerUid: 'user123',
+      questId: 8,
+    );
 
     expect(result.moderationVerdict, PhotoModerationVerdict.tooDark);
   });

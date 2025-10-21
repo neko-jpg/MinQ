@@ -16,7 +16,8 @@ class PairRepository {
   final _random = Random();
 
   Stream<Pair?> getPairStreamForUser(String uid) {
-    final assignmentStream = _firestore.collection('pair_assignments').doc(uid).snapshots();
+    final assignmentStream =
+        _firestore.collection('pair_assignments').doc(uid).snapshots();
 
     return assignmentStream.asyncMap((assignmentSnap) async {
       if (!assignmentSnap.exists) {
@@ -197,10 +198,7 @@ class PairRepository {
   }
 
   Future<void> blockUser(String blockerUid, String blockedUid) async {
-    await _firestore
-        .collection('blocks')
-        .doc('$blockerUid-$blockedUid')
-        .set({
+    await _firestore.collection('blocks').doc('$blockerUid-$blockedUid').set({
       'blocker': blockerUid,
       'blocked': blockedUid,
       'createdAt': FieldValue.serverTimestamp(),
@@ -208,11 +206,17 @@ class PairRepository {
   }
 
   Future<void> unblockUser(String blockerUid, String blockedUid) async {
-    await _firestore.collection('blocks').doc('$blockerUid-$blockedUid').delete();
+    await _firestore
+        .collection('blocks')
+        .doc('$blockerUid-$blockedUid')
+        .delete();
   }
 
   Future<void> reportUser(
-      String reporterUid, String reportedUid, String reason) async {
+    String reporterUid,
+    String reportedUid,
+    String reason,
+  ) async {
     await _firestore.collection('reports').add({
       'reporter': reporterUid,
       'reported': reportedUid,
@@ -267,10 +271,20 @@ class PairRepository {
         .collection('messages')
         .orderBy('timestamp', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => ChatMessage.fromFirestore(doc)).toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => ChatMessage.fromFirestore(doc))
+                  .toList(),
+        );
   }
 
-  Future<void> sendMessage({required String pairId, required String senderId, String? text, String? imageUrl}) async {
+  Future<void> sendMessage({
+    required String pairId,
+    required String senderId,
+    String? text,
+    String? imageUrl,
+  }) async {
     if ((text?.trim().isEmpty ?? true) && (imageUrl?.isEmpty ?? true)) return;
 
     final messageData = {
@@ -281,11 +295,23 @@ class PairRepository {
       'reactions': {},
     };
 
-    await _firestore.collection('pairs').doc(pairId).collection('messages').add(messageData);
+    await _firestore
+        .collection('pairs')
+        .doc(pairId)
+        .collection('messages')
+        .add(messageData);
   }
 
-  Future<void> addReaction(String pairId, String messageId, String reactionEmoji) async {
-    final messageRef = _firestore.collection('pairs').doc(pairId).collection('messages').doc(messageId);
+  Future<void> addReaction(
+    String pairId,
+    String messageId,
+    String reactionEmoji,
+  ) async {
+    final messageRef = _firestore
+        .collection('pairs')
+        .doc(pairId)
+        .collection('messages')
+        .doc(messageId);
 
     await _firestore.runTransaction((transaction) async {
       final snapshot = await transaction.get(messageRef);
@@ -293,8 +319,11 @@ class PairRepository {
         throw Exception('メッセージが存在しません');
       }
 
-      final currentReactions = Map<String, int>.from(snapshot.data()!['reactions'] ?? {});
-      currentReactions[reactionEmoji] = (currentReactions[reactionEmoji] ?? 0) + 1;
+      final currentReactions = Map<String, int>.from(
+        snapshot.data()!['reactions'] ?? {},
+      );
+      currentReactions[reactionEmoji] =
+          (currentReactions[reactionEmoji] ?? 0) + 1;
 
       transaction.update(messageRef, {'reactions': currentReactions});
     });
@@ -313,11 +342,19 @@ class PairRepository {
     await sendMessage(pairId: pairId, senderId: senderId, text: checkInMessage);
   }
 
-  Future<void> sendQuickMessage(String pairId, String senderId, String message) async {
+  Future<void> sendQuickMessage(
+    String pairId,
+    String senderId,
+    String message,
+  ) async {
     await sendMessage(pairId: pairId, senderId: senderId, text: message);
   }
 
-  Future<void> subscribeToPairingNotifications(String uid, String fcmToken, String category) async {
+  Future<void> subscribeToPairingNotifications(
+    String uid,
+    String fcmToken,
+    String category,
+  ) async {
     final docRef = _firestore.collection('pair_notifications').doc(uid);
     await docRef.set({
       'fcmToken': fcmToken,

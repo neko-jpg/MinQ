@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 
 /// Lightweight API client for the GPT-4o Mini support bot endpoint.
 class GenerativeSupportClient {
+  /// Creates a new [GenerativeSupportClient].
   GenerativeSupportClient({
     required http.Client httpClient,
     required String endpoint,
@@ -17,6 +18,7 @@ class GenerativeSupportClient {
   final String _endpoint;
   final String _apiKey;
 
+  /// Generates a response from the support bot.
   Future<String> generateResponse({
     required String conversationId,
     required List<Map<String, String>> messages,
@@ -50,9 +52,13 @@ class GenerativeSupportClient {
   }
 }
 
+/// An exception thrown by the [GenerativeSupportClient].
 @immutable
 class GenerativeSupportException implements Exception {
+  /// Creates a new [GenerativeSupportException].
   const GenerativeSupportException(this.message);
+
+  /// The error message.
   final String message;
 
   @override

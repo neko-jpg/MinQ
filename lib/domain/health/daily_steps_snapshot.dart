@@ -1,10 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class DailyStepsSnapshot extends Equatable {
-  const DailyStepsSnapshot({
-    required this.date,
-    required this.steps,
-  });
+  const DailyStepsSnapshot({required this.date, required this.steps});
 
   final DateTime date;
   final int steps;

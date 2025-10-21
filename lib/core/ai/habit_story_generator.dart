@@ -2,27 +2,24 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-
-import 'tflite_unified_ai_service.dart';
 
 /// ハビットストーリー自動生成サービス
 /// Instagram Stories風の美しいビジュアルストーリーを自動生成
 class HabitStoryGenerator {
   static HabitStoryGenerator? _instance;
-  static HabitStoryGenerator get instance => _instance ??= HabitStoryGenerator._();
-  
+  static HabitStoryGenerator get instance =>
+      _instance ??= HabitStoryGenerator._();
+
   HabitStoryGenerator._();
 
   final TFLiteUnifiedAIService _aiService = TFLiteUnifiedAIService.instance;
-  
+
   bool _isGenerating = false;
 
   /// ストーリーの生成
@@ -37,21 +34,25 @@ class HabitStoryGenerator {
     }
 
     _isGenerating = true;
-    
+
     try {
       log('HabitStory: ストーリー生成開始 - ${type.name}');
-      
+
       await _aiService.initialize();
-      
+
       // テンプレートの選択
       final template = customTemplate ?? _selectTemplate(type, progressData);
-      
+
       // AIによるストーリーテキスト生成
       final storyText = await _generateStoryText(type, progressData, template);
-      
+
       // ビジュアル要素の生成
-      final visualElements = await _generateVisualElements(type, progressData, template);
-      
+      final visualElements = await _generateVisualElements(
+        type,
+        progressData,
+        template,
+      );
+
       // ストーリー画像の作成
       final storyImage = await _createStoryImage(
         template: template,
@@ -59,13 +60,13 @@ class HabitStoryGenerator {
         visualElements: visualElements,
         settings: settings ?? const StorySettings(),
       );
-      
+
       // 動画の作成（オプション）
       File? storyVideo;
       if (settings?.includeVideo == true) {
         storyVideo = await _createStoryVideo(storyImage, template, settings!);
       }
-      
+
       final story = HabitStory(
         id: _generateStoryId(),
         type: type,
@@ -79,7 +80,7 @@ class HabitStoryGenerator {
         createdAt: DateTime.now(),
         shareUrl: null, // 後で生成
       );
-      
+
       log('HabitStory: ストーリー生成完了');
       return story;
     } finally {
@@ -94,7 +95,7 @@ class HabitStoryGenerator {
     StorySettings? settings,
   }) async {
     final type = _getMilestoneStoryType(milestone);
-    
+
     return generateStory(
       type: type,
       progressData: progressData,
@@ -109,7 +110,7 @@ class HabitStoryGenerator {
   }) async {
     // 週次データを統合
     final combinedData = _combineWeeklyData(weeklyData);
-    
+
     return generateStory(
       type: StoryType.weeklySummary,
       progressData: combinedData,
@@ -147,25 +148,30 @@ class HabitStoryGenerator {
   ) async {
     try {
       final prompt = _buildStoryPrompt(type, data, template);
-      
+
       final aiResponse = await _aiService.generateChatResponse(
         prompt,
-        systemPrompt: 'あなたは感動的なストーリーテラーです。ユーザーの習慣の成果を祝福し、励ましの言葉を込めた美しいストーリーを作成してください。',
+        systemPrompt:
+            'あなたは感動的なストーリーテラーです。ユーザーの習慣の成果を祝福し、励ましの言葉を込めた美しいストーリーを作成してください。',
         maxTokens: 200,
       );
-      
+
       if (aiResponse.isNotEmpty && aiResponse.length > 20) {
         return _parseAIStoryResponse(aiResponse, type);
       }
     } catch (e) {
       log('HabitStory: AIテキスト生成エラー - $e');
     }
-    
+
     return _getFallbackStoryText(type, data);
   }
 
   /// ストーリープロンプトの構築
-  String _buildStoryPrompt(StoryType type, HabitProgressData data, StoryTemplate template) {
+  String _buildStoryPrompt(
+    StoryType type,
+    HabitProgressData data,
+    StoryTemplate template,
+  ) {
     switch (type) {
       case StoryType.dailyAchievement:
         return '''
@@ -177,7 +183,7 @@ class HabitStoryGenerator {
 
 タイトル（10文字以内）と本文（50文字以内）で、達成感と継続への励ましを込めて作成してください。
 ''';
-      
+
       case StoryType.streakMilestone:
         return '''
 ストリーク達成の感動的なストーリーを作成してください：
@@ -188,7 +194,7 @@ class HabitStoryGenerator {
 
 この継続力を称賛し、さらなる継続への意欲を高めるストーリーを作成してください。
 ''';
-      
+
       case StoryType.weeklyProgress:
         return '''
 週次進捗の振り返りストーリーを作成してください：
@@ -198,7 +204,7 @@ class HabitStoryGenerator {
 
 今週の成果を振り返り、来週への前向きなメッセージを込めてください。
 ''';
-      
+
       default:
         return '''
 習慣継続の素晴らしい成果についてストーリーを作成してください：
@@ -213,8 +219,9 @@ class HabitStoryGenerator {
 
   /// AI応答の解析
   StoryText _parseAIStoryResponse(String response, StoryType type) {
-    final lines = response.split('\n').where((line) => line.trim().isNotEmpty).toList();
-    
+    final lines =
+        response.split('\n').where((line) => line.trim().isNotEmpty).toList();
+
     if (lines.length >= 2) {
       return StoryText(
         title: lines[0].trim(),
@@ -222,7 +229,7 @@ class HabitStoryGenerator {
         hashtags: _generateHashtags(type),
       );
     }
-    
+
     return StoryText(
       title: _getDefaultTitle(type),
       content: response.trim(),
@@ -258,25 +265,27 @@ class HabitStoryGenerator {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
     final size = Size(settings.width.toDouble(), settings.height.toDouble());
-    
+
     final painter = StoryPainter(
       template: template,
       storyText: storyText,
       visualElements: visualElements,
       settings: settings,
     );
-    
+
     painter.paint(canvas, size);
-    
+
     final picture = recorder.endRecording();
     final image = await picture.toImage(settings.width, settings.height);
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    
+
     // ファイルに保存
     final directory = await getTemporaryDirectory();
-    final file = File('${directory.path}/habit_story_${DateTime.now().millisecondsSinceEpoch}.png');
+    final file = File(
+      '${directory.path}/habit_story_${DateTime.now().millisecondsSinceEpoch}.png',
+    );
     await file.writeAsBytes(byteData!.buffer.asUint8List());
-    
+
     return file;
   }
 
@@ -298,18 +307,21 @@ class HabitStoryGenerator {
   }
 
   /// ストーリーの共有
-  Future<void> shareStory(HabitStory story, {List<SharePlatform>? platforms}) async {
+  Future<void> shareStory(
+    HabitStory story, {
+    List<SharePlatform>? platforms,
+  }) async {
     try {
       final files = <XFile>[];
-      
+
       if (story.imageFile != null) {
         files.add(XFile(story.imageFile!.path));
       }
-      
+
       if (story.videoFile != null) {
         files.add(XFile(story.videoFile!.path));
       }
-      
+
       final shareText = '''
 ${story.title}
 
@@ -319,17 +331,13 @@ ${story.visualElements.hashtags.join(' ')}
 
 #MinQ #習慣形成 #継続力
 ''';
-      
+
       if (files.isNotEmpty) {
-        await Share.shareXFiles(
-          files,
-          text: shareText,
-          subject: story.title,
-        );
+        await Share.shareXFiles(files, text: shareText, subject: story.title);
       } else {
         await Share.share(shareText, subject: story.title);
       }
-      
+
       log('HabitStory: ストーリー共有完了');
     } catch (e) {
       log('HabitStory: ストーリー共有エラー - $e');
@@ -353,37 +361,35 @@ ${story.visualElements.hashtags.join(' ')}
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: story.imageFile != null
-            ? Image.file(
-                story.imageFile!,
-                fit: BoxFit.cover,
-              )
-            : Container(
-                decoration: BoxDecoration(
-                  gradient: story.visualElements.backgroundGradient,
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        story.visualElements.iconEmoji,
-                        style: const TextStyle(fontSize: 48),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        story.title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+        child:
+            story.imageFile != null
+                ? Image.file(story.imageFile!, fit: BoxFit.cover)
+                : Container(
+                  decoration: BoxDecoration(
+                    gradient: story.visualElements.backgroundGradient,
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          story.visualElements.iconEmoji,
+                          style: const TextStyle(fontSize: 48),
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                        const SizedBox(height: 16),
+                        Text(
+                          story.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
       ),
     );
   }
@@ -413,16 +419,24 @@ ${story.visualElements.hashtags.join(' ')}
       return HabitProgressData.empty();
     }
 
-    final totalCompletions = weeklyData.fold(0, (sum, data) => sum + data.totalCompletions);
-    final averageMood = weeklyData.fold(0.0, (sum, data) => sum + data.averageWeeklyMood) / weeklyData.length;
-    final allAchievements = weeklyData.expand((data) => data.achievements).toSet().toList();
+    final totalCompletions = weeklyData.fold(
+      0,
+      (sum, data) => sum + data.totalCompletions,
+    );
+    final averageMood =
+        weeklyData.fold(0.0, (sum, data) => sum + data.averageWeeklyMood) /
+        weeklyData.length;
+    final allAchievements =
+        weeklyData.expand((data) => data.achievements).toSet().toList();
 
     return HabitProgressData(
       habitTitle: '週次サマリー',
       category: 'summary',
       currentStreak: weeklyData.first.currentStreak,
       totalCompletions: totalCompletions,
-      weeklyCompletionRate: weeklyData.fold(0.0, (sum, data) => sum + data.weeklyCompletionRate) / weeklyData.length,
+      weeklyCompletionRate:
+          weeklyData.fold(0.0, (sum, data) => sum + data.weeklyCompletionRate) /
+          weeklyData.length,
       averageWeeklyMood: averageMood,
       todayMood: weeklyData.last.todayMood,
       activeHabits: weeklyData.length,
@@ -438,7 +452,11 @@ ${story.visualElements.hashtags.join(' ')}
       layout: TemplateLayout.centered,
       backgroundStyle: BackgroundStyle.gradient,
       textStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      titleStyle: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+      titleStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+      ),
       showProgress: true,
       showMood: true,
       animationDuration: const Duration(seconds: 3),
@@ -451,7 +469,11 @@ ${story.visualElements.hashtags.join(' ')}
       layout: TemplateLayout.celebration,
       backgroundStyle: BackgroundStyle.confetti,
       textStyle: const TextStyle(color: Colors.white, fontSize: 18),
-      titleStyle: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+      titleStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+      ),
       showProgress: true,
       showMood: false,
       animationDuration: const Duration(seconds: 5),
@@ -464,7 +486,11 @@ ${story.visualElements.hashtags.join(' ')}
       layout: TemplateLayout.chart,
       backgroundStyle: BackgroundStyle.minimal,
       textStyle: const TextStyle(color: Colors.black87, fontSize: 16),
-      titleStyle: const TextStyle(color: Colors.black87, fontSize: 22, fontWeight: FontWeight.bold),
+      titleStyle: const TextStyle(
+        color: Colors.black87,
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
       showProgress: true,
       showMood: true,
       animationDuration: const Duration(seconds: 4),
@@ -477,7 +503,11 @@ ${story.visualElements.hashtags.join(' ')}
       layout: TemplateLayout.timeline,
       backgroundStyle: BackgroundStyle.gradient,
       textStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      titleStyle: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+      titleStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+      ),
       showProgress: true,
       showMood: true,
       animationDuration: const Duration(seconds: 6),
@@ -490,7 +520,11 @@ ${story.visualElements.hashtags.join(' ')}
       layout: TemplateLayout.journey,
       backgroundStyle: BackgroundStyle.stars,
       textStyle: const TextStyle(color: Colors.white, fontSize: 18),
-      titleStyle: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+      titleStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 30,
+        fontWeight: FontWeight.bold,
+      ),
       showProgress: true,
       showMood: true,
       animationDuration: const Duration(seconds: 8),
@@ -503,7 +537,11 @@ ${story.visualElements.hashtags.join(' ')}
       layout: TemplateLayout.grid,
       backgroundStyle: BackgroundStyle.gradient,
       textStyle: const TextStyle(color: Colors.white, fontSize: 16),
-      titleStyle: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+      titleStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+      ),
       showProgress: true,
       showMood: true,
       animationDuration: const Duration(seconds: 4),
@@ -516,7 +554,11 @@ ${story.visualElements.hashtags.join(' ')}
       layout: TemplateLayout.quote,
       backgroundStyle: BackgroundStyle.inspirational,
       textStyle: const TextStyle(color: Colors.white, fontSize: 18),
-      titleStyle: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold),
+      titleStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 26,
+        fontWeight: FontWeight.bold,
+      ),
       showProgress: false,
       showMood: false,
       animationDuration: const Duration(seconds: 3),
@@ -529,7 +571,11 @@ ${story.visualElements.hashtags.join(' ')}
       layout: TemplateLayout.celebration,
       backgroundStyle: BackgroundStyle.fireworks,
       textStyle: const TextStyle(color: Colors.white, fontSize: 20),
-      titleStyle: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
+      titleStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
+      ),
       showProgress: true,
       showMood: false,
       animationDuration: const Duration(seconds: 5),
@@ -537,7 +583,10 @@ ${story.visualElements.hashtags.join(' ')}
   }
 
   // ビジュアル要素生成メソッド
-  LinearGradient _selectBackgroundGradient(StoryType type, HabitProgressData data) {
+  LinearGradient _selectBackgroundGradient(
+    StoryType type,
+    HabitProgressData data,
+  ) {
     switch (data.category) {
       case 'fitness':
         return const LinearGradient(
@@ -568,50 +617,86 @@ ${story.visualElements.hashtags.join(' ')}
 
   Color _selectPrimaryColor(String category) {
     switch (category) {
-      case 'fitness': return const Color(0xFF667eea);
-      case 'mindfulness': return const Color(0xFF4facfe);
-      case 'learning': return const Color(0xFFf093fb);
-      default: return const Color(0xFF43e97b);
+      case 'fitness':
+        return const Color(0xFF667eea);
+      case 'mindfulness':
+        return const Color(0xFF4facfe);
+      case 'learning':
+        return const Color(0xFFf093fb);
+      default:
+        return const Color(0xFF43e97b);
     }
   }
 
   Color _selectAccentColor(String category) {
     switch (category) {
-      case 'fitness': return const Color(0xFF764ba2);
-      case 'mindfulness': return const Color(0xFF00f2fe);
-      case 'learning': return const Color(0xFFf5576c);
-      default: return const Color(0xFF38f9d7);
+      case 'fitness':
+        return const Color(0xFF764ba2);
+      case 'mindfulness':
+        return const Color(0xFF00f2fe);
+      case 'learning':
+        return const Color(0xFFf5576c);
+      default:
+        return const Color(0xFF38f9d7);
     }
   }
 
   String _selectIconEmoji(String category) {
     switch (category) {
-      case 'fitness': return '💪';
-      case 'mindfulness': return '🧘';
-      case 'learning': return '📚';
-      case 'health': return '🌱';
-      case 'productivity': return '⚡';
-      case 'creative': return '🎨';
-      default: return '⭐';
+      case 'fitness':
+        return '💪';
+      case 'mindfulness':
+        return '🧘';
+      case 'learning':
+        return '📚';
+      case 'health':
+        return '🌱';
+      case 'productivity':
+        return '⚡';
+      case 'creative':
+        return '🎨';
+      default:
+        return '⭐';
     }
   }
 
-  List<DecorativeElement> _generateDecorativeElements(StoryType type, HabitProgressData data) {
+  List<DecorativeElement> _generateDecorativeElements(
+    StoryType type,
+    HabitProgressData data,
+  ) {
     switch (type) {
       case StoryType.celebration:
         return [
-          DecorativeElement(type: ElementType.confetti, position: const Offset(0.5, 0.2)),
-          DecorativeElement(type: ElementType.sparkles, position: const Offset(0.8, 0.3)),
-          DecorativeElement(type: ElementType.stars, position: const Offset(0.2, 0.7)),
+          DecorativeElement(
+            type: ElementType.confetti,
+            position: const Offset(0.5, 0.2),
+          ),
+          DecorativeElement(
+            type: ElementType.sparkles,
+            position: const Offset(0.8, 0.3),
+          ),
+          DecorativeElement(
+            type: ElementType.stars,
+            position: const Offset(0.2, 0.7),
+          ),
         ];
       case StoryType.streakMilestone:
         return [
-          DecorativeElement(type: ElementType.fire, position: const Offset(0.9, 0.1)),
-          DecorativeElement(type: ElementType.trophy, position: const Offset(0.1, 0.9)),
+          DecorativeElement(
+            type: ElementType.fire,
+            position: const Offset(0.9, 0.1),
+          ),
+          DecorativeElement(
+            type: ElementType.trophy,
+            position: const Offset(0.1, 0.9),
+          ),
         ];
       default:
         return [
-          DecorativeElement(type: ElementType.sparkles, position: const Offset(0.9, 0.2)),
+          DecorativeElement(
+            type: ElementType.sparkles,
+            position: const Offset(0.9, 0.2),
+          ),
         ];
     }
   }
@@ -665,14 +750,22 @@ ${story.visualElements.hashtags.join(' ')}
 
   String _getDefaultTitle(StoryType type) {
     switch (type) {
-      case StoryType.dailyAchievement: return '今日も達成！';
-      case StoryType.streakMilestone: return 'ストリーク更新！';
-      case StoryType.weeklyProgress: return '今週の成果';
-      case StoryType.monthlyReflection: return '今月の振り返り';
-      case StoryType.yearlyJourney: return '1年間の軌跡';
-      case StoryType.weeklySummary: return '週次サマリー';
-      case StoryType.motivational: return '継続の力';
-      case StoryType.celebration: return 'お祝い！';
+      case StoryType.dailyAchievement:
+        return '今日も達成！';
+      case StoryType.streakMilestone:
+        return 'ストリーク更新！';
+      case StoryType.weeklyProgress:
+        return '今週の成果';
+      case StoryType.monthlyReflection:
+        return '今月の振り返り';
+      case StoryType.yearlyJourney:
+        return '1年間の軌跡';
+      case StoryType.weeklySummary:
+        return '週次サマリー';
+      case StoryType.motivational:
+        return '継続の力';
+      case StoryType.celebration:
+        return 'お祝い！';
     }
   }
 
@@ -681,13 +774,15 @@ ${story.visualElements.hashtags.join(' ')}
       case StoryType.dailyAchievement:
         return StoryText(
           title: '今日も達成！',
-          content: '${data.habitTitle}を${data.currentStreak}日連続で継続中！小さな積み重ねが大きな成果を生みます。',
+          content:
+              '${data.habitTitle}を${data.currentStreak}日連続で継続中！小さな積み重ねが大きな成果を生みます。',
           hashtags: _generateHashtags(type),
         );
       case StoryType.streakMilestone:
         return StoryText(
           title: '${data.currentStreak}日達成！',
-          content: '${data.habitTitle}を${data.currentStreak}日間継続しました！この調子で更なる高みを目指しましょう。',
+          content:
+              '${data.habitTitle}を${data.currentStreak}日間継続しました！この調子で更なる高みを目指しましょう。',
           hashtags: _generateHashtags(type),
         );
       default:
@@ -719,13 +814,13 @@ class StoryPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // 背景の描画
     _drawBackground(canvas, size);
-    
+
     // テキストの描画
     _drawText(canvas, size);
-    
+
     // 装飾要素の描画
     _drawDecorations(canvas, size);
-    
+
     // プログレスの描画
     if (template.showProgress) {
       _drawProgress(canvas, size);
@@ -734,7 +829,7 @@ class StoryPainter extends CustomPainter {
 
   void _drawBackground(Canvas canvas, Size size) {
     final paint = Paint();
-    
+
     switch (template.backgroundStyle) {
       case BackgroundStyle.gradient:
         paint.shader = visualElements.backgroundGradient.createShader(
@@ -749,7 +844,7 @@ class StoryPainter extends CustomPainter {
           Rect.fromLTWH(0, 0, size.width, size.height),
         );
     }
-    
+
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
   }
 
@@ -760,20 +855,20 @@ class StoryPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
     titlePainter.layout(maxWidth: size.width * 0.8);
-    
+
     final titleOffset = Offset(
       (size.width - titlePainter.width) / 2,
       size.height * 0.3,
     );
     titlePainter.paint(canvas, titleOffset);
-    
+
     // コンテンツの描画
     final contentPainter = TextPainter(
       text: TextSpan(text: storyText.content, style: template.textStyle),
       textDirection: TextDirection.ltr,
     );
     contentPainter.layout(maxWidth: size.width * 0.8);
-    
+
     final contentOffset = Offset(
       (size.width - contentPainter.width) / 2,
       size.height * 0.5,
@@ -787,13 +882,17 @@ class StoryPainter extends CustomPainter {
     }
   }
 
-  void _drawDecorativeElement(Canvas canvas, Size size, DecorativeElement element) {
+  void _drawDecorativeElement(
+    Canvas canvas,
+    Size size,
+    DecorativeElement element,
+  ) {
     final paint = Paint()..color = Colors.white.withOpacity(0.8);
     final position = Offset(
       size.width * element.position.dx,
       size.height * element.position.dy,
     );
-    
+
     switch (element.type) {
       case ElementType.sparkles:
         _drawSparkle(canvas, position, paint);
@@ -820,7 +919,7 @@ class StoryPainter extends CustomPainter {
     path.lineTo(position.dx - 8, position.dy);
     path.lineTo(position.dx - 2, position.dy - 2);
     path.close();
-    
+
     canvas.drawPath(path, paint);
   }
 
@@ -841,13 +940,13 @@ class StoryPainter extends CustomPainter {
       size.width * 0.8,
       8,
     );
-    
+
     final backgroundPaint = Paint()..color = Colors.white.withOpacity(0.3);
     canvas.drawRRect(
       RRect.fromRectAndRadius(progressRect, const Radius.circular(4)),
       backgroundPaint,
     );
-    
+
     final progressPaint = Paint()..color = Colors.white;
     final progressWidth = progressRect.width * 0.7; // 仮の進捗
     final filledRect = Rect.fromLTWH(
@@ -856,7 +955,7 @@ class StoryPainter extends CustomPainter {
       progressWidth,
       progressRect.height,
     );
-    
+
     canvas.drawRRect(
       RRect.fromRectAndRadius(filledRect, const Radius.circular(4)),
       progressPaint,
@@ -1074,19 +1173,6 @@ enum BackgroundStyle {
   inspirational,
 }
 
-enum ElementType {
-  sparkles,
-  stars,
-  confetti,
-  fire,
-  trophy,
-  heart,
-}
+enum ElementType { sparkles, stars, confetti, fire, trophy, heart }
 
-enum SharePlatform {
-  instagram,
-  twitter,
-  facebook,
-  line,
-  general,
-}
+enum SharePlatform { instagram, twitter, facebook, line, general }

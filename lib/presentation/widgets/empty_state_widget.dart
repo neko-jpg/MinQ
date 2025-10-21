@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/spacing_system.dart';
-import '../../core/assets/app_icons.dart';
+import 'package:minq/core/assets/app_icons.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// 空状態ウィジェット - 統一されたスタイル
 class EmptyStateWidget extends StatelessWidget {
@@ -22,39 +22,37 @@ class EmptyStateWidget extends StatelessWidget {
   });
 
   /// クエストが空の状態
-  factory EmptyStateWidget.emptyQuests({
-    VoidCallback? onCreateQuest,
-  }) {
+  factory EmptyStateWidget.emptyQuests({VoidCallback? onCreateQuest}) {
     return EmptyStateWidget(
       type: EmptyStateType.quests,
       icon: AppIcons.questOutlined,
       title: 'クエストがありません',
       message: '最初のクエストを作成して\n習慣づくりを始めましょう',
-      action: onCreateQuest != null
-          ? ElevatedButton.icon(
-              onPressed: onCreateQuest,
-              icon: const Icon(AppIcons.add),
-              label: const Text('クエストを作成'),
-            )
-          : null,
+      action:
+          onCreateQuest != null
+              ? ElevatedButton.icon(
+                onPressed: onCreateQuest,
+                icon: const Icon(AppIcons.add),
+                label: const Text('クエストを作成'),
+              )
+              : null,
     );
   }
 
   /// ログが空の状態
-  factory EmptyStateWidget.emptyLogs({
-    VoidCallback? onStartLogging,
-  }) {
+  factory EmptyStateWidget.emptyLogs({VoidCallback? onStartLogging}) {
     return EmptyStateWidget(
       type: EmptyStateType.logs,
       icon: AppIcons.calendar,
       title: 'まだ記録がありません',
       message: 'クエストを完了して\n進捗を記録しましょう',
-      action: onStartLogging != null
-          ? ElevatedButton(
-              onPressed: onStartLogging,
-              child: const Text('今日のクエストを見る'),
-            )
-          : null,
+      action:
+          onStartLogging != null
+              ? ElevatedButton(
+                onPressed: onStartLogging,
+                child: const Text('今日のクエストを見る'),
+              )
+              : null,
     );
   }
 
@@ -69,35 +67,33 @@ class EmptyStateWidget extends StatelessWidget {
   }
 
   /// ペアが空の状態
-  factory EmptyStateWidget.emptyPairs({
-    VoidCallback? onFindPair,
-  }) {
+  factory EmptyStateWidget.emptyPairs({VoidCallback? onFindPair}) {
     return EmptyStateWidget(
       type: EmptyStateType.pairs,
       icon: AppIcons.pairOutlined,
       title: 'ペアがいません',
       message: '一緒に頑張る仲間を\n見つけましょう',
-      action: onFindPair != null
-          ? ElevatedButton.icon(
-              onPressed: onFindPair,
-              icon: const Icon(AppIcons.search),
-              label: const Text('ペアを探す'),
-            )
-          : null,
+      action:
+          onFindPair != null
+              ? ElevatedButton.icon(
+                onPressed: onFindPair,
+                icon: const Icon(AppIcons.search),
+                label: const Text('ペアを探す'),
+              )
+              : null,
     );
   }
 
   /// 検索結果が空の状態
-  factory EmptyStateWidget.emptySearch({
-    String? searchQuery,
-  }) {
+  factory EmptyStateWidget.emptySearch({String? searchQuery}) {
     return EmptyStateWidget(
       type: EmptyStateType.search,
       icon: AppIcons.search,
       title: '検索結果がありません',
-      message: searchQuery != null
-          ? '「$searchQuery」に一致する\n結果が見つかりませんでした'
-          : '検索条件を変更して\n再度お試しください',
+      message:
+          searchQuery != null
+              ? '「$searchQuery」に一致する\n結果が見つかりませんでした'
+              : '検索条件を変更して\n再度お試しください',
     );
   }
 
@@ -111,32 +107,32 @@ class EmptyStateWidget extends StatelessWidget {
       icon: AppIcons.error,
       title: 'エラーが発生しました',
       message: errorMessage ?? '問題が発生しました\nもう一度お試しください',
-      action: onRetry != null
-          ? ElevatedButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(AppIcons.refresh),
-              label: const Text('再試行'),
-            )
-          : null,
+      action:
+          onRetry != null
+              ? ElevatedButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(AppIcons.refresh),
+                label: const Text('再試行'),
+              )
+              : null,
     );
   }
 
   /// ネットワークエラー状態
-  factory EmptyStateWidget.networkError({
-    VoidCallback? onRetry,
-  }) {
+  factory EmptyStateWidget.networkError({VoidCallback? onRetry}) {
     return EmptyStateWidget(
       type: EmptyStateType.networkError,
       icon: Icons.wifi_off_rounded,
       title: 'インターネット接続がありません',
       message: 'ネットワーク接続を確認して\n再度お試しください',
-      action: onRetry != null
-          ? ElevatedButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(AppIcons.refresh),
-              label: const Text('再試行'),
-            )
-          : null,
+      action:
+          onRetry != null
+              ? ElevatedButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(AppIcons.refresh),
+                label: const Text('再試行'),
+              )
+              : null,
     );
   }
 
@@ -149,15 +145,17 @@ class EmptyStateWidget extends StatelessWidget {
       type: EmptyStateType.permissionDenied,
       icon: AppIcons.lock,
       title: '権限が必要です',
-      message: permissionName != null
-          ? '$permissionNameの権限が\n必要です'
-          : 'この機能を使用するには\n権限が必要です',
-      action: onRequestPermission != null
-          ? ElevatedButton(
-              onPressed: onRequestPermission,
-              child: const Text('権限を許可'),
-            )
-          : null,
+      message:
+          permissionName != null
+              ? '$permissionNameの権限が\n必要です'
+              : 'この機能を使用するには\n権限が必要です',
+      action:
+          onRequestPermission != null
+              ? ElevatedButton(
+                onPressed: onRequestPermission,
+                child: const Text('権限を許可'),
+              )
+              : null,
     );
   }
 
@@ -206,10 +204,7 @@ class EmptyStateWidget extends StatelessWidget {
               ),
 
             // アクション
-            if (action != null) ...[
-              SpacingSystem.vSpaceXL,
-              action!,
-            ],
+            if (action != null) ...[SpacingSystem.vSpaceXL, action!],
           ],
         ),
       ),
@@ -227,11 +222,7 @@ class EmptyStateWidget extends StatelessWidget {
         color: iconColor.withOpacity(0.1),
         shape: BoxShape.circle,
       ),
-      child: Icon(
-        icon,
-        size: 48,
-        color: iconColor,
-      ),
+      child: Icon(icon, size: 48, color: iconColor),
     );
   }
 
@@ -327,11 +318,7 @@ class EmptyStateAnimation extends StatelessWidget {
       width: width ?? 200,
       height: height ?? 200,
       child: const Center(
-        child: Icon(
-          Icons.animation_rounded,
-          size: 96,
-          color: Colors.grey,
-        ),
+        child: Icon(Icons.animation_rounded, size: 96, color: Colors.grey),
       ),
     );
   }
@@ -372,21 +359,14 @@ class EmptyStateCard extends StatelessWidget {
                   color: colorScheme.primary.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  icon,
-                  color: colorScheme.primary,
-                  size: 24,
-                ),
+                child: Icon(icon, color: colorScheme.primary, size: 24),
               ),
               SpacingSystem.hSpaceMD,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: theme.textTheme.titleMedium,
-                    ),
+                    Text(title, style: theme.textTheme.titleMedium),
                     SpacingSystem.vSpaceXS,
                     Text(
                       message,

@@ -13,7 +13,7 @@ class EcosystemMappingService {
 
   /// Analyzes the correlations and interdependencies between a user's habits.
   Future<Map<String, dynamic>> analyzeEcosystem(String userId) async {
-    print("Analyzing habit ecosystem for user $userId.");
+    print('Analyzing habit ecosystem for user $userId.');
     final questLogsSnapshot = await _firestore
         .collection('users')
         .doc(userId)
@@ -23,7 +23,7 @@ class EcosystemMappingService {
         .get();
 
     if (questLogsSnapshot.docs.length < 20) {
-      print("Not enough data to analyze ecosystem.");
+      print('Not enough data to analyze ecosystem.');
       return {};
     }
 
@@ -64,13 +64,13 @@ class EcosystemMappingService {
       'habitEcosystem': ecosystemData
     });
 
-    print("Ecosystem analysis complete for user $userId.");
+    print('Ecosystem analysis complete for user $userId.');
     return ecosystemData;
   }
 
   /// Identifies the "keystone" habit that has the most positive impact on other habits.
   Future<String?> identifyKeystoneHabit(String userId) async {
-    print("Identifying keystone habit for user $userId.");
+    print('Identifying keystone habit for user $userId.');
     final userDoc = await _firestore.collection('users').doc(userId).get();
     final ecosystem = userDoc.data()?['habitEcosystem'] as Map<String, dynamic>?;
 
@@ -110,7 +110,7 @@ class EcosystemMappingService {
     final ecosystem = userDoc.data()?['habitEcosystem'] as Map<String, dynamic>?;
 
     if (ecosystem == null) {
-      return ["Analyze your habits first to get suggestions."];
+      return ['Analyze your habits first to get suggestions.'];
     }
 
     final coOccurrenceMatrix = ecosystem['coOccurrenceMatrix'] as Map<String, dynamic>;
@@ -128,7 +128,7 @@ class EcosystemMappingService {
     });
 
     if (suggestions.isEmpty) {
-      return ["Keep building habits to find powerful connections!"];
+      return ['Keep building habits to find powerful connections!'];
     }
 
     return suggestions.take(3).toList(); // Return top 3 suggestions

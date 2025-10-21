@@ -35,40 +35,37 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _mainController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
+
     _featuresController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _mainController,
-      curve: const Interval(0.0, 0.6, curve: Curves.elasticOut),
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _mainController,
+        curve: const Interval(0.0, 0.6, curve: Curves.elasticOut),
+      ),
+    );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _mainController,
-      curve: const Interval(0.3, 0.8, curve: Curves.easeOut),
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _mainController,
+        curve: const Interval(0.3, 0.8, curve: Curves.easeOut),
+      ),
+    );
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.5),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _featuresController,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _featuresController, curve: Curves.easeOutBack),
+    );
 
     _startAnimations();
   }
@@ -89,7 +86,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return Scaffold(
       backgroundColor: Colors.black.withOpacity(0.9),
       body: SafeArea(
@@ -97,7 +94,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
           children: [
             // 背景エフェクト
             _buildBackgroundEffects(tokens),
-            
+
             // メインコンテンツ
             Center(
               child: SingleChildScrollView(
@@ -107,36 +104,33 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                   children: [
                     // レベルアップアニメーション
                     _buildLevelUpAnimation(tokens),
-                    
+
                     SizedBox(height: tokens.spacing(8)),
-                    
+
                     // レベル情報
                     _buildLevelInfo(tokens),
-                    
+
                     SizedBox(height: tokens.spacing(8)),
-                    
+
                     // 解放された機能
                     _buildUnlockedFeatures(tokens),
-                    
+
                     SizedBox(height: tokens.spacing(10)),
-                    
+
                     // 続行ボタン
                     _buildContinueButton(tokens),
                   ],
                 ),
               ),
             ),
-            
+
             // 閉じるボタン
             Positioned(
               top: tokens.spacing(4),
               right: tokens.spacing(4),
               child: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ),
+                icon: const Icon(Icons.close, color: Colors.white),
               ),
             ),
           ],
@@ -183,10 +177,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [
-                      Colors.yellow.shade300,
-                      Colors.orange.shade400,
-                    ],
+                    colors: [Colors.yellow.shade300, Colors.orange.shade400],
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -202,9 +193,9 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                   color: Colors.white,
                 ),
               ),
-              
+
               SizedBox(height: tokens.spacing(4)),
-              
+
               // レベルアップテキスト
               FadeTransition(
                 opacity: _fadeAnimation,
@@ -232,10 +223,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.1),
           borderRadius: tokens.cornerLarge(),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.3),
-            width: 1,
-          ),
+          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
         ),
         child: Column(
           children: [
@@ -246,10 +234,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
-                  colors: [
-                    tokens.brandPrimary,
-                    Colors.purple.shade600,
-                  ],
+                  colors: [tokens.brandPrimary, Colors.purple.shade600],
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -269,9 +254,9 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 ),
               ),
             ),
-            
+
             SizedBox(height: tokens.spacing(4)),
-            
+
             // レベルタイトル
             Text(
               widget.levelInfo.title,
@@ -280,9 +265,9 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 fontWeight: FontWeight.bold,
               ),
             ),
-            
+
             SizedBox(height: tokens.spacing(2)),
-            
+
             // レベル説明
             Text(
               widget.levelInfo.description,
@@ -307,9 +292,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.05),
             borderRadius: tokens.cornerLarge(),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-            ),
+            border: Border.all(color: Colors.white.withOpacity(0.2)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,12 +314,12 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                   ),
                 ],
               ),
-              
+
               SizedBox(height: tokens.spacing(4)),
-              
+
               ...widget.levelInfo.unlockedFeatures.map((feature) {
                 return _buildFeatureItem(tokens, feature);
-              }).toList(),
+              }),
             ],
           ),
         ),
@@ -346,7 +329,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
 
   Widget _buildFeatureItem(MinqTokens tokens, String featureId) {
     final featureInfo = _getFeatureInfo(featureId);
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: tokens.spacing(3)),
       padding: EdgeInsets.all(tokens.spacing(3)),
@@ -369,9 +352,9 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
               size: tokens.spacing(5),
             ),
           ),
-          
+
           SizedBox(width: tokens.spacing(3)),
-          
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,7 +376,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
               ],
             ),
           ),
-          
+
           Icon(
             Icons.check_circle,
             color: Colors.green.shade400,
@@ -417,12 +400,8 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
           style: ElevatedButton.styleFrom(
             backgroundColor: tokens.brandPrimary,
             foregroundColor: Colors.white,
-            padding: EdgeInsets.symmetric(
-              vertical: tokens.spacing(4),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: tokens.cornerLarge(),
-            ),
+            padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
+            shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             elevation: 8,
             shadowColor: tokens.brandPrimary.withOpacity(0.5),
           ),
@@ -437,10 +416,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 ),
               ),
               SizedBox(width: tokens.spacing(2)),
-              Icon(
-                Icons.arrow_forward,
-                size: tokens.spacing(5),
-              ),
+              Icon(Icons.arrow_forward, size: tokens.spacing(5)),
             ],
           ),
         ),

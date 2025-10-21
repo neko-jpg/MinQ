@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:miinq_integrations/miinq_integrations.dart';
+import 'package:minq/core/ai/gemma_ai_service.dart';
 import 'package:minq/data/providers.dart';
-import '../providers/gemma_ai_provider.dart';
+import 'package:minq/data/providers/gemma_ai_provider.dart';
 import 'package:minq/domain/support/support_message.dart';
-import '../../core/ai/gemma_ai_service.dart';
 
 class SupportChatService {
   SupportChatService({

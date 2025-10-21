@@ -5,31 +5,32 @@ import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-import 'tflite_unified_ai_service.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service.dart';
 
 /// リアルタイムAIコーチサービス
 /// クエスト実行中にリアルタイムでコーチングを提供
 class RealtimeCoachService {
   static RealtimeCoachService? _instance;
-  static RealtimeCoachService get instance => _instance ??= RealtimeCoachService._();
-  
+  static RealtimeCoachService get instance =>
+      _instance ??= RealtimeCoachService._();
+
   RealtimeCoachService._();
 
   final TFLiteUnifiedAIService _aiService = TFLiteUnifiedAIService.instance;
   final FlutterTts _tts = FlutterTts();
-  
+
   Timer? _coachingTimer;
   Timer? _motivationTimer;
   Timer? _checkInTimer;
-  
+
   bool _isActive = false;
   String? _currentQuestId;
   DateTime? _sessionStartTime;
   CoachingSettings _settings = const CoachingSettings();
-  
-  final StreamController<CoachingMessage> _messageController = 
+
+  final StreamController<CoachingMessage> _messageController =
       StreamController<CoachingMessage>.broadcast();
-  
+
   Stream<CoachingMessage> get messageStream => _messageController.stream;
 
   /// コーチングセッションの開始
@@ -52,12 +53,15 @@ class RealtimeCoachService {
     await _aiService.initialize();
 
     // 開始メッセージ
-    final startMessage = await _generateStartMessage(questTitle, estimatedDuration);
+    final startMessage = await _generateStartMessage(
+      questTitle,
+      estimatedDuration,
+    );
     await _sendCoachingMessage(startMessage, CoachingMessageType.start);
 
     // 定期的なコーチング開始
     _startPeriodicCoaching(estimatedDuration);
-    
+
     log('RealtimeCoach: コーチングセッション開始 - $questTitle');
   }
 
@@ -68,7 +72,7 @@ class RealtimeCoachService {
     _coachingTimer?.cancel();
     _motivationTimer?.cancel();
     _checkInTimer?.cancel();
-    
+
     // 終了メッセージ
     if (_sessionStartTime != null) {
       final duration = DateTime.now().difference(_sessionStartTime!);
@@ -79,7 +83,7 @@ class RealtimeCoachService {
     _isActive = false;
     _currentQuestId = null;
     _sessionStartTime = null;
-    
+
     log('RealtimeCoach: コーチングセッション終了');
   }
 
@@ -117,41 +121,56 @@ class RealtimeCoachService {
   /// タイミング指定メッセージのスケジュール
   void _scheduleTimedMessages(Duration estimatedDuration) {
     // 25%地点
-    Timer(Duration(milliseconds: (estimatedDuration.inMilliseconds * 0.25).round()), () {
-      if (_isActive) _sendProgressMessage(0.25);
-    });
+    Timer(
+      Duration(milliseconds: (estimatedDuration.inMilliseconds * 0.25).round()),
+      () {
+        if (_isActive) _sendProgressMessage(0.25);
+      },
+    );
 
     // 50%地点
-    Timer(Duration(milliseconds: (estimatedDuration.inMilliseconds * 0.5).round()), () {
-      if (_isActive) _sendProgressMessage(0.5);
-    });
+    Timer(
+      Duration(milliseconds: (estimatedDuration.inMilliseconds * 0.5).round()),
+      () {
+        if (_isActive) _sendProgressMessage(0.5);
+      },
+    );
 
     // 75%地点
-    Timer(Duration(milliseconds: (estimatedDuration.inMilliseconds * 0.75).round()), () {
-      if (_isActive) _sendProgressMessage(0.75);
-    });
+    Timer(
+      Duration(milliseconds: (estimatedDuration.inMilliseconds * 0.75).round()),
+      () {
+        if (_isActive) _sendProgressMessage(0.75);
+      },
+    );
 
     // 90%地点（ラストスパート）
-    Timer(Duration(milliseconds: (estimatedDuration.inMilliseconds * 0.9).round()), () {
-      if (_isActive) _sendFinalSpurtMessage();
-    });
+    Timer(
+      Duration(milliseconds: (estimatedDuration.inMilliseconds * 0.9).round()),
+      () {
+        if (_isActive) _sendFinalSpurtMessage();
+      },
+    );
   }
 
   /// 開始メッセージの生成
-  Future<String> _generateStartMessage(String questTitle, Duration duration) async {
+  Future<String> _generateStartMessage(
+    String questTitle,
+    Duration duration,
+  ) async {
     final templates = [
-      '${questTitle}を始めましょう！予定時間は${_formatDuration(duration)}です。一緒に頑張りましょう！',
-      'さあ、${questTitle}の時間です。${_formatDuration(duration)}間、集中して取り組みましょう。',
-      '${questTitle}をスタートします。今日も素晴らしい時間にしましょう！',
+      '$questTitleを始めましょう！予定時間は${_formatDuration(duration)}です。一緒に頑張りましょう！',
+      'さあ、$questTitleの時間です。${_formatDuration(duration)}間、集中して取り組みましょう。',
+      '$questTitleをスタートします。今日も素晴らしい時間にしましょう！',
     ];
 
     try {
       final aiMessage = await _aiService.generateChatResponse(
-        '${questTitle}を${_formatDuration(duration)}間実行します。やる気が出る開始メッセージを生成してください。',
+        '$questTitleを${_formatDuration(duration)}間実行します。やる気が出る開始メッセージを生成してください。',
         systemPrompt: 'あなたは親しみやすいパーソナルコーチです。短く励ましのメッセージを作成してください。',
         maxTokens: 50,
       );
-      
+
       if (aiMessage.isNotEmpty && aiMessage.length > 10) {
         return aiMessage;
       }
@@ -176,7 +195,7 @@ class RealtimeCoachService {
         systemPrompt: 'あなたは親しみやすいパーソナルコーチです。達成を祝う短いメッセージを作成してください。',
         maxTokens: 50,
       );
-      
+
       if (aiMessage.isNotEmpty && aiMessage.length > 10) {
         return aiMessage;
       }
@@ -202,17 +221,18 @@ class RealtimeCoachService {
     try {
       final currentTime = DateTime.now();
       final elapsed = currentTime.difference(_sessionStartTime!);
-      
+
       final aiMessage = await _aiService.generateChatResponse(
         '習慣実行中です。${_formatDuration(elapsed)}経過しました。短い励ましのメッセージをください。',
         systemPrompt: 'あなたは親しみやすいパーソナルコーチです。継続を励ます短いメッセージを作成してください。',
         maxTokens: 30,
       );
-      
-      final message = (aiMessage.isNotEmpty && aiMessage.length > 5) 
-          ? aiMessage 
-          : templates[math.Random().nextInt(templates.length)];
-      
+
+      final message =
+          (aiMessage.isNotEmpty && aiMessage.length > 5)
+              ? aiMessage
+              : templates[math.Random().nextInt(templates.length)];
+
       await _sendCoachingMessage(message, CoachingMessageType.motivation);
     } catch (e) {
       log('RealtimeCoach: モチベーションメッセージエラー - $e');
@@ -241,9 +261,9 @@ class RealtimeCoachService {
 
     final percentage = (progress * 100).round();
     final templates = [
-      '${percentage}%完了です！順調に進んでいますね。',
-      'もう${percentage}%も進みました。素晴らしいペースです！',
-      '${percentage}%地点を通過しました。この調子で続けましょう。',
+      '$percentage%完了です！順調に進んでいますね。',
+      'もう$percentage%も進みました。素晴らしいペースです！',
+      '$percentage%地点を通過しました。この調子で続けましょう。',
     ];
 
     final message = templates[math.Random().nextInt(templates.length)];
@@ -265,7 +285,10 @@ class RealtimeCoachService {
   }
 
   /// コーチングメッセージの送信
-  Future<void> _sendCoachingMessage(String message, CoachingMessageType type) async {
+  Future<void> _sendCoachingMessage(
+    String message,
+    CoachingMessageType type,
+  ) async {
     final coachingMessage = CoachingMessage(
       message: message,
       type: type,
@@ -322,15 +345,21 @@ class RealtimeCoachService {
         systemPrompt: 'あなたは共感的なパーソナルコーチです。ユーザーを励まし、実践的なアドバイスを提供してください。',
         maxTokens: 80,
       );
-      
-      final message = (aiMessage.isNotEmpty && aiMessage.length > 10) 
-          ? aiMessage 
-          : interventionMessages[math.Random().nextInt(interventionMessages.length)];
-      
+
+      final message =
+          (aiMessage.isNotEmpty && aiMessage.length > 10)
+              ? aiMessage
+              : interventionMessages[math.Random().nextInt(
+                interventionMessages.length,
+              )];
+
       await _sendCoachingMessage(message, CoachingMessageType.intervention);
     } catch (e) {
       log('RealtimeCoach: 緊急介入メッセージエラー - $e');
-      final message = interventionMessages[math.Random().nextInt(interventionMessages.length)];
+      final message =
+          interventionMessages[math.Random().nextInt(
+            interventionMessages.length,
+          )];
       await _sendCoachingMessage(message, CoachingMessageType.intervention);
     }
   }
@@ -338,7 +367,7 @@ class RealtimeCoachService {
   /// 設定の更新
   void updateSettings(CoachingSettings settings) {
     _settings = settings;
-    
+
     // タイマーの再設定
     if (_isActive) {
       _motivationTimer?.cancel();
@@ -355,7 +384,7 @@ class RealtimeCoachService {
     _checkInTimer?.cancel();
     _messageController.close();
     _tts.stop();
-    
+
     _isActive = false;
     _currentQuestId = null;
     _sessionStartTime = null;
@@ -392,7 +421,8 @@ class CoachingSettings {
       motivationInterval: motivationInterval ?? this.motivationInterval,
       enableVoice: enableVoice ?? this.enableVoice,
       enableHaptics: enableHaptics ?? this.enableHaptics,
-      enableEmergencyIntervention: enableEmergencyIntervention ?? this.enableEmergencyIntervention,
+      enableEmergencyIntervention:
+          enableEmergencyIntervention ?? this.enableEmergencyIntervention,
       voiceSpeed: voiceSpeed ?? this.voiceSpeed,
       voiceVolume: voiceVolume ?? this.voiceVolume,
     );

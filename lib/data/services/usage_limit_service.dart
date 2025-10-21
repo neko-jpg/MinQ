@@ -11,8 +11,7 @@ class UsageLimitSnapshot {
   final Duration usedToday;
   final DateTime lastReset;
 
-  bool get isBlocked =>
-      dailyLimit != null && usedToday >= dailyLimit!;
+  bool get isBlocked => dailyLimit != null && usedToday >= dailyLimit!;
 
   Duration get remaining {
     if (dailyLimit == null) {
@@ -40,7 +39,7 @@ const Object _sentinel = Object();
 
 class UsageLimitService {
   UsageLimitService(this._preferences, {DateTime Function()? now})
-      : _now = now ?? DateTime.now;
+    : _now = now ?? DateTime.now;
 
   final LocalPreferencesService _preferences;
   final DateTime Function() _now;

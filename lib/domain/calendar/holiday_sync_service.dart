@@ -3,11 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Holiday {
-  Holiday({
-    required this.date,
-    required this.name,
-    required this.locale,
-  });
+  Holiday({required this.date, required this.name, required this.locale});
 
   final DateTime date;
   final String name;
@@ -42,25 +38,35 @@ class HolidaySyncService {
   }) async {
     final now = DateTime.now().toUtc();
     final previous = _cache;
-    if (previous != null && previous.fetchedAt.isAfter(now.subtract(const Duration(hours: 6)))) {
+    if (previous != null &&
+        previous.fetchedAt.isAfter(now.subtract(const Duration(hours: 6)))) {
       return previous;
     }
 
     final uri = Uri.parse('$endpoint/$year/$countryCode');
     final response = await _client.get(uri);
     if (response.statusCode != 200) {
-      throw HolidaySyncException('Failed to fetch holidays: ${response.statusCode}');
+      throw HolidaySyncException(
+        'Failed to fetch holidays: ${response.statusCode}',
+      );
     }
 
     final List<dynamic> decoded = jsonDecode(response.body) as List<dynamic>;
-    final holidays = decoded
-        .map((dynamic item) => Holiday(
-              date: DateTime.parse(item['date'] as String),
-              name: item['localName'] as String,
-              locale: item['countryCode'] as String,
-            ))
-        .toList();
-    final result = HolidaySyncResult(holidays: holidays, fetchedAt: now, source: uri);
+    final holidays =
+        decoded
+            .map(
+              (dynamic item) => Holiday(
+                date: DateTime.parse(item['date'] as String),
+                name: item['localName'] as String,
+                locale: item['countryCode'] as String,
+              ),
+            )
+            .toList();
+    final result = HolidaySyncResult(
+      holidays: holidays,
+      fetchedAt: now,
+      source: uri,
+    );
     _cache = result;
     return result;
   }

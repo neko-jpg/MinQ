@@ -1,4 +1,4 @@
-﻿import 'package:isar/isar.dart';
+import 'package:isar/isar.dart';
 import 'package:minq/domain/quest/quest.dart';
 
 class QuestRepository {
@@ -7,24 +7,9 @@ class QuestRepository {
   final Isar _isar;
 
   static const List<Map<String, dynamic>> _templateSeedData = [
-    {
-      'title': '英単語を3個音読する',
-      'category': '学習',
-      'minutes': 3,
-      'iconKey': 'book',
-    },
-    {
-      'title': '教科書を1ページ読む',
-      'category': '学習',
-      'minutes': 5,
-      'iconKey': 'book',
-    },
-    {
-      'title': 'ノートを10分見返す',
-      'category': '学習',
-      'minutes': 10,
-      'iconKey': 'memo',
-    },
+    {'title': '英単語を3個音読する', 'category': '学習', 'minutes': 3, 'iconKey': 'book'},
+    {'title': '教科書を1ページ読む', 'category': '学習', 'minutes': 5, 'iconKey': 'book'},
+    {'title': 'ノートを10分見返す', 'category': '学習', 'minutes': 10, 'iconKey': 'memo'},
     {
       'title': '授業のポイントを5分まとめる',
       'category': '学習',
@@ -97,24 +82,14 @@ class QuestRepository {
       'minutes': 5,
       'iconKey': 'stretch',
     },
-    {
-      'title': 'ラジオ体操を1セット',
-      'category': '運動',
-      'minutes': 5,
-      'iconKey': 'walk',
-    },
+    {'title': 'ラジオ体操を1セット', 'category': '運動', 'minutes': 5, 'iconKey': 'walk'},
     {
       'title': 'ジャンピングジャックを20回',
       'category': '運動',
       'minutes': 5,
       'iconKey': 'dumbbell',
     },
-    {
-      'title': '早歩きで10分歩く',
-      'category': '運動',
-      'minutes': 10,
-      'iconKey': 'walk',
-    },
+    {'title': '早歩きで10分歩く', 'category': '運動', 'minutes': 10, 'iconKey': 'walk'},
     {
       'title': 'ストレッチポールで10分ほぐす',
       'category': '運動',
@@ -133,30 +108,15 @@ class QuestRepository {
       'minutes': 5,
       'iconKey': 'clean',
     },
-    {
-      'title': '本棚を1段整頓する',
-      'category': '片付け',
-      'minutes': 5,
-      'iconKey': 'clean',
-    },
+    {'title': '本棚を1段整頓する', 'category': '片付け', 'minutes': 5, 'iconKey': 'clean'},
     {
       'title': '洗濯物をたたむ',
       'category': '片付け',
       'minutes': 10,
       'iconKey': 'laundry',
     },
-    {
-      'title': 'ゴミ箱を空にする',
-      'category': '片付け',
-      'minutes': 3,
-      'iconKey': 'trash',
-    },
-    {
-      'title': '玄関を掃き掃除する',
-      'category': '片付け',
-      'minutes': 5,
-      'iconKey': 'clean',
-    },
+    {'title': 'ゴミ箱を空にする', 'category': '片付け', 'minutes': 3, 'iconKey': 'trash'},
+    {'title': '玄関を掃き掃除する', 'category': '片付け', 'minutes': 5, 'iconKey': 'clean'},
     {
       'title': '観葉植物に水をあげる',
       'category': '片付け',
@@ -181,12 +141,7 @@ class QuestRepository {
       'minutes': 5,
       'iconKey': 'todo',
     },
-    {
-      'title': '郵便物を仕分けする',
-      'category': '片付け',
-      'minutes': 5,
-      'iconKey': 'todo',
-    },
+    {'title': '郵便物を仕分けする', 'category': '片付け', 'minutes': 5, 'iconKey': 'todo'},
     {
       'title': '起きたら水をコップ1杯飲む',
       'category': '生活',
@@ -205,12 +160,7 @@ class QuestRepository {
       'minutes': 3,
       'iconKey': 'todo',
     },
-    {
-      'title': '明日の服を準備する',
-      'category': '生活',
-      'minutes': 5,
-      'iconKey': 'todo',
-    },
+    {'title': '明日の服を準備する', 'category': '生活', 'minutes': 5, 'iconKey': 'todo'},
     {
       'title': '料理の下ごしらえを10分する',
       'category': '生活',
@@ -229,18 +179,8 @@ class QuestRepository {
       'minutes': 3,
       'iconKey': 'trash',
     },
-    {
-      'title': '自炊メニューを考える',
-      'category': '生活',
-      'minutes': 5,
-      'iconKey': 'cook',
-    },
-    {
-      'title': '気分転換に散歩10分',
-      'category': '生活',
-      'minutes': 10,
-      'iconKey': 'walk',
-    },
+    {'title': '自炊メニューを考える', 'category': '生活', 'minutes': 5, 'iconKey': 'cook'},
+    {'title': '気分転換に散歩10分', 'category': '生活', 'minutes': 10, 'iconKey': 'walk'},
     {
       'title': '就寝前に照明を落とす時間を作る',
       'category': '生活',
@@ -253,12 +193,7 @@ class QuestRepository {
       'minutes': 3,
       'iconKey': 'breath',
     },
-    {
-      'title': '1分瞑想をする',
-      'category': 'セルフケア',
-      'minutes': 1,
-      'iconKey': 'mind',
-    },
+    {'title': '1分瞑想をする', 'category': 'セルフケア', 'minutes': 1, 'iconKey': 'mind'},
     {
       'title': '感謝を1つ書き出す',
       'category': 'セルフケア',
@@ -430,14 +365,15 @@ class QuestRepository {
           updates.add(current);
         }
       } else {
-        final quest = Quest()
-          ..owner = 'template'
-          ..title = title
-          ..category = category
-          ..estimatedMinutes = minutes
-          ..iconKey = iconKey
-          ..status = QuestStatus.active
-          ..createdAt = now;
+        final quest =
+            Quest()
+              ..owner = 'template'
+              ..title = title
+              ..category = category
+              ..estimatedMinutes = minutes
+              ..iconKey = iconKey
+              ..status = QuestStatus.active
+              ..createdAt = now;
         updates.add(quest);
       }
     }

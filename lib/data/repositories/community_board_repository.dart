@@ -3,7 +3,7 @@ import 'package:minq/domain/community/community_post.dart';
 
 class CommunityBoardRepository {
   CommunityBoardRepository(FirebaseFirestore firestore)
-      : _collection = firestore.collection('community_posts');
+    : _collection = firestore.collection('community_posts');
 
   final CollectionReference<Map<String, dynamic>> _collection;
 
@@ -13,19 +13,20 @@ class CommunityBoardRepository {
         .limit(100)
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs
-              .map(
-                (doc) => CommunityPost(
-                  id: doc.id,
-                  authorId: doc['authorId'] as String,
-                  authorDisplayName: doc['authorDisplayName'] as String,
-                  message: doc['message'] as String,
-                  createdAt: (doc['createdAt'] as Timestamp).toDate(),
-                  likeCount: (doc['likeCount'] as num?)?.toInt() ?? 0,
-                  flagged: doc['flagged'] as bool? ?? false,
-                ),
-              )
-              .toList(),
+          (snapshot) =>
+              snapshot.docs
+                  .map(
+                    (doc) => CommunityPost(
+                      id: doc.id,
+                      authorId: doc['authorId'] as String,
+                      authorDisplayName: doc['authorDisplayName'] as String,
+                      message: doc['message'] as String,
+                      createdAt: (doc['createdAt'] as Timestamp).toDate(),
+                      likeCount: (doc['likeCount'] as num?)?.toInt() ?? 0,
+                      flagged: doc['flagged'] as bool? ?? false,
+                    ),
+                  )
+                  .toList(),
         );
   }
 
@@ -51,8 +52,6 @@ class CommunityBoardRepository {
   }
 
   Future<void> report(String postId) async {
-    await _collection.doc(postId).update(<String, dynamic>{
-      'flagged': true,
-    });
+    await _collection.doc(postId).update(<String, dynamic>{'flagged': true});
   }
 }

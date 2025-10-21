@@ -1,6 +1,7 @@
 import 'dart:async';
+
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../logging/app_logger.dart';
 
 /// 通知スロットリングサービス - 連続通知を抑制
 class NotificationThrottleService {

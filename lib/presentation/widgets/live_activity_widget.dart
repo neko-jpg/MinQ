@@ -503,7 +503,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
             ],
           ),
           SizedBox(height: tokens.spacing(2)),
-          ...._recentActivities.take(3).map((activity) {
+          ..._recentActivities.take(3).map((activity) {
             return Padding(
               padding: EdgeInsets.only(bottom: tokens.spacing(1)),
               child: _buildActivityItem(activity),

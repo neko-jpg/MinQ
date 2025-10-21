@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../deeplink/deeplink_handler.dart';
-import 'notification_channels.dart';
+import 'package:minq/core/deeplink/deeplink_handler.dart';
+import 'package:minq/core/notifications/notification_channels.dart';
 
 /// プッシュ通知ハンドラー
 class PushNotificationHandler {
