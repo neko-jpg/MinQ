@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:collection';
+
+import 'package:flutter/material.dart';
 
 /// SnackBarグローバルマネージャー
 /// 重複排他、優先度管理、キュー処理
@@ -132,8 +133,9 @@ class SnackBarManager {
     }
 
     // 優先度順にソート
-    final sortedQueue = _queue.toList()
-      ..sort((a, b) => b.priority.index.compareTo(a.priority.index));
+    final sortedQueue =
+        _queue.toList()
+          ..sort((a, b) => b.priority.index.compareTo(a.priority.index));
 
     final request = sortedQueue.first;
     _queue.remove(request);
@@ -150,28 +152,26 @@ class SnackBarManager {
           _getIcon(request.type),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              request.message,
-              style: const TextStyle(fontSize: 14),
-            ),
+            child: Text(request.message, style: const TextStyle(fontSize: 14)),
           ),
         ],
       ),
       backgroundColor: _getBackgroundColor(request.type),
       duration: request.duration,
-      action: request.actionLabel != null
-          ? SnackBarAction(
-              label: request.actionLabel!,
-              textColor: Colors.white,
-              onPressed: request.onAction ?? () {},
-            )
-          : null,
+      action:
+          request.actionLabel != null
+              ? SnackBarAction(
+                label: request.actionLabel!,
+                textColor: Colors.white,
+                onPressed: request.onAction ?? () {},
+              )
+              : null,
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       dismissDirection:
-          request.dismissible ? DismissDirection.horizontal : DismissDirection.none,
+          request.dismissible
+              ? DismissDirection.horizontal
+              : DismissDirection.none,
     );
 
     _messenger?.showSnackBar(snackBar).closed.then((_) {
@@ -238,19 +238,10 @@ class _SnackBarRequest {
 }
 
 /// SnackBarタイプ
-enum SnackBarType {
-  success,
-  error,
-  warning,
-  info,
-}
+enum SnackBarType { success, error, warning, info }
 
 /// SnackBar優先度
-enum SnackBarPriority {
-  low,
-  normal,
-  high,
-}
+enum SnackBarPriority { low, normal, high }
 
 /// BuildContext拡張
 extension SnackBarExtension on BuildContext {

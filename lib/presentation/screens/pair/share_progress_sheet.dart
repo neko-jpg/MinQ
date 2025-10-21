@@ -37,31 +37,39 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     final memoController = TextEditingController();
     showDialog(
       context: context,
-      builder: (dialogCtx) => AlertDialog(
-        title: const Text('メモを添付'),
-        content: TextField(
-          controller: memoController,
-          autofocus: true,
-          decoration: const InputDecoration(hintText: '今日の頑張りを伝えよう'),
-          maxLines: 3,
-        ),
-        actions: [
-          TextButton(child: const Text('キャンセル'), onPressed: () => Navigator.of(dialogCtx).pop()),
-          TextButton(
-            child: const Text('送信'),
-            onPressed: () {
-              final repo = ref.read(pairRepositoryProvider);
-              final uid = ref.read(uidProvider);
-              final memo = memoController.text.trim();
-              if (memo.isNotEmpty && repo != null && uid != null) {
-                repo.sendMessage(pairId: widget.pairId, senderId: uid, text: memo);
-              }
-              Navigator.of(dialogCtx).pop();
-              Navigator.of(context).pop(); // Close the bottom sheet as well
-            },
+      builder:
+          (dialogCtx) => AlertDialog(
+            title: const Text('メモを添付'),
+            content: TextField(
+              controller: memoController,
+              autofocus: true,
+              decoration: const InputDecoration(hintText: '今日の頑張りを伝えよう'),
+              maxLines: 3,
+            ),
+            actions: [
+              TextButton(
+                child: const Text('キャンセル'),
+                onPressed: () => Navigator.of(dialogCtx).pop(),
+              ),
+              TextButton(
+                child: const Text('送信'),
+                onPressed: () {
+                  final repo = ref.read(pairRepositoryProvider);
+                  final uid = ref.read(uidProvider);
+                  final memo = memoController.text.trim();
+                  if (memo.isNotEmpty && repo != null && uid != null) {
+                    repo.sendMessage(
+                      pairId: widget.pairId,
+                      senderId: uid,
+                      text: memo,
+                    );
+                  }
+                  Navigator.of(dialogCtx).pop();
+                  Navigator.of(context).pop(); // Close the bottom sheet as well
+                },
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -96,8 +104,17 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('進捗を共有', style: tokens.titleLarge.copyWith(color: tokens.textPrimary, fontWeight: FontWeight.bold)),
-          IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
+          Text(
+            '進捗を共有',
+            style: tokens.titleLarge.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ],
       ),
     );
@@ -128,11 +145,19 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('クエストを選択', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text(
+          'クエストを選択',
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: _selectedQuest,
-          items: ['運動', '勉強', '読書'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+          initialValue: _selectedQuest,
+          items:
+              [
+                '運動',
+                '勉強',
+                '読書',
+              ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
           onChanged: (value) {
             if (value != null) {
               setState(() => _selectedQuest = value);
@@ -141,7 +166,10 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
           decoration: InputDecoration(
             filled: true,
             fillColor: tokens.background,
-            border: OutlineInputBorder(borderRadius: tokens.cornerLarge(), borderSide: BorderSide(color: tokens.border)),
+            border: OutlineInputBorder(
+              borderRadius: tokens.cornerLarge(),
+              borderSide: BorderSide(color: tokens.border),
+            ),
           ),
         ),
       ],
@@ -152,13 +180,32 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('証拠を添付', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text(
+          '証拠を添付',
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
         const SizedBox(height: 8),
         Row(
           children: [
-            Expanded(child: _AttachmentButton(tokens: tokens, icon: Icons.photo_camera, label: '写真', onPressed: () { /* TODO */ })),
+            Expanded(
+              child: _AttachmentButton(
+                tokens: tokens,
+                icon: Icons.photo_camera,
+                label: '写真',
+                onPressed: () {
+                  /* TODO */
+                },
+              ),
+            ),
             const SizedBox(width: 16),
-            Expanded(child: _AttachmentButton(tokens: tokens, icon: Icons.edit_note, label: 'メモ', onPressed: _showMemoDialog)),
+            Expanded(
+              child: _AttachmentButton(
+                tokens: tokens,
+                icon: Icons.edit_note,
+                label: 'メモ',
+                onPressed: _showMemoDialog,
+              ),
+            ),
           ],
         ),
       ],
@@ -172,7 +219,10 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
         Text('達成度', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
         const SizedBox(height: 8),
         ToggleButtons(
-          isSelected: List.generate(3, (index) => index == _selectedAchievement),
+          isSelected: List.generate(
+            3,
+            (index) => index == _selectedAchievement,
+          ),
           onPressed: (index) => setState(() => _selectedAchievement = index),
           borderRadius: tokens.cornerLarge(),
           selectedColor: Colors.white,
@@ -180,9 +230,18 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
           fillColor: tokens.brandPrimary,
           splashColor: tokens.brandPrimary.withOpacity(0.2),
           children: const [
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text('✔ 達成')),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text('△ 部分')),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text('✘ 未達')),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text('✔ 達成'),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text('△ 部分'),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text('✘ 未達'),
+            ),
           ],
         ),
       ],
@@ -195,8 +254,17 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('連続記録', style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
-            Text('🔥 7 日目', style: tokens.bodySmall.copyWith(color: tokens.textMuted, fontWeight: FontWeight.bold)),
+            Text(
+              '連続記録',
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            ),
+            Text(
+              '🔥 7 日目',
+              style: tokens.bodySmall.copyWith(
+                color: tokens.textMuted,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -251,7 +319,11 @@ class _AttachmentButton extends StatelessWidget {
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 24),
-        side: BorderSide(color: tokens.border, width: 2, style: BorderStyle.solid),
+        side: BorderSide(
+          color: tokens.border,
+          width: 2,
+          style: BorderStyle.solid,
+        ),
         shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       ),
     );

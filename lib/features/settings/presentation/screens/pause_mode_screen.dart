@@ -1,8 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
+import 'package:shared_preferences/shared_preferences.dart';
 
 const String _pauseModeKey = 'is_pause_mode_enabled';
 
@@ -27,7 +27,7 @@ class PauseModeNotifier extends StateNotifier<bool> {
           .doc(_userId) // Using dummy user ID
           .update({'isPaused': isEnabled});
     } catch (e) {
-      print("Error updating backend pause state: $e");
+      print('Error updating backend pause state: $e');
       // Optionally, revert the local state if backend fails
       await prefs.setBool(_pauseModeKey, !isEnabled);
       state = !isEnabled;
@@ -42,7 +42,6 @@ final pauseModeProvider = StateNotifierProvider<PauseModeNotifier, bool>((ref) {
   return PauseModeNotifier();
 });
 
-
 class PauseModeScreen extends ConsumerWidget {
   const PauseModeScreen({super.key});
 
@@ -51,16 +50,14 @@ class PauseModeScreen extends ConsumerWidget {
     final isPaused = ref.watch(pauseModeProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("ポーズモード"),
-      ),
+      appBar: AppBar(title: const Text('ポーズモード')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             SwitchListTile(
-              title: const Text("ポーズモードを有効にする"),
-              subtitle: const Text("有効にすると、全ての通知がオフになり、ストリークが維持されます。"),
+              title: const Text('ポーズモードを有効にする'),
+              subtitle: const Text('有効にすると、全ての通知がオフになり、ストリークが維持されます。'),
               value: isPaused,
               onChanged: (bool value) {
                 ref.read(pauseModeProvider.notifier).setPauseMode(value);
@@ -73,9 +70,11 @@ class PauseModeScreen extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    "ポーズモードが有効です。ゆっくり休んで、準備ができたら戻ってきてくださいね。",
+                    'ポーズモードが有効です。ゆっくり休んで、準備ができたら戻ってきてくださいね。',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onTertiaryContainer)
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onTertiaryContainer,
+                    ),
                   ),
                 ),
               ),

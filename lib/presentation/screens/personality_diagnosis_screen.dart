@@ -1,29 +1,29 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/ai/personality_diagnosis_service.dart';
-import '../../domain/habit_dna/habit_archetype.dart';
+import 'package:minq/core/ai/personality_diagnosis_service.dart';
 
 /// AIパーソナリティ診断画面
 class PersonalityDiagnosisScreen extends ConsumerStatefulWidget {
   const PersonalityDiagnosisScreen({super.key});
 
   @override
-  ConsumerState<PersonalityDiagnosisScreen> createState() => _PersonalityDiagnosisScreenState();
+  ConsumerState<PersonalityDiagnosisScreen> createState() =>
+      _PersonalityDiagnosisScreenState();
 }
 
-class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosisScreen>
+class _PersonalityDiagnosisScreenState
+    extends ConsumerState<PersonalityDiagnosisScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  final PersonalityDiagnosisService _diagnosisService = PersonalityDiagnosisService.instance;
-  
+  final PersonalityDiagnosisService _diagnosisService =
+      PersonalityDiagnosisService.instance;
+
   PersonalityDiagnosis? _currentDiagnosis;
   bool _isAnalyzing = false;
   int _currentQuestionIndex = 0;
   final List<int> _answers = [];
-  
+
   // サンプル質問（実際の実装では外部ファイルから読み込み）
   final List<DiagnosisQuestion> _questions = [
     DiagnosisQuestion(
@@ -39,22 +39,12 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
     DiagnosisQuestion(
       id: 2,
       text: '習慣が続かないとき、どう感じますか？',
-      options: [
-        '自分を責めてしまう',
-        '方法を変えて再挑戦する',
-        '一時的に休んで再開する',
-        '完璧でなくても続ける',
-      ],
+      options: ['自分を責めてしまう', '方法を変えて再挑戦する', '一時的に休んで再開する', '完璧でなくても続ける'],
     ),
     DiagnosisQuestion(
       id: 3,
       text: 'モチベーションの源泉は何ですか？',
-      options: [
-        '目標達成の喜び',
-        '他人からの評価',
-        '自己成長の実感',
-        '習慣そのものの楽しさ',
-      ],
+      options: ['目標達成の喜び', '他人からの評価', '自己成長の実感', '習慣そのものの楽しさ'],
     ),
     DiagnosisQuestion(
       id: 4,
@@ -69,12 +59,7 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
     DiagnosisQuestion(
       id: 5,
       text: '理想的な習慣継続環境は？',
-      options: [
-        '一人で集中できる環境',
-        '仲間と一緒に取り組める環境',
-        '競争要素がある環境',
-        '自由度が高い環境',
-      ],
+      options: ['一人で集中できる環境', '仲間と一緒に取り組める環境', '競争要素がある環境', '自由度が高い環境'],
     ),
   ];
 
@@ -94,7 +79,9 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
   Future<void> _loadCurrentDiagnosis() async {
     try {
       // TODO: 実際のユーザーIDを取得
-      final diagnosis = await _diagnosisService.getCurrentDiagnosis('current_user_id');
+      final diagnosis = await _diagnosisService.getCurrentDiagnosis(
+        'current_user_id',
+      );
       setState(() => _currentDiagnosis = diagnosis);
     } catch (e) {
       // 診断結果がない場合は無視
@@ -193,9 +180,9 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
               ),
             ),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // 質問
           Card(
             child: Padding(
@@ -212,12 +199,12 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // 選択肢
                   ...question.options.asMap().entries.map((entry) {
                     final index = entry.key;
                     final option = entry.value;
-                    
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: InkWell(
@@ -237,11 +224,15 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
                                 height: 24,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.grey.shade400),
+                                  border: Border.all(
+                                    color: Colors.grey.shade400,
+                                  ),
                                 ),
                                 child: Center(
                                   child: Text(
-                                    String.fromCharCode(65 + index), // A, B, C, D
+                                    String.fromCharCode(
+                                      65 + index,
+                                    ), // A, B, C, D
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -262,14 +253,14 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
                         ),
                       ),
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
           ),
-          
+
           const Spacer(),
-          
+
           // ナビゲーションボタン
           Row(
             children: [
@@ -284,9 +275,10 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
               Expanded(
                 flex: _currentQuestionIndex > 0 ? 1 : 2,
                 child: ElevatedButton(
-                  onPressed: _answers.length > _currentQuestionIndex
-                      ? _nextQuestion
-                      : null,
+                  onPressed:
+                      _answers.length > _currentQuestionIndex
+                          ? _nextQuestion
+                          : null,
                   child: Text(
                     _currentQuestionIndex == _questions.length - 1
                         ? '診断完了'
@@ -307,18 +299,11 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.check_circle,
-            size: 80,
-            color: Colors.green,
-          ),
+          const Icon(Icons.check_circle, size: 80, color: Colors.green),
           const SizedBox(height: 24),
           const Text(
             '診断完了！',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           const Text(
@@ -345,24 +330,14 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.psychology_outlined,
-              size: 80,
-              color: Colors.grey,
-            ),
+            Icon(Icons.psychology_outlined, size: 80, color: Colors.grey),
             SizedBox(height: 16),
             Text(
               '診断結果がありません',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            Text(
-              '「診断」タブから診断を開始してください',
-              style: TextStyle(color: Colors.grey),
-            ),
+            Text('「診断」タブから診断を開始してください', style: TextStyle(color: Colors.grey)),
           ],
         ),
       );
@@ -381,10 +356,7 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  Text(
-                    archetype.emoji,
-                    style: const TextStyle(fontSize: 64),
-                  ),
+                  Text(archetype.emoji, style: const TextStyle(fontSize: 64)),
                   const SizedBox(height: 16),
                   Text(
                     archetype.name,
@@ -397,14 +369,14 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
                   Text(
                     archetype.description,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 16),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.blue.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(16),
@@ -421,9 +393,9 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 特徴
           Card(
             child: Padding(
@@ -433,33 +405,34 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
                 children: [
                   const Text(
                     '特徴',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  ...archetype.traits.map((trait) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.check_circle,
-                          size: 16,
-                          color: Colors.green,
+                  ...archetype.traits
+                      .map(
+                        (trait) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.check_circle,
+                                size: 16,
+                                color: Colors.green,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(child: Text(trait)),
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text(trait)),
-                      ],
-                    ),
-                  )).toList(),
+                      )
+                      .toList(),
                 ],
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 推奨習慣
           Card(
             child: Padding(
@@ -469,33 +442,34 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
                 children: [
                   const Text(
                     'おすすめの習慣',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  ...archetype.recommendedHabits.map((habit) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          size: 16,
-                          color: Colors.amber,
+                  ...archetype.recommendedHabits
+                      .map(
+                        (habit) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.star,
+                                size: 16,
+                                color: Colors.amber,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(child: Text(habit)),
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text(habit)),
-                      ],
-                    ),
-                  )).toList(),
+                      )
+                      .toList(),
                 ],
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 行動パターン分析
           Card(
             child: Padding(
@@ -505,10 +479,7 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
                 children: [
                   const Text(
                     '行動パターン分析',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
                   _buildPatternChart(),
@@ -516,9 +487,9 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // アクションボタン
           Row(
             children: [
@@ -546,47 +517,48 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
 
   Widget _buildPatternChart() {
     if (_currentDiagnosis == null) return const SizedBox();
-    
+
     final patterns = _currentDiagnosis!.behaviorPatterns;
-    
+
     return Column(
-      children: patterns.entries.map((entry) {
-        final label = _getPatternLabel(entry.key);
-        final value = entry.value;
-        
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children:
+          patterns.entries.map((entry) {
+            final label = _getPatternLabel(entry.key);
+            final value = entry.value;
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label),
-                  Text(
-                    '${(value * 100).toInt()}%',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(label),
+                      Text(
+                        '${(value * 100).toInt()}%',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  LinearProgressIndicator(
+                    value: value,
+                    backgroundColor: Colors.grey.shade300,
+                    valueColor: AlwaysStoppedAnimation(
+                      _getPatternColor(entry.key),
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              LinearProgressIndicator(
-                value: value,
-                backgroundColor: Colors.grey.shade300,
-                valueColor: AlwaysStoppedAnimation(_getPatternColor(entry.key)),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
+            );
+          }).toList(),
     );
   }
 
   Widget _buildAnalysisTab() {
     if (_currentDiagnosis == null) {
-      return const Center(
-        child: Text('診断結果がありません'),
-      );
+      return const Center(child: Text('診断結果がありません'));
     }
 
     return SingleChildScrollView(
@@ -603,10 +575,7 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
                 children: [
                   const Text(
                     'AI分析結果',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
                   Text(_currentDiagnosis!.aiInsights),
@@ -614,9 +583,9 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 改善提案
           Card(
             child: Padding(
@@ -626,34 +595,33 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
                 children: [
                   const Text(
                     '改善提案',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  ..._currentDiagnosis!.recommendations.map((rec) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Icon(
-                          Icons.lightbulb,
-                          size: 16,
-                          color: Colors.orange,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text(rec)),
-                      ],
+                  ..._currentDiagnosis!.recommendations.map(
+                    (rec) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.lightbulb,
+                            size: 16,
+                            color: Colors.orange,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(rec)),
+                        ],
+                      ),
                     ),
-                  )).toList(),
+                  ),
                 ],
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 相性分析
           if (_currentDiagnosis!.compatibilityAnalysis.isNotEmpty)
             Card(
@@ -670,15 +638,20 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ..._currentDiagnosis!.compatibilityAnalysis.entries.map((entry) {
+                    ..._currentDiagnosis!.compatibilityAnalysis.entries.map((
+                      entry,
+                    ) {
                       final archetype = entry.key;
                       final compatibility = entry.value;
-                      
+
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Row(
                           children: [
-                            Text(archetype.emoji, style: const TextStyle(fontSize: 20)),
+                            Text(
+                              archetype.emoji,
+                              style: const TextStyle(fontSize: 20),
+                            ),
                             const SizedBox(width: 8),
                             Expanded(child: Text(archetype.name)),
                             _buildCompatibilityIndicator(compatibility),
@@ -698,7 +671,7 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
   Widget _buildCompatibilityIndicator(double compatibility) {
     Color color;
     String text;
-    
+
     if (compatibility >= 0.8) {
       color = Colors.green;
       text = '最高';
@@ -712,7 +685,7 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
       color = Colors.red;
       text = '注意';
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -754,43 +727,43 @@ class _PersonalityDiagnosisScreenState extends ConsumerState<PersonalityDiagnosi
 
   Future<void> _startAnalysis() async {
     setState(() => _isAnalyzing = true);
-    
+
     try {
       // TODO: 実際のユーザーIDを取得
       final diagnosis = await _diagnosisService.performDiagnosis(
         'current_user_id',
         _answers,
       );
-      
+
       setState(() {
         _currentDiagnosis = diagnosis;
         _isAnalyzing = false;
       });
-      
+
       _tabController.animateTo(1);
-      
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('診断が完了しました！')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('診断が完了しました！')));
       }
     } catch (e) {
       setState(() => _isAnalyzing = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('診断に失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('診断に失敗しました: $e')));
       }
     }
   }
 
   void _shareResult() {
     if (_currentDiagnosis == null) return;
-    
+
     // TODO: 結果の共有機能を実装
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('結果を共有しました')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('結果を共有しました')));
   }
 
   void _retakeDiagnosis() {

@@ -2,14 +2,11 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-enum ConnectivityStatus {
-  online,
-  offline,
-}
+enum ConnectivityStatus { online, offline }
 
 class ConnectivityService {
   ConnectivityService({Connectivity? connectivity})
-      : _connectivity = connectivity ?? Connectivity();
+    : _connectivity = connectivity ?? Connectivity();
 
   final Connectivity _connectivity;
 
@@ -19,20 +16,24 @@ class ConnectivityService {
   StreamSubscription<List<ConnectivityResult>>? _subscription;
 
   Stream<ConnectivityStatus> get onStatusChanged async* {
-    final List<ConnectivityResult> initial = await _connectivity.checkConnectivity();
+    final List<ConnectivityResult> initial =
+        await _connectivity.checkConnectivity();
     yield _mapResult(initial.first);
     yield* _controller.stream;
   }
 
   Future<void> initialize() async {
     _subscription?.cancel();
-    _subscription = _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> result) {
+    _subscription = _connectivity.onConnectivityChanged.listen((
+      List<ConnectivityResult> result,
+    ) {
       _controller.add(_mapResult(result.first));
     });
   }
 
   Future<ConnectivityStatus> getCurrentStatus() async {
-    final List<ConnectivityResult> result = await _connectivity.checkConnectivity();
+    final List<ConnectivityResult> result =
+        await _connectivity.checkConnectivity();
     return _mapResult(result.first);
   }
 

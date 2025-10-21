@@ -34,10 +34,10 @@ class AnalyticsService {
 
   // Quest Events
   Future<void> logQuestCreate(String category, int estimatedMinutes) async {
-    await _logEvent('quest_create', parameters: {
-      'category': category,
-      'estimated_minutes': estimatedMinutes,
-    });
+    await _logEvent(
+      'quest_create',
+      parameters: {'category': category, 'estimated_minutes': estimatedMinutes},
+    );
   }
 
   Future<void> logQuestEdit(int questId) async {
@@ -49,10 +49,10 @@ class AnalyticsService {
   }
 
   Future<void> logQuestComplete(int questId, String proofType) async {
-    await _logEvent('quest_complete', parameters: {
-      'quest_id': questId,
-      'proof_type': proofType,
-    });
+    await _logEvent(
+      'quest_complete',
+      parameters: {'quest_id': questId, 'proof_type': proofType},
+    );
   }
 
   // Progress Events
@@ -95,10 +95,10 @@ class AnalyticsService {
   }
 
   Future<void> logPairReport(String pairId, String reason) async {
-    await _logEvent('pair_report', parameters: {
-      'pair_id': pairId,
-      'reason': reason,
-    });
+    await _logEvent(
+      'pair_report',
+      parameters: {'pair_id': pairId, 'reason': reason},
+    );
   }
 
   // Screen Views
@@ -117,14 +117,17 @@ class AnalyticsService {
 
   // Error Events
   Future<void> logError(String errorType, String message) async {
-    await _logEvent('error_occurred', parameters: {
-      'error_type': errorType,
-      'message': message,
-    });
+    await _logEvent(
+      'error_occurred',
+      parameters: {'error_type': errorType, 'message': message},
+    );
   }
 
   // Generic event logging
-  Future<void> logEvent(String eventName, {Map<String, Object>? parameters}) async {
+  Future<void> logEvent(
+    String eventName, {
+    Map<String, Object>? parameters,
+  }) async {
     await _logEvent(eventName, parameters: parameters);
   }
 

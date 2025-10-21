@@ -124,7 +124,7 @@ class AgeVerificationService {
       });
       print('✅ Queued parental consent email to: $parentEmail');
     } catch (e) {
-      print("Error queuing email: $e");
+      print('Error queuing email: $e');
     }
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/app_theme.dart';
 
 /// アプリ内アンケートウィジェット
 class SurveyWidget extends StatefulWidget {
@@ -22,8 +22,10 @@ class _SurveyWidgetState extends State<SurveyWidget> {
   final Map<String, dynamic> _answers = {};
   int _currentQuestionIndex = 0;
 
-  SurveyQuestion get _currentQuestion => widget.survey.questions[_currentQuestionIndex];
-  bool get _isLastQuestion => _currentQuestionIndex == widget.survey.questions.length - 1;
+  SurveyQuestion get _currentQuestion =>
+      widget.survey.questions[_currentQuestionIndex];
+  bool get _isLastQuestion =>
+      _currentQuestionIndex == widget.survey.questions.length - 1;
   bool get _canProceed => _answers.containsKey(_currentQuestion.id);
 
   void _nextQuestion() {
@@ -157,9 +159,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         if (question.isRequired)
           Text(
             ' *必須',
-            style: tokens.typography.caption.copyWith(
-              color: tokens.error,
-            ),
+            style: tokens.typography.caption.copyWith(color: tokens.error),
           ),
         SizedBox(height: tokens.spacing.md),
         _buildQuestionInput(question, tokens),
@@ -182,48 +182,55 @@ class _SurveyWidgetState extends State<SurveyWidget> {
 
   Widget _buildMultipleChoice(SurveyQuestion question, MinqTheme tokens) {
     return Column(
-      children: question.options!.map((option) {
-        final isSelected = _answers[question.id] == option;
-        return Padding(
-          padding: EdgeInsets.only(bottom: tokens.spacing.sm),
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                _answers[question.id] = option;
-              });
-            },
-            borderRadius: BorderRadius.circular(tokens.radius.md),
-            child: Container(
-              padding: EdgeInsets.all(tokens.spacing.md),
-              decoration: BoxDecoration(
-                color: isSelected ? tokens.primary.withOpacity(0.1) : tokens.background,
+      children:
+          question.options!.map((option) {
+            final isSelected = _answers[question.id] == option;
+            return Padding(
+              padding: EdgeInsets.only(bottom: tokens.spacing.sm),
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _answers[question.id] = option;
+                  });
+                },
                 borderRadius: BorderRadius.circular(tokens.radius.md),
-                border: Border.all(
-                  color: isSelected ? tokens.primary : tokens.border,
-                  width: isSelected ? 2 : 1,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                    color: isSelected ? tokens.primary : tokens.textSecondary,
-                  ),
-                  SizedBox(width: tokens.spacing.sm),
-                  Expanded(
-                    child: Text(
-                      option,
-                      style: tokens.typography.body.copyWith(
-                        color: tokens.textPrimary,
-                      ),
+                child: Container(
+                  padding: EdgeInsets.all(tokens.spacing.md),
+                  decoration: BoxDecoration(
+                    color:
+                        isSelected
+                            ? tokens.primary.withOpacity(0.1)
+                            : tokens.background,
+                    borderRadius: BorderRadius.circular(tokens.radius.md),
+                    border: Border.all(
+                      color: isSelected ? tokens.primary : tokens.border,
+                      width: isSelected ? 2 : 1,
                     ),
                   ),
-                ],
+                  child: Row(
+                    children: [
+                      Icon(
+                        isSelected
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        color:
+                            isSelected ? tokens.primary : tokens.textSecondary,
+                      ),
+                      SizedBox(width: tokens.spacing.sm),
+                      Expanded(
+                        child: Text(
+                          option,
+                          style: tokens.typography.body.copyWith(
+                            color: tokens.textPrimary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-        );
-      }).toList(),
+            );
+          }).toList(),
     );
   }
 
@@ -287,13 +294,9 @@ class _SurveyWidgetState extends State<SurveyWidget> {
   Widget _buildYesNo(SurveyQuestion question, MinqTheme tokens) {
     return Row(
       children: [
-        Expanded(
-          child: _buildYesNoButton('はい', true, tokens),
-        ),
+        Expanded(child: _buildYesNoButton('はい', true, tokens)),
         SizedBox(width: tokens.spacing.md),
-        Expanded(
-          child: _buildYesNoButton('いいえ', false, tokens),
-        ),
+        Expanded(child: _buildYesNoButton('いいえ', false, tokens)),
       ],
     );
   }
@@ -312,9 +315,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         padding: EdgeInsets.symmetric(vertical: tokens.spacing.md),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(tokens.radius.md),
-          side: BorderSide(
-            color: isSelected ? tokens.primary : tokens.border,
-          ),
+          side: BorderSide(color: isSelected ? tokens.primary : tokens.border),
         ),
       ),
       child: Text(label),
@@ -357,12 +358,7 @@ class SurveyQuestion {
 }
 
 /// 質問タイプ
-enum SurveyQuestionType {
-  multipleChoice,
-  rating,
-  text,
-  yesNo,
-}
+enum SurveyQuestionType { multipleChoice, rating, text, yesNo }
 
 /// アンケート回答
 class SurveyResponse {
@@ -387,7 +383,7 @@ class SurveyResponse {
 
 /// サンプルアンケート
 class SampleSurveys {
-  static Survey get userSatisfaction => Survey(
+  static Survey get userSatisfaction => const Survey(
     id: 'user_satisfaction_2025',
     title: 'ユーザー満足度調査',
     description: 'MinQをより良くするため、ご意見をお聞かせください',
@@ -402,13 +398,7 @@ class SampleSurveys {
         id: 'q2',
         text: '最も気に入っている機能は何ですか？',
         type: SurveyQuestionType.multipleChoice,
-        options: [
-          'クエスト管理',
-          'ペア機能',
-          '統計・グラフ',
-          '通知機能',
-          'その他',
-        ],
+        options: ['クエスト管理', 'ペア機能', '統計・グラフ', '通知機能', 'その他'],
       ),
       SurveyQuestion(
         id: 'q3',

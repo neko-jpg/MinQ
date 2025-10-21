@@ -1,11 +1,11 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:minq/presentation/controllers/ai_concierge_chat_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import '../../data/providers/gemma_ai_provider.dart';
+import 'package:minq/data/providers/gemma_ai_provider.dart';
 
 enum _ConciergeMenuOption { insights, clearHistory, diagnostics, toggleAI }
 
@@ -42,7 +42,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final chatState = ref.watch(aiConciergeChatControllerProvider);
-    
+
     // ref.listenをbuild内で使用
     ref.listen<AsyncValue<List<AiConciergeMessage>>>(
       aiConciergeChatControllerProvider,
@@ -79,7 +79,9 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
             ),
             Consumer(
               builder: (context, ref, child) {
-                final controller = ref.read(aiConciergeChatControllerProvider.notifier);
+                final controller = ref.read(
+                  aiConciergeChatControllerProvider.notifier,
+                );
                 final mode = controller.getCurrentAIMode();
                 return Text(
                   mode,
@@ -181,23 +183,22 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
       case _ConciergeMenuOption.clearHistory:
         final confirmed = await showDialog<bool>(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('チャット履歴を削除'),
-            content: const Text('すべてのチャット履歴を削除しますか？この操作は取り消せません。'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('キャンセル'),
+          builder:
+              (context) => AlertDialog(
+                title: const Text('チャット履歴を削除'),
+                content: const Text('すべてのチャット履歴を削除しますか？この操作は取り消せません。'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text('キャンセル'),
+                  ),
+                  FilledButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    style: FilledButton.styleFrom(backgroundColor: Colors.red),
+                    child: const Text('削除'),
+                  ),
+                ],
               ),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-                child: const Text('削除'),
-              ),
-            ],
-          ),
         );
         if (confirmed == true) {
           await notifier.resetConversation();
@@ -478,44 +479,67 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
   Future<void> _showDiagnostics() async {
     final gemmaService = await ref.read(gemmaAIServiceProvider.future);
     final diagnostics = await gemmaService.getDiagnosticInfo();
-    
+
     if (!mounted) return;
-    
+
     await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('AI診断情報'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildDiagnosticItem('初期化状態', diagnostics['isInitialized']?.toString() ?? 'unknown'),
-              _buildDiagnosticItem('アクティブモデル', diagnostics['hasActiveModel']?.toString() ?? 'unknown'),
-              _buildDiagnosticItem('モデルファイル', diagnostics['modelFileName']?.toString() ?? 'unknown'),
-              _buildDiagnosticItem('インストール済み', diagnostics['isModelInstalled']?.toString() ?? 'unknown'),
-              _buildDiagnosticItem('リカバリ試行', diagnostics['hasAttemptedRecovery']?.toString() ?? 'unknown'),
-              if (diagnostics['installedModels'] != null)
-                _buildDiagnosticItem('インストール済みモデル', diagnostics['installedModels'].toString()),
-              if (diagnostics['diagnosticError'] != null)
-                _buildDiagnosticItem('エラー', diagnostics['diagnosticError'].toString()),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('AI診断情報'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildDiagnosticItem(
+                    '初期化状態',
+                    diagnostics['isInitialized']?.toString() ?? 'unknown',
+                  ),
+                  _buildDiagnosticItem(
+                    'アクティブモデル',
+                    diagnostics['hasActiveModel']?.toString() ?? 'unknown',
+                  ),
+                  _buildDiagnosticItem(
+                    'モデルファイル',
+                    diagnostics['modelFileName']?.toString() ?? 'unknown',
+                  ),
+                  _buildDiagnosticItem(
+                    'インストール済み',
+                    diagnostics['isModelInstalled']?.toString() ?? 'unknown',
+                  ),
+                  _buildDiagnosticItem(
+                    'リカバリ試行',
+                    diagnostics['hasAttemptedRecovery']?.toString() ??
+                        'unknown',
+                  ),
+                  if (diagnostics['installedModels'] != null)
+                    _buildDiagnosticItem(
+                      'インストール済みモデル',
+                      diagnostics['installedModels'].toString(),
+                    ),
+                  if (diagnostics['diagnosticError'] != null)
+                    _buildDiagnosticItem(
+                      'エラー',
+                      diagnostics['diagnosticError'].toString(),
+                    ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('閉じる'),
+              ),
+              FilledButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  await _forceResetAI();
+                },
+                child: const Text('AIをリセット'),
+              ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('閉じる'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await _forceResetAI();
-            },
-            child: const Text('AIをリセット'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -532,9 +556,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );
@@ -544,10 +566,12 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
     try {
       final gemmaService = await ref.read(gemmaAIServiceProvider.future);
       await gemmaService.forceReset();
-      
+
       // チャットも再初期化
-      await ref.read(aiConciergeChatControllerProvider.notifier).resetConversation();
-      
+      await ref
+          .read(aiConciergeChatControllerProvider.notifier)
+          .resetConversation();
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -572,23 +596,24 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
   Future<void> _toggleAIMode() async {
     final controller = ref.read(aiConciergeChatControllerProvider.notifier);
     final currentMode = controller.getCurrentAIMode();
-    
+
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('AIモード切り替え'),
-        content: Text('現在のモード: $currentMode\n\nAIモードを切り替えますか？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('AIモード切り替え'),
+            content: Text('現在のモード: $currentMode\n\nAIモードを切り替えますか？'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('キャンセル'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('切り替え'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('切り替え'),
-          ),
-        ],
-      ),
     );
 
     if (confirmed == true) {
@@ -605,4 +630,3 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
     }
   }
 }
-

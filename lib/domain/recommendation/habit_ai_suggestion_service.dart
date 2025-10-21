@@ -23,11 +23,9 @@ class HabitAiSuggestion {
 }
 
 class HabitAiSuggestionService {
-  HabitAiSuggestionService({
-    Random? random,
-    AIIntegrationManager? aiManager,
-  })  : _random = random ?? Random(),
-        _aiManager = aiManager ?? AIIntegrationManager.instance;
+  HabitAiSuggestionService({Random? random, AIIntegrationManager? aiManager})
+    : _random = random ?? Random(),
+      _aiManager = aiManager ?? AIIntegrationManager.instance;
 
   final Random _random;
   final AIIntegrationManager _aiManager;
@@ -51,7 +49,7 @@ class HabitAiSuggestionService {
       } catch (e) {
         // Fallback to template-based suggestions
       }
-      
+
       return QuestTemplateRepository.getAllTemplates()
           .take(limit)
           .map(
@@ -83,10 +81,13 @@ class HabitAiSuggestionService {
         continue; // Already have a very similar quest.
       }
 
-      final normalizedCategory =
-          _normalizeCategory(template.category.displayName);
+      final normalizedCategory = _normalizeCategory(
+        template.category.displayName,
+      );
       final usage = categoryUsage[normalizedCategory];
-      final hasQuestInCategory = existingCategories.contains(normalizedCategory);
+      final hasQuestInCategory = existingCategories.contains(
+        normalizedCategory,
+      );
 
       var score = 0.45; // Base confidence.
       final reasons = <String>[];
@@ -117,17 +118,18 @@ class HabitAiSuggestionService {
 
       final supportingFacts = <String>[];
       if (usage != null && usage.count > 0) {
-        supportingFacts.add('過去30日で${usage.count}件の${template.category.displayName}ログがあります。');
+        supportingFacts.add(
+          '過去30日で${usage.count}件の${template.category.displayName}ログがあります。',
+        );
       }
       if (predominantTime != null) {
         supportingFacts.add('主な活動時間: ${predominantTime.label}');
       }
 
       // Enhance rationale with AI if available
-      String enhancedRationale = reasons.isEmpty
-          ? '日々のリズムから親和性の高い習慣をピックアップしました。'
-          : reasons.join(' ');
-      
+      String enhancedRationale =
+          reasons.isEmpty ? '日々のリズムから親和性の高い習慣をピックアップしました。' : reasons.join(' ');
+
       if (confidence > 0.7) {
         try {
           final aiEnhancement = await _aiManager.generateChatResponse(
@@ -201,10 +203,11 @@ class HabitAiSuggestionService {
       buckets[bucket] = (buckets[bucket] ?? 0) + 1;
     }
 
-    final mostActive = buckets.entries
-        .where((entry) => entry.value > 0)
-        .sortedBy((entry) => entry.value)
-        .lastOrNull;
+    final mostActive =
+        buckets.entries
+            .where((entry) => entry.value > 0)
+            .sortedBy((entry) => entry.value)
+            .lastOrNull;
     return mostActive?.key;
   }
 
@@ -226,25 +229,15 @@ class HabitAiSuggestionService {
         _PredominantTimeOfDay.night,
         _PredominantTimeOfDay.afternoon,
       },
-      QuestCategory.productivity: {
-        _PredominantTimeOfDay.afternoon,
-      },
-      QuestCategory.creative: {
-        _PredominantTimeOfDay.night,
-      },
+      QuestCategory.productivity: {_PredominantTimeOfDay.afternoon},
+      QuestCategory.creative: {_PredominantTimeOfDay.night},
       QuestCategory.social: {
         _PredominantTimeOfDay.evening,
         _PredominantTimeOfDay.night,
       },
-      QuestCategory.financial: {
-        _PredominantTimeOfDay.afternoon,
-      },
-      QuestCategory.health: {
-        _PredominantTimeOfDay.morning,
-      },
-      QuestCategory.other: {
-        _PredominantTimeOfDay.afternoon,
-      },
+      QuestCategory.financial: {_PredominantTimeOfDay.afternoon},
+      QuestCategory.health: {_PredominantTimeOfDay.morning},
+      QuestCategory.other: {_PredominantTimeOfDay.afternoon},
     };
 
     final acceptable = preferences[category];

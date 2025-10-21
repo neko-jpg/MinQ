@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:collection/collection.dart';
 
 /// Role of a member inside a [TeamHabit].
@@ -44,19 +42,13 @@ class TeamHabitMember {
 
 /// Completion state of a member for a given date.
 class TeamHabitCompletion {
-  TeamHabitCompletion({
-    required this.date,
-    required this.completedBy,
-  });
+  TeamHabitCompletion({required this.date, required this.completedBy});
 
   final DateTime date;
   final Set<String> completedBy;
 
   TeamHabitCompletion markCompleted(String uid) {
-    return TeamHabitCompletion(
-      date: date,
-      completedBy: {...completedBy, uid},
-    );
+    return TeamHabitCompletion(date: date, completedBy: {...completedBy, uid});
   }
 }
 
@@ -69,8 +61,8 @@ class TeamHabit {
     required this.members,
     List<TeamHabitCompletion>? completions,
     DateTime? archivedAt,
-  })  : _completions = completions ?? <TeamHabitCompletion>[],
-        archivedAt = archivedAt;
+  }) : _completions = completions ?? <TeamHabitCompletion>[],
+       archivedAt = archivedAt;
 
   final String id;
   final String name;
@@ -119,25 +111,20 @@ class TeamHabit {
     return copyWith(members: updatedMembers);
   }
 
-  TeamHabit markCompleted({
-    required String uid,
-    required DateTime date,
-  }) {
+  TeamHabit markCompleted({required String uid, required DateTime date}) {
     if (!members.containsKey(uid)) {
       throw StateError('Member $uid cannot complete habit for team $id');
     }
 
     final normalizedDate = DateTime.utc(date.year, date.month, date.day);
-    final existing = _completions
-        .firstWhereOrNull((completion) => completion.date == normalizedDate);
+    final existing = _completions.firstWhereOrNull(
+      (completion) => completion.date == normalizedDate,
+    );
 
     final List<TeamHabitCompletion> updated = List.of(_completions);
     if (existing == null) {
       updated.add(
-        TeamHabitCompletion(
-          date: normalizedDate,
-          completedBy: {uid},
-        ),
+        TeamHabitCompletion(date: normalizedDate, completedBy: {uid}),
       );
     } else {
       final index = updated.indexOf(existing);

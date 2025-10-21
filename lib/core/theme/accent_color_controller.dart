@@ -3,14 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// アクセントカラー
-enum AccentColor {
-  blue,
-  green,
-  purple,
-  orange,
-  pink,
-  teal,
-}
+enum AccentColor { blue, green, purple, orange, pink, teal }
 
 extension AccentColorExtension on AccentColor {
   /// カラー値を取得
@@ -51,21 +44,18 @@ extension AccentColorExtension on AccentColor {
 
   /// MaterialColorを生成
   MaterialColor get materialColor {
-    return MaterialColor(
-      color.value,
-      <int, Color>{
-        50: color.withOpacity(0.1),
-        100: color.withOpacity(0.2),
-        200: color.withOpacity(0.3),
-        300: color.withOpacity(0.4),
-        400: color.withOpacity(0.6),
-        500: color,
-        600: color.withOpacity(0.8),
-        700: color.withOpacity(0.9),
-        800: color.withOpacity(0.95),
-        900: color,
-      },
-    );
+    return MaterialColor(color.value, <int, Color>{
+      50: color.withOpacity(0.1),
+      100: color.withOpacity(0.2),
+      200: color.withOpacity(0.3),
+      300: color.withOpacity(0.4),
+      400: color.withOpacity(0.6),
+      500: color,
+      600: color.withOpacity(0.8),
+      700: color.withOpacity(0.9),
+      800: color.withOpacity(0.95),
+      900: color,
+    });
   }
 }
 
@@ -102,8 +92,8 @@ class AccentColorController extends StateNotifier<AccentColor> {
 /// アクセントカラーコントローラープロバイダー
 final accentColorControllerProvider =
     StateNotifierProvider<AccentColorController, AccentColor>((ref) {
-  return AccentColorController();
-});
+      return AccentColorController();
+    });
 
 /// アクセントカラープロバイダー
 final accentColorProvider = Provider<Color>((ref) {
@@ -123,43 +113,40 @@ class AccentColorPicker extends ConsumerWidget {
     return Wrap(
       spacing: 16,
       runSpacing: 16,
-      children: AccentColor.values.map((color) {
-        final isSelected = color == currentColor;
+      children:
+          AccentColor.values.map((color) {
+            final isSelected = color == currentColor;
 
-        return GestureDetector(
-          onTap: () => controller.setAccentColor(color),
-          child: Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: color.color,
-              shape: BoxShape.circle,
-              border: isSelected
-                  ? Border.all(
-                      color: Colors.white,
-                      width: 3,
-                    )
-                  : null,
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: color.color.withOpacity(0.5),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ]
-                  : null,
-            ),
-            child: isSelected
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 32,
-                  )
-                : null,
-          ),
-        );
-      }).toList(),
+            return GestureDetector(
+              onTap: () => controller.setAccentColor(color),
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: color.color,
+                  shape: BoxShape.circle,
+                  border:
+                      isSelected
+                          ? Border.all(color: Colors.white, width: 3)
+                          : null,
+                  boxShadow:
+                      isSelected
+                          ? [
+                            BoxShadow(
+                              color: color.color.withOpacity(0.5),
+                              blurRadius: 8,
+                              spreadRadius: 2,
+                            ),
+                          ]
+                          : null,
+                ),
+                child:
+                    isSelected
+                        ? const Icon(Icons.check, color: Colors.white, size: 32)
+                        : null,
+              ),
+            );
+          }).toList(),
     );
   }
 }

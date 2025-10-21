@@ -70,7 +70,10 @@ class ProgressRing extends StatefulWidget {
 class _ProgressRingState extends State<ProgressRing>
     with TickerProviderStateMixin {
   bool get _reduceMotion =>
-      WidgetsBinding.instance.platformDispatcher.accessibilityFeatures
+      WidgetsBinding
+          .instance
+          .platformDispatcher
+          .accessibilityFeatures
           .disableAnimations;
 
   bool get _shouldShowSparkles => widget.showSparkles && !_reduceMotion;
@@ -117,23 +120,21 @@ class _ProgressRingState extends State<ProgressRing>
     _progressAnimation = Tween<double>(
       begin: 0.0,
       end: widget.progress,
-    ).animate(CurvedAnimation(
-      parent: _progressController,
-      curve: Curves.easeInOutCubic,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: _progressController,
+        curve: Curves.easeInOutCubic,
+      ),
+    );
 
     // Sparkle animation for completion effect
     _sparkleController = AnimationController(
       duration: sparkleDuration,
       vsync: this,
     );
-    _sparkleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _sparkleController,
-      curve: Curves.easeInOut,
-    ));
+    _sparkleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _sparkleController, curve: Curves.easeInOut),
+    );
 
     // Pulse animation for completion celebration
     _pulseController = AnimationController(
@@ -141,26 +142,18 @@ class _ProgressRingState extends State<ProgressRing>
       vsync: this,
     );
     final double pulseEnd = _reduceMotion ? 1.0 : 1.1;
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: pulseEnd,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.elasticOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 1.0, end: pulseEnd).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.elasticOut),
+    );
 
     // Rotation animation for sparkles
     _rotationController = AnimationController(
       duration: rotationDuration,
       vsync: this,
     );
-    _rotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 2 * math.pi,
-    ).animate(CurvedAnimation(
-      parent: _rotationController,
-      curve: Curves.linear,
-    ));
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 2 * math.pi).animate(
+      CurvedAnimation(parent: _rotationController, curve: Curves.linear),
+    );
 
     _previousProgress = widget.progress;
   }
@@ -169,10 +162,12 @@ class _ProgressRingState extends State<ProgressRing>
     _progressAnimation = Tween<double>(
       begin: _previousProgress,
       end: widget.progress,
-    ).animate(CurvedAnimation(
-      parent: _progressController,
-      curve: Curves.easeInOutCubic,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: _progressController,
+        curve: Curves.easeInOutCubic,
+      ),
+    );
 
     _progressController.reset();
     _progressController.forward();
@@ -227,7 +222,7 @@ class _ProgressRingState extends State<ProgressRing>
   @override
   void didUpdateWidget(ProgressRing oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     if (oldWidget.progress != widget.progress) {
       if (widget.progress < _previousProgress) {
         // Progress decreased, reset completion state
@@ -257,7 +252,7 @@ class _ProgressRingState extends State<ProgressRing>
   @override
   Widget build(BuildContext context) {
     final theme = MinqTheme.of(context);
-    
+
     return AnimatedBuilder(
       animation: Listenable.merge([
         _progressAnimation,
@@ -284,20 +279,21 @@ class _ProgressRingState extends State<ProgressRing>
                     startAngle: widget.startAngle,
                   ),
                 ),
-                
+
                 // Progress ring
                 CustomPaint(
                   size: Size(widget.size, widget.size),
                   painter: _ProgressRingPainter(
                     progress: _progressAnimation.value,
                     strokeWidth: widget.strokeWidth,
-                    color: _progressAnimation.value >= 1.0
-                        ? (widget.completedColor ?? theme.progressComplete)
-                        : (widget.progressColor ?? theme.progressActive),
+                    color:
+                        _progressAnimation.value >= 1.0
+                            ? (widget.completedColor ?? theme.progressComplete)
+                            : (widget.progressColor ?? theme.progressActive),
                     startAngle: widget.startAngle,
                   ),
                 ),
-                
+
                 // Sparkles
                 if (_shouldShowSparkles && _sparkleAnimation.value > 0)
                   Transform.rotate(
@@ -311,10 +307,9 @@ class _ProgressRingState extends State<ProgressRing>
                       ),
                     ),
                   ),
-                
+
                 // Center content
-                if (widget.child != null)
-                  widget.child!,
+                if (widget.child != null) widget.child!,
               ],
             ),
           ),
@@ -341,12 +336,13 @@ class _ProgressRingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width - strokeWidth) / 2;
-    
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
@@ -360,9 +356,9 @@ class _ProgressRingPainter extends CustomPainter {
   @override
   bool shouldRepaint(_ProgressRingPainter oldDelegate) {
     return oldDelegate.progress != progress ||
-           oldDelegate.color != color ||
-           oldDelegate.strokeWidth != strokeWidth ||
-           oldDelegate.startAngle != startAngle;
+        oldDelegate.color != color ||
+        oldDelegate.strokeWidth != strokeWidth ||
+        oldDelegate.startAngle != startAngle;
   }
 }
 
@@ -381,12 +377,13 @@ class _SparklesPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = ringSize / 2;
-    
-    final paint = Paint()
-      ..color = color.withOpacity(animation)
-      ..strokeWidth = 2.0
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+
+    final paint =
+        Paint()
+          ..color = color.withOpacity(animation)
+          ..strokeWidth = 2.0
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     // Draw sparkles around the ring
     const sparkleCount = 8;
@@ -397,9 +394,9 @@ class _SparklesPainter extends CustomPainter {
         center.dx + sparkleRadius * math.cos(angle),
         center.dy + sparkleRadius * math.sin(angle),
       );
-      
+
       final sparkleSize = 4.0 * animation;
-      
+
       // Draw sparkle as a small cross
       canvas.drawLine(
         Offset(sparkleCenter.dx - sparkleSize, sparkleCenter.dy),
@@ -417,7 +414,7 @@ class _SparklesPainter extends CustomPainter {
   @override
   bool shouldRepaint(_SparklesPainter oldDelegate) {
     return oldDelegate.animation != animation ||
-           oldDelegate.color != color ||
-           oldDelegate.ringSize != ringSize;
+        oldDelegate.color != color ||
+        oldDelegate.ringSize != ringSize;
   }
 }

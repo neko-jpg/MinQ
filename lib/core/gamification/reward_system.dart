@@ -24,9 +24,7 @@ class RewardSystem {
 
     try {
       final snapshot = await _firestore!.collection('rewards').get();
-      return snapshot.docs
-          .map((doc) => Reward.fromJson(doc.data()))
-          .toList();
+      return snapshot.docs.map((doc) => Reward.fromJson(doc.data())).toList();
     } catch (e) {
       print('Error fetching rewards: $e');
       return [];
@@ -56,9 +54,8 @@ class RewardSystem {
         }
         final reward = Reward.fromJson(rewardSnapshot.data()!);
 
-        final pointsCollectionSnapshot = await userRef
-            .collection('points_transactions')
-            .get();
+        final pointsCollectionSnapshot =
+            await userRef.collection('points_transactions').get();
         final currentPoints = pointsCollectionSnapshot.docs
             .map((doc) => doc.data()['value'] as int)
             .fold(0, (prev, el) => prev + el);
@@ -94,41 +91,73 @@ class RewardSystem {
   Future<Reward?> generateVariableReward(String userId) async {
     // This is a simplified example. A real implementation might fetch these from a remote config.
     final potentialRewards = [
-      Reward(id: 'surprise_1', name: 'Small Point Pouch', description: 'A little bonus!', cost: 0, type: 'consumable'),
-      Reward(id: 'surprise_2', name: 'Medium Point Pouch', description: 'A nice bonus!', cost: 0, type: 'consumable'),
-      Reward(id: 'surprise_3', name: 'Exclusive Icon', description: 'A rare profile icon!', cost: 0, type: 'icon'),
+      const Reward(
+        id: 'surprise_1',
+        name: 'Small Point Pouch',
+        description: 'A little bonus!',
+        cost: 0,
+        type: 'consumable',
+      ),
+      const Reward(
+        id: 'surprise_2',
+        name: 'Medium Point Pouch',
+        description: 'A nice bonus!',
+        cost: 0,
+        type: 'consumable',
+      ),
+      const Reward(
+        id: 'surprise_3',
+        name: 'Exclusive Icon',
+        description: 'A rare profile icon!',
+        cost: 0,
+        type: 'icon',
+      ),
     ];
 
     // Simple rarity simulation
     final rarity = (DateTime.now().millisecondsSinceEpoch % 100); // 0-99
     Reward selectedReward;
-    if (rarity < 60) { // 60% chance
+    if (rarity < 60) {
+      // 60% chance
       selectedReward = potentialRewards[0];
-    } else if (rarity < 90) { // 30% chance
+    } else if (rarity < 90) {
+      // 30% chance
       selectedReward = potentialRewards[1];
-    } else { // 10% chance
+    } else {
+      // 10% chance
       selectedReward = potentialRewards[2];
     }
 
     try {
       // Firestoreが利用できない場合はローカルログのみ
       if (_firestore == null) {
-        print('Surprise reward generated (offline mode): ${selectedReward.name}');
+        print(
+          'Surprise reward generated (offline mode): ${selectedReward.name}',
+        );
         return selectedReward;
       }
 
       // For consumable point pouches, directly award points instead of adding to inventory
-      if(selectedReward.type == 'consumable') {
-         final points = selectedReward.name.contains('Small') ? 25 : 50;
-         await _firestore!.collection('users').doc(userId).collection('points_transactions').add({
-           'value': points,
-           'reason': 'Surprise Reward: ${selectedReward.name}',
-           'createdAt': FieldValue.serverTimestamp(),
-           'userId': userId,
-         });
-         print('Awarded $points surprise points to user $userId');
+      if (selectedReward.type == 'consumable') {
+        final points = selectedReward.name.contains('Small') ? 25 : 50;
+        await _firestore!
+            .collection('users')
+            .doc(userId)
+            .collection('points_transactions')
+            .add({
+              'value': points,
+              'reason': 'Surprise Reward: ${selectedReward.name}',
+              'createdAt': FieldValue.serverTimestamp(),
+              'userId': userId,
+            });
+        print('Awarded $points surprise points to user $userId');
       } else {
-        await _firestore!.collection('users').doc(userId).collection('user_rewards').doc(selectedReward.id).set(selectedReward.toJson());
+        await _firestore!
+            .collection('users')
+            .doc(userId)
+            .collection('user_rewards')
+            .doc(selectedReward.id)
+            .set(selectedReward.toJson());
         print('Awarded surprise reward ${selectedReward.name} to user $userId');
       }
       return selectedReward;

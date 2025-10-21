@@ -1,5 +1,5 @@
-import 'package:quick_actions/quick_actions.dart';
 import 'package:flutter/material.dart';
+import 'package:quick_actions/quick_actions.dart';
 
 /// アプリショートカットの種類
 enum AppShortcutType {
@@ -175,9 +175,7 @@ class ShortcutStats {
   AppShortcutType? getMostUsed() {
     if (_usageCount.isEmpty) return null;
 
-    return _usageCount.entries
-        .reduce((a, b) => a.value > b.value ? a : b)
-        .key;
+    return _usageCount.entries.reduce((a, b) => a.value > b.value ? a : b).key;
   }
 
   /// 統計をリセット
@@ -248,11 +246,7 @@ class ShortcutConfig {
 
   /// ShortcutItemに変換
   ShortcutItem toShortcutItem() {
-    return ShortcutItem(
-      type: type,
-      localizedTitle: localizedTitle,
-      icon: icon,
-    );
+    return ShortcutItem(type: type, localizedTitle: localizedTitle, icon: icon);
   }
 }
 

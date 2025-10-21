@@ -20,7 +20,7 @@ class HapticManager {
   /// Initialize the haptic manager with user preferences
   static Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
     try {
       final prefs = await SharedPreferences.getInstance();
       _isEnabled = prefs.getBool(_hapticEnabledKey) ?? true;
@@ -54,7 +54,7 @@ class HapticManager {
   /// Uses light impact on iOS, light vibration on Android
   static Future<void> success() async {
     if (!_isEnabled) return;
-    
+
     try {
       if (Platform.isIOS) {
         // iOS: Use light impact for subtle success feedback
@@ -74,7 +74,7 @@ class HapticManager {
   /// Uses medium impact for noticeable but not alarming feedback
   static Future<void> warning() async {
     if (!_isEnabled) return;
-    
+
     try {
       if (Platform.isIOS) {
         // iOS: Medium impact for warnings
@@ -94,7 +94,7 @@ class HapticManager {
   /// Uses heavy impact for strong, attention-grabbing feedback
   static Future<void> error() async {
     if (!_isEnabled) return;
-    
+
     try {
       if (Platform.isIOS) {
         // iOS: Heavy impact for errors
@@ -114,7 +114,7 @@ class HapticManager {
   /// Uses selection click for subtle interaction confirmation
   static Future<void> selection() async {
     if (!_isEnabled) return;
-    
+
     try {
       if (Platform.isIOS) {
         // iOS: Selection click for UI interactions
@@ -134,7 +134,7 @@ class HapticManager {
   /// Uses a sequence of impacts to create a celebratory feeling
   static Future<void> achievement() async {
     if (!_isEnabled) return;
-    
+
     try {
       // Create a celebratory sequence: light -> medium -> light
       await HapticFeedback.lightImpact();
@@ -153,7 +153,7 @@ class HapticManager {
   /// Uses a quick double-tap pattern
   static Future<void> streak() async {
     if (!_isEnabled) return;
-    
+
     try {
       await HapticFeedback.lightImpact();
       await Future.delayed(const Duration(milliseconds: 50));
@@ -169,7 +169,7 @@ class HapticManager {
   /// Uses a ascending pattern of impacts
   static Future<void> levelUp() async {
     if (!_isEnabled) return;
-    
+
     try {
       await HapticFeedback.lightImpact();
       await Future.delayed(const Duration(milliseconds: 80));
@@ -187,7 +187,7 @@ class HapticManager {
   /// Uses selection click for immediate response
   static Future<void> buttonPress() async {
     if (!_isEnabled) return;
-    
+
     try {
       await HapticFeedback.selectionClick();
     } catch (e) {
@@ -201,7 +201,7 @@ class HapticManager {
   /// Uses light impact for toggle actions
   static Future<void> toggle() async {
     if (!_isEnabled) return;
-    
+
     try {
       await HapticFeedback.lightImpact();
     } catch (e) {

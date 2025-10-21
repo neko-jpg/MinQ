@@ -1,6 +1,6 @@
 import 'dart:async';
-import '../../models/mini_quest.dart';
-import '../interfaces/quest_repository_interface.dart';
+import 'package:minq/data/models/mini_quest.dart';
+import 'package:minq/data/repositories/interfaces/quest_repository_interface.dart';
 
 /// テスト用のFakeクエストリポジトリ
 class FakeQuestRepository implements IQuestRepository {
@@ -82,9 +82,9 @@ class FakeQuestRepository implements IQuestRepository {
 
   @override
   Stream<List<MiniQuest>> watchActiveQuests(String userId) {
-    return watchUserQuests(userId).map(
-      (quests) => quests.where((q) => q.isActive).toList(),
-    );
+    return watchUserQuests(
+      userId,
+    ).map((quests) => quests.where((q) => q.isActive).toList());
   }
 
   @override

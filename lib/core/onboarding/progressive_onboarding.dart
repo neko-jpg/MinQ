@@ -10,35 +10,27 @@ class ProgressiveOnboarding {
 
   void _initializeLevels() {
     _levels.addAll({
-      'level_1': OnboardingLevel(
+      'level_1': const OnboardingLevel(
         level: 1,
         title: 'ビギナー',
         description: '基本機能を学ぼう',
-        unlockedFeatures: [
-          'quest_create',
-          'quest_complete',
-          'basic_stats',
-        ],
+        unlockedFeatures: ['quest_create', 'quest_complete', 'basic_stats'],
         requirements: OnboardingRequirements(
           minQuestsCompleted: 0,
           minDaysUsed: 0,
         ),
       ),
-      'level_2': OnboardingLevel(
+      'level_2': const OnboardingLevel(
         level: 2,
         title: 'アクティブユーザー',
         description: '習慣を続けよう',
-        unlockedFeatures: [
-          'notifications',
-          'streak_tracking',
-          'weekly_stats',
-        ],
+        unlockedFeatures: ['notifications', 'streak_tracking', 'weekly_stats'],
         requirements: OnboardingRequirements(
           minQuestsCompleted: 5,
           minDaysUsed: 3,
         ),
       ),
-      'level_3': OnboardingLevel(
+      'level_3': const OnboardingLevel(
         level: 3,
         title: 'ハビットマスター',
         description: '高度な機能を使いこなそう',
@@ -54,7 +46,7 @@ class ProgressiveOnboarding {
           minStreak: 3,
         ),
       ),
-      'level_4': OnboardingLevel(
+      'level_4': const OnboardingLevel(
         level: 4,
         title: 'エキスパート',
         description: 'すべての機能を解放',
@@ -130,9 +122,10 @@ class ProgressiveOnboarding {
     final requirements = nextLevel.requirements;
     final questProgress = questsCompleted / requirements.minQuestsCompleted;
     final daysProgress = daysUsed / requirements.minDaysUsed;
-    final streakProgress = requirements.minStreak > 0
-        ? currentStreak / requirements.minStreak
-        : 1.0;
+    final streakProgress =
+        requirements.minStreak > 0
+            ? currentStreak / requirements.minStreak
+            : 1.0;
 
     final overallProgress = (questProgress + daysProgress + streakProgress) / 3;
 
@@ -197,8 +190,8 @@ class OnboardingRequirements {
     required int currentStreak,
   }) {
     return questsCompleted >= minQuestsCompleted &&
-           daysUsed >= minDaysUsed &&
-           currentStreak >= minStreak;
+        daysUsed >= minDaysUsed &&
+        currentStreak >= minStreak;
   }
 }
 

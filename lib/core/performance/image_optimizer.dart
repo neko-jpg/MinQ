@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +20,14 @@ class ImageOptimizer {
     int quality = 85,
     ImageFormat format = ImageFormat.webp,
   }) async {
-    final cacheKey = _generateCacheKey(imageData, maxWidth, maxHeight, quality, format);
-    
+    final cacheKey = _generateCacheKey(
+      imageData,
+      maxWidth,
+      maxHeight,
+      quality,
+      format,
+    );
+
     if (_optimizedCache.containsKey(cacheKey)) {
       return _optimizedCache[cacheKey]!;
     }
@@ -36,7 +40,7 @@ class ImageOptimizer {
         quality: quality,
         format: format,
       );
-      
+
       _optimizedCache[cacheKey] = optimized;
       return optimized;
     } catch (e) {
@@ -98,7 +102,7 @@ class ImageOptimizer {
   Future<ui.Image> _resizeImage(ui.Image image, int width, int height) async {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
-    
+
     canvas.drawImageRect(
       image,
       Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
@@ -150,11 +154,7 @@ class ImageOptimizer {
 }
 
 /// 画像フォーマット
-enum ImageFormat {
-  png,
-  jpeg,
-  webp,
-}
+enum ImageFormat { png, jpeg, webp }
 
 /// 最適化された画像ウィジェット
 class OptimizedImage extends StatefulWidget {
@@ -215,7 +215,7 @@ class _OptimizedImageState extends State<OptimizedImage> {
     try {
       // 画像データを取得
       final imageData = await _getImageData(widget.imageProvider);
-      
+
       // 最適化
       final optimized = await ImageOptimizer().optimizeImage(
         imageData,
@@ -227,7 +227,7 @@ class _OptimizedImageState extends State<OptimizedImage> {
 
       // 最適化された画像プロバイダーを作成
       _optimizedProvider = MemoryImage(optimized);
-      
+
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -235,7 +235,7 @@ class _OptimizedImageState extends State<OptimizedImage> {
       if (kDebugMode) {
         print('Image optimization error: $e');
       }
-      
+
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -258,20 +258,21 @@ class _OptimizedImageState extends State<OptimizedImage> {
       // メモリ画像の場合
       return provider.bytes;
     } else {
-      throw UnsupportedError('Unsupported image provider: ${provider.runtimeType}');
+      throw UnsupportedError(
+        'Unsupported image provider: ${provider.runtimeType}',
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return widget.placeholder ?? 
-        const Center(child: CircularProgressIndicator());
+      return widget.placeholder ??
+          const Center(child: CircularProgressIndicator());
     }
 
     if (_hasError) {
-      return widget.errorWidget ?? 
-        const Icon(Icons.error, color: Colors.red);
+      return widget.errorWidget ?? const Icon(Icons.error, color: Colors.red);
     }
 
     return Image(
@@ -355,10 +356,10 @@ class ImageCacheManager {
   /// 画像キャッシュを最適化
   void optimizeImageCache() {
     final imageCache = PaintingBinding.instance.imageCache;
-    
+
     // キャッシュサイズを制限（100MB）
     imageCache.maximumSizeBytes = 100 * 1024 * 1024;
-    
+
     // キャッシュ数を制限（1000枚）
     imageCache.maximumSize = 1000;
   }
@@ -366,12 +367,13 @@ class ImageCacheManager {
   /// 低メモリ時のクリーンアップ
   void handleLowMemory() {
     final imageCache = PaintingBinding.instance.imageCache;
-    
+
     // キャッシュサイズを半分に削減
     final currentSize = imageCache.currentSizeBytes;
-    if (currentSize > 50 * 1024 * 1024) { // 50MB以上の場合
+    if (currentSize > 50 * 1024 * 1024) {
+      // 50MB以上の場合
       imageCache.clear();
-      
+
       if (kDebugMode) {
         print('Image cache cleared due to low memory');
       }
@@ -381,7 +383,7 @@ class ImageCacheManager {
   /// キャッシュ統計を取得
   Map<String, dynamic> getCacheStats() {
     final imageCache = PaintingBinding.instance.imageCache;
-    
+
     return {
       'currentSize': imageCache.currentSize,
       'currentSizeBytes': imageCache.currentSizeBytes,

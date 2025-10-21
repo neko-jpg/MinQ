@@ -1,5 +1,5 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// Feature Flag Kill Switch
 /// Remote Configのみで機能を即時停止
@@ -14,11 +14,11 @@ class KillSwitch {
     try {
       await _remoteConfig.fetchAndActivate();
       final enabled = _remoteConfig.getBool('feature_$featureKey');
-      
+
       if (!enabled) {
         _logger.warning('Feature disabled by kill switch: $featureKey');
       }
-      
+
       return enabled;
     } catch (e, stack) {
       _logger.error('Kill switch check failed', error: e, stackTrace: stack);
@@ -30,11 +30,11 @@ class KillSwitch {
   /// 複数の機能をチェック
   Future<Map<String, bool>> checkFeatures(List<String> featureKeys) async {
     final results = <String, bool>{};
-    
+
     for (final key in featureKeys) {
       results[key] = await isFeatureEnabled(key);
     }
-    
+
     return results;
   }
 
@@ -42,7 +42,7 @@ class KillSwitch {
   Future<T> getFeatureConfig<T>(String featureKey, T defaultValue) async {
     try {
       await _remoteConfig.fetchAndActivate();
-      
+
       if (T == String) {
         return _remoteConfig.getString('config_$featureKey') as T;
       } else if (T == int) {
@@ -52,7 +52,7 @@ class KillSwitch {
       } else if (T == bool) {
         return _remoteConfig.getBool('config_$featureKey') as T;
       }
-      
+
       return defaultValue;
     } catch (e, stack) {
       _logger.error('Feature config fetch failed', error: e, stackTrace: stack);
@@ -66,17 +66,21 @@ class KillSwitch {
       await _remoteConfig.fetchAndActivate();
       final all = _remoteConfig.getAll();
       final features = <String, bool>{};
-      
+
       for (final entry in all.entries) {
         if (entry.key.startsWith('feature_')) {
           final featureName = entry.key.substring('feature_'.length);
           features[featureName] = entry.value.asBool();
         }
       }
-      
+
       return features;
     } catch (e, stack) {
-      _logger.error('Failed to get all feature flags', error: e, stackTrace: stack);
+      _logger.error(
+        'Failed to get all feature flags',
+        error: e,
+        stackTrace: stack,
+      );
       return {};
     }
   }
@@ -133,13 +137,13 @@ class KillSwitchWidget {
     Widget Function()? fallback,
   }) async {
     final enabled = await _killSwitch.isFeatureEnabled(featureKey);
-    
+
     if (enabled) {
       return builder();
     } else if (fallback != null) {
       return fallback();
     }
-    
+
     return null;
   }
 }

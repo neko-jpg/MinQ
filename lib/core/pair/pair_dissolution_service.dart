@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// ペア解消サービス
 class PairDissolutionService {
   final FirebaseFirestore _firestore;
 
   PairDissolutionService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// ペアを解消
   Future<bool> dissolvePair({
@@ -38,11 +38,10 @@ class PairDissolutionService {
       await _updateUserPairStatus(user1Id, pairId, dissolved: true);
       await _updateUserPairStatus(user2Id, pairId, dissolved: true);
 
-      AppLogger.info('Pair dissolved', data: {
-        'pairId': pairId,
-        'dissolvedBy': userId,
-        'reason': reason,
-      });
+      AppLogger.info(
+        'Pair dissolved',
+        data: {'pairId': pairId, 'dissolvedBy': userId, 'reason': reason},
+      );
 
       return true;
     } catch (e, stack) {
@@ -68,12 +67,7 @@ class PairDissolutionService {
     return {
       'title': 'ペアを解消しますか？',
       'message': 'ペアを解消すると、相手との進捗共有が停止されます。この操作は取り消せません。',
-      'reasons': [
-        '目標が達成できた',
-        '相性が合わなかった',
-        '一時的に休止したい',
-        'その他',
-      ],
+      'reasons': ['目標が達成できた', '相性が合わなかった', '一時的に休止したい', 'その他'],
     };
   }
 }

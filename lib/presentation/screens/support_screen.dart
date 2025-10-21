@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/data/services/support_chat_service.dart';
 import 'package:minq/domain/support/support_message.dart';
 import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/data/services/support_chat_service.dart';
 
 class SupportScreen extends ConsumerStatefulWidget {
   const SupportScreen({super.key});

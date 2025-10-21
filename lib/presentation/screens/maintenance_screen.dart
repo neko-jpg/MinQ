@@ -5,11 +5,7 @@ class MaintenanceScreen extends StatelessWidget {
   final String? message;
   final DateTime? estimatedEndTime;
 
-  const MaintenanceScreen({
-    super.key,
-    this.message,
-    this.estimatedEndTime,
-  });
+  const MaintenanceScreen({super.key, this.message, this.estimatedEndTime});
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +16,7 @@ class MaintenanceScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.construction,
-                size: 80,
-                color: Colors.orange,
-              ),
+              const Icon(Icons.construction, size: 80, color: Colors.orange),
               const SizedBox(height: 24),
               Text(
                 'メンテナンス中',

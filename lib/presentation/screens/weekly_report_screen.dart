@@ -1,10 +1,10 @@
 import 'dart:math' as math;
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fl_chart/fl_chart.dart';
 
-import '../../core/ai/weekly_report_service.dart';
+import 'package:minq/core/ai/weekly_report_service.dart';
 
 /// 週次AI分析レポート画面
 class WeeklyReportScreen extends ConsumerStatefulWidget {
@@ -18,7 +18,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   final WeeklyReportService _reportService = WeeklyReportService.instance;
-  
+
   List<WeeklyReport> _reports = [];
   WeeklyReport? _currentReport;
   bool _isLoading = false;
@@ -39,12 +39,12 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
 
   Future<void> _loadReports() async {
     setState(() => _isLoading = true);
-    
+
     try {
       // TODO: 実際のユーザーIDを取得
       final reports = await _reportService.getReportHistory('current_user_id');
       final current = reports.isNotEmpty ? reports.first : null;
-      
+
       setState(() {
         _reports = reports;
         _currentReport = current;
@@ -53,9 +53,9 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('レポートの読み込みに失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('レポートの読み込みに失敗しました: $e')));
       }
     }
   }
@@ -119,18 +119,11 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.analytics_outlined,
-              size: 80,
-              color: Colors.grey,
-            ),
+            const Icon(Icons.analytics_outlined, size: 80, color: Colors.grey),
             const SizedBox(height: 16),
             const Text(
               '今週のレポートがありません',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             const Text(
@@ -169,10 +162,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
                   const SizedBox(height: 8),
                   Text(
                     '生成日時: ${_formatDateTime(_currentReport!.generatedAt)}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -202,9 +192,9 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // AI分析結果
           Card(
             child: Padding(
@@ -234,9 +224,9 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // トレンド分析
           Card(
             child: Padding(
@@ -246,23 +236,17 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
                 children: [
                   const Text(
                     'トレンド分析',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  SizedBox(
-                    height: 200,
-                    child: _buildTrendChart(),
-                  ),
+                  SizedBox(height: 200, child: _buildTrendChart()),
                 ],
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 改善提案
           Card(
             child: Padding(
@@ -284,33 +268,35 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
                     ],
                   ),
                   const SizedBox(height: 12),
-                  ..._currentReport!.recommendations.map((rec) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Icon(
-                          Icons.arrow_right,
-                          size: 16,
-                          color: Colors.blue,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            rec.description,
-                            style: const TextStyle(fontSize: 14),
+                  ..._currentReport!.recommendations.map(
+                    (rec) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.arrow_right,
+                            size: 16,
+                            color: Colors.blue,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              rec.description,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  )).toList(),
+                  ),
                 ],
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 成功率予測
           Card(
             child: Padding(
@@ -353,14 +339,19 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
                           ],
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: 100,
                         height: 100,
                         child: CircularProgressIndicator(
-                          value: _currentReport!.successPrediction.nextWeekCompletionRate,
+                          value:
+                              _currentReport!
+                                  .successPrediction
+                                  .nextWeekCompletionRate,
                           strokeWidth: 8,
                           backgroundColor: Colors.grey.shade300,
-                          valueColor: const AlwaysStoppedAnimation(Colors.green),
+                          valueColor: const AlwaysStoppedAnimation(
+                            Colors.green,
+                          ),
                         ),
                       ),
                     ],
@@ -369,9 +360,9 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // アクションボタン
           Row(
             children: [
@@ -397,7 +388,12 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
     );
   }
 
-  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
+  Widget _buildMetricCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Column(
       children: [
         Container(
@@ -412,17 +408,11 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
         const SizedBox(height: 8),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey.shade600,
-          ),
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
         ),
       ],
     );
@@ -439,7 +429,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
 
     return LineChart(
       LineChartData(
-        gridData: FlGridData(show: false),
+        gridData: const FlGridData(show: false),
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
@@ -468,8 +458,12 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
               },
             ),
           ),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
         ),
         borderData: FlBorderData(show: false),
         lineBarsData: [
@@ -501,18 +495,11 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.history,
-              size: 80,
-              color: Colors.grey,
-            ),
+            Icon(Icons.history, size: 80, color: Colors.grey),
             SizedBox(height: 16),
             Text(
               'レポート履歴がありません',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
             Text(
@@ -586,9 +573,14 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: _getScoreColor(report.overallScore).withValues(alpha: 0.1),
+                      color: _getScoreColor(
+                        report.overallScore,
+                      ).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -605,21 +597,14 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
               const SizedBox(height: 12),
               Text(
                 report.aiAnalysis.predictions.aiPrediction,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade700,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Icon(
-                    Icons.trending_up,
-                    size: 16,
-                    color: Colors.green,
-                  ),
+                  const Icon(Icons.trending_up, size: 16, color: Colors.green),
                   const SizedBox(width: 4),
                   Text(
                     '成功率予測: ${(report.successPrediction.nextWeekCompletionRate * 100).toInt()}%',
@@ -672,9 +657,9 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
             ],
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         Card(
           child: Column(
             children: [
@@ -700,9 +685,9 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
             ],
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         Card(
           child: Column(
             children: [
@@ -735,80 +720,83 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen>
 
   Future<void> _generateNewReport() async {
     setState(() => _isGenerating = true);
-    
+
     try {
       // TODO: 実際のユーザーIDを取得
-      final report = await _reportService.generateWeeklyReport('current_user_id');
-      
+      final report = await _reportService.generateWeeklyReport(
+        'current_user_id',
+      );
+
       setState(() {
         _reports.insert(0, report);
         _currentReport = report;
         _isGenerating = false;
       });
-      
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('新しいレポートを生成しました！')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('新しいレポートを生成しました！')));
       }
     } catch (e) {
       setState(() => _isGenerating = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('レポート生成に失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('レポート生成に失敗しました: $e')));
       }
     }
   }
 
   void _shareReport() {
     if (_currentReport == null) return;
-    
+
     // TODO: レポートの共有機能を実装
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('レポートを共有しました')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('レポートを共有しました')));
   }
 
   void _exportReport() {
     if (_currentReport == null) return;
-    
+
     // TODO: PDFエクスポート機能を実装
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('PDFで保存しました')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('PDFで保存しました')));
   }
 
   void _exportAllReports() {
     // TODO: 全レポートのエクスポート機能を実装
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('すべてのレポートをエクスポートしました')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('すべてのレポートをエクスポートしました')));
   }
 
   void _showDeleteDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('履歴削除'),
-        content: const Text('古いレポートを削除しますか？この操作は取り消せません。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('履歴削除'),
+            content: const Text('古いレポートを削除しますか？この操作は取り消せません。'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // TODO: 履歴削除機能を実装
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('古いレポートを削除しました')),
+                  );
+                },
+                child: const Text('削除'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // TODO: 履歴削除機能を実装
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('古いレポートを削除しました')),
-              );
-            },
-            child: const Text('削除'),
-          ),
-        ],
-      ),
     );
   }
 

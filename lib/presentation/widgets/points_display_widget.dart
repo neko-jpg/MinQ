@@ -20,13 +20,13 @@ class PointsDisplayWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final uid = ref.watch(uidProvider);
-    
+
     if (uid == null) {
       return const SizedBox.shrink();
     }
 
     final gamificationEngine = ref.watch(providers.gamificationEngineProvider);
-    
+
     return FutureBuilder<Map<String, dynamic>>(
       future: _loadPointsData(gamificationEngine, uid),
       builder: (context, snapshot) {
@@ -83,7 +83,12 @@ class PointsDisplayWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildCompactView(MinqTokens tokens, int points, String rank, IconData rankIcon) {
+  Widget _buildCompactView(
+    MinqTokens tokens,
+    int points,
+    String rank,
+    IconData rankIcon,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: tokens.spacing(3),
@@ -91,10 +96,7 @@ class PointsDisplayWidget extends ConsumerWidget {
       ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.brandPrimary,
-            tokens.brandPrimary.withOpacity(0.8),
-          ],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -110,11 +112,7 @@ class PointsDisplayWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            rankIcon,
-            color: Colors.white,
-            size: tokens.spacing(5),
-          ),
+          Icon(rankIcon, color: Colors.white, size: tokens.spacing(5)),
           SizedBox(width: tokens.spacing(2)),
           Text(
             '$points',
@@ -128,15 +126,17 @@ class PointsDisplayWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildFullView(MinqTokens tokens, int points, String rank, IconData rankIcon) {
+  Widget _buildFullView(
+    MinqTokens tokens,
+    int points,
+    String rank,
+    IconData rankIcon,
+  ) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.brandPrimary,
-            tokens.brandPrimary.withOpacity(0.8),
-          ],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -159,11 +159,7 @@ class PointsDisplayWidget extends ConsumerWidget {
               color: Colors.white.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              rankIcon,
-              color: Colors.white,
-              size: tokens.spacing(6),
-            ),
+            child: Icon(rankIcon, color: Colors.white, size: tokens.spacing(6)),
           ),
           SizedBox(width: tokens.spacing(3)),
           Column(
@@ -200,7 +196,7 @@ class PointsDisplayWidget extends ConsumerWidget {
   ) async {
     final points = await engine.getUserPoints(uid);
     final rank = engine.getRankForPoints(points);
-    
+
     // ランクアイコンを決定
     IconData rankIcon;
     switch (rank.name) {
@@ -223,11 +219,7 @@ class PointsDisplayWidget extends ConsumerWidget {
         rankIcon = Icons.star;
     }
 
-    return {
-      'points': points,
-      'rank': rank.name,
-      'rankIcon': rankIcon,
-    };
+    return {'points': points, 'rank': rank.name, 'rankIcon': rankIcon};
   }
 }
 
@@ -274,11 +266,8 @@ class _AnimatedPointsWidgetState extends State<AnimatedPointsWidget>
     _animation = IntTween(
       begin: _previousPoints,
       end: widget.points,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
-    
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+
     _controller.reset();
     _controller.forward();
   }
@@ -294,10 +283,7 @@ class _AnimatedPointsWidgetState extends State<AnimatedPointsWidget>
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
-        return Text(
-          '${_animation.value}',
-          style: widget.style,
-        );
+        return Text('${_animation.value}', style: widget.style);
       },
     );
   }
@@ -311,13 +297,13 @@ class RankProgressWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final uid = ref.watch(uidProvider);
-    
+
     if (uid == null) {
       return const SizedBox.shrink();
     }
 
     final gamificationEngine = ref.watch(providers.gamificationEngineProvider);
-    
+
     return FutureBuilder<Map<String, dynamic>>(
       future: _loadRankData(gamificationEngine, uid),
       builder: (context, snapshot) {
@@ -352,9 +338,7 @@ class RankProgressWidget extends ConsumerWidget {
                 children: [
                   Text(
                     '現在のランク',
-                    style: tokens.bodySmall.copyWith(
-                      color: tokens.textMuted,
-                    ),
+                    style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                   ),
                   Text(
                     currentRank,
@@ -365,7 +349,7 @@ class RankProgressWidget extends ConsumerWidget {
                   ),
                 ],
               ),
-              
+
               if (nextRank != null) ...[
                 SizedBox(height: tokens.spacing(3)),
                 Row(
@@ -373,9 +357,7 @@ class RankProgressWidget extends ConsumerWidget {
                   children: [
                     Text(
                       '次のランクまで',
-                      style: tokens.bodySmall.copyWith(
-                        color: tokens.textMuted,
-                      ),
+                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                     ),
                     Text(
                       '$pointsToNext ポイント',
@@ -399,9 +381,7 @@ class RankProgressWidget extends ConsumerWidget {
                 SizedBox(height: tokens.spacing(1)),
                 Text(
                   '次のランク: $nextRank',
-                  style: tokens.bodySmall.copyWith(
-                    color: tokens.textMuted,
-                  ),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
               ],
             ],
@@ -417,7 +397,7 @@ class RankProgressWidget extends ConsumerWidget {
   ) async {
     final points = await engine.getUserPoints(uid);
     final currentRank = engine.getRankForPoints(points);
-    
+
     // 次のランク情報を計算
     final allRanks = [
       {'name': 'ブロンズ', 'points': 0},
@@ -430,7 +410,7 @@ class RankProgressWidget extends ConsumerWidget {
     String? nextRank;
     int nextRankPoints = 50000;
     int currentRankPoints = currentRank.minPoints;
-    
+
     for (int i = 0; i < allRanks.length; i++) {
       final rankPoints = allRanks[i]['points'] as int;
       if (points >= rankPoints && i < allRanks.length - 1) {
@@ -440,9 +420,11 @@ class RankProgressWidget extends ConsumerWidget {
       }
     }
 
-    final progress = nextRank != null 
-        ? (points - currentRankPoints) / (nextRankPoints - currentRankPoints)
-        : 1.0;
+    final progress =
+        nextRank != null
+            ? (points - currentRankPoints) /
+                (nextRankPoints - currentRankPoints)
+            : 1.0;
 
     return {
       'currentRank': currentRank.name,

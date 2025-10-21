@@ -1,54 +1,55 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/habit_dna/habit_dna_service.dart';
-import 'package:minq/domain/habit_dna/habit_archetype.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 // A dummy user ID for now
 const _userId = 'test_user';
 const _uuid = Uuid();
 
-final questRecommendationsProvider = FutureProvider.autoDispose<List<String>>((ref) async {
+final questRecommendationsProvider = FutureProvider.autoDispose<List<String>>((
+  ref,
+) async {
   final habitDnaService = ref.watch(habitDNAServiceProvider);
   final archetype = await habitDnaService.determineArchetype(_userId);
 
   if (archetype == null) {
-    return [
-      "コップ1杯の水を飲む",
-      "1分間、深呼吸する",
-      "今日の感謝を1つ書き出す",
-    ];
+    return ['コップ1杯の水を飲む', '1分間、深呼吸する', '今日の感謝を1つ書き出す'];
   }
 
   // Return recommendations based on archetype
   switch (archetype.id) {
     case 'the_planner':
-      return ["明日のタスクを3つ書き出す", "週末の計画を立てる", "カバンの中を整理する"];
+      return ['明日のタスクを3つ書き出す', '週末の計画を立てる', 'カバンの中を整理する'];
     case 'the_sprinter':
-      return ["10分間だけ部屋を片付ける", "新しいレシピを試してみる", "5分間のHIITトレーニング"];
+      return ['10分間だけ部屋を片付ける', '新しいレシピを試してみる', '5分間のHIITトレーニング'];
     case 'the_marathoner':
-      return ["1ページだけ本を読む", "1分間だけ瞑想する", "ストレッチを1つする"];
+      return ['1ページだけ本を読む', '1分間だけ瞑想する', 'ストレッチを1つする'];
     case 'the_explorer':
-      return ["近所を散歩して新しい発見をする", "聴いたことのないジャンルの音楽を聴く", "新しい単語を1つ覚える"];
+      return ['近所を散歩して新しい発見をする', '聴いたことのないジャンルの音楽を聴く', '新しい単語を1つ覚える'];
     default:
-      return ["コップ1杯の水を飲む"];
+      return ['コップ1杯の水を飲む'];
   }
 });
 
 final addQuestProvider = Provider((ref) {
   return (String questName) async {
     final questId = _uuid.v4();
-    await FirebaseFirestore.instance.collection('users').doc(_userId).collection('quests').doc(questId).set({
-      'id': questId,
-      'name': questName,
-      'completed': false,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_userId)
+        .collection('quests')
+        .doc(questId)
+        .set({
+          'id': questId,
+          'name': questName,
+          'completed': false,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
     // Invalidate to refresh quest lists if they are visible on the same screen
   };
 });
-
 
 class QuestRecommendationWidget extends ConsumerWidget {
   const QuestRecommendationWidget({super.key});
@@ -63,30 +64,35 @@ class QuestRecommendationWidget extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "おすすめのミニクエスト",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text('おすすめのミニクエスト', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             recommendationsAsync.when(
-              data: (recommendations) => Column(
-                children: recommendations.map((rec) => ListTile(
-                  leading: const Icon(Icons.lightbulb_outline),
-                  title: Text(rec),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.add_circle_outline),
-                    tooltip: "クエストに追加",
-                    onPressed: () {
-                      ref.read(addQuestProvider)(rec);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("「$rec」をクエストに追加しました！")),
-                      );
-                    },
+              data:
+                  (recommendations) => Column(
+                    children:
+                        recommendations
+                            .map(
+                              (rec) => ListTile(
+                                leading: const Icon(Icons.lightbulb_outline),
+                                title: Text(rec),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.add_circle_outline),
+                                  tooltip: 'クエストに追加',
+                                  onPressed: () {
+                                    ref.read(addQuestProvider)(rec);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('「$rec」をクエストに追加しました！'),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            )
+                            .toList(),
                   ),
-                )).toList(),
-              ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => const Center(child: Text("おすすめの取得に失敗")),
+              error: (err, stack) => const Center(child: Text('おすすめの取得に失敗')),
             ),
           ],
         ),

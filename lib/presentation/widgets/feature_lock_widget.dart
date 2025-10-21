@@ -24,15 +24,15 @@ class FeatureLockWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final onboarding = ref.watch(progressiveOnboardingProvider);
-    
+
     return onboarding.when(
       data: (service) {
         final isUnlocked = service.isFeatureUnlocked(featureId);
-        
+
         if (isUnlocked) {
           return child;
         }
-        
+
         return _buildLockedFeature(context, tokens, service);
       },
       loading: () => _buildLoadingState(tokens),
@@ -47,17 +47,14 @@ class FeatureLockWidget extends ConsumerWidget {
   ) {
     final requiredLevel = _getRequiredLevel(featureId);
     final currentLevel = service.currentLevel;
-    
+
     return GestureDetector(
       onTap: onTap ?? () => _showUnlockDialog(context, tokens, requiredLevel),
       child: Stack(
         children: [
           // 元のウィジェットを薄く表示
-          Opacity(
-            opacity: 0.3,
-            child: IgnorePointer(child: child),
-          ),
-          
+          Opacity(opacity: 0.3, child: IgnorePointer(child: child)),
+
           // ロックオーバーレイ
           Positioned.fill(
             child: Container(
@@ -77,7 +74,11 @@ class FeatureLockWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildLockContent(MinqTokens tokens, int requiredLevel, int currentLevel) {
+  Widget _buildLockContent(
+    MinqTokens tokens,
+    int requiredLevel,
+    int currentLevel,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -89,10 +90,7 @@ class FeatureLockWidget extends ConsumerWidget {
             decoration: BoxDecoration(
               color: Colors.orange.withOpacity(0.2),
               shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.orange,
-                width: 2,
-              ),
+              border: Border.all(color: Colors.orange, width: 2),
             ),
             child: Icon(
               Icons.lock,
@@ -100,9 +98,9 @@ class FeatureLockWidget extends ConsumerWidget {
               size: tokens.spacing(6),
             ),
           ),
-          
+
           SizedBox(height: tokens.spacing(2)),
-          
+
           // レベル要件
           Text(
             'レベル$requiredLevel で解放',
@@ -111,9 +109,9 @@ class FeatureLockWidget extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          
+
           SizedBox(height: tokens.spacing(1)),
-          
+
           // 現在のレベル
           Text(
             '現在: レベル$currentLevel',
@@ -121,9 +119,9 @@ class FeatureLockWidget extends ConsumerWidget {
               color: Colors.white.withOpacity(0.8),
             ),
           ),
-          
+
           SizedBox(height: tokens.spacing(2)),
-          
+
           // タップヒント
           Container(
             padding: EdgeInsets.symmetric(
@@ -157,23 +155,26 @@ class FeatureLockWidget extends ConsumerWidget {
               color: Colors.black.withOpacity(0.3),
               borderRadius: tokens.cornerMedium(),
             ),
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
+            child: const Center(child: CircularProgressIndicator()),
           ),
         ),
       ],
     );
   }
 
-  void _showUnlockDialog(BuildContext context, MinqTokens tokens, int requiredLevel) {
+  void _showUnlockDialog(
+    BuildContext context,
+    MinqTokens tokens,
+    int requiredLevel,
+  ) {
     showDialog(
       context: context,
-      builder: (context) => FeatureUnlockDialog(
-        featureId: featureId,
-        requiredLevel: requiredLevel,
-        customMessage: customMessage,
-      ),
+      builder:
+          (context) => FeatureUnlockDialog(
+            featureId: featureId,
+            requiredLevel: requiredLevel,
+            customMessage: customMessage,
+          ),
     );
   }
 
@@ -182,7 +183,11 @@ class FeatureLockWidget extends ConsumerWidget {
       'quest_create' || 'quest_complete' || 'basic_stats' => 1,
       'notifications' || 'streak_tracking' || 'weekly_stats' => 2,
       'pair_feature' || 'advanced_stats' || 'export_data' || 'tags' => 3,
-      'achievements' || 'events' || 'templates' || 'timer' || 'advanced_customization' => 4,
+      'achievements' ||
+      'events' ||
+      'templates' ||
+      'timer' ||
+      'advanced_customization' => 4,
       _ => 1,
     };
   }
@@ -205,7 +210,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final onboarding = ref.watch(progressiveOnboardingProvider);
-    
+
     return onboarding.when(
       data: (service) => _buildDialog(context, tokens, service),
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -213,19 +218,21 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildDialog(BuildContext context, MinqTokens tokens, ProgressiveOnboarding service) {
+  Widget _buildDialog(
+    BuildContext context,
+    MinqTokens tokens,
+    ProgressiveOnboarding service,
+  ) {
     final levelInfo = service.getLevel(requiredLevel);
     final progress = service.getProgress(
       questsCompleted: 10, // TODO: 実際の値を取得
       daysUsed: 5,
       currentStreak: 2,
     );
-    
+
     return Dialog(
       backgroundColor: tokens.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: tokens.cornerLarge(),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing(6)),
         child: Column(
@@ -254,24 +261,24 @@ class FeatureUnlockDialog extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             SizedBox(height: tokens.spacing(4)),
-            
+
             // 機能情報
             _buildFeatureInfo(tokens),
-            
+
             SizedBox(height: tokens.spacing(4)),
-            
+
             // レベル要件
             if (levelInfo != null) _buildLevelRequirement(tokens, levelInfo),
-            
+
             SizedBox(height: tokens.spacing(4)),
-            
+
             // 進捗表示
             _buildProgressSection(tokens, progress),
-            
+
             SizedBox(height: tokens.spacing(6)),
-            
+
             // アクションボタン
             Row(
               children: [
@@ -305,7 +312,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
 
   Widget _buildFeatureInfo(MinqTokens tokens) {
     final featureInfo = _getFeatureInfo(featureId);
-    
+
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -327,9 +334,9 @@ class FeatureUnlockDialog extends ConsumerWidget {
               size: tokens.spacing(6),
             ),
           ),
-          
+
           SizedBox(width: tokens.spacing(3)),
-          
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,9 +350,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
                 SizedBox(height: tokens.spacing(1)),
                 Text(
                   featureInfo.description,
-                  style: tokens.bodyMedium.copyWith(
-                    color: tokens.textMuted,
-                  ),
+                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                 ),
               ],
             ),
@@ -361,20 +366,14 @@ class FeatureUnlockDialog extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.orange.withOpacity(0.1),
         borderRadius: tokens.cornerMedium(),
-        border: Border.all(
-          color: Colors.orange.withOpacity(0.3),
-        ),
+        border: Border.all(color: Colors.orange.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                Icons.star,
-                color: Colors.orange,
-                size: tokens.spacing(5),
-              ),
+              Icon(Icons.star, color: Colors.orange, size: tokens.spacing(5)),
               SizedBox(width: tokens.spacing(2)),
               Text(
                 'レベル$requiredLevel: ${levelInfo.title}',
@@ -385,37 +384,32 @@ class FeatureUnlockDialog extends ConsumerWidget {
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(2)),
-          
-          Text(
-            levelInfo.description,
-            style: tokens.bodyMedium,
-          ),
-          
+
+          Text(levelInfo.description, style: tokens.bodyMedium),
+
           SizedBox(height: tokens.spacing(3)),
-          
+
           Text(
             '解放条件:',
-            style: tokens.bodyMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(1)),
-          
+
           _buildRequirementItem(
             tokens,
             Icons.task_alt,
             'クエスト${levelInfo.requirements.minQuestsCompleted}個完了',
           ),
-          
+
           _buildRequirementItem(
             tokens,
             Icons.calendar_today,
             '${levelInfo.requirements.minDaysUsed}日間使用',
           ),
-          
+
           if (levelInfo.requirements.minStreak > 0)
             _buildRequirementItem(
               tokens,
@@ -432,18 +426,9 @@ class FeatureUnlockDialog extends ConsumerWidget {
       padding: EdgeInsets.only(bottom: tokens.spacing(1)),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: tokens.spacing(4),
-            color: tokens.textMuted,
-          ),
+          Icon(icon, size: tokens.spacing(4), color: tokens.textMuted),
           SizedBox(width: tokens.spacing(2)),
-          Text(
-            text,
-            style: tokens.bodySmall.copyWith(
-              color: tokens.textMuted,
-            ),
-          ),
+          Text(text, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
         ],
       ),
     );
@@ -461,13 +446,11 @@ class FeatureUnlockDialog extends ConsumerWidget {
         children: [
           Text(
             '現在の進捗',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(3)),
-          
+
           if (progress.questProgress != null)
             _buildProgressBar(
               tokens,
@@ -475,7 +458,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
               progress.questProgress!,
               Icons.task_alt,
             ),
-          
+
           if (progress.daysProgress != null)
             _buildProgressBar(
               tokens,
@@ -483,7 +466,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
               progress.daysProgress!,
               Icons.calendar_today,
             ),
-          
+
           if (progress.streakProgress != null)
             _buildProgressBar(
               tokens,
@@ -509,30 +492,22 @@ class FeatureUnlockDialog extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(
-                icon,
-                size: tokens.spacing(4),
-                color: tokens.textMuted,
-              ),
+              Icon(icon, size: tokens.spacing(4), color: tokens.textMuted),
               SizedBox(width: tokens.spacing(2)),
               Text(
                 label,
-                style: tokens.bodySmall.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: tokens.bodySmall.copyWith(fontWeight: FontWeight.w600),
               ),
               const Spacer(),
               Text(
                 '${(progress * 100).toInt()}%',
-                style: tokens.bodySmall.copyWith(
-                  color: tokens.textMuted,
-                ),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(1)),
-          
+
           LinearProgressIndicator(
             value: progress,
             backgroundColor: tokens.border,
@@ -558,10 +533,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
               color: tokens.textMuted,
             ),
             SizedBox(height: tokens.spacing(4)),
-            Text(
-              'エラーが発生しました',
-              style: tokens.titleMedium,
-            ),
+            Text('エラーが発生しました', style: tokens.titleMedium),
             SizedBox(height: tokens.spacing(4)),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -623,7 +595,9 @@ class FeatureInfo {
 }
 
 /// プログレッシブオンボーディングプロバイダー
-final progressiveOnboardingProvider = FutureProvider<ProgressiveOnboarding>((ref) async {
+final progressiveOnboardingProvider = FutureProvider<ProgressiveOnboarding>((
+  ref,
+) async {
   // TODO: 実際のユーザーデータを取得してレベルを設定
   return ProgressiveOnboarding();
 });

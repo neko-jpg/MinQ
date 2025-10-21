@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
-import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
@@ -11,8 +10,9 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 /// すべてのAI機能を一元化し、最高のパフォーマンスを提供
 class TFLiteUnifiedAIService {
   static TFLiteUnifiedAIService? _instance;
-  static TFLiteUnifiedAIService get instance => _instance ??= TFLiteUnifiedAIService._();
-  
+  static TFLiteUnifiedAIService get instance =>
+      _instance ??= TFLiteUnifiedAIService._();
+
   TFLiteUnifiedAIService._();
 
   // モデル管理
@@ -20,11 +20,11 @@ class TFLiteUnifiedAIService {
   Interpreter? _sentimentModel;
   Interpreter? _recommendationModel;
   Interpreter? _predictionModel;
-  
+
   // トークナイザー
   Map<String, int>? _vocabulary;
   Map<int, String>? _reverseVocabulary;
-  
+
   // 初期化状態
   bool _isInitialized = false;
   final Completer<void> _initCompleter = Completer<void>();
@@ -53,17 +53,25 @@ class TFLiteUnifiedAIService {
   Future<void> _loadModels() async {
     try {
       // テキスト生成モデル（軽量GPT風）
-      _textGenerationModel = await _loadModel('assets/models/text_generation.tflite');
-      
+      _textGenerationModel = await _loadModel(
+        'assets/models/text_generation.tflite',
+      );
+
       // 感情分析モデル
-      _sentimentModel = await _loadModel('assets/models/sentiment_analysis.tflite');
-      
+      _sentimentModel = await _loadModel(
+        'assets/models/sentiment_analysis.tflite',
+      );
+
       // 推薦システムモデル
-      _recommendationModel = await _loadModel('assets/models/recommendation.tflite');
-      
+      _recommendationModel = await _loadModel(
+        'assets/models/recommendation.tflite',
+      );
+
       // 失敗予測モデル
-      _predictionModel = await _loadModel('assets/models/failure_prediction.tflite');
-      
+      _predictionModel = await _loadModel(
+        'assets/models/failure_prediction.tflite',
+      );
+
       log('TFLite AI: すべてのモデルが読み込まれました');
     } catch (e) {
       log('TFLite AI: モデル読み込みエラー - $e');
@@ -99,12 +107,14 @@ class TFLiteUnifiedAIService {
   /// 語彙の読み込み
   Future<void> _loadVocabulary() async {
     try {
-      final vocabJson = await rootBundle.loadString('assets/models/vocabulary.json');
+      final vocabJson = await rootBundle.loadString(
+        'assets/models/vocabulary.json',
+      );
       final vocabData = jsonDecode(vocabJson) as Map<String, dynamic>;
-      
+
       _vocabulary = Map<String, int>.from(vocabData);
       _reverseVocabulary = _vocabulary!.map((k, v) => MapEntry(v, k));
-      
+
       log('TFLite AI: 語彙データ読み込み完了 (${_vocabulary!.length}語)');
     } catch (e) {
       log('TFLite AI: 語彙読み込みエラー、デフォルト語彙を使用 - $e');
@@ -115,10 +125,22 @@ class TFLiteUnifiedAIService {
   /// デフォルト語彙の初期化
   void _initializeDefaultVocabulary() {
     _vocabulary = {
-      '<pad>': 0, '<unk>': 1, '<start>': 2, '<end>': 3,
-      'こんにちは': 4, 'ありがとう': 5, '習慣': 6, '継続': 7,
-      '目標': 8, '達成': 9, '成功': 10, '失敗': 11,
-      '今日': 12, '明日': 13, '頑張る': 14, '応援': 15,
+      '<pad>': 0,
+      '<unk>': 1,
+      '<start>': 2,
+      '<end>': 3,
+      'こんにちは': 4,
+      'ありがとう': 5,
+      '習慣': 6,
+      '継続': 7,
+      '目標': 8,
+      '達成': 9,
+      '成功': 10,
+      '失敗': 11,
+      '今日': 12,
+      '明日': 13,
+      '頑張る': 14,
+      '応援': 15,
     };
     _reverseVocabulary = _vocabulary!.map((k, v) => MapEntry(v, k));
   }
@@ -133,15 +155,19 @@ class TFLiteUnifiedAIService {
     int maxTokens = 150,
   }) async {
     await initialize();
-    
+
     try {
       if (_textGenerationModel == null) {
         return _generateRuleBasedResponse(userMessage);
       }
 
-      final context = _buildContext(userMessage, conversationHistory, systemPrompt);
+      final context = _buildContext(
+        userMessage,
+        conversationHistory,
+        systemPrompt,
+      );
       final tokens = _tokenizeText(context);
-      
+
       if (tokens.isEmpty) {
         return _generateRuleBasedResponse(userMessage);
       }
@@ -150,10 +176,10 @@ class TFLiteUnifiedAIService {
       final outputTensor = List.filled(maxTokens, 0.0).reshape([1, maxTokens]);
 
       _textGenerationModel!.run(inputTensor, outputTensor);
-      
+
       final generatedTokens = _extractTokensFromOutput(outputTensor);
       final response = _detokenizeText(generatedTokens);
-      
+
       return _postProcessResponse(response);
     } catch (e) {
       log('TFLite AI: テキスト生成エラー - $e');
@@ -162,17 +188,22 @@ class TFLiteUnifiedAIService {
   }
 
   /// コンテキストの構築
-  String _buildContext(String userMessage, List<String> history, String? systemPrompt) {
+  String _buildContext(
+    String userMessage,
+    List<String> history,
+    String? systemPrompt,
+  ) {
     final buffer = StringBuffer();
-    
+
     if (systemPrompt != null) {
       buffer.writeln(systemPrompt);
     }
-    
-    for (final msg in history.take(5)) { // 最新5件のみ
+
+    for (final msg in history.take(5)) {
+      // 最新5件のみ
       buffer.writeln(msg);
     }
-    
+
     buffer.write(userMessage);
     return buffer.toString();
   }
@@ -180,7 +211,7 @@ class TFLiteUnifiedAIService {
   /// ルールベース応答生成（フォールバック）
   String _generateRuleBasedResponse(String userMessage) {
     final message = userMessage.toLowerCase();
-    
+
     // 挨拶
     if (_containsAny(message, ['こんにちは', 'おはよう', 'こんばんは'])) {
       return _getRandomResponse([
@@ -189,7 +220,7 @@ class TFLiteUnifiedAIService {
         'こんにちは！何かお手伝いできることはありますか？',
       ]);
     }
-    
+
     // モチベーション
     if (_containsAny(message, ['やる気', 'モチベーション', '続かない', '挫折'])) {
       return _getRandomResponse([
@@ -198,7 +229,7 @@ class TFLiteUnifiedAIService {
         '今日できなくても大丈夫。明日また新しい気持ちで始めましょう！',
       ]);
     }
-    
+
     // 習慣について
     if (_containsAny(message, ['習慣', 'ルーティン', '続ける', 'コツ'])) {
       return _getRandomResponse([
@@ -207,7 +238,7 @@ class TFLiteUnifiedAIService {
         '習慣が身につくまで約21日。焦らず続けることが大切です。',
       ]);
     }
-    
+
     return _getRandomResponse([
       'ありがとうございます。他にも何かお聞きしたいことはありますか？',
       'そうですね。MinQでどんな習慣を始めてみたいですか？',
@@ -220,7 +251,7 @@ class TFLiteUnifiedAIService {
   /// テキストの感情分析
   Future<SentimentResult> analyzeSentiment(String text) async {
     await initialize();
-    
+
     try {
       if (_sentimentModel == null) {
         return _analyzeSentimentRuleBased(text);
@@ -228,10 +259,13 @@ class TFLiteUnifiedAIService {
 
       final tokens = _tokenizeText(text);
       final inputTensor = _prepareInputTensor(tokens, maxLength: 64);
-      final outputTensor = List.filled(3, 0.0).reshape([1, 3]); // [negative, neutral, positive]
+      final outputTensor = List.filled(
+        3,
+        0.0,
+      ).reshape([1, 3]); // [negative, neutral, positive]
 
       _sentimentModel!.run(inputTensor, outputTensor);
-      
+
       final scores = outputTensor[0] as List<double>;
       return SentimentResult(
         positive: scores[2],
@@ -248,21 +282,21 @@ class TFLiteUnifiedAIService {
   SentimentResult _analyzeSentimentRuleBased(String text) {
     final positiveWords = ['嬉しい', '楽しい', '頑張る', '成功', '達成', 'ありがとう'];
     final negativeWords = ['悲しい', '辛い', '失敗', '挫折', '疲れた', 'しんどい'];
-    
+
     final lowerText = text.toLowerCase();
     var positiveScore = 0.0;
     var negativeScore = 0.0;
-    
+
     for (final word in positiveWords) {
       if (lowerText.contains(word)) positiveScore += 0.2;
     }
-    
+
     for (final word in negativeWords) {
       if (lowerText.contains(word)) negativeScore += 0.2;
     }
-    
+
     final neutralScore = 1.0 - positiveScore - negativeScore;
-    
+
     return SentimentResult(
       positive: positiveScore.clamp(0.0, 1.0),
       neutral: neutralScore.clamp(0.0, 1.0),
@@ -280,18 +314,25 @@ class TFLiteUnifiedAIService {
     int limit = 5,
   }) async {
     await initialize();
-    
+
     try {
       if (_recommendationModel == null) {
         return _generateRuleBasedRecommendations(userHabits, limit);
       }
 
-      final features = _encodeUserFeatures(userHabits, completedHabits, preferences);
+      final features = _encodeUserFeatures(
+        userHabits,
+        completedHabits,
+        preferences,
+      );
       final inputTensor = [features].reshape([1, features.length]);
-      final outputTensor = List.filled(100, 0.0).reshape([1, 100]); // 100種類の習慣スコア
+      final outputTensor = List.filled(
+        100,
+        0.0,
+      ).reshape([1, 100]); // 100種類の習慣スコア
 
       _recommendationModel!.run(inputTensor, outputTensor);
-      
+
       final scores = outputTensor[0] as List<double>;
       return _extractTopRecommendations(scores, limit);
     } catch (e) {
@@ -307,23 +348,30 @@ class TFLiteUnifiedAIService {
     Map<String, double> preferences,
   ) {
     final features = <double>[];
-    
+
     // 習慣カテゴリの分布
-    final categories = ['fitness', 'mindfulness', 'learning', 'productivity', 'health'];
+    final categories = [
+      'fitness',
+      'mindfulness',
+      'learning',
+      'productivity',
+      'health',
+    ];
     for (final category in categories) {
       final count = userHabits.where((h) => h.contains(category)).length;
       features.add(count / userHabits.length);
     }
-    
+
     // 完了率
-    final completionRate = userHabits.isEmpty ? 0.0 : completedHabits.length / userHabits.length;
+    final completionRate =
+        userHabits.isEmpty ? 0.0 : completedHabits.length / userHabits.length;
     features.add(completionRate);
-    
+
     // 好み
     for (final category in categories) {
       features.add(preferences[category] ?? 0.5);
     }
-    
+
     return features;
   }
 
@@ -336,7 +384,7 @@ class TFLiteUnifiedAIService {
     required DateTime targetDate,
   }) async {
     await initialize();
-    
+
     try {
       if (_predictionModel == null) {
         return _predictFailureRuleBased(history, targetDate);
@@ -347,7 +395,7 @@ class TFLiteUnifiedAIService {
       final outputTensor = List.filled(1, 0.0).reshape([1, 1]);
 
       _predictionModel!.run(inputTensor, outputTensor);
-      
+
       final riskScore = outputTensor[0][0] as double;
       return FailurePrediction(
         riskScore: riskScore,
@@ -362,38 +410,44 @@ class TFLiteUnifiedAIService {
   }
 
   /// 失敗予測特徴量のエンコード
-  List<double> _encodeFailureFeatures(List<CompletionRecord> history, DateTime targetDate) {
+  List<double> _encodeFailureFeatures(
+    List<CompletionRecord> history,
+    DateTime targetDate,
+  ) {
     final features = <double>[];
-    
+
     // 最近の完了率
-    final recentHistory = history.where((r) => 
-      targetDate.difference(r.completedAt).inDays <= 7
-    ).toList();
-    
+    final recentHistory =
+        history
+            .where((r) => targetDate.difference(r.completedAt).inDays <= 7)
+            .toList();
+
     features.add(recentHistory.length / 7.0); // 週間完了率
-    
+
     // ストリーク長
     var currentStreak = 0;
-    final sortedHistory = history..sort((a, b) => b.completedAt.compareTo(a.completedAt));
-    
+    final sortedHistory =
+        history..sort((a, b) => b.completedAt.compareTo(a.completedAt));
+
     for (var i = 0; i < sortedHistory.length; i++) {
-      final daysDiff = targetDate.difference(sortedHistory[i].completedAt).inDays;
+      final daysDiff =
+          targetDate.difference(sortedHistory[i].completedAt).inDays;
       if (daysDiff == i) {
         currentStreak++;
       } else {
         break;
       }
     }
-    
+
     features.add(currentStreak / 30.0); // 正規化されたストリーク
-    
+
     // 曜日パターン
     final weekdayPattern = List.filled(7, 0.0);
     for (final record in history) {
       weekdayPattern[record.completedAt.weekday - 1]++;
     }
     features.addAll(weekdayPattern.map((count) => count / history.length));
-    
+
     return features;
   }
 
@@ -402,15 +456,17 @@ class TFLiteUnifiedAIService {
   /// テキストのトークン化
   List<int> _tokenizeText(String text) {
     if (_vocabulary == null) return [];
-    
+
     final words = text.toLowerCase().split(RegExp(r'\s+'));
-    return words.map((word) => _vocabulary![word] ?? _vocabulary!['<unk>']!).toList();
+    return words
+        .map((word) => _vocabulary![word] ?? _vocabulary!['<unk>']!)
+        .toList();
   }
 
   /// トークンのテキスト化
   String _detokenizeText(List<int> tokens) {
     if (_reverseVocabulary == null) return '';
-    
+
     return tokens
         .map((token) => _reverseVocabulary![token] ?? '<unk>')
         .where((word) => !['<pad>', '<start>', '<end>'].contains(word))
@@ -418,7 +474,10 @@ class TFLiteUnifiedAIService {
   }
 
   /// 入力テンソルの準備
-  List<List<double>> _prepareInputTensor(List<int> tokens, {required int maxLength}) {
+  List<List<double>> _prepareInputTensor(
+    List<int> tokens, {
+    required int maxLength,
+  }) {
     final padded = List<double>.filled(maxLength, 0.0);
     for (var i = 0; i < math.min(tokens.length, maxLength); i++) {
       padded[i] = tokens[i].toDouble();
@@ -451,55 +510,89 @@ class TFLiteUnifiedAIService {
   }
 
   /// ルールベース推薦生成
-  List<HabitRecommendation> _generateRuleBasedRecommendations(List<String> userHabits, int limit) {
+  List<HabitRecommendation> _generateRuleBasedRecommendations(
+    List<String> userHabits,
+    int limit,
+  ) {
     final allHabits = [
-      '朝の瞑想', '読書', '運動', '日記', '早起き',
-      '水分補給', 'ストレッチ', '感謝の記録', '目標設定', '振り返り'
+      '朝の瞑想',
+      '読書',
+      '運動',
+      '日記',
+      '早起き',
+      '水分補給',
+      'ストレッチ',
+      '感謝の記録',
+      '目標設定',
+      '振り返り',
     ];
-    
-    final recommendations = allHabits
-        .where((habit) => !userHabits.contains(habit))
-        .take(limit)
-        .map((habit) => HabitRecommendation(
-          title: habit,
-          score: 0.7 + math.Random().nextDouble() * 0.3,
-          reason: '${habit}は継続しやすく効果的な習慣です',
-        ))
-        .toList();
-    
+
+    final recommendations =
+        allHabits
+            .where((habit) => !userHabits.contains(habit))
+            .take(limit)
+            .map(
+              (habit) => HabitRecommendation(
+                title: habit,
+                score: 0.7 + math.Random().nextDouble() * 0.3,
+                reason: '$habitは継続しやすく効果的な習慣です',
+              ),
+            )
+            .toList();
+
     return recommendations;
   }
 
   /// トップ推薦の抽出
-  List<HabitRecommendation> _extractTopRecommendations(List<double> scores, int limit) {
+  List<HabitRecommendation> _extractTopRecommendations(
+    List<double> scores,
+    int limit,
+  ) {
     final habits = [
-      '朝の瞑想', '読書', '運動', '日記', '早起き',
-      '水分補給', 'ストレッチ', '感謝の記録', '目標設定', '振り返り'
+      '朝の瞑想',
+      '読書',
+      '運動',
+      '日記',
+      '早起き',
+      '水分補給',
+      'ストレッチ',
+      '感謝の記録',
+      '目標設定',
+      '振り返り',
     ];
-    
-    final indexed = scores.asMap().entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    
+
+    final indexed =
+        scores.asMap().entries.toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
+
     return indexed
         .take(limit)
-        .map((entry) => HabitRecommendation(
-          title: habits[entry.key % habits.length],
-          score: entry.value,
-          reason: 'AIが分析した結果、あなたに最適な習慣です',
-        ))
+        .map(
+          (entry) => HabitRecommendation(
+            title: habits[entry.key % habits.length],
+            score: entry.value,
+            reason: 'AIが分析した結果、あなたに最適な習慣です',
+          ),
+        )
         .toList();
   }
 
   /// ルールベース失敗予測
-  FailurePrediction _predictFailureRuleBased(List<CompletionRecord> history, DateTime targetDate) {
-    final recentDays = 7;
-    final recentHistory = history.where((r) => 
-      targetDate.difference(r.completedAt).inDays <= recentDays
-    ).toList();
-    
+  FailurePrediction _predictFailureRuleBased(
+    List<CompletionRecord> history,
+    DateTime targetDate,
+  ) {
+    const recentDays = 7;
+    final recentHistory =
+        history
+            .where(
+              (r) => targetDate.difference(r.completedAt).inDays <= recentDays,
+            )
+            .toList();
+
     final recentCompletionRate = recentHistory.length / recentDays;
     final riskScore = 1.0 - recentCompletionRate;
-    
+
     return FailurePrediction(
       riskScore: riskScore,
       confidence: 0.6,
@@ -509,37 +602,40 @@ class TFLiteUnifiedAIService {
   }
 
   /// リスク要因の特定
-  List<String> _identifyRiskFactors(List<CompletionRecord> history, DateTime targetDate) {
+  List<String> _identifyRiskFactors(
+    List<CompletionRecord> history,
+    DateTime targetDate,
+  ) {
     final factors = <String>[];
-    
+
     if (history.isEmpty) {
       factors.add('履歴データが不足しています');
       return factors;
     }
-    
-    final recentHistory = history.where((r) => 
-      targetDate.difference(r.completedAt).inDays <= 7
-    ).toList();
-    
+
+    final recentHistory =
+        history
+            .where((r) => targetDate.difference(r.completedAt).inDays <= 7)
+            .toList();
+
     if (recentHistory.length < 3) {
       factors.add('最近の実行頻度が低下しています');
     }
-    
-    final weekendHistory = history.where((r) => 
-      r.completedAt.weekday >= 6
-    ).toList();
-    
+
+    final weekendHistory =
+        history.where((r) => r.completedAt.weekday >= 6).toList();
+
     if (weekendHistory.length < history.length * 0.3) {
       factors.add('週末の実行率が低い傾向があります');
     }
-    
+
     return factors;
   }
 
   /// 予防提案の生成
   List<String> _generatePreventionSuggestions(double riskScore) {
     final suggestions = <String>[];
-    
+
     if (riskScore > 0.7) {
       suggestions.addAll([
         'リマインダーの時間を見直してみましょう',
@@ -547,14 +643,11 @@ class TFLiteUnifiedAIService {
         'ペア機能を使って仲間と一緒に取り組みましょう',
       ]);
     } else if (riskScore > 0.4) {
-      suggestions.addAll([
-        '小さな報酬を設定してモチベーションを上げましょう',
-        '実行する環境を整えてみてください',
-      ]);
+      suggestions.addAll(['小さな報酬を設定してモチベーションを上げましょう', '実行する環境を整えてみてください']);
     } else {
       suggestions.add('現在のペースを維持して継続しましょう');
     }
-    
+
     return suggestions;
   }
 
@@ -577,12 +670,12 @@ class TFLiteUnifiedAIService {
     _sentimentModel?.close();
     _recommendationModel?.close();
     _predictionModel?.close();
-    
+
     _textGenerationModel = null;
     _sentimentModel = null;
     _recommendationModel = null;
     _predictionModel = null;
-    
+
     _isInitialized = false;
     log('TFLite AI: リソースが解放されました');
   }
@@ -603,8 +696,10 @@ class SentimentResult {
   });
 
   SentimentType get dominantSentiment {
-    if (positive > neutral && positive > negative) return SentimentType.positive;
-    if (negative > neutral && negative > positive) return SentimentType.negative;
+    if (positive > neutral && positive > negative)
+      return SentimentType.positive;
+    if (negative > neutral && negative > positive)
+      return SentimentType.negative;
     return SentimentType.neutral;
   }
 }
@@ -652,8 +747,5 @@ class CompletionRecord {
   final DateTime completedAt;
   final String habitId;
 
-  CompletionRecord({
-    required this.completedAt,
-    required this.habitId,
-  });
+  CompletionRecord({required this.completedAt, required this.habitId});
 }

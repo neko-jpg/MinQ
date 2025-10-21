@@ -6,7 +6,10 @@ import 'package:riverpod/riverpod.dart';
 // Dummy type until integrations package is fixed
 class WearableChannel {
   const WearableChannel();
-  Future<void> syncSnapshot({String? userId, List<Map<String, dynamic>>? quests}) async {}
+  Future<void> syncSnapshot({
+    String? userId,
+    List<Map<String, dynamic>>? quests,
+  }) async {}
   Future<void> registerQuickAction({String? questId, String? label}) async {}
 }
 
@@ -21,15 +24,16 @@ class WearableSyncService {
   }) async {
     await _channel.syncSnapshot(
       userId: userId,
-      quests: quests
-          .map(
-            (quest) => <String, dynamic>{
-              'id': quest.id.toString(),
-              'title': quest.title,
-              'completedToday': false,
-            },
-          )
-          .toList(),
+      quests:
+          quests
+              .map(
+                (quest) => <String, dynamic>{
+                  'id': quest.id.toString(),
+                  'title': quest.title,
+                  'completedToday': false,
+                },
+              )
+              .toList(),
     );
   }
 
@@ -44,7 +48,7 @@ class WearableSyncService {
 }
 
 final wearableChannelProvider = Provider<WearableChannel>((ref) {
-  return WearableChannel();
+  return const WearableChannel();
 });
 
 final wearableSyncServiceProvider = Provider<WearableSyncService>((ref) {

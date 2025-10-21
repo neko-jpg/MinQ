@@ -25,16 +25,17 @@ class NotificationChannels {
   const NotificationChannels._();
 
   /// 重要な通知チャンネル
-  static const AndroidNotificationChannel important = AndroidNotificationChannel(
-    NotificationChannelId.important,
-    '重要な通知',
-    description: 'クエスト完了のリマインダーなど、重要な通知を受け取ります',
-    importance: Importance.high,
-    playSound: true,
-    enableVibration: true,
-    enableLights: true,
-    showBadge: true,
-  );
+  static const AndroidNotificationChannel important =
+      AndroidNotificationChannel(
+        NotificationChannelId.important,
+        '重要な通知',
+        description: 'クエスト完了のリマインダーなど、重要な通知を受け取ります',
+        importance: Importance.high,
+        playSound: true,
+        enableVibration: true,
+        enableLights: true,
+        showBadge: true,
+      );
 
   /// 通常の通知チャンネル
   static const AndroidNotificationChannel normal = AndroidNotificationChannel(
@@ -120,28 +121,16 @@ class NotificationAction {
   });
 
   /// 完了アクション
-  static const complete = NotificationAction(
-    id: 'complete',
-    title: '完了',
-  );
+  static const complete = NotificationAction(id: 'complete', title: '完了');
 
   /// スヌーズアクション
-  static const snooze = NotificationAction(
-    id: 'snooze',
-    title: 'スヌーズ',
-  );
+  static const snooze = NotificationAction(id: 'snooze', title: 'スヌーズ');
 
   /// 表示アクション
-  static const view = NotificationAction(
-    id: 'view',
-    title: '表示',
-  );
+  static const view = NotificationAction(id: 'view', title: '表示');
 
   /// 返信アクション
-  static const reply = NotificationAction(
-    id: 'reply',
-    title: '返信',
-  );
+  static const reply = NotificationAction(id: 'reply', title: '返信');
 
   /// 削除アクション
   static const dismiss = NotificationAction(
@@ -166,30 +155,21 @@ class NotificationCategoryConfig {
   /// クエスト完了カテゴリー
   static const questCompletion = NotificationCategoryConfig(
     identifier: IOSNotificationCategory.questCompletion,
-    actions: [
-      NotificationAction.complete,
-      NotificationAction.snooze,
-    ],
+    actions: [NotificationAction.complete, NotificationAction.snooze],
     hiddenPreviewsBodyPlaceholder: 'クエストのリマインダー',
   );
 
   /// ペアメッセージカテゴリー
   static const pairMessage = NotificationCategoryConfig(
     identifier: IOSNotificationCategory.pairMessage,
-    actions: [
-      NotificationAction.reply,
-      NotificationAction.view,
-    ],
+    actions: [NotificationAction.reply, NotificationAction.view],
     hiddenPreviewsBodyPlaceholder: 'ペアからのメッセージ',
   );
 
   /// スヌーズカテゴリー
   static const snooze = NotificationCategoryConfig(
     identifier: IOSNotificationCategory.snooze,
-    actions: [
-      NotificationAction.snooze,
-      NotificationAction.dismiss,
-    ],
+    actions: [NotificationAction.snooze, NotificationAction.dismiss],
   );
 
   /// 全カテゴリーのリスト
@@ -247,7 +227,8 @@ class NotificationSettingsHelper {
       enableLights: enableLights,
       sound: sound != null ? RawResourceAndroidNotificationSound(sound) : null,
       vibrationPattern: vibrationPattern,
-      largeIcon: largeIcon != null ? DrawableResourceAndroidBitmap(largeIcon) : null,
+      largeIcon:
+          largeIcon != null ? DrawableResourceAndroidBitmap(largeIcon) : null,
       showWhen: true,
       when: DateTime.now().millisecondsSinceEpoch,
     );
@@ -410,9 +391,7 @@ class NotificationSchedule {
 
   /// 1回限りの通知
   static NotificationSchedule once(DateTime time) {
-    return NotificationSchedule(
-      scheduledTime: time,
-    );
+    return NotificationSchedule(scheduledTime: time);
   }
 
   /// カスタム間隔の通知
@@ -420,9 +399,6 @@ class NotificationSchedule {
     required DateTime time,
     required Duration interval,
   }) {
-    return NotificationSchedule(
-      scheduledTime: time,
-      repeatInterval: interval,
-    );
+    return NotificationSchedule(scheduledTime: time, repeatInterval: interval);
   }
 }

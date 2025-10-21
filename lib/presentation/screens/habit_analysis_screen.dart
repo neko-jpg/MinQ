@@ -1,7 +1,6 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fl_chart/fl_chart.dart';
-
 import 'package:minq/core/ai/failure_prediction_service.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -20,7 +19,8 @@ class HabitAnalysisScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<HabitAnalysisScreen> createState() => _HabitAnalysisScreenState();
+  ConsumerState<HabitAnalysisScreen> createState() =>
+      _HabitAnalysisScreenState();
 }
 
 class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
@@ -72,33 +72,28 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
       appBar: AppBar(
         title: Text(
           '${widget.habitName}の分析',
-          style: tokens.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         backgroundColor: tokens.surface,
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'AI予測'),
-            Tab(text: '詳細分析'),
-            Tab(text: '改善提案'),
-          ],
+          tabs: const [Tab(text: 'AI予測'), Tab(text: '詳細分析'), Tab(text: '改善提案')],
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _predictionResult == null
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _predictionResult == null
               ? _buildErrorState(tokens)
               : TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildPredictionTab(tokens),
-                    _buildAnalysisTab(tokens),
-                    _buildSuggestionsTab(tokens),
-                  ],
-                ),
+                controller: _tabController,
+                children: [
+                  _buildPredictionTab(tokens),
+                  _buildAnalysisTab(tokens),
+                  _buildSuggestionsTab(tokens),
+                ],
+              ),
     );
   }
 
@@ -115,15 +110,10 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
           SizedBox(height: tokens.spacing(4)),
           Text(
             'データの読み込みに失敗しました',
-            style: tokens.titleMedium.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.titleMedium.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing(4)),
-          ElevatedButton(
-            onPressed: _loadAnalysis,
-            child: const Text('再試行'),
-          ),
+          ElevatedButton(onPressed: _loadAnalysis, child: const Text('再試行')),
         ],
       ),
     );
@@ -131,7 +121,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
 
   Widget _buildPredictionTab(MinqTokens tokens) {
     final result = _predictionResult!;
-    
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
@@ -139,19 +129,19 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
         children: [
           // リスクレベルカード
           _buildRiskLevelCard(tokens, result),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 予測スコア表示
           _buildPredictionScoreCard(tokens, result),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 成功率トレンド
           _buildSuccessRateCard(tokens, result.analysis),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 次回予測
           _buildNextPredictionCard(tokens, result),
         ],
@@ -161,7 +151,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
 
   Widget _buildAnalysisTab(MinqTokens tokens) {
     final analysis = _predictionResult!.analysis;
-    
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
@@ -169,14 +159,14 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
         children: [
           // 曜日別成功率
           _buildDayAnalysisCard(tokens, analysis),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 時間帯別成功率
           _buildTimeAnalysisCard(tokens, analysis),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 統計サマリー
           _buildStatsSummaryCard(tokens, analysis),
         ],
@@ -186,7 +176,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
 
   Widget _buildSuggestionsTab(MinqTokens tokens) {
     final suggestions = _predictionResult!.suggestions;
-    
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
@@ -194,25 +184,26 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
         children: [
           Text(
             'AI改善提案',
-            style: tokens.titleLarge.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           if (suggestions.isEmpty)
             _buildNoSuggestionsState(tokens)
           else
-            ...suggestions.map((suggestion) => 
-              _buildSuggestionCard(tokens, suggestion)
-            ).toList(),
+            ...suggestions.map(
+              (suggestion) => _buildSuggestionCard(tokens, suggestion),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildRiskLevelCard(MinqTokens tokens, FailurePredictionResult result) {
+  Widget _buildRiskLevelCard(
+    MinqTokens tokens,
+    FailurePredictionResult result,
+  ) {
     final riskLevel = result.riskLevel;
     Color riskColor;
     IconData riskIcon;
@@ -245,29 +236,19 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
       padding: EdgeInsets.all(tokens.spacing(6)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            riskColor.withOpacity(0.1),
-            riskColor.withOpacity(0.05),
-          ],
+          colors: [riskColor.withOpacity(0.1), riskColor.withOpacity(0.05)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: tokens.cornerLarge(),
-        border: Border.all(
-          color: riskColor.withOpacity(0.3),
-          width: 2,
-        ),
+        border: Border.all(color: riskColor.withOpacity(0.3), width: 2),
       ),
       child: Column(
         children: [
-          Icon(
-            riskIcon,
-            size: tokens.spacing(16),
-            color: riskColor,
-          ),
-          
+          Icon(riskIcon, size: tokens.spacing(16), color: riskColor),
+
           SizedBox(height: tokens.spacing(3)),
-          
+
           Text(
             riskText,
             style: tokens.displaySmall.copyWith(
@@ -275,14 +256,12 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
               fontWeight: FontWeight.bold,
             ),
           ),
-          
+
           SizedBox(height: tokens.spacing(2)),
-          
+
           Text(
             riskDescription,
-            style: tokens.bodyLarge.copyWith(
-              color: riskColor.withOpacity(0.8),
-            ),
+            style: tokens.bodyLarge.copyWith(color: riskColor.withOpacity(0.8)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -290,10 +269,13 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildPredictionScoreCard(MinqTokens tokens, FailurePredictionResult result) {
+  Widget _buildPredictionScoreCard(
+    MinqTokens tokens,
+    FailurePredictionResult result,
+  ) {
     final score = result.prediction.predictionScore;
     final percentage = (score * 100).toInt();
-    
+
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -306,13 +288,11 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
         children: [
           Text(
             '失敗予測スコア',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           Row(
             children: [
               Expanded(
@@ -336,7 +316,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
                   ],
                 ),
               ),
-              
+
               SizedBox(
                 width: tokens.spacing(32),
                 height: tokens.spacing(32),
@@ -344,14 +324,16 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
                   value: score,
                   strokeWidth: 8,
                   backgroundColor: tokens.border,
-                  valueColor: AlwaysStoppedAnimation<Color>(_getScoreColor(score)),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    _getScoreColor(score),
+                  ),
                 ),
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(3)),
-          
+
           LinearProgressIndicator(
             value: score,
             backgroundColor: tokens.border,
@@ -364,7 +346,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
 
   Widget _buildSuccessRateCard(MinqTokens tokens, analysis) {
     final successRate = (analysis.successRate * 100).toInt();
-    
+
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -377,13 +359,11 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
         children: [
           Text(
             '全体成功率',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           Row(
             children: [
               Icon(
@@ -401,24 +381,25 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(3)),
-          
+
           Text(
             '過去のデータに基づく成功率です',
-            style: tokens.bodyMedium.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildNextPredictionCard(MinqTokens tokens, FailurePredictionResult result) {
+  Widget _buildNextPredictionCard(
+    MinqTokens tokens,
+    FailurePredictionResult result,
+  ) {
     final tomorrow = DateTime.now().add(const Duration(days: 1));
     final dayName = _getDayDisplayName(tomorrow.weekday);
-    
+
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -438,24 +419,20 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
               SizedBox(width: tokens.spacing(2)),
               Text(
                 '明日の予測',
-                style: tokens.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(3)),
-          
+
           Text(
             '$dayNameの成功予測を準備中...',
-            style: tokens.bodyMedium.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
-          
+
           SizedBox(height: tokens.spacing(3)),
-          
+
           ElevatedButton(
             onPressed: () {
               // 明日の予測を生成
@@ -485,20 +462,18 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
         children: [
           Text(
             '曜日別成功率',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           SizedBox(
             height: tokens.spacing(60),
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
                 maxY: 1.0,
-                barTouchData: BarTouchData(enabled: false),
+                barTouchData: const BarTouchData(enabled: false),
                 titlesData: FlTitlesData(
                   show: true,
                   bottomTitles: AxisTitles(
@@ -554,18 +529,16 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
         children: [
           Text(
             '時間帯別成功率',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           ...analysis.successByTime.entries.map((entry) {
             final timeSlot = entry.key;
             final successRate = entry.value;
             final percentage = (successRate * 100).toInt();
-            
+
             return Padding(
               padding: EdgeInsets.only(bottom: tokens.spacing(3)),
               child: Row(
@@ -579,7 +552,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
                       ),
                     ),
                   ),
-                  
+
                   Expanded(
                     child: LinearProgressIndicator(
                       value: successRate,
@@ -589,9 +562,9 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
                       ),
                     ),
                   ),
-                  
+
                   SizedBox(width: tokens.spacing(2)),
-                  
+
                   Text(
                     '$percentage%',
                     style: tokens.bodyMedium.copyWith(
@@ -609,11 +582,13 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
   }
 
   Widget _buildStatsSummaryCard(MinqTokens tokens, analysis) {
-    final bestDay = analysis.successByDay.entries
-        .reduce((a, b) => a.value > b.value ? a : b);
-    final worstDay = analysis.successByDay.entries
-        .reduce((a, b) => a.value < b.value ? a : b);
-    
+    final bestDay = analysis.successByDay.entries.reduce(
+      (a, b) => a.value > b.value ? a : b,
+    );
+    final worstDay = analysis.successByDay.entries.reduce(
+      (a, b) => a.value < b.value ? a : b,
+    );
+
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -626,13 +601,11 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
         children: [
           Text(
             '統計サマリー',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           _buildStatItem(
             tokens,
             '最も成功しやすい曜日',
@@ -640,7 +613,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
             '${(bestDay.value * 100).toInt()}%',
             Colors.green,
           ),
-          
+
           _buildStatItem(
             tokens,
             '最も失敗しやすい曜日',
@@ -648,7 +621,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
             '${(worstDay.value * 100).toInt()}%',
             Colors.red,
           ),
-          
+
           _buildStatItem(
             tokens,
             '最終更新',
@@ -673,10 +646,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: tokens.bodyMedium,
-          ),
+          Text(label, style: tokens.bodyMedium),
           Row(
             children: [
               Text(
@@ -688,12 +658,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
               ),
               if (suffix.isNotEmpty) ...[
                 SizedBox(width: tokens.spacing(1)),
-                Text(
-                  suffix,
-                  style: tokens.bodySmall.copyWith(
-                    color: color,
-                  ),
-                ),
+                Text(suffix, style: tokens.bodySmall.copyWith(color: color)),
               ],
             ],
           ),
@@ -705,7 +670,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
   Widget _buildSuggestionCard(MinqTokens tokens, FailureSuggestion suggestion) {
     Color priorityColor;
     IconData priorityIcon;
-    
+
     switch (suggestion.priority) {
       case SuggestionPriority.high:
         priorityColor = Colors.red;
@@ -720,27 +685,21 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
         priorityIcon = Icons.lightbulb_outline;
         break;
     }
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: tokens.spacing(3)),
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surface,
         borderRadius: tokens.cornerLarge(),
-        border: Border.all(
-          color: priorityColor.withOpacity(0.3),
-        ),
+        border: Border.all(color: priorityColor.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                priorityIcon,
-                color: priorityColor,
-                size: tokens.spacing(5),
-              ),
+              Icon(priorityIcon, color: priorityColor, size: tokens.spacing(5)),
               SizedBox(width: tokens.spacing(2)),
               Expanded(
                 child: Text(
@@ -752,16 +711,14 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(2)),
-          
+
           Text(
             suggestion.description,
-            style: tokens.bodyMedium.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
-          
+
           if (suggestion.actionable) ...[
             SizedBox(height: tokens.spacing(3)),
             ElevatedButton(
@@ -795,16 +752,12 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
           SizedBox(height: tokens.spacing(4)),
           Text(
             '現在、改善提案はありません',
-            style: tokens.titleMedium.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.titleMedium.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing(2)),
           Text(
             'データが蓄積されると、AIがより良い提案を生成します',
-            style: tokens.bodyMedium.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -813,13 +766,21 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
   }
 
   List<BarChartGroupData> _buildDayBarGroups(Map<String, double> successByDay) {
-    const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    
+    const dayOrder = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+
     return dayOrder.asMap().entries.map((entry) {
       final index = entry.key;
       final dayName = entry.value;
       final successRate = successByDay[dayName] ?? 0.0;
-      
+
       return BarChartGroupData(
         x: index,
         barRods: [
@@ -880,15 +841,15 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
 
   void _generateTomorrowPrediction() {
     // TODO: 明日の予測を生成
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('明日の予測を生成中...')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('明日の予測を生成中...')));
   }
 
   void _applySuggestion(FailureSuggestion suggestion) {
     // TODO: 提案を実行
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('「${suggestion.title}」を実行しました')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('「${suggestion.title}」を実行しました')));
   }
 }

@@ -5,11 +5,7 @@ import 'package:minq/core/ai/realtime_coach_service.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class AICoachOverlay extends ConsumerStatefulWidget {
-  const AICoachOverlay({
-    super.key,
-    required this.child,
-    this.questId,
-  });
+  const AICoachOverlay({super.key, required this.child, this.questId});
 
   final Widget child;
   final String? questId;
@@ -24,7 +20,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
   late AnimationController _pulseController;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _pulseAnimation;
-  
+
   StreamSubscription<CoachingMessage>? _messageSubscription;
   CoachingMessage? _currentMessage;
   Timer? _hideTimer;
@@ -34,12 +30,12 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
   @override
   void initState() {
     super.initState();
-    
+
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    
+
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
@@ -48,18 +44,13 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _slideController, curve: Curves.easeOutBack),
+    );
 
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.1,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
 
     _startListening();
   }
@@ -74,13 +65,13 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
   }
 
   void _startListening() {
-    _messageSubscription = RealtimeCoachService.instance.messageStream.listen(
-      (message) {
-        if (widget.questId == null || message.questId == widget.questId) {
-          _showMessage(message);
-        }
-      },
-    );
+    _messageSubscription = RealtimeCoachService.instance.messageStream.listen((
+      message,
+    ) {
+      if (widget.questId == null || message.questId == widget.questId) {
+        _showMessage(message);
+      }
+    });
   }
 
   void _showMessage(CoachingMessage message) {
@@ -91,7 +82,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
     });
 
     _slideController.forward();
-    
+
     // メッセージタイプに応じてアニメーション
     if (message.type == CoachingMessageType.motivation ||
         message.type == CoachingMessageType.progress) {
@@ -157,9 +148,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
             right: 0,
             child: SlideTransition(
               position: _slideAnimation,
-              child: _isMinimized
-                  ? _buildMinimizedCoach()
-                  : _buildFullCoach(),
+              child: _isMinimized ? _buildMinimizedCoach() : _buildFullCoach(),
             ),
           ),
       ],
@@ -187,10 +176,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
       child: AnimatedBuilder(
         animation: _pulseAnimation,
         builder: (context, child) {
-          return Transform.scale(
-            scale: _pulseAnimation.value,
-            child: child,
-          );
+          return Transform.scale(scale: _pulseAnimation.value, child: child);
         },
         child: Padding(
           padding: EdgeInsets.all(tokens.spacing(4)),
@@ -224,17 +210,11 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
                   ),
                   IconButton(
                     onPressed: _toggleMinimize,
-                    icon: const Icon(
-                      Icons.minimize,
-                      color: Colors.white,
-                    ),
+                    icon: const Icon(Icons.minimize, color: Colors.white),
                   ),
                   IconButton(
                     onPressed: _dismissMessage,
-                    icon: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                    ),
+                    icon: const Icon(Icons.close, color: Colors.white),
                   ),
                 ],
               ),
@@ -251,9 +231,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
                 ),
                 child: Text(
                   message.message,
-                  style: tokens.bodyMedium.copyWith(
-                    color: Colors.white,
-                  ),
+                  style: tokens.bodyMedium.copyWith(color: Colors.white),
                 ),
               ),
 
@@ -309,18 +287,12 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
               Expanded(
                 child: Text(
                   message.message,
-                  style: tokens.bodySmall.copyWith(
-                    color: Colors.white,
-                  ),
+                  style: tokens.bodySmall.copyWith(color: Colors.white),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Icon(
-                Icons.expand_less,
-                color: Colors.white,
-                size: 20,
-              ),
+              const Icon(Icons.expand_less, color: Colors.white, size: 20),
             ],
           ),
         ),
@@ -336,11 +308,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
         color: Colors.white.withOpacity(0.2),
         shape: BoxShape.circle,
       ),
-      child: Icon(
-        _getMessageIcon(type),
-        color: Colors.white,
-        size: size * 0.6,
-      ),
+      child: Icon(_getMessageIcon(type), color: Colors.white, size: size * 0.6),
     );
   }
 
@@ -354,10 +322,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
     return ElevatedButton.icon(
       onPressed: onPressed,
       icon: Icon(icon, size: 16),
-      label: Text(
-        label,
-        style: tokens.bodySmall,
-      ),
+      label: Text(label, style: tokens.bodySmall),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white.withOpacity(0.2),
         foregroundColor: Colors.white,
@@ -371,7 +336,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
 
   Color _getMessageColor(CoachingMessageType type) {
     final tokens = context.tokens;
-    
+
     switch (type) {
       case CoachingMessageType.start:
         return tokens.encouragement;
@@ -431,11 +396,13 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
   void _respondToCheckIn(String response) {
     // TODO: ユーザーの応答を記録・分析
     _dismissMessage();
-    
+
     // 応答に基づいて追加のコーチングを提供
     if (response == 'tired') {
       Timer(const Duration(seconds: 2), () {
-        RealtimeCoachService.instance.triggerEmergencyIntervention('ユーザーが疲労を報告');
+        RealtimeCoachService.instance.triggerEmergencyIntervention(
+          'ユーザーが疲労を報告',
+        );
       });
     }
   }
@@ -446,7 +413,8 @@ class AICoachSettingsScreen extends ConsumerStatefulWidget {
   const AICoachSettingsScreen({super.key});
 
   @override
-  ConsumerState<AICoachSettingsScreen> createState() => _AICoachSettingsScreenState();
+  ConsumerState<AICoachSettingsScreen> createState() =>
+      _AICoachSettingsScreenState();
 }
 
 class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
@@ -480,113 +448,93 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 基本設定
-            _buildSettingsSection(
-              '基本設定',
-              [
-                _buildSwitchTile(
-                  '音声コーチング',
-                  '音声でメッセージを読み上げます',
-                  _settings.enableVoice,
-                  (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(enableVoice: value);
-                    });
-                  },
-                ),
-                _buildSwitchTile(
-                  '触覚フィードバック',
-                  'メッセージ時に振動でお知らせします',
-                  _settings.enableHaptics,
-                  (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(enableHaptics: value);
-                    });
-                  },
-                ),
-                _buildSwitchTile(
-                  '緊急介入',
-                  '困難を感じた時にサポートメッセージを送信',
-                  _settings.enableEmergencyIntervention,
-                  (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(enableEmergencyIntervention: value);
-                    });
-                  },
-                ),
-              ],
-            ),
+            _buildSettingsSection('基本設定', [
+              _buildSwitchTile(
+                '音声コーチング',
+                '音声でメッセージを読み上げます',
+                _settings.enableVoice,
+                (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(enableVoice: value);
+                  });
+                },
+              ),
+              _buildSwitchTile(
+                '触覚フィードバック',
+                'メッセージ時に振動でお知らせします',
+                _settings.enableHaptics,
+                (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(enableHaptics: value);
+                  });
+                },
+              ),
+              _buildSwitchTile(
+                '緊急介入',
+                '困難を感じた時にサポートメッセージを送信',
+                _settings.enableEmergencyIntervention,
+                (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(
+                      enableEmergencyIntervention: value,
+                    );
+                  });
+                },
+              ),
+            ]),
 
             SizedBox(height: tokens.spacing(6)),
 
             // 音声設定
             if (_settings.enableVoice) ...[
-              _buildSettingsSection(
-                '音声設定',
-                [
-                  _buildSliderTile(
-                    '読み上げ速度',
-                    _settings.voiceSpeed,
-                    0.5,
-                    1.5,
-                    (value) {
-                      setState(() {
-                        _settings = _settings.copyWith(voiceSpeed: value);
-                      });
-                    },
-                  ),
-                  _buildSliderTile(
-                    '音量',
-                    _settings.voiceVolume,
-                    0.0,
-                    1.0,
-                    (value) {
-                      setState(() {
-                        _settings = _settings.copyWith(voiceVolume: value);
-                      });
-                    },
-                  ),
-                ],
-              ),
+              _buildSettingsSection('音声設定', [
+                _buildSliderTile('読み上げ速度', _settings.voiceSpeed, 0.5, 1.5, (
+                  value,
+                ) {
+                  setState(() {
+                    _settings = _settings.copyWith(voiceSpeed: value);
+                  });
+                }),
+                _buildSliderTile('音量', _settings.voiceVolume, 0.0, 1.0, (
+                  value,
+                ) {
+                  setState(() {
+                    _settings = _settings.copyWith(voiceVolume: value);
+                  });
+                }),
+              ]),
 
               SizedBox(height: tokens.spacing(6)),
             ],
 
             // 頻度設定
-            _buildSettingsSection(
-              '頻度設定',
-              [
-                _buildIntervalTile(
-                  '励ましメッセージの間隔',
-                  _settings.motivationInterval,
-                  (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(motivationInterval: value);
-                    });
-                  },
-                ),
-              ],
-            ),
+            _buildSettingsSection('頻度設定', [
+              _buildIntervalTile('励ましメッセージの間隔', _settings.motivationInterval, (
+                value,
+              ) {
+                setState(() {
+                  _settings = _settings.copyWith(motivationInterval: value);
+                });
+              }),
+            ]),
 
             SizedBox(height: tokens.spacing(6)),
 
             // テスト機能
-            _buildSettingsSection(
-              'テスト',
-              [
-                ListTile(
-                  title: const Text('音声テスト'),
-                  subtitle: const Text('音声コーチングをテストします'),
-                  trailing: const Icon(Icons.play_arrow),
-                  onTap: _testVoiceCoaching,
-                ),
-                ListTile(
-                  title: const Text('メッセージテスト'),
-                  subtitle: const Text('コーチングメッセージをテストします'),
-                  trailing: const Icon(Icons.message),
-                  onTap: _testMessage,
-                ),
-              ],
-            ),
+            _buildSettingsSection('テスト', [
+              ListTile(
+                title: const Text('音声テスト'),
+                subtitle: const Text('音声コーチングをテストします'),
+                trailing: const Icon(Icons.play_arrow),
+                onTap: _testVoiceCoaching,
+              ),
+              ListTile(
+                title: const Text('メッセージテスト'),
+                subtitle: const Text('コーチングメッセージをテストします'),
+                trailing: const Icon(Icons.message),
+                onTap: _testMessage,
+              ),
+            ]),
           ],
         ),
       ),
@@ -601,9 +549,7 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
       children: [
         Text(
           title,
-          style: tokens.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: tokens.spacing(3)),
         Card(
@@ -667,15 +613,13 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
 
     return ListTile(
       title: Text(title),
-      subtitle: Text('${minutes}分間隔'),
+      subtitle: Text('$minutes分間隔'),
       trailing: DropdownButton<int>(
         value: minutes,
-        items: [1, 3, 5, 10, 15, 30].map((min) {
-          return DropdownMenuItem(
-            value: min,
-            child: Text('${min}分'),
-          );
-        }).toList(),
+        items:
+            [1, 3, 5, 10, 15, 30].map((min) {
+              return DropdownMenuItem(value: min, child: Text('$min分'));
+            }).toList(),
         onChanged: (value) {
           if (value != null) {
             onChanged(Duration(minutes: value));

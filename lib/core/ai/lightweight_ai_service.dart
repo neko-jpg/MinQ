@@ -56,28 +56,61 @@ class LightweightAIService {
 
   String generateResponse(String userMessage) {
     final message = userMessage.toLowerCase();
-    
+
     // キーワードベースの応答選択（優先度順）
-    if (_containsAny(message, ['こんにちは', 'おはよう', 'こんばんは', 'はじめまして', 'hello', 'hi'])) {
+    if (_containsAny(message, [
+      'こんにちは',
+      'おはよう',
+      'こんばんは',
+      'はじめまして',
+      'hello',
+      'hi',
+    ])) {
       return _getRandomResponse('greeting');
     }
-    
-    if (_containsAny(message, ['やる気', 'モチベーション', '続かない', '挫折', '頑張', '疲れ', 'しんどい'])) {
+
+    if (_containsAny(message, [
+      'やる気',
+      'モチベーション',
+      '続かない',
+      '挫折',
+      '頑張',
+      '疲れ',
+      'しんどい',
+    ])) {
       return _getRandomResponse('motivation');
     }
-    
-    if (_containsAny(message, ['習慣', 'ルーティン', '続ける', '始める', 'コツ', '方法', 'どうやって'])) {
+
+    if (_containsAny(message, [
+      '習慣',
+      'ルーティン',
+      '続ける',
+      '始める',
+      'コツ',
+      '方法',
+      'どうやって',
+    ])) {
       return _getRandomResponse('habit');
     }
-    
+
     if (_containsAny(message, ['ありがとう', 'サポート', '助けて', '相談', 'お疲れ', '応援'])) {
       return _getRandomResponse('support');
     }
-    
-    if (_containsAny(message, ['？', '?', 'なぜ', 'どう', 'なに', '何', 'いつ', 'どこ', 'だれ'])) {
+
+    if (_containsAny(message, [
+      '？',
+      '?',
+      'なぜ',
+      'どう',
+      'なに',
+      '何',
+      'いつ',
+      'どこ',
+      'だれ',
+    ])) {
       return _getRandomResponse('question');
     }
-    
+
     return _getRandomResponse('default');
   }
 

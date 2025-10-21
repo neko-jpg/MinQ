@@ -5,7 +5,10 @@ import 'package:riverpod/riverpod.dart';
 // Dummy type until integrations package is fixed
 class MenuBarChannel {
   const MenuBarChannel();
-  Future<void> updateTimer({required String title, required Duration remaining}) async {}
+  Future<void> updateTimer({
+    required String title,
+    required Duration remaining,
+  }) async {}
   Future<void> clear() async {}
 }
 
@@ -25,7 +28,7 @@ class DesktopMenuBarService {
 }
 
 final menuBarChannelProvider = Provider<MenuBarChannel>((ref) {
-  return MenuBarChannel();
+  return const MenuBarChannel();
 });
 
 final desktopMenuBarServiceProvider = Provider<DesktopMenuBarService>((ref) {

@@ -1,4 +1,4 @@
-﻿import 'package:collection/collection.dart';
+import 'package:collection/collection.dart';
 import 'package:isar/isar.dart';
 import 'package:minq/domain/log/quest_log.dart';
 
@@ -37,11 +37,16 @@ class QuestLogRepository {
     final localDay = day.toLocal();
     final dayStart = DateTime(localDay.year, localDay.month, localDay.day);
     final nextDay = dayStart.add(const Duration(days: 1));
-    
+
     return _isar.questLogs
         .filter()
         .uidEqualTo(uid)
-        .tsBetween(dayStart.toUtc(), nextDay.toUtc(), includeLower: true, includeUpper: false)
+        .tsBetween(
+          dayStart.toUtc(),
+          nextDay.toUtc(),
+          includeLower: true,
+          includeUpper: false,
+        )
         .sortByTsDesc()
         .findAll();
   }
@@ -55,11 +60,16 @@ class QuestLogRepository {
     final localDay = day.toLocal();
     final dayStart = DateTime(localDay.year, localDay.month, localDay.day);
     final nextDay = dayStart.add(const Duration(days: 1));
-    
+
     return _isar.questLogs
         .filter()
         .uidEqualTo(uid)
-        .tsBetween(dayStart.toUtc(), nextDay.toUtc(), includeLower: true, includeUpper: false)
+        .tsBetween(
+          dayStart.toUtc(),
+          nextDay.toUtc(),
+          includeLower: true,
+          includeUpper: false,
+        )
         .count();
   }
 
@@ -143,29 +153,29 @@ class QuestLogRepository {
   Future<double> calculateWeeklyCompletionRate(String uid) async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    
+
     // Get the start of the current week (Monday)
     final weekStart = today.subtract(Duration(days: today.weekday - 1));
-    
+
     int completedDays = 0;
     int totalDays = 0;
-    
+
     for (int i = 0; i < 7; i++) {
       final day = weekStart.add(Duration(days: i));
       totalDays++;
-      
+
       // Don't count future days
       if (day.isAfter(today)) {
         totalDays--;
         continue;
       }
-      
+
       final logsForDay = await countLogsForDay(uid, day);
       if (logsForDay > 0) {
         completedDays++;
       }
     }
-    
+
     if (totalDays == 0) return 0.0;
     return completedDays / totalDays;
   }
@@ -176,11 +186,12 @@ class QuestLogRepository {
       return 0;
     }
 
-    final days = logs
-        .map((log) => DateTime.utc(log.ts.year, log.ts.month, log.ts.day))
-        .toSet()
-        .toList()
-      ..sort();
+    final days =
+        logs
+            .map((log) => DateTime.utc(log.ts.year, log.ts.month, log.ts.day))
+            .toSet()
+            .toList()
+          ..sort();
 
     var longest = 0;
     var current = 0;
@@ -227,5 +238,3 @@ class QuestLogRepository {
     return getLogsForUser(uid);
   }
 }
-
-

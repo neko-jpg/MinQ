@@ -3,12 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// フォントサイズ設定
-enum FontSizeScale {
-  small,
-  medium,
-  large,
-  extraLarge,
-}
+enum FontSizeScale { small, medium, large, extraLarge }
 
 extension FontSizeScaleExtension on FontSizeScale {
   /// スケール値
@@ -89,8 +84,8 @@ class FontSizeController extends StateNotifier<FontSizeScale> {
 /// フォントサイズコントローラープロバイダー
 final fontSizeControllerProvider =
     StateNotifierProvider<FontSizeController, FontSizeScale>((ref) {
-  return FontSizeController();
-});
+      return FontSizeController();
+    });
 
 /// フォントサイズスケールプロバイダー
 final fontSizeScaleProvider = Provider<double>((ref) {
@@ -110,10 +105,7 @@ class FontSizePicker extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'フォントサイズ',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        Text('フォントサイズ', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 16),
         Row(
           children: [
@@ -143,9 +135,7 @@ class FontSizePicker extends ConsumerWidget {
         Center(
           child: Text(
             'プレビュー: ${currentSize.displayName}',
-            style: TextStyle(
-              fontSize: 16 * currentSize.scale,
-            ),
+            style: TextStyle(fontSize: 16 * currentSize.scale),
           ),
         ),
       ],
@@ -157,19 +147,16 @@ class FontSizePicker extends ConsumerWidget {
 class TextScaleWrapper extends ConsumerWidget {
   final Widget child;
 
-  const TextScaleWrapper({
-    super.key,
-    required this.child,
-  });
+  const TextScaleWrapper({super.key, required this.child});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scale = ref.watch(fontSizeScaleProvider);
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(
-        textScaleFactor: scale,
-      ),
+      data: MediaQuery.of(
+        context,
+      ).copyWith(textScaler: TextScaler.linear(scale)),
       child: child,
     );
   }

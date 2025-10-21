@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../logging/app_logger.dart';
 import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
 
+import 'package:minq/core/logging/app_logger.dart';
 
 /// サブスクリプション管理サービス
 ///
@@ -44,7 +44,10 @@ class SubscriptionService {
         final expiry = (sub['expiryDate'] as Timestamp).toDate();
 
         if (expiry.isAfter(DateTime.now())) {
-          _currentPlan = SubscriptionPlan.values.firstWhere((p) => p.name == planName, orElse: () => SubscriptionPlan.free);
+          _currentPlan = SubscriptionPlan.values.firstWhere(
+            (p) => p.name == planName,
+            orElse: () => SubscriptionPlan.free,
+          );
         } else {
           _currentPlan = SubscriptionPlan.free;
         }
@@ -61,23 +64,28 @@ class SubscriptionService {
   Future<bool> purchase(SubscriptionPlan plan) async {
     if (plan == SubscriptionPlan.free) return false;
     try {
-      AppLogger.info('Attempting to purchase subscription', {'plan': plan.name});
+      AppLogger.info('Attempting to purchase subscription', {
+        'plan': plan.name,
+      });
 
       final now = DateTime.now();
-      final expiryDate = plan == SubscriptionPlan.premiumMonthly
-          ? DateTime(now.year, now.month + 1, now.day)
-          : DateTime(now.year + 1, now.month, now.day);
+      final expiryDate =
+          plan == SubscriptionPlan.premiumMonthly
+              ? DateTime(now.year, now.month + 1, now.day)
+              : DateTime(now.year + 1, now.month, now.day);
 
       await _firestore.collection('users').doc(_userId).update({
         'subscription': {
           'plan': plan.name,
           'purchaseDate': Timestamp.now(),
           'expiryDate': Timestamp.fromDate(expiryDate),
-        }
+        },
       });
 
       _currentPlan = plan;
-      AppLogger.info('Subscription purchased successfully', {'plan': plan.name});
+      AppLogger.info('Subscription purchased successfully', {
+        'plan': plan.name,
+      });
       return true;
     } catch (e, stack) {
       AppLogger.error('Failed to purchase subscription', e, stack);
@@ -90,7 +98,9 @@ class SubscriptionService {
     try {
       AppLogger.info('Attempting to restore subscription');
       await _loadSubscriptionStatus();
-      AppLogger.info('Subscription restored successfully', {'plan': _currentPlan.name});
+      AppLogger.info('Subscription restored successfully', {
+        'plan': _currentPlan.name,
+      });
       return true;
     } catch (e, stack) {
       AppLogger.error('Failed to restore subscription', e, stack);
@@ -256,10 +266,7 @@ class FeatureLimit {
   /// 無制限かどうか
   final bool unlimited;
 
-  FeatureLimit({
-    this.maxCount,
-    this.unlimited = false,
-  });
+  FeatureLimit({this.maxCount, this.unlimited = false});
 
   /// 制限に達しているかチェック
   bool isLimitReached(int currentCount) {

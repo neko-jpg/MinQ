@@ -63,34 +63,34 @@ class WelcomeScreen extends ConsumerWidget {
                           fontWeight: FontWeight.bold,
                           color: tokens.textPrimary,
                         ),
-                        children: const [TextSpan(text: "MinQへようこそ")],
+                        children: const [TextSpan(text: 'MinQへようこそ')],
                       ),
                     ),
                     SizedBox(height: tokens.spacing(4)),
                     Text(
-                      "ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。",
+                      'ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。',
                       textAlign: TextAlign.center,
                       style: textTheme.bodyLarge?.copyWith(
                         color: tokens.textSecondary,
                       ),
                     ),
                     SizedBox(height: tokens.spacing(8)),
-                    _FeatureCard(
+                    const _FeatureCard(
                       icon: Icons.touch_app,
-                      title: "3タップで習慣化",
-                      description: "新しい習慣をたった3タップで始められます。とてもシンプルです。",
+                      title: '3タップで習慣化',
+                      description: '新しい習慣をたった3タップで始められます。とてもシンプルです。',
                     ),
                     SizedBox(height: tokens.spacing(4)),
-                    _FeatureCard(
+                    const _FeatureCard(
                       icon: Icons.groups,
-                      title: "匿名ペア",
-                      description: "パートナーから、匿名で説明責任とサポートを得られます。",
+                      title: '匿名ペア',
+                      description: 'パートナーから、匿名で説明責任とサポートを得られます。',
                     ),
                     SizedBox(height: tokens.spacing(4)),
-                    _FeatureCard(
+                    const _FeatureCard(
                       icon: Icons.explore,
-                      title: "ミニクエスト",
-                      description: "あなたの目標を、達成感のある小さなクエストに変えましょう。",
+                      title: 'ミニクエスト',
+                      description: 'あなたの目標を、達成感のある小さなクエストに変えましょう。',
                     ),
                     SizedBox(height: tokens.spacing(6)),
                   ],
@@ -195,7 +195,7 @@ class _BottomNavigation extends StatelessWidget {
             child: FilledButton.icon(
               onPressed: onGetStarted,
               icon: const Icon(Icons.arrow_forward),
-              label: const Text("始める"),
+              label: const Text('始める'),
               style: FilledButton.styleFrom(
                 backgroundColor: tokens.brandPrimary,
                 foregroundColor: tokens.ensureAccessibleOnBackground(
@@ -216,11 +216,11 @@ class _BottomNavigation extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("すでにアカウントをお持ちですか？", style: textTheme.bodySmall),
+              Text('すでにアカウントをお持ちですか？', style: textTheme.bodySmall),
               TextButton(
                 onPressed: onLogin,
                 child: Text(
-                  "ログイン",
+                  'ログイン',
                   style: textTheme.bodySmall?.copyWith(
                     color: tokens.brandPrimary,
                     fontWeight: FontWeight.bold,

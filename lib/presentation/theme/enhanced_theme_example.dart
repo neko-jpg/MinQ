@@ -9,7 +9,7 @@ class EnhancedThemeExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = MinqTheme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.getAccessibleBackgroundColor(context),
       appBar: AppBar(
@@ -27,91 +27,87 @@ class EnhancedThemeExample extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Emotional Colors Section
-            _buildSection(
-              context,
-              'Emotional Colors',
-              [
-                _buildColorCard(context, 'Joy Accent', theme.joyAccent),
-                _buildColorCard(context, 'Encouragement', theme.encouragement),
-                _buildColorCard(context, 'Serenity', theme.serenity),
-                _buildColorCard(context, 'Warmth', theme.warmth),
-              ],
-            ),
-            
+            _buildSection(context, 'Emotional Colors', [
+              _buildColorCard(context, 'Joy Accent', theme.joyAccent),
+              _buildColorCard(context, 'Encouragement', theme.encouragement),
+              _buildColorCard(context, 'Serenity', theme.serenity),
+              _buildColorCard(context, 'Warmth', theme.warmth),
+            ]),
+
             SizedBox(height: theme.respectfulSpace),
-            
+
             // State Colors Section
-            _buildSection(
-              context,
-              'State Colors',
-              [
-                _buildColorCard(context, 'Progress Active', theme.progressActive),
-                _buildColorCard(context, 'Progress Complete', theme.progressComplete),
-                _buildColorCard(context, 'Progress Pending', theme.progressPending),
-              ],
-            ),
-            
+            _buildSection(context, 'State Colors', [
+              _buildColorCard(context, 'Progress Active', theme.progressActive),
+              _buildColorCard(
+                context,
+                'Progress Complete',
+                theme.progressComplete,
+              ),
+              _buildColorCard(
+                context,
+                'Progress Pending',
+                theme.progressPending,
+              ),
+            ]),
+
             SizedBox(height: theme.respectfulSpace),
-            
+
             // Typography Section
-            _buildSection(
-              context,
-              'Emotional Typography',
-              [
-                Text('🎉 Celebration Text!', style: theme.celebrationText),
-                SizedBox(height: theme.intimateSpace),
-                Text('💪 You can do it!', style: theme.encouragementText),
-                SizedBox(height: theme.intimateSpace),
-                Text('💡 Here\'s a helpful tip', style: theme.guidanceText),
-                SizedBox(height: theme.intimateSpace),
-                Text('(whispered hint)', style: theme.whisperText),
-              ],
-            ),
-            
+            _buildSection(context, 'Emotional Typography', [
+              Text('🎉 Celebration Text!', style: theme.celebrationText),
+              SizedBox(height: theme.intimateSpace),
+              Text('💪 You can do it!', style: theme.encouragementText),
+              SizedBox(height: theme.intimateSpace),
+              Text('💡 Here\'s a helpful tip', style: theme.guidanceText),
+              SizedBox(height: theme.intimateSpace),
+              Text('(whispered hint)', style: theme.whisperText),
+            ]),
+
             SizedBox(height: theme.respectfulSpace),
-            
+
             // Spacing Examples
-            _buildSection(
-              context,
-              'Enhanced Spacing',
-              [
-                Container(
-                  padding: theme.intimatePadding,
-                  decoration: BoxDecoration(
-                    color: theme.serenity.withValues(alpha: 0.1),
-                    borderRadius: theme.cornerSmall(),
-                  ),
-                  child: Text('Intimate Spacing', style: theme.bodySmall),
+            _buildSection(context, 'Enhanced Spacing', [
+              Container(
+                padding: theme.intimatePadding,
+                decoration: BoxDecoration(
+                  color: theme.serenity.withValues(alpha: 0.1),
+                  borderRadius: theme.cornerSmall(),
                 ),
-                SizedBox(height: theme.breathingSpace),
-                Container(
-                  padding: theme.breathingPadding,
-                  decoration: BoxDecoration(
-                    color: theme.warmth.withValues(alpha: 0.1),
-                    borderRadius: theme.cornerMedium(),
-                  ),
-                  child: Text('Breathing Space', style: theme.bodyMedium),
+                child: Text('Intimate Spacing', style: theme.bodySmall),
+              ),
+              SizedBox(height: theme.breathingSpace),
+              Container(
+                padding: theme.breathingPadding,
+                decoration: BoxDecoration(
+                  color: theme.warmth.withValues(alpha: 0.1),
+                  borderRadius: theme.cornerMedium(),
                 ),
-              ],
-            ),
-            
+                child: Text('Breathing Space', style: theme.bodyMedium),
+              ),
+            ]),
+
             SizedBox(height: theme.respectfulSpace),
-            
+
             // Interactive Elements
-            _buildSection(
-              context,
-              'Interactive Elements',
-              [
-                _buildAnimatedButton(context, 'Joy Button', theme.joyAccent),
-                SizedBox(height: theme.breathingSpace),
-                _buildAnimatedButton(context, 'Success Button', theme.progressComplete),
-                SizedBox(height: theme.breathingSpace),
-                _buildAnimatedButton(context, 'Warning Button', theme.accentWarning),
-              ],
-            ),
-            
+            _buildSection(context, 'Interactive Elements', [
+              _buildAnimatedButton(context, 'Joy Button', theme.joyAccent),
+              SizedBox(height: theme.breathingSpace),
+              _buildAnimatedButton(
+                context,
+                'Success Button',
+                theme.progressComplete,
+              ),
+              SizedBox(height: theme.breathingSpace),
+              _buildAnimatedButton(
+                context,
+                'Warning Button',
+                theme.accentWarning,
+              ),
+            ]),
+
             SizedBox(height: theme.dramaticSpace),
-            
+
             // Accessibility Info
             _buildAccessibilityInfo(context),
           ],
@@ -119,10 +115,14 @@ class EnhancedThemeExample extends StatelessWidget {
       ),
     );
   }
-  
-  Widget _buildSection(BuildContext context, String title, List<Widget> children) {
+
+  Widget _buildSection(
+    BuildContext context,
+    String title,
+    List<Widget> children,
+  ) {
     final theme = MinqTheme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -137,10 +137,10 @@ class EnhancedThemeExample extends StatelessWidget {
       ],
     );
   }
-  
+
   Widget _buildColorCard(BuildContext context, String name, Color color) {
     final theme = MinqTheme.of(context);
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: theme.intimateSpace),
       padding: theme.intimatePadding,
@@ -170,12 +170,15 @@ class EnhancedThemeExample extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildAnimatedButton(BuildContext context, String text, Color color) {
     final theme = MinqTheme.of(context);
-    
+
     return AnimatedContainer(
-      duration: theme.getAnimationDuration(context, const Duration(milliseconds: 200)),
+      duration: theme.getAnimationDuration(
+        context,
+        const Duration(milliseconds: 200),
+      ),
       curve: theme.easeInOutCubic,
       child: ElevatedButton(
         onPressed: () {
@@ -184,29 +187,31 @@ class EnhancedThemeExample extends StatelessWidget {
               content: Text('$text pressed!'),
               backgroundColor: color,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: theme.cornerMedium(),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: theme.cornerMedium()),
             ),
           );
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: Colors.white,
-          minimumSize: const Size(double.infinity, MinqTheme.minTouchTargetSize),
-          shape: RoundedRectangleBorder(
-            borderRadius: theme.cornerMedium(),
+          minimumSize: const Size(
+            double.infinity,
+            MinqTheme.minTouchTargetSize,
           ),
+          shape: RoundedRectangleBorder(borderRadius: theme.cornerMedium()),
         ),
-        child: Text(text, style: theme.bodyMedium.copyWith(color: Colors.white)),
+        child: Text(
+          text,
+          style: theme.bodyMedium.copyWith(color: Colors.white),
+        ),
       ),
     );
   }
-  
+
   Widget _buildAccessibilityInfo(BuildContext context) {
     final theme = MinqTheme.of(context);
     final isHighContrast = theme.isHighContrastMode(context);
-    
+
     return Container(
       padding: theme.breathingPadding,
       decoration: BoxDecoration(
@@ -239,19 +244,26 @@ class EnhancedThemeExample extends StatelessWidget {
           _buildAccessibilityRow(
             context,
             'WCAG AA Compliance',
-            theme.meetsWCAGAA(theme.textPrimary, theme.background) ? 'Pass' : 'Fail',
-            theme.meetsWCAGAA(theme.textPrimary, theme.background) 
-                ? theme.progressComplete 
+            theme.meetsWCAGAA(theme.textPrimary, theme.background)
+                ? 'Pass'
+                : 'Fail',
+            theme.meetsWCAGAA(theme.textPrimary, theme.background)
+                ? theme.progressComplete
                 : theme.accentError,
           ),
         ],
       ),
     );
   }
-  
-  Widget _buildAccessibilityRow(BuildContext context, String label, String value, Color statusColor) {
+
+  Widget _buildAccessibilityRow(
+    BuildContext context,
+    String label,
+    String value,
+    Color statusColor,
+  ) {
     final theme = MinqTheme.of(context);
-    
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: theme.intimateSpace / 2),
       child: Row(

@@ -1,16 +1,14 @@
-import 'package:flutter/foundation.dart';
-
 class ContentModerationService {
   static const List<String> _ngWords = [
     // 基本的な不適切な言葉（日本語）
     'バカ', 'ばか', 'アホ', 'あほ', 'クソ', 'くそ', 'クズ', 'くず',
     '死ね', 'しね', '殺す', 'ころす', 'うざい', 'ウザい', 'きもい', 'キモい',
     'ブス', 'ぶす', 'デブ', 'でぶ', 'チビ', 'ちび',
-    
+
     // 基本的な不適切な言葉（英語）
     'stupid', 'idiot', 'moron', 'dumb', 'hate', 'kill', 'die',
     'ugly', 'fat', 'loser', 'shut up',
-    
+
     // 差別的な言葉は含めない（誤検知を避けるため）
     // 実際の運用では、より包括的なリストを使用し、
     // 機械学習ベースのモデレーションも併用することを推奨
@@ -30,7 +28,7 @@ class ContentModerationService {
     }
 
     final normalizedText = text.toLowerCase().replaceAll(RegExp(r'\s+'), '');
-    
+
     // NGワードチェック
     for (final ngWord in _ngWords) {
       if (normalizedText.contains(ngWord.toLowerCase())) {
@@ -117,13 +115,35 @@ class ContentModerationService {
   /// 匿名性を保つためのユーザー名生成
   static String generateAnonymousUsername() {
     final adjectives = [
-      '元気な', '優しい', '頑張る', '明るい', '静かな', '真面目な', '楽しい', '穏やかな',
-      'がんばり屋の', 'ポジティブな', '前向きな', '笑顔の', '親切な', '丁寧な',
+      '元気な',
+      '優しい',
+      '頑張る',
+      '明るい',
+      '静かな',
+      '真面目な',
+      '楽しい',
+      '穏やかな',
+      'がんばり屋の',
+      'ポジティブな',
+      '前向きな',
+      '笑顔の',
+      '親切な',
+      '丁寧な',
     ];
-    
+
     final nouns = [
-      'ユーザー', '仲間', 'パートナー', '友達', 'サポーター', 'チャレンジャー',
-      'ランナー', 'ウォーカー', 'リーダー', 'ヘルパー', 'ドリーマー', 'ファイター',
+      'ユーザー',
+      '仲間',
+      'パートナー',
+      '友達',
+      'サポーター',
+      'チャレンジャー',
+      'ランナー',
+      'ウォーカー',
+      'リーダー',
+      'ヘルパー',
+      'ドリーマー',
+      'ファイター',
     ];
 
     final random = DateTime.now().millisecondsSinceEpoch;

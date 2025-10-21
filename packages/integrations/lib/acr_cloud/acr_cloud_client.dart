@@ -6,16 +6,16 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:meta/meta.dart';
 
-import 'acr_cloud_config.dart';
-import 'models.dart';
+import 'package:miinq_integrations/acr_cloud/acr_cloud_config.dart';
+import 'package:miinq_integrations/acr_cloud/models.dart';
 
 /// A minimal client for the ACR Cloud identify API.
 class ACRCloudClient {
   ACRCloudClient({
     required http.Client httpClient,
     required ACRCloudConfig config,
-  })  : _httpClient = httpClient,
-        _config = config;
+  }) : _httpClient = httpClient,
+       _config = config;
 
   final http.Client _httpClient;
   final ACRCloudConfig _config;
@@ -50,10 +50,14 @@ class ACRCloudClient {
     Duration? sampleLength,
   }) async {
     if (audio.isEmpty) {
-      throw ArgumentError.value(audio, 'audio', 'Audio sample must not be empty');
+      throw ArgumentError.value(
+        audio,
+        'audio',
+        'Audio sample must not be empty',
+      );
     }
 
-    final endpoint = '/v1/identify';
+    const endpoint = '/v1/identify';
     final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     const dataType = 'audio';
     const signatureVersion = '1';
@@ -67,13 +71,17 @@ class ACRCloudClient {
       timestamp: timestamp,
     );
 
-    final request = http.MultipartRequest('POST', Uri.parse('https://${_config.host}$endpoint'))
-      ..fields['access_key'] = _config.accessKey
-      ..fields['data_type'] = dataType
-      ..fields['signature_version'] = signatureVersion
-      ..fields['signature'] = signature
-      ..fields['sample_bytes'] = audio.length.toString()
-      ..fields['timestamp'] = timestamp.toString();
+    final request =
+        http.MultipartRequest(
+            'POST',
+            Uri.parse('https://${_config.host}$endpoint'),
+          )
+          ..fields['access_key'] = _config.accessKey
+          ..fields['data_type'] = dataType
+          ..fields['signature_version'] = signatureVersion
+          ..fields['signature'] = signature
+          ..fields['sample_bytes'] = audio.length.toString()
+          ..fields['timestamp'] = timestamp.toString();
 
     if (sampleLength != null) {
       request.fields['sample_length'] = sampleLength.inSeconds.toString();
@@ -91,7 +99,9 @@ class ACRCloudClient {
     final response = await _httpClient.send(request);
     final payload = await response.stream.bytesToString();
     if (response.statusCode != 200) {
-      throw ACRCloudException('Identification failed: ${response.statusCode} $payload');
+      throw ACRCloudException(
+        'Identification failed: ${response.statusCode} $payload',
+      );
     }
 
     final json = jsonDecode(payload) as Map<String, dynamic>;
@@ -108,13 +118,16 @@ class ACRCloudClient {
 
     final track = musicMatches.first as Map<String, dynamic>;
     final title = track['title'] as String? ?? '';
-    final album = (track['album'] as Map<String, dynamic>?)?['name'] as String? ?? '';
-    final artists = (track['artists'] as List<dynamic>? ?? <dynamic>[])
-        .map((dynamic e) => (e as Map<String, dynamic>)['name'] as String)
-        .toList();
-    final genres = (track['genres'] as List<dynamic>? ?? <dynamic>[])
-        .map((dynamic e) => (e as Map<String, dynamic>)['name'] as String)
-        .toList();
+    final album =
+        (track['album'] as Map<String, dynamic>?)?['name'] as String? ?? '';
+    final artists =
+        (track['artists'] as List<dynamic>? ?? <dynamic>[])
+            .map((dynamic e) => (e as Map<String, dynamic>)['name'] as String)
+            .toList();
+    final genres =
+        (track['genres'] as List<dynamic>? ?? <dynamic>[])
+            .map((dynamic e) => (e as Map<String, dynamic>)['name'] as String)
+            .toList();
     final score = (track['score'] as num?)?.toDouble() ?? 0;
     final playOffset = (track['play_offset_ms'] as num?)?.toInt() ?? 0;
 
@@ -138,4 +151,3 @@ class ACRCloudException implements Exception {
   @override
   String toString() => 'ACRCloudException: $message';
 }
-

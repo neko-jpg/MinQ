@@ -36,7 +36,7 @@ class NetworkStatusService {
   /// ステータスを更新
   void _updateStatus(List<ConnectivityResult> results) {
     final result = results.firstOrNull ?? ConnectivityResult.none;
-    
+
     NetworkStatus newStatus;
     if (result == ConnectivityResult.none) {
       newStatus = NetworkStatus.offline;

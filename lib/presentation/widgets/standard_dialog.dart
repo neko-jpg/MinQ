@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/spacing_system.dart';
-import '../theme/elevation_system.dart';
+
+import 'package:minq/presentation/theme/elevation_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// 標準ダイアログ - 統一されたダイアログコンポーネント
 class StandardDialog extends StatelessWidget {
@@ -36,24 +37,25 @@ class StandardDialog extends StatelessWidget {
   }) {
     return showDialog<bool>(
       context: context,
-      builder: (context) => StandardDialog(
-        title: title,
-        message: message,
-        type: destructive ? DialogType.destructive : DialogType.normal,
-        actions: [
-          DialogAction(
-            label: cancelText,
-            onPressed: () => Navigator.of(context).pop(false),
-            isCancel: true,
+      builder:
+          (context) => StandardDialog(
+            title: title,
+            message: message,
+            type: destructive ? DialogType.destructive : DialogType.normal,
+            actions: [
+              DialogAction(
+                label: cancelText,
+                onPressed: () => Navigator.of(context).pop(false),
+                isCancel: true,
+              ),
+              DialogAction(
+                label: confirmText,
+                onPressed: () => Navigator.of(context).pop(true),
+                isPrimary: true,
+                isDestructive: destructive,
+              ),
+            ],
           ),
-          DialogAction(
-            label: confirmText,
-            onPressed: () => Navigator.of(context).pop(true),
-            isPrimary: true,
-            isDestructive: destructive,
-          ),
-        ],
-      ),
     );
   }
 
@@ -67,18 +69,19 @@ class StandardDialog extends StatelessWidget {
   }) {
     return showDialog(
       context: context,
-      builder: (context) => StandardDialog(
-        title: title,
-        message: message,
-        type: type,
-        actions: [
-          DialogAction(
-            label: buttonText,
-            onPressed: () => Navigator.of(context).pop(),
-            isPrimary: true,
+      builder:
+          (context) => StandardDialog(
+            title: title,
+            message: message,
+            type: type,
+            actions: [
+              DialogAction(
+                label: buttonText,
+                onPressed: () => Navigator.of(context).pop(),
+                isPrimary: true,
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -117,7 +120,7 @@ class StandardDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderSystem.dialogRadius,
       ),
       child: Padding(
@@ -202,25 +205,22 @@ class StandardDialog extends StatelessWidget {
     if (actions.length == 2) {
       return Row(
         children: [
-          Expanded(
-            child: _buildActionButton(context, actions[0]),
-          ),
+          Expanded(child: _buildActionButton(context, actions[0])),
           SpacingSystem.hSpaceSM,
-          Expanded(
-            child: _buildActionButton(context, actions[1]),
-          ),
+          Expanded(child: _buildActionButton(context, actions[1])),
         ],
       );
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: actions.map((action) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: _buildActionButton(context, action),
-        );
-      }).toList(),
+      children:
+          actions.map((action) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _buildActionButton(context, action),
+            );
+          }).toList(),
     );
   }
 
@@ -229,9 +229,10 @@ class StandardDialog extends StatelessWidget {
       return ElevatedButton(
         onPressed: action.onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: action.isDestructive
-              ? const Color(0xFFEF4444)
-              : Theme.of(context).colorScheme.primary,
+          backgroundColor:
+              action.isDestructive
+                  ? const Color(0xFFEF4444)
+                  : Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
         ),
         child: Text(action.label),
@@ -245,10 +246,7 @@ class StandardDialog extends StatelessWidget {
       );
     }
 
-    return TextButton(
-      onPressed: action.onPressed,
-      child: Text(action.label),
-    );
+    return TextButton(onPressed: action.onPressed, child: Text(action.label));
   }
 }
 
@@ -270,13 +268,7 @@ class DialogAction {
 }
 
 /// ダイアログタイプ
-enum DialogType {
-  normal,
-  success,
-  error,
-  warning,
-  destructive,
-}
+enum DialogType { normal, success, error, warning, destructive }
 
 /// BuildContext拡張
 extension DialogExtension on BuildContext {

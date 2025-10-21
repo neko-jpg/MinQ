@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide TimeOfDay;
-import '../../core/context/context_aware_service.dart';
-import 'package:flutter/material.dart' as material show TimeOfDay;
+import 'package:minq/core/context/context_aware_service.dart';
 
 /// コンテキストアウェアなウィジェット集
 class ContextAwareWidgets {
@@ -76,10 +75,7 @@ class _ContextAwareContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!adaptToContext) {
-      return Container(
-        padding: padding,
-        child: child,
-      );
+      return Container(padding: padding, child: child);
     }
 
     return ValueListenableBuilder<AppContext>(
@@ -153,7 +149,7 @@ class _ContextAwareCard extends StatelessWidget {
   Color _getCardColor(AppContext appContext, BuildContext context) {
     final baseColor = Theme.of(context).cardColor;
     final primaryColor = appContext.getPrimaryColor();
-    
+
     // 時間帯に応じてカードの色を微調整
     switch (appContext.timeOfDay) {
       case TimeOfDay.morning:
@@ -201,7 +197,7 @@ class _ContextAwareText extends StatelessWidget {
   TextStyle _getTextStyle(AppContext appContext, BuildContext context) {
     final baseStyle = style ?? Theme.of(context).textTheme.bodyMedium!;
     final primaryColor = appContext.getPrimaryColor();
-    
+
     // 時間帯に応じてテキストの色を調整
     Color textColor;
     switch (appContext.timeOfDay) {
@@ -218,7 +214,7 @@ class _ContextAwareText extends StatelessWidget {
         textColor = Color.lerp(baseStyle.color, Colors.white, 0.1)!;
         break;
     }
-    
+
     return baseStyle.copyWith(color: textColor);
   }
 }
@@ -238,10 +234,7 @@ class _ContextAwareButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!adaptToContext) {
-      return ElevatedButton(
-        onPressed: onPressed,
-        child: Text(text),
-      );
+      return ElevatedButton(onPressed: onPressed, child: Text(text));
     }
 
     return ValueListenableBuilder<AppContext>(
@@ -311,9 +304,9 @@ class ContextInfoWidget extends StatelessWidget {
                     color: appContext.getPrimaryColor(),
                   ),
                 ),
-                
+
                 const SizedBox(height: 12),
-                
+
                 // 時間情報
                 if (showTime)
                   Row(
@@ -330,9 +323,11 @@ class ContextInfoWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                
+
                 // 天気情報
-                if (showWeather && appContext.weather.condition != WeatherCondition.unknown) ...[
+                if (showWeather &&
+                    appContext.weather.condition !=
+                        WeatherCondition.unknown) ...[
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -349,7 +344,7 @@ class ContextInfoWidget extends StatelessWidget {
                     ],
                   ),
                 ],
-                
+
                 // 推奨習慣
                 if (showRecommendations) ...[
                   const SizedBox(height: 12),
@@ -362,18 +357,23 @@ class ContextInfoWidget extends StatelessWidget {
                   const SizedBox(height: 4),
                   Wrap(
                     spacing: 8,
-                    children: appContext.getRecommendedHabits().map((habit) {
-                      return Chip(
-                        label: Text(
-                          habit,
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                        backgroundColor: appContext.getPrimaryColor().withOpacity(0.1),
-                        side: BorderSide(
-                          color: appContext.getPrimaryColor().withOpacity(0.3),
-                        ),
-                      );
-                    }).toList(),
+                    children:
+                        appContext.getRecommendedHabits().map((habit) {
+                          return Chip(
+                            label: Text(
+                              habit,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            backgroundColor: appContext
+                                .getPrimaryColor()
+                                .withOpacity(0.1),
+                            side: BorderSide(
+                              color: appContext.getPrimaryColor().withOpacity(
+                                0.3,
+                              ),
+                            ),
+                          );
+                        }).toList(),
                   ),
                 ],
               ],
@@ -450,7 +450,8 @@ class ContextInfoWidget extends StatelessWidget {
 }
 
 /// コンテキストアウェアなアプリバー
-class ContextAwareAppBar extends StatelessWidget implements PreferredSizeWidget {
+class ContextAwareAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
   final bool adaptToContext;
@@ -465,10 +466,7 @@ class ContextAwareAppBar extends StatelessWidget implements PreferredSizeWidget 
   @override
   Widget build(BuildContext context) {
     if (!adaptToContext) {
-      return AppBar(
-        title: Text(title),
-        actions: actions,
-      );
+      return AppBar(title: Text(title), actions: actions);
     }
 
     return ValueListenableBuilder<AppContext>(

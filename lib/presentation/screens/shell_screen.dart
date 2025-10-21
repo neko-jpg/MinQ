@@ -55,9 +55,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     final duration = DateTime.now().difference(_sessionStartedAt!);
     _sessionStartedAt = null;
     if (duration.isNegative || duration.inSeconds == 0) return;
-    await ref
-        .read(usageLimitControllerProvider.notifier)
-        .recordUsage(duration);
+    await ref.read(usageLimitControllerProvider.notifier).recordUsage(duration);
   }
 
   Future<void> _checkAndScheduleAuxiliaryNotification() async {
@@ -196,10 +194,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     }
 
     return Stack(
-      children: [
-        scaffold,
-        _UsageLimitOverlay(state: usageLimitState),
-      ],
+      children: [scaffold, _UsageLimitOverlay(state: usageLimitState)],
     );
   }
 }
@@ -214,7 +209,7 @@ class _UsageLimitOverlay extends ConsumerWidget {
     if (duration.inHours >= 1) {
       final hours = duration.inHours;
       final minutes = duration.inMinutes.remainder(60);
-      return '${hours}時間${minutes}分';
+      return '$hours時間$minutes分';
     }
     return '${duration.inMinutes}分';
   }
@@ -242,8 +237,11 @@ class _UsageLimitOverlay extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(Icons.lock_clock,
-                    size: tokens.spacing(10), color: tokens.brandPrimary),
+                Icon(
+                  Icons.lock_clock,
+                  size: tokens.spacing(10),
+                  color: tokens.brandPrimary,
+                ),
                 SizedBox(height: tokens.spacing(3)),
                 Text(
                   '利用時間制限に達しました',

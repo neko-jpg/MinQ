@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// PDFエクスポートサービス
-/// 
+///
 /// 注意: pdf パッケージが必要
 /// pubspec.yaml に追加: pdf: ^3.10.0
 class PdfExportService {
@@ -15,7 +14,7 @@ class PdfExportService {
     try {
       // TODO: pdf パッケージを使用して実装
       // final pdf = pw.Document();
-      // 
+      //
       // pdf.addPage(
       //   pw.Page(
       //     build: (context) => pw.Column(
@@ -49,8 +48,11 @@ class PdfExportService {
       AppLogger.info('Stats PDF export completed');
       return null;
     } catch (e, stack) {
-      AppLogger.error('Failed to export stats PDF',
-          error: e, stackTrace: stack);
+      AppLogger.error(
+        'Failed to export stats PDF',
+        error: e,
+        stackTrace: stack,
+      );
       return null;
     }
   }

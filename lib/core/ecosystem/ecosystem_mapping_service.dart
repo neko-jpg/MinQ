@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Provider for the service
-final ecosystemMappingServiceProvider = Provider<EcosystemMappingService>((ref) {
+final ecosystemMappingServiceProvider = Provider<EcosystemMappingService>((
+  ref,
+) {
   return EcosystemMappingService(FirebaseFirestore.instance);
 });
 
@@ -13,17 +15,18 @@ class EcosystemMappingService {
 
   /// Analyzes the correlations and interdependencies between a user's habits.
   Future<Map<String, dynamic>> analyzeEcosystem(String userId) async {
-    print("Analyzing habit ecosystem for user $userId.");
-    final questLogsSnapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('quest_logs')
-        .orderBy('completedAt', descending: true)
-        .limit(500) // Use a reasonable limit for performance
-        .get();
+    print('Analyzing habit ecosystem for user $userId.');
+    final questLogsSnapshot =
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('quest_logs')
+            .orderBy('completedAt', descending: true)
+            .limit(500) // Use a reasonable limit for performance
+            .get();
 
     if (questLogsSnapshot.docs.length < 20) {
-      print("Not enough data to analyze ecosystem.");
+      print('Not enough data to analyze ecosystem.');
       return {};
     }
 
@@ -61,24 +64,27 @@ class EcosystemMappingService {
     };
 
     await _firestore.collection('users').doc(userId).update({
-      'habitEcosystem': ecosystemData
+      'habitEcosystem': ecosystemData,
     });
 
-    print("Ecosystem analysis complete for user $userId.");
+    print('Ecosystem analysis complete for user $userId.');
     return ecosystemData;
   }
 
   /// Identifies the "keystone" habit that has the most positive impact on other habits.
   Future<String?> identifyKeystoneHabit(String userId) async {
-    print("Identifying keystone habit for user $userId.");
+    print('Identifying keystone habit for user $userId.');
     final userDoc = await _firestore.collection('users').doc(userId).get();
-    final ecosystem = userDoc.data()?['habitEcosystem'] as Map<String, dynamic>?;
+    final ecosystem =
+        userDoc.data()?['habitEcosystem'] as Map<String, dynamic>?;
 
     if (ecosystem == null || ecosystem['coOccurrenceMatrix'] == null) {
       await analyzeEcosystem(userId); // Analyze first if not present
-      final updatedUserDoc = await _firestore.collection('users').doc(userId).get();
-      final updatedEcosystem = updatedUserDoc.data()?['habitEcosystem'] as Map<String, dynamic>?;
-      if(updatedEcosystem == null) return null;
+      final updatedUserDoc =
+          await _firestore.collection('users').doc(userId).get();
+      final updatedEcosystem =
+          updatedUserDoc.data()?['habitEcosystem'] as Map<String, dynamic>?;
+      if (updatedEcosystem == null) return null;
       return _findKeystone(updatedEcosystem);
     }
 
@@ -86,49 +92,58 @@ class EcosystemMappingService {
   }
 
   String? _findKeystone(Map<String, dynamic> ecosystem) {
-     final coOccurrenceMatrix = ecosystem['coOccurrenceMatrix'] as Map<String, dynamic>;
-     if (coOccurrenceMatrix.isEmpty) return null;
+    final coOccurrenceMatrix =
+        ecosystem['coOccurrenceMatrix'] as Map<String, dynamic>;
+    if (coOccurrenceMatrix.isEmpty) return null;
 
-     String? keystoneHabit;
-     double maxInfluenceScore = 0;
+    String? keystoneHabit;
+    double maxInfluenceScore = 0;
 
-     coOccurrenceMatrix.forEach((habit, connections) {
-       double currentScore = (connections as Map<String, dynamic>).values.fold(0, (sum, val) => sum + (val as int));
-       if (currentScore > maxInfluenceScore) {
-         maxInfluenceScore = currentScore;
-         keystoneHabit = habit;
-       }
-     });
+    coOccurrenceMatrix.forEach((habit, connections) {
+      double currentScore = (connections as Map<String, dynamic>).values.fold(
+        0,
+        (sum, val) => sum + (val as int),
+      );
+      if (currentScore > maxInfluenceScore) {
+        maxInfluenceScore = currentScore;
+        keystoneHabit = habit;
+      }
+    });
 
-     return keystoneHabit;
+    return keystoneHabit;
   }
-
 
   /// Suggests optimizations for the user's habit ecosystem.
   Future<List<String>> getOptimizationSuggestions(String userId) async {
     final userDoc = await _firestore.collection('users').doc(userId).get();
-    final ecosystem = userDoc.data()?['habitEcosystem'] as Map<String, dynamic>?;
+    final ecosystem =
+        userDoc.data()?['habitEcosystem'] as Map<String, dynamic>?;
 
     if (ecosystem == null) {
-      return ["Analyze your habits first to get suggestions."];
+      return ['Analyze your habits first to get suggestions.'];
     }
 
-    final coOccurrenceMatrix = ecosystem['coOccurrenceMatrix'] as Map<String, dynamic>;
-    final occurrenceCount = ecosystem['occurrenceCount'] as Map<String, dynamic>;
+    final coOccurrenceMatrix =
+        ecosystem['coOccurrenceMatrix'] as Map<String, dynamic>;
+    final occurrenceCount =
+        ecosystem['occurrenceCount'] as Map<String, dynamic>;
     final suggestions = <String>[];
 
     coOccurrenceMatrix.forEach((habitA, connections) {
       (connections as Map<String, dynamic>).forEach((habitB, count) {
         final totalA = occurrenceCount[habitA] ?? 1;
         final probability = (count as int) / totalA;
-        if (probability > 0.6) { // High correlation
-          suggestions.add("Did you know? Completing '$habitA' increases your chances of also doing '$habitB'!");
+        if (probability > 0.6) {
+          // High correlation
+          suggestions.add(
+            "Did you know? Completing '$habitA' increases your chances of also doing '$habitB'!",
+          );
         }
       });
     });
 
     if (suggestions.isEmpty) {
-      return ["Keep building habits to find powerful connections!"];
+      return ['Keep building habits to find powerful connections!'];
     }
 
     return suggestions.take(3).toList(); // Return top 3 suggestions

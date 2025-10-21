@@ -44,9 +44,7 @@ class ThemeSelectionScreen extends ConsumerWidget {
     final selectedColor = ref.watch(themeProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("テーマカラーを選択"),
-      ),
+      appBar: AppBar(title: const Text('テーマカラーを選択')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.builder(
@@ -67,9 +65,10 @@ class ThemeSelectionScreen extends ConsumerWidget {
                   color: color,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: selectedColor.value == color.value
-                        ? Theme.of(context).colorScheme.onSurface
-                        : Colors.transparent,
+                    color:
+                        selectedColor.value == color.value
+                            ? Theme.of(context).colorScheme.onSurface
+                            : Colors.transparent,
                     width: 3,
                   ),
                 ),

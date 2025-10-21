@@ -15,7 +15,7 @@ class ReferralCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final uid = ref.watch(uidProvider);
-    
+
     if (uid == null) {
       return const SizedBox.shrink();
     }
@@ -95,10 +95,7 @@ class ReferralCard extends ConsumerWidget {
         padding: EdgeInsets.all(tokens.spacing(4)),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.purple.shade400,
-              Colors.purple.shade600,
-            ],
+            colors: [Colors.purple.shade400, Colors.purple.shade600],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -190,7 +187,7 @@ class CompactReferralCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    
+
     return GestureDetector(
       onTap: () {
         final navigation = ref.read(navigationUseCaseProvider);
@@ -203,10 +200,7 @@ class CompactReferralCard extends ConsumerWidget {
         ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.purple.shade400,
-              Colors.purple.shade600,
-            ],
+            colors: [Colors.purple.shade400, Colors.purple.shade600],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -215,11 +209,7 @@ class CompactReferralCard extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.people,
-              color: Colors.white,
-              size: tokens.spacing(4),
-            ),
+            Icon(Icons.people, color: Colors.white, size: tokens.spacing(4)),
             SizedBox(width: tokens.spacing(2)),
             Text(
               '友達招待',
@@ -242,16 +232,13 @@ class ReferralPromotionBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    
+
     return Container(
       margin: EdgeInsets.all(tokens.spacing(4)),
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Colors.purple.shade300,
-            Colors.purple.shade500,
-          ],
+          colors: [Colors.purple.shade300, Colors.purple.shade500],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

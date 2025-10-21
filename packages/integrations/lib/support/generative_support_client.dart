@@ -9,9 +9,9 @@ class GenerativeSupportClient {
     required http.Client httpClient,
     required String endpoint,
     required String apiKey,
-  })  : _httpClient = httpClient,
-        _endpoint = endpoint,
-        _apiKey = apiKey;
+  }) : _httpClient = httpClient,
+       _endpoint = endpoint,
+       _apiKey = apiKey;
 
   final http.Client _httpClient;
   final String _endpoint;

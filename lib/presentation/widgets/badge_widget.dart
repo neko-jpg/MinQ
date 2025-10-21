@@ -53,26 +53,23 @@ class BadgeWidget extends StatelessWidget {
     Color? backgroundColor,
     Color? textColor,
     bool show = true,
-  })  : type = BadgeType.numeric,
-        count = count,
-        text = null,
-        size = size,
-        backgroundColor = backgroundColor,
-        textColor = textColor,
-        show = show;
+  }) : type = BadgeType.numeric,
+       count = count,
+       text = null,
+       size = size,
+       backgroundColor = backgroundColor,
+       textColor = textColor,
+       show = show;
 
   /// ドットバッジを作成
-  const BadgeWidget.dot({
-    super.key,
-    Color? backgroundColor,
-    bool show = true,
-  })  : type = BadgeType.dot,
-        count = null,
-        text = null,
-        size = BadgeSize.small,
-        backgroundColor = backgroundColor,
-        textColor = null,
-        show = show;
+  const BadgeWidget.dot({super.key, Color? backgroundColor, bool show = true})
+    : type = BadgeType.dot,
+      count = null,
+      text = null,
+      size = BadgeSize.small,
+      backgroundColor = backgroundColor,
+      textColor = null,
+      show = show;
 
   /// テキストバッジを作成
   const BadgeWidget.text({
@@ -82,13 +79,13 @@ class BadgeWidget extends StatelessWidget {
     Color? backgroundColor,
     Color? textColor,
     bool show = true,
-  })  : type = BadgeType.text,
-        count = null,
-        text = text,
-        size = size,
-        backgroundColor = backgroundColor,
-        textColor = textColor,
-        show = show;
+  }) : type = BadgeType.text,
+       count = null,
+       text = text,
+       size = size,
+       backgroundColor = backgroundColor,
+       textColor = textColor,
+       show = show;
 
   @override
   Widget build(BuildContext context) {
@@ -117,10 +114,7 @@ class BadgeWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.white,
-          width: 1.5,
-        ),
+        border: Border.all(color: Colors.white, width: 1.5),
       ),
     );
   }
@@ -149,10 +143,7 @@ class BadgeWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(isLarge ? 10 : 8),
-        border: Border.all(
-          color: Colors.white,
-          width: 1.5,
-        ),
+        border: Border.all(color: Colors.white, width: 1.5),
       ),
       child: Center(
         child: Text(
@@ -168,27 +159,17 @@ class BadgeWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildTextBadge(
-    BuildContext context,
-    Color bgColor,
-    Color fgColor,
-  ) {
+  Widget _buildTextBadge(BuildContext context, Color bgColor, Color fgColor) {
     if (text == null || text!.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8.0,
-        vertical: 4.0,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: Colors.white,
-          width: 1.5,
-        ),
+        border: Border.all(color: Colors.white, width: 1.5),
       ),
       child: Text(
         text!,
@@ -225,20 +206,25 @@ class WidgetWithBadge extends StatelessWidget {
       children: [
         child,
         Positioned(
-          top: alignment == Alignment.topRight || alignment == Alignment.topLeft
-              ? offset.top
-              : null,
+          top:
+              alignment == Alignment.topRight || alignment == Alignment.topLeft
+                  ? offset.top
+                  : null,
           bottom:
-              alignment == Alignment.bottomRight || alignment == Alignment.bottomLeft
+              alignment == Alignment.bottomRight ||
+                      alignment == Alignment.bottomLeft
                   ? offset.bottom
                   : null,
           right:
-              alignment == Alignment.topRight || alignment == Alignment.bottomRight
+              alignment == Alignment.topRight ||
+                      alignment == Alignment.bottomRight
                   ? offset.right
                   : null,
-          left: alignment == Alignment.topLeft || alignment == Alignment.bottomLeft
-              ? offset.left
-              : null,
+          left:
+              alignment == Alignment.topLeft ||
+                      alignment == Alignment.bottomLeft
+                  ? offset.left
+                  : null,
           child: badge,
         ),
       ],
@@ -272,9 +258,10 @@ class BadgedIcon extends StatelessWidget {
     }
 
     return WidgetWithBadge(
-      badge: showDot
-          ? const BadgeWidget.dot()
-          : BadgeWidget.numeric(count: badgeCount ?? 0),
+      badge:
+          showDot
+              ? const BadgeWidget.dot()
+              : BadgeWidget.numeric(count: badgeCount ?? 0),
       offset: const EdgeInsets.only(top: -4, right: -4),
       child: Icon(icon, color: iconColor, size: iconSize),
     );
@@ -340,16 +327,11 @@ class _AnimatedBadgeState extends State<AnimatedBadge>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.elasticOut,
-      ),
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+    _scaleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
     if (widget.badge.show) {
       _controller.forward();
@@ -376,9 +358,6 @@ class _AnimatedBadgeState extends State<AnimatedBadge>
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _scaleAnimation,
-      child: widget.badge,
-    );
+    return ScaleTransition(scale: _scaleAnimation, child: widget.badge);
   }
 }

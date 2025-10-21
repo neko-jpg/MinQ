@@ -1,9 +1,9 @@
 /// リマインダーの種類
 enum ReminderType {
-  encouragement,  // 励まし
-  celebration,    // お祝い
-  checkIn,       // チェックイン
-  motivation,    // モチベーション
+  encouragement, // 励まし
+  celebration, // お祝い
+  checkIn, // チェックイン
+  motivation, // モチベーション
 }
 
 /// ペア間のリマインダー
@@ -45,7 +45,10 @@ class PairReminder {
       message: json['message'] as String,
       sentAt: DateTime.parse(json['sentAt'] as String),
       isRead: json['isRead'] as bool,
-      readAt: json['readAt'] != null ? DateTime.parse(json['readAt'] as String) : null,
+      readAt:
+          json['readAt'] != null
+              ? DateTime.parse(json['readAt'] as String)
+              : null,
       metadata: json['metadata'] as Map<String, dynamic>?,
     );
   }

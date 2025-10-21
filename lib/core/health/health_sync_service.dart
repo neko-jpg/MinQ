@@ -31,16 +31,22 @@ class HealthSyncService {
     ];
 
     try {
-      bool requested = await _health.requestAuthorization(types, permissions: permissions);
+      bool requested = await _health.requestAuthorization(
+        types,
+        permissions: permissions,
+      );
       return requested;
     } catch (e) {
-      print("Error requesting health permissions: $e");
+      print('Error requesting health permissions: $e');
       return false;
     }
   }
 
   /// Fetches health data for a given period.
-  Future<List<HealthDataPoint>> syncHealthData(DateTime startDate, DateTime endDate) async {
+  Future<List<HealthDataPoint>> syncHealthData(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
     final types = [
       HealthDataType.STEPS,
       HealthDataType.SLEEP_ASLEEP,
@@ -48,20 +54,27 @@ class HealthSyncService {
     ];
 
     try {
-      List<HealthDataPoint> healthData = await _health.getHealthDataFromTypes(startDate, endDate, types);
+      List<HealthDataPoint> healthData = await _health.getHealthDataFromTypes(
+        startDate,
+        endDate,
+        types,
+      );
       // Remove duplicates
       healthData = HealthFactory.removeDuplicates(healthData);
       return healthData;
     } catch (e) {
-      print("Error fetching health data: $e");
+      print('Error fetching health data: $e');
       return [];
     }
   }
 
   /// Auto-updates quests based on the fetched health data.
-  Future<void> autoUpdateQuestsFromHealthData(String userId, List<HealthDataPoint> healthData) async {
+  Future<void> autoUpdateQuestsFromHealthData(
+    String userId,
+    List<HealthDataPoint> healthData,
+  ) async {
     if (healthData.isEmpty) {
-      print("No new health data to process.");
+      print('No new health data to process.');
       return;
     }
 
@@ -69,21 +82,26 @@ class HealthSyncService {
     final aggregatedData = <HealthDataType, num>{};
     for (final point in healthData) {
       final value = (point.value as NumericHealthValue).numericValue;
-      aggregatedData.update(point.type, (sum) => sum + value, ifAbsent: () => value);
+      aggregatedData.update(
+        point.type,
+        (sum) => sum + value,
+        ifAbsent: () => value,
+      );
     }
-    print("Aggregated health data: $aggregatedData");
+    print('Aggregated health data: $aggregatedData');
 
     // 2. Fetch user's active, uncompleted, health-related quests
-    final questSnapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('quests')
-        .where('completed', isEqualTo: false)
-        .where('healthType', whereIn: ['STEPS', 'SLEEP', 'CALORIES'])
-        .get();
+    final questSnapshot =
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('quests')
+            .where('completed', isEqualTo: false)
+            .where('healthType', whereIn: ['STEPS', 'SLEEP', 'CALORIES'])
+            .get();
 
     if (questSnapshot.docs.isEmpty) {
-      print("No relevant health quests to update.");
+      print('No relevant health quests to update.');
       return;
     }
 
@@ -96,7 +114,7 @@ class HealthSyncService {
       final goal = quest['goal'] as num;
 
       HealthDataType? healthType;
-      switch(healthTypeString) {
+      switch (healthTypeString) {
         case 'STEPS':
           healthType = HealthDataType.STEPS;
           break;
@@ -115,22 +133,36 @@ class HealthSyncService {
         completedQuestsCount++;
 
         // Also log the completion
-        await _firestore.collection('users').doc(userId).collection('quest_logs').add({
-          'questId': questDoc.id,
-          'name': quest['name'],
-          'completedAt': FieldValue.serverTimestamp(),
-        });
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('quest_logs')
+            .add({
+              'questId': questDoc.id,
+              'name': quest['name'],
+              'completedAt': FieldValue.serverTimestamp(),
+            });
       }
     }
 
     // 4. Update challenge progress if any quests were completed
     if (completedQuestsCount > 0) {
       // Assuming daily and weekly challenges are based on quest count
-      final dailyChallengeId = 'daily_${DateTime.now().year}_${DateTime.now().month}_${DateTime.now().day}';
-      final weeklyChallengeId = 'weekly_${DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).year}_${DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).month}_${DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).day}';
+      final dailyChallengeId =
+          'daily_${DateTime.now().year}_${DateTime.now().month}_${DateTime.now().day}';
+      final weeklyChallengeId =
+          'weekly_${DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).year}_${DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).month}_${DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).day}';
 
-      await _challengeService.updateProgress(userId: userId, challengeId: dailyChallengeId, incrementBy: completedQuestsCount);
-      await _challengeService.updateProgress(userId: userId, challengeId: weeklyChallengeId, incrementBy: completedQuestsCount);
+      await _challengeService.updateProgress(
+        userId: userId,
+        challengeId: dailyChallengeId,
+        incrementBy: completedQuestsCount,
+      );
+      await _challengeService.updateProgress(
+        userId: userId,
+        challengeId: weeklyChallengeId,
+        incrementBy: completedQuestsCount,
+      );
     }
   }
 }

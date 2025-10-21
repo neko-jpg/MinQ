@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:minq/presentation/common/onboarding/onboarding.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// オンボーディングシステムのデモ画面
 class OnboardingDemoScreen extends StatefulWidget {

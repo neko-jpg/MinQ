@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/content_moderation_service.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/security/sensitive_content.dart'
     as custom;
 import 'package:minq/presentation/screens/pair_screen.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 
 class ProfileSettingScreen extends ConsumerWidget {
   const ProfileSettingScreen({super.key});
@@ -23,7 +23,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
-          "プロフィール", // HTMLに合わせる
+          'プロフィール', // HTMLに合わせる
           style: tokens.titleMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
@@ -549,21 +549,18 @@ class ProfileSettingScreen extends ConsumerWidget {
         pairAsync.when(
           data: (pair) {
             if (pair == null) {
-              return Card(
+              return const Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      const Icon(Icons.person_add, size: 48),
-                      const SizedBox(height: 8),
-                      const Text('ペアが見つかりません'),
-                      const SizedBox(height: 8),
-                      const _ComingSoonPill(),
-                      const SizedBox(height: 12),
-                      FilledButton(
-                        onPressed: null,
-                        child: const Text('ペアを探す（準備中）'),
-                      ),
+                      Icon(Icons.person_add, size: 48),
+                      SizedBox(height: 8),
+                      Text('ペアが見つかりません'),
+                      SizedBox(height: 8),
+                      _ComingSoonPill(),
+                      SizedBox(height: 12),
+                      FilledButton(onPressed: null, child: Text('ペアを探す（準備中）')),
                     ],
                   ),
                 ),
@@ -662,18 +659,18 @@ class ProfileSettingScreen extends ConsumerWidget {
           style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        Card(
+        const Card(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0),
             child: Column(
               children: [
-                const Icon(Icons.star, size: 48, color: Colors.amber),
-                const SizedBox(height: 8),
-                const Text('プレミアム機能は準備中です'),
-                const SizedBox(height: 8),
-                const _ComingSoonPill(),
-                const SizedBox(height: 12),
-                FilledButton(onPressed: null, child: const Text('詳細を見る（準備中）')),
+                Icon(Icons.star, size: 48, color: Colors.amber),
+                SizedBox(height: 8),
+                Text('プレミアム機能は準備中です'),
+                SizedBox(height: 8),
+                _ComingSoonPill(),
+                SizedBox(height: 12),
+                FilledButton(onPressed: null, child: Text('詳細を見る（準備中）')),
               ],
             ),
           ),

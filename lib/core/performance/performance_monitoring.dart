@@ -1,16 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:firebase_performance/firebase_performance.dart';
 
 /// パフォーマンスモニタリングサービス
 class PerformanceMonitoringService {
   final FirebasePerformance _performance;
 
   PerformanceMonitoringService({FirebasePerformance? performance})
-      : _performance = performance ?? FirebasePerformance.instance;
+    : _performance = performance ?? FirebasePerformance.instance;
 
   /// 初期化
   Future<void> initialize() async {
@@ -91,7 +89,11 @@ class PerformanceTracer {
   }
 
   /// メトリクスを記録
-  static Future<void> recordMetric(String traceName, String metricName, int value) async {
+  static Future<void> recordMetric(
+    String traceName,
+    String metricName,
+    int value,
+  ) async {
     final trace = _traces[traceName];
     if (trace != null) {
       await _service.recordMetric(trace, metricName, value);
@@ -99,7 +101,11 @@ class PerformanceTracer {
   }
 
   /// 属性を設定
-  static Future<void> setAttribute(String traceName, String name, String value) async {
+  static Future<void> setAttribute(
+    String traceName,
+    String name,
+    String value,
+  ) async {
     final trace = _traces[traceName];
     if (trace != null) {
       await _service.setAttribute(trace, name, value);
@@ -120,17 +126,7 @@ class TraceNames {
 }
 
 /// HTTPメソッド
-enum HttpMethod {
-  Connect,
-  Delete,
-  Get,
-  Head,
-  Options,
-  Patch,
-  Post,
-  Put,
-  Trace,
-}
+enum HttpMethod { Connect, Delete, Get, Head, Options, Patch, Post, Put, Trace }
 
 /// パフォーマンスメトリクス
 class PerformanceMetrics {
@@ -184,22 +180,24 @@ class HttpMetric {
   int? requestPayloadSize;
   int? responsePayloadSize;
   String? responseContentType;
-  
+
   Future<void> start() async {}
   Future<void> stop() async {}
 }
 
 /// 統合パフォーマンスマネージャー
 class IntegratedPerformanceManager {
-  static final IntegratedPerformanceManager _instance = IntegratedPerformanceManager._internal();
+  static final IntegratedPerformanceManager _instance =
+      IntegratedPerformanceManager._internal();
   factory IntegratedPerformanceManager() => _instance;
   IntegratedPerformanceManager._internal();
 
-  final PerformanceMonitoringService _firebasePerformance = PerformanceMonitoringService();
+  final PerformanceMonitoringService _firebasePerformance =
+      PerformanceMonitoringService();
   final FrameRateMonitor _frameRateMonitor = FrameRateMonitor();
   final MemoryMonitor _memoryMonitor = MemoryMonitor();
   final NetworkPerformanceMonitor _networkMonitor = NetworkPerformanceMonitor();
-  
+
   bool _isInitialized = false;
 
   /// 初期化
@@ -210,9 +208,9 @@ class IntegratedPerformanceManager {
     _frameRateMonitor.start();
     _memoryMonitor.start();
     _networkMonitor.start();
-    
+
     _isInitialized = true;
-    
+
     if (kDebugMode) {
       print('Integrated Performance Manager initialized');
     }
@@ -245,10 +243,10 @@ class FrameRateMonitor {
   final List<Duration> _frameTimes = [];
   int _droppedFrames = 0;
   Timer? _monitorTimer;
-  
+
   void start() {
     SchedulerBinding.instance.addPersistentFrameCallback(_onFrame);
-    
+
     _monitorTimer = Timer.periodic(
       const Duration(seconds: 5),
       (_) => _analyzeFrameRate(),
@@ -257,7 +255,7 @@ class FrameRateMonitor {
 
   void _onFrame(Duration timestamp) {
     _frameTimes.add(timestamp);
-    
+
     // 最新100フレームのみ保持
     if (_frameTimes.length > 100) {
       _frameTimes.removeAt(0);
@@ -270,15 +268,16 @@ class FrameRateMonitor {
     int droppedInPeriod = 0;
     for (int i = 1; i < _frameTimes.length; i++) {
       final frameDuration = _frameTimes[i] - _frameTimes[i - 1];
-      
+
       // 16.67ms（60fps）を大幅に超える場合はドロップフレーム
-      if (frameDuration.inMicroseconds > 33340) { // 30fps以下
+      if (frameDuration.inMicroseconds > 33340) {
+        // 30fps以下
         droppedInPeriod++;
       }
     }
-    
+
     _droppedFrames += droppedInPeriod;
-    
+
     if (kDebugMode && droppedInPeriod > 0) {
       print('Dropped frames detected: $droppedInPeriod');
     }
@@ -289,9 +288,9 @@ class FrameRateMonitor {
 
     final totalDuration = _frameTimes.last - _frameTimes.first;
     final frameCount = _frameTimes.length - 1;
-    
+
     if (totalDuration.inMicroseconds == 0) return 60.0;
-    
+
     return (frameCount * 1000000) / totalDuration.inMicroseconds;
   }
 
@@ -321,13 +320,14 @@ class MemoryMonitor {
     // プラットフォーム固有のメモリ使用量取得（簡略化）
     final usage = _getCurrentMemoryUsage();
     _currentMemoryUsage = usage;
-    
+
     if (usage > _peakMemoryUsage) {
       _peakMemoryUsage = usage;
     }
 
     // メモリ使用量が高い場合の警告
-    if (usage > 200 * 1024 * 1024) { // 200MB以上
+    if (usage > 200 * 1024 * 1024) {
+      // 200MB以上
       if (kDebugMode) {
         print('High memory usage detected: ${usage ~/ (1024 * 1024)}MB');
       }
@@ -363,7 +363,7 @@ class NetworkPerformanceMonitor {
 
   void recordLatency(Duration latency) {
     _latencies.add(latency);
-    
+
     // 最新50件のみ保持
     if (_latencies.length > 50) {
       _latencies.removeAt(0);
@@ -377,10 +377,13 @@ class NetworkPerformanceMonitor {
   void _analyzeNetworkPerformance() {
     if (_latencies.isNotEmpty) {
       final avgLatency = getAverageLatency();
-      
-      if (avgLatency.inMilliseconds > 2000) { // 2秒以上
+
+      if (avgLatency.inMilliseconds > 2000) {
+        // 2秒以上
         if (kDebugMode) {
-          print('High network latency detected: ${avgLatency.inMilliseconds}ms');
+          print(
+            'High network latency detected: ${avgLatency.inMilliseconds}ms',
+          );
         }
       }
     }
@@ -388,12 +391,12 @@ class NetworkPerformanceMonitor {
 
   Duration getAverageLatency() {
     if (_latencies.isEmpty) return Duration.zero;
-    
+
     final totalMicroseconds = _latencies.fold<int>(
       0,
       (sum, latency) => sum + latency.inMicroseconds,
     );
-    
+
     return Duration(microseconds: totalMicroseconds ~/ _latencies.length);
   }
 
@@ -428,7 +431,7 @@ class PerformanceReport {
   /// パフォーマンススコアを計算（0-100）
   int calculateScore() {
     int score = 100;
-    
+
     // フレームレートスコア（40%）
     if (frameRate < 30) {
       score -= 40;
@@ -437,7 +440,7 @@ class PerformanceReport {
     } else if (frameRate < 55) {
       score -= 10;
     }
-    
+
     // メモリ使用量スコア（30%）
     final memoryMB = memoryUsage / (1024 * 1024);
     if (memoryMB > 300) {
@@ -447,7 +450,7 @@ class PerformanceReport {
     } else if (memoryMB > 150) {
       score -= 10;
     }
-    
+
     // ネットワークレイテンシスコア（20%）
     if (networkLatency.inMilliseconds > 3000) {
       score -= 20;
@@ -456,14 +459,14 @@ class PerformanceReport {
     } else if (networkLatency.inMilliseconds > 1000) {
       score -= 10;
     }
-    
+
     // ドロップフレーム・エラースコア（10%）
     if (droppedFrames > 50 || networkErrors > 10) {
       score -= 10;
     } else if (droppedFrames > 20 || networkErrors > 5) {
       score -= 5;
     }
-    
+
     return score.clamp(0, 100);
   }
 
@@ -495,14 +498,16 @@ class PerformanceOptimizedWidget extends StatefulWidget {
   final bool enableMonitoring;
 
   @override
-  State<PerformanceOptimizedWidget> createState() => _PerformanceOptimizedWidgetState();
+  State<PerformanceOptimizedWidget> createState() =>
+      _PerformanceOptimizedWidgetState();
 }
 
-class _PerformanceOptimizedWidgetState extends State<PerformanceOptimizedWidget> {
+class _PerformanceOptimizedWidgetState
+    extends State<PerformanceOptimizedWidget> {
   @override
   void initState() {
     super.initState();
-    
+
     if (widget.enableMonitoring) {
       IntegratedPerformanceManager().initialize();
     }
@@ -510,16 +515,14 @@ class _PerformanceOptimizedWidgetState extends State<PerformanceOptimizedWidget>
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: widget.child,
-    );
+    return RepaintBoundary(child: widget.child);
   }
 }
 
 class FirebasePerformance {
   static final instance = FirebasePerformance._();
   FirebasePerformance._();
-  
+
   Future<void> setPerformanceCollectionEnabled(bool enabled) async {}
   Trace newTrace(String name) => Trace();
   HttpMetric newHttpMetric(String url, HttpMethod method) => HttpMetric();

@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 
 class MenuBarChannel {
   MenuBarChannel({MethodChannel? channel})
-      : _channel = channel ?? const MethodChannel('miinq/desktop_menu_bar');
+    : _channel = channel ?? const MethodChannel('miinq/desktop_menu_bar');
 
   final MethodChannel _channel;
 

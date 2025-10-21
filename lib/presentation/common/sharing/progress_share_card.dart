@@ -1,18 +1,16 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/providers.dart';
 import 'package:minq/domain/social/achievement_share.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/haptic_manager.dart';
-import 'package:minq/presentation/common/celebration/celebration_system.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:minq/l10n/app_localizations.dart';
 
 /// 進捗共有カードウィジェット
 class ProgressShareCard extends ConsumerStatefulWidget {
@@ -64,21 +62,13 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       vsync: this,
     );
 
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.05,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
 
-    _shareScaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.95,
-    ).animate(CurvedAnimation(
-      parent: _shareController,
-      curve: Curves.easeInOut,
-    ));
+    _shareScaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _shareController, curve: Curves.easeInOut),
+    );
 
     if (widget.currentStreak >= 7) {
       _pulseController.repeat(reverse: true);
@@ -143,11 +133,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
             color: Colors.white.withOpacity(0.2),
             borderRadius: tokens.cornerMedium(),
           ),
-          child: const Icon(
-            Icons.trending_up,
-            color: Colors.white,
-            size: 24,
-          ),
+          child: const Icon(Icons.trending_up, color: Colors.white, size: 24),
         ),
         SizedBox(width: tokens.spacing(3)),
         Expanded(
@@ -191,10 +177,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            '🔥',
-            style: TextStyle(fontSize: 16),
-          ),
+          const Text('🔥', style: TextStyle(fontSize: 16)),
           SizedBox(width: tokens.spacing(1)),
           Text(
             '${widget.currentStreak}',
@@ -261,11 +244,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       ),
       child: Column(
         children: [
-          Icon(
-            icon,
-            color: Colors.white,
-            size: 20,
-          ),
+          Icon(icon, color: Colors.white, size: 20),
           const SizedBox(height: 4),
           Text(
             value,
@@ -297,17 +276,18 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: _isSharing ? null : _handleShare,
-              icon: _isSharing
-                  ? Container(
-                      width: 24,
-                      height: 24,
-                      padding: const EdgeInsets.all(2.0),
-                      child: const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 3,
-                      ),
-                    )
-                  : const Icon(Icons.share, color: Colors.white),
+              icon:
+                  _isSharing
+                      ? Container(
+                        width: 24,
+                        height: 24,
+                        padding: const EdgeInsets.all(2.0),
+                        child: const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 3,
+                        ),
+                      )
+                      : const Icon(Icons.share, color: Colors.white),
               label: Text(
                 _isSharing ? '準備中...' : '進捗をシェア',
                 style: const TextStyle(
@@ -339,7 +319,8 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
     _shareController.forward().then((_) => _shareController.reverse());
 
     try {
-      final boundary = _cardKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      final boundary =
+          _cardKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       final image = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final pngBytes = byteData!.buffer.asUint8List();
@@ -348,10 +329,9 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       final file = await File('${tempDir.path}/minq_progress.png').create();
       await file.writeAsBytes(pngBytes);
 
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        text: 'MinQで${widget.currentStreak}日連続で目標達成中！ #MinQ #習慣化アプリ',
-      );
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], text: 'MinQで${widget.currentStreak}日連続で目標達成中！ #MinQ #習慣化アプリ');
 
       // TODO: Implement logEvent
       // ref.read(analyticsServiceProvider).logEvent(
@@ -361,7 +341,6 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       //     'total_quests': widget.totalQuests,
       //   },
       // );
-
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
@@ -440,7 +419,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       '習慣化で人生が変わる',
       '継続こそが最大の才能',
     ];
-    
+
     return messages[Random().nextInt(messages.length)];
   }
 }
@@ -448,10 +427,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
 class ProgressShareCardPreview extends StatelessWidget {
   final ProgressShare progressShare;
 
-  const ProgressShareCardPreview({
-    super.key,
-    required this.progressShare,
-  });
+  const ProgressShareCardPreview({super.key, required this.progressShare});
 
   @override
   Widget build(BuildContext context) {

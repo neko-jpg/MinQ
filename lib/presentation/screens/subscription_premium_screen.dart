@@ -8,15 +8,17 @@ class SubscriptionPremiumScreen extends ConsumerStatefulWidget {
   const SubscriptionPremiumScreen({super.key});
 
   @override
-  ConsumerState<SubscriptionPremiumScreen> createState() => _SubscriptionPremiumScreenState();
+  ConsumerState<SubscriptionPremiumScreen> createState() =>
+      _SubscriptionPremiumScreenState();
 }
 
-class _SubscriptionPremiumScreenState extends ConsumerState<SubscriptionPremiumScreen>
+class _SubscriptionPremiumScreenState
+    extends ConsumerState<SubscriptionPremiumScreen>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  
+
   int _selectedPlanIndex = 1; // デフォルトで年額プランを選択
   bool _isProcessing = false;
 
@@ -27,23 +29,18 @@ class _SubscriptionPremiumScreenState extends ConsumerState<SubscriptionPremiumS
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
-    
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
-    
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
+    );
+
     _animationController.forward();
   }
 
@@ -58,11 +55,12 @@ class _SubscriptionPremiumScreenState extends ConsumerState<SubscriptionPremiumS
     final tokens = context.tokens;
     final subscriptionManager = ref.watch(subscriptionManagerProvider);
     final currentStatus = ref.watch(subscriptionStatusProvider);
-    
+
     // プレミアムプランのみを表示
-    final premiumPlans = SubscriptionManager.availablePlans
-        .where((plan) => plan.id.contains('premium'))
-        .toList();
+    final premiumPlans =
+        SubscriptionManager.availablePlans
+            .where((plan) => plan.id.contains('premium'))
+            .toList();
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -126,7 +124,7 @@ class _SubscriptionPremiumScreenState extends ConsumerState<SubscriptionPremiumS
               ),
             ),
           ),
-          
+
           // 機能一覧
           SliverToBoxAdapter(
             child: Padding(
@@ -142,14 +140,14 @@ class _SubscriptionPremiumScreenState extends ConsumerState<SubscriptionPremiumS
                     ),
                   ),
                   SizedBox(height: tokens.spacing(4)),
-                  ...premiumPlans.first.features.map((feature) => 
-                    _buildFeatureItem(tokens, feature),
-                  ).toList(),
+                  ...premiumPlans.first.features.map(
+                    (feature) => _buildFeatureItem(tokens, feature),
+                  ),
                 ],
               ),
             ),
           ),
-          
+
           // プラン選択
           SliverToBoxAdapter(
             child: Padding(
@@ -169,12 +167,12 @@ class _SubscriptionPremiumScreenState extends ConsumerState<SubscriptionPremiumS
                     final index = entry.key;
                     final plan = entry.value;
                     return _buildPlanCard(tokens, plan, index);
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
           ),
-          
+
           // 購入ボタン
           SliverToBoxAdapter(
             child: Padding(
@@ -193,15 +191,18 @@ class _SubscriptionPremiumScreenState extends ConsumerState<SubscriptionPremiumS
                           borderRadius: tokens.cornerLarge(),
                         ),
                       ),
-                      child: _isProcessing
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              'プレミアムを開始',
-                              style: tokens.typeScale.h4.copyWith(
+                      child:
+                          _isProcessing
+                              ? const CircularProgressIndicator(
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                              )
+                              : Text(
+                                'プレミアムを開始',
+                                style: tokens.typeScale.h4.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
                     ),
                   ),
                   SizedBox(height: tokens.spacing(3)),
@@ -266,14 +267,17 @@ class _SubscriptionPremiumScreenState extends ConsumerState<SubscriptionPremiumS
   Widget _buildPlanCard(MinqTheme tokens, SubscriptionPlan plan, int index) {
     final isSelected = _selectedPlanIndex == index;
     final isYearly = plan.id == SubscriptionManager.premiumYearlyId;
-    
+
     return GestureDetector(
       onTap: () => setState(() => _selectedPlanIndex = index),
       child: Container(
         margin: EdgeInsets.only(bottom: tokens.spacing(3)),
         padding: EdgeInsets.all(tokens.spacing(4)),
         decoration: BoxDecoration(
-          color: isSelected ? tokens.brandPrimary.withOpacity(0.1) : tokens.surface,
+          color:
+              isSelected
+                  ? tokens.brandPrimary.withOpacity(0.1)
+                  : tokens.surface,
           border: Border.all(
             color: isSelected ? tokens.brandPrimary : tokens.border,
             width: isSelected ? 2 : 1,
@@ -361,28 +365,31 @@ class _SubscriptionPremiumScreenState extends ConsumerState<SubscriptionPremiumS
 
   Future<void> _handlePurchase() async {
     if (_isProcessing) return;
-    
+
     setState(() => _isProcessing = true);
-    
+
     try {
       final subscriptionManager = ref.read(subscriptionManagerProvider);
-      final selectedPlan = SubscriptionManager.availablePlans
-          .where((plan) => plan.id.contains('premium'))
-          .toList()[_selectedPlanIndex];
-      
-      final success = await subscriptionManager.startSubscription(selectedPlan.id);
-      
+      final selectedPlan =
+          SubscriptionManager.availablePlans
+              .where((plan) => plan.id.contains('premium'))
+              .toList()[_selectedPlanIndex];
+
+      final success = await subscriptionManager.startSubscription(
+        selectedPlan.id,
+      );
+
       if (success && mounted) {
         // サブスクリプション状態を更新
         ref.invalidate(subscriptionStatusProvider);
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('プレミアムプランを開始しました！'),
             backgroundColor: Colors.green,
           ),
         );
-        
+
         context.pop();
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -412,21 +419,16 @@ class _SubscriptionPremiumScreenState extends ConsumerState<SubscriptionPremiumS
     try {
       final subscriptionManager = ref.read(subscriptionManagerProvider);
       await subscriptionManager.restoreSubscriptions();
-      
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('購入を復元しました'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('購入を復元しました')));
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('復元に失敗しました: $e'),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text('復元に失敗しました: $e'), backgroundColor: Colors.red),
         );
       }
     }

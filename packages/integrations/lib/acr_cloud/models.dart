@@ -26,10 +26,7 @@ class ACRCloudTrackMetadata {
 
 @JsonSerializable()
 class ACRCloudResult {
-  ACRCloudResult({
-    required this.metadata,
-    required this.score,
-  });
+  ACRCloudResult({required this.metadata, required this.score});
 
   factory ACRCloudResult.fromJson(Map<String, dynamic> json) =>
       _$ACRCloudResultFromJson(json);

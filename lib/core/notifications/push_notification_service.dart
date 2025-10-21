@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
 
-final pushNotificationServiceProvider = Provider<PushNotificationService>((ref) {
+final pushNotificationServiceProvider = Provider<PushNotificationService>((
+  ref,
+) {
   return PushNotificationService(
     FirebaseMessaging.instance,
     FirebaseFirestore.instance,
@@ -22,7 +24,7 @@ class PushNotificationService {
 
     // 2. Get the token
     final token = await _fcm.getToken();
-    print("FCM Token: $token");
+    print('FCM Token: $token');
 
     // 3. Save the token for the user
     if (token != null) {
@@ -52,11 +54,11 @@ class PushNotificationService {
           .collection('device_tokens')
           .doc(token)
           .set({
-        'createdAt': FieldValue.serverTimestamp(),
-        'platform': 'android', // In a real app, detect the platform
-      });
+            'createdAt': FieldValue.serverTimestamp(),
+            'platform': 'android', // In a real app, detect the platform
+          });
     } catch (e) {
-      print("Error saving FCM token: $e");
+      print('Error saving FCM token: $e');
     }
   }
 }

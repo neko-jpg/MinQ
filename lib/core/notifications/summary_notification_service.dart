@@ -1,5 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'notification_channels.dart';
+import 'package:minq/core/notifications/notification_channels.dart';
 
 /// まとめ通知サービス
 class SummaryNotificationService {
@@ -50,9 +50,7 @@ class SummaryNotificationService {
       setAsGroupSummary: false,
     );
 
-    final iosDetails = DarwinNotificationDetails(
-      threadIdentifier: groupKey,
-    );
+    final iosDetails = DarwinNotificationDetails(threadIdentifier: groupKey);
 
     final details = NotificationDetails(
       android: androidDetails,
@@ -95,9 +93,7 @@ class SummaryNotificationService {
     );
 
     // iOS用のまとめ通知
-    final iosDetails = DarwinNotificationDetails(
-      threadIdentifier: groupKey,
-    );
+    final iosDetails = DarwinNotificationDetails(threadIdentifier: groupKey);
 
     final details = NotificationDetails(
       android: androidDetails,
@@ -160,7 +156,10 @@ class SummaryNotificationService {
 
   /// 全グループの通知数を取得
   int getTotalNotificationCount() {
-    return _pendingNotifications.values.fold(0, (sum, list) => sum + list.length);
+    return _pendingNotifications.values.fold(
+      0,
+      (sum, list) => sum + list.length,
+    );
   }
 }
 
@@ -193,7 +192,7 @@ class DailySummaryNotificationService {
     required int currentStreak,
     required double achievementRate,
   }) async {
-    final title = '今日の振り返り';
+    const title = '今日の振り返り';
     final body = _buildSummaryBody(
       completedQuests: completedQuests,
       totalQuests: totalQuests,
@@ -209,7 +208,7 @@ class DailySummaryNotificationService {
       styleInformation: BigTextStyleInformation(body),
     );
 
-    final iosDetails = const DarwinNotificationDetails(
+    const iosDetails = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: false,
       presentSound: false,
@@ -265,7 +264,7 @@ class DailySummaryNotificationService {
     required double weeklyAchievementRate,
     required List<String> topQuests,
   }) async {
-    final title = '今週の振り返り';
+    const title = '今週の振り返り';
     final body = _buildWeeklySummaryBody(
       totalCompletedQuests: totalCompletedQuests,
       totalQuests: totalQuests,
@@ -282,7 +281,7 @@ class DailySummaryNotificationService {
       styleInformation: BigTextStyleInformation(body),
     );
 
-    final iosDetails = const DarwinNotificationDetails(
+    const iosDetails = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: false,
       presentSound: false,
@@ -394,7 +393,7 @@ class NotificationScheduler {
       priority: Priority.defaultPriority,
     );
 
-    final iosDetails = const DarwinNotificationDetails();
+    const iosDetails = DarwinNotificationDetails();
 
     final details = NotificationDetails(
       android: androidDetails,
@@ -410,9 +409,10 @@ class NotificationScheduler {
         _convertToRepeatInterval(schedule.repeatInterval!),
         details,
         payload: payload,
-        androidScheduleMode: schedule.exactTiming
-            ? AndroidScheduleMode.exactAllowWhileIdle
-            : AndroidScheduleMode.inexactAllowWhileIdle,
+        androidScheduleMode:
+            schedule.exactTiming
+                ? AndroidScheduleMode.exactAllowWhileIdle
+                : AndroidScheduleMode.inexactAllowWhileIdle,
       );
     } else {
       // 1回限りの通知
@@ -423,9 +423,10 @@ class NotificationScheduler {
         _convertToTZDateTime(schedule.scheduledTime),
         details,
         payload: payload,
-        androidScheduleMode: schedule.exactTiming
-            ? AndroidScheduleMode.exactAllowWhileIdle
-            : AndroidScheduleMode.inexactAllowWhileIdle,
+        androidScheduleMode:
+            schedule.exactTiming
+                ? AndroidScheduleMode.exactAllowWhileIdle
+                : AndroidScheduleMode.inexactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
       );

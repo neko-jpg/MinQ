@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
-import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class NotificationSettingsScreen extends ConsumerStatefulWidget {
@@ -18,7 +18,7 @@ class _NotificationSettingsScreenState
     extends ConsumerState<NotificationSettingsScreen> {
   TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 30);
   TimeOfDay _eveningTime = const TimeOfDay(hour: 21, minute: 30);
-  Set<int> _enabledWeekdays = {1, 2, 3, 4, 5}; // 平日デフォルト
+  final Set<int> _enabledWeekdays = {1, 2, 3, 4, 5}; // 平日デフォルト
   bool _notifyOnHolidays = false;
   late TimeOfDay _initialMorningTime;
   late TimeOfDay _initialEveningTime;

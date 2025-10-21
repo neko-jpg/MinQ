@@ -19,7 +19,8 @@ class BadgeNotificationWidget extends StatefulWidget {
   final Duration duration;
 
   @override
-  State<BadgeNotificationWidget> createState() => _BadgeNotificationWidgetState();
+  State<BadgeNotificationWidget> createState() =>
+      _BadgeNotificationWidgetState();
 }
 
 class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
@@ -27,7 +28,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
   late AnimationController _slideController;
   late AnimationController _scaleController;
   late AnimationController _sparkleController;
-  
+
   late Animation<Offset> _slideAnimation;
   late Animation<double> _scaleAnimation;
   late Animation<double> _sparkleAnimation;
@@ -35,17 +36,17 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
   @override
   void initState() {
     super.initState();
-    
+
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     _scaleController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _sparkleController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
@@ -54,26 +55,17 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, -1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.elasticOut,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _slideController, curve: Curves.elasticOut),
+    );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _scaleController,
-      curve: Curves.elasticOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _scaleController, curve: Curves.elasticOut),
+    );
 
-    _sparkleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _sparkleController,
-      curve: Curves.easeInOut,
-    ));
+    _sparkleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _sparkleController, curve: Curves.easeInOut),
+    );
 
     _startAnimation();
   }
@@ -81,13 +73,13 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
   void _startAnimation() async {
     // 触覚フィードバック
     HapticFeedback.mediumImpact();
-    
+
     // アニメーション開始
     _slideController.forward();
     await Future.delayed(const Duration(milliseconds: 200));
     _scaleController.forward();
     _sparkleController.repeat(reverse: true);
-    
+
     // 自動消去タイマー
     Future.delayed(widget.duration, () {
       if (mounted) {
@@ -113,7 +105,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return SlideTransition(
       position: _slideAnimation,
       child: Container(
@@ -156,7 +148,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                     },
                   ),
                 ),
-                
+
                 // メインコンテンツ
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -176,14 +168,12 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                               width: 2,
                             ),
                           ),
-                          child: Center(
-                            child: _getBadgeIcon(widget.badge.id),
-                          ),
+                          child: Center(child: _getBadgeIcon(widget.badge.id)),
                         ),
                       ),
-                      
+
                       const SizedBox(width: 12),
-                      
+
                       // テキスト情報
                       Expanded(
                         child: Column(
@@ -217,7 +207,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                           ],
                         ),
                       ),
-                      
+
                       // 閉じるボタン
                       IconButton(
                         onPressed: _dismiss,
@@ -241,7 +231,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
   Widget _getBadgeIcon(String badgeId) {
     IconData iconData;
     Color iconColor = Colors.white;
-    
+
     switch (badgeId) {
       case 'quest_master_1':
         iconData = Icons.star;
@@ -276,12 +266,8 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
       default:
         iconData = Icons.workspace_premium;
     }
-    
-    return Icon(
-      iconData,
-      color: iconColor,
-      size: 32,
-    );
+
+    return Icon(iconData, color: iconColor, size: 32);
   }
 }
 
@@ -289,17 +275,15 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
 class SparklePainter extends CustomPainter {
   final double animation;
   final Color color;
-  
-  SparklePainter({
-    required this.animation,
-    required this.color,
-  });
+
+  SparklePainter({required this.animation, required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color.withOpacity(animation * 0.8)
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = color.withOpacity(animation * 0.8)
+          ..style = PaintingStyle.fill;
 
     // スパークルの位置を計算
     final sparkles = [
@@ -315,7 +299,7 @@ class SparklePainter extends CustomPainter {
       final sparkle = sparkles[i];
       final phase = (animation + i * 0.2) % 1.0;
       final sparkleSize = 4 * phase * (1 - phase) * 4; // 0から4の間で変化
-      
+
       if (sparkleSize > 0.5) {
         _drawSparkle(canvas, sparkle, sparkleSize, paint);
       }
@@ -324,24 +308,26 @@ class SparklePainter extends CustomPainter {
 
   void _drawSparkle(Canvas canvas, Offset center, double size, Paint paint) {
     final path = Path();
-    
+
     // 4つの尖った星形を描画
     final points = <Offset>[];
     for (int i = 0; i < 8; i++) {
       final angle = (i * 45) * (3.14159 / 180);
       final radius = (i % 2 == 0) ? size : size * 0.4;
-      points.add(Offset(
-        center.dx + radius * math.cos(angle),
-        center.dy + radius * math.sin(angle),
-      ));
+      points.add(
+        Offset(
+          center.dx + radius * math.cos(angle),
+          center.dy + radius * math.sin(angle),
+        ),
+      );
     }
-    
+
     path.moveTo(points[0].dx, points[0].dy);
     for (int i = 1; i < points.length; i++) {
       path.lineTo(points[i].dx, points[i].dy);
     }
     path.close();
-    
+
     canvas.drawPath(path, paint);
   }
 
@@ -361,15 +347,13 @@ class BadgeNotificationOverlay {
     hide();
 
     _currentEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: MediaQuery.of(context).padding.top + 16,
-        left: 0,
-        right: 0,
-        child: BadgeNotificationWidget(
-          badge: badge,
-          onDismiss: hide,
-        ),
-      ),
+      builder:
+          (context) => Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 0,
+            right: 0,
+            child: BadgeNotificationWidget(badge: badge, onDismiss: hide),
+          ),
     );
 
     Overlay.of(context).insert(_currentEntry!);
@@ -398,7 +382,8 @@ class PointsNotificationWidget extends StatefulWidget {
   final Duration duration;
 
   @override
-  State<PointsNotificationWidget> createState() => _PointsNotificationWidgetState();
+  State<PointsNotificationWidget> createState() =>
+      _PointsNotificationWidgetState();
 }
 
 class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
@@ -410,7 +395,7 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -419,18 +404,11 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
     _scaleAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.0, 0.5),
-    ));
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.5)),
+    );
 
     _startAnimation();
   }
@@ -438,7 +416,7 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
   void _startAnimation() async {
     HapticFeedback.lightImpact();
     _controller.forward();
-    
+
     Future.delayed(widget.duration, () {
       if (mounted) {
         _controller.reverse().then((_) => widget.onDismiss());
@@ -455,7 +433,7 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -465,10 +443,7 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
             scale: _scaleAnimation.value,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.green,
                 borderRadius: BorderRadius.circular(16),
@@ -483,11 +458,7 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.add_circle,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  const Icon(Icons.add_circle, color: Colors.white, size: 20),
                   const SizedBox(width: 8),
                   Text(
                     '+${widget.points} ポイント',
@@ -525,18 +496,19 @@ class PointsNotificationOverlay {
     hide();
 
     _currentEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: MediaQuery.of(context).padding.top + 80,
-        left: 0,
-        right: 0,
-        child: Center(
-          child: PointsNotificationWidget(
-            points: points,
-            reason: reason,
-            onDismiss: hide,
+      builder:
+          (context) => Positioned(
+            top: MediaQuery.of(context).padding.top + 80,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: PointsNotificationWidget(
+                points: points,
+                reason: reason,
+                onDismiss: hide,
+              ),
+            ),
           ),
-        ),
-      ),
     );
 
     Overlay.of(context).insert(_currentEntry!);
@@ -548,4 +520,3 @@ class PointsNotificationOverlay {
     _currentEntry = null;
   }
 }
-

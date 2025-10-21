@@ -43,7 +43,10 @@ class OperationsMetricsService {
   Future<void> recordSessionStart(DateTime now) async {
     final int total = _prefs.getInt(_totalSessionsKey) ?? 0;
     await _prefs.setInt(_totalSessionsKey, total + 1);
-    await _prefs.setInt(_sessionStartedAtKey, now.toUtc().millisecondsSinceEpoch);
+    await _prefs.setInt(
+      _sessionStartedAtKey,
+      now.toUtc().millisecondsSinceEpoch,
+    );
     await _prefs.setBool(_crashRecordedKey, false);
   }
 
@@ -63,12 +66,20 @@ class OperationsMetricsService {
     final int crashed = _prefs.getInt(_crashedSessionsKey) ?? 0;
     final int startedAtMillis = _prefs.getInt(_sessionStartedAtKey) ?? 0;
     final int crashAtMillis = _prefs.getInt(_lastCrashAtKey) ?? 0;
-    final DateTime? startedAt = startedAtMillis <= 0
-        ? null
-        : DateTime.fromMillisecondsSinceEpoch(startedAtMillis, isUtc: true).toLocal();
-    final DateTime? crashAt = crashAtMillis <= 0
-        ? null
-        : DateTime.fromMillisecondsSinceEpoch(crashAtMillis, isUtc: true).toLocal();
+    final DateTime? startedAt =
+        startedAtMillis <= 0
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(
+              startedAtMillis,
+              isUtc: true,
+            ).toLocal();
+    final DateTime? crashAt =
+        crashAtMillis <= 0
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(
+              crashAtMillis,
+              isUtc: true,
+            ).toLocal();
     return OperationsSnapshot(
       totalSessions: total,
       crashedSessions: crashed,

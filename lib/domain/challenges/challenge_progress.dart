@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 part 'challenge_progress.freezed.dart';
 part 'challenge_progress.g.dart';
@@ -14,5 +13,6 @@ class ChallengeProgress with _$ChallengeProgress {
     required bool completed,
   }) = _ChallengeProgress;
 
-  factory ChallengeProgress.fromJson(Map<String, dynamic> json) => _$ChallengeProgressFromJson(json);
+  factory ChallengeProgress.fromJson(Map<String, dynamic> json) =>
+      _$ChallengeProgressFromJson(json);
 }

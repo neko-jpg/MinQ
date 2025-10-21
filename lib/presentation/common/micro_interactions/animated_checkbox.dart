@@ -90,52 +90,36 @@ class _AnimatedCheckboxState extends State<AnimatedCheckbox>
       duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.95,
-    ).animate(CurvedAnimation(
-      parent: _scaleController,
-      curve: Curves.easeInOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _scaleController, curve: Curves.easeInOut),
+    );
 
     // Check animation for the checkmark appearance
     _checkController = AnimationController(
       duration: widget.animationDuration,
       vsync: this,
     );
-    _checkAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _checkController,
-      curve: Curves.elasticOut,
-    ));
+    _checkAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _checkController, curve: Curves.elasticOut),
+    );
 
     // Glow animation for success feedback
     _glowController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    _glowAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _glowController,
-      curve: Curves.easeInOut,
-    ));
+    _glowAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
+    );
 
     // Bounce animation for celebration
     _bounceController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    _bounceAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _bounceController,
-      curve: Curves.elasticOut,
-    ));
+    _bounceAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _bounceController, curve: Curves.elasticOut),
+    );
 
     // Set initial state
     if (widget.isChecked) {
@@ -208,7 +192,7 @@ class _AnimatedCheckboxState extends State<AnimatedCheckbox>
   @override
   Widget build(BuildContext context) {
     final theme = MinqTheme.of(context);
-    
+
     return GestureDetector(
       onTap: _handleTap,
       child: AnimatedBuilder(
@@ -225,37 +209,42 @@ class _AnimatedCheckboxState extends State<AnimatedCheckbox>
               width: widget.size,
               height: widget.size,
               decoration: BoxDecoration(
-                color: widget.isChecked
-                    ? (widget.activeColor ?? theme.progressComplete)
-                    : (widget.inactiveColor ?? theme.surface),
+                color:
+                    widget.isChecked
+                        ? (widget.activeColor ?? theme.progressComplete)
+                        : (widget.inactiveColor ?? theme.surface),
                 borderRadius: widget.borderRadius ?? BorderRadius.circular(4),
                 border: Border.all(
-                  color: widget.isChecked
-                      ? (widget.activeColor ?? theme.progressComplete)
-                      : (widget.borderColor ?? theme.border),
+                  color:
+                      widget.isChecked
+                          ? (widget.activeColor ?? theme.progressComplete)
+                          : (widget.borderColor ?? theme.border),
                   width: widget.borderWidth,
                 ),
-                boxShadow: _glowAnimation.value > 0
-                    ? [
-                        BoxShadow(
-                          color: (widget.activeColor ?? theme.progressComplete)
-                              .withOpacity(_glowAnimation.value * 0.4),
-                          blurRadius: 8 * _glowAnimation.value,
-                          spreadRadius: 2 * _glowAnimation.value,
-                        ),
-                      ]
-                    : null,
+                boxShadow:
+                    _glowAnimation.value > 0
+                        ? [
+                          BoxShadow(
+                            color: (widget.activeColor ??
+                                    theme.progressComplete)
+                                .withOpacity(_glowAnimation.value * 0.4),
+                            blurRadius: 8 * _glowAnimation.value,
+                            spreadRadius: 2 * _glowAnimation.value,
+                          ),
+                        ]
+                        : null,
               ),
-              child: widget.isChecked
-                  ? Transform.scale(
-                      scale: _checkAnimation.value,
-                      child: Icon(
-                        Icons.check,
-                        size: widget.size * 0.7,
-                        color: widget.checkColor ?? Colors.white,
-                      ),
-                    )
-                  : null,
+              child:
+                  widget.isChecked
+                      ? Transform.scale(
+                        scale: _checkAnimation.value,
+                        child: Icon(
+                          Icons.check,
+                          size: widget.size * 0.7,
+                          color: widget.checkColor ?? Colors.white,
+                        ),
+                      )
+                      : null,
             ),
           );
         },

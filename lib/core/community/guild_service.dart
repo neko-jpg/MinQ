@@ -10,33 +10,36 @@ import 'package:flutter/foundation.dart';
 class GuildService {
   static GuildService? _instance;
   static GuildService get instance => _instance ??= GuildService._();
-  
+
   GuildService._();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  
+
   StreamSubscription<QuerySnapshot>? _guildsSubscription;
   StreamSubscription<DocumentSnapshot>? _currentGuildSubscription;
   StreamSubscription<QuerySnapshot>? _messagesSubscription;
-  
+
   final ValueNotifier<List<Guild>> _availableGuilds = ValueNotifier([]);
   final ValueNotifier<Guild?> _currentGuild = ValueNotifier(null);
   final ValueNotifier<List<GuildMessage>> _guildMessages = ValueNotifier([]);
-  final ValueNotifier<List<GuildChallenge>> _activeChallenges = ValueNotifier([]);
-  
+  final ValueNotifier<List<GuildChallenge>> _activeChallenges = ValueNotifier(
+    [],
+  );
+
   ValueListenable<List<Guild>> get availableGuilds => _availableGuilds;
   ValueListenable<Guild?> get currentGuild => _currentGuild;
   ValueListenable<List<GuildMessage>> get guildMessages => _guildMessages;
-  ValueListenable<List<GuildChallenge>> get activeChallenges => _activeChallenges;
+  ValueListenable<List<GuildChallenge>> get activeChallenges =>
+      _activeChallenges;
 
   /// サービスの初期化
   Future<void> initialize(String userId) async {
     try {
       log('GuildService: 初期化開始 - $userId');
-      
+
       // ユーザーの所属ギルドを確認
       await _loadUserGuild(userId);
-      
+
       // 利用可能なギルドを監視
       _guildsSubscription = _firestore
           .collection('guilds')
@@ -46,7 +49,7 @@ class GuildService {
           .limit(20)
           .snapshots()
           .listen(_onAvailableGuildsChanged);
-      
+
       log('GuildService: 初期化完了');
     } catch (e) {
       log('GuildService: 初期化エラー - $e');
@@ -76,10 +79,10 @@ class GuildService {
   }) async {
     try {
       log('GuildService: ギルド作成開始');
-      
+
       final guildId = _generateGuildId();
       final now = DateTime.now();
-      
+
       final guild = Guild(
         id: guildId,
         name: name,
@@ -100,12 +103,12 @@ class GuildService {
         rules: GuildRules.defaultRules(),
         stats: GuildStats.empty(),
       );
-      
+
       await _firestore.collection('guilds').doc(guildId).set(guild.toMap());
-      
+
       // ユーザーのギルド情報を更新
       await _updateUserGuildInfo(creatorId, guildId, GuildRole.admin);
-      
+
       log('GuildService: ギルド作成完了 - $guildId');
       return guild;
     } catch (e) {
@@ -118,42 +121,42 @@ class GuildService {
   Future<void> joinGuild(String guildId, String userId) async {
     try {
       log('GuildService: ギルド参加開始 - $guildId');
-      
+
       final guildDoc = _firestore.collection('guilds').doc(guildId);
-      
+
       await _firestore.runTransaction((transaction) async {
         final snapshot = await transaction.get(guildDoc);
-        
+
         if (!snapshot.exists) {
           throw Exception('ギルドが見つかりません');
         }
-        
+
         final guild = Guild.fromMap(snapshot.data()!);
-        
+
         if (guild.memberIds.contains(userId)) {
           throw Exception('既に参加しています');
         }
-        
+
         if (guild.memberCount >= guild.maxMembers) {
           throw Exception('メンバー数が上限に達しています');
         }
-        
+
         if (!guild.isPublic) {
           throw Exception('このギルドは招待制です');
         }
-        
+
         final updatedMemberIds = [...guild.memberIds, userId];
-        
+
         transaction.update(guildDoc, {
           'memberIds': updatedMemberIds,
           'memberCount': updatedMemberIds.length,
           'lastActivityAt': FieldValue.serverTimestamp(),
         });
       });
-      
+
       // ユーザーのギルド情報を更新
       await _updateUserGuildInfo(userId, guildId, GuildRole.member);
-      
+
       // 参加メッセージを送信
       await sendMessage(
         guildId: guildId,
@@ -161,7 +164,7 @@ class GuildService {
         content: 'ユーザーがギルドに参加しました！',
         type: GuildMessageType.system,
       );
-      
+
       log('GuildService: ギルド参加完了');
     } catch (e) {
       log('GuildService: ギルド参加エラー - $e');
@@ -173,25 +176,27 @@ class GuildService {
   Future<void> leaveGuild(String guildId, String userId) async {
     try {
       log('GuildService: ギルド退出開始 - $guildId');
-      
+
       final guildDoc = _firestore.collection('guilds').doc(guildId);
-      
+
       await _firestore.runTransaction((transaction) async {
         final snapshot = await transaction.get(guildDoc);
-        
+
         if (!snapshot.exists) {
           throw Exception('ギルドが見つかりません');
         }
-        
+
         final guild = Guild.fromMap(snapshot.data()!);
-        
+
         if (!guild.memberIds.contains(userId)) {
           throw Exception('このギルドに参加していません');
         }
-        
-        final updatedMemberIds = guild.memberIds.where((id) => id != userId).toList();
-        final updatedAdminIds = guild.adminIds.where((id) => id != userId).toList();
-        
+
+        final updatedMemberIds =
+            guild.memberIds.where((id) => id != userId).toList();
+        final updatedAdminIds =
+            guild.adminIds.where((id) => id != userId).toList();
+
         // 最後のメンバーの場合はギルドを削除
         if (updatedMemberIds.isEmpty) {
           transaction.delete(guildDoc);
@@ -200,7 +205,7 @@ class GuildService {
           if (guild.adminIds.contains(userId) && updatedAdminIds.isEmpty) {
             updatedAdminIds.add(updatedMemberIds.first);
           }
-          
+
           transaction.update(guildDoc, {
             'memberIds': updatedMemberIds,
             'adminIds': updatedAdminIds,
@@ -209,10 +214,10 @@ class GuildService {
           });
         }
       });
-      
+
       // ユーザーのギルド情報をクリア
       await _updateUserGuildInfo(userId, null, null);
-      
+
       log('GuildService: ギルド退出完了');
     } catch (e) {
       log('GuildService: ギルド退出エラー - $e');
@@ -230,9 +235,9 @@ class GuildService {
   }) async {
     try {
       log('GuildService: メッセージ送信開始');
-      
+
       final messageId = _generateMessageId();
-      
+
       final message = GuildMessage(
         id: messageId,
         guildId: guildId,
@@ -243,17 +248,17 @@ class GuildService {
         createdAt: DateTime.now(),
         reactions: {},
       );
-      
+
       await _firestore
           .collection('guild_messages')
           .doc(messageId)
           .set(message.toMap());
-      
+
       // ギルドの最終活動時刻を更新
       await _firestore.collection('guilds').doc(guildId).update({
         'lastActivityAt': FieldValue.serverTimestamp(),
       });
-      
+
       log('GuildService: メッセージ送信完了');
     } catch (e) {
       log('GuildService: メッセージ送信エラー - $e');
@@ -274,10 +279,10 @@ class GuildService {
   }) async {
     try {
       log('GuildService: チャレンジ作成開始');
-      
+
       final challengeId = _generateChallengeId();
       final now = DateTime.now();
-      
+
       final challenge = GuildChallenge(
         id: challengeId,
         guildId: guildId,
@@ -296,12 +301,12 @@ class GuildService {
         endTime: now.add(duration),
         completions: [],
       );
-      
+
       await _firestore
           .collection('guild_challenges')
           .doc(challengeId)
           .set(challenge.toMap());
-      
+
       log('GuildService: チャレンジ作成完了 - $challengeId');
       return challenge;
     } catch (e) {
@@ -314,37 +319,39 @@ class GuildService {
   Future<void> joinChallenge(String challengeId, String userId) async {
     try {
       log('GuildService: チャレンジ参加開始 - $challengeId');
-      
-      final challengeDoc = _firestore.collection('guild_challenges').doc(challengeId);
-      
+
+      final challengeDoc = _firestore
+          .collection('guild_challenges')
+          .doc(challengeId);
+
       await _firestore.runTransaction((transaction) async {
         final snapshot = await transaction.get(challengeDoc);
-        
+
         if (!snapshot.exists) {
           throw Exception('チャレンジが見つかりません');
         }
-        
+
         final challenge = GuildChallenge.fromMap(snapshot.data()!);
-        
+
         if (challenge.status != ChallengeStatus.active) {
           throw Exception('このチャレンジは参加できません');
         }
-        
+
         if (challenge.participantIds.contains(userId)) {
           throw Exception('既に参加しています');
         }
-        
+
         if (DateTime.now().isAfter(challenge.endTime)) {
           throw Exception('チャレンジの期限が過ぎています');
         }
-        
+
         final updatedParticipantIds = [...challenge.participantIds, userId];
-        
+
         transaction.update(challengeDoc, {
           'participantIds': updatedParticipantIds,
         });
       });
-      
+
       log('GuildService: チャレンジ参加完了');
     } catch (e) {
       log('GuildService: チャレンジ参加エラー - $e');
@@ -361,9 +368,9 @@ class GuildService {
   }) async {
     try {
       log('GuildService: チャレンジ完了記録開始');
-      
+
       final completionId = _generateCompletionId();
-      
+
       final completion = ChallengeCompletion(
         id: completionId,
         challengeId: challengeId,
@@ -372,15 +379,15 @@ class GuildService {
         completedAt: DateTime.now(),
         metadata: metadata ?? {},
       );
-      
+
       await _firestore
           .collection('challenge_completions')
           .doc(completionId)
           .set(completion.toMap());
-      
+
       // チャレンジの進捗を更新
       await _updateChallengeProgress(challengeId, userId);
-      
+
       log('GuildService: チャレンジ完了記録完了');
     } catch (e) {
       log('GuildService: チャレンジ完了記録エラー - $e');
@@ -396,33 +403,33 @@ class GuildService {
   }) async {
     try {
       log('GuildService: ギルド検索開始');
-      
+
       Query queryRef = _firestore
           .collection('guilds')
           .where('isPublic', isEqualTo: true);
-      
+
       if (category != null) {
         queryRef = queryRef.where('category', isEqualTo: category);
       }
-      
-      queryRef = queryRef
-          .orderBy('memberCount', descending: true)
-          .limit(limit);
-      
+
+      queryRef = queryRef.orderBy('memberCount', descending: true).limit(limit);
+
       final snapshot = await queryRef.get();
-      
-      var guilds = snapshot.docs
-          .map((doc) => Guild.fromMap(doc.data() as Map<String, dynamic>))
-          .toList();
-      
+
+      var guilds =
+          snapshot.docs
+              .map((doc) => Guild.fromMap(doc.data() as Map<String, dynamic>))
+              .toList();
+
       // クエリによるフィルタリング
       if (query != null && query.isNotEmpty) {
-        guilds = guilds.where((guild) {
-          return guild.name.toLowerCase().contains(query.toLowerCase()) ||
-                 guild.description.toLowerCase().contains(query.toLowerCase());
-        }).toList();
+        guilds =
+            guilds.where((guild) {
+              return guild.name.toLowerCase().contains(query.toLowerCase()) ||
+                  guild.description.toLowerCase().contains(query.toLowerCase());
+            }).toList();
       }
-      
+
       log('GuildService: ギルド検索完了 - ${guilds.length}件');
       return guilds;
     } catch (e) {
@@ -438,7 +445,7 @@ class GuildService {
   }) async {
     try {
       log('GuildService: ランキング取得開始');
-      
+
       String orderField;
       switch (type) {
         case RankingType.experience:
@@ -451,26 +458,28 @@ class GuildService {
           orderField = 'totalChallengesCompleted';
           break;
       }
-      
-      final snapshot = await _firestore
-          .collection('guilds')
-          .where('isPublic', isEqualTo: true)
-          .orderBy(orderField, descending: true)
-          .limit(limit)
-          .get();
-      
-      final rankings = snapshot.docs.asMap().entries.map((entry) {
-        final index = entry.key;
-        final doc = entry.value;
-        final guild = Guild.fromMap(doc.data());
-        
-        return GuildRanking(
-          rank: index + 1,
-          guild: guild,
-          score: _getScoreByType(guild, type),
-        );
-      }).toList();
-      
+
+      final snapshot =
+          await _firestore
+              .collection('guilds')
+              .where('isPublic', isEqualTo: true)
+              .orderBy(orderField, descending: true)
+              .limit(limit)
+              .get();
+
+      final rankings =
+          snapshot.docs.asMap().entries.map((entry) {
+            final index = entry.key;
+            final doc = entry.value;
+            final guild = Guild.fromMap(doc.data());
+
+            return GuildRanking(
+              rank: index + 1,
+              guild: guild,
+              score: _getScoreByType(guild, type),
+            );
+          }).toList();
+
       log('GuildService: ランキング取得完了');
       return rankings;
     } catch (e) {
@@ -484,11 +493,11 @@ class GuildService {
   Future<void> _loadUserGuild(String userId) async {
     try {
       final userDoc = await _firestore.collection('users').doc(userId).get();
-      
+
       if (userDoc.exists) {
         final userData = userDoc.data()!;
         final guildId = userData['guildId'] as String?;
-        
+
         if (guildId != null) {
           await _subscribeToGuild(guildId);
         }
@@ -501,22 +510,22 @@ class GuildService {
   Future<void> _subscribeToGuild(String guildId) async {
     _currentGuildSubscription?.cancel();
     _messagesSubscription?.cancel();
-    
+
     // ギルド情報を監視
     _currentGuildSubscription = _firestore
         .collection('guilds')
         .doc(guildId)
         .snapshots()
         .listen((snapshot) {
-      if (snapshot.exists) {
-        final guild = Guild.fromMap(snapshot.data()!);
-        _currentGuild.value = guild;
-        _loadActiveChallenges(guildId);
-      } else {
-        _currentGuild.value = null;
-      }
-    });
-    
+          if (snapshot.exists) {
+            final guild = Guild.fromMap(snapshot.data()!);
+            _currentGuild.value = guild;
+            _loadActiveChallenges(guildId);
+          } else {
+            _currentGuild.value = null;
+          }
+        });
+
     // メッセージを監視
     _messagesSubscription = _firestore
         .collection('guild_messages')
@@ -525,26 +534,29 @@ class GuildService {
         .limit(100)
         .snapshots()
         .listen((snapshot) {
-      final messages = snapshot.docs
-          .map((doc) => GuildMessage.fromMap(doc.data()))
-          .toList();
-      _guildMessages.value = messages;
-    });
+          final messages =
+              snapshot.docs
+                  .map((doc) => GuildMessage.fromMap(doc.data()))
+                  .toList();
+          _guildMessages.value = messages;
+        });
   }
 
   Future<void> _loadActiveChallenges(String guildId) async {
     try {
-      final snapshot = await _firestore
-          .collection('guild_challenges')
-          .where('guildId', isEqualTo: guildId)
-          .where('status', isEqualTo: 'active')
-          .orderBy('createdAt', descending: true)
-          .get();
-      
-      final challenges = snapshot.docs
-          .map((doc) => GuildChallenge.fromMap(doc.data()))
-          .toList();
-      
+      final snapshot =
+          await _firestore
+              .collection('guild_challenges')
+              .where('guildId', isEqualTo: guildId)
+              .where('status', isEqualTo: 'active')
+              .orderBy('createdAt', descending: true)
+              .get();
+
+      final challenges =
+          snapshot.docs
+              .map((doc) => GuildChallenge.fromMap(doc.data()))
+              .toList();
+
       _activeChallenges.value = challenges;
     } catch (e) {
       log('GuildService: アクティブチャレンジ読み込みエラー - $e');
@@ -553,22 +565,27 @@ class GuildService {
 
   void _onAvailableGuildsChanged(QuerySnapshot snapshot) {
     try {
-      final guilds = snapshot.docs
-          .map((doc) => Guild.fromMap(doc.data() as Map<String, dynamic>))
-          .toList();
-      
+      final guilds =
+          snapshot.docs
+              .map((doc) => Guild.fromMap(doc.data() as Map<String, dynamic>))
+              .toList();
+
       _availableGuilds.value = guilds;
-      
+
       log('GuildService: 利用可能ギルド更新 - ${guilds.length}件');
     } catch (e) {
       log('GuildService: 利用可能ギルド更新エラー - $e');
     }
   }
 
-  Future<void> _updateUserGuildInfo(String userId, String? guildId, GuildRole? role) async {
+  Future<void> _updateUserGuildInfo(
+    String userId,
+    String? guildId,
+    GuildRole? role,
+  ) async {
     try {
       final userDoc = _firestore.collection('users').doc(userId);
-      
+
       if (guildId != null && role != null) {
         await userDoc.update({
           'guildId': guildId,
@@ -587,49 +604,54 @@ class GuildService {
     }
   }
 
-  Future<void> _updateChallengeProgress(String challengeId, String userId) async {
+  Future<void> _updateChallengeProgress(
+    String challengeId,
+    String userId,
+  ) async {
     try {
-      final challengeDoc = _firestore.collection('guild_challenges').doc(challengeId);
-      
+      final challengeDoc = _firestore
+          .collection('guild_challenges')
+          .doc(challengeId);
+
       await _firestore.runTransaction((transaction) async {
         final snapshot = await transaction.get(challengeDoc);
-        
+
         if (!snapshot.exists) return;
-        
+
         final challenge = GuildChallenge.fromMap(snapshot.data()!);
-        
+
         // ユーザーの完了数を計算
-        final userCompletions = await _firestore
-            .collection('challenge_completions')
-            .where('challengeId', isEqualTo: challengeId)
-            .where('userId', isEqualTo: userId)
-            .get();
-        
+        final userCompletions =
+            await _firestore
+                .collection('challenge_completions')
+                .where('challengeId', isEqualTo: challengeId)
+                .where('userId', isEqualTo: userId)
+                .get();
+
         final userCompletionCount = userCompletions.docs.length;
-        
+
         // 全体の進捗を更新
-        final totalCompletions = await _firestore
-            .collection('challenge_completions')
-            .where('challengeId', isEqualTo: challengeId)
-            .get();
-        
+        final totalCompletions =
+            await _firestore
+                .collection('challenge_completions')
+                .where('challengeId', isEqualTo: challengeId)
+                .get();
+
         final updatedCompletedUserIds = <String>{...challenge.completedUserIds};
-        
+
         // 目標達成したユーザーを追加
         if (userCompletionCount >= challenge.targetCount) {
           updatedCompletedUserIds.add(userId);
         }
-        
+
         transaction.update(challengeDoc, {
           'currentCount': totalCompletions.docs.length,
           'completedUserIds': updatedCompletedUserIds.toList(),
         });
-        
+
         // チャレンジ完了チェック
         if (updatedCompletedUserIds.length >= challenge.participantIds.length) {
-          transaction.update(challengeDoc, {
-            'status': 'completed',
-          });
+          transaction.update(challengeDoc, {'status': 'completed'});
         }
       });
     } catch (e) {
@@ -749,7 +771,9 @@ class Guild {
       experience: map['experience'] ?? 0,
       totalChallengesCompleted: map['totalChallengesCompleted'] ?? 0,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ?? 0),
-      lastActivityAt: DateTime.fromMillisecondsSinceEpoch(map['lastActivityAt'] ?? 0),
+      lastActivityAt: DateTime.fromMillisecondsSinceEpoch(
+        map['lastActivityAt'] ?? 0,
+      ),
       rules: GuildRules.fromMap(map['rules'] ?? {}),
       stats: GuildStats.fromMap(map['stats'] ?? {}),
     );
@@ -898,8 +922,9 @@ class GuildMessage {
       metadata: Map<String, dynamic>.from(map['metadata'] ?? {}),
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ?? 0),
       reactions: Map<String, List<String>>.from(
-        (map['reactions'] ?? {}).map((key, value) => 
-          MapEntry(key, List<String>.from(value ?? []))),
+        (map['reactions'] ?? {}).map(
+          (key, value) => MapEntry(key, List<String>.from(value ?? [])),
+        ),
       ),
     );
   }
@@ -984,9 +1009,11 @@ class GuildChallenge {
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ?? 0),
       startTime: DateTime.fromMillisecondsSinceEpoch(map['startTime'] ?? 0),
       endTime: DateTime.fromMillisecondsSinceEpoch(map['endTime'] ?? 0),
-      completions: (map['completions'] as List<dynamic>?)
-          ?.map((c) => ChallengeCompletion.fromMap(c))
-          .toList() ?? [],
+      completions:
+          (map['completions'] as List<dynamic>?)
+              ?.map((c) => ChallengeCompletion.fromMap(c))
+              .toList() ??
+          [],
     );
   }
 }
@@ -1038,15 +1065,14 @@ class GuildRanking {
   final Guild guild;
   final int score;
 
-  GuildRanking({
-    required this.rank,
-    required this.guild,
-    required this.score,
-  });
+  GuildRanking({required this.rank, required this.guild, required this.score});
 }
 
 /// 列挙型
 enum GuildRole { member, admin, creator }
+
 enum GuildMessageType { text, system, achievement, challenge }
+
 enum ChallengeStatus { active, completed, cancelled }
+
 enum RankingType { experience, memberCount, challengesCompleted }

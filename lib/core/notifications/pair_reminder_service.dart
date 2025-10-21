@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// ペアリマインド通知サービス
 class PairReminderService {
@@ -10,8 +10,8 @@ class PairReminderService {
   PairReminderService({
     FirebaseFirestore? firestore,
     FlutterLocalNotificationsPlugin? notifications,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _notifications = notifications ?? FlutterLocalNotificationsPlugin();
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _notifications = notifications ?? FlutterLocalNotificationsPlugin();
 
   /// ペアの未達成状況をチェックして通知
   Future<void> checkAndNotifyPairProgress({
@@ -41,8 +41,11 @@ class PairReminderService {
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to check pair progress',
-          error: e, stackTrace: stack);
+      AppLogger.error(
+        'Failed to check pair progress',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -51,16 +54,17 @@ class PairReminderService {
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);
 
-    final snapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('quest_logs')
-        .where('completedAt', isGreaterThanOrEqualTo: startOfDay)
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('quest_logs')
+            .where('completedAt', isGreaterThanOrEqualTo: startOfDay)
+            .get();
 
     // 簡易的な進捗計算
     final completedCount = snapshot.docs.length;
-    final totalQuests = 10; // TODO: 実際のクエスト数を取得
+    const totalQuests = 10; // TODO: 実際のクエスト数を取得
 
     return ((completedCount / totalQuests) * 100).toInt();
   }
@@ -88,13 +92,13 @@ class PairReminderService {
     await _notifications.show(
       userId.hashCode,
       'ペアからの応援',
-      'ペアの進捗は${partnerProgress}%です。一緒に頑張りましょう！',
+      'ペアの進捗は$partnerProgress%です。一緒に頑張りましょう！',
       details,
     );
 
-    AppLogger.info('Pair reminder sent', data: {
-      'userId': userId,
-      'partnerProgress': partnerProgress,
-    });
+    AppLogger.info(
+      'Pair reminder sent',
+      data: {'userId': userId, 'partnerProgress': partnerProgress},
+    );
   }
 }

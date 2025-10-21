@@ -30,8 +30,8 @@ class ACRCloudConfig {
   final String accessSecret;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'host': host,
-        'accessKey': accessKey,
-        'accessSecret': accessSecret,
-      };
+    'host': host,
+    'accessKey': accessKey,
+    'accessSecret': accessSecret,
+  };
 }

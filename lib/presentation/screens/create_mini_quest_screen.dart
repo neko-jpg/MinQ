@@ -64,7 +64,7 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
 
     try {
       await ref.read(questRepositoryProvider).addQuest(quest);
-      
+
       // プロバイダーを無効化してデータを再読み込み
       ref.invalidate(homeDataProvider);
       ref.invalidate(recentLogsProvider);
@@ -76,24 +76,21 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
 
       // 成功メッセージを表示
       FeedbackMessenger.showSuccessToast(context, 'MiniQuestを作成しました！');
-      
+
       // 少し待ってからホーム画面に遷移（プロバイダーの更新を待つ）
       await Future.delayed(const Duration(milliseconds: 300));
-      
+
       if (!mounted) {
         return;
       }
-      
+
       // ホーム画面に遷移
       ref.read(navigationUseCaseProvider).goHome();
     } catch (e) {
       if (!mounted) {
         return;
       }
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        'MiniQuestの作成に失敗しました: $e',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'MiniQuestの作成に失敗しました: $e');
     }
   }
 
@@ -168,7 +165,10 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: tokens.cornerLarge(),
-                    borderSide: BorderSide(color: tokens.brandPrimary, width: 2),
+                    borderSide: BorderSide(
+                      color: tokens.brandPrimary,
+                      width: 2,
+                    ),
                   ),
                 ),
               ),
@@ -280,7 +280,10 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: tokens.cornerLarge(),
-                    borderSide: BorderSide(color: tokens.brandPrimary, width: 2),
+                    borderSide: BorderSide(
+                      color: tokens.brandPrimary,
+                      width: 2,
+                    ),
                   ),
                 ),
               ),
