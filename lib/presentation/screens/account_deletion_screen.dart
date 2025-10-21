@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/l10n/app_localizations.dart';
-import 'package:minq/data/providers.dart';
 
 class AccountDeletionScreen extends ConsumerStatefulWidget {
   const AccountDeletionScreen({super.key});
@@ -31,10 +30,7 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
     await Future.delayed(const Duration(seconds: 2));
 
     if (mounted) {
-      FeedbackMessenger.showSuccessToast(
-        context,
-        'アカウント削除処理を開始しました。',
-      );
+      FeedbackMessenger.showSuccessToast(context, 'アカウント削除処理を開始しました。');
       Navigator.of(context).pop();
       Navigator.of(context).pop();
     }
@@ -56,12 +52,17 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
                 children: [
                   Text(
                     l10n.accountDeletionConfirmDialogDescription,
-                    style: tokens.bodySmall.copyWith(color: tokens.textMuted, height: 1.5),
+                    style: tokens.bodySmall.copyWith(
+                      color: tokens.textMuted,
+                      height: 1.5,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     l10n.accountDeletionConfirmDialogPrompt,
-                    style: tokens.bodySmall.copyWith(fontWeight: FontWeight.w600),
+                    style: tokens.bodySmall.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   TextField(
@@ -103,9 +104,7 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.accountDeletionTitle),
-      ),
+      appBar: AppBar(title: Text(l10n.accountDeletionTitle)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -154,36 +153,39 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: _isConfirmed && !_isDeleting
-                  ? () {
-                      FeedbackMessenger.showInfoToast(
-                        context,
-                        '安全のため、ボタンを長押しして確定してください。',
-                      );
-                    }
-                  : null,
-              onLongPress: _isConfirmed && !_isDeleting
-                  ? () {
-                      FeedbackManager.warning();
-                      _handleDelete();
-                    }
-                  : null,
+              onPressed:
+                  _isConfirmed && !_isDeleting
+                      ? () {
+                        FeedbackMessenger.showInfoToast(
+                          context,
+                          '安全のため、ボタンを長押しして確定してください。',
+                        );
+                      }
+                      : null,
+              onLongPress:
+                  _isConfirmed && !_isDeleting
+                      ? () {
+                        FeedbackManager.warning();
+                        _handleDelete();
+                      }
+                      : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: tokens.accentError,
                 foregroundColor: Colors.white,
                 disabledBackgroundColor: tokens.border,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: _isDeleting
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Text('長押しでアカウントを削除する'),
+              child:
+                  _isDeleting
+                      ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                          color: Colors.white,
+                        ),
+                      )
+                      : const Text('長押しでアカウントを削除する'),
             ),
             const Spacer(flex: 1),
           ],

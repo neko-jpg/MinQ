@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 /// ユーザートークン制Rate Limiter
 /// 機能乱用対策
 class RateLimiter {
@@ -35,7 +33,9 @@ class RateLimiter {
   Map<String, dynamic> getStats() {
     return {
       'totalBuckets': _buckets.length,
-      'buckets': _buckets.map((key, bucket) => MapEntry(key, bucket.getStats())),
+      'buckets': _buckets.map(
+        (key, bucket) => MapEntry(key, bucket.getStats()),
+      ),
     };
   }
 }
@@ -47,8 +47,8 @@ class TokenBucket {
   DateTime _lastRefill;
 
   TokenBucket(this.config)
-      : _tokens = config.capacity.toDouble(),
-        _lastRefill = DateTime.now();
+    : _tokens = config.capacity.toDouble(),
+      _lastRefill = DateTime.now();
 
   /// トークンを消費
   RateLimitResult consume({int tokens = 1}) {
@@ -72,7 +72,9 @@ class TokenBucket {
   void _refill() {
     final now = DateTime.now();
     final elapsed = now.difference(_lastRefill);
-    final tokensToAdd = (elapsed.inSeconds / config.refillInterval.inSeconds) * config.refillRate;
+    final tokensToAdd =
+        (elapsed.inSeconds / config.refillInterval.inSeconds) *
+        config.refillRate;
 
     _tokens = (_tokens + tokensToAdd).clamp(0, config.capacity.toDouble());
     _lastRefill = now;
@@ -80,13 +82,16 @@ class TokenBucket {
 
   /// リセット時刻を計算
   DateTime _calculateResetTime() {
-    final secondsUntilFull = ((config.capacity - _tokens) / config.refillRate) * config.refillInterval.inSeconds;
+    final secondsUntilFull =
+        ((config.capacity - _tokens) / config.refillRate) *
+        config.refillInterval.inSeconds;
     return DateTime.now().add(Duration(seconds: secondsUntilFull.toInt()));
   }
 
   /// リトライまでの時間を計算
   Duration _calculateRetryAfter() {
-    final secondsUntilToken = (1 / config.refillRate) * config.refillInterval.inSeconds;
+    final secondsUntilToken =
+        (1 / config.refillRate) * config.refillInterval.inSeconds;
     return Duration(seconds: secondsUntilToken.toInt());
   }
 
@@ -102,8 +107,8 @@ class TokenBucket {
 
 /// レート制限設定
 class RateLimitConfig {
-  final int capacity;        // バケット容量
-  final int refillRate;      // 補充レート（トークン数）
+  final int capacity; // バケット容量
+  final int refillRate; // 補充レート（トークン数）
   final Duration refillInterval; // 補充間隔
 
   const RateLimitConfig({
@@ -218,10 +223,7 @@ class RateLimitException implements Exception {
   final String message;
   final Duration retryAfter;
 
-  const RateLimitException({
-    required this.message,
-    required this.retryAfter,
-  });
+  const RateLimitException({required this.message, required this.retryAfter});
 
   @override
   String toString() {

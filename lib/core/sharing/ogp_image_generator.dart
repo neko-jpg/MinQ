@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// OGP画像生成サービス
 /// クエスト達成バナーをSNSシェア用の画像として生成
@@ -31,13 +31,15 @@ class OgpImageGenerator {
 
       // 一時ファイルに保存
       final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/achievement_banner_${DateTime.now().millisecondsSinceEpoch}.png');
-      
+      final file = File(
+        '${tempDir.path}/achievement_banner_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       if (byteData == null) return null;
 
       await file.writeAsBytes(byteData.buffer.asUint8List());
-      
+
       _logger.info('OGP image generated: ${file.path}');
       return file;
     } catch (e, stack) {
@@ -49,9 +51,9 @@ class OgpImageGenerator {
   /// ウィジェットを画像に変換
   Future<ui.Image?> _widgetToImage(Widget widget) async {
     final repaintBoundary = RenderRepaintBoundary();
-    
+
     final view = ui.PlatformDispatcher.instance.views.first;
-    final logicalSize = const Size(1200, 630); // OGP標準サイズ
+    const logicalSize = Size(1200, 630); // OGP標準サイズ
     final devicePixelRatio = view.devicePixelRatio;
 
     final renderView = RenderView(
@@ -74,10 +76,7 @@ class OgpImageGenerator {
 
     final rootElement = RenderObjectToWidgetAdapter<RenderBox>(
       container: repaintBoundary,
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: widget,
-      ),
+      child: Directionality(textDirection: TextDirection.ltr, child: widget),
     ).attachToRenderTree(buildOwner);
 
     buildOwner.buildScope(rootElement);
@@ -109,23 +108,18 @@ class _AchievementBannerWidget extends StatelessWidget {
     return Container(
       width: 1200,
       height: 630,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            const Color(0xFF6366F1),
-            const Color(0xFF8B5CF6),
-          ],
+          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
         ),
       ),
       child: Stack(
         children: [
           // 背景パターン
           Positioned.fill(
-            child: CustomPaint(
-              painter: _BackgroundPatternPainter(),
-            ),
+            child: CustomPaint(painter: _BackgroundPatternPainter()),
           ),
           // コンテンツ
           Center(
@@ -274,29 +268,22 @@ class _StatBadge extends StatelessWidget {
 class _BackgroundPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+    final paint =
+        Paint()
+          ..color = Colors.white.withOpacity(0.05)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
 
     const spacing = 60.0;
-    
+
     // 縦線
     for (double x = 0; x < size.width; x += spacing) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        paint,
-      );
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
 
     // 横線
     for (double y = 0; y < size.height; y += spacing) {
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
     }
   }
 

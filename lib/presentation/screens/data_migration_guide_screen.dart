@@ -7,9 +7,7 @@ class DataMigrationGuideScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('データ移行ガイド'),
-      ),
+      appBar: AppBar(title: const Text('データ移行ガイド')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -62,10 +60,7 @@ class DataMigrationGuideScreen extends StatelessWidget {
               children: [
                 Icon(icon, color: Theme.of(context).primaryColor),
                 const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(title, style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 16),
@@ -94,9 +89,7 @@ class DataMigrationGuideScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(entry.value),
-                    ),
+                    Expanded(child: Text(entry.value)),
                   ],
                 ),
               );
@@ -114,7 +107,7 @@ class DataMigrationGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(Icons.warning, color: Colors.orange),
+            const Icon(Icons.warning, color: Colors.orange),
             const SizedBox(width: 12),
             Expanded(
               child: Text(

@@ -66,13 +66,13 @@ class DailyFocusService {
       } else if (daysSinceLast != null) {
         if (daysSinceLast >= 10) {
           score += 0.32;
-          reasons.add('最後の記録から${daysSinceLast}日経過しています。リズムを取り戻しましょう。');
+          reasons.add('最後の記録から$daysSinceLast日経過しています。リズムを取り戻しましょう。');
         } else if (daysSinceLast >= 5) {
           score += 0.24;
-          reasons.add('前回から${daysSinceLast}日空いています。継続のチャンスです。');
+          reasons.add('前回から$daysSinceLast日空いています。継続のチャンスです。');
         } else if (daysSinceLast >= 2) {
           score += 0.12;
-          reasons.add('${daysSinceLast}日間お休みしています。軽く再開してみましょう。');
+          reasons.add('$daysSinceLast日間お休みしています。軽く再開してみましょう。');
         } else {
           score += 0.05;
           reasons.add('直近でも継続できているので勢いを保ちましょう。');
@@ -94,7 +94,7 @@ class DailyFocusService {
       if (lastCompletedAt != null) {
         final formatted = DateFormat('M/d').format(lastCompletedAt);
         final gap = daysSinceLast!;
-        facts.add('前回の記録: $formatted (${gap == 0 ? '今日' : '${gap}日前'})');
+        facts.add('前回の記録: $formatted (${gap == 0 ? '今日' : '$gap日前'})');
       } else {
         facts.add('まだ記録がありません');
       }

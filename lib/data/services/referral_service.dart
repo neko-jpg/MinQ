@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:share_plus/share_plus.dart';
-import '../services/analytics_service.dart';
+import 'package:minq/data/services/analytics_service.dart';
 
 /// 招待/リファラルサービス
 /// 招待リンク生成、トラッキング、報酬管理
@@ -14,9 +14,9 @@ class ReferralService {
     FirebaseFirestore? firestore,
     FirebaseDynamicLinks? dynamicLinks,
     required AnalyticsService analytics,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _dynamicLinks = dynamicLinks ?? FirebaseDynamicLinks.instance,
-        _analytics = analytics;
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _dynamicLinks = dynamicLinks ?? FirebaseDynamicLinks.instance,
+       _analytics = analytics;
 
   /// 招待リンク生成
   Future<String> generateInviteLink({
@@ -44,7 +44,7 @@ class ReferralService {
       );
 
       final shortLink = await _dynamicLinks.buildShortLink(parameters);
-      
+
       // リンク生成をトラッキング
       await _analytics.logEvent(
         'referral_link_generated',
@@ -57,7 +57,10 @@ class ReferralService {
 
       return shortLink.shortUrl.toString();
     } catch (e) {
-      await _analytics.logError('referral_link_generation_failed', e.toString());
+      await _analytics.logError(
+        'referral_link_generation_failed',
+        e.toString(),
+      );
       rethrow;
     }
   }
@@ -69,13 +72,9 @@ class ReferralService {
   }) async {
     try {
       final link = await generateInviteLink(userId: userId);
-      final message = customMessage ??
-          'MiniQuestで一緒に習慣を作りませんか？\n$link';
+      final message = customMessage ?? 'MiniQuestで一緒に習慣を作りませんか？\n$link';
 
-      await Share.share(
-        message,
-        subject: 'MiniQuestへの招待',
-      );
+      await Share.share(message, subject: 'MiniQuestへの招待');
 
       await _analytics.logEvent(
         'referral_link_shared',
@@ -119,20 +118,14 @@ class ReferralService {
 
       // 新規ユーザーのリファラル情報を保存
       final userRef = _firestore.collection('users').doc(newUserId);
-      batch.set(
-        userRef,
-        {
-          'referredBy': referrerId,
-          'referredAt': FieldValue.serverTimestamp(),
-        },
-        SetOptions(merge: true),
-      );
+      batch.set(userRef, {
+        'referredBy': referrerId,
+        'referredAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
 
       // リファラーの招待カウントを増加
       final referrerRef = _firestore.collection('users').doc(referrerId);
-      batch.update(referrerRef, {
-        'referralCount': FieldValue.increment(1),
-      });
+      batch.update(referrerRef, {'referralCount': FieldValue.increment(1)});
 
       // リファラル履歴を記録
       final referralRef = _firestore.collection('referrals').doc();
@@ -147,10 +140,7 @@ class ReferralService {
 
       await _analytics.logEvent(
         'referral_recorded',
-        parameters: {
-          'referrer_id': referrerId,
-          'new_user_id': newUserId,
-        },
+        parameters: {'referrer_id': referrerId, 'new_user_id': newUserId},
       );
     } catch (e) {
       await _analytics.logError('referral_recording_failed', e.toString());
@@ -175,13 +165,14 @@ class ReferralService {
       });
 
       // リファラル履歴を更新
-      final referralQuery = await _firestore
-          .collection('referrals')
-          .where('referrerId', isEqualTo: referrerId)
-          .where('newUserId', isEqualTo: newUserId)
-          .where('status', isEqualTo: 'pending')
-          .limit(1)
-          .get();
+      final referralQuery =
+          await _firestore
+              .collection('referrals')
+              .where('referrerId', isEqualTo: referrerId)
+              .where('newUserId', isEqualTo: newUserId)
+              .where('status', isEqualTo: 'pending')
+              .limit(1)
+              .get();
 
       if (referralQuery.docs.isNotEmpty) {
         final referralRef = referralQuery.docs.first.reference;
@@ -214,20 +205,24 @@ class ReferralService {
       final userDoc = await _firestore.collection('users').doc(userId).get();
       final referralCount = userDoc.data()?['referralCount'] ?? 0;
 
-      final referralsQuery = await _firestore
-          .collection('referrals')
-          .where('referrerId', isEqualTo: userId)
-          .get();
+      final referralsQuery =
+          await _firestore
+              .collection('referrals')
+              .where('referrerId', isEqualTo: userId)
+              .get();
 
-      final pending = referralsQuery.docs
-          .where((doc) => doc.data()['status'] == 'pending')
-          .length;
-      final completed = referralsQuery.docs
-          .where((doc) => doc.data()['status'] == 'completed')
-          .length;
-      final rewarded = referralsQuery.docs
-          .where((doc) => doc.data()['status'] == 'rewarded')
-          .length;
+      final pending =
+          referralsQuery.docs
+              .where((doc) => doc.data()['status'] == 'pending')
+              .length;
+      final completed =
+          referralsQuery.docs
+              .where((doc) => doc.data()['status'] == 'completed')
+              .length;
+      final rewarded =
+          referralsQuery.docs
+              .where((doc) => doc.data()['status'] == 'rewarded')
+              .length;
 
       return ReferralStats(
         totalReferrals: referralCount,
@@ -261,10 +256,7 @@ class ReferralService {
 
       await _analytics.logEvent(
         'referral_campaign_created',
-        parameters: {
-          'campaign_id': campaignId,
-          'campaign_name': name,
-        },
+        parameters: {'campaign_id': campaignId, 'campaign_name': name},
       );
     } catch (e) {
       await _analytics.logError('campaign_creation_failed', e.toString());
@@ -276,12 +268,13 @@ class ReferralService {
   Future<List<Map<String, dynamic>>> getActiveCampaigns() async {
     try {
       final now = Timestamp.now();
-      final snapshot = await _firestore
-          .collection('referral_campaigns')
-          .where('active', isEqualTo: true)
-          .where('startDate', isLessThanOrEqualTo: now)
-          .where('endDate', isGreaterThanOrEqualTo: now)
-          .get();
+      final snapshot =
+          await _firestore
+              .collection('referral_campaigns')
+              .where('active', isEqualTo: true)
+              .where('startDate', isLessThanOrEqualTo: now)
+              .where('endDate', isGreaterThanOrEqualTo: now)
+              .get();
 
       return snapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {

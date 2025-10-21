@@ -3,11 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// テーマモード
-enum AppThemeMode {
-  light,
-  dark,
-  system,
-}
+enum AppThemeMode { light, dark, system }
 
 /// テーマコントローラー
 class ThemeController extends StateNotifier<AppThemeMode> {
@@ -72,8 +68,8 @@ class ThemeController extends StateNotifier<AppThemeMode> {
 /// テーマコントローラープロバイダー
 final themeControllerProvider =
     StateNotifierProvider<ThemeController, AppThemeMode>((ref) {
-  return ThemeController();
-});
+      return ThemeController();
+    });
 
 /// テーマモードプロバイダー（MaterialAppで使用）
 final themeModeProvider = Provider<ThemeMode>((ref) {
@@ -84,13 +80,13 @@ final themeModeProvider = Provider<ThemeMode>((ref) {
 /// ダークモード判定プロバイダー
 final isDarkModeProvider = Provider<bool>((ref) {
   final mode = ref.watch(themeControllerProvider);
-  
+
   if (mode == AppThemeMode.dark) {
     return true;
   } else if (mode == AppThemeMode.light) {
     return false;
   }
-  
+
   // システム設定を確認
   return WidgetsBinding.instance.platformDispatcher.platformBrightness ==
       Brightness.dark;

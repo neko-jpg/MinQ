@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/common/micro_interactions/micro_interactions.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// Demo screen showcasing the micro-interaction components
 /// This is for development and testing purposes
@@ -9,10 +9,12 @@ class MicroInteractionDemoScreen extends StatefulWidget {
   const MicroInteractionDemoScreen({super.key});
 
   @override
-  State<MicroInteractionDemoScreen> createState() => _MicroInteractionDemoScreenState();
+  State<MicroInteractionDemoScreen> createState() =>
+      _MicroInteractionDemoScreenState();
 }
 
-class _MicroInteractionDemoScreenState extends State<MicroInteractionDemoScreen> {
+class _MicroInteractionDemoScreenState
+    extends State<MicroInteractionDemoScreen> {
   bool _checkboxValue = false;
   bool _isPulsing = false;
   double _progress = 0.3;
@@ -27,7 +29,7 @@ class _MicroInteractionDemoScreenState extends State<MicroInteractionDemoScreen>
   @override
   Widget build(BuildContext context) {
     final theme = MinqTheme.of(context);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Micro-Interactions Demo'),
@@ -40,10 +42,7 @@ class _MicroInteractionDemoScreenState extends State<MicroInteractionDemoScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Animated Checkbox Demo
-            Text(
-              'Animated Checkbox',
-              style: theme.titleMedium,
-            ),
+            Text('Animated Checkbox', style: theme.titleMedium),
             SizedBox(height: theme.spaceMD),
             Row(
               children: [
@@ -63,14 +62,11 @@ class _MicroInteractionDemoScreenState extends State<MicroInteractionDemoScreen>
                 ),
               ],
             ),
-            
+
             SizedBox(height: theme.spaceLG),
-            
+
             // Pulsing Button Demo
-            Text(
-              'Pulsing Button',
-              style: theme.titleMedium,
-            ),
+            Text('Pulsing Button', style: theme.titleMedium),
             SizedBox(height: theme.spaceMD),
             Row(
               children: [
@@ -98,14 +94,11 @@ class _MicroInteractionDemoScreenState extends State<MicroInteractionDemoScreen>
                 ),
               ],
             ),
-            
+
             SizedBox(height: theme.spaceLG),
-            
+
             // Progress Ring Demo
-            Text(
-              'Progress Ring',
-              style: theme.titleMedium,
-            ),
+            Text('Progress Ring', style: theme.titleMedium),
             SizedBox(height: theme.spaceMD),
             Center(
               child: ProgressRing(
@@ -126,9 +119,9 @@ class _MicroInteractionDemoScreenState extends State<MicroInteractionDemoScreen>
                 ),
               ),
             ),
-            
+
             SizedBox(height: theme.spaceMD),
-            
+
             // Progress controls
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -167,16 +160,13 @@ class _MicroInteractionDemoScreenState extends State<MicroInteractionDemoScreen>
                 ),
               ],
             ),
-            
+
             SizedBox(height: theme.spaceLG),
-            
+
             // Feedback Settings
-            Text(
-              'Feedback Settings',
-              style: theme.titleMedium,
-            ),
+            Text('Feedback Settings', style: theme.titleMedium),
             SizedBox(height: theme.spaceMD),
-            
+
             SwitchListTile(
               title: const Text('Haptic Feedback'),
               value: FeedbackManager.isHapticEnabled,
@@ -186,7 +176,7 @@ class _MicroInteractionDemoScreenState extends State<MicroInteractionDemoScreen>
                 });
               },
             ),
-            
+
             SwitchListTile(
               title: const Text('Audio Feedback'),
               value: FeedbackManager.isAudioEnabled,
@@ -196,16 +186,13 @@ class _MicroInteractionDemoScreenState extends State<MicroInteractionDemoScreen>
                 });
               },
             ),
-            
+
             SizedBox(height: theme.spaceLG),
-            
+
             // Feedback Test Buttons
-            Text(
-              'Test Different Feedback Types',
-              style: theme.titleMedium,
-            ),
+            Text('Test Different Feedback Types', style: theme.titleMedium),
             SizedBox(height: theme.spaceMD),
-            
+
             Wrap(
               spacing: theme.spaceSM,
               runSpacing: theme.spaceSM,

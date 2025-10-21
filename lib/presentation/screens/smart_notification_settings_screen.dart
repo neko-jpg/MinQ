@@ -1,9 +1,8 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fl_chart/fl_chart.dart';
-
-import 'package:minq/core/notifications/smart_notification_service.dart';
 import 'package:minq/core/notifications/re_engagement_service.dart';
+import 'package:minq/core/notifications/smart_notification_service.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -13,10 +12,12 @@ class SmartNotificationSettingsScreen extends ConsumerStatefulWidget {
   const SmartNotificationSettingsScreen({super.key});
 
   @override
-  ConsumerState<SmartNotificationSettingsScreen> createState() => _SmartNotificationSettingsScreenState();
+  ConsumerState<SmartNotificationSettingsScreen> createState() =>
+      _SmartNotificationSettingsScreenState();
 }
 
-class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificationSettingsScreen>
+class _SmartNotificationSettingsScreenState
+    extends ConsumerState<SmartNotificationSettingsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   NotificationAnalytics? _analytics;
@@ -43,10 +44,11 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
     try {
       final smartService = ref.read(smartNotificationServiceProvider);
       final reEngagementService = ref.read(reEngagementServiceProvider);
-      
+
       final analytics = await smartService.getNotificationAnalytics(uid);
-      final reEngagementAnalytics = await reEngagementService.analyzeReEngagementEffectiveness();
-      
+      final reEngagementAnalytics =
+          await reEngagementService.analyzeReEngagementEffectiveness();
+
       setState(() {
         _analytics = analytics;
         _reEngagementAnalytics = reEngagementAnalytics;
@@ -67,31 +69,26 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
       appBar: AppBar(
         title: Text(
           'スマート通知設定',
-          style: tokens.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         backgroundColor: tokens.surface,
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: '設定'),
-            Tab(text: '分析'),
-            Tab(text: 'A/Bテスト'),
-          ],
+          tabs: const [Tab(text: '設定'), Tab(text: '分析'), Tab(text: 'A/Bテスト')],
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-              controller: _tabController,
-              children: [
-                _buildSettingsTab(tokens),
-                _buildAnalyticsTab(tokens),
-                _buildABTestTab(tokens),
-              ],
-            ),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildSettingsTab(tokens),
+                  _buildAnalyticsTab(tokens),
+                  _buildABTestTab(tokens),
+                ],
+              ),
     );
   }
 
@@ -103,19 +100,19 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           // AI通知設定
           _buildAINotificationSettings(tokens),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 最適時刻設定
           _buildOptimalTimingSettings(tokens),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // パーソナライゼーション設定
           _buildPersonalizationSettings(tokens),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 再エンゲージメント設定
           _buildReEngagementSettings(tokens),
         ],
@@ -135,14 +132,14 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           // 通知効果サマリー
           _buildNotificationSummary(tokens, _analytics!),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 開封率グラフ
           _buildOpenRateChart(tokens, _analytics!),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 再エンゲージメント分析
           if (_reEngagementAnalytics != null)
             _buildReEngagementAnalysis(tokens, _reEngagementAnalytics!),
@@ -159,23 +156,21 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           Text(
             'A/Bテスト管理',
-            style: tokens.titleLarge.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           // 実行中のテスト
           _buildActiveTests(tokens),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // テスト結果
           _buildTestResults(tokens),
-          
+
           SizedBox(height: tokens.spacing(6)),
-          
+
           // 新しいテストを作成
           _buildCreateTestSection(tokens),
         ],
@@ -204,15 +199,13 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
               SizedBox(width: tokens.spacing(2)),
               Text(
                 'AI通知設定',
-                style: tokens.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           SwitchListTile(
             title: const Text('AI生成メッセージ'),
             subtitle: const Text('AIがパーソナライズされたメッセージを生成'),
@@ -221,7 +214,7 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
               // TODO: 設定を保存
             },
           ),
-          
+
           SwitchListTile(
             title: const Text('失敗予測通知'),
             subtitle: const Text('習慣失敗のリスクが高い時に警告'),
@@ -230,7 +223,7 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
               // TODO: 設定を保存
             },
           ),
-          
+
           SwitchListTile(
             title: const Text('励まし通知'),
             subtitle: const Text('成果に基づいて励ましメッセージを送信'),
@@ -265,15 +258,13 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
               SizedBox(width: tokens.spacing(2)),
               Text(
                 '最適時刻設定',
-                style: tokens.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           SwitchListTile(
             title: const Text('自動最適化'),
             subtitle: const Text('AIがあなたの行動パターンから最適時刻を計算'),
@@ -282,7 +273,7 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
               // TODO: 設定を保存
             },
           ),
-          
+
           ListTile(
             title: const Text('現在の最適時刻'),
             subtitle: const Text('朝 9:15（AI計算結果）'),
@@ -294,18 +285,19 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
               child: const Text('再計算'),
             ),
           ),
-          
+
           ListTile(
             title: const Text('通知頻度'),
             subtitle: const Text('1日最大3回'),
             trailing: DropdownButton<int>(
               value: 3,
-              items: [1, 2, 3, 4, 5].map((count) {
-                return DropdownMenuItem(
-                  value: count,
-                  child: Text('$count回'),
-                );
-              }).toList(),
+              items:
+                  [1, 2, 3, 4, 5].map((count) {
+                    return DropdownMenuItem(
+                      value: count,
+                      child: Text('$count回'),
+                    );
+                  }).toList(),
               onChanged: (value) {
                 // TODO: 頻度設定を保存
               },
@@ -329,23 +321,17 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           Row(
             children: [
-              Icon(
-                Icons.person,
-                color: Colors.purple,
-                size: tokens.spacing(6),
-              ),
+              Icon(Icons.person, color: Colors.purple, size: tokens.spacing(6)),
               SizedBox(width: tokens.spacing(2)),
               Text(
                 'パーソナライゼーション',
-                style: tokens.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           ListTile(
             title: const Text('メッセージトーン'),
             subtitle: const Text('励まし重視'),
@@ -362,7 +348,7 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
               },
             ),
           ),
-          
+
           SwitchListTile(
             title: const Text('絵文字使用'),
             subtitle: const Text('メッセージに絵文字を含める'),
@@ -371,7 +357,7 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
               // TODO: 設定を保存
             },
           ),
-          
+
           SwitchListTile(
             title: const Text('名前呼びかけ'),
             subtitle: const Text('メッセージにあなたの名前を含める'),
@@ -398,23 +384,17 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           Row(
             children: [
-              Icon(
-                Icons.refresh,
-                color: Colors.green,
-                size: tokens.spacing(6),
-              ),
+              Icon(Icons.refresh, color: Colors.green, size: tokens.spacing(6)),
               SizedBox(width: tokens.spacing(2)),
               Text(
                 '再エンゲージメント',
-                style: tokens.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           SwitchListTile(
             title: const Text('自動再エンゲージメント'),
             subtitle: const Text('非アクティブ時に自動で復帰を促す'),
@@ -423,24 +403,25 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
               // TODO: 設定を保存
             },
           ),
-          
+
           ListTile(
             title: const Text('再エンゲージメント開始'),
             subtitle: const Text('2日間非アクティブ後'),
             trailing: DropdownButton<int>(
               value: 2,
-              items: [1, 2, 3, 5, 7].map((days) {
-                return DropdownMenuItem(
-                  value: days,
-                  child: Text('${days}日後'),
-                );
-              }).toList(),
+              items:
+                  [1, 2, 3, 5, 7].map((days) {
+                    return DropdownMenuItem(
+                      value: days,
+                      child: Text('$days日後'),
+                    );
+                  }).toList(),
               onChanged: (value) {
                 // TODO: 設定を保存
               },
             ),
           ),
-          
+
           ListTile(
             title: const Text('段階的アプローチ'),
             subtitle: const Text('優しい → 励まし → 価値提案'),
@@ -454,7 +435,10 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
     );
   }
 
-  Widget _buildNotificationSummary(MinqTokens tokens, NotificationAnalytics analytics) {
+  Widget _buildNotificationSummary(
+    MinqTokens tokens,
+    NotificationAnalytics analytics,
+  ) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -467,13 +451,11 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           Text(
             '通知効果サマリー',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           Row(
             children: [
               Expanded(
@@ -505,9 +487,9 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           Row(
             children: [
               Expanded(
@@ -554,11 +536,7 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
       ),
       child: Column(
         children: [
-          Icon(
-            icon,
-            color: color,
-            size: tokens.spacing(6),
-          ),
+          Icon(icon, color: color, size: tokens.spacing(6)),
           SizedBox(height: tokens.spacing(2)),
           Text(
             value,
@@ -570,9 +548,7 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
           SizedBox(height: tokens.spacing(1)),
           Text(
             label,
-            style: tokens.bodySmall.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -580,7 +556,10 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
     );
   }
 
-  Widget _buildOpenRateChart(MinqTokens tokens, NotificationAnalytics analytics) {
+  Widget _buildOpenRateChart(
+    MinqTokens tokens,
+    NotificationAnalytics analytics,
+  ) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -593,13 +572,11 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           Text(
             '開封率推移',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           SizedBox(
             height: tokens.spacing(60),
             child: LineChart(
@@ -654,7 +631,10 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
     );
   }
 
-  Widget _buildReEngagementAnalysis(MinqTokens tokens, ReEngagementAnalytics analytics) {
+  Widget _buildReEngagementAnalysis(
+    MinqTokens tokens,
+    ReEngagementAnalytics analytics,
+  ) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -667,13 +647,11 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           Text(
             '再エンゲージメント分析',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           Row(
             children: [
               Expanded(
@@ -723,13 +701,11 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           Text(
             '実行中のテスト',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           // モックテスト
           _buildTestItem(
             tokens,
@@ -738,7 +714,7 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
             '実行中',
             Colors.green,
           ),
-          
+
           _buildTestItem(
             tokens,
             '送信タイミング最適化',
@@ -764,13 +740,11 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           Text(
             '過去のテスト結果',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           _buildTestItem(
             tokens,
             '絵文字使用効果',
@@ -812,14 +786,12 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
                 SizedBox(height: tokens.spacing(1)),
                 Text(
                   description,
-                  style: tokens.bodySmall.copyWith(
-                    color: tokens.textMuted,
-                  ),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
               ],
             ),
           ),
-          
+
           Container(
             padding: EdgeInsets.symmetric(
               horizontal: tokens.spacing(2),
@@ -855,13 +827,11 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
         children: [
           Text(
             '新しいテストを作成',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          
+
           SizedBox(height: tokens.spacing(4)),
-          
+
           ElevatedButton.icon(
             onPressed: () {
               // TODO: テスト作成画面に遷移
@@ -891,9 +861,7 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
           SizedBox(height: tokens.spacing(4)),
           Text(
             message,
-            style: tokens.titleMedium.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.titleMedium.copyWith(color: tokens.textMuted),
           ),
         ],
       ),
@@ -915,8 +883,8 @@ class _SmartNotificationSettingsScreenState extends ConsumerState<SmartNotificat
 
   void _recalculateOptimalTime() {
     // TODO: 最適時刻を再計算
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('最適時刻を再計算中...')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('最適時刻を再計算中...')));
   }
 }

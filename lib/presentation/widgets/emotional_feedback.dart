@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../core/audio/sound_effects_service.dart';
+import 'package:minq/core/audio/sound_effects_service.dart';
 
 /// エモーショナルフィードバックウィジェット集
 class EmotionalFeedback {
@@ -40,13 +40,13 @@ class EmotionalFeedback {
   static void _showCelebrationOverlay(BuildContext context) {
     final overlay = Overlay.of(context);
     late OverlayEntry overlayEntry;
-    
+
     overlayEntry = OverlayEntry(
-      builder: (context) => _CelebrationOverlay(
-        onComplete: () => overlayEntry.remove(),
-      ),
+      builder:
+          (context) =>
+              _CelebrationOverlay(onComplete: () => overlayEntry.remove()),
     );
-    
+
     overlay.insert(overlayEntry);
   }
 
@@ -78,14 +78,15 @@ class EmotionalFeedback {
   static void _showEpicAchievement(BuildContext context, String achievement) {
     final overlay = Overlay.of(context);
     late OverlayEntry overlayEntry;
-    
+
     overlayEntry = OverlayEntry(
-      builder: (context) => _EpicAchievementOverlay(
-        achievement: achievement,
-        onComplete: () => overlayEntry.remove(),
-      ),
+      builder:
+          (context) => _EpicAchievementOverlay(
+            achievement: achievement,
+            onComplete: () => overlayEntry.remove(),
+          ),
     );
-    
+
     overlay.insert(overlayEntry);
   }
 }
@@ -108,20 +109,20 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-    
+
     _confettiController = AnimationController(
       duration: const Duration(milliseconds: 3000),
       vsync: this,
     );
-    
+
     _controller.forward();
     _confettiController.forward();
-    
+
     // 自動で閉じる
     Future.delayed(const Duration(milliseconds: 2500), () {
       if (mounted) {
@@ -152,7 +153,7 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
               );
             },
           ),
-          
+
           // 紙吹雪
           AnimatedBuilder(
             animation: _confettiController,
@@ -163,7 +164,7 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
               );
             },
           ),
-          
+
           // メッセージ
           Center(
             child: AnimatedBuilder(
@@ -205,10 +206,7 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
                           SizedBox(height: 8),
                           Text(
                             '素晴らしい成果です！',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                            ),
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
                           ),
                         ],
                       ),
@@ -239,16 +237,13 @@ class _ConfettiPainter extends CustomPainter {
       final x = size.width * random.nextDouble();
       final y = -50 + (size.height + 100) * progress;
       final rotation = random.nextDouble() * math.pi * 2 * progress;
-      
+
       paint.color = _getRandomColor(random);
-      
+
       canvas.save();
       canvas.translate(x, y);
       canvas.rotate(rotation);
-      canvas.drawRect(
-        const Rect.fromLTWH(-4, -8, 8, 16),
-        paint,
-      );
+      canvas.drawRect(const Rect.fromLTWH(-4, -8, 8, 16), paint);
       canvas.restore();
     }
   }
@@ -292,15 +287,17 @@ class _ComfortDialogState extends State<_ComfortDialog>
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    
-    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
-    
-    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-    
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+
+    _opacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
     _controller.forward();
   }
 
@@ -326,18 +323,11 @@ class _ComfortDialogState extends State<_ComfortDialog>
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    Icons.favorite,
-                    size: 48,
-                    color: Colors.pink,
-                  ),
+                  const Icon(Icons.favorite, size: 48, color: Colors.pink),
                   const SizedBox(height: 16),
                   const Text(
                     '大丈夫です',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -378,7 +368,8 @@ class _EpicAchievementOverlay extends StatefulWidget {
   });
 
   @override
-  State<_EpicAchievementOverlay> createState() => _EpicAchievementOverlayState();
+  State<_EpicAchievementOverlay> createState() =>
+      _EpicAchievementOverlayState();
 }
 
 class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
@@ -390,22 +381,22 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
   @override
   void initState() {
     super.initState();
-    
+
     _mainController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
+
     _particleController = AnimationController(
       duration: const Duration(milliseconds: 3000),
       vsync: this,
     );
-    
+
     _textController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _startAnimationSequence();
   }
 
@@ -415,7 +406,7 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
     _mainController.forward();
     await Future.delayed(const Duration(milliseconds: 300));
     _textController.forward();
-    
+
     // 自動で閉じる
     await Future.delayed(const Duration(milliseconds: 3000));
     if (mounted) {
@@ -458,7 +449,7 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
                 );
               },
             ),
-            
+
             // メインコンテンツ
             Center(
               child: Column(
@@ -498,9 +489,9 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
                       );
                     },
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // テキスト
                   AnimatedBuilder(
                     animation: _textController,
@@ -561,14 +552,10 @@ class _EpicParticlePainter extends CustomPainter {
       final y = size.height * random.nextDouble();
       final scale = random.nextDouble() * progress;
       final opacity = (1.0 - progress) * random.nextDouble();
-      
+
       paint.color = Colors.white.withOpacity(opacity);
-      
-      canvas.drawCircle(
-        Offset(x, y),
-        scale * 3,
-        paint,
-      );
+
+      canvas.drawCircle(Offset(x, y), scale * 3, paint);
     }
   }
 
@@ -608,11 +595,12 @@ class _EmotionalButtonState extends State<EmotionalButton>
       duration: widget.animationDuration,
       vsync: this,
     );
-    
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-    
+
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.05,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
     _updateColorAnimation();
     _controller.forward();
   }
@@ -630,10 +618,7 @@ class _EmotionalButtonState extends State<EmotionalButton>
     _colorAnimation = ColorTween(
       begin: _getStateColor(EmotionalState.neutral),
       end: _getStateColor(widget.state),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   Color _getStateColor(EmotionalState state) {
@@ -712,11 +697,12 @@ class _EmotionalCardState extends State<EmotionalCard>
       duration: widget.animationDuration,
       vsync: this,
     );
-    
-    _glowAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-    
+
+    _glowAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
     if (widget.state != EmotionalState.neutral) {
       _controller.repeat(reverse: true);
     }
@@ -749,20 +735,27 @@ class _EmotionalCardState extends State<EmotionalCard>
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            boxShadow: widget.state != EmotionalState.neutral ? [
-              BoxShadow(
-                color: _getStateColor(widget.state).withOpacity(0.3 * _glowAnimation.value),
-                blurRadius: 10 + (10 * _glowAnimation.value),
-                spreadRadius: 2 + (2 * _glowAnimation.value),
-              ),
-            ] : null,
+            boxShadow:
+                widget.state != EmotionalState.neutral
+                    ? [
+                      BoxShadow(
+                        color: _getStateColor(
+                          widget.state,
+                        ).withOpacity(0.3 * _glowAnimation.value),
+                        blurRadius: 10 + (10 * _glowAnimation.value),
+                        spreadRadius: 2 + (2 * _glowAnimation.value),
+                      ),
+                    ]
+                    : null,
           ),
           child: Card(
             elevation: 2 + (4 * _glowAnimation.value),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
               side: BorderSide(
-                color: _getStateColor(widget.state).withOpacity(0.3 * _glowAnimation.value),
+                color: _getStateColor(
+                  widget.state,
+                ).withOpacity(0.3 * _glowAnimation.value),
                 width: 1 + _glowAnimation.value,
               ),
             ),
@@ -790,10 +783,4 @@ class _EmotionalCardState extends State<EmotionalCard>
 }
 
 /// 感情状態
-enum EmotionalState {
-  neutral,
-  happy,
-  excited,
-  calm,
-  motivated,
-}
+enum EmotionalState { neutral, happy, excited, calm, motivated }

@@ -4,11 +4,10 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
+import 'package:minq/data/services/image_moderation_service.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-
-import 'package:minq/data/services/image_moderation_service.dart';
 
 class PhotoStorageService {
   PhotoStorageService({
@@ -17,11 +16,11 @@ class PhotoStorageService {
     Uuid? uuid,
     Future<Directory> Function()? documentsDirectoryBuilder,
     ImageModerationService? moderationService,
-  })  : _imagePicker = imagePicker ?? ImagePicker(),
-        _uuid = uuid ?? const Uuid(),
-        _documentsDirectoryBuilder =
-            documentsDirectoryBuilder ?? getApplicationDocumentsDirectory,
-        _moderationService = moderationService ?? const ImageModerationService();
+  }) : _imagePicker = imagePicker ?? ImagePicker(),
+       _uuid = uuid ?? const Uuid(),
+       _documentsDirectoryBuilder =
+           documentsDirectoryBuilder ?? getApplicationDocumentsDirectory,
+       _moderationService = moderationService ?? const ImageModerationService();
 
   final ImagePicker _imagePicker;
   final int quality;
@@ -120,10 +119,10 @@ class PhotoCaptureResult {
   final PhotoModerationVerdict moderationVerdict;
 
   static PhotoCaptureResult empty() => const PhotoCaptureResult(
-        path: '',
-        bytes: 0,
-        moderationVerdict: PhotoModerationVerdict.ok,
-      );
+    path: '',
+    bytes: 0,
+    moderationVerdict: PhotoModerationVerdict.ok,
+  );
 
   bool get hasFile => path.isNotEmpty;
 }
@@ -136,7 +135,10 @@ class PhotoCaptureException implements Exception {
   factory PhotoCaptureException.fromPlatform(PlatformException exception) {
     if (exception.code == 'camera_access_denied' ||
         exception.code == 'camera_access_restricted') {
-      return PhotoCaptureException(PhotoCaptureFailure.permissionDenied, exception);
+      return PhotoCaptureException(
+        PhotoCaptureFailure.permissionDenied,
+        exception,
+      );
     }
     return PhotoCaptureException(PhotoCaptureFailure.cameraFailure, exception);
   }

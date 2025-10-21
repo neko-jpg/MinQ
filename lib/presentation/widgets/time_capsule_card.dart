@@ -16,7 +16,8 @@ class TimeCapsuleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final isDelivered = capsule.deliveryDate.isBefore(DateTime.now());
-    final daysUntilDelivery = capsule.deliveryDate.difference(DateTime.now()).inDays;
+    final daysUntilDelivery =
+        capsule.deliveryDate.difference(DateTime.now()).inDays;
 
     return Card(
       elevation: 0,
@@ -42,14 +43,18 @@ class TimeCapsuleCard extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(tokens.spacing(2)),
                     decoration: BoxDecoration(
-                      color: isDelivered 
-                          ? tokens.encouragement.withOpacity(0.1)
-                          : tokens.brandPrimary.withOpacity(0.1),
+                      color:
+                          isDelivered
+                              ? tokens.encouragement.withOpacity(0.1)
+                              : tokens.brandPrimary.withOpacity(0.1),
                       borderRadius: tokens.cornerMedium(),
                     ),
                     child: Icon(
                       isDelivered ? Icons.mail : Icons.schedule_send,
-                      color: isDelivered ? tokens.encouragement : tokens.brandPrimary,
+                      color:
+                          isDelivered
+                              ? tokens.encouragement
+                              : tokens.brandPrimary,
                       size: 20,
                     ),
                   ),
@@ -61,7 +66,10 @@ class TimeCapsuleCard extends StatelessWidget {
                         Text(
                           isDelivered ? '配信済み' : '配信待ち',
                           style: tokens.bodySmall.copyWith(
-                            color: isDelivered ? tokens.encouragement : tokens.brandPrimary,
+                            color:
+                                isDelivered
+                                    ? tokens.encouragement
+                                    : tokens.brandPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -103,7 +111,7 @@ class TimeCapsuleCard extends StatelessWidget {
                         borderRadius: tokens.cornerSmall(),
                       ),
                       child: Text(
-                        '${daysUntilDelivery}日後',
+                        '$daysUntilDelivery日後',
                         style: tokens.bodySmall.copyWith(
                           color: tokens.textMuted,
                           fontWeight: FontWeight.bold,
@@ -118,9 +126,7 @@ class TimeCapsuleCard extends StatelessWidget {
               // メッセージプレビュー
               Text(
                 _truncateMessage(capsule.message),
-                style: tokens.bodyMedium.copyWith(
-                  color: tokens.textPrimary,
-                ),
+                style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -130,17 +136,11 @@ class TimeCapsuleCard extends StatelessWidget {
               // 配信日
               Row(
                 children: [
-                  Icon(
-                    Icons.calendar_today,
-                    size: 16,
-                    color: tokens.textMuted,
-                  ),
+                  Icon(Icons.calendar_today, size: 16, color: tokens.textMuted),
                   SizedBox(width: tokens.spacing(1)),
                   Text(
                     '配信日: ${capsule.deliveryDate.year}年${capsule.deliveryDate.month}月${capsule.deliveryDate.day}日',
-                    style: tokens.bodySmall.copyWith(
-                      color: tokens.textMuted,
-                    ),
+                    style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                   ),
                   const Spacer(),
                   Icon(
@@ -191,18 +191,12 @@ class _OpeningAnimationState extends State<_OpeningAnimation>
     _scaleAnimation = Tween<double>(
       begin: 0.8,
       end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
     _opacityAnimation = Tween<double>(
       begin: 0.3,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.repeat(reverse: true);
   }
@@ -241,11 +235,7 @@ class _OpeningAnimationState extends State<_OpeningAnimation>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.auto_awesome,
-                    size: 16,
-                    color: Colors.white,
-                  ),
+                  const Icon(Icons.auto_awesome, size: 16, color: Colors.white),
                   SizedBox(width: tokens.spacing(1)),
                   Text(
                     'タップして開封',

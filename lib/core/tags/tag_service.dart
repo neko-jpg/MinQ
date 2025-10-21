@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// タグサービス
 class TagService {
   final FirebaseFirestore _firestore;
 
   TagService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// タグを作成
   Future<String?> createTag({
@@ -16,11 +16,8 @@ class TagService {
     required Color color,
   }) async {
     try {
-      final tagRef = _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('tags')
-          .doc();
+      final tagRef =
+          _firestore.collection('users').doc(userId).collection('tags').doc();
 
       await tagRef.set({
         'name': name,
@@ -45,15 +42,15 @@ class TagService {
         .orderBy('name')
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        return Tag(
-          id: doc.id,
-          name: data['name'] as String,
-          color: Color(data['color'] as int),
-        );
-      }).toList();
-    });
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            return Tag(
+              id: doc.id,
+              name: data['name'] as String,
+              color: Color(data['color'] as int),
+            );
+          }).toList();
+        });
   }
 
   /// タグを削除
@@ -73,18 +70,13 @@ class TagService {
   }
 }
 
-
 /// タグモデル
 class Tag {
   final String id;
   final String name;
   final Color color;
 
-  Tag({
-    required this.id,
-    required this.name,
-    required this.color,
-  });
+  Tag({required this.id, required this.name, required this.color});
 }
 
 /// プリセットタグ

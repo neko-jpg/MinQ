@@ -4,17 +4,12 @@ import 'package:flutter/material.dart';
 class PairProgressComparisonScreen extends StatelessWidget {
   final String pairId;
 
-  const PairProgressComparisonScreen({
-    super.key,
-    required this.pairId,
-  });
+  const PairProgressComparisonScreen({super.key, required this.pairId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('進捗比較'),
-      ),
+      appBar: AppBar(title: const Text('進捗比較')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -57,10 +52,7 @@ class PairProgressComparisonScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 16),
             Row(
               children: [
@@ -96,17 +88,14 @@ class PairProgressComparisonScreen extends StatelessWidget {
   }) {
     return Column(
       children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: 8),
         Text(
           value.toString(),
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: color,
-                fontWeight: FontWeight.bold,
-              ),
+            color: color,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );
@@ -119,17 +108,12 @@ class PairProgressComparisonScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '週間進捗グラフ',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('週間進捗グラフ', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 16),
             Container(
               height: 200,
               color: Colors.grey.shade200,
-              child: const Center(
-                child: Text('グラフ表示エリア'),
-              ),
+              child: const Center(child: Text('グラフ表示エリア')),
             ),
           ],
         ),

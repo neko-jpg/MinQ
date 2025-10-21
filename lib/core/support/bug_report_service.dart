@@ -101,11 +101,7 @@ class BugReportService {
   Future<List<String>> _collectLogs() async {
     // TODO: 実際のログ収集ロジックを実装
     // アプリ内で保存しているログを取得
-    return [
-      'Log entry 1',
-      'Log entry 2',
-      'Log entry 3',
-    ];
+    return ['Log entry 1', 'Log entry 2', 'Log entry 3'];
   }
 
   /// スクリーンショットをアップロード
@@ -124,16 +120,15 @@ class BugReportService {
     required String userId,
     int limit = 20,
   }) async {
-    final snapshot = await _firestore
-        .collection('bugReports')
-        .where('userId', '==', userId)
-        .orderBy('createdAt', descending: true)
-        .limit(limit)
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('bugReports')
+            .where('userId', '==', userId)
+            .orderBy('createdAt', descending: true)
+            .limit(limit)
+            .get();
 
-    return snapshot.docs
-        .map((doc) => BugReport.fromFirestore(doc))
-        .toList();
+    return snapshot.docs.map((doc) => BugReport.fromFirestore(doc)).toList();
   }
 
   /// バグレポートの詳細を取得
@@ -156,10 +151,10 @@ class BugReportService {
         .doc(reportId)
         .collection('comments')
         .add({
-      'comment': comment,
-      'userId': userId,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+          'comment': comment,
+          'userId': userId,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
 
     await _firestore.collection('bugReports').doc(reportId).update({
       'updatedAt': FieldValue.serverTimestamp(),
@@ -264,18 +259,7 @@ enum BugCategory {
 }
 
 /// バグステータス
-enum BugStatus {
-  open,
-  inProgress,
-  resolved,
-  closed,
-  wontFix,
-}
+enum BugStatus { open, inProgress, resolved, closed, wontFix }
 
 /// フィードバックタイプ
-enum FeedbackType {
-  feature,
-  improvement,
-  question,
-  other,
-}
+enum FeedbackType { feature, improvement, question, other }

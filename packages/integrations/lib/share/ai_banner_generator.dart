@@ -40,11 +40,11 @@ class AIBannerGenerator {
       }
     }
     img.gaussianBlur(overlay, radius: 12);
-    img.compositeImage(canvas as img.Image, overlay, blend: img.BlendMode.screen);
+    img.compositeImage(canvas, overlay, blend: img.BlendMode.screen);
   }
 
   void _paintBlobs(_ImageLike canvas, _Palette palette, Random rng) {
-    final blobCount = 4;
+    const blobCount = 4;
     for (var i = 0; i < blobCount; i++) {
       final radius =
           (canvas.width * 0.15 + rng.nextDouble() * canvas.width * 0.1).toInt();
@@ -52,7 +52,7 @@ class AIBannerGenerator {
       final centerY = rng.nextInt(canvas.height);
       final color = palette.accents[rng.nextInt(palette.accents.length)];
       img.fillCircle(
-        canvas as img.Image,
+        canvas,
         x: centerX,
         y: centerY,
         radius: radius,

@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// HTTPキャッシュサービス
 class HttpCacheService {
   static const String _cachePrefix = 'http_cache_';
   static const String _cacheMetaPrefix = 'http_cache_meta_';
-  
+
   // デフォルトキャッシュ期間
   static const Duration _defaultCacheDuration = Duration(hours: 1);
   static const Duration _imageCacheDuration = Duration(days: 7);
@@ -36,10 +36,7 @@ class HttpCacheService {
 
       AppLogger.info('Cache hit', data: {'url': url});
 
-      return CachedResponse(
-        data: cachedData,
-        meta: meta,
-      );
+      return CachedResponse(data: cachedData, meta: meta);
     } catch (e, stack) {
       AppLogger.error('Failed to get cache', error: e, stackTrace: stack);
       return null;
@@ -73,10 +70,10 @@ class HttpCacheService {
       await prefs.setString(cacheKey, data);
       await prefs.setString(metaKey, jsonEncode(meta.toJson()));
 
-      AppLogger.info('Cache saved', data: {
-        'url': url,
-        'expiresAt': expiresAt.toIso8601String(),
-      });
+      AppLogger.info(
+        'Cache saved',
+        data: {'url': url, 'expiresAt': expiresAt.toIso8601String()},
+      );
     } catch (e, stack) {
       AppLogger.error('Failed to save cache', error: e, stackTrace: stack);
     }
@@ -131,7 +128,11 @@ class HttpCacheService {
 
       AppLogger.info('Expired cache cleaned');
     } catch (e, stack) {
-      AppLogger.error('Failed to clean expired cache', error: e, stackTrace: stack);
+      AppLogger.error(
+        'Failed to clean expired cache',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -160,10 +161,14 @@ class HttpCacheService {
 
   /// URLに応じたキャッシュ期間を取得
   Duration _getCacheDuration(String url) {
-    if (url.contains(RegExp(r'\.(jpg|jpeg|png|gif|webp|svg)$', caseSensitive: false))) {
+    if (url.contains(
+      RegExp(r'\.(jpg|jpeg|png|gif|webp|svg)$', caseSensitive: false),
+    )) {
       return _imageCacheDuration;
     }
-    if (url.contains(RegExp(r'\.(css|js|woff|woff2|ttf)$', caseSensitive: false))) {
+    if (url.contains(
+      RegExp(r'\.(css|js|woff|woff2|ttf)$', caseSensitive: false),
+    )) {
       return _staticAssetCacheDuration;
     }
     return _defaultCacheDuration;
@@ -198,22 +203,22 @@ class CacheMeta {
   bool get isExpired => DateTime.now().isAfter(expiresAt);
 
   Map<String, dynamic> toJson() => {
-        'url': url,
-        'cachedAt': cachedAt.toIso8601String(),
-        'expiresAt': expiresAt.toIso8601String(),
-        'headers': headers,
-        'etag': etag,
-        'lastModified': lastModified,
-      };
+    'url': url,
+    'cachedAt': cachedAt.toIso8601String(),
+    'expiresAt': expiresAt.toIso8601String(),
+    'headers': headers,
+    'etag': etag,
+    'lastModified': lastModified,
+  };
 
   factory CacheMeta.fromJson(Map<String, dynamic> json) => CacheMeta(
-        url: json['url'] as String,
-        cachedAt: DateTime.parse(json['cachedAt'] as String),
-        expiresAt: DateTime.parse(json['expiresAt'] as String),
-        headers: Map<String, String>.from(json['headers'] as Map),
-        etag: json['etag'] as String?,
-        lastModified: json['lastModified'] as String?,
-      );
+    url: json['url'] as String,
+    cachedAt: DateTime.parse(json['cachedAt'] as String),
+    expiresAt: DateTime.parse(json['expiresAt'] as String),
+    headers: Map<String, String>.from(json['headers'] as Map),
+    etag: json['etag'] as String?,
+    lastModified: json['lastModified'] as String?,
+  );
 }
 
 /// キャッシュレスポンス
@@ -221,10 +226,7 @@ class CachedResponse {
   final String data;
   final CacheMeta meta;
 
-  CachedResponse({
-    required this.data,
-    required this.meta,
-  });
+  CachedResponse({required this.data, required this.meta});
 }
 
 /// CDN最適化ヘルパー
@@ -237,19 +239,19 @@ class CdnOptimizer {
     switch (strategy) {
       case CacheStrategy.noCache:
         return 'no-cache, no-store, must-revalidate';
-      
+
       case CacheStrategy.shortTerm:
         final age = maxAge ?? const Duration(minutes: 5);
         return 'public, max-age=${age.inSeconds}';
-      
+
       case CacheStrategy.mediumTerm:
         final age = maxAge ?? const Duration(hours: 1);
         return 'public, max-age=${age.inSeconds}';
-      
+
       case CacheStrategy.longTerm:
         final age = maxAge ?? const Duration(days: 7);
         return 'public, max-age=${age.inSeconds}, immutable';
-      
+
       case CacheStrategy.forever:
         return 'public, max-age=31536000, immutable';
     }
@@ -263,30 +265,34 @@ class CdnOptimizer {
   /// リソースタイプに応じたキャッシュ戦略を取得
   static CacheStrategy getStrategyForResource(String url) {
     // 画像
-    if (url.contains(RegExp(r'\.(jpg|jpeg|png|gif|webp|svg)$', caseSensitive: false))) {
+    if (url.contains(
+      RegExp(r'\.(jpg|jpeg|png|gif|webp|svg)$', caseSensitive: false),
+    )) {
       return CacheStrategy.longTerm;
     }
-    
+
     // フォント
-    if (url.contains(RegExp(r'\.(woff|woff2|ttf|otf)$', caseSensitive: false))) {
+    if (url.contains(
+      RegExp(r'\.(woff|woff2|ttf|otf)$', caseSensitive: false),
+    )) {
       return CacheStrategy.forever;
     }
-    
+
     // CSS/JS（バージョン付き）
     if (url.contains(RegExp(r'\.(css|js)\?v=', caseSensitive: false))) {
       return CacheStrategy.longTerm;
     }
-    
+
     // CSS/JS（バージョンなし）
     if (url.contains(RegExp(r'\.(css|js)$', caseSensitive: false))) {
       return CacheStrategy.shortTerm;
     }
-    
+
     // API
     if (url.contains('/api/')) {
       return CacheStrategy.noCache;
     }
-    
+
     // デフォルト
     return CacheStrategy.mediumTerm;
   }
@@ -300,7 +306,7 @@ class CdnOptimizer {
   /// 最適な圧縮形式を取得
   static String getOptimalCompression(Map<String, String> headers) {
     final acceptEncoding = headers['accept-encoding']?.toLowerCase() ?? '';
-    
+
     if (acceptEncoding.contains('br')) {
       return 'br';
     } else if (acceptEncoding.contains('gzip')) {
@@ -308,18 +314,18 @@ class CdnOptimizer {
     } else if (acceptEncoding.contains('deflate')) {
       return 'deflate';
     }
-    
+
     return 'identity';
   }
 }
 
 /// キャッシュ戦略
 enum CacheStrategy {
-  noCache,      // キャッシュしない
-  shortTerm,    // 短期（5分）
-  mediumTerm,   // 中期（1時間）
-  longTerm,     // 長期（7日）
-  forever,      // 永続（1年）
+  noCache, // キャッシュしない
+  shortTerm, // 短期（5分）
+  mediumTerm, // 中期（1時間）
+  longTerm, // 長期（7日）
+  forever, // 永続（1年）
 }
 
 /// キャッシュ統計
@@ -347,10 +353,10 @@ class CacheStats {
   }
 
   Map<String, dynamic> toJson() => {
-        'hits': hits,
-        'misses': misses,
-        'expired': expired,
-        'errors': errors,
-        'hitRate': hitRate,
-      };
+    'hits': hits,
+    'misses': misses,
+    'expired': expired,
+    'errors': errors,
+    'hitRate': hitRate,
+  };
 }

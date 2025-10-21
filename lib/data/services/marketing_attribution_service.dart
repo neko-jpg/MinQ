@@ -3,7 +3,7 @@ import 'package:minq/data/services/local_preferences_service.dart';
 
 class MarketingAttributionService {
   MarketingAttributionService(this._preferences, {NowProvider? now})
-      : _now = now ?? DateTime.now;
+    : _now = now ?? DateTime.now;
 
   final LocalPreferencesService _preferences;
   final NowProvider _now;
@@ -19,8 +19,13 @@ class MarketingAttributionService {
     final content = params['utm_content'] ?? '';
     final term = params['utm_term'] ?? '';
 
-    if ([source, medium, campaign, content, term]
-        .every((element) => element.isEmpty)) {
+    if ([
+      source,
+      medium,
+      campaign,
+      content,
+      term,
+    ].every((element) => element.isEmpty)) {
       return;
     }
 
@@ -31,8 +36,7 @@ class MarketingAttributionService {
       'campaign': campaign,
       'content': content,
       'term': term,
-      'captured_at_epoch':
-          _now().toUtc().millisecondsSinceEpoch.toString(),
+      'captured_at_epoch': _now().toUtc().millisecondsSinceEpoch.toString(),
     });
   }
 }

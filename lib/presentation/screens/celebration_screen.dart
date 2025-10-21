@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:minq/data/providers.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/l10n/app_localizations.dart';
 
 class CelebrationScreen extends ConsumerStatefulWidget {
   const CelebrationScreen({super.key});
@@ -50,11 +49,12 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext) => _NotificationEducationDialog(
-        l10n: l10n,
-        tokens: tokens,
-        showEducation: !hasEducated,
-      ),
+      builder:
+          (dialogContext) => _NotificationEducationDialog(
+            l10n: l10n,
+            tokens: tokens,
+            showEducation: !hasEducated,
+          ),
     );
 
     if (!mounted) return;
@@ -88,7 +88,9 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   Future<void> _shareAchievement() async {
     try {
       final streak = await ref.read(streakProvider.future);
-      final totalCompleted = await ref.read(todayCompletionCountProvider.future);
+      final totalCompleted = await ref.read(
+        todayCompletionCountProvider.future,
+      );
       final shareService = ref.read(shareServiceProvider);
 
       await shareService.shareAchievementWithOgp(
@@ -99,9 +101,9 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
     } catch (error) {
       debugPrint('Share failed: $error');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('共有に失敗しました')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('共有に失敗しました')));
       }
     }
   }
@@ -147,10 +149,13 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
     AppLocalizations l10n,
   ) {
     final titleText =
-        isLongest ? l10n.celebrationNewLongestStreak : l10n.celebrationStreakMessage(streak);
-    final subtitleText = isLongest
-        ? l10n.celebrationLongestSubtitle
-        : l10n.celebrationKeepGoingSubtitle;
+        isLongest
+            ? l10n.celebrationNewLongestStreak
+            : l10n.celebrationStreakMessage(streak);
+    final subtitleText =
+        isLongest
+            ? l10n.celebrationLongestSubtitle
+            : l10n.celebrationKeepGoingSubtitle;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -291,10 +296,12 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
             child: OutlinedButton.icon(
               onPressed: () => _shareAchievement(),
               icon: const Icon(Icons.share),
-              label: Text('達成を共有する'),
+              label: const Text('達成を共有する'),
               style: OutlinedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
-                shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
+                shape: RoundedRectangleBorder(
+                  borderRadius: tokens.cornerFull(),
+                ),
               ),
             ),
           ),
@@ -308,7 +315,9 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
                 backgroundColor: tokens.brandPrimary,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
-                shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
+                shape: RoundedRectangleBorder(
+                  borderRadius: tokens.cornerFull(),
+                ),
               ),
               child: Text(
                 l10n.celebrationDone,
@@ -378,9 +387,18 @@ class _NotificationEducationDialog extends StatelessWidget {
               ),
             ),
             SizedBox(height: tokens.spacing(2)),
-            _DialogBullet(text: l10n.notificationPermissionDialogBenefitReminders, tokens: tokens),
-            _DialogBullet(text: l10n.notificationPermissionDialogBenefitPair, tokens: tokens),
-            _DialogBullet(text: l10n.notificationPermissionDialogBenefitGoal, tokens: tokens),
+            _DialogBullet(
+              text: l10n.notificationPermissionDialogBenefitReminders,
+              tokens: tokens,
+            ),
+            _DialogBullet(
+              text: l10n.notificationPermissionDialogBenefitPair,
+              tokens: tokens,
+            ),
+            _DialogBullet(
+              text: l10n.notificationPermissionDialogBenefitGoal,
+              tokens: tokens,
+            ),
           ],
           SizedBox(height: tokens.spacing(3)),
           Text(

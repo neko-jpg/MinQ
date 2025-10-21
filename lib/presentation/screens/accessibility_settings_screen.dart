@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/app_theme.dart';
 
 /// アクセシビリティ設定画面
 /// 高齢者向けの特大UI・音声読み上げ速度などの設定
@@ -214,9 +214,7 @@ class _AccessibilitySettingsScreenState
       child: SwitchListTile(
         title: Text(
           title,
-          style: tokens.typography.body.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: tokens.typography.body.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
           subtitle,
@@ -363,9 +361,9 @@ class _AccessibilitySettingsScreenState
 
   void _saveSettings() {
     // TODO: 設定を保存
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('設定を保存しました')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('設定を保存しました')));
     context.pop();
   }
 }

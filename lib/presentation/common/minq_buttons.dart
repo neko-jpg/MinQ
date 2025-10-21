@@ -134,8 +134,9 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
         }
         return null;
       }),
-      minimumSize:
-          WidgetStatePropertyAll<Size>(Size.fromHeight(tokens.spacing(14))),
+      minimumSize: WidgetStatePropertyAll<Size>(
+        Size.fromHeight(tokens.spacing(14)),
+      ),
       padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
         EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
       ),
@@ -149,9 +150,10 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
 
     final button = FilledButton(
       style: buttonStyle,
-      onPressed: disabled
-          ? null
-          : () => runGuarded(() async {
+      onPressed:
+          disabled
+              ? null
+              : () => runGuarded(() async {
                 await widget.onPressed!();
               }),
       child: AnimatedSwitcher(
@@ -223,8 +225,9 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
             child: Text(
               widget.label,
               textAlign: TextAlign.center,
-              style:
-                  tokens.typeScale.button.copyWith(color: tokens.textPrimary),
+              style: tokens.typeScale.button.copyWith(
+                color: tokens.textPrimary,
+              ),
             ),
           ),
         ],
@@ -269,8 +272,9 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
         }
         return BorderSide(color: baseBorder);
       }),
-      minimumSize:
-          WidgetStatePropertyAll<Size>(Size.fromHeight(tokens.spacing(14))),
+      minimumSize: WidgetStatePropertyAll<Size>(
+        Size.fromHeight(tokens.spacing(14)),
+      ),
       padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
         EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
       ),
@@ -284,9 +288,10 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
 
     final button = OutlinedButton(
       style: buttonStyle,
-      onPressed: disabled
-          ? null
-          : () => runGuarded(() async {
+      onPressed:
+          disabled
+              ? null
+              : () => runGuarded(() async {
                 await widget.onPressed!();
               }),
       child: AnimatedSwitcher(
@@ -353,12 +358,14 @@ class _MinqTextButtonState extends State<MinqTextButton>
           ..add(Icon(widget.icon, size: tokens.spacing(5)))
           ..add(SizedBox(width: tokens.spacing(2)));
       }
-      children.add(Flexible(
-        child: Text(
-          widget.label,
-          style: tokens.typeScale.button.copyWith(color: baseColor),
+      children.add(
+        Flexible(
+          child: Text(
+            widget.label,
+            style: tokens.typeScale.button.copyWith(color: baseColor),
+          ),
         ),
-      ));
+      );
 
       return Row(
         key: const ValueKey<String>('label'),
@@ -403,16 +410,18 @@ class _MinqTextButtonState extends State<MinqTextButton>
     );
 
     final button = TextButton(
-      onPressed: disabled
-          ? null
-          : () => runGuarded(() async {
+      onPressed:
+          disabled
+              ? null
+              : () => runGuarded(() async {
                 await widget.onTap!();
               }),
       style: buttonStyle,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 180),
-        transitionBuilder: (child, animation) =>
-            FadeTransition(opacity: animation, child: child),
+        transitionBuilder:
+            (child, animation) =>
+                FadeTransition(opacity: animation, child: child),
         child: buildContent(),
       ),
     );

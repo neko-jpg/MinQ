@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/ai/gemma_ai_service.dart';
+import 'package:minq/core/ai/gemma_ai_service.dart';
 
 /// Gemma AI サービスプロバイダー
 final gemmaAIServiceProvider = FutureProvider<GemmaAIService>((ref) async {

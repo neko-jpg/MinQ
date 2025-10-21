@@ -19,17 +19,14 @@ class EventSystem {
         endDate: DateTime(2025, 1, 31),
         type: EventType.challenge,
         rewards: [
-          EventReward(
+          const EventReward(
             id: 'new_year_badge',
             title: '新年バッジ',
             description: '新年チャレンジ完了',
             icon: '🏆',
           ),
         ],
-        requirements: EventRequirements(
-          minCompletions: 21,
-          minStreak: 7,
-        ),
+        requirements: const EventRequirements(minCompletions: 21, minStreak: 7),
       ),
       Event(
         id: 'spring_fitness',
@@ -41,14 +38,14 @@ class EventSystem {
         type: EventType.seasonal,
         category: 'health',
         rewards: [
-          EventReward(
+          const EventReward(
             id: 'spring_badge',
             title: '春の運動バッジ',
             description: '春の運動習慣完了',
             icon: '🏃',
           ),
         ],
-        requirements: EventRequirements(
+        requirements: const EventRequirements(
           minCompletions: 15,
           categoryRequired: 'health',
         ),
@@ -63,14 +60,14 @@ class EventSystem {
         type: EventType.weekly,
         category: 'learning',
         rewards: [
-          EventReward(
+          const EventReward(
             id: 'reading_badge',
             title: '読書家バッジ',
             description: '読書週間完了',
             icon: '📖',
           ),
         ],
-        requirements: EventRequirements(
+        requirements: const EventRequirements(
           minCompletions: 7,
           minStreak: 7,
           categoryRequired: 'learning',
@@ -91,8 +88,8 @@ class EventSystem {
   List<Event> getUpcomingEvents() {
     final now = DateTime.now();
     return _events.where((event) {
-      return now.isBefore(event.startDate);
-    }).toList()
+        return now.isBefore(event.startDate);
+      }).toList()
       ..sort((a, b) => a.startDate.compareTo(b.startDate));
   }
 
@@ -100,23 +97,25 @@ class EventSystem {
   List<Event> getPastEvents() {
     final now = DateTime.now();
     return _events.where((event) {
-      return now.isAfter(event.endDate);
-    }).toList()
+        return now.isAfter(event.endDate);
+      }).toList()
       ..sort((a, b) => b.endDate.compareTo(a.endDate));
   }
 
   /// イベント進捗を計算
   EventProgress calculateProgress(Event event, List<DateTime> completions) {
-    final eventCompletions = completions.where((completion) {
-      return completion.isAfter(event.startDate) && 
-             completion.isBefore(event.endDate);
-    }).toList();
+    final eventCompletions =
+        completions.where((completion) {
+          return completion.isAfter(event.startDate) &&
+              completion.isBefore(event.endDate);
+        }).toList();
 
     final completionCount = eventCompletions.length;
     final currentStreak = _calculateEventStreak(eventCompletions, event);
-    
-    final isCompleted = completionCount >= event.requirements.minCompletions &&
-                       currentStreak >= event.requirements.minStreak;
+
+    final isCompleted =
+        completionCount >= event.requirements.minCompletions &&
+        currentStreak >= event.requirements.minStreak;
 
     return EventProgress(
       eventId: event.id,
@@ -183,10 +182,10 @@ class Event {
 
 /// イベントタイプ
 enum EventType {
-  challenge,  // チャレンジ
-  seasonal,   // 季節イベント
-  weekly,     // 週次イベント
-  special,    // 特別イベント
+  challenge, // チャレンジ
+  seasonal, // 季節イベント
+  weekly, // 週次イベント
+  special, // 特別イベント
 }
 
 /// イベント報酬
@@ -239,10 +238,7 @@ class EventRanking {
   final String eventId;
   final List<EventRankingEntry> entries;
 
-  const EventRanking({
-    required this.eventId,
-    required this.entries,
-  });
+  const EventRanking({required this.eventId, required this.entries});
 }
 
 /// ランキングエントリー

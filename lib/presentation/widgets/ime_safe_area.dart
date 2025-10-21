@@ -2,10 +2,7 @@ import 'package:flutter/widgets.dart';
 
 /// Provides additional padding to avoid IME candidate windows overlapping the UI.
 class ImeSafeArea extends StatelessWidget {
-  const ImeSafeArea({
-    super.key,
-    required this.child,
-  });
+  const ImeSafeArea({super.key, required this.child});
 
   final Widget child;
 

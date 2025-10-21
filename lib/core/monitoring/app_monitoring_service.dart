@@ -2,10 +2,10 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// アプリ監視サービス
-/// 
+///
 /// 稼働状況、パフォーマンス、エラーを監視し、
 /// 重大なイベントを検出・通知する
 class AppMonitoringService {
@@ -17,9 +17,9 @@ class AppMonitoringService {
     FirebaseAnalytics? analytics,
     FirebaseCrashlytics? crashlytics,
     FirebasePerformance? performance,
-  })  : _analytics = analytics ?? FirebaseAnalytics.instance,
-        _crashlytics = crashlytics ?? FirebaseCrashlytics.instance,
-        _performance = performance ?? FirebasePerformance.instance;
+  }) : _analytics = analytics ?? FirebaseAnalytics.instance,
+       _crashlytics = crashlytics ?? FirebaseCrashlytics.instance,
+       _performance = performance ?? FirebasePerformance.instance;
 
   /// 重大イベントの閾値
   static const double _criticalCrashRate = 0.05; // 5%
@@ -39,9 +39,7 @@ class AppMonitoringService {
   /// 画面遷移を記録
   Future<void> trackScreenView(String screenName) async {
     try {
-      await _analytics.logScreenView(
-        screenName: screenName,
-      );
+      await _analytics.logScreenView(screenName: screenName);
       AppLogger.debug('Screen view: $screenName');
     } catch (e, stack) {
       AppLogger.error('Failed to track screen view', e, stack);
@@ -54,10 +52,7 @@ class AppMonitoringService {
     Map<String, dynamic>? parameters,
   }) async {
     try {
-      await _analytics.logEvent(
-        name: action,
-        parameters: parameters,
-      );
+      await _analytics.logEvent(name: action, parameters: parameters);
       AppLogger.debug('User action: $action', parameters);
     } catch (e, stack) {
       AppLogger.error('Failed to track user action', e, stack);
@@ -105,10 +100,13 @@ class AppMonitoringService {
     required Duration duration,
   }) async {
     try {
-      final metric = _performance.newHttpMetric(url, HttpMethod.values.firstWhere(
-        (m) => m.name.toUpperCase() == method.toUpperCase(),
-        orElse: () => HttpMethod.Get,
-      ));
+      final metric = _performance.newHttpMetric(
+        url,
+        HttpMethod.values.firstWhere(
+          (m) => m.name.toUpperCase() == method.toUpperCase(),
+          orElse: () => HttpMethod.Get,
+        ),
+      );
 
       metric.httpResponseCode = statusCode;
       metric.requestPayloadSize = requestPayloadSize;
@@ -120,13 +118,10 @@ class AppMonitoringService {
 
       // レスポンスタイムが閾値を超えた場合
       if (duration.inMilliseconds > _criticalResponseTime) {
-        AppLogger.warning(
-          'Slow API response detected',
-          {
-            'url': url,
-            'duration': duration.inMilliseconds,
-          },
-        );
+        AppLogger.warning('Slow API response detected', {
+          'url': url,
+          'duration': duration.inMilliseconds,
+        });
         await _notifyCriticalEvent(
           'Slow API Response',
           'URL: $url, Duration: ${duration.inMilliseconds}ms',
@@ -161,10 +156,9 @@ class AppMonitoringService {
   /// クラッシュ率を監視
   Future<void> monitorCrashRate(double crashRate) async {
     if (crashRate > _criticalCrashRate) {
-      AppLogger.critical(
-        'Critical crash rate detected',
-        {'crash_rate': crashRate},
-      );
+      AppLogger.critical('Critical crash rate detected', {
+        'crash_rate': crashRate,
+      });
       await _notifyCriticalEvent(
         'High Crash Rate',
         'Current crash rate: ${(crashRate * 100).toStringAsFixed(2)}%',
@@ -175,10 +169,7 @@ class AppMonitoringService {
   /// エラー率を監視
   Future<void> monitorErrorRate(double errorRate) async {
     if (errorRate > _criticalErrorRate) {
-      AppLogger.warning(
-        'High error rate detected',
-        {'error_rate': errorRate},
-      );
+      AppLogger.warning('High error rate detected', {'error_rate': errorRate});
       await _notifyCriticalEvent(
         'High Error Rate',
         'Current error rate: ${(errorRate * 100).toStringAsFixed(2)}%',
@@ -274,7 +265,7 @@ class AppMonitoringService {
   }
 
   /// 重大イベントを通知
-  /// 
+  ///
   /// 実際の実装では、Slack/メール/PagerDutyなどに通知
   Future<void> _notifyCriticalEvent(String title, String message) async {
     try {
@@ -336,12 +327,12 @@ class HealthStatus {
   });
 
   Map<String, dynamic> toJson() => {
-        'is_healthy': isHealthy,
-        'analytics_healthy': analyticsHealthy,
-        'crashlytics_healthy': crashlyticsHealthy,
-        'performance_healthy': performanceHealthy,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'is_healthy': isHealthy,
+    'analytics_healthy': analyticsHealthy,
+    'crashlytics_healthy': crashlyticsHealthy,
+    'performance_healthy': performanceHealthy,
+    'timestamp': timestamp.toIso8601String(),
+  };
 }
 
 /// 監視サービスのProvider

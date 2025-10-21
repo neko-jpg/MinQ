@@ -25,9 +25,7 @@ class IMEAwareScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar as PreferredSizeWidget?,
-      body: SafeArea(
-        child: body,
-      ),
+      body: SafeArea(child: body),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
@@ -78,7 +76,8 @@ class _IMEAwareFormState extends State<IMEAwareForm> {
         builder: (context, constraints) {
           return SingleChildScrollView(
             controller: _scrollController,
-            padding: widget.padding?.add(
+            padding:
+                widget.padding?.add(
                   EdgeInsets.only(bottom: viewInsets.bottom),
                 ) ??
                 EdgeInsets.only(bottom: viewInsets.bottom),
@@ -184,7 +183,8 @@ class _IMEAwareTextFieldState extends State<IMEAwareTextField> {
 
       // フィールドが見える位置までスクロール
       if (position.dy + fieldHeight > visibleHeight) {
-        final scrollOffset = widget.scrollController!.offset +
+        final scrollOffset =
+            widget.scrollController!.offset +
             (position.dy + fieldHeight - visibleHeight) +
             50; // 余白
 
@@ -228,10 +228,7 @@ class _IMEAwareTextFieldState extends State<IMEAwareTextField> {
 class KeyboardHeightDetector extends StatelessWidget {
   final Widget Function(BuildContext context, double keyboardHeight) builder;
 
-  const KeyboardHeightDetector({
-    super.key,
-    required this.builder,
-  });
+  const KeyboardHeightDetector({super.key, required this.builder});
 
   @override
   Widget build(BuildContext context) {
@@ -244,10 +241,7 @@ class KeyboardHeightDetector extends StatelessWidget {
 class KeyboardVisibilityDetector extends StatelessWidget {
   final Widget Function(BuildContext context, bool isKeyboardVisible) builder;
 
-  const KeyboardVisibilityDetector({
-    super.key,
-    required this.builder,
-  });
+  const KeyboardVisibilityDetector({super.key, required this.builder});
 
   @override
   Widget build(BuildContext context) {
@@ -320,11 +314,12 @@ class IMEAwareBottomSheet extends StatelessWidget {
       context: context,
       isScrollControlled: isScrollControlled,
       backgroundColor: Colors.transparent,
-      builder: (context) => IMEAwareBottomSheet(
-        padding: padding,
-        isScrollControlled: isScrollControlled,
-        child: child,
-      ),
+      builder:
+          (context) => IMEAwareBottomSheet(
+            padding: padding,
+            isScrollControlled: isScrollControlled,
+            child: child,
+          ),
     );
   }
 
@@ -336,17 +331,12 @@ class IMEAwareBottomSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(16),
-        ),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      padding: padding?.add(
-            EdgeInsets.only(bottom: keyboardHeight),
-          ) ??
+      padding:
+          padding?.add(EdgeInsets.only(bottom: keyboardHeight)) ??
           EdgeInsets.only(bottom: keyboardHeight),
-      child: SafeArea(
-        child: child,
-      ),
+      child: SafeArea(child: child),
     );
   }
 }

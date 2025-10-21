@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/minq_tokens.dart';
 import 'package:minq/presentation/theme/minq_theme_extension.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 
 /// クエスト属性選択ウィジェット
 /// 難易度、推定時間、場所などの属性を選択
@@ -109,25 +108,26 @@ class _DifficultySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       spacing: tokens.spacing.sm,
-      children: difficulties.map((difficulty) {
-        final isSelected = selected == difficulty['value'];
-        return ChoiceChip(
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(difficulty['icon']!),
-              SizedBox(width: tokens.spacing.xs),
-              Text(difficulty['label']!),
-            ],
-          ),
-          selected: isSelected,
-          onSelected: (selected) {
-            onChanged(selected ? difficulty['value'] : null);
-          },
-          backgroundColor: tokens.surface,
-          selectedColor: tokens.primary.withOpacity(0.2),
-        );
-      }).toList(),
+      children:
+          difficulties.map((difficulty) {
+            final isSelected = selected == difficulty['value'];
+            return ChoiceChip(
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(difficulty['icon']!),
+                  SizedBox(width: tokens.spacing.xs),
+                  Text(difficulty['label']!),
+                ],
+              ),
+              selected: isSelected,
+              onSelected: (selected) {
+                onChanged(selected ? difficulty['value'] : null);
+              },
+              backgroundColor: tokens.surface,
+              selectedColor: tokens.primary.withOpacity(0.2),
+            );
+          }).toList(),
     );
   }
 }
@@ -156,19 +156,20 @@ class _DurationSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       spacing: tokens.spacing.sm,
-      children: durations.map((duration) {
-        final value = duration['value'] as int;
-        final isSelected = selected == value;
-        return ChoiceChip(
-          label: Text(duration['label']!),
-          selected: isSelected,
-          onSelected: (selected) {
-            onChanged(selected ? value : null);
-          },
-          backgroundColor: tokens.surface,
-          selectedColor: tokens.primary.withOpacity(0.2),
-        );
-      }).toList(),
+      children:
+          durations.map((duration) {
+            final value = duration['value'] as int;
+            final isSelected = selected == value;
+            return ChoiceChip(
+              label: Text(duration['label']!),
+              selected: isSelected,
+              onSelected: (selected) {
+                onChanged(selected ? value : null);
+              },
+              backgroundColor: tokens.surface,
+              selectedColor: tokens.primary.withOpacity(0.2),
+            );
+          }).toList(),
     );
   }
 }
@@ -198,25 +199,26 @@ class _LocationSelector extends StatelessWidget {
     return Wrap(
       spacing: tokens.spacing.sm,
       runSpacing: tokens.spacing.sm,
-      children: locations.map((location) {
-        final isSelected = selected == location['value'];
-        return ChoiceChip(
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(location['icon']!),
-              SizedBox(width: tokens.spacing.xs),
-              Text(location['label']!),
-            ],
-          ),
-          selected: isSelected,
-          onSelected: (selected) {
-            onChanged(selected ? location['value'] : null);
-          },
-          backgroundColor: tokens.surface,
-          selectedColor: tokens.primary.withOpacity(0.2),
-        );
-      }).toList(),
+      children:
+          locations.map((location) {
+            final isSelected = selected == location['value'];
+            return ChoiceChip(
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(location['icon']!),
+                  SizedBox(width: tokens.spacing.xs),
+                  Text(location['label']!),
+                ],
+              ),
+              selected: isSelected,
+              onSelected: (selected) {
+                onChanged(selected ? location['value'] : null);
+              },
+              backgroundColor: tokens.surface,
+              selectedColor: tokens.primary.withOpacity(0.2),
+            );
+          }).toList(),
     );
   }
 }

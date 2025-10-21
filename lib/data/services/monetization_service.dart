@@ -69,13 +69,7 @@ class MonetizationService {
   }
 }
 
-enum AdPlacement {
-  questList,
-  statsScreen,
-  recordFlow,
-  celebration,
-  onboarding,
-}
+enum AdPlacement { questList, statsScreen, recordFlow, celebration, onboarding }
 
 enum PremiumFeature {
   unlimitedQuests,

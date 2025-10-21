@@ -1,38 +1,41 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 /// コンテキストアウェアサービス
 /// 時間・天気・位置・デバイス状態に基づいてUIを動的に調整
 class ContextAwareService {
   static ContextAwareService? _instance;
-  static ContextAwareService get instance => _instance ??= ContextAwareService._();
-  
+  static ContextAwareService get instance =>
+      _instance ??= ContextAwareService._();
+
   ContextAwareService._();
 
   Timer? _contextUpdateTimer;
-  final ValueNotifier<AppContext> _currentContext = ValueNotifier(AppContext.initial());
-  
+  final ValueNotifier<AppContext> _currentContext = ValueNotifier(
+    AppContext.initial(),
+  );
+
   ValueListenable<AppContext> get currentContext => _currentContext;
 
   /// サービスの初期化
   Future<void> initialize() async {
     try {
       log('ContextAwareService: 初期化開始');
-      
+
       // 初期コンテキストを取得
       await _updateContext();
-      
+
       // 定期的にコンテキストを更新（5分ごと）
       _contextUpdateTimer = Timer.periodic(
         const Duration(minutes: 5),
         (_) => _updateContext(),
       );
-      
+
       log('ContextAwareService: 初期化完了');
     } catch (e) {
       log('ContextAwareService: 初期化エラー - $e');
@@ -57,7 +60,7 @@ class ContextAwareService {
       final weatherContext = await _getWeatherContext();
       final deviceContext = _getDeviceContext();
       final activityContext = _getActivityContext();
-      
+
       final newContext = AppContext(
         timeOfDay: timeContext.timeOfDay,
         season: timeContext.season,
@@ -70,7 +73,7 @@ class ContextAwareService {
         focusMode: activityContext.focusMode,
         lastUpdated: DateTime.now(),
       );
-      
+
       _currentContext.value = newContext;
       log('ContextAwareService: コンテキスト更新完了');
     } catch (e) {
@@ -82,7 +85,7 @@ class ContextAwareService {
   TimeContext _getTimeContext() {
     final now = DateTime.now();
     final hour = now.hour;
-    
+
     TimeOfDay timeOfDay;
     if (hour >= 5 && hour < 12) {
       timeOfDay = TimeOfDay.morning;
@@ -93,7 +96,7 @@ class ContextAwareService {
     } else {
       timeOfDay = TimeOfDay.night;
     }
-    
+
     Season season;
     final month = now.month;
     if (month >= 3 && month <= 5) {
@@ -105,7 +108,7 @@ class ContextAwareService {
     } else {
       season = Season.winter;
     }
-    
+
     return TimeContext(
       timeOfDay: timeOfDay,
       season: season,
@@ -121,10 +124,13 @@ class ContextAwareService {
       if (position == null) {
         return WeatherContext.unknown();
       }
-      
+
       // 天気情報を取得（OpenWeatherMap API使用）
-      final weatherData = await _fetchWeatherData(position.latitude, position.longitude);
-      
+      final weatherData = await _fetchWeatherData(
+        position.latitude,
+        position.longitude,
+      );
+
       return WeatherContext(
         condition: _parseWeatherCondition(weatherData['weather'][0]['main']),
         temperature: (weatherData['main']['temp'] as num).toDouble(),
@@ -149,11 +155,11 @@ class ContextAwareService {
           return null;
         }
       }
-      
+
       if (permission == LocationPermission.deniedForever) {
         return null;
       }
-      
+
       return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.low,
         timeLimit: const Duration(seconds: 10),
@@ -168,10 +174,11 @@ class ContextAwareService {
   Future<Map<String, dynamic>> _fetchWeatherData(double lat, double lon) async {
     // 注意: 実際の実装では環境変数からAPIキーを取得してください
     const apiKey = 'YOUR_OPENWEATHER_API_KEY';
-    final url = 'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric';
-    
+    final url =
+        'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric';
+
     final response = await http.get(Uri.parse(url));
-    
+
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
@@ -214,7 +221,7 @@ class ContextAwareService {
   /// アクティビティコンテキストを取得
   ActivityContext _getActivityContext() {
     final hour = DateTime.now().hour;
-    
+
     ActivityLevel activityLevel;
     if (hour >= 6 && hour <= 9) {
       activityLevel = ActivityLevel.high; // 朝の活動時間
@@ -225,7 +232,7 @@ class ContextAwareService {
     } else {
       activityLevel = ActivityLevel.low; // 夜間
     }
-    
+
     return ActivityContext(
       activityLevel: activityLevel,
       focusMode: FocusMode.normal,
@@ -295,37 +302,25 @@ class AppContext {
         return const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFE3F2FD),
-            Color(0xFFBBDEFB),
-          ],
+          colors: [Color(0xFFE3F2FD), Color(0xFFBBDEFB)],
         );
       case TimeOfDay.afternoon:
         return const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFF3E5F5),
-            Color(0xFFE1BEE7),
-          ],
+          colors: [Color(0xFFF3E5F5), Color(0xFFE1BEE7)],
         );
       case TimeOfDay.evening:
         return const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFFFF3E0),
-            Color(0xFFFFE0B2),
-          ],
+          colors: [Color(0xFFFFF3E0), Color(0xFFFFE0B2)],
         );
       case TimeOfDay.night:
         return const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF263238),
-            Color(0xFF37474F),
-          ],
+          colors: [Color(0xFF263238), Color(0xFF37474F)],
         );
     }
   }
@@ -333,7 +328,7 @@ class AppContext {
   /// コンテキストに基づくメッセージを取得
   String getContextualMessage() {
     final messages = <String>[];
-    
+
     // 時間帯メッセージ
     switch (timeOfDay) {
       case TimeOfDay.morning:
@@ -349,7 +344,7 @@ class AppContext {
         messages.add('今日もお疲れさまでした。ゆっくり休んでください 🌙');
         break;
     }
-    
+
     // 天気メッセージ
     switch (weather.condition) {
       case WeatherCondition.sunny:
@@ -364,14 +359,14 @@ class AppContext {
       default:
         break;
     }
-    
+
     return messages.isNotEmpty ? messages.first : 'MinQで素晴らしい習慣を築きましょう！';
   }
 
   /// 推奨される習慣を取得
   List<String> getRecommendedHabits() {
     final habits = <String>[];
-    
+
     switch (timeOfDay) {
       case TimeOfDay.morning:
         habits.addAll(['朝の瞑想', 'ストレッチ', '読書', '日記']);
@@ -386,7 +381,7 @@ class AppContext {
         habits.addAll(['読書', '瞑想', 'ストレッチ', '明日の準備']);
         break;
     }
-    
+
     // 天気に基づく習慣
     switch (weather.condition) {
       case WeatherCondition.sunny:
@@ -398,7 +393,7 @@ class AppContext {
       default:
         break;
     }
-    
+
     return habits.take(5).toList();
   }
 }
@@ -461,17 +456,28 @@ class ActivityContext {
   final ActivityLevel activityLevel;
   final FocusMode focusMode;
 
-  ActivityContext({
-    required this.activityLevel,
-    required this.focusMode,
-  });
+  ActivityContext({required this.activityLevel, required this.focusMode});
 }
 
 /// 列挙型
 enum TimeOfDay { morning, afternoon, evening, night }
+
 enum Season { spring, summer, autumn, winter }
-enum DayOfWeek { monday, tuesday, wednesday, thursday, friday, saturday, sunday }
+
+enum DayOfWeek {
+  monday,
+  tuesday,
+  wednesday,
+  thursday,
+  friday,
+  saturday,
+  sunday,
+}
+
 enum WeatherCondition { sunny, cloudy, rainy, snowy, stormy, foggy, unknown }
+
 enum NetworkType { wifi, cellular, none }
+
 enum ActivityLevel { low, medium, high }
+
 enum FocusMode { normal, focus, doNotDisturb }

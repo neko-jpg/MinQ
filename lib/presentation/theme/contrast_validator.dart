@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
 
 /// コントラスト検証ツール
 /// WCAG 2.1準拠のコントラスト比チェック
@@ -159,9 +160,10 @@ class ContrastValidator {
     FontWeight? fontWeight,
   }) {
     final ratio = calculateContrastRatio(foreground, background);
-    final isLarge = fontSize != null && fontWeight != null
-        ? isLargeText(fontSize, fontWeight)
-        : false;
+    final isLarge =
+        fontSize != null && fontWeight != null
+            ? isLargeText(fontSize, fontWeight)
+            : false;
 
     return ContrastReport(
       foreground: foreground,
@@ -178,9 +180,7 @@ class ContrastValidator {
   // ========================================
 
   /// 複数の色の組み合わせを検証
-  static List<ContrastReport> validateColorPairs(
-    List<ColorPair> pairs,
-  ) {
+  static List<ContrastReport> validateColorPairs(List<ColorPair> pairs) {
     return pairs.map((pair) {
       return generateReport(
         pair.foreground,
@@ -197,8 +197,8 @@ class ContrastValidator {
 
     // プライマリテキスト
     reports['primary_on_background'] = generateReport(
-      theme.colorScheme.onBackground,
-      theme.colorScheme.background,
+      theme.colorScheme.onSurface,
+      theme.colorScheme.surface,
     );
 
     reports['primary_on_surface'] = generateReport(
@@ -311,7 +311,8 @@ class ThemeContrastReport {
     buffer.writeln('=== Theme Contrast Report ===');
     buffer.writeln('Overall AA Compliance: ${allMeetAA ? "✓ Pass" : "✗ Fail"}');
     buffer.writeln(
-        'Overall AAA Compliance: ${allMeetAAA ? "✓ Pass" : "✗ Fail"}');
+      'Overall AAA Compliance: ${allMeetAAA ? "✓ Pass" : "✗ Fail"}',
+    );
     buffer.writeln('');
 
     for (final entry in reports.entries) {

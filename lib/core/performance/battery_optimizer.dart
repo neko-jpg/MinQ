@@ -46,7 +46,7 @@ class BatteryOptimizer {
       // プラットフォーム固有のバッテリー情報取得
       final batteryLevel = await _getBatteryLevel();
       final isLowPowerMode = await _isInLowPowerMode();
-      
+
       _updateOptimizationLevel(batteryLevel, isLowPowerMode);
     } catch (e) {
       if (kDebugMode) {
@@ -74,7 +74,8 @@ class BatteryOptimizer {
     if (Platform.isIOS) {
       try {
         const platform = MethodChannel('low_power_mode');
-        return await platform.invokeMethod<bool>('isLowPowerModeEnabled') ?? false;
+        return await platform.invokeMethod<bool>('isLowPowerModeEnabled') ??
+            false;
       } catch (e) {
         return false;
       }
@@ -99,7 +100,8 @@ class BatteryOptimizer {
     _isLowPowerMode = isLowPowerMode;
 
     // レベルが変更された場合、戦略を適用
-    if (previousLevel != _currentLevel || previousLowPowerMode != _isLowPowerMode) {
+    if (previousLevel != _currentLevel ||
+        previousLowPowerMode != _isLowPowerMode) {
       _applyOptimizationStrategies();
     }
   }
@@ -107,7 +109,7 @@ class BatteryOptimizer {
   /// 最適化戦略を適用
   void _applyOptimizationStrategies() {
     final optimizationLevel = _getOptimizationLevel();
-    
+
     for (final strategy in _strategies) {
       strategy.apply(optimizationLevel);
     }
@@ -146,15 +148,15 @@ class BatteryOptimizer {
 
 /// バッテリーレベル
 enum BatteryLevel {
-  normal,   // 30%以上
-  low,      // 15-30%
+  normal, // 30%以上
+  low, // 15-30%
   critical, // 15%以下
 }
 
 /// 最適化レベル
 enum OptimizationLevel {
-  minimal,    // 通常時
-  moderate,   // バッテリー低下時
+  minimal, // 通常時
+  moderate, // バッテリー低下時
   aggressive, // 低電力モード/クリティカル時
 }
 
@@ -243,7 +245,8 @@ class NetworkOptimizationStrategy implements BatteryOptimizationStrategy {
 }
 
 /// バックグラウンドタスク最適化戦略
-class BackgroundTaskOptimizationStrategy implements BatteryOptimizationStrategy {
+class BackgroundTaskOptimizationStrategy
+    implements BatteryOptimizationStrategy {
   @override
   void apply(OptimizationLevel level) {
     switch (level) {
@@ -362,7 +365,7 @@ class _BatteryEfficientWidgetState extends State<BatteryEfficientWidget>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    
+
     if (widget.enableOptimization) {
       _startStatusMonitoring();
     }
@@ -392,7 +395,7 @@ class _BatteryEfficientWidgetState extends State<BatteryEfficientWidget>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    
+
     if (state == AppLifecycleState.paused) {
       // アプリがバックグラウンドに移行時の最適化
       _statusUpdateTimer?.cancel();
@@ -414,10 +417,10 @@ class _BatteryEfficientWidgetState extends State<BatteryEfficientWidget>
     switch (_batteryStatus!.optimizationLevel) {
       case OptimizationLevel.minimal:
         return widget.child;
-      
+
       case OptimizationLevel.moderate:
         return RepaintBoundary(child: widget.child);
-      
+
       case OptimizationLevel.aggressive:
         return RepaintBoundary(
           child: AnimatedSwitcher(

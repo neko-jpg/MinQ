@@ -25,11 +25,7 @@ class FeedbackMessenger {
 
   /// Shows an error toast message.
   static void showErrorToast(BuildContext context, String message) {
-    _showSnackBar(
-      context,
-      message,
-      duration: const Duration(seconds: 2),
-    );
+    _showSnackBar(context, message, duration: const Duration(seconds: 2));
   }
 
   /// Shows an error snackbar with an action button.
@@ -44,7 +40,8 @@ class FeedbackMessenger {
       message,
       duration: const Duration(seconds: 3),
       actionLabel: actionLabel,
-      onAction: onAction ?? () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+      onAction:
+          onAction ?? () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
     );
   }
 
@@ -62,12 +59,13 @@ class FeedbackMessenger {
         content: Text(message),
         duration: duration,
         behavior: SnackBarBehavior.floating,
-        action: actionLabel == null
-            ? null
-            : SnackBarAction(
-                label: actionLabel,
-                onPressed: onAction ?? () {},
-              ),
+        action:
+            actionLabel == null
+                ? null
+                : SnackBarAction(
+                  label: actionLabel,
+                  onPressed: onAction ?? () {},
+                ),
       ),
     );
   }

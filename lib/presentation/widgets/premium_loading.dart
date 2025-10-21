@@ -12,11 +12,7 @@ class PremiumLoading {
     double size = 50.0,
     Duration duration = const Duration(milliseconds: 1200),
   }) {
-    return _PulseLoading(
-      color: color,
-      size: size,
-      duration: duration,
-    );
+    return _PulseLoading(color: color, size: size, duration: duration);
   }
 
   /// 波紋ローディング
@@ -25,11 +21,7 @@ class PremiumLoading {
     double size = 50.0,
     Duration duration = const Duration(milliseconds: 1500),
   }) {
-    return _RippleLoading(
-      color: color,
-      size: size,
-      duration: duration,
-    );
+    return _RippleLoading(color: color, size: size, duration: duration);
   }
 
   /// スピンローディング
@@ -38,11 +30,7 @@ class PremiumLoading {
     double size = 50.0,
     Duration duration = const Duration(milliseconds: 1000),
   }) {
-    return _SpinLoading(
-      color: color,
-      size: size,
-      duration: duration,
-    );
+    return _SpinLoading(color: color, size: size, duration: duration);
   }
 
   /// ドットローディング
@@ -51,11 +39,7 @@ class PremiumLoading {
     double size = 50.0,
     Duration duration = const Duration(milliseconds: 1200),
   }) {
-    return _DotsLoading(
-      color: color,
-      size: size,
-      duration: duration,
-    );
+    return _DotsLoading(color: color, size: size, duration: duration);
   }
 
   /// 波ローディング
@@ -64,11 +48,7 @@ class PremiumLoading {
     double size = 50.0,
     Duration duration = const Duration(milliseconds: 1000),
   }) {
-    return _WaveLoading(
-      color: color,
-      size: size,
-      duration: duration,
-    );
+    return _WaveLoading(color: color, size: size, duration: duration);
   }
 }
 
@@ -78,11 +58,7 @@ class _PulseLoading extends StatefulWidget {
   final double size;
   final Duration duration;
 
-  const _PulseLoading({
-    this.color,
-    required this.size,
-    required this.duration,
-  });
+  const _PulseLoading({this.color, required this.size, required this.duration});
 
   @override
   State<_PulseLoading> createState() => _PulseLoadingState();
@@ -97,26 +73,17 @@ class _PulseLoadingState extends State<_PulseLoading>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _scaleAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _opacityAnimation = Tween<double>(
       begin: 1.0,
       end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.repeat();
   }
@@ -154,10 +121,7 @@ class _PulseLoadingState extends State<_PulseLoading>
               Container(
                 width: widget.size * 0.6,
                 height: widget.size * 0.6,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color,
-                ),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: color),
               ),
             ],
           );
@@ -190,10 +154,7 @@ class _RippleLoadingState extends State<_RippleLoading>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _controller.repeat();
   }
 
@@ -214,10 +175,7 @@ class _RippleLoadingState extends State<_RippleLoading>
         animation: _controller,
         builder: (context, child) {
           return CustomPaint(
-            painter: _RipplePainter(
-              animation: _controller,
-              color: color,
-            ),
+            painter: _RipplePainter(animation: _controller, color: color),
             size: Size(widget.size, widget.size),
           );
         },
@@ -230,10 +188,8 @@ class _RipplePainter extends CustomPainter {
   final Animation<double> animation;
   final Color color;
 
-  _RipplePainter({
-    required this.animation,
-    required this.color,
-  }) : super(repaint: animation);
+  _RipplePainter({required this.animation, required this.color})
+    : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -245,10 +201,11 @@ class _RipplePainter extends CustomPainter {
       final radius = maxRadius * progress;
       final opacity = 1.0 - progress;
 
-      final paint = Paint()
-        ..color = color.withOpacity(opacity * 0.6)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.0;
+      final paint =
+          Paint()
+            ..color = color.withOpacity(opacity * 0.6)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2.0;
 
       canvas.drawCircle(center, radius, paint);
     }
@@ -264,11 +221,7 @@ class _SpinLoading extends StatefulWidget {
   final double size;
   final Duration duration;
 
-  const _SpinLoading({
-    this.color,
-    required this.size,
-    required this.duration,
-  });
+  const _SpinLoading({this.color, required this.size, required this.duration});
 
   @override
   State<_SpinLoading> createState() => _SpinLoadingState();
@@ -281,10 +234,7 @@ class _SpinLoadingState extends State<_SpinLoading>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _controller.repeat();
   }
 
@@ -327,28 +277,25 @@ class _SpinPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
 
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0
-      ..strokeCap = StrokeCap.round;
+    final paint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3.0
+          ..strokeCap = StrokeCap.round;
 
     // グラデーション効果
     for (int i = 0; i < 8; i++) {
       final angle = (i * math.pi * 2) / 8;
       final opacity = (i + 1) / 8;
-      
+
       paint.color = color.withOpacity(opacity);
-      
+
       final startX = center.dx + math.cos(angle) * radius * 0.7;
       final startY = center.dy + math.sin(angle) * radius * 0.7;
       final endX = center.dx + math.cos(angle) * radius * 0.9;
       final endY = center.dy + math.sin(angle) * radius * 0.9;
-      
-      canvas.drawLine(
-        Offset(startX, startY),
-        Offset(endX, endY),
-        paint,
-      );
+
+      canvas.drawLine(Offset(startX, startY), Offset(endX, endY), paint);
     }
   }
 
@@ -362,11 +309,7 @@ class _DotsLoading extends StatefulWidget {
   final double size;
   final Duration duration;
 
-  const _DotsLoading({
-    this.color,
-    required this.size,
-    required this.duration,
-  });
+  const _DotsLoading({this.color, required this.size, required this.duration});
 
   @override
   State<_DotsLoading> createState() => _DotsLoadingState();
@@ -379,10 +322,7 @@ class _DotsLoadingState extends State<_DotsLoading>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _controller.repeat();
   }
 
@@ -408,7 +348,7 @@ class _DotsLoadingState extends State<_DotsLoading>
               final delay = index * 0.2;
               final progress = (_controller.value + delay) % 1.0;
               final scale = math.sin(progress * math.pi);
-              
+
               return Transform.scale(
                 scale: 0.5 + scale * 0.5,
                 child: Container(
@@ -434,11 +374,7 @@ class _WaveLoading extends StatefulWidget {
   final double size;
   final Duration duration;
 
-  const _WaveLoading({
-    this.color,
-    required this.size,
-    required this.duration,
-  });
+  const _WaveLoading({this.color, required this.size, required this.duration});
 
   @override
   State<_WaveLoading> createState() => _WaveLoadingState();
@@ -451,10 +387,7 @@ class _WaveLoadingState extends State<_WaveLoading>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _controller.repeat();
   }
 
@@ -475,10 +408,7 @@ class _WaveLoadingState extends State<_WaveLoading>
         animation: _controller,
         builder: (context, child) {
           return CustomPaint(
-            painter: _WavePainter(
-              animation: _controller,
-              color: color,
-            ),
+            painter: _WavePainter(animation: _controller, color: color),
             size: Size(widget.size, widget.size * 0.6),
           );
         },
@@ -491,18 +421,17 @@ class _WavePainter extends CustomPainter {
   final Animation<double> animation;
   final Color color;
 
-  _WavePainter({
-    required this.animation,
-    required this.color,
-  }) : super(repaint: animation);
+  _WavePainter({required this.animation, required this.color})
+    : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0
-      ..strokeCap = StrokeCap.round;
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.0
+          ..strokeCap = StrokeCap.round;
 
     final path = Path();
     final waveHeight = size.height * 0.3;
@@ -512,7 +441,8 @@ class _WavePainter extends CustomPainter {
     path.moveTo(0, size.height / 2);
 
     for (double x = 0; x <= waveLength; x += 1) {
-      final y = size.height / 2 + 
+      final y =
+          size.height / 2 +
           math.sin((x / waveLength * 2 * math.pi) + phase) * waveHeight;
       path.lineTo(x, y);
     }
@@ -598,10 +528,4 @@ class PremiumLoadingOverlay extends StatelessWidget {
   }
 }
 
-enum LoadingType {
-  pulse,
-  ripple,
-  spin,
-  dots,
-  wave,
-}
+enum LoadingType { pulse, ripple, spin, dots, wave }

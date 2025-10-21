@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/gamification/gamification_engine.dart' show GamificationEngine;
+import 'package:minq/core/gamification/gamification_engine.dart'
+    show GamificationEngine;
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -13,13 +14,13 @@ class GamificationStatusCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final uid = ref.watch(uidProvider);
-    
+
     if (uid == null) {
       return const SizedBox.shrink();
     }
 
     final gamificationEngine = ref.watch(gamificationEngineProvider);
-    
+
     return FutureBuilder<Map<String, dynamic>>(
       future: _loadGamificationData(gamificationEngine, uid),
       builder: (context, snapshot) {
@@ -180,7 +181,7 @@ class GamificationStatusCard extends ConsumerWidget {
   ) async {
     final points = await engine.getUserPoints(uid);
     final rank = engine.getRankForPoints(points);
-    
+
     // ランクアイコンを決定
     IconData rankIcon;
     switch (rank.name) {
@@ -214,7 +215,7 @@ class GamificationStatusCard extends ConsumerWidget {
 
     int nextRankPoints = 50000;
     int currentRankPoints = 0;
-    
+
     for (int i = 0; i < allRanks.length; i++) {
       final rankPoints = allRanks[i]['points'] as int;
       if (points >= rankPoints) {
@@ -225,7 +226,8 @@ class GamificationStatusCard extends ConsumerWidget {
       }
     }
 
-    final progress = (points - currentRankPoints) / (nextRankPoints - currentRankPoints);
+    final progress =
+        (points - currentRankPoints) / (nextRankPoints - currentRankPoints);
 
     return {
       'points': points,

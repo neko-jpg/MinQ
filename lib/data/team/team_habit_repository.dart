@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 
-import '../../domain/team/team_habit.dart';
+import 'package:minq/domain/team/team_habit.dart';
 
 /// Repository contract for managing [TeamHabit]s.
 abstract class TeamHabitRepository {
@@ -20,10 +20,7 @@ abstract class TeamHabitRepository {
     DateTime? joinedAt,
   });
 
-  Future<void> leaveTeam({
-    required String habitId,
-    required String uid,
-  });
+  Future<void> leaveTeam({required String habitId, required String uid});
 
   Future<void> recordCompletion({
     required String habitId,
@@ -95,10 +92,7 @@ class InMemoryTeamHabitRepository implements TeamHabitRepository {
   }
 
   @override
-  Future<void> leaveTeam({
-    required String habitId,
-    required String uid,
-  }) async {
+  Future<void> leaveTeam({required String habitId, required String uid}) async {
     final habit = _storage[habitId];
     if (habit == null) {
       throw StateError('Team habit $habitId does not exist');

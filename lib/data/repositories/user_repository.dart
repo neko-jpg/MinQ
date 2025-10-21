@@ -82,7 +82,7 @@ class UserRepository {
       if (user == null) {
         return;
       }
-      
+
       // Apply updates based on the map
       if (updates.containsKey('onboardingCompleted')) {
         user.onboardingCompleted = updates['onboardingCompleted'] as bool;
@@ -93,7 +93,7 @@ class UserRepository {
       if (updates.containsKey('totalPoints')) {
         user.totalPoints = updates['totalPoints'] as int;
       }
-      
+
       await _isar.users.put(user);
     });
   }

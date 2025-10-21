@@ -1,11 +1,8 @@
-﻿import 'package:isar/isar.dart';
+import 'package:isar/isar.dart';
 
 part 'quest.g.dart';
 
-enum QuestStatus {
-  active,
-  paused,
-}
+enum QuestStatus { active, paused }
 
 @Collection()
 class Quest {

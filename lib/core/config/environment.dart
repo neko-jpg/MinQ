@@ -76,10 +76,7 @@ class EnvironmentConfig {
 
   /// API Base URL
   static String get apiBaseUrl {
-    const url = String.fromEnvironment(
-      'API_BASE_URL',
-      defaultValue: '',
-    );
+    const url = String.fromEnvironment('API_BASE_URL', defaultValue: '');
     if (url.isNotEmpty) return url;
 
     switch (current) {
@@ -112,10 +109,7 @@ class EnvironmentConfig {
 
   /// Sentry DSN
   static String get sentryDsn {
-    const dsn = String.fromEnvironment(
-      'SENTRY_DSN',
-      defaultValue: '',
-    );
+    const dsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
     return dsn;
   }
 
@@ -139,10 +133,7 @@ class EnvironmentConfig {
 
   /// ログレベル
   static String get logLevel {
-    const level = String.fromEnvironment(
-      'LOG_LEVEL',
-      defaultValue: '',
-    );
+    const level = String.fromEnvironment('LOG_LEVEL', defaultValue: '');
     if (level.isNotEmpty) return level;
 
     switch (current) {
@@ -157,10 +148,7 @@ class EnvironmentConfig {
 
   /// Slack Webhook URL
   static String? get slackWebhookUrl {
-    const url = String.fromEnvironment(
-      'SLACK_WEBHOOK_URL',
-      defaultValue: '',
-    );
+    const url = String.fromEnvironment('SLACK_WEBHOOK_URL', defaultValue: '');
     return url.isEmpty ? null : url;
   }
 

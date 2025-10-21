@@ -1,17 +1,16 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:minq/domain/home/home_view_data.dart';
 import 'package:minq/domain/stats/stats_view_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 typedef NowProvider = DateTime Function();
 
 /// Stores lightweight privacy/safety related flags locally.
 class LocalPreferencesService {
   LocalPreferencesService({NowProvider? now})
-      : _prefsFuture = SharedPreferences.getInstance(),
-        _now = now ?? DateTime.now;
+    : _prefsFuture = SharedPreferences.getInstance(),
+      _now = now ?? DateTime.now;
 
   static const String _pairGuidelinesKey = 'pair_guidelines_seen_v1';
   static const String _reportHistoryKey = 'report_history_v1';
@@ -110,14 +109,17 @@ class LocalPreferencesService {
     final cutoff = currentTime.subtract(window);
 
     final stored = prefs.getStringList(_reportHistoryKey) ?? <String>[];
-    final timestamps = stored
-        .map((String value) => DateTime.fromMillisecondsSinceEpoch(
-              int.tryParse(value) ?? 0,
-              isUtc: true,
-            ))
-        .where((DateTime timestamp) => timestamp.isAfter(cutoff))
-        .toList()
-      ..sort();
+    final timestamps =
+        stored
+            .map(
+              (String value) => DateTime.fromMillisecondsSinceEpoch(
+                int.tryParse(value) ?? 0,
+                isUtc: true,
+              ),
+            )
+            .where((DateTime timestamp) => timestamp.isAfter(cutoff))
+            .toList()
+          ..sort();
 
     if (timestamps.length >= maxReports) {
       final earliest = timestamps.first;
@@ -280,8 +282,13 @@ class LocalPreferencesService {
     final term = prefs.getString(_utmTermKey) ?? '';
     final capturedAtMillis = prefs.getInt(_utmCapturedAtKey) ?? 0;
 
-    if ([source, medium, campaign, content, term]
-        .every((element) => element.isEmpty)) {
+    if ([
+      source,
+      medium,
+      campaign,
+      content,
+      term,
+    ].every((element) => element.isEmpty)) {
       return null;
     }
 
@@ -403,10 +410,7 @@ class LocalPreferencesService {
 
   Future<void> setUsageLastReset(DateTime now) async {
     final prefs = await _prefsFuture;
-    await prefs.setInt(
-      _usageLastResetKey,
-      now.toUtc().millisecondsSinceEpoch,
-    );
+    await prefs.setInt(_usageLastResetKey, now.toUtc().millisecondsSinceEpoch);
   }
 
   Future<String?> getNotificationSoundProfileId() async {

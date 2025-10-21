@@ -5,10 +5,10 @@ import 'package:flutter/foundation.dart';
 class NotificationScheduleCustomizer {
   /// 通知を送信すべき曜日（0=日曜, 6=土曜）
   final Set<int> enabledWeekdays;
-  
+
   /// 祝日に通知を送信するか
   final bool notifyOnHolidays;
-  
+
   /// 休日に通知を送信するか（土日）
   final bool notifyOnWeekends;
 
@@ -50,8 +50,9 @@ class NotificationScheduleCustomizer {
     }
 
     // 週末チェック
-    final isWeekend = dateTime.weekday == DateTime.saturday || 
-                      dateTime.weekday == DateTime.sunday;
+    final isWeekend =
+        dateTime.weekday == DateTime.saturday ||
+        dateTime.weekday == DateTime.sunday;
     if (isWeekend && !notifyOnWeekends) {
       return false;
     }
@@ -67,7 +68,7 @@ class NotificationScheduleCustomizer {
     required bool Function(DateTime) isHoliday,
   }) {
     var candidate = from;
-    
+
     // 最大30日先まで検索
     for (var i = 0; i < 30; i++) {
       for (final timeStr in notificationTimes) {
@@ -86,12 +87,15 @@ class NotificationScheduleCustomizer {
           minute,
         );
 
-        if (notificationTime.isAfter(from) && 
-            shouldNotify(notificationTime, isHoliday: isHoliday(notificationTime))) {
+        if (notificationTime.isAfter(from) &&
+            shouldNotify(
+              notificationTime,
+              isHoliday: isHoliday(notificationTime),
+            )) {
           return notificationTime;
         }
       }
-      
+
       candidate = candidate.add(const Duration(days: 1));
     }
 
@@ -110,9 +114,11 @@ class NotificationScheduleCustomizer {
   /// JSON形式から復元
   factory NotificationScheduleCustomizer.fromJson(Map<String, dynamic> json) {
     return NotificationScheduleCustomizer(
-      enabledWeekdays: (json['enabledWeekdays'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toSet() ?? const {1, 2, 3, 4, 5},
+      enabledWeekdays:
+          (json['enabledWeekdays'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toSet() ??
+          const {1, 2, 3, 4, 5},
       notifyOnHolidays: json['notifyOnHolidays'] as bool? ?? false,
       notifyOnWeekends: json['notifyOnWeekends'] as bool? ?? false,
     );
@@ -128,11 +134,8 @@ class NotificationScheduleCustomizer {
   }
 
   @override
-  int get hashCode => Object.hash(
-    enabledWeekdays,
-    notifyOnHolidays,
-    notifyOnWeekends,
-  );
+  int get hashCode =>
+      Object.hash(enabledWeekdays, notifyOnHolidays, notifyOnWeekends);
 
   NotificationScheduleCustomizer copyWith({
     Set<int>? enabledWeekdays,

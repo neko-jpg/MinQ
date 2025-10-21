@@ -1,10 +1,9 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:minq/core/mood/mood_tracking_service.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/domain/mood/mood_state.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -53,20 +52,12 @@ class _MoodTrackingScreenState extends ConsumerState<MoodTrackingScreen>
         ),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: '記録'),
-            Tab(text: 'グラフ'),
-            Tab(text: '分析'),
-          ],
+          tabs: const [Tab(text: '記録'), Tab(text: 'グラフ'), Tab(text: '分析')],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          _MoodRecordTab(),
-          _MoodGraphTab(),
-          _MoodAnalysisTab(),
-        ],
+        children: const [_MoodRecordTab(), _MoodGraphTab(), _MoodAnalysisTab()],
       ),
     );
   }
@@ -85,34 +76,34 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
   bool _isLoading = false;
 
   final Map<String, MoodData> _moodOptions = {
-    'very_happy': MoodData(
+    'very_happy': const MoodData(
       emoji: '😄',
       label: 'とても良い',
-      color: const Color(0xFF4CAF50),
+      color: Color(0xFF4CAF50),
       description: '最高の気分です！',
     ),
-    'happy': MoodData(
+    'happy': const MoodData(
       emoji: '😊',
       label: '良い',
-      color: const Color(0xFF8BC34A),
+      color: Color(0xFF8BC34A),
       description: '気分が良いです',
     ),
-    'neutral': MoodData(
+    'neutral': const MoodData(
       emoji: '😐',
       label: '普通',
-      color: const Color(0xFFFF9800),
+      color: Color(0xFFFF9800),
       description: '普通の気分です',
     ),
-    'sad': MoodData(
+    'sad': const MoodData(
       emoji: '😔',
       label: '悪い',
-      color: const Color(0xFFFF5722),
+      color: Color(0xFFFF5722),
       description: '少し落ち込んでいます',
     ),
-    'very_sad': MoodData(
+    'very_sad': const MoodData(
       emoji: '😢',
       label: 'とても悪い',
-      color: const Color(0xFFF44336),
+      color: Color(0xFFF44336),
       description: 'とても落ち込んでいます',
     ),
   };
@@ -120,10 +111,7 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
   Future<void> _recordMood() async {
     final uid = ref.read(uidProvider);
     if (uid == null) {
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        'ユーザーがサインインしていません',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'ユーザーがサインインしていません');
       return;
     }
 
@@ -140,17 +128,11 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
       );
 
       if (mounted) {
-        FeedbackMessenger.showSuccessToast(
-          context,
-          '気分を記録しました！',
-        );
+        FeedbackMessenger.showSuccessToast(context, '気分を記録しました！');
       }
     } catch (e) {
       if (mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          '気分の記録に失敗しました',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, '気分の記録に失敗しました');
       }
     } finally {
       if (mounted) {
@@ -175,9 +157,7 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
           Card(
             elevation: 0,
             color: selectedMoodData.color.withOpacity(0.1),
-            shape: RoundedRectangleBorder(
-              borderRadius: tokens.cornerLarge(),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing(4)),
               child: Column(
@@ -198,9 +178,7 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
                   SizedBox(height: tokens.spacing(2)),
                   Text(
                     '気分を記録することで、習慣との関係性を分析できます',
-                    style: tokens.bodyMedium.copyWith(
-                      color: tokens.textMuted,
-                    ),
+                    style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -251,7 +229,7 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
 
           // 評価スライダー
           Text(
-            '詳細な評価 (${_selectedRating}/5)',
+            '詳細な評価 ($_selectedRating/5)',
             style: tokens.bodyMedium.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
@@ -353,9 +331,7 @@ class _MoodGraphTab extends ConsumerWidget {
             children: [
               Text(
                 '表示期間',
-                style: tokens.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               SegmentedButton<int>(
@@ -364,7 +340,7 @@ class _MoodGraphTab extends ConsumerWidget {
                   ButtonSegment(value: 30, label: Text('30日')),
                   ButtonSegment(value: 90, label: Text('90日')),
                 ],
-                selected: {30},
+                selected: const {30},
                 onSelectionChanged: (selection) {
                   // TODO: 期間変更処理
                 },
@@ -394,10 +370,7 @@ class _MoodGraphTab extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(height: tokens.spacing(4)),
-                  SizedBox(
-                    height: 200,
-                    child: _MoodLineChart(),
-                  ),
+                  SizedBox(height: 200, child: _MoodLineChart()),
                 ],
               ),
             ),
@@ -425,10 +398,7 @@ class _MoodGraphTab extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(height: tokens.spacing(4)),
-                  SizedBox(
-                    height: 200,
-                    child: _MoodPieChart(),
-                  ),
+                  SizedBox(height: 200, child: _MoodPieChart()),
                 ],
               ),
             ),
@@ -475,10 +445,7 @@ class _MoodAnalysisTab extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.insights,
-                        color: tokens.brandPrimary,
-                      ),
+                      Icon(Icons.insights, color: tokens.brandPrimary),
                       SizedBox(width: tokens.spacing(2)),
                       Text(
                         '習慣との相関分析',
@@ -501,9 +468,7 @@ class _MoodAnalysisTab extends ConsumerWidget {
           Card(
             elevation: 0,
             color: tokens.brandPrimary.withOpacity(0.1),
-            shape: RoundedRectangleBorder(
-              borderRadius: tokens.cornerLarge(),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing(4)),
               child: Column(
@@ -511,10 +476,7 @@ class _MoodAnalysisTab extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.psychology,
-                        color: tokens.brandPrimary,
-                      ),
+                      Icon(Icons.psychology, color: tokens.brandPrimary),
                       SizedBox(width: tokens.spacing(2)),
                       Text(
                         'AIインサイト',
@@ -537,9 +499,7 @@ class _MoodAnalysisTab extends ConsumerWidget {
           Card(
             elevation: 0,
             color: tokens.encouragement.withOpacity(0.1),
-            shape: RoundedRectangleBorder(
-              borderRadius: tokens.cornerLarge(),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing(4)),
               child: Column(
@@ -547,10 +507,7 @@ class _MoodAnalysisTab extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.lightbulb,
-                        color: tokens.encouragement,
-                      ),
+                      Icon(Icons.lightbulb, color: tokens.encouragement),
                       SizedBox(width: tokens.spacing(2)),
                       Text(
                         '改善提案',
@@ -571,32 +528,26 @@ class _MoodAnalysisTab extends ConsumerWidget {
     );
   }
 
-  Future<void> _runCorrelationAnalysis(BuildContext context, WidgetRef ref) async {
+  Future<void> _runCorrelationAnalysis(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final uid = ref.read(uidProvider);
     if (uid == null) {
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        'ユーザーがサインインしていません',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'ユーザーがサインインしていません');
       return;
     }
 
     try {
       final service = ref.read(moodTrackingServiceProvider);
       await service.analyzeMoodHabitCorrelation(uid);
-      
+
       if (context.mounted) {
-        FeedbackMessenger.showSuccessToast(
-          context,
-          '相関分析が完了しました！',
-        );
+        FeedbackMessenger.showSuccessToast(context, '相関分析が完了しました！');
       }
     } catch (e) {
       if (context.mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          '分析に失敗しました',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, '分析に失敗しました');
       }
     }
   }
@@ -622,17 +573,13 @@ class _TodayMoodHistory extends StatelessWidget {
           children: [
             Text(
               '今日の記録',
-              style: tokens.bodyMedium.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing(2)),
             // TODO: 実際のデータを表示
             Text(
               '記録がありません',
-              style: tokens.bodySmall.copyWith(
-                color: tokens.textMuted,
-              ),
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             ),
           ],
         ),
@@ -722,14 +669,14 @@ class _CorrelationInsights extends StatelessWidget {
 
     return Column(
       children: [
-        _InsightItem(
+        const _InsightItem(
           icon: Icons.trending_up,
           title: '良い気分の日',
           description: '平均3.2個の習慣を完了',
           color: Colors.green,
         ),
         SizedBox(height: tokens.spacing(2)),
-        _InsightItem(
+        const _InsightItem(
           icon: Icons.trending_down,
           title: '悪い気分の日',
           description: '平均1.8個の習慣を完了',
@@ -748,9 +695,7 @@ class _AIInsights extends StatelessWidget {
     return Text(
       'あなたの気分が良い日は、習慣の継続率が78%高くなる傾向があります。'
       '特に朝の瞑想を行った日は、一日を通して気分が安定しています。',
-      style: tokens.bodyMedium.copyWith(
-        color: tokens.textPrimary,
-      ),
+      style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
     );
   }
 }
@@ -762,13 +707,13 @@ class _ImprovementSuggestions extends StatelessWidget {
 
     return Column(
       children: [
-        _SuggestionItem(
+        const _SuggestionItem(
           icon: Icons.wb_sunny,
           title: '朝のルーティン',
           description: '気分を上げる朝の習慣を追加してみましょう',
         ),
         SizedBox(height: tokens.spacing(2)),
-        _SuggestionItem(
+        const _SuggestionItem(
           icon: Icons.self_improvement,
           title: 'マインドフルネス',
           description: '瞑想や深呼吸で心を整える時間を作りましょう',
@@ -803,11 +748,7 @@ class _InsightItem extends StatelessWidget {
             color: color.withOpacity(0.1),
             borderRadius: tokens.cornerMedium(),
           ),
-          child: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
+          child: Icon(icon, color: color, size: 20),
         ),
         SizedBox(width: tokens.spacing(3)),
         Expanded(
@@ -816,15 +757,11 @@ class _InsightItem extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: tokens.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
                 description,
-                style: tokens.bodySmall.copyWith(
-                  color: tokens.textMuted,
-                ),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ],
           ),
@@ -857,11 +794,7 @@ class _SuggestionItem extends StatelessWidget {
             color: tokens.encouragement.withOpacity(0.1),
             borderRadius: tokens.cornerMedium(),
           ),
-          child: Icon(
-            icon,
-            color: tokens.encouragement,
-            size: 20,
-          ),
+          child: Icon(icon, color: tokens.encouragement, size: 20),
         ),
         SizedBox(width: tokens.spacing(3)),
         Expanded(
@@ -870,15 +803,11 @@ class _SuggestionItem extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: tokens.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
                 description,
-                style: tokens.bodySmall.copyWith(
-                  color: tokens.textMuted,
-                ),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ],
           ),

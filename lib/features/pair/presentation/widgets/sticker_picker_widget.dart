@@ -5,9 +5,11 @@ import 'package:minq/features/pair/presentation/widgets/conversation_starter_wid
 // In a real app, this would be part of a service that fetches sticker packs.
 final stickerPacksProvider = Provider<List<String>>((ref) {
   // These paths are placeholders.
-  return List.generate(12, (i) => 'assets/images/stickers/sticker_${i + 1}.png');
+  return List.generate(
+    12,
+    (i) => 'assets/images/stickers/sticker_${i + 1}.png',
+  );
 });
-
 
 class StickerPickerWidget extends ConsumerWidget {
   const StickerPickerWidget({super.key, required this.pairId});
@@ -40,9 +42,12 @@ class StickerPickerWidget extends ConsumerWidget {
           return GestureDetector(
             onTap: () {
               // Re-use the dummy chat service to "send" the sticker.
-              ref.read(chatServiceProvider).sendMessage(
+              ref
+                  .read(chatServiceProvider)
+                  .sendMessage(
                     pairId: pairId,
-                    text: "[sticker:$stickerId]", // Send a special format for stickers
+                    text:
+                        '[sticker:$stickerId]', // Send a special format for stickers
                   );
               // Close the picker after selection
               Navigator.of(context).pop();
@@ -50,7 +55,13 @@ class StickerPickerWidget extends ConsumerWidget {
             // Using a placeholder icon since the actual assets don't exist yet.
             child: Card(
               elevation: 1,
-              child: Center(child: Icon(Icons.emoji_emotions_outlined, size: 40, color: Theme.of(context).colorScheme.primary)),
+              child: Center(
+                child: Icon(
+                  Icons.emoji_emotions_outlined,
+                  size: 40,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
             ),
           );
         },

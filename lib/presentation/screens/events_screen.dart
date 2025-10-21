@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/core/events/event_system.dart';
 import 'package:minq/core/challenges/event_manager.dart';
+import 'package:minq/core/events/event_system.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
@@ -53,11 +53,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         ),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: '開催中'),
-            Tab(text: '予定'),
-            Tab(text: '過去'),
-          ],
+          tabs: const [Tab(text: '開催中'), Tab(text: '予定'), Tab(text: '過去')],
         ),
       ),
       body: TabBarView(
@@ -83,7 +79,7 @@ class _ActiveEventsTab extends ConsumerWidget {
     final activeEvents = eventSystem.getActiveEvents();
 
     if (activeEvents.isEmpty) {
-      return _EmptyEventState(
+      return const _EmptyEventState(
         icon: Icons.event_busy,
         title: '開催中のイベントはありません',
         subtitle: '新しいイベントをお楽しみに！',
@@ -104,19 +100,19 @@ class _ActiveEventsTab extends ConsumerWidget {
           // イベント一覧
           Text(
             '参加可能なイベント',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: tokens.spacing(3)),
-          ...activeEvents.map((event) => Padding(
-                padding: EdgeInsets.only(bottom: tokens.spacing(3)),
-                child: EventCard(
-                  event: event,
-                  onTap: () => _showEventDetail(context, event),
-                  onJoin: () => _joinEvent(context, ref, event),
-                ),
-              )),
+          ...activeEvents.map(
+            (event) => Padding(
+              padding: EdgeInsets.only(bottom: tokens.spacing(3)),
+              child: EventCard(
+                event: event,
+                onTap: () => _showEventDetail(context, event),
+                onJoin: () => _joinEvent(context, ref, event),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -131,35 +127,27 @@ class _ActiveEventsTab extends ConsumerWidget {
     );
   }
 
-  Future<void> _joinEvent(BuildContext context, WidgetRef ref, Event event) async {
+  Future<void> _joinEvent(
+    BuildContext context,
+    WidgetRef ref,
+    Event event,
+  ) async {
     final uid = ref.read(uidProvider);
     if (uid == null) {
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        'ユーザーがサインインしていません',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'ユーザーがサインインしていません');
       return;
     }
 
     try {
       final eventManager = ref.read(eventManagerProvider);
-      await eventManager.registerForEvent(
-        userId: uid,
-        eventId: event.id,
-      );
+      await eventManager.registerForEvent(userId: uid, eventId: event.id);
 
       if (context.mounted) {
-        FeedbackMessenger.showSuccessToast(
-          context,
-          '${event.title}に参加しました！',
-        );
+        FeedbackMessenger.showSuccessToast(context, '${event.title}に参加しました！');
       }
     } catch (e) {
       if (context.mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          'イベント参加に失敗しました',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, 'イベント参加に失敗しました');
       }
     }
   }
@@ -176,7 +164,7 @@ class _UpcomingEventsTab extends ConsumerWidget {
     final upcomingEvents = eventSystem.getUpcomingEvents();
 
     if (upcomingEvents.isEmpty) {
-      return _EmptyEventState(
+      return const _EmptyEventState(
         icon: Icons.schedule,
         title: '予定されているイベントはありません',
         subtitle: '新しいイベントの企画をお待ちください',
@@ -190,15 +178,15 @@ class _UpcomingEventsTab extends ConsumerWidget {
         children: [
           Text(
             '今後のイベント',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: tokens.spacing(3)),
-          ...upcomingEvents.map((event) => Padding(
-                padding: EdgeInsets.only(bottom: tokens.spacing(3)),
-                child: _UpcomingEventCard(event: event),
-              )),
+          ...upcomingEvents.map(
+            (event) => Padding(
+              padding: EdgeInsets.only(bottom: tokens.spacing(3)),
+              child: _UpcomingEventCard(event: event),
+            ),
+          ),
         ],
       ),
     );
@@ -216,7 +204,7 @@ class _PastEventsTab extends ConsumerWidget {
     final pastEvents = eventSystem.getPastEvents();
 
     if (pastEvents.isEmpty) {
-      return _EmptyEventState(
+      return const _EmptyEventState(
         icon: Icons.history,
         title: '過去のイベントはありません',
         subtitle: 'イベントに参加して履歴を作りましょう',
@@ -230,15 +218,15 @@ class _PastEventsTab extends ConsumerWidget {
         children: [
           Text(
             '過去のイベント',
-            style: tokens.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: tokens.spacing(3)),
-          ...pastEvents.map((event) => Padding(
-                padding: EdgeInsets.only(bottom: tokens.spacing(3)),
-                child: _PastEventCard(event: event),
-              )),
+          ...pastEvents.map(
+            (event) => Padding(
+              padding: EdgeInsets.only(bottom: tokens.spacing(3)),
+              child: _PastEventCard(event: event),
+            ),
+          ),
         ],
       ),
     );
@@ -260,10 +248,7 @@ class _FeaturedEventCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.brandPrimary,
-            tokens.brandPrimary.withOpacity(0.8),
-          ],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -283,10 +268,7 @@ class _FeaturedEventCard extends StatelessWidget {
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: tokens.cornerMedium(),
                   ),
-                  child: Text(
-                    event.icon,
-                    style: const TextStyle(fontSize: 24),
-                  ),
+                  child: Text(event.icon, style: const TextStyle(fontSize: 24)),
                 ),
                 SizedBox(width: tokens.spacing(3)),
                 Expanded(
@@ -319,7 +301,7 @@ class _FeaturedEventCard extends StatelessWidget {
                     borderRadius: tokens.cornerSmall(),
                   ),
                   child: Text(
-                    '残り${daysLeft}日',
+                    '残り$daysLeft日',
                     style: tokens.bodySmall.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -402,10 +384,7 @@ class _UpcomingEventCard extends StatelessWidget {
                     color: tokens.textMuted.withOpacity(0.1),
                     borderRadius: tokens.cornerMedium(),
                   ),
-                  child: Text(
-                    event.icon,
-                    style: const TextStyle(fontSize: 24),
-                  ),
+                  child: Text(event.icon, style: const TextStyle(fontSize: 24)),
                 ),
                 SizedBox(width: tokens.spacing(3)),
                 Expanded(
@@ -439,7 +418,7 @@ class _UpcomingEventCard extends StatelessWidget {
                     borderRadius: tokens.cornerSmall(),
                   ),
                   child: Text(
-                    '${daysUntil}日後',
+                    '$daysUntil日後',
                     style: tokens.bodySmall.copyWith(
                       color: tokens.textMuted,
                       fontWeight: FontWeight.bold,
@@ -451,17 +430,11 @@ class _UpcomingEventCard extends StatelessWidget {
             SizedBox(height: tokens.spacing(3)),
             Row(
               children: [
-                Icon(
-                  Icons.schedule,
-                  size: 16,
-                  color: tokens.textMuted,
-                ),
+                Icon(Icons.schedule, size: 16, color: tokens.textMuted),
                 SizedBox(width: tokens.spacing(1)),
                 Text(
                   '${event.startDate.month}月${event.startDate.day}日開始',
-                  style: tokens.bodySmall.copyWith(
-                    color: tokens.textMuted,
-                  ),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
                 const Spacer(),
                 TextButton(
@@ -561,42 +534,41 @@ class _PastEventCard extends StatelessWidget {
             if (event.rewards.isNotEmpty) ...[
               Text(
                 '獲得した報酬',
-                style: tokens.bodySmall.copyWith(
-                  color: tokens.textMuted,
-                ),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
               SizedBox(height: tokens.spacing(1)),
               Wrap(
                 spacing: tokens.spacing(2),
-                children: event.rewards.map((reward) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing(2),
-                      vertical: tokens.spacing(1),
-                    ),
-                    decoration: BoxDecoration(
-                      color: tokens.joyAccent.withOpacity(0.1),
-                      borderRadius: tokens.cornerSmall(),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          reward.icon,
-                          style: const TextStyle(fontSize: 16),
+                children:
+                    event.rewards.map((reward) {
+                      return Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: tokens.spacing(2),
+                          vertical: tokens.spacing(1),
                         ),
-                        SizedBox(width: tokens.spacing(1)),
-                        Text(
-                          reward.title,
-                          style: tokens.bodySmall.copyWith(
-                            color: tokens.joyAccent,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        decoration: BoxDecoration(
+                          color: tokens.joyAccent.withOpacity(0.1),
+                          borderRadius: tokens.cornerSmall(),
                         ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              reward.icon,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(width: tokens.spacing(1)),
+                            Text(
+                              reward.title,
+                              style: tokens.bodySmall.copyWith(
+                                color: tokens.joyAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
               ),
             ],
           ],
@@ -627,11 +599,7 @@ class _EmptyEventState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 64,
-              color: tokens.textMuted,
-            ),
+            Icon(icon, size: 64, color: tokens.textMuted),
             SizedBox(height: tokens.spacing(4)),
             Text(
               title,
@@ -644,9 +612,7 @@ class _EmptyEventState extends StatelessWidget {
             SizedBox(height: tokens.spacing(2)),
             Text(
               subtitle,
-              style: tokens.bodyMedium.copyWith(
-                color: tokens.textMuted,
-              ),
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
           ],
@@ -669,9 +635,7 @@ class _EventDetailSheet extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.8,
       decoration: BoxDecoration(
         color: tokens.background,
-        borderRadius: BorderRadius.vertical(
-          top: tokens.cornerXLarge().topLeft,
-        ),
+        borderRadius: BorderRadius.vertical(top: tokens.cornerXLarge().topLeft),
       ),
       child: Column(
         children: [
@@ -778,7 +742,8 @@ class _EventDetailSheet extends StatelessWidget {
                   _InfoRow(
                     icon: Icons.schedule,
                     label: '開催期間',
-                    value: '${event.startDate.month}月${event.startDate.day}日 - ${event.endDate.month}月${event.endDate.day}日',
+                    value:
+                        '${event.startDate.month}月${event.startDate.day}日 - ${event.endDate.month}月${event.endDate.day}日',
                   ),
 
                   SizedBox(height: tokens.spacing(2)),
@@ -810,47 +775,49 @@ class _EventDetailSheet extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: tokens.spacing(2)),
-                    ...event.rewards.map((reward) => Padding(
-                          padding: EdgeInsets.only(bottom: tokens.spacing(2)),
-                          child: Container(
-                            padding: EdgeInsets.all(tokens.spacing(3)),
-                            decoration: BoxDecoration(
-                              color: tokens.joyAccent.withOpacity(0.1),
-                              borderRadius: tokens.cornerMedium(),
-                              border: Border.all(
-                                color: tokens.joyAccent.withOpacity(0.3),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  reward.icon,
-                                  style: const TextStyle(fontSize: 24),
-                                ),
-                                SizedBox(width: tokens.spacing(3)),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        reward.title,
-                                        style: tokens.bodyMedium.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        reward.description,
-                                        style: tokens.bodySmall.copyWith(
-                                          color: tokens.textMuted,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                    ...event.rewards.map(
+                      (reward) => Padding(
+                        padding: EdgeInsets.only(bottom: tokens.spacing(2)),
+                        child: Container(
+                          padding: EdgeInsets.all(tokens.spacing(3)),
+                          decoration: BoxDecoration(
+                            color: tokens.joyAccent.withOpacity(0.1),
+                            borderRadius: tokens.cornerMedium(),
+                            border: Border.all(
+                              color: tokens.joyAccent.withOpacity(0.3),
                             ),
                           ),
-                        )),
+                          child: Row(
+                            children: [
+                              Text(
+                                reward.icon,
+                                style: const TextStyle(fontSize: 24),
+                              ),
+                              SizedBox(width: tokens.spacing(3)),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      reward.title,
+                                      style: tokens.bodyMedium.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      reward.description,
+                                      style: tokens.bodySmall.copyWith(
+                                        color: tokens.textMuted,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
 
                   SizedBox(height: tokens.spacing(6)),
@@ -905,25 +872,14 @@ class _InfoRow extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(
-          icon,
-          size: 16,
-          color: tokens.textMuted,
-        ),
+        Icon(icon, size: 16, color: tokens.textMuted),
         SizedBox(width: tokens.spacing(2)),
-        Text(
-          label,
-          style: tokens.bodySmall.copyWith(
-            color: tokens.textMuted,
-          ),
-        ),
+        Text(label, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
         SizedBox(width: tokens.spacing(2)),
         Expanded(
           child: Text(
             value,
-            style: tokens.bodySmall.copyWith(
-              color: tokens.textPrimary,
-            ),
+            style: tokens.bodySmall.copyWith(color: tokens.textPrimary),
           ),
         ),
       ],

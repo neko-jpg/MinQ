@@ -19,7 +19,7 @@ class AudioFeedbackManager {
   /// Initialize the audio feedback manager with user preferences
   static Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
     try {
       final prefs = await SharedPreferences.getInstance();
       _isEnabled = prefs.getBool(_audioEnabledKey) ?? true;
@@ -53,7 +53,7 @@ class AudioFeedbackManager {
   /// Uses system success sound or custom sound if available
   static Future<void> playSuccess() async {
     if (!_isEnabled) return;
-    
+
     try {
       // Use system click sound as a placeholder
       // In a real implementation, you might want to use a package like audioplayers
@@ -70,7 +70,7 @@ class AudioFeedbackManager {
   /// Uses a gentle, uplifting sound
   static Future<void> playEncouragement() async {
     if (!_isEnabled) return;
-    
+
     try {
       // Use system click sound as a placeholder
       // In production, this would be a custom encouraging sound
@@ -86,7 +86,7 @@ class AudioFeedbackManager {
   /// Uses system alert sound
   static Future<void> playNotification() async {
     if (!_isEnabled) return;
-    
+
     try {
       await SystemSound.play(SystemSoundType.alert);
     } catch (e) {
@@ -100,7 +100,7 @@ class AudioFeedbackManager {
   /// Uses system alert sound with different context
   static Future<void> playError() async {
     if (!_isEnabled) return;
-    
+
     try {
       await SystemSound.play(SystemSoundType.alert);
     } catch (e) {
@@ -114,7 +114,7 @@ class AudioFeedbackManager {
   /// Uses system click sound
   static Future<void> playButtonTap() async {
     if (!_isEnabled) return;
-    
+
     try {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
@@ -128,7 +128,7 @@ class AudioFeedbackManager {
   /// Uses a celebratory sound sequence
   static Future<void> playAchievement() async {
     if (!_isEnabled) return;
-    
+
     try {
       // Play a sequence of clicks to simulate celebration
       await SystemSound.play(SystemSoundType.click);
@@ -147,7 +147,7 @@ class AudioFeedbackManager {
   /// Uses a quick double-click pattern
   static Future<void> playStreak() async {
     if (!_isEnabled) return;
-    
+
     try {
       await SystemSound.play(SystemSoundType.click);
       await Future.delayed(const Duration(milliseconds: 50));
@@ -163,7 +163,7 @@ class AudioFeedbackManager {
   /// Uses an ascending pattern of sounds
   static Future<void> playLevelUp() async {
     if (!_isEnabled) return;
-    
+
     try {
       // Simulate ascending tones with clicks at different intervals
       await SystemSound.play(SystemSoundType.click);
@@ -182,7 +182,7 @@ class AudioFeedbackManager {
   /// Uses a subtle click sound
   static Future<void> playToggle() async {
     if (!_isEnabled) return;
-    
+
     try {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
@@ -196,7 +196,7 @@ class AudioFeedbackManager {
   /// Uses a subtle sound for gesture feedback
   static Future<void> playSwipe() async {
     if (!_isEnabled) return;
-    
+
     try {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../core/version/version_check_service.dart';
-import '../theme/app_theme.dart';
-import '../theme/minq_theme.dart';
+import 'package:minq/core/version/version_check_service.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// バージョン更新画面
 class VersionUpdateScreen extends ConsumerWidget {
@@ -29,11 +28,7 @@ class VersionUpdateScreen extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.system_update,
-                  size: 80,
-                  color: tokens.brandPrimary,
-                ),
+                Icon(Icons.system_update, size: 80, color: tokens.brandPrimary),
                 SizedBox(height: tokens.spacing(6)),
                 Text(
                   _getTitle(result),
@@ -81,17 +76,22 @@ class VersionUpdateScreen extends ConsumerWidget {
     return switch (result) {
       VersionForceUpdate(:final currentVersion, :final minVersion) =>
         'このバージョン（$currentVersion）はサポートが終了しました。\n'
-        '最新バージョン（$minVersion以上）にアップデートしてください。',
-      VersionUpdateAvailable(:final currentVersion, :final recommendedVersion) =>
+            '最新バージョン（$minVersion以上）にアップデートしてください。',
+      VersionUpdateAvailable(
+        :final currentVersion,
+        :final recommendedVersion,
+      ) =>
         '新しいバージョン（$recommendedVersion）が利用可能です。\n'
-        'より快適にご利用いただくため、アップデートをおすすめします。',
+            'より快適にご利用いただくため、アップデートをおすすめします。',
       _ => '最新バージョンにアップデートしてください。',
     };
   }
 
   Future<void> _openStore() async {
     // TODO: プラットフォームに応じてストアURLを変更
-    final url = Uri.parse('https://play.google.com/store/apps/details?id=com.example.minq');
+    final url = Uri.parse(
+      'https://play.google.com/store/apps/details?id=com.example.minq',
+    );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     }

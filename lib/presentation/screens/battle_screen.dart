@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/battle/battle_service.dart';
-import '../widgets/empty_state_widget.dart';
+import 'package:minq/core/battle/battle_service.dart';
+import 'package:minq/presentation/widgets/empty_state_widget.dart';
 
 /// ハビットバトル画面
 class BattleScreen extends ConsumerStatefulWidget {
@@ -18,7 +18,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   final BattleService _battleService = BattleService.instance;
-  
+
   List<Battle> _availableBattles = [];
   List<BattleRanking> _rankings = [];
   bool _isLoading = false;
@@ -39,14 +39,14 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
 
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
-    
+
     try {
       // TODO: 実際のユーザーIDを取得
       await _battleService.initialize('current_user_id');
-      
+
       final battles = await _battleService.searchAvailableBattles();
       final rankings = await _battleService.getGlobalRanking();
-      
+
       setState(() {
         _availableBattles = battles;
         _rankings = rankings;
@@ -55,9 +55,9 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('データの読み込みに失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('データの読み込みに失敗しました: $e')));
       }
     }
   }
@@ -103,16 +103,22 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
             children: [
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: _selectedCategory,
+                  initialValue: _selectedCategory,
                   decoration: const InputDecoration(
                     labelText: 'カテゴリ',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                   ),
                   items: const [
                     DropdownMenuItem(value: 'all', child: Text('すべて')),
                     DropdownMenuItem(value: 'fitness', child: Text('フィットネス')),
-                    DropdownMenuItem(value: 'mindfulness', child: Text('マインドフルネス')),
+                    DropdownMenuItem(
+                      value: 'mindfulness',
+                      child: Text('マインドフルネス'),
+                    ),
                     DropdownMenuItem(value: 'learning', child: Text('学習')),
                     DropdownMenuItem(value: 'productivity', child: Text('生産性')),
                   ],
@@ -123,35 +129,33 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                 ),
               ),
               const SizedBox(width: 12),
-              IconButton(
-                onPressed: _loadData,
-                icon: const Icon(Icons.refresh),
-              ),
+              IconButton(onPressed: _loadData, icon: const Icon(Icons.refresh)),
             ],
           ),
         ),
-        
+
         // バトルリスト
         Expanded(
-          child: _availableBattles.isEmpty
-              ? EmptyStateWidget(
-                  icon: Icons.sports_esports,
-                  title: 'バトルがありません',
-                  subtitle: '新しいバトルを作成するか、しばらく待ってから再度確認してください',
-                  actionText: 'バトルを作成',
-                  onAction: () => _tabController.animateTo(1),
-                )
-              : RefreshIndicator(
-                  onRefresh: _loadData,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: _availableBattles.length,
-                    itemBuilder: (context, index) {
-                      final battle = _availableBattles[index];
-                      return _buildBattleCard(battle);
-                    },
+          child:
+              _availableBattles.isEmpty
+                  ? EmptyStateWidget(
+                    icon: Icons.sports_esports,
+                    title: 'バトルがありません',
+                    subtitle: '新しいバトルを作成するか、しばらく待ってから再度確認してください',
+                    actionText: 'バトルを作成',
+                    onAction: () => _tabController.animateTo(1),
+                  )
+                  : RefreshIndicator(
+                    onRefresh: _loadData,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: _availableBattles.length,
+                      itemBuilder: (context, index) {
+                        final battle = _availableBattles[index];
+                        return _buildBattleCard(battle);
+                      },
+                    ),
                   ),
-                ),
         ),
       ],
     );
@@ -160,7 +164,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
   Widget _buildBattleCard(Battle battle) {
     final progress = battle.participants.length / battle.maxParticipants;
     final timeLeft = battle.duration;
-    
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
@@ -178,7 +182,9 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: _getCategoryColor(battle.category).withOpacity(0.1),
+                      color: _getCategoryColor(
+                        battle.category,
+                      ).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -210,7 +216,10 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.orange.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
@@ -226,22 +235,19 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               // 説明
               Text(
                 battle.description,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade700,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               // 進捗と情報
               Row(
                 children: [
@@ -285,9 +291,9 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               // アクションボタン
               SizedBox(
                 width: double.infinity,
@@ -321,13 +327,10 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                 children: [
                   const Text(
                     'バトルを作成',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // タイトル
                   TextFormField(
                     decoration: const InputDecoration(
@@ -336,7 +339,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // カテゴリ
                   DropdownButtonFormField<String>(
                     decoration: const InputDecoration(
@@ -345,14 +348,20 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                     ),
                     items: const [
                       DropdownMenuItem(value: 'fitness', child: Text('フィットネス')),
-                      DropdownMenuItem(value: 'mindfulness', child: Text('マインドフルネス')),
+                      DropdownMenuItem(
+                        value: 'mindfulness',
+                        child: Text('マインドフルネス'),
+                      ),
                       DropdownMenuItem(value: 'learning', child: Text('学習')),
-                      DropdownMenuItem(value: 'productivity', child: Text('生産性')),
+                      DropdownMenuItem(
+                        value: 'productivity',
+                        child: Text('生産性'),
+                      ),
                     ],
                     onChanged: (value) {},
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // 期間
                   DropdownButtonFormField<Duration>(
                     decoration: const InputDecoration(
@@ -380,7 +389,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                     onChanged: (value) {},
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // 参加費
                   TextFormField(
                     decoration: const InputDecoration(
@@ -391,7 +400,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // 説明
                   TextFormField(
                     decoration: const InputDecoration(
@@ -401,7 +410,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                     maxLines: 3,
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // 作成ボタン
                   ElevatedButton(
                     onPressed: _createBattle,
@@ -411,9 +420,9 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // クイック作成
           Card(
             child: Padding(
@@ -423,10 +432,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                 children: [
                   const Text(
                     'クイック作成',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
                   _buildQuickCreateButton(
@@ -469,7 +475,14 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
     int entryFee,
   ) {
     return InkWell(
-      onTap: () => _createQuickBattle(title, description, category, duration, entryFee),
+      onTap:
+          () => _createQuickBattle(
+            title,
+            description,
+            category,
+            duration,
+            entryFee,
+          ),
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -498,10 +511,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                   ),
                   Text(
                     description,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -568,10 +578,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                 color: Colors.orange,
               ),
             ),
-            const Text(
-              '総ポイント',
-              style: TextStyle(fontSize: 10),
-            ),
+            const Text('総ポイント', style: TextStyle(fontSize: 10)),
           ],
         ),
       ),
@@ -605,8 +612,9 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
   }
 
   Widget _buildHistoryCard(BattleResult result) {
-    final isWinner = result.winner?.userId == 'current_user_id'; // TODO: 実際のユーザーID
-    
+    final isWinner =
+        result.winner?.userId == 'current_user_id'; // TODO: 実際のユーザーID
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -633,20 +641,14 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                 ),
                 Text(
                   _formatDate(result.completedAt),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Text(
               '参加者: ${result.participants.length}人 | 期間: ${_formatDuration(result.duration)}',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
             if (isWinner) ...[
               const SizedBox(height: 8),
@@ -704,7 +706,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              
+
               // ヘッダー
               Padding(
                 padding: const EdgeInsets.all(16),
@@ -726,7 +728,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                   ],
                 ),
               ),
-              
+
               // コンテンツ
               Expanded(
                 child: SingleChildScrollView(
@@ -748,17 +750,23 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                               ),
                               const SizedBox(height: 12),
                               _buildInfoRow('カテゴリ', battle.category),
-                              _buildInfoRow('期間', _formatDuration(battle.duration)),
+                              _buildInfoRow(
+                                '期間',
+                                _formatDuration(battle.duration),
+                              ),
                               _buildInfoRow('参加費', '${battle.entryFee}P'),
                               _buildInfoRow('賞金総額', '${battle.totalPrize}P'),
-                              _buildInfoRow('参加者', '${battle.participants.length}/${battle.maxParticipants}'),
+                              _buildInfoRow(
+                                '参加者',
+                                '${battle.participants.length}/${battle.maxParticipants}',
+                              ),
                             ],
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // 説明
                       Card(
                         child: Padding(
@@ -776,9 +784,9 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // 参加ボタン
                       ElevatedButton(
                         onPressed: () {
@@ -792,7 +800,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                         ),
                         child: const Text('参加する'),
                       ),
-                      
+
                       const SizedBox(height: 32),
                     ],
                   ),
@@ -815,19 +823,13 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
             width: 80,
             child: Text(
               label,
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
         ],
@@ -841,20 +843,23 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
 
   Future<void> _joinBattle(Battle battle) async {
     try {
-      await _battleService.joinBattle(battle.id, 'current_user_id'); // TODO: 実際のユーザーID
-      
+      await _battleService.joinBattle(
+        battle.id,
+        'current_user_id',
+      ); // TODO: 実際のユーザーID
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('バトルに参加しました！')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('バトルに参加しました！')));
       }
-      
+
       await _loadData();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('参加に失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('参加に失敗しました: $e')));
       }
     }
   }
@@ -863,18 +868,18 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
     try {
       // TODO: フォームの値を取得して実際のバトルを作成
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('バトルを作成しました！')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('バトルを作成しました！')));
       }
-      
+
       _tabController.animateTo(0);
       await _loadData();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('作成に失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('作成に失敗しました: $e')));
       }
     }
   }
@@ -895,20 +900,20 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
         title: title,
         description: description,
       );
-      
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('「$title」を作成しました！')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('「$title」を作成しました！')));
       }
-      
+
       _tabController.animateTo(0);
       await _loadData();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('作成に失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('作成に失敗しました: $e')));
       }
     }
   }

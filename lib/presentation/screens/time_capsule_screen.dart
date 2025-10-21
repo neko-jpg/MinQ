@@ -52,18 +52,12 @@ class _TimeCapsuleScreenState extends ConsumerState<TimeCapsuleScreen>
         ),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: '作成'),
-            Tab(text: '一覧'),
-          ],
+          tabs: const [Tab(text: '作成'), Tab(text: '一覧')],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          _CreateTimeCapsuleTab(),
-          _TimeCapsuleListTab(),
-        ],
+        children: const [_CreateTimeCapsuleTab(), _TimeCapsuleListTab()],
       ),
     );
   }
@@ -73,7 +67,8 @@ class _CreateTimeCapsuleTab extends ConsumerStatefulWidget {
   const _CreateTimeCapsuleTab();
 
   @override
-  ConsumerState<_CreateTimeCapsuleTab> createState() => _CreateTimeCapsuleTabState();
+  ConsumerState<_CreateTimeCapsuleTab> createState() =>
+      _CreateTimeCapsuleTabState();
 }
 
 class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
@@ -117,10 +112,7 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
 
     final uid = ref.read(uidProvider);
     if (uid == null) {
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        'ユーザーがサインインしていません',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'ユーザーがサインインしていません');
       return;
     }
 
@@ -130,7 +122,7 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
 
     try {
       final service = ref.read(timeCapsuleServiceProvider);
-      
+
       // AI予測メッセージを生成（簡易版）
       final prediction = _generateAIPrediction(_messageController.text);
 
@@ -142,11 +134,8 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
       );
 
       if (mounted) {
-        FeedbackMessenger.showSuccessToast(
-          context,
-          'タイムカプセルを作成しました！',
-        );
-        
+        FeedbackMessenger.showSuccessToast(context, 'タイムカプセルを作成しました！');
+
         // フォームをリセット
         _messageController.clear();
         _predictionController.clear();
@@ -156,10 +145,7 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
       }
     } catch (e) {
       if (mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          'タイムカプセルの作成に失敗しました',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, 'タイムカプセルの作成に失敗しました');
       }
     } finally {
       if (mounted) {
@@ -180,7 +166,7 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
       '目標に向かって着実に歩み続け、理想の自分に近づいているでしょう。',
       '多くの経験を積み、より豊かな人生を送っていることでしょう。',
     ];
-    
+
     return predictions[DateTime.now().millisecond % predictions.length];
   }
 
@@ -199,9 +185,7 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
             Card(
               elevation: 0,
               color: tokens.brandPrimary.withOpacity(0.1),
-              shape: RoundedRectangleBorder(
-                borderRadius: tokens.cornerLarge(),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
               child: Padding(
                 padding: EdgeInsets.all(tokens.spacing(4)),
                 child: Column(
@@ -249,9 +233,7 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
               maxLines: 5,
               decoration: InputDecoration(
                 hintText: '例：1年後の自分へ。今は毎日瞑想を続けています。きっと心が穏やかになっているでしょうね...',
-                border: OutlineInputBorder(
-                  borderRadius: tokens.cornerLarge(),
-                ),
+                border: OutlineInputBorder(borderRadius: tokens.cornerLarge()),
                 filled: true,
                 fillColor: tokens.surface,
               ),
@@ -288,10 +270,7 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.calendar_today,
-                      color: tokens.brandPrimary,
-                    ),
+                    Icon(Icons.calendar_today, color: tokens.brandPrimary),
                     SizedBox(width: tokens.spacing(3)),
                     Expanded(
                       child: Column(
@@ -344,7 +323,7 @@ class _TimeCapsuleListTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    
+
     // TODO: 実際のデータ取得プロバイダーを実装
     // final capsulesAsync = ref.watch(userTimeCapsuleProvider);
 
@@ -372,11 +351,7 @@ class _TimeCapsuleListTab extends ConsumerWidget {
                       color: tokens.brandPrimary,
                     ),
                   ),
-                  Container(
-                    width: 1,
-                    height: 40,
-                    color: tokens.border,
-                  ),
+                  Container(width: 1, height: 40, color: tokens.border),
                   Expanded(
                     child: _StatItem(
                       icon: Icons.mail,
@@ -402,7 +377,11 @@ class _TimeCapsuleListTab extends ConsumerWidget {
                   child: TimeCapsuleCard(
                     // TODO: 実際のTimeCapsuleオブジェクトを渡す
                     capsule: _mockTimeCapsules[index],
-                    onTap: () => _showTimeCapsuleDetail(context, _mockTimeCapsules[index]),
+                    onTap:
+                        () => _showTimeCapsuleDetail(
+                          context,
+                          _mockTimeCapsules[index],
+                        ),
                   ),
                 );
               },
@@ -478,11 +457,7 @@ class _StatItem extends StatelessWidget {
 
     return Column(
       children: [
-        Icon(
-          icon,
-          color: color,
-          size: 24,
-        ),
+        Icon(icon, color: color, size: 24),
         SizedBox(height: tokens.spacing(1)),
         Text(
           value,
@@ -491,12 +466,7 @@ class _StatItem extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(
-          label,
-          style: tokens.bodySmall.copyWith(
-            color: tokens.textMuted,
-          ),
-        ),
+        Text(label, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
       ],
     );
   }
@@ -516,9 +486,7 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.8,
       decoration: BoxDecoration(
         color: tokens.background,
-        borderRadius: BorderRadius.vertical(
-          top: tokens.cornerXLarge().topLeft,
-        ),
+        borderRadius: BorderRadius.vertical(top: tokens.cornerXLarge().topLeft),
       ),
       child: Column(
         children: [
@@ -567,13 +535,15 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
                   _InfoRow(
                     icon: Icons.create,
                     label: '作成日',
-                    value: '${capsule.createdAt.year}年${capsule.createdAt.month}月${capsule.createdAt.day}日',
+                    value:
+                        '${capsule.createdAt.year}年${capsule.createdAt.month}月${capsule.createdAt.day}日',
                   ),
                   SizedBox(height: tokens.spacing(2)),
                   _InfoRow(
                     icon: Icons.schedule,
                     label: '配信日',
-                    value: '${capsule.deliveryDate.year}年${capsule.deliveryDate.month}月${capsule.deliveryDate.day}日',
+                    value:
+                        '${capsule.deliveryDate.year}年${capsule.deliveryDate.month}月${capsule.deliveryDate.day}日',
                   ),
 
                   SizedBox(height: tokens.spacing(4)),
@@ -618,7 +588,9 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: tokens.brandPrimary.withOpacity(0.1),
                       borderRadius: tokens.cornerLarge(),
-                      border: Border.all(color: tokens.brandPrimary.withOpacity(0.3)),
+                      border: Border.all(
+                        color: tokens.brandPrimary.withOpacity(0.3),
+                      ),
                     ),
                     child: Text(
                       capsule.prediction,
@@ -647,10 +619,7 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
 
   void _shareTimeCapsule(BuildContext context, TimeCapsule capsule) {
     // TODO: SNS共有機能を実装
-    FeedbackMessenger.showInfoSnackBar(
-      context,
-      'SNS共有機能は準備中です',
-    );
+    FeedbackMessenger.showInfoSnackBar(context, 'SNS共有機能は準備中です');
   }
 }
 
@@ -671,25 +640,14 @@ class _InfoRow extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(
-          icon,
-          size: 16,
-          color: tokens.textMuted,
-        ),
+        Icon(icon, size: 16, color: tokens.textMuted),
         SizedBox(width: tokens.spacing(2)),
-        Text(
-          label,
-          style: tokens.bodySmall.copyWith(
-            color: tokens.textMuted,
-          ),
-        ),
+        Text(label, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
         SizedBox(width: tokens.spacing(2)),
         Expanded(
           child: Text(
             value,
-            style: tokens.bodySmall.copyWith(
-              color: tokens.textPrimary,
-            ),
+            style: tokens.bodySmall.copyWith(color: tokens.textPrimary),
           ),
         ),
       ],

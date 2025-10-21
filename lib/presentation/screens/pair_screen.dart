@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/pair/pair.dart';
-import 'package:minq/presentation/common/minq_buttons.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
+import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -121,7 +120,9 @@ class _PairedView extends ConsumerWidget {
               SizedBox(height: tokens.spacing(8)),
               MinqPrimaryButton(
                 label:
-                    canHighFive ? l10n.pairHighFiveAction : l10n.pairHighFiveSent,
+                    canHighFive
+                        ? l10n.pairHighFiveAction
+                        : l10n.pairHighFiveSent,
                 onPressed:
                     canHighFive
                         ? () async {
@@ -144,14 +145,16 @@ class _PairedView extends ConsumerWidget {
                 spacing: tokens.spacing(3),
                 runSpacing: tokens.spacing(3),
                 alignment: WrapAlignment.center,
-                children: quickMessages
-                    .map(
-                      (message) => _QuickMessageChip(
-                        text: message,
-                        onTap: () => _sendQuickMessage(ref, pairId, message),
-                      ),
-                    )
-                    .toList(),
+                children:
+                    quickMessages
+                        .map(
+                          (message) => _QuickMessageChip(
+                            text: message,
+                            onTap:
+                                () => _sendQuickMessage(ref, pairId, message),
+                          ),
+                        )
+                        .toList(),
               ),
             ],
           ),
@@ -216,10 +219,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
   Future<void> _joinWithInvite() async {
     final code = _inviteCodeController.text.trim();
     if (code.isEmpty) {
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        '招待コードを入力してください。',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, '招待コードを入力してください。');
       return;
     }
     final uid = ref.read(uidProvider);
@@ -230,10 +230,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         .read(pairRepositoryProvider)!
         .joinByInvitation(code, uid);
     if (mounted && pairId == null) {
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        '招待コードが無効です。',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, '招待コードが無効です。');
     }
   }
 
@@ -246,10 +243,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         .read(pairRepositoryProvider)!
         .requestRandomPair(uid, _selectedCategory);
     if (mounted && pairId == null) {
-      FeedbackMessenger.showInfoToast(
-        context,
-        '現在マッチング中です。順番をお待ちください。',
-      );
+      FeedbackMessenger.showInfoToast(context, '現在マッチング中です。順番をお待ちください。');
     }
   }
 
@@ -279,8 +273,9 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
           SizedBox(height: tokens.spacing(8)),
           MinqPrimaryButton(
             label: 'マッチングを開始する',
-            onPressed: () async =>
-                ref.read(navigationUseCaseProvider).goToPairMatching(),
+            onPressed:
+                () async =>
+                    ref.read(navigationUseCaseProvider).goToPairMatching(),
           ),
         ],
       ),
@@ -483,15 +478,16 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         ),
         SizedBox(height: tokens.spacing(1)),
         DropdownButtonFormField<String>(
-          value: currentValue,
-          items: items
-              .map(
-                (item) => DropdownMenuItem(
-                  value: item.value,
-                  child: Text(item.label),
-                ),
-              )
-              .toList(),
+          initialValue: currentValue,
+          items:
+              items
+                  .map(
+                    (item) => DropdownMenuItem(
+                      value: item.value,
+                      child: Text(item.label),
+                    ),
+                  )
+                  .toList(),
           onChanged: onChanged,
           decoration: InputDecoration(
             filled: true,

@@ -1,15 +1,13 @@
 import 'dart:async';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:minq/data/providers.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/l10n/app_localizations.dart';
 
 enum PairMatchingStatus { searching, matchFound, noMatch, confirmed, timeout }
 
@@ -126,18 +124,42 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 500),
           child: switch (_status) {
-            PairMatchingStatus.searching => _buildSearchingUI(context, tokens, l10n),
-            PairMatchingStatus.matchFound => _buildMatchFoundUI(context, tokens, l10n),
-            PairMatchingStatus.noMatch => _buildNoMatchUI(context, tokens, l10n),
-            PairMatchingStatus.confirmed => _buildConfirmedUI(context, tokens, l10n),
-            PairMatchingStatus.timeout => _buildTimeoutUI(context, tokens, l10n),
+            PairMatchingStatus.searching => _buildSearchingUI(
+              context,
+              tokens,
+              l10n,
+            ),
+            PairMatchingStatus.matchFound => _buildMatchFoundUI(
+              context,
+              tokens,
+              l10n,
+            ),
+            PairMatchingStatus.noMatch => _buildNoMatchUI(
+              context,
+              tokens,
+              l10n,
+            ),
+            PairMatchingStatus.confirmed => _buildConfirmedUI(
+              context,
+              tokens,
+              l10n,
+            ),
+            PairMatchingStatus.timeout => _buildTimeoutUI(
+              context,
+              tokens,
+              l10n,
+            ),
           },
         ),
       ),
     );
   }
 
-  Widget _buildSearchingUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildSearchingUI(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Column(
       key: const ValueKey('searching'),
       mainAxisAlignment: MainAxisAlignment.center,
@@ -166,7 +188,11 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
                   ),
                 ),
               ),
-              Icon(Icons.groups_2_rounded, color: tokens.brandPrimary, size: 64),
+              Icon(
+                Icons.groups_2_rounded,
+                color: tokens.brandPrimary,
+                size: 64,
+              ),
             ],
           ),
         ),
@@ -188,16 +214,17 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           ),
         ),
         const Spacer(flex: 3),
-        MinqSecondaryButton(
-          label: l10n.cancel,
-          onPressed: _cancelPairing,
-        ),
+        MinqSecondaryButton(label: l10n.cancel, onPressed: _cancelPairing),
         const SizedBox(height: 48),
       ],
     );
   }
 
-  Widget _buildTimeoutUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildTimeoutUI(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Padding(
       key: const ValueKey('timeout'),
       padding: const EdgeInsets.all(24.0),
@@ -205,11 +232,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
-          Icon(
-            Icons.timer_off_outlined,
-            color: tokens.accentWarning,
-            size: 72,
-          ),
+          Icon(Icons.timer_off_outlined, color: tokens.accentWarning, size: 72),
           const SizedBox(height: 24),
           Text(
             l10n.pairMatchingTimeoutTitle,
@@ -244,7 +267,11 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     );
   }
 
-  Widget _buildMatchFoundUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildMatchFoundUI(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Padding(
       key: const ValueKey('matchFound'),
       padding: const EdgeInsets.all(24.0),
@@ -252,11 +279,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
-          Icon(
-            Icons.celebration,
-            color: tokens.accentSuccess,
-            size: 72,
-          ),
+          Icon(Icons.celebration, color: tokens.accentSuccess, size: 72),
           const SizedBox(height: 24),
           Text(
             'マッチング成功！',
@@ -291,7 +314,11 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     );
   }
 
-  Widget _buildNoMatchUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildNoMatchUI(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Padding(
       key: const ValueKey('noMatch'),
       padding: const EdgeInsets.all(24.0),
@@ -299,11 +326,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
-          Icon(
-            Icons.search_off,
-            color: tokens.textMuted,
-            size: 72,
-          ),
+          Icon(Icons.search_off, color: tokens.textMuted, size: 72),
           const SizedBox(height: 24),
           Text(
             'マッチングできませんでした',
@@ -338,7 +361,11 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     );
   }
 
-  Widget _buildConfirmedUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildConfirmedUI(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Padding(
       key: const ValueKey('confirmed'),
       padding: const EdgeInsets.all(24.0),
@@ -346,11 +373,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
-          Icon(
-            Icons.check_circle,
-            color: tokens.accentSuccess,
-            size: 72,
-          ),
+          Icon(Icons.check_circle, color: tokens.accentSuccess, size: 72),
           const SizedBox(height: 24),
           Text(
             'ペアリング完了',

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../theme/spacing_system.dart';
-import '../theme/typography_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/presentation/theme/typography_system.dart';
 
 /// 変更履歴・お知らせセンター画面
 class ChangelogScreen extends ConsumerWidget {
@@ -10,23 +10,13 @@ class ChangelogScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('お知らせ・変更履歴'),
-      ),
+      appBar: AppBar(title: const Text('お知らせ・変更履歴')),
       body: ListView(
         padding: EdgeInsets.all(AppSpacing.md),
         children: [
-          _buildSection(
-            context,
-            title: '最新のお知らせ',
-            items: _getAnnouncements(),
-          ),
+          _buildSection(context, title: '最新のお知らせ', items: _getAnnouncements()),
           SizedBox(height: AppSpacing.lg),
-          _buildSection(
-            context,
-            title: '変更履歴',
-            items: _getChangelogs(),
-          ),
+          _buildSection(context, title: '変更履歴', items: _getChangelogs()),
         ],
       ),
     );
@@ -40,10 +30,7 @@ class ChangelogScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: AppTypography.h2,
-        ),
+        Text(title, style: AppTypography.h2),
         SizedBox(height: AppSpacing.md),
         ...items.map((item) => _buildChangelogCard(context, item)),
       ],
@@ -60,48 +47,35 @@ class ChangelogScreen extends ConsumerWidget {
             children: [
               _buildTypeChip(item.type),
               SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  item.title,
-                  style: AppTypography.h3,
-                ),
-              ),
+              Expanded(child: Text(item.title, style: AppTypography.h3)),
             ],
           ),
           SizedBox(height: AppSpacing.xs),
           Text(
             _formatDate(item.date),
-            style: AppTypography.caption.copyWith(
-              color: Colors.grey,
-            ),
+            style: AppTypography.caption.copyWith(color: Colors.grey),
           ),
           if (item.description != null) ...[
             SizedBox(height: AppSpacing.sm),
-            Text(
-              item.description!,
-              style: AppTypography.body,
-            ),
+            Text(item.description!, style: AppTypography.body),
           ],
           if (item.changes.isNotEmpty) ...[
             SizedBox(height: AppSpacing.sm),
-            ...item.changes.map((change) => Padding(
-                  padding: EdgeInsets.only(
-                    left: AppSpacing.md,
-                    bottom: AppSpacing.xs,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('• ', style: AppTypography.body),
-                      Expanded(
-                        child: Text(
-                          change,
-                          style: AppTypography.body,
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
+            ...item.changes.map(
+              (change) => Padding(
+                padding: EdgeInsets.only(
+                  left: AppSpacing.md,
+                  bottom: AppSpacing.xs,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('• ', style: AppTypography.body),
+                    Expanded(child: Text(change, style: AppTypography.body)),
+                  ],
+                ),
+              ),
+            ),
           ],
         ],
       ),
@@ -145,10 +119,7 @@ class ChangelogScreen extends ConsumerWidget {
       avatar: Icon(icon, size: 16, color: Colors.white),
       label: Text(
         label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-        ),
+        style: const TextStyle(color: Colors.white, fontSize: 12),
       ),
       backgroundColor: color,
       padding: EdgeInsets.zero,
@@ -166,15 +137,10 @@ class ChangelogScreen extends ConsumerWidget {
         type: ChangelogType.announcement,
         title: 'MiniQ v1.0.0 リリース！',
         date: DateTime(2025, 10, 2),
-        description: 'MiniQの最初のバージョンをリリースしました。'
+        description:
+            'MiniQの最初のバージョンをリリースしました。'
             '習慣を楽しく継続できる機能が満載です。',
-        changes: [
-          '習慣管理機能',
-          '進捗統計表示',
-          'ペア機能',
-          'プッシュ通知',
-          'データエクスポート',
-        ],
+        changes: ['習慣管理機能', '進捗統計表示', 'ペア機能', 'プッシュ通知', 'データエクスポート'],
       ),
     ];
   }
@@ -202,22 +168,14 @@ class ChangelogScreen extends ConsumerWidget {
         title: 'パフォーマンス改善',
         date: DateTime(2025, 9, 25),
         description: 'アプリの起動速度とレスポンスを改善しました。',
-        changes: [
-          '起動時間を30%短縮',
-          '画面遷移のアニメーションを最適化',
-          'メモリ使用量を削減',
-        ],
+        changes: ['起動時間を30%短縮', '画面遷移のアニメーションを最適化', 'メモリ使用量を削減'],
       ),
       ChangelogItem(
         type: ChangelogType.bugfix,
         title: 'バグ修正',
         date: DateTime(2025, 9, 20),
         description: 'いくつかのバグを修正しました。',
-        changes: [
-          '通知が届かない問題を修正',
-          'ダークモードでの表示崩れを修正',
-          'データ同期の遅延を改善',
-        ],
+        changes: ['通知が届かない問題を修正', 'ダークモードでの表示崩れを修正', 'データ同期の遅延を改善'],
       ),
     ];
   }
@@ -241,10 +199,4 @@ class ChangelogItem {
 }
 
 /// 変更履歴のタイプ
-enum ChangelogType {
-  announcement,
-  feature,
-  improvement,
-  bugfix,
-  maintenance,
-}
+enum ChangelogType { announcement, feature, improvement, bugfix, maintenance }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/animation_system.dart';
-import '../theme/spacing_system.dart';
+import 'package:minq/presentation/theme/animation_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// スクロール到達インジケータの種類
 enum ScrollIndicatorType {
@@ -41,9 +41,7 @@ class ScrollIndicatorConfig {
     switch (platform) {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
-        return const ScrollIndicatorConfig(
-          type: ScrollIndicatorType.edgeGlow,
-        );
+        return const ScrollIndicatorConfig(type: ScrollIndicatorType.edgeGlow);
       case TargetPlatform.iOS:
       case TargetPlatform.macOS:
         return const ScrollIndicatorConfig(
@@ -94,9 +92,7 @@ class ScrollIndicatorWrapper extends StatelessWidget {
     final glowColor = config.glowColor ?? theme.colorScheme.primary;
 
     return ScrollConfiguration(
-      behavior: ScrollConfiguration.of(context).copyWith(
-        overscroll: true,
-      ),
+      behavior: ScrollConfiguration.of(context).copyWith(overscroll: true),
       child: GlowingOverscrollIndicator(
         axisDirection: AxisDirection.down,
         color: glowColor,
@@ -132,10 +128,7 @@ class ScrollIndicatorWrapper extends StatelessWidget {
     BuildContext context,
     ScrollIndicatorConfig config,
   ) {
-    return CustomScrollIndicator(
-      controller: controller,
-      child: child,
-    );
+    return CustomScrollIndicator(controller: controller, child: child);
   }
 }
 
@@ -207,9 +200,7 @@ class _CustomScrollIndicatorState extends State<CustomScrollIndicator> {
           child: AnimatedOpacity(
             opacity: _showTopIndicator ? 1.0 : 0.0,
             duration: AnimationSystem.fast,
-            child: _ScrollEdgeIndicator(
-              isTop: true,
-            ),
+            child: const _ScrollEdgeIndicator(isTop: true),
           ),
         ),
         // 下部インジケータ
@@ -220,9 +211,7 @@ class _CustomScrollIndicatorState extends State<CustomScrollIndicator> {
           child: AnimatedOpacity(
             opacity: _showBottomIndicator ? 1.0 : 0.0,
             duration: AnimationSystem.fast,
-            child: _ScrollEdgeIndicator(
-              isTop: false,
-            ),
+            child: const _ScrollEdgeIndicator(isTop: false),
           ),
         ),
       ],
@@ -234,9 +223,7 @@ class _CustomScrollIndicatorState extends State<CustomScrollIndicator> {
 class _ScrollEdgeIndicator extends StatelessWidget {
   final bool isTop;
 
-  const _ScrollEdgeIndicator({
-    required this.isTop,
-  });
+  const _ScrollEdgeIndicator({required this.isTop});
 
   @override
   Widget build(BuildContext context) {
@@ -315,25 +302,23 @@ class _ScrollPositionIndicatorState extends State<ScrollPositionIndicator> {
 
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: List.generate(
-        widget.itemCount,
-        (index) {
-          final isActive = index == _currentIndex;
-          return AnimatedContainer(
-            duration: AnimationSystem.fast,
-            curve: AnimationSystem.standard,
-            width: isActive ? 24 : 8,
-            height: 8,
-            margin: EdgeInsets.symmetric(horizontal: Spacing.xxs),
-            decoration: BoxDecoration(
-              color: isActive
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurface.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(4),
-            ),
-          );
-        },
-      ),
+      children: List.generate(widget.itemCount, (index) {
+        final isActive = index == _currentIndex;
+        return AnimatedContainer(
+          duration: AnimationSystem.fast,
+          curve: AnimationSystem.standard,
+          width: isActive ? 24 : 8,
+          height: 8,
+          margin: EdgeInsets.symmetric(horizontal: Spacing.xxs),
+          decoration: BoxDecoration(
+            color:
+                isActive
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurface.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        );
+      }),
     );
   }
 }
@@ -378,7 +363,8 @@ class _ScrollProgressIndicatorState extends State<ScrollProgressIndicator> {
     final maxScroll = position.maxScrollExtent;
     final currentScroll = position.pixels;
 
-    final progress = maxScroll > 0 ? (currentScroll / maxScroll).clamp(0.0, 1.0) : 0.0;
+    final progress =
+        maxScroll > 0 ? (currentScroll / maxScroll).clamp(0.0, 1.0) : 0.0;
 
     if (progress != _progress) {
       setState(() {
@@ -446,9 +432,7 @@ extension ScrollableExtension on Widget {
   Widget withCustomIndicator({ScrollController? controller}) {
     return ScrollIndicatorWrapper(
       controller: controller,
-      config: const ScrollIndicatorConfig(
-        type: ScrollIndicatorType.custom,
-      ),
+      config: const ScrollIndicatorConfig(type: ScrollIndicatorType.custom),
       child: this,
     );
   }

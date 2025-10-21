@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// 複数リマインダーサービス
 class MultipleReminderService {
@@ -63,9 +63,7 @@ class MultipleReminderService {
         time: time,
       );
 
-      logger.info(
-        'Reminder added',
-      );
+      logger.info('Reminder added');
     } catch (e, stack) {
       logger.error('Failed to add reminder', e, stack);
       rethrow;
@@ -246,9 +244,7 @@ class MultipleReminderService {
         }
       }
 
-      logger.info(
-        'Reminders saved',
-      );
+      logger.info('Reminders saved');
     } catch (e, stack) {
       logger.error('Failed to save reminders', e, stack);
       rethrow;
@@ -299,11 +295,7 @@ class MultipleReminderService {
         payload: questId,
       );
     } catch (e, stack) {
-      logger.warning(
-        'Failed to schedule reminder notification',
-        e,
-        stack,
-      );
+      logger.warning('Failed to schedule reminder notification', e, stack);
     }
   }
 
@@ -313,11 +305,7 @@ class MultipleReminderService {
       final notificationId = reminderId.hashCode;
       await _notifications.cancel(notificationId);
     } catch (e, stack) {
-      logger.warning(
-        'Failed to cancel reminder notification',
-        e,
-        stack,
-      );
+      logger.warning('Failed to cancel reminder notification', e, stack);
     }
   }
 

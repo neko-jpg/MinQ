@@ -7,10 +7,7 @@ import 'package:minq/domain/support/tip_option.dart';
 import 'package:riverpod/riverpod.dart';
 
 class TipJarService {
-  TipJarService({
-    required this.client,
-    required this.tipEndpoint,
-  });
+  TipJarService({required this.client, required this.tipEndpoint});
 
   final http.Client client;
   final Uri tipEndpoint;
@@ -22,11 +19,13 @@ class TipJarService {
     }
     final decoded = jsonDecode(response.body) as List<dynamic>;
     return decoded
-        .map((dynamic raw) => TipOption(
-              id: raw['id'] as String,
-              label: raw['label'] as String,
-              amount: (raw['amount'] as num).toInt(),
-            ))
+        .map(
+          (dynamic raw) => TipOption(
+            id: raw['id'] as String,
+            label: raw['label'] as String,
+            amount: (raw['amount'] as num).toInt(),
+          ),
+        )
         .toList();
   }
 

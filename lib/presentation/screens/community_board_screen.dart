@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/data/repositories/community_board_repository.dart';
 import 'package:minq/domain/community/community_post.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/controllers/community_board_controller.dart';
@@ -11,10 +10,7 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 class CommunityBoardScreen extends ConsumerWidget {
   const CommunityBoardScreen({super.key});
 
-  Future<void> _handleSubmit(
-    WidgetRef ref,
-    BuildContext context,
-  ) async {
+  Future<void> _handleSubmit(WidgetRef ref, BuildContext context) async {
     final repository = ref.read(communityBoardRepositoryProvider);
     if (repository == null) {
       FeedbackMessenger.showErrorToast(context, 'コミュニティ掲示板を利用できません');
@@ -29,7 +25,8 @@ class CommunityBoardScreen extends ConsumerWidget {
     }
 
     final userId = ref.read(uidProvider);
-    final displayName = userId?.substring(0, userId.length.clamp(0, 6)) ?? '匿名ユーザー';
+    final displayName =
+        userId?.substring(0, userId.length.clamp(0, 6)) ?? '匿名ユーザー';
 
     try {
       await repository.create(
@@ -70,7 +67,9 @@ class CommunityBoardScreen extends ConsumerWidget {
                 children: [
                   Text(
                     '仲間の進捗やアイデアをシェアしよう',
-                    style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
+                    style: tokens.titleLarge.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: tokens.spacing(2)),
                   TextField(
@@ -105,7 +104,11 @@ class CommunityBoardScreen extends ConsumerWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.groups, size: 64, color: tokens.textMuted),
+                            Icon(
+                              Icons.groups,
+                              size: 64,
+                              color: tokens.textMuted,
+                            ),
                             SizedBox(height: tokens.spacing(3)),
                             Text(
                               'まだ投稿がありません。最初の投稿者になりましょう！',
@@ -119,9 +122,12 @@ class CommunityBoardScreen extends ConsumerWidget {
                   }
 
                   return ListView.separated(
-                    padding: EdgeInsets.symmetric(horizontal: tokens.spacing(4)),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: tokens.spacing(4),
+                    ),
                     itemCount: posts.length,
-                    separatorBuilder: (_, __) => SizedBox(height: tokens.spacing(3)),
+                    separatorBuilder:
+                        (_, __) => SizedBox(height: tokens.spacing(3)),
                     itemBuilder: (context, index) {
                       final post = posts[index];
                       return _CommunityPostCard(post: post);
@@ -129,12 +135,13 @@ class CommunityBoardScreen extends ConsumerWidget {
                   );
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, _) => Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(tokens.spacing(6)),
-                    child: Text('投稿の読み込みに失敗しました: $error'),
-                  ),
-                ),
+                error:
+                    (error, _) => Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(tokens.spacing(6)),
+                        child: Text('投稿の読み込みに失敗しました: $error'),
+                      ),
+                    ),
               ),
             ),
           ],
@@ -164,7 +171,9 @@ class _CommunityPostCard extends ConsumerWidget {
               children: [
                 Text(
                   post.authorDisplayName,
-                  style: tokens.titleSmall.copyWith(fontWeight: FontWeight.w600),
+                  style: tokens.titleSmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 Text(
                   _formatTimestamp(post.createdAt),
@@ -186,15 +195,17 @@ class _CommunityPostCard extends ConsumerWidget {
                       Text(post.likeCount.toString()),
                     ],
                   ),
-                  onPressed: repository == null
-                      ? null
-                      : () => repository.like(post.id),
+                  onPressed:
+                      repository == null
+                          ? null
+                          : () => repository.like(post.id),
                 ),
                 const Spacer(),
                 TextButton.icon(
-                  onPressed: repository == null
-                      ? null
-                      : () => repository.report(post.id),
+                  onPressed:
+                      repository == null
+                          ? null
+                          : () => repository.report(post.id),
                   icon: const Icon(Icons.flag_outlined),
                   label: const Text('報告'),
                 ),

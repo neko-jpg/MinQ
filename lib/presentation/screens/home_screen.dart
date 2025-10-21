@@ -10,11 +10,11 @@ import 'package:minq/presentation/controllers/sync_status_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/ai_concierge_card.dart';
-import 'package:minq/presentation/widgets/gamification_status_card.dart';
-import 'package:minq/presentation/widgets/referral_card.dart';
-import 'package:minq/presentation/widgets/level_progress_widget.dart';
 import 'package:minq/presentation/widgets/failure_prediction_widget.dart';
+import 'package:minq/presentation/widgets/gamification_status_card.dart';
+import 'package:minq/presentation/widgets/level_progress_widget.dart';
 import 'package:minq/presentation/widgets/live_activity_widget.dart';
+import 'package:minq/presentation/widgets/referral_card.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -29,27 +29,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _syncStatusSubscription = ref.listenManual<SyncStatus>(
-      syncStatusProvider,
-      (previous, next) {
-        if (!mounted || !next.showBanner || next.bannerMessage == null) {
-          return;
-        }
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
-          final messenger = ScaffoldMessenger.of(context);
-          messenger
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(next.bannerMessage!),
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
-        });
-      },
-    );
+    _syncStatusSubscription = ref.listenManual<SyncStatus>(syncStatusProvider, (
+      previous,
+      next,
+    ) {
+      if (!mounted || !next.showBanner || next.bannerMessage == null) {
+        return;
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final messenger = ScaffoldMessenger.of(context);
+        messenger
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(next.bannerMessage!),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        ref.read(syncStatusProvider.notifier).acknowledgeBanner();
+      });
+    });
   }
 
   @override
@@ -72,21 +72,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const double maxWidth = 640;
             Widget child = homeAsync.when(
               loading: () => const _HomeScreenSkeleton(),
-              error: (error, _) => _HomeStateMessage(
-                icon: Icons.error_outline,
-                title: 'ホームデータの取得に失敗しました',
-                message: '通信状態を確認して再度お試しください。',
-                action: FilledButton.icon(
-                  onPressed: () => ref.invalidate(homeDataProvider),
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('再読み込み'),
-                ),
-              ),
-              data: (data) => _HomeContent(
-                data: data,
-                isOffline: syncStatus.phase == SyncPhase.offline,
-                onRetry: () => ref.invalidate(homeDataProvider),
-              ),
+              error:
+                  (error, _) => _HomeStateMessage(
+                    icon: Icons.error_outline,
+                    title: 'ホームデータの取得に失敗しました',
+                    message: '通信状態を確認して再度お試しください。',
+                    action: FilledButton.icon(
+                      onPressed: () => ref.invalidate(homeDataProvider),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('再読み込み'),
+                    ),
+                  ),
+              data:
+                  (data) => _HomeContent(
+                    data: data,
+                    isOffline: syncStatus.phase == SyncPhase.offline,
+                    onRetry: () => ref.invalidate(homeDataProvider),
+                  ),
             );
 
             if (constraints.maxWidth > maxWidth) {
@@ -196,7 +198,9 @@ class _TodayFocusCard extends ConsumerWidget {
     final focus = data.focus;
     final quests = data.quests;
     final focusQuest =
-        focus == null ? null : quests.firstWhereOrNull((q) => q.id == focus.questId);
+        focus == null
+            ? null
+            : quests.firstWhereOrNull((q) => q.id == focus.questId);
 
     final bool hasCompletedToday = data.recentLogs.any((log) {
       return focus != null &&
@@ -229,14 +233,15 @@ class _TodayFocusCard extends ConsumerWidget {
                   SizedBox(height: tokens.spacing(1)),
                   Text(
                     focusQuest?.title ?? 'AIがあなたの習慣を学習中です',
-                    style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
+                    style: tokens.titleLarge.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: tokens.spacing(1)),
                   Text(
-                    focus?.headline ??
-                        'MiniQuestを作成して取り組むと、ここに今日のおすすめが表示されます。',
+                    focus?.headline ?? 'MiniQuestを作成して取り組むと、ここに今日のおすすめが表示されます。',
                     style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
@@ -270,7 +275,10 @@ class _TodayFocusCard extends ConsumerWidget {
                   ),
                   Icon(
                     focusQuest != null
-                        ? iconDataForKey(focusQuest.iconKey, fallback: Icons.auto_awesome)
+                        ? iconDataForKey(
+                          focusQuest.iconKey,
+                          fallback: Icons.auto_awesome,
+                        )
                         : Icons.auto_awesome,
                     size: tokens.spacing(8),
                     color: tokens.brandPrimary,
@@ -347,7 +355,8 @@ class _MiniQuestsSection extends ConsumerWidget {
             crossAxisSpacing: 12,
             childAspectRatio: 1.45,
           ),
-          itemBuilder: (context, index) => _MiniQuestTile(quest: display[index]),
+          itemBuilder:
+              (context, index) => _MiniQuestTile(quest: display[index]),
         ),
       ],
     );
@@ -365,10 +374,7 @@ class _MiniQuestTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.brandPrimary,
-            tokens.brandPrimary.withOpacity(0.75),
-          ],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.75)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -439,7 +445,9 @@ class _WeeklyStreakCard extends StatelessWidget {
     final now = DateTime.now();
     final weekDays = List.generate(7, (index) {
       final date = now.subtract(Duration(days: 6 - index));
-      final hasLog = recentLogs.any((log) => DateUtils.isSameDay(log.timestamp, date));
+      final hasLog = recentLogs.any(
+        (log) => DateUtils.isSameDay(log.timestamp, date),
+      );
       return (date: date, hasLog: hasLog);
     });
 
@@ -462,34 +470,43 @@ class _WeeklyStreakCard extends StatelessWidget {
             SizedBox(height: tokens.spacing(3)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: weekDays.map((day) {
-                final isToday = DateUtils.isSameDay(day.date, now);
-                return Column(
-                  children: [
-                    Text(
-                      _weekdayName(day.date.weekday),
-                      style: tokens.bodySmall.copyWith(
-                        color: isToday ? tokens.textPrimary : tokens.textMuted,
-                        fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                      ),
-                    ),
-                    SizedBox(height: tokens.spacing(2)),
-                    Container(
-                      width: tokens.spacing(8),
-                      height: tokens.spacing(8),
-                      decoration: BoxDecoration(
-                        color: day.hasLog
-                            ? tokens.brandPrimary
-                            : tokens.surfaceVariant,
-                        shape: BoxShape.circle,
-                      ),
-                      child: day.hasLog
-                          ? const Icon(Icons.check, color: Colors.white, size: 16)
-                          : null,
-                    ),
-                  ],
-                );
-              }).toList(),
+              children:
+                  weekDays.map((day) {
+                    final isToday = DateUtils.isSameDay(day.date, now);
+                    return Column(
+                      children: [
+                        Text(
+                          _weekdayName(day.date.weekday),
+                          style: tokens.bodySmall.copyWith(
+                            color:
+                                isToday ? tokens.textPrimary : tokens.textMuted,
+                            fontWeight:
+                                isToday ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                        SizedBox(height: tokens.spacing(2)),
+                        Container(
+                          width: tokens.spacing(8),
+                          height: tokens.spacing(8),
+                          decoration: BoxDecoration(
+                            color:
+                                day.hasLog
+                                    ? tokens.brandPrimary
+                                    : tokens.surfaceVariant,
+                            shape: BoxShape.circle,
+                          ),
+                          child:
+                              day.hasLog
+                                  ? const Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                    size: 16,
+                                  )
+                                  : null,
+                        ),
+                      ],
+                    );
+                  }).toList(),
             ),
           ],
         ),
@@ -609,10 +626,7 @@ class _HomeOfflineNotice extends StatelessWidget {
               style: tokens.bodyMedium.copyWith(color: Colors.orange),
             ),
           ),
-          TextButton(
-            onPressed: onRetry,
-            child: const Text('再接続'),
-          ),
+          TextButton(onPressed: onRetry, child: const Text('再接続')),
         ],
       ),
     );

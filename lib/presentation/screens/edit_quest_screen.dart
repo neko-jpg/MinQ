@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/core/reminders/multiple_reminder_service.dart';
@@ -29,13 +28,13 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
   final _contactLinkController = TextEditingController();
   final PageController _pageController = PageController();
   final SetEquality<int> _setEquality = const SetEquality<int>();
-  final ListEquality<_ReminderFormEntry> _reminderListEquality =
-      ListEquality<_ReminderFormEntry>(const _ReminderFormEntryEquality());
+  const ListEquality<_ReminderFormEntry> _reminderListEquality =
+      ListEquality<_ReminderFormEntry>(_ReminderFormEntryEquality());
 
   String _selectedIconKey = 'spa';
   static const Color _defaultColor = Color(0xFF37CBFA);
 
-  Color _selectedColor = _defaultColor;
+  final Color _selectedColor = _defaultColor;
   bool _isTimeGoal = true;
   final Set<int> _selectedDays = <int>{..._defaultSelectedDays};
   final List<_ReminderFormEntry> _reminderEntries = <_ReminderFormEntry>[];

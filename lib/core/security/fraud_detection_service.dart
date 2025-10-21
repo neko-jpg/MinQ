@@ -1,5 +1,4 @@
-import 'package:flutter/foundation.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// 不正利用検出サービス
 /// 短時間での大量クエスト完了などの異常な行動を検出
@@ -23,9 +22,10 @@ class FraudDetectionService {
       final now = DateTime.now();
 
       // 1時間以内の完了数をチェック
-      final lastHourCompletions = recentCompletions
-          .where((time) => now.difference(time) < const Duration(hours: 1))
-          .length;
+      final lastHourCompletions =
+          recentCompletions
+              .where((time) => now.difference(time) < const Duration(hours: 1))
+              .length;
 
       if (lastHourCompletions > _maxQuestsPerHour) {
         _logger.warning(
@@ -33,16 +33,18 @@ class FraudDetectionService {
           metadata: {'userId': userId},
         );
         return FraudDetectionResult.suspicious(
-          reason: '1時間に$lastHourCompletions個のクエストを完了しました（上限: $_maxQuestsPerHour）',
+          reason:
+              '1時間に$lastHourCompletions個のクエストを完了しました（上限: $_maxQuestsPerHour）',
           severity: FraudSeverity.medium,
           action: FraudAction.warning,
         );
       }
 
       // 1日以内の完了数をチェック
-      final lastDayCompletions = recentCompletions
-          .where((time) => now.difference(time) < const Duration(days: 1))
-          .length;
+      final lastDayCompletions =
+          recentCompletions
+              .where((time) => now.difference(time) < const Duration(days: 1))
+              .length;
 
       if (lastDayCompletions > _maxQuestsPerDay) {
         _logger.warning(
@@ -84,10 +86,9 @@ class FraudDetectionService {
     }
 
     // 最新のN件の完了時刻をチェック
-    final recentCompletions = completions
-        .take(_suspiciousCompletionCount)
-        .toList()
-      ..sort((a, b) => b.compareTo(a)); // 新しい順
+    final recentCompletions =
+        completions.take(_suspiciousCompletionCount).toList()
+          ..sort((a, b) => b.compareTo(a)); // 新しい順
 
     if (recentCompletions.isEmpty) return null;
 
@@ -121,7 +122,11 @@ class FraudDetectionService {
 
       return FraudDetectionResult.clean();
     } catch (e, stack) {
-      _logger.error('Account fraud detection failed', error: e, stackTrace: stack);
+      _logger.error(
+        'Account fraud detection failed',
+        error: e,
+        stackTrace: stack,
+      );
       return FraudDetectionResult.clean();
     }
   }
@@ -205,15 +210,15 @@ class FraudDetectionResult {
 
 /// 不正の深刻度
 enum FraudSeverity {
-  low,    // 軽微（警告のみ）
+  low, // 軽微（警告のみ）
   medium, // 中程度（一時的な制限）
-  high,   // 深刻（アカウント停止検討）
+  high, // 深刻（アカウント停止検討）
 }
 
 /// 不正検出時のアクション
 enum FraudAction {
-  warning,        // 警告表示
-  cooldown,       // クールダウン期間設定
+  warning, // 警告表示
+  cooldown, // クールダウン期間設定
   temporaryBlock, // 一時的なブロック
   permanentBlock, // 永久ブロック
 }
@@ -231,7 +236,8 @@ class FraudDetectionStats {
       'suspiciousActivities': suspiciousActivities,
       'warnings': warnings,
       'blocks': blocks,
-      'suspiciousRate': totalChecks > 0 ? suspiciousActivities / totalChecks : 0,
+      'suspiciousRate':
+          totalChecks > 0 ? suspiciousActivities / totalChecks : 0,
     };
   }
 }

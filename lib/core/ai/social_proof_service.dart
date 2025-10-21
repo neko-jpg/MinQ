@@ -9,28 +9,29 @@ import 'package:flutter/services.dart';
 /// リアルタイムアクティビティを追跡し、社会的な習慣化を促進
 class SocialProofService {
   static SocialProofService? _instance;
-  static SocialProofService get instance => _instance ??= SocialProofService._();
-  
+  static SocialProofService get instance =>
+      _instance ??= SocialProofService._();
+
   SocialProofService._();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  
+
   StreamSubscription<QuerySnapshot>? _activitySubscription;
   StreamSubscription<QuerySnapshot>? _liveUsersSubscription;
-  
-  final StreamController<LiveActivityUpdate> _activityController = 
+
+  final StreamController<LiveActivityUpdate> _activityController =
       StreamController<LiveActivityUpdate>.broadcast();
-  
-  final StreamController<SocialStats> _statsController = 
+
+  final StreamController<SocialStats> _statsController =
       StreamController<SocialStats>.broadcast();
-  
+
   Stream<LiveActivityUpdate> get activityStream => _activityController.stream;
   Stream<SocialStats> get statsStream => _statsController.stream;
-  
+
   bool _isActive = false;
   String? _currentUserId;
   SocialSettings _settings = const SocialSettings();
-  
+
   final Map<String, UserActivity> _activeUsers = {};
   final List<ActivityEvent> _recentActivities = [];
 
@@ -50,7 +51,7 @@ class SocialProofService {
     await _initializeUserPresence();
     _startListeningToActivities();
     _startListeningToLiveUsers();
-    
+
     log('SocialProof: ソーシャルプルーフ開始 - $userId');
   }
 
@@ -59,16 +60,16 @@ class SocialProofService {
     if (!_isActive) return;
 
     await _removeUserPresence();
-    
+
     _activitySubscription?.cancel();
     _liveUsersSubscription?.cancel();
-    
+
     _activeUsers.clear();
     _recentActivities.clear();
-    
+
     _isActive = false;
     _currentUserId = null;
-    
+
     log('SocialProof: ソーシャルプルーフ停止');
   }
 
@@ -77,10 +78,7 @@ class SocialProofService {
     if (_currentUserId == null) return;
 
     try {
-      await _firestore
-          .collection('live_users')
-          .doc(_currentUserId)
-          .set({
+      await _firestore.collection('live_users').doc(_currentUserId).set({
         'userId': _currentUserId,
         'isOnline': true,
         'lastSeen': FieldValue.serverTimestamp(),
@@ -104,10 +102,7 @@ class SocialProofService {
     if (_currentUserId == null) return;
 
     try {
-      await _firestore
-          .collection('live_users')
-          .doc(_currentUserId)
-          .update({
+      await _firestore.collection('live_users').doc(_currentUserId).update({
         'isOnline': false,
         'lastSeen': FieldValue.serverTimestamp(),
         'currentActivity': null,
@@ -123,7 +118,10 @@ class SocialProofService {
   void _startListeningToActivities() {
     _activitySubscription = _firestore
         .collection('live_activities')
-        .where('timestamp', isGreaterThan: DateTime.now().subtract(const Duration(minutes: 30)))
+        .where(
+          'timestamp',
+          isGreaterThan: DateTime.now().subtract(const Duration(minutes: 30)),
+        )
         .orderBy('timestamp', descending: true)
         .limit(50)
         .snapshots()
@@ -138,7 +136,10 @@ class SocialProofService {
     _liveUsersSubscription = _firestore
         .collection('live_users')
         .where('isOnline', isEqualTo: true)
-        .where('lastSeen', isGreaterThan: DateTime.now().subtract(const Duration(minutes: 5)))
+        .where(
+          'lastSeen',
+          isGreaterThan: DateTime.now().subtract(const Duration(minutes: 5)),
+        )
         .snapshots()
         .listen(
           _handleLiveUsersUpdate,
@@ -150,7 +151,7 @@ class SocialProofService {
   void _handleActivityUpdate(QuerySnapshot snapshot) {
     try {
       _recentActivities.clear();
-      
+
       for (final doc in snapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
         final activity = ActivityEvent.fromMap(data);
@@ -159,15 +160,17 @@ class SocialProofService {
 
       // アクティビティ統計の更新
       _updateActivityStats();
-      
+
       // 最新のアクティビティを通知
       if (_recentActivities.isNotEmpty) {
         final latest = _recentActivities.first;
-        _activityController.add(LiveActivityUpdate(
-          type: ActivityUpdateType.newActivity,
-          activity: latest,
-          totalActiveUsers: _activeUsers.length,
-        ));
+        _activityController.add(
+          LiveActivityUpdate(
+            type: ActivityUpdateType.newActivity,
+            activity: latest,
+            totalActiveUsers: _activeUsers.length,
+          ),
+        );
       }
     } catch (e) {
       log('SocialProof: アクティビティ更新処理エラー - $e');
@@ -178,7 +181,7 @@ class SocialProofService {
   void _handleLiveUsersUpdate(QuerySnapshot snapshot) {
     try {
       _activeUsers.clear();
-      
+
       for (final doc in snapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
         final user = UserActivity.fromMap(data);
@@ -187,7 +190,7 @@ class SocialProofService {
 
       // 統計の更新
       _updateSocialStats();
-      
+
       log('SocialProof: アクティブユーザー数: ${_activeUsers.length}');
     } catch (e) {
       log('SocialProof: ライブユーザー更新処理エラー - $e');
@@ -199,18 +202,20 @@ class SocialProofService {
     final now = DateTime.now();
     final last5Minutes = now.subtract(const Duration(minutes: 5));
     final last15Minutes = now.subtract(const Duration(minutes: 15));
-    
-    final recent5min = _recentActivities
-        .where((a) => a.timestamp.isAfter(last5Minutes))
-        .toList();
-    
-    final recent15min = _recentActivities
-        .where((a) => a.timestamp.isAfter(last15Minutes))
-        .toList();
+
+    final recent5min =
+        _recentActivities
+            .where((a) => a.timestamp.isAfter(last5Minutes))
+            .toList();
+
+    final recent15min =
+        _recentActivities
+            .where((a) => a.timestamp.isAfter(last15Minutes))
+            .toList();
 
     // カテゴリ別の統計
     final categoryStats = <String, CategoryActivity>{};
-    
+
     for (final activity in recent15min) {
       final category = activity.category;
       if (!categoryStats.containsKey(category)) {
@@ -220,20 +225,22 @@ class SocialProofService {
           recentCompletions: 0,
         );
       }
-      
+
       categoryStats[category]!.activeUsers.add(activity.userId);
       if (activity.type == ActivityType.completion) {
         categoryStats[category]!.recentCompletions++;
       }
     }
 
-    _activityController.add(LiveActivityUpdate(
-      type: ActivityUpdateType.statsUpdate,
-      totalActiveUsers: _activeUsers.length,
-      recentActivities5min: recent5min.length,
-      recentActivities15min: recent15min.length,
-      categoryStats: categoryStats,
-    ));
+    _activityController.add(
+      LiveActivityUpdate(
+        type: ActivityUpdateType.statsUpdate,
+        totalActiveUsers: _activeUsers.length,
+        recentActivities5min: recent5min.length,
+        recentActivities15min: recent15min.length,
+        categoryStats: categoryStats,
+      ),
+    );
   }
 
   /// ソーシャル統計の更新
@@ -273,10 +280,7 @@ class SocialProofService {
       });
 
       // ユーザーの現在のアクティビティを更新
-      await _firestore
-          .collection('live_users')
-          .doc(_currentUserId)
-          .update({
+      await _firestore.collection('live_users').doc(_currentUserId).update({
         'currentActivity': {
           'habitId': habitId,
           'habitTitle': habitTitle,
@@ -322,29 +326,28 @@ class SocialProofService {
       });
 
       // ユーザーの現在のアクティビティをクリア
-      await _firestore
-          .collection('live_users')
-          .doc(_currentUserId)
-          .update({
+      await _firestore.collection('live_users').doc(_currentUserId).update({
         'currentActivity': null,
         'lastSeen': FieldValue.serverTimestamp(),
       });
 
       // 完了時の特別な通知
-      _activityController.add(LiveActivityUpdate(
-        type: ActivityUpdateType.completion,
-        activity: ActivityEvent(
-          userId: _currentUserId!,
-          habitId: habitId,
-          habitTitle: habitTitle,
-          category: category,
-          type: ActivityType.completion,
-          timestamp: DateTime.now(),
-          avatar: _generateAnonymousAvatar(),
-          nickname: _generateAnonymousNickname(),
+      _activityController.add(
+        LiveActivityUpdate(
+          type: ActivityUpdateType.completion,
+          activity: ActivityEvent(
+            userId: _currentUserId!,
+            habitId: habitId,
+            habitTitle: habitTitle,
+            category: category,
+            type: ActivityType.completion,
+            timestamp: DateTime.now(),
+            avatar: _generateAnonymousAvatar(),
+            nickname: _generateAnonymousNickname(),
+          ),
+          totalActiveUsers: _activeUsers.length,
         ),
-        totalActiveUsers: _activeUsers.length,
-      ));
+      );
 
       // 祝福エフェクト
       if (_settings.enableCelebration) {
@@ -362,7 +365,8 @@ class SocialProofService {
     required String targetUserId,
     required EncouragementType stampType,
   }) async {
-    if (!_isActive || _currentUserId == null || !_settings.allowInteraction) return;
+    if (!_isActive || _currentUserId == null || !_settings.allowInteraction)
+      return;
 
     try {
       await _firestore.collection('encouragements').add({
@@ -379,16 +383,18 @@ class SocialProofService {
         HapticFeedback.mediumImpact();
       }
 
-      _activityController.add(LiveActivityUpdate(
-        type: ActivityUpdateType.encouragement,
-        encouragement: EncouragementEvent(
-          fromUserId: _currentUserId!,
-          toUserId: targetUserId,
-          type: stampType,
-          timestamp: DateTime.now(),
+      _activityController.add(
+        LiveActivityUpdate(
+          type: ActivityUpdateType.encouragement,
+          encouragement: EncouragementEvent(
+            fromUserId: _currentUserId!,
+            toUserId: targetUserId,
+            type: stampType,
+            timestamp: DateTime.now(),
+          ),
+          totalActiveUsers: _activeUsers.length,
         ),
-        totalActiveUsers: _activeUsers.length,
-      ));
+      );
 
       log('SocialProof: 励ましスタンプ送信 - ${stampType.name}');
     } catch (e) {
@@ -399,10 +405,10 @@ class SocialProofService {
   /// 現在のアクティビティ統計を取得
   Future<CurrentActivityStats> getCurrentStats() async {
     final now = DateTime.now();
-    
+
     // カテゴリ別のアクティブユーザー数を計算
     final categoryUsers = <String, Set<String>>{};
-    
+
     for (final user in _activeUsers.values) {
       if (user.currentActivity != null) {
         final category = user.currentActivity!.category;
@@ -413,7 +419,7 @@ class SocialProofService {
     // 最も人気のあるカテゴリを特定
     String? mostPopularCategory;
     int maxUsers = 0;
-    
+
     categoryUsers.forEach((category, users) {
       if (users.length > maxUsers) {
         maxUsers = users.length;
@@ -423,28 +429,34 @@ class SocialProofService {
 
     return CurrentActivityStats(
       totalOnlineUsers: _activeUsers.length,
-      totalActiveUsers: _activeUsers.values.where((u) => u.currentActivity != null).length,
+      totalActiveUsers:
+          _activeUsers.values.where((u) => u.currentActivity != null).length,
       categoryStats: categoryUsers.map((k, v) => MapEntry(k, v.length)),
       mostPopularCategory: mostPopularCategory,
       mostPopularCategoryUsers: maxUsers,
-      recentCompletions: _recentActivities
-          .where((a) => a.type == ActivityType.completion)
-          .where((a) => now.difference(a.timestamp).inMinutes <= 15)
-          .length,
+      recentCompletions:
+          _recentActivities
+              .where((a) => a.type == ActivityType.completion)
+              .where((a) => now.difference(a.timestamp).inMinutes <= 15)
+              .length,
     );
   }
 
   /// 特定カテゴリのライブ情報を取得
   Future<CategoryLiveInfo> getCategoryLiveInfo(String category) async {
-    final categoryUsers = _activeUsers.values
-        .where((u) => u.currentActivity?.category == category)
-        .toList();
+    final categoryUsers =
+        _activeUsers.values
+            .where((u) => u.currentActivity?.category == category)
+            .toList();
 
-    final recentCompletions = _recentActivities
-        .where((a) => a.category == category)
-        .where((a) => a.type == ActivityType.completion)
-        .where((a) => DateTime.now().difference(a.timestamp).inMinutes <= 30)
-        .toList();
+    final recentCompletions =
+        _recentActivities
+            .where((a) => a.category == category)
+            .where((a) => a.type == ActivityType.completion)
+            .where(
+              (a) => DateTime.now().difference(a.timestamp).inMinutes <= 30,
+            )
+            .toList();
 
     return CategoryLiveInfo(
       category: category,
@@ -452,22 +464,38 @@ class SocialProofService {
       recentCompletions: recentCompletions.length,
       averageSessionTime: _calculateAverageSessionTime(category),
       popularHabits: _getPopularHabits(category),
-      encouragementMessages: _generateCategoryEncouragement(category, categoryUsers.length),
+      encouragementMessages: _generateCategoryEncouragement(
+        category,
+        categoryUsers.length,
+      ),
     );
   }
 
   /// 祝福エフェクトのトリガー
   void _triggerCelebrationEffect() {
     // 拍手や花火などのエフェクトをトリガー
-    _activityController.add(LiveActivityUpdate(
-      type: ActivityUpdateType.celebration,
-      totalActiveUsers: _activeUsers.length,
-    ));
+    _activityController.add(
+      LiveActivityUpdate(
+        type: ActivityUpdateType.celebration,
+        totalActiveUsers: _activeUsers.length,
+      ),
+    );
   }
 
   /// 匿名アバターの生成
   String _generateAnonymousAvatar() {
-    final avatars = ['🐱', '🐶', '🐰', '🐻', '🐼', '🦊', '🐸', '🐧', '🦋', '🌟'];
+    final avatars = [
+      '🐱',
+      '🐶',
+      '🐰',
+      '🐻',
+      '🐼',
+      '🦊',
+      '🐸',
+      '🐧',
+      '🦋',
+      '🌟',
+    ];
     return avatars[math.Random().nextInt(avatars.length)];
   }
 
@@ -475,10 +503,10 @@ class SocialProofService {
   String _generateAnonymousNickname() {
     final adjectives = ['頑張る', '元気な', '優しい', '強い', '明るい', '素敵な'];
     final nouns = ['ユーザー', '仲間', '友達', 'パートナー', 'メンバー'];
-    
+
     final adj = adjectives[math.Random().nextInt(adjectives.length)];
     final noun = nouns[math.Random().nextInt(nouns.length)];
-    
+
     return '$adj$noun';
   }
 
@@ -495,115 +523,125 @@ class SocialProofService {
   /// トップカテゴリを取得
   List<String> _getTopCategories() {
     final categoryCount = <String, int>{};
-    
+
     for (final activity in _recentActivities) {
-      categoryCount[activity.category] = (categoryCount[activity.category] ?? 0) + 1;
+      categoryCount[activity.category] =
+          (categoryCount[activity.category] ?? 0) + 1;
     }
-    
-    final sorted = categoryCount.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    
+
+    final sorted =
+        categoryCount.entries.toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
+
     return sorted.take(3).map((e) => e.key).toList();
   }
 
   /// 励ましメッセージの生成
   List<String> _generateEncouragementMessages() {
     final messages = <String>[];
-    
+
     if (_activeUsers.length > 10) {
       messages.add('今${_activeUsers.length}人が一緒に頑張っています！');
     }
-    
-    final recentCompletions = _recentActivities
-        .where((a) => a.type == ActivityType.completion)
-        .where((a) => DateTime.now().difference(a.timestamp).inMinutes <= 15)
-        .length;
-    
+
+    final recentCompletions =
+        _recentActivities
+            .where((a) => a.type == ActivityType.completion)
+            .where(
+              (a) => DateTime.now().difference(a.timestamp).inMinutes <= 15,
+            )
+            .length;
+
     if (recentCompletions > 5) {
-      messages.add('この15分で${recentCompletions}個の習慣が完了しました！');
+      messages.add('この15分で$recentCompletions個の習慣が完了しました！');
     }
-    
+
     return messages;
   }
 
   /// 平均セッション時間の計算
   Duration _calculateAverageSessionTime(String category) {
-    final completions = _recentActivities
-        .where((a) => a.category == category && a.type == ActivityType.completion)
-        .toList();
-    
+    final completions =
+        _recentActivities
+            .where(
+              (a) =>
+                  a.category == category && a.type == ActivityType.completion,
+            )
+            .toList();
+
     if (completions.isEmpty) return const Duration(minutes: 15);
-    
+
     var totalMinutes = 0;
     var count = 0;
-    
+
     for (final completion in completions) {
       if (completion.actualDuration != null) {
         totalMinutes += completion.actualDuration!;
         count++;
       }
     }
-    
+
     if (count == 0) return const Duration(minutes: 15);
-    
+
     return Duration(minutes: (totalMinutes / count).round());
   }
 
   /// 人気の習慣を取得
   List<String> _getPopularHabits(String category) {
     final habitCount = <String, int>{};
-    
+
     for (final activity in _recentActivities) {
       if (activity.category == category) {
-        habitCount[activity.habitTitle] = (habitCount[activity.habitTitle] ?? 0) + 1;
+        habitCount[activity.habitTitle] =
+            (habitCount[activity.habitTitle] ?? 0) + 1;
       }
     }
-    
-    final sorted = habitCount.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    
+
+    final sorted =
+        habitCount.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
     return sorted.take(3).map((e) => e.key).toList();
   }
 
   /// カテゴリ別励ましメッセージの生成
-  List<String> _generateCategoryEncouragement(String category, int activeUsers) {
+  List<String> _generateCategoryEncouragement(
+    String category,
+    int activeUsers,
+  ) {
     final messages = <String>[];
-    
+
     switch (category) {
       case 'fitness':
         if (activeUsers > 0) {
-          messages.add('今${activeUsers}人が運動中です！一緒に体を動かしましょう！');
+          messages.add('今$activeUsers人が運動中です！一緒に体を動かしましょう！');
         }
         break;
       case 'mindfulness':
         if (activeUsers > 0) {
-          messages.add('${activeUsers}人が瞑想中です。心を落ち着けて参加しませんか？');
+          messages.add('$activeUsers人が瞑想中です。心を落ち着けて参加しませんか？');
         }
         break;
       case 'learning':
         if (activeUsers > 0) {
-          messages.add('${activeUsers}人が学習中です。知識を深める時間ですね！');
+          messages.add('$activeUsers人が学習中です。知識を深める時間ですね！');
         }
         break;
       default:
         if (activeUsers > 0) {
-          messages.add('${activeUsers}人が${category}に取り組んでいます！');
+          messages.add('$activeUsers人が$categoryに取り組んでいます！');
         }
     }
-    
+
     return messages;
   }
 
   /// 設定の更新
   void updateSettings(SocialSettings settings) {
     _settings = settings;
-    
+
     // プライバシー設定の更新
     if (_currentUserId != null) {
-      _firestore
-          .collection('live_users')
-          .doc(_currentUserId)
-          .update({
+      _firestore.collection('live_users').doc(_currentUserId).update({
         'settings': {
           'showActivity': settings.showActivity,
           'allowInteraction': settings.allowInteraction,
@@ -618,10 +656,10 @@ class SocialProofService {
     _liveUsersSubscription?.cancel();
     _activityController.close();
     _statsController.close();
-    
+
     _activeUsers.clear();
     _recentActivities.clear();
-    
+
     _isActive = false;
     _currentUserId = null;
   }
@@ -747,9 +785,10 @@ class UserActivity {
       userId: map['userId'] ?? '',
       isOnline: map['isOnline'] ?? false,
       lastSeen: (map['lastSeen'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      currentActivity: map['currentActivity'] != null
-          ? CurrentHabitActivity.fromMap(map['currentActivity'])
-          : null,
+      currentActivity:
+          map['currentActivity'] != null
+              ? CurrentHabitActivity.fromMap(map['currentActivity'])
+              : null,
       avatar: map['avatar'] ?? '🌟',
       nickname: map['nickname'] ?? '匿名ユーザー',
     );
@@ -868,13 +907,21 @@ class CategoryLiveInfo {
 
 /// 列挙型
 enum ActivityType { start, completion, pause, resume }
-enum ActivityUpdateType { newActivity, completion, encouragement, celebration, statsUpdate }
-enum EncouragementType { 
-  thumbsUp('👍'), 
-  heart('❤️'), 
-  fire('🔥'), 
-  clap('👏'), 
-  star('⭐'), 
+
+enum ActivityUpdateType {
+  newActivity,
+  completion,
+  encouragement,
+  celebration,
+  statsUpdate,
+}
+
+enum EncouragementType {
+  thumbsUp('👍'),
+  heart('❤️'),
+  fire('🔥'),
+  clap('👏'),
+  star('⭐'),
   muscle('💪');
 
   const EncouragementType(this.emoji);

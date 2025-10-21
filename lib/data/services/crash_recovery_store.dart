@@ -13,7 +13,8 @@ class CrashReport {
     return CrashReport(
       message: json['message'] as String? ?? 'Unknown Error',
       stackTrace: json['stackTrace'] as String? ?? '',
-      recordedAt: DateTime.tryParse(json['recordedAt'] as String? ?? '') ??
+      recordedAt:
+          DateTime.tryParse(json['recordedAt'] as String? ?? '') ??
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
     );
   }

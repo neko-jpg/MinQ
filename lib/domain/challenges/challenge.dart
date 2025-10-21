@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 part 'challenge.freezed.dart';
 part 'challenge.g.dart';
@@ -16,5 +15,6 @@ class Challenge with _$Challenge {
     required DateTime endDate,
   }) = _Challenge;
 
-  factory Challenge.fromJson(Map<String, dynamic> json) => _$ChallengeFromJson(json);
+  factory Challenge.fromJson(Map<String, dynamic> json) =>
+      _$ChallengeFromJson(json);
 }

@@ -26,10 +26,10 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
   late AnimationController _slideController;
   late Animation<double> _pulseAnimation;
   late Animation<Offset> _slideAnimation;
-  
+
   StreamSubscription<LiveActivityUpdate>? _activitySubscription;
   StreamSubscription<SocialStats>? _statsSubscription;
-  
+
   CurrentActivityStats? _currentStats;
   List<ActivityEvent> _recentActivities = [];
   SocialStats? _socialStats;
@@ -38,32 +38,27 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
   @override
   void initState() {
     super.initState();
-    
+
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
+
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.05,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, -1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _slideController, curve: Curves.easeOutBack),
+    );
 
     _startListening();
     _loadInitialData();
@@ -82,7 +77,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
     _activitySubscription = SocialProofService.instance.activityStream.listen(
       _handleActivityUpdate,
     );
-    
+
     _statsSubscription = SocialProofService.instance.statsStream.listen(
       _handleStatsUpdate,
     );
@@ -371,11 +366,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
 
     return Column(
       children: [
-        Icon(
-          icon,
-          color: Colors.white,
-          size: 20,
-        ),
+        Icon(icon, color: Colors.white, size: 20),
         SizedBox(height: tokens.spacing(1)),
         Text(
           value,
@@ -424,17 +415,16 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
         children: [
           Text(
             'カテゴリ別アクティビティ',
-            style: tokens.bodyMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: tokens.spacing(2)),
           Wrap(
             spacing: tokens.spacing(2),
             runSpacing: tokens.spacing(2),
-            children: stats.categoryStats.entries.map((entry) {
-              return _buildCategoryChip(entry.key, entry.value);
-            }).toList(),
+            children:
+                stats.categoryStats.entries.map((entry) {
+                  return _buildCategoryChip(entry.key, entry.value);
+                }).toList(),
           ),
         ],
       ),
@@ -488,22 +478,16 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
         children: [
           Row(
             children: [
-              Icon(
-                Icons.timeline,
-                color: tokens.brandPrimary,
-                size: 16,
-              ),
+              Icon(Icons.timeline, color: tokens.brandPrimary, size: 16),
               SizedBox(width: tokens.spacing(1)),
               Text(
                 '最近のアクティビティ',
-                style: tokens.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           SizedBox(height: tokens.spacing(2)),
-          ...._recentActivities.take(3).map((activity) {
+          ..._recentActivities.take(3).map((activity) {
             return Padding(
               padding: EdgeInsets.only(bottom: tokens.spacing(1)),
               child: _buildActivityItem(activity),
@@ -520,10 +504,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
 
     return Row(
       children: [
-        Text(
-          activity.avatar,
-          style: const TextStyle(fontSize: 16),
-        ),
+        Text(activity.avatar, style: const TextStyle(fontSize: 16)),
         SizedBox(width: tokens.spacing(2)),
         Expanded(
           child: RichText(
@@ -542,7 +523,8 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
                   style: TextStyle(color: tokens.brandPrimary),
                 ),
                 TextSpan(
-                  text: activity.type == ActivityType.completion ? 'を完了' : 'を開始',
+                  text:
+                      activity.type == ActivityType.completion ? 'を完了' : 'を開始',
                 ),
               ],
             ),
@@ -550,11 +532,10 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
         ),
         Text(
           timeAgo,
-          style: tokens.bodySmall.copyWith(
-            color: tokens.textMuted,
-          ),
+          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
         ),
-        if (widget.showEncouragement && activity.type == ActivityType.start) ...[
+        if (widget.showEncouragement &&
+            activity.type == ActivityType.start) ...[
           SizedBox(width: tokens.spacing(2)),
           _buildEncouragementButton(activity),
         ],
@@ -573,11 +554,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
           color: tokens.encouragement.withOpacity(0.1),
           borderRadius: tokens.cornerSmall(),
         ),
-        child: Icon(
-          Icons.favorite,
-          size: 12,
-          color: tokens.encouragement,
-        ),
+        child: Icon(Icons.favorite, size: 12, color: tokens.encouragement),
       ),
     );
   }
@@ -597,11 +574,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
         children: [
           Row(
             children: [
-              Icon(
-                Icons.campaign,
-                color: tokens.encouragement,
-                size: 16,
-              ),
+              Icon(Icons.campaign, color: tokens.encouragement, size: 16),
               SizedBox(width: tokens.spacing(1)),
               Text(
                 '励ましメッセージ',
@@ -618,9 +591,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
               padding: EdgeInsets.only(bottom: tokens.spacing(1)),
               child: Text(
                 message,
-                style: tokens.bodySmall.copyWith(
-                  color: tokens.textPrimary,
-                ),
+                style: tokens.bodySmall.copyWith(color: tokens.textPrimary),
               ),
             );
           }),
@@ -683,10 +654,12 @@ class LiveActivitySettingsScreen extends ConsumerStatefulWidget {
   const LiveActivitySettingsScreen({super.key});
 
   @override
-  ConsumerState<LiveActivitySettingsScreen> createState() => _LiveActivitySettingsScreenState();
+  ConsumerState<LiveActivitySettingsScreen> createState() =>
+      _LiveActivitySettingsScreenState();
 }
 
-class _LiveActivitySettingsScreenState extends ConsumerState<LiveActivitySettingsScreen> {
+class _LiveActivitySettingsScreenState
+    extends ConsumerState<LiveActivitySettingsScreen> {
   late SocialSettings _settings;
 
   @override
@@ -717,60 +690,54 @@ class _LiveActivitySettingsScreenState extends ConsumerState<LiveActivitySetting
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // プライバシー設定
-            _buildSettingsSection(
-              'プライバシー設定',
-              [
-                SwitchListTile(
-                  title: const Text('アクティビティを表示'),
-                  subtitle: const Text('他のユーザーにあなたの活動を表示します'),
-                  value: _settings.showActivity,
-                  onChanged: (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(showActivity: value);
-                    });
-                  },
-                ),
-                SwitchListTile(
-                  title: const Text('交流を許可'),
-                  subtitle: const Text('他のユーザーからの励ましを受け取ります'),
-                  value: _settings.allowInteraction,
-                  onChanged: (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(allowInteraction: value);
-                    });
-                  },
-                ),
-              ],
-            ),
+            _buildSettingsSection('プライバシー設定', [
+              SwitchListTile(
+                title: const Text('アクティビティを表示'),
+                subtitle: const Text('他のユーザーにあなたの活動を表示します'),
+                value: _settings.showActivity,
+                onChanged: (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(showActivity: value);
+                  });
+                },
+              ),
+              SwitchListTile(
+                title: const Text('交流を許可'),
+                subtitle: const Text('他のユーザーからの励ましを受け取ります'),
+                value: _settings.allowInteraction,
+                onChanged: (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(allowInteraction: value);
+                  });
+                },
+              ),
+            ]),
 
             SizedBox(height: tokens.spacing(6)),
 
             // 通知設定
-            _buildSettingsSection(
-              '通知設定',
-              [
-                SwitchListTile(
-                  title: const Text('触覚フィードバック'),
-                  subtitle: const Text('アクティビティ時に振動でお知らせします'),
-                  value: _settings.enableHaptics,
-                  onChanged: (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(enableHaptics: value);
-                    });
-                  },
-                ),
-                SwitchListTile(
-                  title: const Text('祝福エフェクト'),
-                  subtitle: const Text('完了時に祝福エフェクトを表示します'),
-                  value: _settings.enableCelebration,
-                  onChanged: (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(enableCelebration: value);
-                    });
-                  },
-                ),
-              ],
-            ),
+            _buildSettingsSection('通知設定', [
+              SwitchListTile(
+                title: const Text('触覚フィードバック'),
+                subtitle: const Text('アクティビティ時に振動でお知らせします'),
+                value: _settings.enableHaptics,
+                onChanged: (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(enableHaptics: value);
+                  });
+                },
+              ),
+              SwitchListTile(
+                title: const Text('祝福エフェクト'),
+                subtitle: const Text('完了時に祝福エフェクトを表示します'),
+                value: _settings.enableCelebration,
+                onChanged: (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(enableCelebration: value);
+                  });
+                },
+              ),
+            ]),
 
             SizedBox(height: tokens.spacing(6)),
 
@@ -778,9 +745,7 @@ class _LiveActivitySettingsScreenState extends ConsumerState<LiveActivitySetting
             Card(
               elevation: 0,
               color: tokens.brandPrimary.withOpacity(0.1),
-              shape: RoundedRectangleBorder(
-                borderRadius: tokens.cornerLarge(),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
               child: Padding(
                 padding: EdgeInsets.all(tokens.spacing(4)),
                 child: Column(
@@ -788,10 +753,7 @@ class _LiveActivitySettingsScreenState extends ConsumerState<LiveActivitySetting
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.info,
-                          color: tokens.brandPrimary,
-                        ),
+                        Icon(Icons.info, color: tokens.brandPrimary),
                         SizedBox(width: tokens.spacing(2)),
                         Text(
                           'ライブアクティビティについて',
@@ -827,9 +789,7 @@ class _LiveActivitySettingsScreenState extends ConsumerState<LiveActivitySetting
       children: [
         Text(
           title,
-          style: tokens.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: tokens.spacing(3)),
         Card(

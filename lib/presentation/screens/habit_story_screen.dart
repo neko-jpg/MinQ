@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/ai/habit_story_generator.dart';
-import '../widgets/empty_state_widget.dart';
+import 'package:minq/core/ai/habit_story_generator.dart';
+import 'package:minq/presentation/widgets/empty_state_widget.dart';
 
 /// ハビットストーリー画面
 class HabitStoryScreen extends ConsumerStatefulWidget {
@@ -18,7 +16,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   final HabitStoryGenerator _storyGenerator = HabitStoryGenerator.instance;
-  
+
   List<HabitStory> _stories = [];
   bool _isLoading = false;
   HabitStory? _selectedStory;
@@ -38,7 +36,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
 
   Future<void> _loadStories() async {
     setState(() => _isLoading = true);
-    
+
     try {
       // サンプルデータでストーリーを生成
       final sampleData = HabitProgressData(
@@ -55,7 +53,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
       );
 
       final stories = <HabitStory>[];
-      
+
       // 複数のストーリータイプを生成
       for (final type in [
         StoryType.dailyAchievement,
@@ -80,16 +78,16 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('ストーリーの読み込みに失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('ストーリーの読み込みに失敗しました: $e')));
       }
     }
   }
 
   Future<void> _generateNewStory(StoryType type) async {
     setState(() => _isLoading = true);
-    
+
     try {
       final sampleData = HabitProgressData(
         habitTitle: '読書習慣',
@@ -115,16 +113,16 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('新しいストーリーを生成しました！')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('新しいストーリーを生成しました！')));
       }
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('ストーリー生成に失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('ストーリー生成に失敗しました: $e')));
       }
     }
   }
@@ -155,11 +153,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          _buildGalleryTab(),
-          _buildCreateTab(),
-          _buildSettingsTab(),
-        ],
+        children: [_buildGalleryTab(), _buildCreateTab(), _buildSettingsTab()],
       ),
     );
   }
@@ -219,10 +213,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
               // 背景画像またはグラデーション
               if (story.imageFile != null)
                 Positioned.fill(
-                  child: Image.file(
-                    story.imageFile!,
-                    fit: BoxFit.cover,
-                  ),
+                  child: Image.file(story.imageFile!, fit: BoxFit.cover),
                 )
               else
                 Positioned.fill(
@@ -232,7 +223,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                     ),
                   ),
                 ),
-              
+
               // オーバーレイ
               Positioned.fill(
                 child: Container(
@@ -248,7 +239,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                   ),
                 ),
               ),
-              
+
               // コンテンツ
               Positioned(
                 left: 12,
@@ -284,13 +275,16 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                   ],
                 ),
               ),
-              
+
               // タイプバッジ
               Positioned(
                 top: 8,
                 right: 8,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(12),
@@ -326,10 +320,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                 children: [
                   const Text(
                     'ストーリータイプを選択',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
                   _buildStoryTypeButton(
@@ -367,9 +358,9 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
               ),
             ),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           if (_isLoading)
             const Card(
               child: Padding(
@@ -430,10 +421,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -482,9 +470,9 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
             ],
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         Card(
           child: Column(
             children: [
@@ -510,9 +498,9 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
             ],
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         Card(
           child: Column(
             children: [
@@ -565,7 +553,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              
+
               // ヘッダー
               Padding(
                 padding: const EdgeInsets.all(16),
@@ -587,7 +575,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                   ],
                 ),
               ),
-              
+
               // コンテンツ
               Expanded(
                 child: SingleChildScrollView(
@@ -611,51 +599,58 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: story.imageFile != null
-                              ? Image.file(
-                                  story.imageFile!,
-                                  fit: BoxFit.cover,
-                                )
-                              : Container(
-                                  decoration: BoxDecoration(
-                                    gradient: story.visualElements.backgroundGradient,
-                                  ),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          story.visualElements.iconEmoji,
-                                          style: const TextStyle(fontSize: 64),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        Text(
-                                          story.title,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
+                          child:
+                              story.imageFile != null
+                                  ? Image.file(
+                                    story.imageFile!,
+                                    fit: BoxFit.cover,
+                                  )
+                                  : Container(
+                                    decoration: BoxDecoration(
+                                      gradient:
+                                          story
+                                              .visualElements
+                                              .backgroundGradient,
+                                    ),
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            story.visualElements.iconEmoji,
+                                            style: const TextStyle(
+                                              fontSize: 64,
+                                            ),
                                           ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          story.content,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            story.title,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            story.content,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 24),
-                      
+
                       // ストーリー情報
                       Card(
                         child: Padding(
@@ -668,18 +663,33 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               const SizedBox(height: 12),
-                              _buildInfoRow('タイプ', _getStoryTypeLabel(story.type)),
-                              _buildInfoRow('作成日時', _formatDateTime(story.createdAt)),
-                              _buildInfoRow('習慣', story.progressData.habitTitle),
-                              _buildInfoRow('カテゴリ', story.progressData.category),
-                              _buildInfoRow('継続日数', '${story.progressData.currentStreak}日'),
+                              _buildInfoRow(
+                                'タイプ',
+                                _getStoryTypeLabel(story.type),
+                              ),
+                              _buildInfoRow(
+                                '作成日時',
+                                _formatDateTime(story.createdAt),
+                              ),
+                              _buildInfoRow(
+                                '習慣',
+                                story.progressData.habitTitle,
+                              ),
+                              _buildInfoRow(
+                                'カテゴリ',
+                                story.progressData.category,
+                              ),
+                              _buildInfoRow(
+                                '継続日数',
+                                '${story.progressData.currentStreak}日',
+                              ),
                             ],
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // アクションボタン
                       Row(
                         children: [
@@ -700,7 +710,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 32),
                     ],
                   ),
@@ -723,19 +733,13 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
             width: 80,
             child: Text(
               label,
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
         ],
@@ -747,15 +751,15 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
     try {
       await _storyGenerator.shareStory(story);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ストーリーを共有しました')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('ストーリーを共有しました')));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('共有に失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('共有に失敗しました: $e')));
       }
     }
   }
@@ -764,15 +768,15 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
     try {
       // TODO: ギャラリーに保存する機能を実装
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ストーリーを保存しました')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('ストーリーを保存しました')));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('保存に失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('保存に失敗しました: $e')));
       }
     }
   }

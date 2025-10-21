@@ -36,81 +36,37 @@ class ElevationSystem {
 
   /// 極小の影 - ホバー状態
   static const List<BoxShadow> minimal = [
-    BoxShadow(
-      color: Color(0x0A000000),
-      blurRadius: 4,
-      offset: Offset(0, 1),
-    ),
+    BoxShadow(color: Color(0x0A000000), blurRadius: 4, offset: Offset(0, 1)),
   ];
 
   /// 小さな影 - カード、チップ
   static const List<BoxShadow> small = [
-    BoxShadow(
-      color: Color(0x0F000000),
-      blurRadius: 8,
-      offset: Offset(0, 2),
-    ),
-    BoxShadow(
-      color: Color(0x0A000000),
-      blurRadius: 4,
-      offset: Offset(0, 1),
-    ),
+    BoxShadow(color: Color(0x0F000000), blurRadius: 8, offset: Offset(0, 2)),
+    BoxShadow(color: Color(0x0A000000), blurRadius: 4, offset: Offset(0, 1)),
   ];
 
   /// 中程度の影 - ボタン、FAB
   static const List<BoxShadow> medium = [
-    BoxShadow(
-      color: Color(0x14000000),
-      blurRadius: 12,
-      offset: Offset(0, 4),
-    ),
-    BoxShadow(
-      color: Color(0x0A000000),
-      blurRadius: 6,
-      offset: Offset(0, 2),
-    ),
+    BoxShadow(color: Color(0x14000000), blurRadius: 12, offset: Offset(0, 4)),
+    BoxShadow(color: Color(0x0A000000), blurRadius: 6, offset: Offset(0, 2)),
   ];
 
   /// 大きな影 - ダイアログ、メニュー
   static const List<BoxShadow> large = [
-    BoxShadow(
-      color: Color(0x1A000000),
-      blurRadius: 18,
-      offset: Offset(0, 8),
-    ),
-    BoxShadow(
-      color: Color(0x0F000000),
-      blurRadius: 8,
-      offset: Offset(0, 4),
-    ),
+    BoxShadow(color: Color(0x1A000000), blurRadius: 18, offset: Offset(0, 8)),
+    BoxShadow(color: Color(0x0F000000), blurRadius: 8, offset: Offset(0, 4)),
   ];
 
   /// 特大の影 - ナビゲーションドロワー
   static const List<BoxShadow> extraLarge = [
-    BoxShadow(
-      color: Color(0x1F000000),
-      blurRadius: 24,
-      offset: Offset(0, 12),
-    ),
-    BoxShadow(
-      color: Color(0x14000000),
-      blurRadius: 12,
-      offset: Offset(0, 6),
-    ),
+    BoxShadow(color: Color(0x1F000000), blurRadius: 24, offset: Offset(0, 12)),
+    BoxShadow(color: Color(0x14000000), blurRadius: 12, offset: Offset(0, 6)),
   ];
 
   /// 最大の影 - モーダル、ボトムシート
   static const List<BoxShadow> maximum = [
-    BoxShadow(
-      color: Color(0x24000000),
-      blurRadius: 32,
-      offset: Offset(0, 16),
-    ),
-    BoxShadow(
-      color: Color(0x1A000000),
-      blurRadius: 16,
-      offset: Offset(0, 8),
-    ),
+    BoxShadow(color: Color(0x24000000), blurRadius: 32, offset: Offset(0, 16)),
+    BoxShadow(color: Color(0x1A000000), blurRadius: 16, offset: Offset(0, 8)),
   ];
 
   // ========================================
@@ -119,29 +75,17 @@ class ElevationSystem {
 
   /// ダークモード - 小さな影
   static const List<BoxShadow> darkSmall = [
-    BoxShadow(
-      color: Color(0x33000000),
-      blurRadius: 10,
-      offset: Offset(0, 3),
-    ),
+    BoxShadow(color: Color(0x33000000), blurRadius: 10, offset: Offset(0, 3)),
   ];
 
   /// ダークモード - 中程度の影
   static const List<BoxShadow> darkMedium = [
-    BoxShadow(
-      color: Color(0x3D000000),
-      blurRadius: 16,
-      offset: Offset(0, 6),
-    ),
+    BoxShadow(color: Color(0x3D000000), blurRadius: 16, offset: Offset(0, 6)),
   ];
 
   /// ダークモード - 大きな影
   static const List<BoxShadow> darkLarge = [
-    BoxShadow(
-      color: Color(0x47000000),
-      blurRadius: 24,
-      offset: Offset(0, 10),
-    ),
+    BoxShadow(color: Color(0x47000000), blurRadius: 24, offset: Offset(0, 10)),
   ];
 
   // ========================================
@@ -175,30 +119,30 @@ class ElevationSystem {
 
   /// プライマリカラーの影
   static List<BoxShadow> primaryGlow(Color primaryColor) => [
-        BoxShadow(
-          color: primaryColor.withOpacity(0.3),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(
+      color: primaryColor.withOpacity(0.3),
+      blurRadius: 16,
+      offset: const Offset(0, 4),
+    ),
+  ];
 
   /// 成功カラーの影
   static List<BoxShadow> successGlow(Color successColor) => [
-        BoxShadow(
-          color: successColor.withOpacity(0.3),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(
+      color: successColor.withOpacity(0.3),
+      blurRadius: 16,
+      offset: const Offset(0, 4),
+    ),
+  ];
 
   /// エラーカラーの影
   static List<BoxShadow> errorGlow(Color errorColor) => [
-        BoxShadow(
-          color: errorColor.withOpacity(0.3),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(
+      color: errorColor.withOpacity(0.3),
+      blurRadius: 16,
+      offset: const Offset(0, 4),
+    ),
+  ];
 
   // ========================================
   // インナーシャドウ（疑似）
@@ -214,10 +158,7 @@ class ElevationSystem {
       gradient: LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          color.withOpacity(0.1),
-          Colors.transparent,
-        ],
+        colors: [color.withOpacity(0.1), Colors.transparent],
         stops: const [0.0, 0.3],
       ),
     );
@@ -355,42 +296,32 @@ class BorderSystem {
   // ========================================
 
   /// 標準枠線
-  static Border standard(Color color) => Border.all(
-        color: color,
-        width: regular,
-      );
+  static Border standard(Color color) =>
+      Border.all(color: color, width: regular);
 
   /// 細い枠線
-  static Border thinBorder(Color color) => Border.all(
-        color: color,
-        width: thin,
-      );
+  static Border thinBorder(Color color) =>
+      Border.all(color: color, width: thin);
 
   /// 太い枠線
-  static Border thickBorder(Color color) => Border.all(
-        color: color,
-        width: thick,
-      );
+  static Border thickBorder(Color color) =>
+      Border.all(color: color, width: thick);
 
   /// 下部のみの枠線
-  static Border bottomOnly(Color color, {double width = regular}) => Border(
-        bottom: BorderSide(color: color, width: width),
-      );
+  static Border bottomOnly(Color color, {double width = regular}) =>
+      Border(bottom: BorderSide(color: color, width: width));
 
   /// 上部のみの枠線
-  static Border topOnly(Color color, {double width = regular}) => Border(
-        top: BorderSide(color: color, width: width),
-      );
+  static Border topOnly(Color color, {double width = regular}) =>
+      Border(top: BorderSide(color: color, width: width));
 
   /// 左側のみの枠線
-  static Border leftOnly(Color color, {double width = regular}) => Border(
-        left: BorderSide(color: color, width: width),
-      );
+  static Border leftOnly(Color color, {double width = regular}) =>
+      Border(left: BorderSide(color: color, width: width));
 
   /// 右側のみの枠線
-  static Border rightOnly(Color color, {double width = regular}) => Border(
-        right: BorderSide(color: color, width: width),
-      );
+  static Border rightOnly(Color color, {double width = regular}) =>
+      Border(right: BorderSide(color: color, width: width));
 
   // ========================================
   // セマンティックな枠線
@@ -492,10 +423,7 @@ extension BorderExtension on Widget {
   /// 角丸を追加
   Widget withRadius(BorderRadius radius, {Color? backgroundColor}) {
     return Container(
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: radius,
-      ),
+      decoration: BoxDecoration(color: backgroundColor, borderRadius: radius),
       clipBehavior: Clip.antiAlias,
       child: this,
     );

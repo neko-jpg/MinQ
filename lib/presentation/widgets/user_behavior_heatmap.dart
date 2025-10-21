@@ -23,13 +23,14 @@ class UserBehaviorHeatmap extends StatelessWidget {
       label: '週間達成ヒートマップ',
       child: HeatMap(
         datasets: dataset,
-        startDate: startDate ?? DateTime.now().subtract(const Duration(days: 90)),
+        startDate:
+            startDate ?? DateTime.now().subtract(const Duration(days: 90)),
         endDate: endDate ?? DateTime.now(),
         size: 32,
         borderRadius: 12,
         margin: const EdgeInsets.all(4),
         colorMode: ColorMode.opacity,
-        defaultColor: theme.colorScheme.surfaceVariant,
+        defaultColor: theme.colorScheme.surfaceContainerHighest,
         textColor: theme.colorScheme.onSurface,
         onClick: (value) => onDateSelected?.call(value),
         showText: false,

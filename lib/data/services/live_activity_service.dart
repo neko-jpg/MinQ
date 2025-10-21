@@ -5,13 +5,23 @@ import 'package:riverpod/riverpod.dart';
 // Dummy type until integrations package is fixed
 class LiveActivityChannel {
   const LiveActivityChannel();
-  Future<void> startProgressActivity({required String questId, required String title, required int completed, required int total}) async {}
-  Future<void> updateProgress({required String questId, required int completed, required int total}) async {}
+  Future<void> startProgressActivity({
+    required String questId,
+    required String title,
+    required int completed,
+    required int total,
+  }) async {}
+  Future<void> updateProgress({
+    required String questId,
+    required int completed,
+    required int total,
+  }) async {}
   Future<void> endProgress(String questId) async {}
 }
 
 class LiveActivityService {
-  LiveActivityService({required LiveActivityChannel channel}) : _channel = channel;
+  LiveActivityService({required LiveActivityChannel channel})
+    : _channel = channel;
 
   final LiveActivityChannel _channel;
 
@@ -47,7 +57,7 @@ class LiveActivityService {
 }
 
 final liveActivityChannelProvider = Provider<LiveActivityChannel>((ref) {
-  return LiveActivityChannel();
+  return const LiveActivityChannel();
 });
 
 final liveActivityServiceProvider = Provider<LiveActivityService>((ref) {

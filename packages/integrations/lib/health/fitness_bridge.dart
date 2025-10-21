@@ -4,9 +4,8 @@ import 'package:flutter/services.dart';
 
 /// Provides a unified method channel API for HealthKit / Google Fit integrations.
 class FitnessBridge {
-  FitnessBridge({
-    MethodChannel? channel,
-  }) : _channel = channel ?? const MethodChannel('miinq/fitness_bridge');
+  FitnessBridge({MethodChannel? channel})
+    : _channel = channel ?? const MethodChannel('miinq/fitness_bridge');
 
   final MethodChannel _channel;
 

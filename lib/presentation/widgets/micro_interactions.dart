@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// マイクロインタラクション集
-/// 
+///
 /// アプリ全体で使用する小さなアニメーションとフィードバック
 class MicroInteractions {
   MicroInteractions._();
@@ -59,18 +59,12 @@ class _BounceButtonState extends State<BounceButton>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.scaleFactor,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -138,32 +132,25 @@ class _RippleEffectState extends State<RippleEffect>
   late AnimationController _controller;
   late Animation<double> _radiusAnimation;
   late Animation<double> _opacityAnimation;
-  
+
   Offset? _tapPosition;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
     _radiusAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
-    
-    _opacityAnimation = Tween<double>(
-      begin: 0.5,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _opacityAnimation = Tween<double>(begin: 0.5, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
+      ),
+    );
   }
 
   @override
@@ -218,11 +205,14 @@ class _RipplePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (tapPosition == null || animation.value == 0.0) return;
 
-    final paint = Paint()
-      ..color = color.withOpacity(opacityAnimation.value)
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = color.withOpacity(opacityAnimation.value)
+          ..style = PaintingStyle.fill;
 
-    final maxRadius = math.sqrt(size.width * size.width + size.height * size.height);
+    final maxRadius = math.sqrt(
+      size.width * size.width + size.height * size.height,
+    );
     final radius = maxRadius * radiusAnimation.value;
 
     canvas.drawCircle(tapPosition!, radius, paint);
@@ -259,11 +249,8 @@ class _ConfettiEffectState extends State<ConfettiEffect>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
     _generateParticles();
   }
 
@@ -366,10 +353,8 @@ class ConfettiPainter extends CustomPainter {
   final Animation<double> animation;
   final List<ConfettiParticle> particles;
 
-  ConfettiPainter({
-    required this.animation,
-    required this.particles,
-  }) : super(repaint: animation);
+  ConfettiPainter({required this.animation, required this.particles})
+    : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -378,22 +363,25 @@ class ConfettiPainter extends CustomPainter {
     for (final particle in particles) {
       final progress = animation.value;
       final gravity = 9.8 * progress * progress;
-      
+
       final x = size.width * (particle.x + particle.velocityX * progress * 0.1);
-      final y = size.height * (particle.y + particle.velocityY * progress * 0.1 + gravity * 0.1);
-      
+      final y =
+          size.height *
+          (particle.y + particle.velocityY * progress * 0.1 + gravity * 0.1);
+
       // 画面外に出たら描画しない
-      if (x < -particle.size || x > size.width + particle.size ||
+      if (x < -particle.size ||
+          x > size.width + particle.size ||
           y > size.height + particle.size) {
         continue;
       }
-      
+
       paint.color = particle.color.withOpacity(1.0 - progress);
-      
+
       canvas.save();
       canvas.translate(x, y);
       canvas.rotate(particle.rotation + particle.rotationSpeed * progress);
-      
+
       // 長方形の紙吹雪
       canvas.drawRect(
         Rect.fromCenter(
@@ -403,7 +391,7 @@ class ConfettiPainter extends CustomPainter {
         ),
         paint,
       );
-      
+
       canvas.restore();
     }
   }
@@ -443,19 +431,13 @@ class _CountUpAnimationState extends State<CountUpAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
     _animation = Tween<double>(
       begin: widget.begin.toDouble(),
       end: widget.end.toDouble(),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
-    
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
     _controller.forward();
   }
 
@@ -466,10 +448,7 @@ class _CountUpAnimationState extends State<CountUpAnimation>
       _animation = Tween<double>(
         begin: _animation.value,
         end: widget.end.toDouble(),
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ));
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
       _controller.forward(from: 0.0);
     }
   }
@@ -522,13 +501,10 @@ class _SparkleEffectState extends State<SparkleEffect>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
     _generateSparkles();
-    
+
     if (widget.isActive) {
       _controller.repeat();
     }
@@ -607,35 +583,34 @@ class SparklePainter extends CustomPainter {
   final Animation<double> animation;
   final List<SparkleParticle> sparkles;
 
-  SparklePainter({
-    required this.animation,
-    required this.sparkles,
-  }) : super(repaint: animation);
+  SparklePainter({required this.animation, required this.sparkles})
+    : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill;
 
     for (final sparkle in sparkles) {
       final progress = (animation.value + sparkle.delay) % 1.0;
       final opacity = math.sin(progress * math.pi);
-      
+
       if (opacity <= 0) continue;
-      
+
       paint.color = Colors.white.withOpacity(opacity * 0.8);
-      
+
       final x = size.width * sparkle.x;
       final y = size.height * sparkle.y;
-      
+
       _drawSparkle(canvas, Offset(x, y), sparkle.size, paint);
     }
   }
 
   void _drawSparkle(Canvas canvas, Offset center, double size, Paint paint) {
     final path = Path();
-    
+
     // 4方向の星形
     path.moveTo(center.dx, center.dy - size);
     path.lineTo(center.dx + size * 0.3, center.dy - size * 0.3);
@@ -646,7 +621,7 @@ class SparklePainter extends CustomPainter {
     path.lineTo(center.dx - size, center.dy);
     path.lineTo(center.dx - size * 0.3, center.dy - size * 0.3);
     path.close();
-    
+
     canvas.drawPath(path, paint);
   }
 

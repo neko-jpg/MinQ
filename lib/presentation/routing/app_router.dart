@@ -1,51 +1,51 @@
 import 'dart:async';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:animations/animations.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/screens/shell_screen.dart';
-import 'package:minq/presentation/screens/home_screen.dart';
-import 'package:minq/presentation/screens/stats_screen.dart';
-import 'package:minq/presentation/screens/quests_screen.dart';
-import 'package:minq/presentation/screens/settings_screen.dart';
-import 'package:minq/presentation/screens/onboarding_screen.dart';
-import 'package:minq/presentation/screens/login_screen.dart';
-import 'package:minq/presentation/screens/record_screen.dart';
-import 'package:minq/presentation/screens/celebration_screen.dart';
-import 'package:minq/presentation/screens/profile_screen.dart';
-import 'package:minq/presentation/screens/policy_viewer_screen.dart';
 import 'package:minq/presentation/common/policy_documents.dart';
-import 'package:minq/presentation/screens/create_quest_screen.dart';
-import 'package:minq/presentation/screens/edit_quest_screen.dart';
-import 'package:minq/presentation/screens/support_screen.dart';
-import 'package:minq/presentation/screens/notification_settings_screen.dart';
-import 'package:minq/presentation/screens/pair/pair_matching_screen.dart';
-import 'package:minq/presentation/screens/pair/buddy_list_screen.dart';
-import 'package:minq/presentation/screens/pair/chat_screen.dart';
 import 'package:minq/presentation/common/sharing/social_sharing_demo.dart';
 import 'package:minq/presentation/screens/account_deletion_screen.dart';
+import 'package:minq/presentation/screens/ai_concierge_chat_screen.dart';
+import 'package:minq/presentation/screens/ai_insights_screen.dart';
+import 'package:minq/presentation/screens/battle_screen.dart';
+import 'package:minq/presentation/screens/celebration_screen.dart';
+import 'package:minq/presentation/screens/challenges_screen.dart';
+import 'package:minq/presentation/screens/community_board_screen.dart';
+import 'package:minq/presentation/screens/create_mini_quest_screen.dart';
+import 'package:minq/presentation/screens/create_quest_screen.dart';
+import 'package:minq/presentation/screens/edit_quest_screen.dart';
+import 'package:minq/presentation/screens/events_screen.dart';
+import 'package:minq/presentation/screens/guild_screen.dart';
+import 'package:minq/presentation/screens/habit_analysis_screen.dart';
+import 'package:minq/presentation/screens/habit_story_screen.dart';
+import 'package:minq/presentation/screens/home_screen.dart';
+import 'package:minq/presentation/screens/login_screen.dart';
+import 'package:minq/presentation/screens/mood_tracking_screen.dart';
+import 'package:minq/presentation/screens/notification_settings_screen.dart';
+import 'package:minq/presentation/screens/onboarding_screen.dart';
+import 'package:minq/presentation/screens/pair/buddy_list_screen.dart';
+import 'package:minq/presentation/screens/pair/chat_screen.dart';
+import 'package:minq/presentation/screens/pair/pair_matching_screen.dart';
+import 'package:minq/presentation/screens/personality_diagnosis_screen.dart';
+import 'package:minq/presentation/screens/policy_viewer_screen.dart';
+import 'package:minq/presentation/screens/profile_screen.dart';
 import 'package:minq/presentation/screens/profile_setting_screen.dart';
 import 'package:minq/presentation/screens/profile_setting_screen.dart';
 import 'package:minq/presentation/screens/quest_detail_screen.dart';
-import 'package:minq/presentation/screens/community_board_screen.dart';
-import 'package:minq/presentation/screens/ai_concierge_chat_screen.dart';
-import 'package:minq/presentation/screens/ai_insights_screen.dart';
-import 'package:minq/presentation/screens/create_mini_quest_screen.dart';
-import 'package:minq/presentation/screens/challenges_screen.dart';
 import 'package:minq/presentation/screens/quest_timer_screen.dart';
+import 'package:minq/presentation/screens/quests_screen.dart';
+import 'package:minq/presentation/screens/record_screen.dart';
 import 'package:minq/presentation/screens/referral_screen.dart';
-import 'package:minq/presentation/screens/habit_analysis_screen.dart';
-import 'package:minq/presentation/screens/time_capsule_screen.dart';
-import 'package:minq/presentation/screens/mood_tracking_screen.dart';
+import 'package:minq/presentation/screens/settings_screen.dart';
+import 'package:minq/presentation/screens/shell_screen.dart';
+import 'package:minq/presentation/screens/stats_screen.dart';
 import 'package:minq/presentation/screens/streak_recovery_screen.dart';
-import 'package:minq/presentation/screens/events_screen.dart';
-import 'package:minq/presentation/screens/habit_story_screen.dart';
-import 'package:minq/presentation/screens/battle_screen.dart';
-import 'package:minq/presentation/screens/personality_diagnosis_screen.dart';
+import 'package:minq/presentation/screens/support_screen.dart';
+import 'package:minq/presentation/screens/time_capsule_screen.dart';
 import 'package:minq/presentation/screens/weekly_report_screen.dart';
-import 'package:minq/presentation/screens/guild_screen.dart';
 import 'package:minq/presentation/widgets/ai_coach_overlay.dart';
 import 'package:minq/presentation/widgets/live_activity_widget.dart';
 
@@ -449,7 +449,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.questTimer,
         pageBuilder: (context, state) {
-          final questId = int.tryParse(state.pathParameters['questId'] ?? '') ?? 0;
+          final questId =
+              int.tryParse(state.pathParameters['questId'] ?? '') ?? 0;
           return buildPageWithTransition<void>(
             context: context,
             state: state,
@@ -460,12 +461,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.referral,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const ReferralScreen(),
-          transitionType: SharedAxisTransitionType.horizontal,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const ReferralScreen(),
+              transitionType: SharedAxisTransitionType.horizontal,
+            ),
       ),
       GoRoute(
         path: AppRoutes.habitAnalysis,
@@ -475,36 +477,36 @@ final routerProvider = Provider<GoRouter>((ref) {
           return buildPageWithTransition<void>(
             context: context,
             state: state,
-            child: HabitAnalysisScreen(
-              habitId: habitId,
-              habitName: habitName,
-            ),
+            child: HabitAnalysisScreen(habitId: habitId, habitName: habitName),
             transitionType: SharedAxisTransitionType.vertical,
           );
         },
       ),
       GoRoute(
         path: AppRoutes.timeCapsule,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const TimeCapsuleScreen(),
-          transitionType: SharedAxisTransitionType.horizontal,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const TimeCapsuleScreen(),
+              transitionType: SharedAxisTransitionType.horizontal,
+            ),
       ),
       GoRoute(
         path: AppRoutes.moodTracking,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const MoodTrackingScreen(),
-          transitionType: SharedAxisTransitionType.horizontal,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const MoodTrackingScreen(),
+              transitionType: SharedAxisTransitionType.horizontal,
+            ),
       ),
       GoRoute(
         path: AppRoutes.streakRecovery,
         pageBuilder: (context, state) {
-          final questId = int.tryParse(state.pathParameters['questId'] ?? '') ?? 0;
+          final questId =
+              int.tryParse(state.pathParameters['questId'] ?? '') ?? 0;
           return buildPageWithTransition<void>(
             context: context,
             state: state,
@@ -515,30 +517,33 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.events,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const EventsScreen(),
-          transitionType: SharedAxisTransitionType.horizontal,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const EventsScreen(),
+              transitionType: SharedAxisTransitionType.horizontal,
+            ),
       ),
       GoRoute(
         path: AppRoutes.aiCoachSettings,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const AICoachSettingsScreen(),
-          transitionType: SharedAxisTransitionType.horizontal,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const AICoachSettingsScreen(),
+              transitionType: SharedAxisTransitionType.horizontal,
+            ),
       ),
       GoRoute(
         path: AppRoutes.liveActivitySettings,
-        pageBuilder: (context, state) => buildPageWithTransition<void>(
-          context: context,
-          state: state,
-          child: const LiveActivitySettingsScreen(),
-          transitionType: SharedAxisTransitionType.horizontal,
-        ),
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const LiveActivitySettingsScreen(),
+              transitionType: SharedAxisTransitionType.horizontal,
+            ),
       ),
       // Main navigation shell
       ShellRoute(
@@ -632,7 +637,8 @@ class NavigationUseCase {
   void goToAiInsights() => _router.push(AppRoutes.aiInsights);
   void goToHabitStory() => _router.push(AppRoutes.habitStory);
   void goToBattle() => _router.push(AppRoutes.battle);
-  void goToPersonalityDiagnosis() => _router.push(AppRoutes.personalityDiagnosis);
+  void goToPersonalityDiagnosis() =>
+      _router.push(AppRoutes.personalityDiagnosis);
   void goToWeeklyReport() => _router.push(AppRoutes.weeklyReport);
   void goToGuild() => _router.push(AppRoutes.guild);
   void goToCreateMiniQuest() => _router.push(AppRoutes.createMiniQuest);
@@ -651,7 +657,8 @@ class NavigationUseCase {
   );
   void goToEvents() => _router.push(AppRoutes.events);
   void goToAICoachSettings() => _router.push(AppRoutes.aiCoachSettings);
-  void goToLiveActivitySettings() => _router.push(AppRoutes.liveActivitySettings);
+  void goToLiveActivitySettings() =>
+      _router.push(AppRoutes.liveActivitySettings);
   void goHome() => _router.go(AppRoutes.home);
   void goToStats() => _router.go(AppRoutes.stats);
   void goToPair() => _router.go(AppRoutes.pair);

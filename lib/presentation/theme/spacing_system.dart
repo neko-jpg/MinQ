@@ -136,8 +136,7 @@ class SpacingSystem {
     double top = 0,
     double right = 0,
     double bottom = 0,
-  }) =>
-      EdgeInsets.only(left: left, top: top, right: right, bottom: bottom);
+  }) => EdgeInsets.only(left: left, top: top, right: right, bottom: bottom);
 
   // ========================================
   // 定義済みパディング
@@ -275,10 +274,7 @@ class BaselineGridOverlay extends StatelessWidget {
         Positioned.fill(
           child: IgnorePointer(
             child: CustomPaint(
-              painter: GridPainter(
-                gridColor: gridColor,
-                gridSize: gridSize,
-              ),
+              painter: GridPainter(gridColor: gridColor, gridSize: gridSize),
             ),
           ),
         ),
@@ -292,33 +288,23 @@ class GridPainter extends CustomPainter {
   final Color gridColor;
   final double gridSize;
 
-  GridPainter({
-    required this.gridColor,
-    required this.gridSize,
-  });
+  GridPainter({required this.gridColor, required this.gridSize});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = gridColor
-      ..strokeWidth = 1;
+    final paint =
+        Paint()
+          ..color = gridColor
+          ..strokeWidth = 1;
 
     // 水平線
     for (double y = 0; y < size.height; y += gridSize) {
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
     }
 
     // 垂直線
     for (double x = 0; x < size.width; x += gridSize) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        paint,
-      );
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
   }
 
@@ -372,10 +358,7 @@ class ResponsiveSpacing {
   const ResponsiveSpacing._();
 
   /// 画面サイズに応じたスペーシングを取得
-  static double getResponsiveSpacing(
-    BuildContext context,
-    double baseSpacing,
-  ) {
+  static double getResponsiveSpacing(BuildContext context, double baseSpacing) {
     final width = MediaQuery.of(context).size.width;
 
     if (width < 360) {
@@ -391,27 +374,18 @@ class ResponsiveSpacing {
 
   /// レスポンシブ画面パディング
   static EdgeInsets screenPadding(BuildContext context) {
-    final spacing = getResponsiveSpacing(
-      context,
-      SpacingSystem.screenPadding,
-    );
+    final spacing = getResponsiveSpacing(context, SpacingSystem.screenPadding);
     return EdgeInsets.all(spacing);
   }
 
   /// レスポンシブカードパディング
   static EdgeInsets cardPadding(BuildContext context) {
-    final spacing = getResponsiveSpacing(
-      context,
-      SpacingSystem.cardPadding,
-    );
+    final spacing = getResponsiveSpacing(context, SpacingSystem.cardPadding);
     return EdgeInsets.all(spacing);
   }
 
   /// レスポンシブセクションスペーシング
   static double sectionSpacing(BuildContext context) {
-    return getResponsiveSpacing(
-      context,
-      SpacingSystem.sectionSpacing,
-    );
+    return getResponsiveSpacing(context, SpacingSystem.sectionSpacing);
   }
 }
