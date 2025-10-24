@@ -91,7 +91,6 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
   Future<void> _toggleVoiceInput() async {
     final speech = ref.read(speechInputServiceProvider);
-    final currentContext = context;
     if (_isVoiceListening) {
       await speech.stop();
       if (mounted) setState(() => _isVoiceListening = false);
@@ -103,6 +102,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
       if (!mounted) return;
 
       if (!available) {
+        if (!mounted) return;
         FeedbackMessenger.showErrorSnackBar(
           context,
           '音声入力を使用できませんでした。マイクの権限を確認してください。',
@@ -125,6 +125,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _isVoiceListening = false);
+      if (!mounted) return;
       FeedbackMessenger.showErrorSnackBar(context, '音声入力の開始に失敗しました。');
     }
   }
@@ -185,9 +186,10 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
   Future<void> _handleBackRequest() async {
     final shouldLeave = await _confirmDiscardChanges();
-    if (!mounted) return;
     if (shouldLeave) {
-      context.pop();
+      if (mounted) {
+        context.pop();
+      }
     }
   }
 
@@ -353,7 +355,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
     return PopScope(
       canPop: !_hasUnsavedChanges,
-      onPopInvoked: (bool didPop) async {
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
         if (didPop) {
           return;
         }
