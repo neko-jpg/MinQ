@@ -120,7 +120,7 @@ class ElevationSystem {
   /// プライマリカラーの影
   static List<BoxShadow> primaryGlow(Color primaryColor) => [
     BoxShadow(
-      color: primaryColor.withOpacity(0.3),
+      color: primaryColor.withAlpha(77),
       blurRadius: 16,
       offset: const Offset(0, 4),
     ),
@@ -129,7 +129,7 @@ class ElevationSystem {
   /// 成功カラーの影
   static List<BoxShadow> successGlow(Color successColor) => [
     BoxShadow(
-      color: successColor.withOpacity(0.3),
+      color: successColor.withAlpha(77),
       blurRadius: 16,
       offset: const Offset(0, 4),
     ),
@@ -138,7 +138,7 @@ class ElevationSystem {
   /// エラーカラーの影
   static List<BoxShadow> errorGlow(Color errorColor) => [
     BoxShadow(
-      color: errorColor.withOpacity(0.3),
+      color: errorColor.withAlpha(77),
       blurRadius: 16,
       offset: const Offset(0, 4),
     ),
@@ -158,7 +158,7 @@ class ElevationSystem {
       gradient: LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [color.withOpacity(0.1), Colors.transparent],
+        colors: [color.withAlpha(26), Colors.transparent],
         stops: const [0.0, 0.3],
       ),
     );

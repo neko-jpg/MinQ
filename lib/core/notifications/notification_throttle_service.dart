@@ -1,7 +1,6 @@
 import 'dart:async';
-
-import 'package:minq/core/logging/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// 通知スロットリングサービス - 連続通知を抑制
 class NotificationThrottleService {
@@ -11,10 +10,10 @@ class NotificationThrottleService {
 
   // デバウンス設定: 同じ種類の通知は最低この間隔を空ける
   static const Duration _debounceInterval = Duration(seconds: 30);
-  
+
   // バッチ設定: この時間内の通知をまとめる
   static const Duration _batchWindow = Duration(minutes: 5);
-  
+
   // レート制限: この時間内に送信できる最大通知数
   static const Duration _rateLimitWindow = Duration(minutes: 10);
   static const int _maxNotificationsPerWindow = 5;
@@ -38,10 +37,10 @@ class NotificationThrottleService {
     final elapsed = now.difference(lastTime);
 
     if (elapsed < _debounceInterval) {
-      AppLogger.info('Notification debounced', data: {
-        'type': notificationType,
-        'elapsed': elapsed.inSeconds,
-      });
+      logger.logJson(
+        'Notification debounced',
+        {'type': notificationType, 'elapsed': elapsed.inSeconds},
+      );
       return true; // デバウンス中
     }
 
@@ -76,11 +75,15 @@ class NotificationThrottleService {
 
     // レート制限チェック
     if (count >= _maxNotificationsPerWindow) {
-      AppLogger.warning('Notification rate limited', data: {
-        'type': notificationType,
-        'count': count,
-        'window': _rateLimitWindow.inMinutes,
-      });
+      logger.logJson(
+        'Notification rate limited',
+        {
+          'type': notificationType,
+          'count': count,
+          'window': _rateLimitWindow.inMinutes,
+        },
+        level: Level.warning,
+      );
       return true;
     }
 
@@ -95,7 +98,7 @@ class NotificationThrottleService {
   }) async {
     if (!_batchedNotifications.containsKey(batchKey)) {
       _batchedNotifications[batchKey] = [];
-      
+
       // バッチウィンドウ後に送信
       Timer(_batchWindow, () async {
         await _sendBatchedNotifications(batchKey);
@@ -103,11 +106,14 @@ class NotificationThrottleService {
     }
 
     _batchedNotifications[batchKey]!.add(notificationData);
-    
-    AppLogger.info('Notification added to batch', data: {
-      'batchKey': batchKey,
-      'count': _batchedNotifications[batchKey]!.length,
-    });
+
+    logger.logJson(
+      'Notification added to batch',
+      {
+        'batchKey': batchKey,
+        'count': _batchedNotifications[batchKey]!.length,
+      },
+    );
   }
 
   /// バッチ通知を取得
@@ -120,14 +126,14 @@ class NotificationThrottleService {
     final notifications = _batchedNotifications[batchKey];
     if (notifications == null || notifications.isEmpty) return;
 
-    AppLogger.info('Sending batched notifications', data: {
-      'batchKey': batchKey,
-      'count': notifications.length,
-    });
+    logger.logJson(
+      'Sending batched notifications',
+      {'batchKey': batchKey, 'count': notifications.length},
+    );
 
     // バッチをクリア
     _batchedNotifications.remove(batchKey);
-    
+
     // 実際の通知送信は呼び出し側で実装
     // ここでは通知データを返すだけ
   }
@@ -158,7 +164,7 @@ class NotificationThrottleService {
     final prefs = await SharedPreferences.getInstance();
     final countKey = '$_keyNotificationCount$notificationType';
     final timeKey = '$_keyLastNotificationTime$notificationType';
-    
+
     final count = prefs.getInt(countKey) ?? 0;
     await prefs.setInt(countKey, count + 1);
     await prefs.setString(timeKey, DateTime.now().toIso8601String());
@@ -175,7 +181,7 @@ class NotificationThrottleService {
   Future<void> clearStats() async {
     final prefs = await SharedPreferences.getInstance();
     final keys = prefs.getKeys();
-    
+
     for (final key in keys) {
       if (key.startsWith(_keyLastNotificationTime) ||
           key.startsWith(_keyNotificationCount)) {
@@ -212,15 +218,15 @@ class NotificationThrottleService {
 
 /// 通知スロットリング結果
 enum NotificationThrottleResult {
-  allowed,      // 送信可能
-  debounced,    // デバウンスにより抑制
-  rateLimited,  // レート制限により抑制
+  allowed, // 送信可能
+  debounced, // デバウンスにより抑制
+  rateLimited, // レート制限により抑制
 }
 
 /// 通知バッチャー - 複数の通知をまとめて表示
 class NotificationBatcher {
   final NotificationThrottleService _throttleService;
-  
+
   NotificationBatcher(this._throttleService);
 
   /// クエスト完了通知をバッチ処理
@@ -278,7 +284,7 @@ class NotificationBatcher {
     }
 
     final count = notifications.length;
-    
+
     switch (batchKey) {
       case 'quest_completions':
         return '$count個のクエストが完了しました';
@@ -300,15 +306,15 @@ class NotificationPriorityManager {
       case 'quest_deadline':
       case 'streak_break_warning':
         return NotificationPriority.high;
-      
+
       case 'quest_reminder':
       case 'pair_message':
         return NotificationPriority.medium;
-      
+
       case 'achievement_unlocked':
       case 'weekly_summary':
         return NotificationPriority.low;
-      
+
       default:
         return NotificationPriority.medium;
     }
@@ -327,8 +333,4 @@ class NotificationPriorityManager {
 }
 
 /// 通知優先度
-enum NotificationPriority {
-  high,
-  medium,
-  low,
-}
+enum NotificationPriority { high, medium, low }

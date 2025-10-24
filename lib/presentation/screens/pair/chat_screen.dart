@@ -65,14 +65,16 @@ class ChatScreen extends ConsumerWidget {
           children: [
             Text(
               'Buddy#${buddyId?.substring(0, 4) ?? ''}',
-              style: tokens.titleSmall.copyWith(
+              style: tokens.typography.h5.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
               '目標: 毎日運動する',
-              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+              style: tokens.typography.bodySmall.copyWith(
+                color: tokens.textMuted,
+              ),
             ),
           ],
         ),
@@ -257,7 +259,7 @@ class _MessageBubble extends ConsumerWidget {
     } else {
       messageContent = Text(
         message.text ?? '',
-        style: tokens.bodyMedium.copyWith(
+        style: tokens.typography.body.copyWith(
           color: isMe ? Colors.white : tokens.textPrimary,
         ),
       );
@@ -382,7 +384,7 @@ class _ReactionButton extends StatelessWidget {
     final tokens = MinqTheme.of(context);
     return InkWell(
       onTap: onTap,
-      borderRadius: tokens.cornerLarge(),
+      borderRadius: BorderRadius.circular(tokens.radius.lg),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         child: Text(emoji, style: const TextStyle(fontSize: 16)),
@@ -542,7 +544,7 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
       elevation: 10,
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing(2)),
+          padding: EdgeInsets.all(tokens.spacing.sm),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -552,7 +554,7 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
                 onReplySelected: _sendQuickText,
                 onStampSelected: _sendQuickText,
               ),
-              SizedBox(height: tokens.spacing(2)),
+              SizedBox(height: tokens.spacing.sm),
               Row(
                 children: [
                   Expanded(
@@ -563,12 +565,12 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
                         filled: true,
                         fillColor: tokens.background,
                         border: OutlineInputBorder(
-                          borderRadius: tokens.cornerXLarge(),
+                          borderRadius: BorderRadius.circular(tokens.radius.xl),
                           borderSide: BorderSide.none,
                         ),
                         contentPadding: EdgeInsets.symmetric(
-                          horizontal: tokens.spacing(4),
-                          vertical: tokens.spacing(3),
+                          horizontal: tokens.spacing.md,
+                          vertical: tokens.spacing.sm,
                         ),
                       ),
                       minLines: 1,
@@ -576,10 +578,10 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
                       onSubmitted: (_) => _sendMessage(),
                     ),
                   ),
-                  SizedBox(width: tokens.spacing(2)),
+                  SizedBox(width: tokens.spacing.sm),
                   if (_isUploading)
                     Padding(
-                      padding: EdgeInsets.all(tokens.spacing(2)),
+                      padding: EdgeInsets.all(tokens.spacing.sm),
                       child: const CircularProgressIndicator(),
                     )
                   else
@@ -618,11 +620,11 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
                                   ? _isSending
                                       ? Padding(
                                         padding: EdgeInsets.all(
-                                          tokens.spacing(3),
+                                          tokens.spacing.sm,
                                         ),
                                         child: SizedBox(
-                                          width: tokens.spacing(6),
-                                          height: tokens.spacing(6),
+                                          width: tokens.spacing.lg,
+                                          height: tokens.spacing.lg,
                                           child:
                                               const CircularProgressIndicator(
                                                 strokeWidth: 2,
@@ -693,8 +695,8 @@ class _QuickReplyBar extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Wrap(
-          spacing: tokens.spacing(2),
-          runSpacing: tokens.spacing(1.5),
+          spacing: tokens.spacing.sm,
+          runSpacing: tokens.spacing.xs,
           children:
               _quickReplyTemplates
                   .map(
@@ -706,24 +708,24 @@ class _QuickReplyBar extends StatelessWidget {
                   )
                   .toList(),
         ),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.sm),
         Wrap(
-          spacing: tokens.spacing(1.5),
+          spacing: tokens.spacing.xs,
           children:
               _stampOptions.map((stamp) {
                 return GestureDetector(
                   onTap: isSending ? null : () => onStampSelected(stamp),
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing(2),
-                      vertical: tokens.spacing(1.5),
+                      horizontal: tokens.spacing.sm,
+                      vertical: tokens.spacing.xs,
                     ),
                     decoration: BoxDecoration(
                       color: tokens.background,
                       borderRadius: tokens.cornerFull(),
-                      border: Border.all(color: tokens.border.withOpacity(0.6)),
+                      border: Border.all(color: tokens.border.withAlpha(153)),
                     ),
-                    child: Text(stamp, style: tokens.titleLarge),
+                    child: Text(stamp, style: tokens.typography.h3),
                   ),
                 );
               }).toList(),

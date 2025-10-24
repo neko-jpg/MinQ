@@ -13,7 +13,7 @@ final communityPostsProvider = StreamProvider<List<CommunityPost>>((ref) {
 
 final newCommunityPostControllerProvider =
     StateProvider.autoDispose<TextEditingController>((ref) {
-      final controller = TextEditingController();
-      ref.onDispose(controller.dispose);
-      return controller;
-    });
+  final controller = TextEditingController();
+  ref.onDispose(controller.dispose);
+  return controller;
+});

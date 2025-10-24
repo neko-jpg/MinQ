@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:minq/core/logging/app_logger.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// OGP画像生成サービス
 /// クエスト達成バナーをSNSシェア用の画像として生成
@@ -32,13 +31,15 @@ class OgpImageGenerator {
 
       // 一時ファイルに保存
       final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/achievement_banner_${DateTime.now().millisecondsSinceEpoch}.png');
-      
+      final file = File(
+        '${tempDir.path}/achievement_banner_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       if (byteData == null) return null;
 
       await file.writeAsBytes(byteData.buffer.asUint8List());
-      
+
       _logger.info('OGP image generated: ${file.path}');
       return file;
     } catch (e, stack) {
@@ -50,7 +51,7 @@ class OgpImageGenerator {
   /// ウィジェットを画像に変換
   Future<ui.Image?> _widgetToImage(Widget widget) async {
     final repaintBoundary = RenderRepaintBoundary();
-    
+
     final view = ui.PlatformDispatcher.instance.views.first;
     const logicalSize = Size(1200, 630); // OGP標準サイズ
     final devicePixelRatio = view.devicePixelRatio;
@@ -75,10 +76,7 @@ class OgpImageGenerator {
 
     final rootElement = RenderObjectToWidgetAdapter<RenderBox>(
       container: repaintBoundary,
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: widget,
-      ),
+      child: Directionality(textDirection: TextDirection.ltr, child: widget),
     ).attachToRenderTree(buildOwner);
 
     buildOwner.buildScope(rootElement);
@@ -114,19 +112,14 @@ class _AchievementBannerWidget extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF6366F1),
-            Color(0xFF8B5CF6),
-          ],
+          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
         ),
       ),
       child: Stack(
         children: [
           // 背景パターン
           Positioned.fill(
-            child: CustomPaint(
-              painter: _BackgroundPatternPainter(),
-            ),
+            child: CustomPaint(painter: _BackgroundPatternPainter()),
           ),
           // コンテンツ
           Center(
@@ -138,7 +131,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withAlpha(51),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -159,7 +152,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                       Shadow(
                         offset: const Offset(0, 2),
                         blurRadius: 4,
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withAlpha(77),
                       ),
                     ],
                   ),
@@ -178,7 +171,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                         Shadow(
                           offset: const Offset(0, 1),
                           blurRadius: 2,
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withAlpha(51),
                         ),
                       ],
                     ),
@@ -211,7 +204,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                   'MinQ - 3分で続く習慣化アプリ',
                   style: TextStyle(
                     fontSize: 24,
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withAlpha(230),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -241,7 +234,7 @@ class _StatBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withAlpha(51),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -275,29 +268,22 @@ class _StatBadge extends StatelessWidget {
 class _BackgroundPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+    final paint =
+        Paint()
+          ..color = Colors.white.withAlpha(13)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
 
     const spacing = 60.0;
-    
+
     // 縦線
     for (double x = 0; x < size.width; x += spacing) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        paint,
-      );
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
 
     // 横線
     for (double y = 0; y < size.height; y += spacing) {
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
     }
   }
 

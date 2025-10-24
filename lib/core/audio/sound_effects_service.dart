@@ -8,8 +8,7 @@ import 'package:just_audio/just_audio.dart';
 /// アプリ全体で使用するサウンドエフェクトを管理
 class SoundEffectsService {
   static SoundEffectsService? _instance;
-  static SoundEffectsService get instance =>
-      _instance ??= SoundEffectsService._();
+  static SoundEffectsService get instance => _instance ??= SoundEffectsService._();
 
   SoundEffectsService._();
 
@@ -102,16 +101,16 @@ class SoundEffectsService {
 
 /// サウンドタイプ
 enum SoundType {
-  tap, // タップ音
-  success, // 成功音
-  error, // エラー音
-  notification, // 通知音
-  levelUp, // レベルアップ音
-  achievement, // 達成音
-  coin, // コイン音
-  whoosh, // スワイプ音
-  pop, // ポップ音
-  chime, // チャイム音
+  tap,           // タップ音
+  success,       // 成功音
+  error,         // エラー音
+  notification,  // 通知音
+  levelUp,       // レベルアップ音
+  achievement,   // 達成音
+  coin,          // コイン音
+  whoosh,        // スワイプ音
+  pop,           // ポップ音
+  chime,         // チャイム音
 }
 
 /// サウンドエフェクト付きウィジェット

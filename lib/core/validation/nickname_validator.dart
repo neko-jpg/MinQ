@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// ニックネーム検証サービス
 class NicknameValidator {
   final FirebaseFirestore _firestore;
+  final AppLogger _logger = AppLogger();
 
   NicknameValidator({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
@@ -43,7 +44,8 @@ class NicknameValidator {
 
       return NicknameValidationResult.success();
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to validate nickname', exception: e, stackTrace: stack);
+      _logger.error('Failed to validate nickname',
+          error: e, stackTrace: stack);
       return NicknameValidationResult.error('検証中にエラーが発生しました');
     }
   }
@@ -52,20 +54,19 @@ class NicknameValidator {
   Future<bool> _checkDuplicate(String nickname) async {
     final normalizedNickname = _normalize(nickname);
 
-    final snapshot = await _firestore
-        .collection('users')
-        .where('nickname_normalized', isEqualTo: normalizedNickname)
-        .limit(1)
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('users')
+            .where('nickname_normalized', isEqualTo: normalizedNickname)
+            .limit(1)
+            .get();
 
     return snapshot.docs.isNotEmpty;
   }
 
   /// ニックネームを正規化（大文字小文字、全角半角を統一）
   String _normalize(String nickname) {
-    return nickname
-        .toLowerCase()
-        .replaceAll(RegExp(r'[Ａ-Ｚａ-ｚ０-９]'), (match) {
+    return nickname.toLowerCase().replaceAll(RegExp(r'[Ａ-Ｚａ-ｚ０-９]'), (match) {
       // 全角英数字を半角に変換
       final char = match.group(0)!;
       return String.fromCharCode(char.codeUnitAt(0) - 0xFEE0);
@@ -125,19 +126,13 @@ class NicknameValidationResult {
   final bool isValid;
   final String? errorMessage;
 
-  NicknameValidationResult._({
-    required this.isValid,
-    this.errorMessage,
-  });
+  NicknameValidationResult._({required this.isValid, this.errorMessage});
 
   factory NicknameValidationResult.success() {
     return NicknameValidationResult._(isValid: true);
   }
 
   factory NicknameValidationResult.error(String message) {
-    return NicknameValidationResult._(
-      isValid: false,
-      errorMessage: message,
-    );
+    return NicknameValidationResult._(isValid: false, errorMessage: message);
   }
 }

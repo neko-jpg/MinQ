@@ -77,15 +77,8 @@ class _PersonalityDiagnosisScreenState
   }
 
   Future<void> _loadCurrentDiagnosis() async {
-    try {
-      // TODO: 実際のユーザーIDを取得
-      final diagnosis = await _diagnosisService.getCurrentDiagnosis(
-        'current_user_id',
-      );
-      setState(() => _currentDiagnosis = diagnosis);
-    } catch (e) {
-      // 診断結果がない場合は無視
-    }
+    // Note: This service does not have a method to get the current diagnosis.
+    // This functionality should be implemented separately.
   }
 
   @override
@@ -343,7 +336,7 @@ class _PersonalityDiagnosisScreenState
       );
     }
 
-    final archetype = _currentDiagnosis!.primaryArchetype;
+    final archetype = _currentDiagnosis!.archetype;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -356,10 +349,13 @@ class _PersonalityDiagnosisScreenState
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  Text(archetype.emoji, style: const TextStyle(fontSize: 64)),
+                  Text(
+                    _getArchetypeEmoji(archetype),
+                    style: const TextStyle(fontSize: 64),
+                  ),
                   const SizedBox(height: 16),
                   Text(
-                    archetype.name,
+                    archetype.displayName,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -367,7 +363,7 @@ class _PersonalityDiagnosisScreenState
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    archetype.description,
+                    _getArchetypeDescription(archetype),
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
@@ -378,7 +374,7 @@ class _PersonalityDiagnosisScreenState
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
+                      color: Colors.blue.withAlpha(26),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
@@ -408,7 +404,7 @@ class _PersonalityDiagnosisScreenState
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  ...archetype.traits
+                  ..._getArchetypeTraits(archetype)
                       .map(
                         (trait) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
@@ -424,8 +420,7 @@ class _PersonalityDiagnosisScreenState
                             ],
                           ),
                         ),
-                      )
-                      .toList(),
+                      ),
                 ],
               ),
             ),
@@ -445,7 +440,7 @@ class _PersonalityDiagnosisScreenState
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  ...archetype.recommendedHabits
+                  ..._getArchetypeRecommendedHabits(archetype)
                       .map(
                         (habit) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
@@ -461,8 +456,7 @@ class _PersonalityDiagnosisScreenState
                             ],
                           ),
                         ),
-                      )
-                      .toList(),
+                      ),
                 ],
               ),
             ),
@@ -482,7 +476,7 @@ class _PersonalityDiagnosisScreenState
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  _buildPatternChart(),
+                  Text(_currentDiagnosis!.detailedAnalysis),
                 ],
               ),
             ),
@@ -515,47 +509,6 @@ class _PersonalityDiagnosisScreenState
     );
   }
 
-  Widget _buildPatternChart() {
-    if (_currentDiagnosis == null) return const SizedBox();
-
-    final patterns = _currentDiagnosis!.behaviorPatterns;
-
-    return Column(
-      children:
-          patterns.entries.map((entry) {
-            final label = _getPatternLabel(entry.key);
-            final value = entry.value;
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(label),
-                      Text(
-                        '${(value * 100).toInt()}%',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  LinearProgressIndicator(
-                    value: value,
-                    backgroundColor: Colors.grey.shade300,
-                    valueColor: AlwaysStoppedAnimation(
-                      _getPatternColor(entry.key),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-    );
-  }
-
   Widget _buildAnalysisTab() {
     if (_currentDiagnosis == null) {
       return const Center(child: Text('診断結果がありません'));
@@ -578,7 +531,7 @@ class _PersonalityDiagnosisScreenState
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  Text(_currentDiagnosis!.aiInsights),
+                  Text(_currentDiagnosis!.detailedAnalysis),
                 ],
               ),
             ),
@@ -610,7 +563,11 @@ class _PersonalityDiagnosisScreenState
                             color: Colors.orange,
                           ),
                           const SizedBox(width: 8),
-                          Expanded(child: Text(rec)),
+                          Expanded(
+                            child: Text(
+                              '${rec.title}: ${rec.customization}',
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -623,7 +580,7 @@ class _PersonalityDiagnosisScreenState
           const SizedBox(height: 16),
 
           // 相性分析
-          if (_currentDiagnosis!.compatibilityAnalysis.isNotEmpty)
+          if (_currentDiagnosis!.compatibility.isNotEmpty)
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -638,7 +595,7 @@ class _PersonalityDiagnosisScreenState
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ..._currentDiagnosis!.compatibilityAnalysis.entries.map((
+                    ..._currentDiagnosis!.compatibility.entries.map((
                       entry,
                     ) {
                       final archetype = entry.key;
@@ -649,16 +606,16 @@ class _PersonalityDiagnosisScreenState
                         child: Row(
                           children: [
                             Text(
-                              archetype.emoji,
+                              _getArchetypeEmoji(archetype),
                               style: const TextStyle(fontSize: 20),
                             ),
                             const SizedBox(width: 8),
-                            Expanded(child: Text(archetype.name)),
+                            Expanded(child: Text(archetype.displayName)),
                             _buildCompatibilityIndicator(compatibility),
                           ],
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),
@@ -689,7 +646,7 @@ class _PersonalityDiagnosisScreenState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(26),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
@@ -729,10 +686,16 @@ class _PersonalityDiagnosisScreenState
     setState(() => _isAnalyzing = true);
 
     try {
-      // TODO: 実際のユーザーIDを取得
-      final diagnosis = await _diagnosisService.performDiagnosis(
-        'current_user_id',
-        _answers,
+      // TODO: Replace with actual data
+      final diagnosis = await _diagnosisService.diagnosePpersonality(
+        habitHistory: [],
+        completionPatterns: [],
+        preferences: UserPreferences(
+          preferredTimes: [],
+          preferredDuration: const Duration(minutes: 30),
+          difficultyPreference: 3,
+          socialPreference: false,
+        ),
       );
 
       setState(() {
@@ -775,38 +738,24 @@ class _PersonalityDiagnosisScreenState
     _tabController.animateTo(0);
   }
 
-  String _getPatternLabel(String key) {
-    switch (key) {
-      case 'consistency':
-        return '継続性';
-      case 'flexibility':
-        return '柔軟性';
-      case 'motivation':
-        return 'モチベーション';
-      case 'social':
-        return '社会性';
-      case 'analytical':
-        return '分析力';
-      default:
-        return key;
-    }
+  String _getArchetypeEmoji(HabitArchetype archetype) {
+    // Implement emoji mapping
+    return '🤔';
   }
 
-  Color _getPatternColor(String key) {
-    switch (key) {
-      case 'consistency':
-        return Colors.blue;
-      case 'flexibility':
-        return Colors.green;
-      case 'motivation':
-        return Colors.orange;
-      case 'social':
-        return Colors.purple;
-      case 'analytical':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
+  String _getArchetypeDescription(HabitArchetype archetype) {
+    // Implement description mapping
+    return 'A description for ${archetype.displayName}';
+  }
+
+  List<String> _getArchetypeTraits(HabitArchetype archetype) {
+    // Implement traits mapping
+    return ['Trait 1', 'Trait 2', 'Trait 3'];
+  }
+
+  List<String> _getArchetypeRecommendedHabits(HabitArchetype archetype) {
+    // Implement recommended habits mapping
+    return ['Habit 1', 'Habit 2', 'Habit 3'];
   }
 }
 

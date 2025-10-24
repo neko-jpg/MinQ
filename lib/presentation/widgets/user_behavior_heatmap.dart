@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 class UserBehaviorHeatmap extends StatelessWidget {
   const UserBehaviorHeatmap({
@@ -17,8 +18,8 @@ class UserBehaviorHeatmap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final focusColor = theme.colorScheme.secondary;
+    final tokens = MinqTheme.of(context);
+    final focusColor = tokens.accentSecondary;
     return Semantics(
       label: '週間達成ヒートマップ',
       child: HeatMap(
@@ -30,15 +31,15 @@ class UserBehaviorHeatmap extends StatelessWidget {
         borderRadius: 12,
         margin: const EdgeInsets.all(4),
         colorMode: ColorMode.opacity,
-        defaultColor: theme.colorScheme.surfaceContainerHighest,
-        textColor: theme.colorScheme.onSurface,
+        defaultColor: tokens.surface,
+        textColor: tokens.onSurface,
         onClick: (value) => onDateSelected?.call(value),
         showText: false,
         scrollable: true,
         colorsets: {
-          1: focusColor.withOpacity(0.25),
-          3: focusColor.withOpacity(0.5),
-          5: focusColor.withOpacity(0.7),
+          1: focusColor.withAlpha((255 * 0.25).round()),
+          3: focusColor.withAlpha((255 * 0.5).round()),
+          5: focusColor.withAlpha((255 * 0.7).round()),
           7: focusColor,
         },
       ),

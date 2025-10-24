@@ -41,7 +41,7 @@ class _TimeCapsuleScreenState extends ConsumerState<TimeCapsuleScreen>
       appBar: AppBar(
         title: Text(
           'タイムカプセル',
-          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+          style: tokens.typography.h3.copyWith(color: tokens.textPrimary),
         ),
         centerTitle: true,
         backgroundColor: tokens.background,
@@ -175,7 +175,7 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
     final tokens = context.tokens;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       child: Form(
         key: _formKey,
         child: Column(
@@ -184,10 +184,12 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
             // 説明カード
             Card(
               elevation: 0,
-              color: tokens.brandPrimary.withOpacity(0.1),
-              shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+              color: tokens.brandPrimary.withAlpha(26),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(tokens.radius.lg),
+              ),
               child: Padding(
-                padding: EdgeInsets.all(tokens.spacing(4)),
+                padding: EdgeInsets.all(tokens.spacing.lg),
                 child: Column(
                   children: [
                     Icon(
@@ -195,19 +197,19 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
                       size: 48,
                       color: tokens.brandPrimary,
                     ),
-                    SizedBox(height: tokens.spacing(2)),
+                    SizedBox(height: tokens.spacing.md),
                     Text(
                       '未来の自分へメッセージを送ろう',
-                      style: tokens.titleMedium.copyWith(
+                      style: tokens.typography.h3.copyWith(
                         color: tokens.textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: tokens.spacing(2)),
+                    SizedBox(height: tokens.spacing.md),
                     Text(
                       '今の気持ちや目標を未来の自分に伝えましょう。\nAIがあなたの未来を予測してくれます。',
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.textMuted,
                       ),
                       textAlign: TextAlign.center,
@@ -217,23 +219,25 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
               ),
             ),
 
-            SizedBox(height: tokens.spacing(6)),
+            SizedBox(height: tokens.spacing.xl),
 
             // メッセージ入力
             Text(
               '未来の自分へのメッセージ',
-              style: tokens.bodyMedium.copyWith(
+              style: tokens.typography.body.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: tokens.spacing(2)),
+            SizedBox(height: tokens.spacing.md),
             TextFormField(
               controller: _messageController,
               maxLines: 5,
               decoration: InputDecoration(
                 hintText: '例：1年後の自分へ。今は毎日瞑想を続けています。きっと心が穏やかになっているでしょうね...',
-                border: OutlineInputBorder(borderRadius: tokens.cornerLarge()),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(tokens.radius.lg),
+                ),
                 filled: true,
                 fillColor: tokens.surface,
               ),
@@ -248,43 +252,43 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
               },
             ),
 
-            SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing.lg),
 
             // 配信日選択
             Text(
               '配信日',
-              style: tokens.bodyMedium.copyWith(
+              style: tokens.typography.body.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: tokens.spacing(2)),
+            SizedBox(height: tokens.spacing.md),
             InkWell(
               onTap: _selectDate,
               child: Container(
-                padding: EdgeInsets.all(tokens.spacing(4)),
+                padding: EdgeInsets.all(tokens.spacing.lg),
                 decoration: BoxDecoration(
                   border: Border.all(color: tokens.border),
-                  borderRadius: tokens.cornerLarge(),
+                  borderRadius: BorderRadius.circular(tokens.radius.lg),
                   color: tokens.surface,
                 ),
                 child: Row(
                   children: [
                     Icon(Icons.calendar_today, color: tokens.brandPrimary),
-                    SizedBox(width: tokens.spacing(3)),
+                    SizedBox(width: tokens.spacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             '${_selectedDate.year}年${_selectedDate.month}月${_selectedDate.day}日',
-                            style: tokens.bodyLarge.copyWith(
+                            style: tokens.typography.body.copyWith(
                               color: tokens.textPrimary,
                             ),
                           ),
                           Text(
                             '${DateTime.now().difference(_selectedDate).inDays.abs()}日後に配信',
-                            style: tokens.bodySmall.copyWith(
+                            style: tokens.typography.caption.copyWith(
                               color: tokens.textMuted,
                             ),
                           ),
@@ -301,14 +305,13 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
               ),
             ),
 
-            SizedBox(height: tokens.spacing(6)),
+            SizedBox(height: tokens.spacing.xl),
 
             // 作成ボタン
             MinqPrimaryButton(
               label: 'タイムカプセルを作成',
               icon: Icons.send,
               onPressed: _isLoading ? null : _createTimeCapsule,
-              isLoading: _isLoading,
             ),
           ],
         ),
@@ -328,7 +331,7 @@ class _TimeCapsuleListTab extends ConsumerWidget {
     // final capsulesAsync = ref.watch(userTimeCapsuleProvider);
 
     return Padding(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       child: Column(
         children: [
           // 統計カード
@@ -336,11 +339,11 @@ class _TimeCapsuleListTab extends ConsumerWidget {
             elevation: 0,
             color: tokens.surface,
             shape: RoundedRectangleBorder(
-              borderRadius: tokens.cornerLarge(),
+              borderRadius: BorderRadius.circular(tokens.radius.lg),
               side: BorderSide(color: tokens.border),
             ),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing(4)),
+              padding: EdgeInsets.all(tokens.spacing.lg),
               child: Row(
                 children: [
                   Expanded(
@@ -365,7 +368,7 @@ class _TimeCapsuleListTab extends ConsumerWidget {
             ),
           ),
 
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.lg),
 
           // タイムカプセル一覧
           Expanded(
@@ -373,7 +376,7 @@ class _TimeCapsuleListTab extends ConsumerWidget {
               itemCount: 4, // TODO: 実際のデータ数
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: EdgeInsets.only(bottom: tokens.spacing(3)),
+                  padding: EdgeInsets.only(bottom: tokens.spacing.md),
                   child: TimeCapsuleCard(
                     // TODO: 実際のTimeCapsuleオブジェクトを渡す
                     capsule: _mockTimeCapsules[index],
@@ -458,15 +461,18 @@ class _StatItem extends StatelessWidget {
     return Column(
       children: [
         Icon(icon, color: color, size: 24),
-        SizedBox(height: tokens.spacing(1)),
+        SizedBox(height: tokens.spacing.xs),
         Text(
           value,
-          style: tokens.titleLarge.copyWith(
+          style: tokens.typography.h2.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(label, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
+        Text(
+          label,
+          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+        ),
       ],
     );
   }
@@ -486,7 +492,9 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.8,
       decoration: BoxDecoration(
         color: tokens.background,
-        borderRadius: BorderRadius.vertical(top: tokens.cornerXLarge().topLeft),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(tokens.radius.xl),
+        ),
       ),
       child: Column(
         children: [
@@ -494,22 +502,22 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
           Container(
             width: 40,
             height: 4,
-            margin: EdgeInsets.symmetric(vertical: tokens.spacing(2)),
+            margin: EdgeInsets.symmetric(vertical: tokens.spacing.md),
             decoration: BoxDecoration(
               color: tokens.border,
-              borderRadius: tokens.cornerSmall(),
+              borderRadius: BorderRadius.circular(tokens.radius.sm),
             ),
           ),
 
           // ヘッダー
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: tokens.spacing(4)),
+            padding: EdgeInsets.symmetric(horizontal: tokens.spacing.lg),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     isDelivered ? '配信済みタイムカプセル' : 'タイムカプセル',
-                    style: tokens.titleMedium.copyWith(
+                    style: tokens.typography.h3.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -527,7 +535,7 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
           // コンテンツ
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(tokens.spacing(4)),
+              padding: EdgeInsets.all(tokens.spacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -538,7 +546,7 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
                     value:
                         '${capsule.createdAt.year}年${capsule.createdAt.month}月${capsule.createdAt.day}日',
                   ),
-                  SizedBox(height: tokens.spacing(2)),
+                  SizedBox(height: tokens.spacing.md),
                   _InfoRow(
                     icon: Icons.schedule,
                     label: '配信日',
@@ -546,62 +554,62 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
                         '${capsule.deliveryDate.year}年${capsule.deliveryDate.month}月${capsule.deliveryDate.day}日',
                   ),
 
-                  SizedBox(height: tokens.spacing(4)),
+                  SizedBox(height: tokens.spacing.lg),
 
                   // メッセージ
                   Text(
                     '過去の自分からのメッセージ',
-                    style: tokens.bodyMedium.copyWith(
+                    style: tokens.typography.body.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing(2)),
+                  SizedBox(height: tokens.spacing.md),
                   Container(
                     width: double.infinity,
-                    padding: EdgeInsets.all(tokens.spacing(4)),
+                    padding: EdgeInsets.all(tokens.spacing.lg),
                     decoration: BoxDecoration(
                       color: tokens.surface,
-                      borderRadius: tokens.cornerLarge(),
+                      borderRadius: BorderRadius.circular(tokens.radius.lg),
                       border: Border.all(color: tokens.border),
                     ),
                     child: Text(
                       capsule.message,
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.textPrimary,
                       ),
                     ),
                   ),
 
-                  SizedBox(height: tokens.spacing(4)),
+                  SizedBox(height: tokens.spacing.lg),
 
                   // AI予測
                   Text(
                     'AIの予測',
-                    style: tokens.bodyMedium.copyWith(
+                    style: tokens.typography.body.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing(2)),
+                  SizedBox(height: tokens.spacing.md),
                   Container(
                     width: double.infinity,
-                    padding: EdgeInsets.all(tokens.spacing(4)),
+                    padding: EdgeInsets.all(tokens.spacing.lg),
                     decoration: BoxDecoration(
-                      color: tokens.brandPrimary.withOpacity(0.1),
-                      borderRadius: tokens.cornerLarge(),
+                      color: tokens.brandPrimary.withAlpha(26),
+                      borderRadius: BorderRadius.circular(tokens.radius.lg),
                       border: Border.all(
-                        color: tokens.brandPrimary.withOpacity(0.3),
+                        color: tokens.brandPrimary.withAlpha(77),
                       ),
                     ),
                     child: Text(
                       capsule.prediction,
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.textPrimary,
                       ),
                     ),
                   ),
 
                   if (isDelivered) ...[
-                    SizedBox(height: tokens.spacing(4)),
+                    SizedBox(height: tokens.spacing.lg),
                     MinqPrimaryButton(
                       label: 'SNSでシェア',
                       icon: Icons.share,
@@ -617,9 +625,12 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
     );
   }
 
-  void _shareTimeCapsule(BuildContext context, TimeCapsule capsule) {
+  Future<void> _shareTimeCapsule(
+    BuildContext context,
+    TimeCapsule capsule,
+  ) async {
     // TODO: SNS共有機能を実装
-    FeedbackMessenger.showInfoSnackBar(context, 'SNS共有機能は準備中です');
+    FeedbackMessenger.showInfoToast(context, 'SNS共有機能は準備中です');
   }
 }
 
@@ -641,13 +652,16 @@ class _InfoRow extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 16, color: tokens.textMuted),
-        SizedBox(width: tokens.spacing(2)),
-        Text(label, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
-        SizedBox(width: tokens.spacing(2)),
+        SizedBox(width: tokens.spacing.sm),
+        Text(
+          label,
+          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+        ),
+        SizedBox(width: tokens.spacing.sm),
         Expanded(
           child: Text(
             value,
-            style: tokens.bodySmall.copyWith(color: tokens.textPrimary),
+            style: tokens.typography.caption.copyWith(color: tokens.textPrimary),
           ),
         ),
       ],

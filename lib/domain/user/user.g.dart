@@ -22,58 +22,38 @@ const UserSchema = CollectionSchema(
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
-    r'currentLevel': PropertySchema(
-      id: 1,
-      name: r'currentLevel',
-      type: IsarType.long,
-    ),
     r'currentStreak': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'currentStreak',
       type: IsarType.long,
     ),
     r'longestStreakReachedAt': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'longestStreakReachedAt',
       type: IsarType.dateTime,
     ),
     r'notificationTimes': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'notificationTimes',
       type: IsarType.stringList,
     ),
-    r'onboardingCompleted': PropertySchema(
-      id: 5,
-      name: r'onboardingCompleted',
-      type: IsarType.bool,
-    ),
-    r'onboardingLevel': PropertySchema(
-      id: 6,
-      name: r'onboardingLevel',
-      type: IsarType.long,
-    ),
     r'pairId': PropertySchema(
-      id: 7,
+      id: 4,
       name: r'pairId',
       type: IsarType.string,
     ),
     r'privacy': PropertySchema(
-      id: 8,
+      id: 5,
       name: r'privacy',
       type: IsarType.string,
     ),
     r'streak': PropertySchema(
-      id: 9,
+      id: 6,
       name: r'streak',
       type: IsarType.long,
     ),
-    r'totalPoints': PropertySchema(
-      id: 10,
-      name: r'totalPoints',
-      type: IsarType.long,
-    ),
     r'uid': PropertySchema(
-      id: 11,
+      id: 7,
       name: r'uid',
       type: IsarType.string,
     )
@@ -137,17 +117,13 @@ void _userSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDateTime(offsets[0], object.createdAt);
-  writer.writeLong(offsets[1], object.currentLevel);
-  writer.writeLong(offsets[2], object.currentStreak);
-  writer.writeDateTime(offsets[3], object.longestStreakReachedAt);
-  writer.writeStringList(offsets[4], object.notificationTimes);
-  writer.writeBool(offsets[5], object.onboardingCompleted);
-  writer.writeLong(offsets[6], object.onboardingLevel);
-  writer.writeString(offsets[7], object.pairId);
-  writer.writeString(offsets[8], object.privacy);
-  writer.writeLong(offsets[9], object.longestStreak);
-  writer.writeLong(offsets[10], object.totalPoints);
-  writer.writeString(offsets[11], object.uid);
+  writer.writeLong(offsets[1], object.currentStreak);
+  writer.writeDateTime(offsets[2], object.longestStreakReachedAt);
+  writer.writeStringList(offsets[3], object.notificationTimes);
+  writer.writeString(offsets[4], object.pairId);
+  writer.writeString(offsets[5], object.privacy);
+  writer.writeLong(offsets[6], object.longestStreak);
+  writer.writeString(offsets[7], object.uid);
 }
 
 User _userDeserialize(
@@ -158,18 +134,14 @@ User _userDeserialize(
 ) {
   final object = User();
   object.createdAt = reader.readDateTime(offsets[0]);
-  object.currentLevel = reader.readLong(offsets[1]);
-  object.currentStreak = reader.readLong(offsets[2]);
+  object.currentStreak = reader.readLong(offsets[1]);
   object.id = id;
-  object.longestStreakReachedAt = reader.readDateTimeOrNull(offsets[3]);
-  object.notificationTimes = reader.readStringList(offsets[4]) ?? [];
-  object.onboardingCompleted = reader.readBool(offsets[5]);
-  object.onboardingLevel = reader.readLongOrNull(offsets[6]);
-  object.pairId = reader.readStringOrNull(offsets[7]);
-  object.privacy = reader.readString(offsets[8]);
-  object.longestStreak = reader.readLong(offsets[9]);
-  object.totalPoints = reader.readLong(offsets[10]);
-  object.uid = reader.readString(offsets[11]);
+  object.longestStreakReachedAt = reader.readDateTimeOrNull(offsets[2]);
+  object.notificationTimes = reader.readStringList(offsets[3]) ?? [];
+  object.pairId = reader.readStringOrNull(offsets[4]);
+  object.privacy = reader.readString(offsets[5]);
+  object.longestStreak = reader.readLong(offsets[6]);
+  object.uid = reader.readString(offsets[7]);
   return object;
 }
 
@@ -185,24 +157,16 @@ P _userDeserializeProp<P>(
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
-    case 3:
       return (reader.readDateTimeOrNull(offset)) as P;
-    case 4:
+    case 3:
       return (reader.readStringList(offset) ?? []) as P;
-    case 5:
-      return (reader.readBool(offset)) as P;
-    case 6:
-      return (reader.readLongOrNull(offset)) as P;
-    case 7:
+    case 4:
       return (reader.readStringOrNull(offset)) as P;
-    case 8:
+    case 5:
       return (reader.readString(offset)) as P;
-    case 9:
+    case 6:
       return (reader.readLong(offset)) as P;
-    case 10:
-      return (reader.readLong(offset)) as P;
-    case 11:
+    case 7:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -439,59 +403,6 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'createdAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> currentLevelEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'currentLevel',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> currentLevelGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'currentLevel',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> currentLevelLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'currentLevel',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> currentLevelBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'currentLevel',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -904,85 +815,6 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> onboardingCompletedEqualTo(
-      bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'onboardingCompleted',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> onboardingLevelIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'onboardingLevel',
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> onboardingLevelIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'onboardingLevel',
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> onboardingLevelEqualTo(
-      int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'onboardingLevel',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> onboardingLevelGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'onboardingLevel',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> onboardingLevelLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'onboardingLevel',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> onboardingLevelBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'onboardingLevel',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<User, User, QAfterFilterCondition> pairIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1308,59 +1140,6 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> totalPointsEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'totalPoints',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> totalPointsGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'totalPoints',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> totalPointsLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'totalPoints',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> totalPointsBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'totalPoints',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<User, User, QAfterFilterCondition> uidEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1507,18 +1286,6 @@ extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> sortByCurrentLevel() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'currentLevel', Sort.asc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> sortByCurrentLevelDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'currentLevel', Sort.desc);
-    });
-  }
-
   QueryBuilder<User, User, QAfterSortBy> sortByCurrentStreak() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'currentStreak', Sort.asc);
@@ -1540,30 +1307,6 @@ extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
   QueryBuilder<User, User, QAfterSortBy> sortByLongestStreakReachedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'longestStreakReachedAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> sortByOnboardingCompleted() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'onboardingCompleted', Sort.asc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> sortByOnboardingCompletedDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'onboardingCompleted', Sort.desc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> sortByOnboardingLevel() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'onboardingLevel', Sort.asc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> sortByOnboardingLevelDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'onboardingLevel', Sort.desc);
     });
   }
 
@@ -1603,18 +1346,6 @@ extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> sortByTotalPoints() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'totalPoints', Sort.asc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> sortByTotalPointsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'totalPoints', Sort.desc);
-    });
-  }
-
   QueryBuilder<User, User, QAfterSortBy> sortByUid() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'uid', Sort.asc);
@@ -1638,18 +1369,6 @@ extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
   QueryBuilder<User, User, QAfterSortBy> thenByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> thenByCurrentLevel() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'currentLevel', Sort.asc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> thenByCurrentLevelDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'currentLevel', Sort.desc);
     });
   }
 
@@ -1689,30 +1408,6 @@ extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> thenByOnboardingCompleted() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'onboardingCompleted', Sort.asc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> thenByOnboardingCompletedDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'onboardingCompleted', Sort.desc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> thenByOnboardingLevel() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'onboardingLevel', Sort.asc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> thenByOnboardingLevelDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'onboardingLevel', Sort.desc);
-    });
-  }
-
   QueryBuilder<User, User, QAfterSortBy> thenByPairId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pairId', Sort.asc);
@@ -1749,18 +1444,6 @@ extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
     });
   }
 
-  QueryBuilder<User, User, QAfterSortBy> thenByTotalPoints() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'totalPoints', Sort.asc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> thenByTotalPointsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'totalPoints', Sort.desc);
-    });
-  }
-
   QueryBuilder<User, User, QAfterSortBy> thenByUid() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'uid', Sort.asc);
@@ -1778,12 +1461,6 @@ extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
   QueryBuilder<User, User, QDistinct> distinctByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createdAt');
-    });
-  }
-
-  QueryBuilder<User, User, QDistinct> distinctByCurrentLevel() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'currentLevel');
     });
   }
 
@@ -1805,18 +1482,6 @@ extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
     });
   }
 
-  QueryBuilder<User, User, QDistinct> distinctByOnboardingCompleted() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'onboardingCompleted');
-    });
-  }
-
-  QueryBuilder<User, User, QDistinct> distinctByOnboardingLevel() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'onboardingLevel');
-    });
-  }
-
   QueryBuilder<User, User, QDistinct> distinctByPairId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1834,12 +1499,6 @@ extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
   QueryBuilder<User, User, QDistinct> distinctByLongestStreak() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'streak');
-    });
-  }
-
-  QueryBuilder<User, User, QDistinct> distinctByTotalPoints() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'totalPoints');
     });
   }
 
@@ -1864,12 +1523,6 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
     });
   }
 
-  QueryBuilder<User, int, QQueryOperations> currentLevelProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'currentLevel');
-    });
-  }
-
   QueryBuilder<User, int, QQueryOperations> currentStreakProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'currentStreak');
@@ -1890,18 +1543,6 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
     });
   }
 
-  QueryBuilder<User, bool, QQueryOperations> onboardingCompletedProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'onboardingCompleted');
-    });
-  }
-
-  QueryBuilder<User, int?, QQueryOperations> onboardingLevelProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'onboardingLevel');
-    });
-  }
-
   QueryBuilder<User, String?, QQueryOperations> pairIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'pairId');
@@ -1917,12 +1558,6 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
   QueryBuilder<User, int, QQueryOperations> longestStreakProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'streak');
-    });
-  }
-
-  QueryBuilder<User, int, QQueryOperations> totalPointsProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'totalPoints');
     });
   }
 

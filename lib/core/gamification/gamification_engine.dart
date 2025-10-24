@@ -25,12 +25,16 @@ class GamificationEngine {
   }) async {
     // Firestoreが利用できない場合はローカルログのみ
     if (_firestore == null) {
-      final totalPoints = (basePoints * difficultyMultiplier * consistencyMultiplier).round();
-      print('Awarded $totalPoints points to user $userId for $reason (offline mode).');
+      final totalPoints =
+          (basePoints * difficultyMultiplier * consistencyMultiplier).round();
+      print(
+        'Awarded $totalPoints points to user $userId for $reason (offline mode).',
+      );
       return;
     }
 
-    final totalPoints = (basePoints * difficultyMultiplier * consistencyMultiplier).round();
+    final totalPoints =
+        (basePoints * difficultyMultiplier * consistencyMultiplier).round();
     final pointsTransaction = Points(
       id: '', // Firestore will generate this
       userId: userId,
@@ -40,7 +44,7 @@ class GamificationEngine {
     );
 
     try {
-      await _firestore
+      await _firestore!
           .collection('users')
           .doc(userId)
           .collection('points_transactions')
@@ -61,38 +65,42 @@ class GamificationEngine {
     }
 
     try {
-      final userBadgesRef =
-          _firestore.collection('users').doc(userId).collection('badges');
-      final questLogsRef =
-          _firestore.collection('users').doc(userId).collection('quest_logs');
+      final userBadgesRef = _firestore!
+          .collection('users')
+          .doc(userId)
+          .collection('badges');
+      final questLogsRef = _firestore!
+          .collection('users')
+          .doc(userId)
+          .collection('quest_logs');
 
-    final awardedBadges = <Badge>[];
+      final awardedBadges = <Badge>[];
 
-    // Get user's existing badges
-    final existingBadgesSnapshot = await userBadgesRef.get();
-    final existingBadgeIds =
-        existingBadgesSnapshot.docs.map((doc) => doc.id).toSet();
+      // Get user's existing badges
+      final existingBadgesSnapshot = await userBadgesRef.get();
+      final existingBadgeIds =
+          existingBadgesSnapshot.docs.map((doc) => doc.id).toSet();
 
-    // Get quest logs
-    final questLogsSnapshot = await questLogsRef.get();
-    final completedQuests = questLogsSnapshot.docs.length;
+      // Get quest logs
+      final questLogsSnapshot = await questLogsRef.get();
+      final completedQuests = questLogsSnapshot.docs.length;
 
-    // Define all possible badges
-    final allBadges = _getBadgeDefinitions(completedQuests);
+      // Define all possible badges
+      final allBadges = _getBadgeDefinitions(completedQuests);
 
-    for (final badgeDef in allBadges) {
-      if (!existingBadgeIds.contains(badgeDef.id) && badgeDef.isEarned) {
-        final newBadge = badgeDef.toBadge();
-        await userBadgesRef.doc(newBadge.id).set(newBadge.toJson());
-        awardedBadges.add(newBadge);
+      for (final badgeDef in allBadges) {
+        if (!existingBadgeIds.contains(badgeDef.id) && badgeDef.isEarned) {
+          final newBadge = badgeDef.toBadge();
+          await userBadgesRef.doc(newBadge.id).set(newBadge.toJson());
+          awardedBadges.add(newBadge);
+        }
       }
-    }
 
-    if (awardedBadges.isNotEmpty) {
-      print('Awarded ${awardedBadges.length} new badges to user $userId.');
-    }
+      if (awardedBadges.isNotEmpty) {
+        print('Awarded ${awardedBadges.length} new badges to user $userId.');
+      }
 
-    return awardedBadges;
+      return awardedBadges;
     } catch (e) {
       print('Failed to check badges (offline): $e');
       return [];
@@ -133,7 +141,6 @@ class GamificationEngine {
     ];
   }
 
-
   /// Calculates the user's current rank based on their total points.
   Future<void> calculateRank(String userId) async {
     if (_firestore == null) {
@@ -142,11 +149,12 @@ class GamificationEngine {
     }
 
     try {
-      final pointsSnapshot = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('points_transactions')
-          .get();
+      final pointsSnapshot =
+          await _firestore!
+              .collection('users')
+              .doc(userId)
+              .collection('points_transactions')
+              .get();
 
       if (pointsSnapshot.docs.isEmpty) {
         print('User $userId has no points yet.');
@@ -159,7 +167,7 @@ class GamificationEngine {
 
       final rank = _getRankForPoints(totalPoints);
 
-      await _firestore.collection('users').doc(userId).update({'rank': rank});
+      await _firestore!.collection('users').doc(userId).update({'rank': rank});
       print('User $userId rank updated to $rank.');
     } catch (e) {
       print('Failed to calculate rank (offline): $e');
@@ -181,19 +189,20 @@ class GamificationEngine {
     }
 
     try {
-      final pointsSnapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('points_transactions')
-        .get();
+      final pointsSnapshot =
+          await _firestore!
+              .collection('users')
+              .doc(userId)
+              .collection('points_transactions')
+              .get();
 
-    if (pointsSnapshot.docs.isEmpty) {
-      return 0;
-    }
+      if (pointsSnapshot.docs.isEmpty) {
+        return 0;
+      }
 
-    return pointsSnapshot.docs
-        .map((doc) => Points.fromJson(doc.data()).value)
-        .fold<int>(0, (prev, current) => prev + current);
+      return pointsSnapshot.docs
+          .map((doc) => Points.fromJson(doc.data()).value)
+          .fold<int>(0, (prev, current) => prev + current);
     } catch (e) {
       print('Failed to get user points (offline): $e');
       return 0;

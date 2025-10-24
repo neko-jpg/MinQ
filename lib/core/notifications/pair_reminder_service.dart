@@ -10,8 +10,8 @@ class PairReminderService {
   PairReminderService({
     FirebaseFirestore? firestore,
     FlutterLocalNotificationsPlugin? notifications,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _notifications = notifications ?? FlutterLocalNotificationsPlugin();
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _notifications = notifications ?? FlutterLocalNotificationsPlugin();
 
   /// ペアの未達成状況をチェックして通知
   Future<void> checkAndNotifyPairProgress({
@@ -41,8 +41,11 @@ class PairReminderService {
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to check pair progress',
-          error: e, stackTrace: stack);
+      logger.error(
+        'Failed to check pair progress',
+        e,
+        stack,
+      );
     }
   }
 
@@ -51,12 +54,13 @@ class PairReminderService {
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);
 
-    final snapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('quest_logs')
-        .where('completedAt', isGreaterThanOrEqualTo: startOfDay)
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('quest_logs')
+            .where('completedAt', isGreaterThanOrEqualTo: startOfDay)
+            .get();
 
     // 簡易的な進捗計算
     final completedCount = snapshot.docs.length;
@@ -92,9 +96,9 @@ class PairReminderService {
       details,
     );
 
-    AppLogger.info('Pair reminder sent', data: {
-      'userId': userId,
-      'partnerProgress': partnerProgress,
-    });
+    logger.logJson(
+      'Pair reminder sent',
+      {'userId': userId, 'partnerProgress': partnerProgress},
+    );
   }
 }

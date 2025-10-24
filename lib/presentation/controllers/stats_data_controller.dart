@@ -6,9 +6,7 @@ import 'package:minq/domain/stats/stats_view_data.dart';
 class StatsDataController extends AutoDisposeAsyncNotifier<StatsViewData> {
   @override
   Future<StatsViewData> build() async {
-    final LocalPreferencesService localPrefs = ref.read(
-      localPreferencesServiceProvider,
-    );
+    final LocalPreferencesService localPrefs = ref.read(localPreferencesServiceProvider);
     final StatsViewData? cached = await localPrefs.loadStatsViewData();
     if (cached != null) {
       state = AsyncData<StatsViewData>(cached);
@@ -22,13 +20,8 @@ class StatsDataController extends AutoDisposeAsyncNotifier<StatsViewData> {
     final logRepo = ref.read(questLogRepositoryProvider);
     final streak = await logRepo.calculateStreak(user.uid);
     final heatmap = await logRepo.getHeatmapData(user.uid);
-    final weeklyCompletionRate = await logRepo.calculateWeeklyCompletionRate(
-      user.uid,
-    );
-    final todayCompletionCount = await logRepo.countLogsForDay(
-      user.uid,
-      DateTime.now(),
-    );
+    final weeklyCompletionRate = await logRepo.calculateWeeklyCompletionRate(user.uid);
+    final todayCompletionCount = await logRepo.countLogsForDay(user.uid, DateTime.now());
 
     final StatsViewData fresh = StatsViewData(
       streak: streak,
@@ -43,8 +36,5 @@ class StatsDataController extends AutoDisposeAsyncNotifier<StatsViewData> {
   }
 }
 
-final AutoDisposeAsyncNotifierProvider<StatsDataController, StatsViewData>
-statsDataProvider =
-    AutoDisposeAsyncNotifierProvider<StatsDataController, StatsViewData>(
-      StatsDataController.new,
-    );
+final AutoDisposeAsyncNotifierProvider<StatsDataController, StatsViewData> statsDataProvider =
+    AutoDisposeAsyncNotifierProvider<StatsDataController, StatsViewData>(StatsDataController.new);

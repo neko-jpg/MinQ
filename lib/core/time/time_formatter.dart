@@ -5,7 +5,7 @@ import 'package:minq/core/providers/clock_provider.dart';
 class TimeFormatter {
   final Clock clock;
 
-  TimeFormatter({Clock? clock}) : clock = clock ?? const SystemClock();
+  TimeFormatter({Clock? clock}) : clock = clock ?? Clock();
 
   /// 相対時刻表現（例: 3分前、2時間前）
   String relative(DateTime dateTime, {String? locale}) {
@@ -140,11 +140,11 @@ class TimeFormatter {
 
 /// 時刻フォーマット
 enum TimeFormat {
-  full,      // 2024年1月1日 12:00
-  date,      // 2024年1月1日
-  time,      // 12:00
-  dateTime,  // 1月1日 12:00
-  short,     // 1/1 12:00
+  full, // 2024年1月1日 12:00
+  date, // 2024年1月1日
+  time, // 12:00
+  dateTime, // 1月1日 12:00
+  short, // 1/1 12:00
 }
 
 /// 時刻表現ポリシー

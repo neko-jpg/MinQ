@@ -30,17 +30,17 @@ class OnboardingScreen extends ConsumerWidget {
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing(4),
-                ).copyWith(top: tokens.spacing(8), bottom: tokens.spacing(4)),
+                  horizontal: tokens.spacing.md,
+                ).copyWith(top: tokens.spacing.xl, bottom: tokens.spacing.md),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: tokens.spacing(8)),
+                    SizedBox(height: tokens.spacing.xl),
                     Container(
                       width: 96,
                       height: 96,
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withOpacity(0.1),
+                        color: tokens.brandPrimary.withAlpha(26),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -49,7 +49,7 @@ class OnboardingScreen extends ConsumerWidget {
                         size: 56,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(6)),
+                    SizedBox(height: tokens.spacing.lg),
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
@@ -60,7 +60,7 @@ class OnboardingScreen extends ConsumerWidget {
                         children: const [TextSpan(text: 'MinQへようこそ')],
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(4)),
+                    SizedBox(height: tokens.spacing.md),
                     Text(
                       'ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。',
                       textAlign: TextAlign.center,
@@ -68,25 +68,25 @@ class OnboardingScreen extends ConsumerWidget {
                         color: tokens.textSecondary,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(8)),
+                    SizedBox(height: tokens.spacing.xl),
                     const _FeatureCard(
                       icon: Icons.touch_app,
                       title: '3タップで習慣化',
                       description: '新しい習慣をたった3タップで始められます。とてもシンプルです。',
                     ),
-                    SizedBox(height: tokens.spacing(4)),
+                    SizedBox(height: tokens.spacing.md),
                     const _FeatureCard(
                       icon: Icons.groups,
                       title: '匿名ペア',
                       description: 'パートナーから、匿名で説明責任とサポートを得られます。',
                     ),
-                    SizedBox(height: tokens.spacing(4)),
+                    SizedBox(height: tokens.spacing.md),
                     const _FeatureCard(
                       icon: Icons.explore,
                       title: 'ミニクエスト',
                       description: 'あなたの目標を、達成感のある小さなクエストに変えましょう。',
                     ),
-                    SizedBox(height: tokens.spacing(5)),
+                    SizedBox(height: tokens.spacing.lg),
                   ],
                 ),
               ),
@@ -119,7 +119,7 @@ class _FeatureCard extends StatelessWidget {
       color: tokens.surface,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing(4)),
+        padding: EdgeInsets.all(tokens.spacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -127,27 +127,27 @@ class _FeatureCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: tokens.brandPrimary.withOpacity(0.1),
+                color: tokens.brandPrimary.withAlpha(26),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: tokens.brandPrimary),
             ),
-            SizedBox(width: tokens.spaceMD),
+            SizedBox(width: tokens.spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: tokens.titleMedium.copyWith(
+                    style: tokens.typography.h4.copyWith(
                       fontWeight: FontWeight.bold,
                       color: tokens.textPrimary,
                     ),
                   ),
-                  SizedBox(height: tokens.intimateSpace),
+                  SizedBox(height: tokens.spacing.xs),
                   Text(
                     description,
-                    style: tokens.bodyMedium.copyWith(
+                    style: tokens.typography.body.copyWith(
                       color: tokens.textSecondary,
                     ),
                   ),
@@ -185,7 +185,7 @@ class _BottomNavigation extends ConsumerWidget {
                   tokens.textPrimary,
                   tokens.brandPrimary,
                 ),
-                padding: EdgeInsets.symmetric(vertical: tokens.spacing(3)),
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing.sm),
                 textStyle: textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -195,7 +195,7 @@ class _BottomNavigation extends ConsumerWidget {
               ),
             ),
           ),
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

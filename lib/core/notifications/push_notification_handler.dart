@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:minq/core/deeplink/deeplink_handler.dart';
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/core/notifications/notification_channels.dart';
 
 /// プッシュ通知ハンドラー
@@ -17,9 +18,9 @@ class PushNotificationHandler {
     required FirebaseMessaging messaging,
     required FlutterLocalNotificationsPlugin localNotifications,
     required DeepLinkHandler deepLinkHandler,
-  })  : _messaging = messaging,
-        _localNotifications = localNotifications,
-        _deepLinkHandler = deepLinkHandler;
+  }) : _messaging = messaging,
+       _localNotifications = localNotifications,
+       _deepLinkHandler = deepLinkHandler;
 
   /// メッセージストリーム
   Stream<RemoteMessage> get messageStream => _messageController.stream;
@@ -31,11 +32,11 @@ class PushNotificationHandler {
 
     // FCMトークンを取得
     final token = await _messaging.getToken();
-    print('📱 FCM Token: $token');
+    logger.info('📱 FCM Token: $token');
 
     // トークン更新を監視
     _messaging.onTokenRefresh.listen((token) {
-      print('🔄 FCM Token refreshed: $token');
+      logger.info('🔄 FCM Token refreshed: $token');
       // サーバーに新しいトークンを送信
       _sendTokenToServer(token);
     });
@@ -66,17 +67,18 @@ class PushNotificationHandler {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('✅ Notification permission granted');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-      print('⚠️ Notification permission granted provisionally');
+      logger.info('✅ Notification permission granted');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      logger.warning('⚠️ Notification permission granted provisionally');
     } else {
-      print('❌ Notification permission denied');
+      logger.error('❌ Notification permission denied');
     }
   }
 
   /// フォアグラウンドメッセージを処理
   Future<void> _handleForegroundMessage(RemoteMessage message) async {
-    print('📬 Foreground message received: ${message.messageId}');
+    logger.info('📬 Foreground message received: ${message.messageId}');
 
     _messageController.add(message);
 
@@ -86,7 +88,7 @@ class PushNotificationHandler {
 
   /// バックグラウンドメッセージを処理
   Future<void> _handleBackgroundMessage(RemoteMessage message) async {
-    print('📬 Background message opened: ${message.messageId}');
+    logger.info('📬 Background message opened: ${message.messageId}');
 
     _messageController.add(message);
 
@@ -195,19 +197,19 @@ class PushNotificationHandler {
   /// トークンをサーバーに送信
   Future<void> _sendTokenToServer(String token) async {
     // TODO: サーバーにトークンを送信
-    print('📤 Sending token to server: $token');
+    logger.info('📤 Sending token to server: $token');
   }
 
   /// トピックを購読
   Future<void> subscribeToTopic(String topic) async {
     await _messaging.subscribeToTopic(topic);
-    print('✅ Subscribed to topic: $topic');
+    logger.info('✅ Subscribed to topic: $topic');
   }
 
   /// トピックの購読を解除
   Future<void> unsubscribeFromTopic(String topic) async {
     await _messaging.unsubscribeFromTopic(topic);
-    print('✅ Unsubscribed from topic: $topic');
+    logger.info('✅ Unsubscribed from topic: $topic');
   }
 
   /// クリーンアップ
@@ -219,7 +221,7 @@ class PushNotificationHandler {
 /// バックグラウンドメッセージハンドラー（トップレベル関数）
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('📬 Background message received: ${message.messageId}');
+  logger.info('📬 Background message received: ${message.messageId}');
   // バックグラウンドでの処理（データ同期など）
 }
 
@@ -314,11 +316,7 @@ class PushNotificationPayload {
     required String title,
     required String body,
   }) {
-    return PushNotificationPayload(
-      type: 'system',
-      title: title,
-      body: body,
-    );
+    return PushNotificationPayload(type: 'system', title: title, body: body);
   }
 
   /// JSONに変換

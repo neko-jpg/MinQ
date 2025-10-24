@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/onboarding/progressive_onboarding.dart';
-import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/feature_lock_widget.dart';
 
@@ -27,7 +26,7 @@ class LevelProgressWidget extends ConsumerWidget {
 
   Widget _buildProgressWidget(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     ProgressiveOnboarding service,
   ) {
     // TODO: 実際のユーザーデータを取得
@@ -58,30 +57,31 @@ class LevelProgressWidget extends ConsumerWidget {
 
   Widget _buildCompactWidget(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
     OnboardingLevel? currentLevelInfo,
   ) {
     return GestureDetector(
       onTap: onTap ?? () => _showLevelDetails(context, progress),
       child: Container(
-        padding: EdgeInsets.all(tokens.spacing(3)),
+        padding: EdgeInsets.all(tokens.spacing.md),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              tokens.brandPrimary.withOpacity(0.1),
-              Colors.purple.withOpacity(0.1),
+              tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+              Colors.purple.withAlpha((255 * 0.1).round()),
             ],
           ),
-          borderRadius: tokens.cornerMedium(),
-          border: Border.all(color: tokens.brandPrimary.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(tokens.radius.md),
+          border:
+              Border.all(color: tokens.brandPrimary.withAlpha((255 * 0.3).round())),
         ),
         child: Row(
           children: [
             // レベルアイコン
             Container(
-              width: tokens.spacing(10),
-              height: tokens.spacing(10),
+              width: tokens.spacing.xl,
+              height: tokens.spacing.xl,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [tokens.brandPrimary, Colors.purple.shade600],
@@ -91,7 +91,7 @@ class LevelProgressWidget extends ConsumerWidget {
               child: Center(
                 child: Text(
                   '${progress.currentLevel}',
-                  style: tokens.titleMedium.copyWith(
+                  style: tokens.typography.h3.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -99,7 +99,7 @@ class LevelProgressWidget extends ConsumerWidget {
               ),
             ),
 
-            SizedBox(width: tokens.spacing(3)),
+            SizedBox(width: tokens.spacing.md),
 
             Expanded(
               child: Column(
@@ -107,12 +107,12 @@ class LevelProgressWidget extends ConsumerWidget {
                 children: [
                   Text(
                     currentLevelInfo?.title ?? 'レベル${progress.currentLevel}',
-                    style: tokens.bodyMedium.copyWith(
+                    style: tokens.typography.body.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
 
-                  SizedBox(height: tokens.spacing(1)),
+                  SizedBox(height: tokens.spacing.xs),
 
                   if (!progress.isMaxLevel) ...[
                     LinearProgressIndicator(
@@ -122,15 +122,16 @@ class LevelProgressWidget extends ConsumerWidget {
                         tokens.brandPrimary,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(1)),
+                    SizedBox(height: tokens.spacing.xs),
                     Text(
                       '次のレベルまで ${((1 - progress.progress) * 100).toInt()}%',
-                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                      style:
+                          tokens.typography.caption.copyWith(color: tokens.textMuted),
                     ),
                   ] else
                     Text(
                       '最高レベル達成！',
-                      style: tokens.bodySmall.copyWith(
+                      style: tokens.typography.caption.copyWith(
                         color: Colors.green,
                         fontWeight: FontWeight.bold,
                       ),
@@ -141,7 +142,7 @@ class LevelProgressWidget extends ConsumerWidget {
 
             Icon(
               Icons.arrow_forward_ios,
-              size: tokens.spacing(4),
+              size: tokens.spacing.lg,
               color: tokens.textMuted,
             ),
           ],
@@ -152,24 +153,25 @@ class LevelProgressWidget extends ConsumerWidget {
 
   Widget _buildFullWidget(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
     OnboardingLevel? currentLevelInfo,
     OnboardingLevel? nextLevelInfo,
   ) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            tokens.brandPrimary.withOpacity(0.1),
-            Colors.purple.withOpacity(0.1),
+            tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+            Colors.purple.withAlpha((255 * 0.1).round()),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: tokens.cornerLarge(),
-        border: Border.all(color: tokens.brandPrimary.withOpacity(0.3)),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        border:
+            Border.all(color: tokens.brandPrimary.withAlpha((255 * 0.3).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,12 +182,12 @@ class LevelProgressWidget extends ConsumerWidget {
               Icon(
                 Icons.star,
                 color: tokens.brandPrimary,
-                size: tokens.spacing(6),
+                size: tokens.spacing.lg,
               ),
-              SizedBox(width: tokens.spacing(2)),
+              SizedBox(width: tokens.spacing.sm),
               Text(
                 'あなたのレベル',
-                style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               if (onTap != null)
@@ -193,21 +195,21 @@ class LevelProgressWidget extends ConsumerWidget {
                   onTap: onTap,
                   child: Icon(
                     Icons.info_outline,
-                    size: tokens.spacing(5),
+                    size: tokens.spacing.md,
                     color: tokens.textMuted,
                   ),
                 ),
             ],
           ),
 
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.lg),
 
           // 現在のレベル
           Row(
             children: [
               Container(
-                width: tokens.spacing(16),
-                height: tokens.spacing(16),
+                width: tokens.spacing.xl * 2,
+                height: tokens.spacing.xl * 2,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [tokens.brandPrimary, Colors.purple.shade600],
@@ -215,7 +217,8 @@ class LevelProgressWidget extends ConsumerWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: tokens.brandPrimary.withOpacity(0.3),
+                      color:
+                          tokens.brandPrimary.withAlpha((255 * 0.3).round()),
                       blurRadius: 8,
                       spreadRadius: 2,
                     ),
@@ -224,7 +227,7 @@ class LevelProgressWidget extends ConsumerWidget {
                 child: Center(
                   child: Text(
                     '${progress.currentLevel}',
-                    style: tokens.displaySmall.copyWith(
+                    style: tokens.typography.h1.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -232,7 +235,7 @@ class LevelProgressWidget extends ConsumerWidget {
                 ),
               ),
 
-              SizedBox(width: tokens.spacing(4)),
+              SizedBox(width: tokens.spacing.lg),
 
               Expanded(
                 child: Column(
@@ -240,14 +243,14 @@ class LevelProgressWidget extends ConsumerWidget {
                   children: [
                     Text(
                       currentLevelInfo?.title ?? 'レベル${progress.currentLevel}',
-                      style: tokens.titleLarge.copyWith(
+                      style: tokens.typography.h2.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(1)),
+                    SizedBox(height: tokens.spacing.xs),
                     Text(
                       currentLevelInfo?.description ?? '',
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.textMuted,
                       ),
                     ),
@@ -257,7 +260,7 @@ class LevelProgressWidget extends ConsumerWidget {
             ],
           ),
 
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.lg),
 
           if (!progress.isMaxLevel && nextLevelInfo != null) ...[
             // 次のレベルへの進捗
@@ -272,7 +275,7 @@ class LevelProgressWidget extends ConsumerWidget {
   }
 
   Widget _buildNextLevelSection(
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
     OnboardingLevel nextLevelInfo,
   ) {
@@ -283,12 +286,12 @@ class LevelProgressWidget extends ConsumerWidget {
           children: [
             Text(
               '次のレベル: ${nextLevelInfo.title}',
-              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
             ),
             const Spacer(),
             Text(
               '${(progress.progress * 100).toInt()}%',
-              style: tokens.titleMedium.copyWith(
+              style: tokens.typography.h3.copyWith(
                 color: tokens.brandPrimary,
                 fontWeight: FontWeight.bold,
               ),
@@ -296,14 +299,14 @@ class LevelProgressWidget extends ConsumerWidget {
           ],
         ),
 
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.sm),
 
         // 進捗バー
         Container(
-          height: tokens.spacing(2),
+          height: tokens.spacing.sm,
           decoration: BoxDecoration(
             color: tokens.border,
-            borderRadius: tokens.cornerSmall(),
+            borderRadius: BorderRadius.circular(tokens.radius.sm),
           ),
           child: FractionallySizedBox(
             alignment: Alignment.centerLeft,
@@ -313,13 +316,13 @@ class LevelProgressWidget extends ConsumerWidget {
                 gradient: LinearGradient(
                   colors: [tokens.brandPrimary, Colors.purple.shade600],
                 ),
-                borderRadius: tokens.cornerSmall(),
+                borderRadius: BorderRadius.circular(tokens.radius.sm),
               ),
             ),
           ),
         ),
 
-        SizedBox(height: tokens.spacing(3)),
+        SizedBox(height: tokens.spacing.md),
 
         // 詳細進捗
         if (progress.questProgress != null ||
@@ -327,7 +330,7 @@ class LevelProgressWidget extends ConsumerWidget {
             progress.streakProgress != null)
           _buildDetailedProgress(tokens, progress),
 
-        SizedBox(height: tokens.spacing(3)),
+        SizedBox(height: tokens.spacing.md),
 
         // 解放される機能プレビュー
         _buildUnlockPreview(tokens, nextLevelInfo),
@@ -336,7 +339,7 @@ class LevelProgressWidget extends ConsumerWidget {
   }
 
   Widget _buildDetailedProgress(
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
   ) {
     return Row(
@@ -352,7 +355,7 @@ class LevelProgressWidget extends ConsumerWidget {
           ),
 
         if (progress.daysProgress != null) ...[
-          SizedBox(width: tokens.spacing(2)),
+          SizedBox(width: tokens.spacing.sm),
           Expanded(
             child: _buildProgressItem(
               tokens,
@@ -364,7 +367,7 @@ class LevelProgressWidget extends ConsumerWidget {
         ],
 
         if (progress.streakProgress != null) ...[
-          SizedBox(width: tokens.spacing(2)),
+          SizedBox(width: tokens.spacing.sm),
           Expanded(
             child: _buildProgressItem(
               tokens,
@@ -379,32 +382,32 @@ class LevelProgressWidget extends ConsumerWidget {
   }
 
   Widget _buildProgressItem(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String label,
     double progress,
     IconData icon,
   ) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(2)),
+      padding: EdgeInsets.all(tokens.spacing.sm),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: tokens.cornerSmall(),
+        borderRadius: BorderRadius.circular(tokens.radius.sm),
       ),
       child: Column(
         children: [
           Icon(
             icon,
-            size: tokens.spacing(4),
+            size: tokens.spacing.lg,
             color: progress >= 1.0 ? Colors.green : tokens.textMuted,
           ),
-          SizedBox(height: tokens.spacing(1)),
+          SizedBox(height: tokens.spacing.xs),
           Text(
             label,
-            style: tokens.bodySmall.copyWith(fontWeight: FontWeight.w600),
+            style: tokens.typography.caption.copyWith(fontWeight: FontWeight.w600),
           ),
           Text(
             '${(progress * 100).toInt()}%',
-            style: tokens.bodySmall.copyWith(
+            style: tokens.typography.caption.copyWith(
               color: progress >= 1.0 ? Colors.green : tokens.textMuted,
             ),
           ),
@@ -413,13 +416,13 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildUnlockPreview(MinqTokens tokens, OnboardingLevel nextLevelInfo) {
+  Widget _buildUnlockPreview(MinqTheme tokens, OnboardingLevel nextLevelInfo) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(3)),
+      padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.1),
-        borderRadius: tokens.cornerMedium(),
-        border: Border.all(color: Colors.green.withOpacity(0.3)),
+        color: Colors.green.withAlpha((255 * 0.1).round()),
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        border: Border.all(color: Colors.green.withAlpha((255 * 0.3).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -429,12 +432,12 @@ class LevelProgressWidget extends ConsumerWidget {
               Icon(
                 Icons.lock_open,
                 color: Colors.green,
-                size: tokens.spacing(4),
+                size: tokens.spacing.lg,
               ),
-              SizedBox(width: tokens.spacing(2)),
+              SizedBox(width: tokens.spacing.sm),
               Text(
                 '解放される機能',
-                style: tokens.bodyMedium.copyWith(
+                style: tokens.typography.body.copyWith(
                   color: Colors.green,
                   fontWeight: FontWeight.bold,
                 ),
@@ -442,26 +445,26 @@ class LevelProgressWidget extends ConsumerWidget {
             ],
           ),
 
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
 
           Wrap(
-            spacing: tokens.spacing(2),
-            runSpacing: tokens.spacing(1),
+            spacing: tokens.spacing.sm,
+            runSpacing: tokens.spacing.xs,
             children:
                 nextLevelInfo.unlockedFeatures.map((feature) {
                   final featureInfo = _getFeatureDisplayName(feature);
                   return Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing(2),
-                      vertical: tokens.spacing(1),
+                      horizontal: tokens.spacing.sm,
+                      vertical: tokens.spacing.xs,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.2),
-                      borderRadius: tokens.cornerSmall(),
+                      color: Colors.green.withAlpha((255 * 0.2).round()),
+                      borderRadius: BorderRadius.circular(tokens.radius.sm),
                     ),
                     child: Text(
                       featureInfo,
-                      style: tokens.bodySmall.copyWith(
+                      style: tokens.typography.caption.copyWith(
                         color: Colors.green.shade700,
                         fontWeight: FontWeight.w600,
                       ),
@@ -474,41 +477,41 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildMaxLevelSection(MinqTokens tokens) {
+  Widget _buildMaxLevelSection(MinqTheme tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.amber.withOpacity(0.2),
-            Colors.orange.withOpacity(0.2),
+            Colors.amber.withAlpha((255 * 0.2).round()),
+            Colors.orange.withAlpha((255 * 0.2).round()),
           ],
         ),
-        borderRadius: tokens.cornerMedium(),
+        borderRadius: BorderRadius.circular(tokens.radius.md),
       ),
       child: Row(
         children: [
           Icon(
             Icons.emoji_events,
             color: Colors.amber,
-            size: tokens.spacing(8),
+            size: tokens.spacing.xl,
           ),
-          SizedBox(width: tokens.spacing(3)),
+          SizedBox(width: tokens.spacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   '最高レベル達成！',
-                  style: tokens.titleMedium.copyWith(
+                  style: tokens.typography.h3.copyWith(
                     color: Colors.amber.shade700,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: tokens.spacing(1)),
+                SizedBox(height: tokens.spacing.xs),
                 Text(
                   'すべての機能が解放されました。素晴らしい！',
-                  style: tokens.bodyMedium.copyWith(
+                  style: tokens.typography.body.copyWith(
                     color: Colors.amber.shade600,
                   ),
                 ),
@@ -520,35 +523,35 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoadingWidget(MinqTokens tokens) {
+  Widget _buildLoadingWidget(MinqTheme tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         color: tokens.surfaceVariant,
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
       ),
       child: const Center(child: CircularProgressIndicator()),
     );
   }
 
-  Widget _buildErrorWidget(MinqTokens tokens) {
+  Widget _buildErrorWidget(MinqTheme tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         color: tokens.surfaceVariant,
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
       ),
       child: Row(
         children: [
           Icon(
             Icons.error_outline,
             color: tokens.textMuted,
-            size: tokens.spacing(6),
+            size: tokens.spacing.lg,
           ),
-          SizedBox(width: tokens.spacing(3)),
+          SizedBox(width: tokens.spacing.md),
           Text(
             'レベル情報を読み込めませんでした',
-            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
         ],
       ),

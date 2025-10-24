@@ -26,12 +26,17 @@ class FakeQuestRepository implements IQuestRepository {
 
   @override
   Future<Quest?> getQuest(String questId) async {
+    // Note: Isar uses int IDs, but the interface uses String.
+    // This fake implementation will parse the string to an int.
+    final intId = int.tryParse(questId);
+    if (intId == null) return null;
+
     for (final quests in _quests.values) {
       final quest = quests.firstWhere(
-        (q) => q.id.toString() == questId,
+        (q) => q.id == intId,
         orElse: () => throw StateError('Quest not found'),
       );
-      if (quest.id.toString() == questId) return quest;
+      if (quest.id == intId) return quest;
     }
     return null;
   }
@@ -57,9 +62,11 @@ class FakeQuestRepository implements IQuestRepository {
 
   @override
   Future<void> deleteQuest(String questId) async {
+    final intId = int.tryParse(questId);
+    if (intId == null) return;
     for (final userId in _quests.keys) {
       final quests = _quests[userId]!;
-      quests.removeWhere((q) => q.id.toString() == questId);
+      quests.removeWhere((q) => q.id == intId);
       _quests[userId] = quests;
       _controller.add(quests);
     }
@@ -67,12 +74,14 @@ class FakeQuestRepository implements IQuestRepository {
 
   @override
   Future<void> updateQuestOrder(List<String> questIds) async {
-    // 順序更新のシミュレーション
+    // This is more complex now with Isar. This fake implementation
+    // might not be fully representative.
     for (final userId in _quests.keys) {
       final quests = _quests[userId]!;
       final reordered = <Quest>[];
-      for (final id in questIds) {
-        final quest = quests.firstWhere((q) => q.id.toString() == id);
+      for (final idStr in questIds) {
+        final id = int.parse(idStr);
+        final quest = quests.firstWhere((q) => q.id == id);
         reordered.add(quest);
       }
       _quests[userId] = reordered;
@@ -84,7 +93,8 @@ class FakeQuestRepository implements IQuestRepository {
   Stream<List<Quest>> watchActiveQuests(String userId) {
     return watchUserQuests(
       userId,
-    ).map((quests) => quests.where((q) => q.status == QuestStatus.active).toList());
+    ).map((quests) =>
+        quests.where((q) => q.status == QuestStatus.active).toList());
   }
 
   @override

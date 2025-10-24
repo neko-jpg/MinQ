@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Provider for the service
-final progressVisualizationServiceProvider = Provider<ProgressVisualizationService>((ref) {
-  return ProgressVisualizationService(FirebaseFirestore.instance);
-});
+final progressVisualizationServiceProvider =
+    Provider<ProgressVisualizationService>((ref) {
+      return ProgressVisualizationService(FirebaseFirestore.instance);
+    });
 
 class ProgressVisualizationService {
   final FirebaseFirestore _firestore;
@@ -25,11 +26,16 @@ class ProgressVisualizationService {
     final snapshot = await _getQuestLogs(userId);
     if (snapshot.docs.isEmpty) return 0;
 
-    final completionDates = snapshot.docs
-        .map((doc) => (doc.data() as Map<String, dynamic>)['completedAt'] as Timestamp)
-        .map((ts) => ts.toDate())
-        .toSet() // Use a set to count unique days
-        .toList();
+    final completionDates =
+        snapshot.docs
+            .map(
+              (doc) =>
+                  (doc.data() as Map<String, dynamic>)['completedAt']
+                      as Timestamp,
+            )
+            .map((ts) => ts.toDate())
+            .toSet() // Use a set to count unique days
+            .toList();
 
     completionDates.sort((a, b) => b.compareTo(a)); // Sort descending
 
@@ -92,13 +98,16 @@ class ProgressVisualizationService {
     final snapshot = await _getQuestLogs(userId);
     if (snapshot.docs.isEmpty) return false;
 
-    final lastCompletion = (snapshot.docs.first.data() as Map<String, dynamic>)['completedAt'] as Timestamp;
+    final lastCompletion =
+        (snapshot.docs.first.data() as Map<String, dynamic>)['completedAt']
+            as Timestamp;
     final lastCompletionDate = lastCompletion.toDate();
     final today = DateTime.now();
 
-    final isToday = lastCompletionDate.year == today.year &&
-                    lastCompletionDate.month == today.month &&
-                    lastCompletionDate.day == today.day;
+    final isToday =
+        lastCompletionDate.year == today.year &&
+        lastCompletionDate.month == today.month &&
+        lastCompletionDate.day == today.day;
 
     return !isToday;
   }

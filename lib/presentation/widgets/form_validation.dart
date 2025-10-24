@@ -395,7 +395,7 @@ class FormFieldWrapper extends StatelessWidget {
                 Icon(
                   Icons.info_outline,
                   size: 16,
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withAlpha((255 * 0.6).round()),
                 ),
               SpacingSystem.hSpaceXS,
               Expanded(
@@ -405,7 +405,7 @@ class FormFieldWrapper extends StatelessWidget {
                     color:
                         errorMessage != null
                             ? colorScheme.error
-                            : colorScheme.onSurface.withOpacity(0.6),
+                            : colorScheme.onSurface.withAlpha((255 * 0.6).round()),
                   ),
                 ),
               ),

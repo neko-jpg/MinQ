@@ -28,22 +28,22 @@ class _MicroInteractionDemoScreenState
 
   @override
   Widget build(BuildContext context) {
-    final theme = MinqTheme.of(context);
+    final tokens = context.tokens;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Micro-Interactions Demo'),
-        backgroundColor: theme.brandPrimary,
+        backgroundColor: tokens.brandPrimary,
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(theme.spaceLG),
+        padding: EdgeInsets.all(tokens.spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Animated Checkbox Demo
-            Text('Animated Checkbox', style: theme.titleMedium),
-            SizedBox(height: theme.spaceMD),
+            Text('Animated Checkbox', style: tokens.typography.h4),
+            SizedBox(height: tokens.spacing.md),
             Row(
               children: [
                 AnimatedCheckbox(
@@ -55,19 +55,19 @@ class _MicroInteractionDemoScreenState
                   },
                   showConfetti: true,
                 ),
-                SizedBox(width: theme.spaceMD),
+                SizedBox(width: tokens.spacing.md),
                 Text(
                   _checkboxValue ? 'Checked!' : 'Unchecked',
-                  style: theme.bodyMedium,
+                  style: tokens.typography.body,
                 ),
               ],
             ),
 
-            SizedBox(height: theme.spaceLG),
+            SizedBox(height: tokens.spacing.lg),
 
             // Pulsing Button Demo
-            Text('Pulsing Button', style: theme.titleMedium),
-            SizedBox(height: theme.spaceMD),
+            Text('Pulsing Button', style: tokens.typography.h4),
+            SizedBox(height: tokens.spacing.md),
             Row(
               children: [
                 PulsingButton(
@@ -79,27 +79,27 @@ class _MicroInteractionDemoScreenState
                   isPulsing: _isPulsing,
                   child: Text(
                     _isPulsing ? 'Stop Pulsing' : 'Start Pulsing',
-                    style: theme.bodyMedium.copyWith(color: Colors.white),
+                    style: tokens.typography.body.copyWith(color: Colors.white),
                   ),
                 ),
-                SizedBox(width: theme.spaceMD),
+                SizedBox(width: tokens.spacing.md),
                 PulsingButton(
                   onPressed: () {
                     FeedbackManager.questCompleted();
                   },
                   child: Text(
                     'Test Feedback',
-                    style: theme.bodyMedium.copyWith(color: Colors.white),
+                    style: tokens.typography.body.copyWith(color: Colors.white),
                   ),
                 ),
               ],
             ),
 
-            SizedBox(height: theme.spaceLG),
+            SizedBox(height: tokens.spacing.lg),
 
             // Progress Ring Demo
-            Text('Progress Ring', style: theme.titleMedium),
-            SizedBox(height: theme.spaceMD),
+            Text('Progress Ring', style: tokens.typography.h4),
+            SizedBox(height: tokens.spacing.md),
             Center(
               child: ProgressRing(
                 progress: _progress,
@@ -115,12 +115,12 @@ class _MicroInteractionDemoScreenState
                 },
                 child: Text(
                   '${(_progress * 100).toInt()}%',
-                  style: theme.titleMedium,
+                  style: tokens.typography.h4,
                 ),
               ),
             ),
 
-            SizedBox(height: theme.spaceMD),
+            SizedBox(height: tokens.spacing.md),
 
             // Progress controls
             Row(
@@ -161,11 +161,11 @@ class _MicroInteractionDemoScreenState
               ],
             ),
 
-            SizedBox(height: theme.spaceLG),
+            SizedBox(height: tokens.spacing.lg),
 
             // Feedback Settings
-            Text('Feedback Settings', style: theme.titleMedium),
-            SizedBox(height: theme.spaceMD),
+            Text('Feedback Settings', style: tokens.typography.h4),
+            SizedBox(height: tokens.spacing.md),
 
             SwitchListTile(
               title: const Text('Haptic Feedback'),
@@ -187,15 +187,15 @@ class _MicroInteractionDemoScreenState
               },
             ),
 
-            SizedBox(height: theme.spaceLG),
+            SizedBox(height: tokens.spacing.lg),
 
             // Feedback Test Buttons
-            Text('Test Different Feedback Types', style: theme.titleMedium),
-            SizedBox(height: theme.spaceMD),
+            Text('Test Different Feedback Types', style: tokens.typography.h4),
+            SizedBox(height: tokens.spacing.md),
 
             Wrap(
-              spacing: theme.spaceSM,
-              runSpacing: theme.spaceSM,
+              spacing: tokens.spacing.sm,
+              runSpacing: tokens.spacing.sm,
               children: [
                 ElevatedButton(
                   onPressed: () => FeedbackManager.questCompleted(),

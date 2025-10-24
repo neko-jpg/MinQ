@@ -221,12 +221,12 @@ class _SplashScreenState extends State<SplashScreen>
                                     shape: BoxShape.circle,
                                     gradient: RadialGradient(
                                       colors: [
-                                        primaryColor.withOpacity(
-                                          _pulseOpacity.value * 0.3,
-                                        ),
-                                        primaryColor.withOpacity(
-                                          _pulseOpacity.value * 0.1,
-                                        ),
+                                        primaryColor.withAlpha(
+                                            (255 * _pulseOpacity.value * 0.3)
+                                                .toInt()),
+                                        primaryColor.withAlpha(
+                                            (255 * _pulseOpacity.value * 0.1)
+                                                .toInt()),
                                         Colors.transparent,
                                       ],
                                     ),
@@ -245,12 +245,12 @@ class _SplashScreenState extends State<SplashScreen>
                                     end: Alignment.bottomRight,
                                     colors: [
                                       primaryColor,
-                                      primaryColor.withOpacity(0.8),
+                                      primaryColor.withAlpha(204),
                                     ],
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: primaryColor.withOpacity(0.3),
+                                      color: primaryColor.withAlpha(77),
                                       blurRadius: 20,
                                       spreadRadius: 5,
                                     ),
@@ -269,7 +269,7 @@ class _SplashScreenState extends State<SplashScreen>
                                             end: Alignment.bottomRight,
                                             colors: [
                                               primaryColor,
-                                              primaryColor.withOpacity(0.8),
+                                              primaryColor.withAlpha(204),
                                             ],
                                           ),
                                         ),
@@ -303,7 +303,7 @@ class _SplashScreenState extends State<SplashScreen>
                               (bounds) => LinearGradient(
                                 colors: [
                                   primaryColor,
-                                  primaryColor.withOpacity(0.8),
+                                  primaryColor.withAlpha(204),
                                 ],
                               ).createShader(bounds),
                           child: const Text(
@@ -421,10 +421,10 @@ class _SplashScreenState extends State<SplashScreen>
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.orange.withOpacity(0.1),
+                          color: Colors.orange.withAlpha(26),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: Colors.orange.withOpacity(0.3),
+                            color: Colors.orange.withAlpha(77),
                           ),
                         ),
                         child: Row(
@@ -515,10 +515,9 @@ class ParticlePainter extends CustomPainter {
       final y = size.height * progress;
 
       final opacity = (1.0 - progress) * 0.3;
-      paint.color =
-          isDark
-              ? Colors.white.withOpacity(opacity)
-              : Colors.grey.withOpacity(opacity);
+      paint.color = isDark
+          ? Colors.white.withAlpha((255 * opacity).toInt())
+          : Colors.grey.withAlpha((255 * opacity).toInt());
 
       canvas.drawCircle(Offset(x, y), 2.0 * (1.0 - progress), paint);
     }
@@ -531,10 +530,9 @@ class ParticlePainter extends CustomPainter {
 
       if (sparkleProgress > 0.8) {
         final sparkleOpacity = (1.0 - sparkleProgress) * 5.0;
-        paint.color =
-            isDark
-                ? Colors.blue.withOpacity(sparkleOpacity * 0.5)
-                : Colors.blue.withOpacity(sparkleOpacity * 0.3);
+        paint.color = isDark
+            ? Colors.blue.withAlpha((255 * sparkleOpacity * 0.5).toInt())
+            : Colors.blue.withAlpha((255 * sparkleOpacity * 0.3).toInt());
 
         _drawSparkle(canvas, Offset(sparkleX, sparkleY), paint);
       }

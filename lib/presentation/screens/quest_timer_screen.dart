@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,15 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/core/ai/ai_integration_manager.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
-import 'package:minq/presentation/common/minq_buttons.dart';
-import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/controllers/quest_log_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/ai_coach_overlay.dart';
-import 'package:minq/presentation/widgets/badge_notification_widget.dart';
 
 /// クエストタイマー画面
 /// タイマーとストップウォッチの両方の機能を提供
@@ -45,7 +40,6 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
   bool _isRunning = false;
   bool _isPaused = false;
   TimerMode _currentMode = TimerMode.timer;
-  DateTime? _startTime;
 
   @override
   void initState() {
@@ -93,7 +87,6 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     setState(() {
       _isRunning = true;
       _isPaused = false;
-      _startTime = DateTime.now();
     });
 
     _pulseController.repeat(reverse: true);
@@ -168,7 +161,6 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
       _isRunning = false;
       _isPaused = false;
       _currentDuration = Duration.zero;
-      _startTime = null;
     });
   }
 
@@ -264,7 +256,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
             data:
                 (quest) => Text(
                   quest?.title ?? 'クエスト',
-                  style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+                  style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
                 ),
             loading: () => const Text('読み込み中...'),
             error: (_, __) => const Text('エラー'),
@@ -321,9 +313,9 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildModeSelector(MinqTokens tokens) {
+  Widget _buildModeSelector(MinqTheme tokens) {
     return Container(
-      margin: EdgeInsets.all(tokens.spacing(4)),
+      margin: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
         color: tokens.surfaceVariant,
         borderRadius: tokens.cornerLarge(),
@@ -336,7 +328,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
                 child: GestureDetector(
                   onTap: () => _switchMode(mode),
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: tokens.spacing(3)),
+                    padding: EdgeInsets.symmetric(vertical: tokens.spacing.sm),
                     decoration: BoxDecoration(
                       color:
                           isSelected ? tokens.brandPrimary : Colors.transparent,
@@ -345,7 +337,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
                     child: Text(
                       mode.displayName,
                       textAlign: TextAlign.center,
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: isSelected ? Colors.white : tokens.textMuted,
                         fontWeight:
                             isSelected ? FontWeight.bold : FontWeight.normal,
@@ -359,7 +351,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildTimerView(MinqTokens tokens) {
+  Widget _buildTimerView(MinqTheme tokens) {
     final progress =
         _targetDuration.inSeconds > 0
             ? _currentDuration.inSeconds / _targetDuration.inSeconds
@@ -401,7 +393,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
                           _isRunning && !_isPaused
                               ? Color.lerp(
                                 tokens.brandPrimary,
-                                tokens.brandPrimary.withOpacity(0.6),
+                                tokens.brandPrimary.withAlpha((255 * 0.6).round()),
                                 _pulseController.value,
                               )!
                               : tokens.brandPrimary,
@@ -415,15 +407,15 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
                       children: [
                         Text(
                           _formatDuration(_targetDuration - _currentDuration),
-                          style: tokens.displayMedium.copyWith(
+                          style: tokens.typography.h2.copyWith(
                             color: tokens.textPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: tokens.spacing(2)),
+                        SizedBox(height: tokens.spacing.sm),
                         Text(
                           '残り時間',
-                          style: tokens.bodyMedium.copyWith(
+                          style: tokens.typography.body.copyWith(
                             color: tokens.textMuted,
                           ),
                         ),
@@ -435,7 +427,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
             },
           ),
 
-          SizedBox(height: tokens.spacing(6)),
+          SizedBox(height: tokens.spacing.lg),
 
           // 目標時間設定
           if (!_isRunning) _buildTimerSettings(tokens),
@@ -444,7 +436,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildStopwatchView(MinqTokens tokens) {
+  Widget _buildStopwatchView(MinqTheme tokens) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -470,15 +462,17 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
                 children: [
                   Text(
                     _formatDuration(_currentDuration),
-                    style: tokens.displayMedium.copyWith(
+                    style: tokens.typography.h2.copyWith(
                       color: tokens.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing(2)),
+                  SizedBox(height: tokens.spacing.sm),
                   Text(
                     '経過時間',
-                    style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                    style: tokens.typography.body.copyWith(
+                      color: tokens.textMuted,
+                    ),
                   ),
                 ],
               ),
@@ -489,9 +483,9 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildTimerSettings(MinqTokens tokens) {
+  Widget _buildTimerSettings(MinqTheme tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
         color: tokens.surface,
         borderRadius: tokens.cornerLarge(),
@@ -501,18 +495,18 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
         children: [
           Text(
             '目標時間',
-            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildTimeButton(tokens, '5分', const Duration(minutes: 5)),
-              SizedBox(width: tokens.spacing(2)),
+              SizedBox(width: tokens.spacing.sm),
               _buildTimeButton(tokens, '15分', const Duration(minutes: 15)),
-              SizedBox(width: tokens.spacing(2)),
+              SizedBox(width: tokens.spacing.sm),
               _buildTimeButton(tokens, '25分', const Duration(minutes: 25)),
-              SizedBox(width: tokens.spacing(2)),
+              SizedBox(width: tokens.spacing.sm),
               _buildTimeButton(tokens, '45分', const Duration(minutes: 45)),
             ],
           ),
@@ -521,7 +515,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildTimeButton(MinqTokens tokens, String label, Duration duration) {
+  Widget _buildTimeButton(MinqTheme tokens, String label, Duration duration) {
     final isSelected = _targetDuration == duration;
 
     return GestureDetector(
@@ -532,8 +526,8 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
       },
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: tokens.spacing(3),
-          vertical: tokens.spacing(2),
+          horizontal: tokens.spacing.sm,
+          vertical: tokens.spacing.xs,
         ),
         decoration: BoxDecoration(
           color: isSelected ? tokens.brandPrimary : Colors.transparent,
@@ -544,7 +538,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
         ),
         child: Text(
           label,
-          style: tokens.bodySmall.copyWith(
+          style: tokens.typography.bodySmall.copyWith(
             color: isSelected ? Colors.white : tokens.textPrimary,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
@@ -553,9 +547,9 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildControlButtons(MinqTokens tokens) {
+  Widget _buildControlButtons(MinqTheme tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.md),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -586,7 +580,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildMainControlButton(MinqTokens tokens) {
+  Widget _buildMainControlButton(MinqTheme tokens) {
     IconData icon;
     String label;
     VoidCallback onPressed;
@@ -620,10 +614,10 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 32),
-            SizedBox(height: tokens.spacing(1)),
+            SizedBox(height: tokens.spacing.xs),
             Text(
               label,
-              style: tokens.bodySmall.copyWith(
+              style: tokens.typography.bodySmall.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
@@ -635,7 +629,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
   }
 
   Widget _buildControlButton(
-    MinqTokens tokens, {
+    MinqTheme tokens, {
     required IconData icon,
     required String label,
     required Color color,
@@ -657,7 +651,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
             Icon(icon, size: 24),
             Text(
               label,
-              style: tokens.bodySmall.copyWith(
+              style: tokens.typography.bodySmall.copyWith(
                 color: Colors.white,
                 fontSize: 10,
               ),
@@ -754,16 +748,16 @@ class _TimerSettingsSheetState extends State<_TimerSettingsSheet> {
     final tokens = context.tokens;
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.md),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'タイマー設定',
-            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
           ),
 
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.md),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -771,7 +765,7 @@ class _TimerSettingsSheetState extends State<_TimerSettingsSheet> {
               // 時間選択
               Column(
                 children: [
-                  Text('時間', style: tokens.bodySmall),
+                  Text('時間', style: tokens.typography.bodySmall),
                   SizedBox(
                     width: 80,
                     height: 120,
@@ -787,7 +781,7 @@ class _TimerSettingsSheetState extends State<_TimerSettingsSheet> {
                           return Center(
                             child: Text(
                               '$index',
-                              style: tokens.titleMedium.copyWith(
+                              style: tokens.typography.h4.copyWith(
                                 color:
                                     index == _hours
                                         ? tokens.brandPrimary
@@ -803,12 +797,12 @@ class _TimerSettingsSheetState extends State<_TimerSettingsSheet> {
                 ],
               ),
 
-              SizedBox(width: tokens.spacing(4)),
+              SizedBox(width: tokens.spacing.md),
 
               // 分選択
               Column(
                 children: [
-                  Text('分', style: tokens.bodySmall),
+                  Text('分', style: tokens.typography.bodySmall),
                   SizedBox(
                     width: 80,
                     height: 120,
@@ -824,7 +818,7 @@ class _TimerSettingsSheetState extends State<_TimerSettingsSheet> {
                           return Center(
                             child: Text(
                               '$index',
-                              style: tokens.titleMedium.copyWith(
+                              style: tokens.typography.h4.copyWith(
                                 color:
                                     index == _minutes
                                         ? tokens.brandPrimary
@@ -842,7 +836,7 @@ class _TimerSettingsSheetState extends State<_TimerSettingsSheet> {
             ],
           ),
 
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.md),
 
           Row(
             children: [
@@ -852,7 +846,7 @@ class _TimerSettingsSheetState extends State<_TimerSettingsSheet> {
                   child: const Text('キャンセル'),
                 ),
               ),
-              SizedBox(width: tokens.spacing(2)),
+              SizedBox(width: tokens.spacing.sm),
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {

@@ -266,7 +266,9 @@ class HabitTemplates {
 
   /// 推定時間別にテンプレートを取得
   static List<HabitTemplate> getByDuration(int maxMinutes) {
-    return all.where((template) => template.estimatedMinutes <= maxMinutes).toList();
+    return all
+        .where((template) => template.estimatedMinutes <= maxMinutes)
+        .toList();
   }
 
   /// IDからテンプレートを取得
@@ -312,37 +314,29 @@ class HabitTemplate {
       title: title,
       description: description,
       icon: icon,
-      category: _toQuestCategory(category),
-      difficulty: _toDifficultyLevel(difficulty),
-      estimatedDuration: Duration(minutes: estimatedMinutes),
+      category: _categoryToQuestCategory(category),
+      difficulty: _difficultyToDifficultyLevel(difficulty),
+      estimatedMinutes: estimatedMinutes,
       tips: [tips],
     );
   }
 
-  QuestCategory _toQuestCategory(HabitCategory category) {
-    switch (category) {
-      case HabitCategory.health:
-        return QuestCategory.health;
-      case HabitCategory.learning:
-        return QuestCategory.learning;
-      case HabitCategory.productivity:
-        return QuestCategory.productivity;
-      case HabitCategory.mindfulness:
-        return QuestCategory.mindfulness;
-      case HabitCategory.social:
-        return QuestCategory.social;
-    }
+  QuestCategory _categoryToQuestCategory(HabitCategory category) {
+    return switch (category) {
+      HabitCategory.health => QuestCategory.health,
+      HabitCategory.learning => QuestCategory.learning,
+      HabitCategory.productivity => QuestCategory.productivity,
+      HabitCategory.mindfulness => QuestCategory.mindfulness,
+      HabitCategory.social => QuestCategory.social,
+    };
   }
 
-  DifficultyLevel _toDifficultyLevel(HabitDifficulty difficulty) {
-    switch (difficulty) {
-      case HabitDifficulty.easy:
-        return DifficultyLevel.easy;
-      case HabitDifficulty.medium:
-        return DifficultyLevel.medium;
-      case HabitDifficulty.hard:
-        return DifficultyLevel.hard;
-    }
+  DifficultyLevel _difficultyToDifficultyLevel(HabitDifficulty difficulty) {
+    return switch (difficulty) {
+      HabitDifficulty.easy => DifficultyLevel.easy,
+      HabitDifficulty.medium => DifficultyLevel.medium,
+      HabitDifficulty.hard => DifficultyLevel.hard,
+    };
   }
 
   String _categoryToString(HabitCategory category) {
@@ -366,18 +360,18 @@ class HabitTemplate {
 
 /// 習慣カテゴリー
 enum HabitCategory {
-  health,        // 健康・運動
-  learning,      // 学習
-  productivity,  // 生産性
-  mindfulness,   // マインドフルネス
-  social,        // 社交
+  health, // 健康・運動
+  learning, // 学習
+  productivity, // 生産性
+  mindfulness, // マインドフルネス
+  social, // 社交
 }
 
 /// 習慣の難易度
 enum HabitDifficulty {
-  easy,    // 簡単
-  medium,  // 普通
-  hard,    // 難しい
+  easy, // 簡単
+  medium, // 普通
+  hard, // 難しい
 }
 
 /// カテゴリーの表示名

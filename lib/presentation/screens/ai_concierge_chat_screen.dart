@@ -72,7 +72,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
           children: <Widget>[
             Text(
               'AI Concierge',
-              style: tokens.titleMedium.copyWith(
+              style: tokens.typography.h4.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
@@ -85,7 +85,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
                 final mode = controller.getCurrentAIMode();
                 return Text(
                   mode,
-                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(color: tokens.textMuted),
                 );
               },
             ),
@@ -127,8 +127,8 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
                   child: ListView(
                     controller: _scrollController,
                     padding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing(4),
-                      vertical: tokens.spacing(4),
+                      horizontal: tokens.spacing.lg,
+                      vertical: tokens.spacing.lg,
                     ),
                     children: <Widget>[
                       ..._buildMessageList(messages, tokens),
@@ -143,18 +143,18 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
         error:
             (error, _) => Center(
               child: Padding(
-                padding: EdgeInsets.all(tokens.spacing(6)),
+                padding: EdgeInsets.all(tokens.spacing.lg),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
                       'AIコンシェルジュを読み込めませんでした。',
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.textMuted,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: tokens.spacing(3)),
+                    SizedBox(height: tokens.spacing.sm),
                     FilledButton(
                       onPressed:
                           () =>
@@ -239,7 +239,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
         previousDate = message.timestamp;
       }
       children.add(_buildMessageBubble(message, tokens));
-      children.add(SizedBox(height: tokens.spacing(3)));
+      children.add(SizedBox(height: tokens.spacing.md));
     }
 
     return children;
@@ -248,20 +248,20 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
   Widget _buildDateChip(DateTime timestamp, MinqTheme tokens) {
     final formatter = DateFormat.yMMMd('ja');
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing(2)),
+      padding: EdgeInsets.only(bottom: tokens.spacing.xs),
       child: Center(
         child: Container(
           padding: EdgeInsets.symmetric(
-            horizontal: tokens.spacing(3),
-            vertical: tokens.spacing(1),
+            horizontal: tokens.spacing.sm,
+            vertical: tokens.spacing.xs,
           ),
           decoration: BoxDecoration(
             color: tokens.surfaceVariant,
-            borderRadius: tokens.cornerLarge(),
+            borderRadius: BorderRadius.circular(tokens.radius.lg),
           ),
           child: Text(
             formatter.format(timestamp),
-            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
           ),
         ),
       ),
@@ -277,16 +277,16 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
     final borderRadius =
         isUser
             ? BorderRadius.only(
-              topLeft: Radius.circular(tokens.radiusLarge),
-              topRight: Radius.circular(tokens.radiusLarge),
-              bottomLeft: Radius.circular(tokens.radiusLarge),
-              bottomRight: Radius.circular(tokens.radiusSmall),
+              topLeft: Radius.circular(tokens.radius.lg),
+              topRight: Radius.circular(tokens.radius.lg),
+              bottomLeft: Radius.circular(tokens.radius.lg),
+              bottomRight: Radius.circular(tokens.radius.sm),
             )
             : BorderRadius.only(
-              topLeft: Radius.circular(tokens.radiusLarge),
-              topRight: Radius.circular(tokens.radiusLarge),
-              bottomLeft: Radius.circular(tokens.radiusSmall),
-              bottomRight: Radius.circular(tokens.radiusLarge),
+              topLeft: Radius.circular(tokens.radius.lg),
+              topRight: Radius.circular(tokens.radius.lg),
+              bottomLeft: Radius.circular(tokens.radius.sm),
+              bottomRight: Radius.circular(tokens.radius.lg),
             );
     final icon = isUser ? null : Icons.psychology;
 
@@ -297,25 +297,25 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
       children: <Widget>[
         if (!isUser)
           Container(
-            width: tokens.spacing(10),
-            height: tokens.spacing(10),
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withOpacity(0.12),
+              color: tokens.brandPrimary.withAlpha(30),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: tokens.brandPrimary),
           )
         else
-          SizedBox(width: tokens.spacing(10)),
-        SizedBox(width: tokens.spacing(2)),
+          const SizedBox(width: 40),
+        SizedBox(width: tokens.spacing.xs),
         Flexible(
           child: Column(
             crossAxisAlignment: alignment,
             children: <Widget>[
               Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing(4),
-                  vertical: tokens.spacing(3),
+                  horizontal: tokens.spacing.md,
+                  vertical: tokens.spacing.sm,
                 ),
                 decoration: BoxDecoration(
                   color: bubbleColor,
@@ -323,16 +323,16 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
                 ),
                 child: Text(
                   message.text,
-                  style: tokens.bodyMedium.copyWith(
+                  style: tokens.typography.body.copyWith(
                     color: textColor,
                     height: 1.5,
                   ),
                 ),
               ),
-              SizedBox(height: tokens.spacing(1)),
+              SizedBox(height: tokens.spacing.xs),
               Text(
                 DateFormat.Hm().format(message.timestamp),
-                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                style: tokens.typography.caption.copyWith(color: tokens.textMuted),
               ),
             ],
           ),
@@ -343,43 +343,40 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
 
   Widget _buildTypingIndicator(MinqTheme tokens) {
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing(3)),
+      padding: EdgeInsets.only(bottom: tokens.spacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            width: tokens.spacing(10),
-            height: tokens.spacing(10),
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withOpacity(0.12),
+              color: tokens.brandPrimary.withAlpha(30),
               shape: BoxShape.circle,
             ),
             child: Icon(Icons.psychology, color: tokens.brandPrimary),
           ),
-          SizedBox(width: tokens.spacing(2)),
+          SizedBox(width: tokens.spacing.xs),
           Container(
-            padding: EdgeInsets.all(tokens.spacing(3)),
+            padding: EdgeInsets.all(tokens.spacing.sm),
             decoration: BoxDecoration(
               color: tokens.surfaceVariant,
-              borderRadius: tokens.cornerLarge(),
+              borderRadius: BorderRadius.circular(tokens.radius.lg),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                SizedBox(
-                  width: tokens.spacing(4),
-                  height: tokens.spacing(4),
+                const SizedBox(
+                  width: 16,
+                  height: 16,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      tokens.brandPrimary,
-                    ),
                   ),
                 ),
-                SizedBox(width: tokens.spacing(2)),
+                SizedBox(width: tokens.spacing.xs),
                 Text(
                   '考え中...',
-                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(color: tokens.textMuted),
                 ),
               ],
             ),
@@ -394,10 +391,10 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
       top: false,
       child: Padding(
         padding: EdgeInsets.fromLTRB(
-          tokens.spacing(4),
-          tokens.spacing(2),
-          tokens.spacing(4),
-          tokens.spacing(4),
+          tokens.spacing.md,
+          tokens.spacing.xs,
+          tokens.spacing.md,
+          tokens.spacing.md,
         ),
         child: Row(
           children: <Widget>[
@@ -409,22 +406,22 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
                   filled: true,
                   fillColor: tokens.surfaceVariant,
                   border: OutlineInputBorder(
-                    borderRadius: tokens.cornerXLarge(),
+                    borderRadius: BorderRadius.circular(tokens.radius.xl),
                     borderSide: BorderSide.none,
                   ),
                   contentPadding: EdgeInsets.symmetric(
-                    horizontal: tokens.spacing(4),
-                    vertical: tokens.spacing(3),
+                    horizontal: tokens.spacing.md,
+                    vertical: tokens.spacing.sm,
                   ),
                 ),
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => _sendMessage(),
               ),
             ),
-            SizedBox(width: tokens.spacing(2)),
+            SizedBox(width: tokens.spacing.xs),
             Container(
-              width: tokens.spacing(11),
-              height: tokens.spacing(11),
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
                 color: tokens.brandPrimary,
                 shape: BoxShape.circle,

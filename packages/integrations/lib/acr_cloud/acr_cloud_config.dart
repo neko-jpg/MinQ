@@ -12,7 +12,7 @@ class ACRCloudConfig {
     required this.accessSecret,
   });
 
-  /// Creates a new [ACRCloudConfig] from a JSON map.
+  /// Creates a new [ACRCloudConfig] from a JSON object.
   factory ACRCloudConfig.fromJson(Map<String, dynamic> json) {
     return ACRCloudConfig(
       host: json['host'] as String,
@@ -21,26 +21,26 @@ class ACRCloudConfig {
     );
   }
 
-  /// Creates a new [ACRCloudConfig] from a base64-encoded JSON string.
+  /// Creates a new [ACRCloudConfig] from a base64 encoded JSON string.
   factory ACRCloudConfig.fromBase64(String encoded) {
     return ACRCloudConfig.fromJson(
       jsonDecode(utf8.decode(base64Decode(encoded))) as Map<String, dynamic>,
     );
   }
 
-  /// The ACR Cloud API host.
+  /// The host of the ACR Cloud API endpoint.
   final String host;
 
-  /// The ACR Cloud API access key.
+  /// The access key for the ACR Cloud API.
   final String accessKey;
 
-  /// The ACR Cloud API access secret.
+  /// The access secret for the ACR Cloud API.
   final String accessSecret;
 
-  /// Converts the [ACRCloudConfig] to a JSON map.
+  /// Converts this object to a JSON map.
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'host': host,
-        'accessKey': accessKey,
-        'accessSecret': accessSecret,
-      };
+    'host': host,
+    'accessKey': accessKey,
+    'accessSecret': accessSecret,
+  };
 }

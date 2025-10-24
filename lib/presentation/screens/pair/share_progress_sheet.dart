@@ -37,39 +37,38 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     final memoController = TextEditingController();
     showDialog(
       context: context,
-      builder:
-          (dialogCtx) => AlertDialog(
-            title: const Text('メモを添付'),
-            content: TextField(
-              controller: memoController,
-              autofocus: true,
-              decoration: const InputDecoration(hintText: '今日の頑張りを伝えよう'),
-              maxLines: 3,
-            ),
-            actions: [
-              TextButton(
-                child: const Text('キャンセル'),
-                onPressed: () => Navigator.of(dialogCtx).pop(),
-              ),
-              TextButton(
-                child: const Text('送信'),
-                onPressed: () {
-                  final repo = ref.read(pairRepositoryProvider);
-                  final uid = ref.read(uidProvider);
-                  final memo = memoController.text.trim();
-                  if (memo.isNotEmpty && repo != null && uid != null) {
-                    repo.sendMessage(
-                      pairId: widget.pairId,
-                      senderId: uid,
-                      text: memo,
-                    );
-                  }
-                  Navigator.of(dialogCtx).pop();
-                  Navigator.of(context).pop(); // Close the bottom sheet as well
-                },
-              ),
-            ],
+      builder: (dialogCtx) => AlertDialog(
+        title: const Text('メモを添付'),
+        content: TextField(
+          controller: memoController,
+          autofocus: true,
+          decoration: const InputDecoration(hintText: '今日の頑張りを伝えよう'),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(
+            child: const Text('キャンセル'),
+            onPressed: () => Navigator.of(dialogCtx).pop(),
           ),
+          TextButton(
+            child: const Text('送信'),
+            onPressed: () {
+              final repo = ref.read(pairRepositoryProvider);
+              final uid = ref.read(uidProvider);
+              final memo = memoController.text.trim();
+              if (memo.isNotEmpty && repo != null && uid != null) {
+                repo.sendMessage(
+                  pairId: widget.pairId,
+                  senderId: uid,
+                  text: memo,
+                );
+              }
+              Navigator.of(dialogCtx).pop();
+              Navigator.of(context).pop(); // Close the bottom sheet as well
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -79,12 +78,12 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
       child: Container(
-        margin: const EdgeInsets.all(16.0),
+        margin: EdgeInsets.all(tokens.spacing.lg),
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: tokens.surface.withOpacity(0.8),
+          color: tokens.surface.withAlpha((255 * 0.8).round()),
           borderRadius: tokens.cornerXLarge(),
-          border: Border.all(color: tokens.border.withOpacity(0.5)),
+          border: Border.all(color: tokens.border.withAlpha((255 * 0.5).round())),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -100,13 +99,13 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
 
   Widget _buildHeader(BuildContext context, MinqTheme tokens) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             '進捗を共有',
-            style: tokens.titleLarge.copyWith(
+            style: tokens.typography.h2.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
@@ -123,18 +122,21 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
   Widget _buildContent(BuildContext context, MinqTheme tokens) {
     return Flexible(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        padding: EdgeInsets.symmetric(
+          horizontal: tokens.spacing.lg,
+          vertical: tokens.spacing.sm,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildQuestSelector(tokens),
-            const SizedBox(height: 24),
+            SizedBox(height: tokens.spacing.xl),
             _buildAttachmentButtons(tokens),
-            const SizedBox(height: 24),
+            SizedBox(height: tokens.spacing.xl),
             _buildAchievementSelector(tokens),
-            const SizedBox(height: 24),
+            SizedBox(height: tokens.spacing.xl),
             _buildStreakProgress(tokens),
-            const SizedBox(height: 16),
+            SizedBox(height: tokens.spacing.lg),
           ],
         ),
       ),
@@ -147,17 +149,14 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
       children: [
         Text(
           'クエストを選択',
-          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: tokens.spacing.sm),
         DropdownButtonFormField<String>(
           initialValue: _selectedQuest,
-          items:
-              [
-                '運動',
-                '勉強',
-                '読書',
-              ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+          items: ['運動', '勉強', '読書']
+              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
           onChanged: (value) {
             if (value != null) {
               setState(() => _selectedQuest = value);
@@ -182,9 +181,9 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
       children: [
         Text(
           '証拠を添付',
-          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: tokens.spacing.sm),
         Row(
           children: [
             Expanded(
@@ -197,7 +196,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
                 },
               ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: tokens.spacing.lg),
             Expanded(
               child: _AttachmentButton(
                 tokens: tokens,
@@ -216,8 +215,8 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('達成度', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
-        const SizedBox(height: 8),
+        Text('達成度', style: tokens.typography.body.copyWith(color: tokens.textMuted)),
+        SizedBox(height: tokens.spacing.sm),
         ToggleButtons(
           isSelected: List.generate(
             3,
@@ -228,19 +227,19 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
           selectedColor: Colors.white,
           color: tokens.textPrimary,
           fillColor: tokens.brandPrimary,
-          splashColor: tokens.brandPrimary.withOpacity(0.2),
-          children: const [
+          splashColor: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+          children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('✔ 達成'),
+              padding: EdgeInsets.symmetric(horizontal: tokens.spacing.lg),
+              child: const Text('✔ 達成'),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('△ 部分'),
+              padding: EdgeInsets.symmetric(horizontal: tokens.spacing.lg),
+              child: const Text('△ 部分'),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('✘ 未達'),
+              padding: EdgeInsets.symmetric(horizontal: tokens.spacing.lg),
+              child: const Text('✘ 未達'),
             ),
           ],
         ),
@@ -256,18 +255,18 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
           children: [
             Text(
               '連続記録',
-              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+              style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
             ),
             Text(
               '🔥 7 日目',
-              style: tokens.bodySmall.copyWith(
+              style: tokens.typography.bodySmall.copyWith(
                 color: tokens.textMuted,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: tokens.spacing.sm),
         LinearProgressIndicator(
           value: 0.7,
           backgroundColor: tokens.border,
@@ -281,7 +280,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
 
   Widget _buildFooter(BuildContext context, MinqTheme tokens) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       child: ElevatedButton.icon(
         icon: const Icon(Icons.send),
         label: const Text('共有する'),
@@ -291,7 +290,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
           foregroundColor: tokens.surface,
           minimumSize: const Size(double.infinity, 56),
           shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
-          textStyle: tokens.titleSmall,
+          textStyle: tokens.typography.h5,
         ),
       ),
     );
@@ -318,7 +317,7 @@ class _AttachmentButton extends StatelessWidget {
       label: Text(label, style: TextStyle(color: tokens.textPrimary)),
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 24),
+        padding: EdgeInsets.symmetric(vertical: tokens.spacing.xl),
         side: BorderSide(
           color: tokens.border,
           width: 2,

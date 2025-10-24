@@ -30,6 +30,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   }
 
   Future<void> _handlePostCelebrationFlows() async {
+    if (!mounted) return;
     await _maybeRequestNotificationPermission();
     if (!mounted) return;
     await _maybeTriggerInAppReview();
@@ -65,7 +66,9 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
 
     if (result == true) {
       final granted = await notificationService.requestPermission();
-      ref.read(notificationPermissionProvider.notifier).state = granted;
+      if (mounted) {
+        ref.read(notificationPermissionProvider.notifier).state = granted;
+      }
       if (!granted) {
         await notificationService.recordPermissionRequestTimestamp();
       }
@@ -77,9 +80,11 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   Future<void> _maybeTriggerInAppReview() async {
     try {
       final currentStreak = await ref.read(streakProvider.future);
-      await ref
-          .read(inAppReviewServiceProvider)
-          .maybeRequestReview(currentStreak: currentStreak);
+      if (mounted) {
+        await ref
+            .read(inAppReviewServiceProvider)
+            .maybeRequestReview(currentStreak: currentStreak);
+      }
     } catch (error) {
       debugPrint('In-app review trigger skipped: $error');
     }
@@ -215,7 +220,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
           ),
           SizedBox(height: tokens.spacing(3)),
           Material(
-            color: tokens.brandPrimary.withOpacity(0.1),
+            color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
             borderRadius: tokens.cornerLarge(),
             child: InkWell(
               onTap: () {
@@ -230,7 +235,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
                       width: tokens.spacing(14),
                       height: tokens.spacing(14),
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withOpacity(0.2),
+                        color: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
                         borderRadius: tokens.cornerLarge(),
                       ),
                       child: Icon(
@@ -342,7 +347,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
           width: tokens.spacing(12),
           height: tokens.spacing(12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withAlpha(51),
             shape: BoxShape.circle,
             backgroundBlendMode: BlendMode.overlay,
           ),
@@ -474,7 +479,7 @@ class _PingAnimation extends AnimatedWidget {
         height: 288 * animation.value,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: color.withOpacity(0.3),
+          color: color.withAlpha(77),
         ),
       ),
     );

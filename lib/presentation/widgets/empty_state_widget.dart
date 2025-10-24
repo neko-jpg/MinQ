@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:minq/core/assets/app_icons.dart';
-import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 空状態ウィジェット - 統一されたスタイル
 class EmptyStateWidget extends StatelessWidget {
@@ -161,12 +162,11 @@ class EmptyStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final tokens = MinqTheme.of(context);
 
     return Center(
       child: Padding(
-        padding: SpacingSystem.paddingXXL,
+        padding: EdgeInsets.all(tokens.spacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -177,34 +177,35 @@ class EmptyStateWidget extends StatelessWidget {
             else if (icon != null)
               _buildIcon(context, icon!, type),
 
-            SpacingSystem.vSpaceLG,
+            SizedBox(height: tokens.spacing.lg),
 
             // タイトル
             if (title != null)
               Text(
                 title!,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  color: _getTitleColor(colorScheme, type),
+                style: tokens.typography.h2.copyWith(
+                  color: _getTitleColor(tokens, type),
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
               ),
 
-            if (title != null && message != null) SpacingSystem.vSpaceSM,
+            if (title != null && message != null)
+              SizedBox(height: tokens.spacing.sm),
 
             // メッセージ
             if (message != null)
               Text(
                 message!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                style: tokens.typography.body.copyWith(
+                  color: tokens.onSurface.withAlpha((255 * 0.6).round()),
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
               ),
 
             // アクション
-            if (action != null) ...[SpacingSystem.vSpaceXL, action!],
+            if (action != null) ...[SizedBox(height: tokens.spacing.xl), action!],
           ],
         ),
       ),
@@ -212,42 +213,42 @@ class EmptyStateWidget extends StatelessWidget {
   }
 
   Widget _buildIcon(BuildContext context, IconData icon, EmptyStateType type) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final iconColor = _getIconColor(colorScheme, type);
+    final tokens = MinqTheme.of(context);
+    final iconColor = _getIconColor(tokens, type);
 
     return Container(
       width: 96,
       height: 96,
       decoration: BoxDecoration(
-        color: iconColor.withOpacity(0.1),
+        color: iconColor.withAlpha((255 * 0.1).round()),
         shape: BoxShape.circle,
       ),
       child: Icon(icon, size: 48, color: iconColor),
     );
   }
 
-  Color _getIconColor(ColorScheme colorScheme, EmptyStateType type) {
+  Color _getIconColor(MinqTheme tokens, EmptyStateType type) {
     switch (type) {
       case EmptyStateType.error:
       case EmptyStateType.networkError:
-        return colorScheme.error;
+        return tokens.accentError;
       case EmptyStateType.permissionDenied:
-        return const Color(0xFFF59E0B); // Warning color
+        return tokens.accentWarning; // Warning color
       case EmptyStateType.quests:
       case EmptyStateType.pairs:
-        return colorScheme.primary;
+        return tokens.brandPrimary;
       default:
-        return colorScheme.onSurface.withOpacity(0.4);
+        return tokens.onSurface.withAlpha((255 * 0.4).round());
     }
   }
 
-  Color _getTitleColor(ColorScheme colorScheme, EmptyStateType type) {
+  Color _getTitleColor(MinqTheme tokens, EmptyStateType type) {
     switch (type) {
       case EmptyStateType.error:
       case EmptyStateType.networkError:
-        return colorScheme.error;
+        return tokens.accentError;
       default:
-        return colorScheme.onSurface;
+        return tokens.onSurface;
     }
   }
 }
@@ -341,37 +342,36 @@ class EmptyStateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final tokens = MinqTheme.of(context);
 
     return Card(
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: SpacingSystem.paddingLG,
+          padding: EdgeInsets.all(tokens.spacing.lg),
           child: Row(
             children: [
               Container(
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: colorScheme.primary.withOpacity(0.1),
+                  color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: colorScheme.primary, size: 24),
+                child: Icon(icon, color: tokens.brandPrimary, size: 24),
               ),
-              SpacingSystem.hSpaceMD,
+              SizedBox(width: tokens.spacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: theme.textTheme.titleMedium),
-                    SpacingSystem.vSpaceXS,
+                    Text(title, style: tokens.typography.h3),
+                    SizedBox(height: tokens.spacing.xs),
                     Text(
                       message,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface.withOpacity(0.6),
+                      style: tokens.typography.caption.copyWith(
+                        color: tokens.onSurface.withAlpha((255 * 0.6).round()),
                       ),
                     ),
                   ],
@@ -381,7 +381,7 @@ class EmptyStateCard extends StatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 16,
-                  color: colorScheme.onSurface.withOpacity(0.4),
+                  color: tokens.onSurface.withAlpha((255 * 0.4).round()),
                 ),
             ],
           ),

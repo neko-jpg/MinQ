@@ -52,15 +52,11 @@ class PersonalizedPushScheduler {
     }
 
     final completionRate = engagement.completionRate;
-    final timeSinceEngagement =
-        engagement.lastEngagedAt == null
-            ? maximumInterval
-            : now.difference(engagement.lastEngagedAt!);
+    final timeSinceEngagement = engagement.lastEngagedAt == null
+        ? maximumInterval
+        : now.difference(engagement.lastEngagedAt!);
 
-    final urgency = _urgency(
-      completionRate: completionRate,
-      inactivity: timeSinceEngagement,
-    );
+    final urgency = _urgency(completionRate: completionRate, inactivity: timeSinceEngagement);
     final interval = _interpolateInterval(urgency);
     final nextSchedule = now.add(interval);
 
@@ -77,10 +73,7 @@ class PersonalizedPushScheduler {
     );
   }
 
-  double _urgency({
-    required double completionRate,
-    required Duration inactivity,
-  }) {
+  double _urgency({required double completionRate, required Duration inactivity}) {
     final completionPenalty = 1 - completionRate;
     final inactivityHours = inactivity.inHours.clamp(0, 72);
     final inactivityScore = inactivityHours / 72;

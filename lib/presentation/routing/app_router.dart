@@ -33,7 +33,6 @@ import 'package:minq/presentation/screens/personality_diagnosis_screen.dart';
 import 'package:minq/presentation/screens/policy_viewer_screen.dart';
 import 'package:minq/presentation/screens/profile_screen.dart';
 import 'package:minq/presentation/screens/profile_setting_screen.dart';
-import 'package:minq/presentation/screens/profile_setting_screen.dart';
 import 'package:minq/presentation/screens/quest_detail_screen.dart';
 import 'package:minq/presentation/screens/quest_timer_screen.dart';
 import 'package:minq/presentation/screens/quests_screen.dart';
@@ -135,16 +134,11 @@ class AppRoutes {
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
-  // 認証状態を監視
-  final authRepo = ref.watch(authRepositoryProvider);
-  final guestUserId = ref.watch(guestUserIdProvider);
-
+  final authChanges = ref.watch(authStateChangesProvider.stream);
   return GoRouter(
     initialLocation: AppRoutes.onboarding,
     navigatorKey: _rootNavigatorKey,
-    // refreshListenable: GoRouterRefreshStream(
-    //   ref.watch(authStateProvider.notifier).stream,
-    // ),
+    refreshListenable: GoRouterRefreshStream(authChanges),
     redirect: (context, state) {
       // マーケティングアトリビューション
       unawaited(
@@ -152,6 +146,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       );
 
       // 認証ガード
+      final authRepo = ref.read(authRepositoryProvider);
+      final guestUserId = ref.read(guestUserIdProvider);
       final isAuthenticated =
           authRepo.getCurrentUser() != null || guestUserId != null;
 
@@ -531,7 +527,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             (context, state) => buildPageWithTransition<void>(
               context: context,
               state: state,
-              child: const AICoachSettingsScreen(),
+              child: Scaffold(
+                appBar: AppBar(title: const Text('AI Coach Settings')),
+                body: const Center(child: Text('Coming Soon')),
+              ),
               transitionType: SharedAxisTransitionType.horizontal,
             ),
       ),
@@ -541,7 +540,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             (context, state) => buildPageWithTransition<void>(
               context: context,
               state: state,
-              child: const LiveActivitySettingsScreen(),
+              child: Scaffold(
+                appBar: AppBar(title: const Text('Live Activity Settings')),
+                body: const Center(child: Text('Coming Soon')),
+              ),
               transitionType: SharedAxisTransitionType.horizontal,
             ),
       ),
@@ -664,6 +666,8 @@ class NavigationUseCase {
   void goToPair() => _router.go(AppRoutes.pair);
   void goToQuests() => _router.go(AppRoutes.quests);
   void goToSettings() => _router.go(AppRoutes.settings);
+  void goToHelpCenter() => _router.push(AppRoutes.support);
+  void goToBugReport() => _router.push(AppRoutes.support);
 }
 
 final navigationUseCaseProvider = Provider<NavigationUseCase>((ref) {

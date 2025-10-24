@@ -32,11 +32,12 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
   }
 
   Future<void> _resetOnboarding() async {
+    final messenger = ScaffoldMessenger.of(context);
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await _loadOnboardingState();
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       const SnackBar(
         content: Text('オンボーディング状態をリセットしました'),
         backgroundColor: Colors.green,
@@ -231,7 +232,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
             Text(
               '現在のステップ: $_currentStep',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withAlpha(179),
               ),
             ),
           ],
@@ -262,7 +263,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
             Text(
               description,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withAlpha(179),
               ),
             ),
             const SizedBox(height: 16),
@@ -289,7 +290,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
               decoration: BoxDecoration(
                 color: Theme.of(
                   context,
-                ).colorScheme.primaryContainer.withOpacity(0.3),
+                ).colorScheme.primaryContainer.withAlpha(77),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(

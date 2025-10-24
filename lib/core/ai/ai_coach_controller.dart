@@ -1,28 +1,34 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service.dart';
 import 'package:minq/domain/ai/ai_coach_state.dart';
 import 'package:minq/domain/ai/chat_message.dart';
 import 'package:uuid/uuid.dart';
 
+// Provider for the AI service
+final tfliteAIServiceProvider = Provider<TFLiteUnifiedAIService>((ref) {
+  return TFLiteUnifiedAIService.instance;
+});
+
 // Provider for the controller
 final aiCoachControllerProvider =
     StateNotifierProvider<AICoachController, AICoachState>((ref) {
-      final gemmaAsync = ref.watch(gemmaAIServiceProvider);
-      return AICoachController(gemmaAsync.valueOrNull);
-    });
+  final aiService = ref.watch(tfliteAIServiceProvider);
+  return AICoachController(aiService);
+});
 
 class AICoachController extends StateNotifier<AICoachState> {
-  final GemmaAIService? _gemmaService;
+  final TFLiteUnifiedAIService _tfliteService;
   final Uuid _uuid = const Uuid();
 
-  AICoachController(this._gemmaService)
-    : super(
-        AICoachState(
-          userId: '', // This should be initialized with the actual user ID
-          conversationHistory: [],
-          isTyping: false,
-          lastInteraction: DateTime.now(),
-        ),
-      );
+  AICoachController(this._tfliteService)
+      : super(
+          AICoachState(
+            userId: '', // This should be initialized with the actual user ID
+            conversationHistory: [],
+            isTyping: false,
+            lastInteraction: DateTime.now(),
+          ),
+        );
 
   /// Handles a new message sent by the user.
   Future<void> sendMessage(String text) async {
@@ -38,15 +44,20 @@ class AICoachController extends StateNotifier<AICoachState> {
       isTyping: true,
     );
 
-    final gemma = _gemmaService;
     var aiResponseText = _coachUnavailableMessage;
-    if (gemma != null) {
-      aiResponseText = await gemma.generateText(
+    try {
+      // Initialize the service if it's not already
+      await _tfliteService.initialize();
+
+      aiResponseText = await _tfliteService.generateChatResponse(
         text,
-        history: _buildHistoryWithoutLatest(),
+        conversationHistory: _buildHistory(),
         systemPrompt: _coachSystemPrompt,
-        maxTokens: 320,
+        maxTokens: 150,
       );
+    } catch (e) {
+      // Error handling is done inside the service, which returns a fallback message.
+      // We can add additional logging here if needed.
     }
 
     // Add AI message to history
@@ -63,30 +74,11 @@ class AICoachController extends StateNotifier<AICoachState> {
     );
   }
 
-  List<GemmaChatMessage> _buildHistoryWithoutLatest() {
-    final messages = state.conversationHistory;
-    if (messages.isEmpty) {
-      return const <GemmaChatMessage>[];
-    }
-
-    final mapped =
-        messages
-            .map(
-              (message) => GemmaChatMessage(
-                role:
-                    message.sender == 'user'
-                        ? GemmaChatRole.user
-                        : GemmaChatRole.assistant,
-                text: message.text,
-              ),
-            )
-            .toList();
-
-    if (mapped.isNotEmpty && mapped.last.isUser) {
-      mapped.removeLast();
-    }
-
-    return mapped;
+  List<String> _buildHistory() {
+    return state.conversationHistory
+        .map((message) =>
+            '${message.sender == 'user' ? 'User' : 'AI'}: ${message.text}')
+        .toList();
   }
 }
 

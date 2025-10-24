@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// ストリークリカバリーサービス
 class StreakRecoveryService {
   final FirebaseFirestore _firestore;
+  final AppLogger _logger = AppLogger();
 
   StreakRecoveryService({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
@@ -32,7 +33,7 @@ class StreakRecoveryService {
         // リカバリーチケット数を確認
         final recoveryTickets = userData['recoveryTickets'] as int? ?? 0;
         if (recoveryTickets <= 0) {
-          MinqLogger.instance.warn('No recovery tickets available');
+          _logger.warning('No recovery tickets available');
           return false;
         }
 
@@ -44,20 +45,21 @@ class StreakRecoveryService {
         });
 
         // チケットを消費
-        transaction.update(userRef, {
-          'recoveryTickets': recoveryTickets - 1,
-        });
+        transaction.update(userRef, {'recoveryTickets': recoveryTickets - 1});
 
-        MinqLogger.instance.info('Streak recovered', metadata: {
-          'userId': userId,
-          'questId': questId,
-          'remainingTickets': recoveryTickets - 1,
-        });
+        _logger.info(
+          'Streak recovered',
+          data: {
+            'userId': userId,
+            'questId': questId,
+            'remainingTickets': recoveryTickets - 1,
+          },
+        );
 
         return true;
       });
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to recover streak', exception: e, stackTrace: stack);
+      _logger.error('Failed to recover streak', error: e, stackTrace: stack);
       return false;
     }
   }
@@ -74,27 +76,26 @@ class StreakRecoveryService {
 
       final userRef = _firestore.collection('users').doc(userId);
 
-      await userRef.update({
-        'recoveryTickets': FieldValue.increment(count),
-      });
+      await userRef.update({'recoveryTickets': FieldValue.increment(count)});
 
-      MinqLogger.instance.info('Recovery tickets purchased', metadata: {
-        'userId': userId,
-        'count': count,
-      });
+      _logger.info(
+        'Recovery tickets purchased',
+        data: {'userId': userId, 'count': count},
+      );
 
       return true;
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to purchase recovery ticket',
-          exception: e, stackTrace: stack);
+      _logger.error(
+        'Failed to purchase recovery ticket',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
 
   /// 広告視聴でリカバリーチケットを獲得
-  Future<bool> earnTicketByWatchingAd({
-    required String userId,
-  }) async {
+  Future<bool> earnTicketByWatchingAd({required String userId}) async {
     try {
       // TODO: 広告視聴処理を実装
       // 1. リワード広告を表示
@@ -107,14 +108,15 @@ class StreakRecoveryService {
         'lastAdWatchedAt': FieldValue.serverTimestamp(),
       });
 
-      MinqLogger.instance.info('Recovery ticket earned by ad', metadata: {
-        'userId': userId,
-      });
+      _logger.info('Recovery ticket earned by ad', data: {'userId': userId});
 
       return true;
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to earn ticket by ad',
-          exception: e, stackTrace: stack);
+      _logger.error(
+        'Failed to earn ticket by ad',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -130,8 +132,11 @@ class StreakRecoveryService {
 
       return userDoc.data()?['recoveryTickets'] as int? ?? 0;
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to get recovery ticket count',
-          exception: e, stackTrace: stack);
+      _logger.error(
+        'Failed to get recovery ticket count',
+        error: e,
+        stackTrace: stack,
+      );
       return 0;
     }
   }
@@ -148,12 +153,13 @@ class StreakRecoveryService {
       }
 
       // 最後のリカバリーから24時間以上経過しているか確認
-      final questDoc = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('quests')
-          .doc(questId)
-          .get();
+      final questDoc =
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('quests')
+              .doc(questId)
+              .get();
 
       if (!questDoc.exists) {
         return false;
@@ -172,8 +178,11 @@ class StreakRecoveryService {
 
       return true;
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to check recovery availability',
-          exception: e, stackTrace: stack);
+      _logger.error(
+        'Failed to check recovery availability',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }

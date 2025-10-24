@@ -18,13 +18,13 @@ class StreakRecoveryPurchase {
       if (kDebugMode) {
         print('Showing ad for streak recovery: $questId');
       }
-      
+
       // 仮実装: デバッグモードでは即座に成功
       if (kDebugMode) {
         await Future.delayed(const Duration(seconds: 2)); // 広告視聴シミュレート
         return const StreakRecoveryResult.success(RecoveryMethod.ad);
       }
-      
+
       return const StreakRecoveryResult.failed('広告の読み込みに失敗しました');
     } catch (e) {
       return StreakRecoveryResult.failed('エラーが発生しました: $e');
@@ -35,7 +35,9 @@ class StreakRecoveryPurchase {
   Future<StreakRecoveryResult> recoverByPurchase(String questId) async {
     try {
       // プレミアムユーザーは無制限
-      if (_subscriptionManager.hasFeatureAccess(PremiumFeature.unlimitedStreakRecovery)) {
+      if (_subscriptionManager.hasFeatureAccess(
+        PremiumFeature.unlimitedStreakRecovery,
+      )) {
         return const StreakRecoveryResult.success(RecoveryMethod.premium);
       }
 
@@ -43,13 +45,13 @@ class StreakRecoveryPurchase {
       if (kDebugMode) {
         print('Processing streak recovery purchase: $questId');
       }
-      
+
       // 仮実装: デバッグモードでは即座に成功
       if (kDebugMode) {
         await Future.delayed(const Duration(seconds: 1)); // 購入処理シミュレート
         return const StreakRecoveryResult.success(RecoveryMethod.purchase);
       }
-      
+
       return const StreakRecoveryResult.failed('購入処理に失敗しました');
     } catch (e) {
       return StreakRecoveryResult.failed('エラーが発生しました: $e');
@@ -63,24 +65,28 @@ class StreakRecoveryPurchase {
   ) async {
     try {
       // プレミアムユーザーは無制限
-      if (_subscriptionManager.hasFeatureAccess(PremiumFeature.unlimitedStreakRecovery)) {
+      if (_subscriptionManager.hasFeatureAccess(
+        PremiumFeature.unlimitedStreakRecovery,
+      )) {
         return const ProtectionPurchaseResult.success(RecoveryMethod.premium);
       }
 
       // 保護タイプ別の価格
       final price = _getProtectionPrice(type);
-      
+
       // In-App Purchase実装（将来）
       if (kDebugMode) {
-        print('Purchasing protection ticket: $questId, type: $type, price: $price');
+        print(
+          'Purchasing protection ticket: $questId, type: $type, price: $price',
+        );
       }
-      
+
       // 仮実装: デバッグモードでは即座に成功
       if (kDebugMode) {
         await Future.delayed(const Duration(seconds: 1));
         return const ProtectionPurchaseResult.success(RecoveryMethod.purchase);
       }
-      
+
       return const ProtectionPurchaseResult.failed('購入処理に失敗しました');
     } catch (e) {
       return ProtectionPurchaseResult.failed('エラーが発生しました: $e');
@@ -93,9 +99,9 @@ class StreakRecoveryPurchase {
       case ProtectionType.freeze:
         return 100; // 凍結日: 100円
       case ProtectionType.pause:
-        return 80;  // 一時停止: 80円
+        return 80; // 一時停止: 80円
       case ProtectionType.skip:
-        return 60;  // スキップ: 60円
+        return 60; // スキップ: 60円
     }
   }
 
@@ -104,34 +110,42 @@ class StreakRecoveryPurchase {
     final options = <RecoveryOption>[];
 
     // プレミアムユーザーは無制限回復
-    if (_subscriptionManager.hasFeatureAccess(PremiumFeature.unlimitedStreakRecovery)) {
-      options.add(const RecoveryOption(
-        method: RecoveryMethod.premium,
-        title: 'プレミアム回復',
-        description: '無制限で回復できます',
-        price: 0,
-        isRecommended: true,
-      ));
+    if (_subscriptionManager.hasFeatureAccess(
+      PremiumFeature.unlimitedStreakRecovery,
+    )) {
+      options.add(
+        const RecoveryOption(
+          method: RecoveryMethod.premium,
+          title: 'プレミアム回復',
+          description: '無制限で回復できます',
+          price: 0,
+          isRecommended: true,
+        ),
+      );
       return options;
     }
 
     // 広告視聴による回復
-    options.add(const RecoveryOption(
-      method: RecoveryMethod.ad,
-      title: '広告視聴で回復',
-      description: '30秒の広告を見てストリークを回復',
-      price: 0,
-      isRecommended: true,
-    ));
+    options.add(
+      const RecoveryOption(
+        method: RecoveryMethod.ad,
+        title: '広告視聴で回復',
+        description: '30秒の広告を見てストリークを回復',
+        price: 0,
+        isRecommended: true,
+      ),
+    );
 
     // 課金による回復
-    options.add(const RecoveryOption(
-      method: RecoveryMethod.purchase,
-      title: 'チケットで回復',
-      description: 'ストリーク回復チケットを使用',
-      price: ticketPrice,
-      isRecommended: false,
-    ));
+    options.add(
+      const RecoveryOption(
+        method: RecoveryMethod.purchase,
+        title: 'チケットで回復',
+        description: 'ストリーク回復チケットを使用',
+        price: ticketPrice,
+        isRecommended: false,
+      ),
+    );
 
     return options;
   }
@@ -141,28 +155,34 @@ class StreakRecoveryPurchase {
     final options = <ProtectionOption>[];
 
     // プレミアムユーザーは無制限保護
-    if (_subscriptionManager.hasFeatureAccess(PremiumFeature.unlimitedStreakRecovery)) {
+    if (_subscriptionManager.hasFeatureAccess(
+      PremiumFeature.unlimitedStreakRecovery,
+    )) {
       for (final type in ProtectionType.values) {
-        options.add(ProtectionOption(
-          type: type,
-          title: _getProtectionTitle(type),
-          description: _getProtectionDescription(type),
-          price: 0,
-          isPremium: true,
-        ));
+        options.add(
+          ProtectionOption(
+            type: type,
+            title: _getProtectionTitle(type),
+            description: _getProtectionDescription(type),
+            price: 0,
+            isPremium: true,
+          ),
+        );
       }
       return options;
     }
 
     // 通常ユーザーの保護オプション
     for (final type in ProtectionType.values) {
-      options.add(ProtectionOption(
-        type: type,
-        title: _getProtectionTitle(type),
-        description: _getProtectionDescription(type),
-        price: _getProtectionPrice(type),
-        isPremium: false,
-      ));
+      options.add(
+        ProtectionOption(
+          type: type,
+          title: _getProtectionTitle(type),
+          description: _getProtectionDescription(type),
+          price: _getProtectionPrice(type),
+          isPremium: false,
+        ),
+      );
     }
 
     return options;
@@ -195,7 +215,8 @@ class StreakRecoveryPurchase {
 sealed class StreakRecoveryResult {
   const StreakRecoveryResult();
 
-  const factory StreakRecoveryResult.success(RecoveryMethod method) = _SuccessResult;
+  const factory StreakRecoveryResult.success(RecoveryMethod method) =
+      _SuccessResult;
   const factory StreakRecoveryResult.failed(String message) = _FailedResult;
 
   T when<T>({
@@ -223,8 +244,10 @@ class _FailedResult extends StreakRecoveryResult {
 sealed class ProtectionPurchaseResult {
   const ProtectionPurchaseResult();
 
-  const factory ProtectionPurchaseResult.success(RecoveryMethod method) = _ProtectionSuccessResult;
-  const factory ProtectionPurchaseResult.failed(String message) = _ProtectionFailedResult;
+  const factory ProtectionPurchaseResult.success(RecoveryMethod method) =
+      _ProtectionSuccessResult;
+  const factory ProtectionPurchaseResult.failed(String message) =
+      _ProtectionFailedResult;
 
   T when<T>({
     required T Function(RecoveryMethod method) success,
@@ -249,16 +272,16 @@ class _ProtectionFailedResult extends ProtectionPurchaseResult {
 
 /// 回復方法
 enum RecoveryMethod {
-  ad,       // 広告視聴
+  ad, // 広告視聴
   purchase, // 課金
-  premium,  // プレミアム
+  premium, // プレミアム
 }
 
 /// 保護タイプ
 enum ProtectionType {
   freeze, // 凍結日
-  pause,  // 一時停止
-  skip,   // スキップ
+  pause, // 一時停止
+  skip, // スキップ
 }
 
 /// 回復オプション

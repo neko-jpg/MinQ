@@ -14,11 +14,7 @@ class ProgressiveOnboarding {
         level: 1,
         title: 'ビギナー',
         description: '基本機能を学ぼう',
-        unlockedFeatures: [
-          'quest_create',
-          'quest_complete',
-          'basic_stats',
-        ],
+        unlockedFeatures: ['quest_create', 'quest_complete', 'basic_stats'],
         requirements: OnboardingRequirements(
           minQuestsCompleted: 0,
           minDaysUsed: 0,
@@ -28,11 +24,7 @@ class ProgressiveOnboarding {
         level: 2,
         title: 'アクティブユーザー',
         description: '習慣を続けよう',
-        unlockedFeatures: [
-          'notifications',
-          'streak_tracking',
-          'weekly_stats',
-        ],
+        unlockedFeatures: ['notifications', 'streak_tracking', 'weekly_stats'],
         requirements: OnboardingRequirements(
           minQuestsCompleted: 5,
           minDaysUsed: 3,
@@ -130,9 +122,10 @@ class ProgressiveOnboarding {
     final requirements = nextLevel.requirements;
     final questProgress = questsCompleted / requirements.minQuestsCompleted;
     final daysProgress = daysUsed / requirements.minDaysUsed;
-    final streakProgress = requirements.minStreak > 0
-        ? currentStreak / requirements.minStreak
-        : 1.0;
+    final streakProgress =
+        requirements.minStreak > 0
+            ? currentStreak / requirements.minStreak
+            : 1.0;
 
     final overallProgress = (questProgress + daysProgress + streakProgress) / 3;
 
@@ -197,8 +190,8 @@ class OnboardingRequirements {
     required int currentStreak,
   }) {
     return questsCompleted >= minQuestsCompleted &&
-           daysUsed >= minDaysUsed &&
-           currentStreak >= minStreak;
+        daysUsed >= minDaysUsed &&
+        currentStreak >= minStreak;
   }
 }
 

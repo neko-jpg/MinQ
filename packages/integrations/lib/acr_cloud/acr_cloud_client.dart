@@ -21,7 +21,8 @@ class ACRCloudClient {
   final http.Client _httpClient;
   final ACRCloudConfig _config;
 
-  /// Builds the signature for an ACR Cloud API request.
+  /// Builds the signature for the HTTP request.
+  /// See the ACR Cloud documentation for more details.
   @visibleForTesting
   String buildSignature({
     required String httpMethod,
@@ -47,9 +48,9 @@ class ACRCloudClient {
     return base64Encode(digest.bytes);
   }
 
-  /// Identifies a track from an audio sample.
+  /// Identifies a song from an audio sample.
   ///
-  /// Returns null if no match is found.
+  /// Returns the [ACRCloudResult] if a match is found, otherwise `null`.
   Future<ACRCloudResult?> identify({
     required Uint8List audio,
     Duration? sampleLength,
@@ -149,7 +150,7 @@ class ACRCloudClient {
   }
 }
 
-/// An exception thrown by the [ACRCloudClient].
+/// An exception thrown when the ACR Cloud API returns an error.
 class ACRCloudException implements Exception {
   /// Creates a new [ACRCloudException].
   ACRCloudException(this.message);

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエストタイマーウィジェット
 /// 習慣実行時のタイマー機能
@@ -117,7 +117,8 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                   value: 1 - progress,
                   strokeWidth: 12,
                   backgroundColor: tokens.background,
-                  valueColor: AlwaysStoppedAnimation<Color>(tokens.primary),
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
                 ),
               ),
               Column(
@@ -153,7 +154,6 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                   label: '開始',
                   onPressed: _startTimer,
                   isPrimary: true,
-                  tokens: tokens,
                 ),
               ] else if (_isPaused) ...[
                 // 再開ボタン
@@ -162,7 +162,6 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                   label: '再開',
                   onPressed: _resumeTimer,
                   isPrimary: true,
-                  tokens: tokens,
                 ),
                 SizedBox(width: tokens.spacing.md),
                 // リセットボタン
@@ -170,7 +169,6 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                   icon: Icons.refresh,
                   label: 'リセット',
                   onPressed: _resetTimer,
-                  tokens: tokens,
                 ),
               ] else ...[
                 // 一時停止ボタン
@@ -178,7 +176,6 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                   icon: Icons.pause,
                   label: '一時停止',
                   onPressed: _pauseTimer,
-                  tokens: tokens,
                 ),
                 SizedBox(width: tokens.spacing.md),
                 // 完了ボタン
@@ -187,7 +184,6 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                   label: '完了',
                   onPressed: _completeTimer,
                   isPrimary: true,
-                  tokens: tokens,
                 ),
               ],
             ],
@@ -226,31 +222,30 @@ class _TimerButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
   final bool isPrimary;
-  final MinqTheme tokens;
 
   const _TimerButton({
     required this.icon,
     required this.label,
     required this.onPressed,
     this.isPrimary = false,
-    required this.tokens,
   });
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
     return ElevatedButton.icon(
       onPressed: onPressed,
       icon: Icon(icon),
       label: Text(label),
       style: ElevatedButton.styleFrom(
-        backgroundColor: isPrimary ? tokens.primary : tokens.surface,
+        backgroundColor: isPrimary ? tokens.brandPrimary : tokens.surface,
         foregroundColor: isPrimary ? Colors.white : tokens.textPrimary,
         padding: EdgeInsets.symmetric(
           horizontal: tokens.spacing.lg,
           vertical: tokens.spacing.md,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.full),
+          borderRadius: BorderRadius.circular(tokens.radius.xl),
           side: isPrimary ? BorderSide.none : BorderSide(color: tokens.border),
         ),
       ),
@@ -284,7 +279,7 @@ class QuestTimerScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withAlpha((255 * 0.9).round()),
         elevation: 0,
       ),
       body: Center(
@@ -348,7 +343,7 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
         Container(
           padding: EdgeInsets.all(tokens.spacing.md),
           decoration: BoxDecoration(
-            color: tokens.primary.withOpacity(0.1),
+            color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
             borderRadius: BorderRadius.circular(tokens.radius.md),
           ),
           child: Row(
@@ -356,7 +351,7 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
             children: [
               Icon(
                 _isWorkSession ? Icons.work_outline : Icons.coffee_outlined,
-                color: tokens.primary,
+                color: tokens.brandPrimary,
               ),
               SizedBox(width: tokens.spacing.sm),
               Text(

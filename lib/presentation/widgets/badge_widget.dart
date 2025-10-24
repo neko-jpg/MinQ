@@ -48,44 +48,32 @@ class BadgeWidget extends StatelessWidget {
   /// 数値バッジを作成
   const BadgeWidget.numeric({
     super.key,
-    required int count,
-    BadgeSize size = BadgeSize.medium,
-    Color? backgroundColor,
-    Color? textColor,
-    bool show = true,
+    required this.count,
+    this.size = BadgeSize.medium,
+    this.backgroundColor,
+    this.textColor,
+    this.show = true,
   }) : type = BadgeType.numeric,
-       count = count,
-       text = null,
-       size = size,
-       backgroundColor = backgroundColor,
-       textColor = textColor,
-       show = show;
+       text = null;
 
   /// ドットバッジを作成
-  const BadgeWidget.dot({super.key, Color? backgroundColor, bool show = true})
+  const BadgeWidget.dot({super.key, this.backgroundColor, this.show = true})
     : type = BadgeType.dot,
       count = null,
       text = null,
       size = BadgeSize.small,
-      backgroundColor = backgroundColor,
-      textColor = null,
-      show = show;
+      textColor = null;
 
   /// テキストバッジを作成
   const BadgeWidget.text({
     super.key,
-    required String text,
-    BadgeSize size = BadgeSize.medium,
-    Color? backgroundColor,
-    Color? textColor,
-    bool show = true,
+    required this.text,
+    this.size = BadgeSize.medium,
+    this.backgroundColor,
+    this.textColor,
+    this.show = true,
   }) : type = BadgeType.text,
-       count = null,
-       text = text,
-       size = size,
-       backgroundColor = backgroundColor,
-       textColor = textColor,
-       show = show;
+       count = null;
 
   @override
   Widget build(BuildContext context) {

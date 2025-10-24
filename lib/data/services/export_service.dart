@@ -7,6 +7,65 @@ import 'package:minq/domain/quest/quest.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+// Helper functions for JSON conversion since Isar models don't have toJson/fromJson
+Map<String, dynamic> _questToJson(Quest quest) {
+  return {
+    'id': quest.id,
+    'owner': quest.owner,
+    'title': quest.title,
+    'category': quest.category,
+    'estimatedMinutes': quest.estimatedMinutes,
+    'difficulty': quest.difficulty,
+    'location': quest.location,
+    'iconKey': quest.iconKey,
+    'status': quest.status.name,
+    'createdAt': quest.createdAt.toIso8601String(),
+    'deletedAt': quest.deletedAt?.toIso8601String(),
+  };
+}
+
+Quest _questFromJson(Map<String, dynamic> json) {
+  return Quest()
+    ..id = json['id'] as int
+    ..owner = json['owner'] as String
+    ..title = json['title'] as String
+    ..category = json['category'] as String
+    ..estimatedMinutes = json['estimatedMinutes'] as int
+    ..difficulty = json['difficulty'] as String?
+    ..location = json['location'] as String?
+    ..iconKey = json['iconKey'] as String?
+    ..status =
+        QuestStatus.values.firstWhere((e) => e.name == json['status'])
+    ..createdAt = DateTime.parse(json['createdAt'] as String)
+    ..deletedAt = json['deletedAt'] == null
+        ? null
+        : DateTime.parse(json['deletedAt'] as String);
+}
+
+Map<String, dynamic> _questLogToJson(QuestLog log) {
+  return {
+    'id': log.id,
+    'uid': log.uid,
+    'questId': log.questId,
+    'ts': log.ts.toIso8601String(),
+    'proofType': log.proofType.name,
+    'proofValue': log.proofValue,
+    'synced': log.synced,
+  };
+}
+
+QuestLog _questLogFromJson(Map<String, dynamic> json) {
+  return QuestLog()
+    ..id = json['id'] as int
+    ..uid = json['uid'] as String
+    ..questId = json['questId'] as int
+    ..ts = DateTime.parse(json['ts'] as String)
+    ..proofType =
+        ProofType.values.firstWhere((e) => e.name == json['proofType'])
+    ..proofValue = json['proofValue'] as String?
+    ..synced = json['synced'] as bool;
+}
+
 /// データエクスポートサービス
 /// CSV、JSON形式でのデータ出力
 class ExportService {
@@ -20,27 +79,25 @@ class ExportService {
 
     // ヘッダー行
     rows.add([
-      'Date',
+      'Timestamp',
       'Quest ID',
-      'Quest Title',
-      'Completed',
-      'Completion Time',
-      'Notes',
+      'User ID',
+      'Proof Type',
+      'Proof Value',
     ]);
 
     // データ行
     for (final log in logs) {
-      final date = log.completedAt;
+      final date = log.ts;
       if (startDate != null && date.isBefore(startDate)) continue;
       if (endDate != null && date.isAfter(endDate)) continue;
 
       rows.add([
-        _formatDate(log.completedAt),
+        _formatDateTime(log.ts),
         log.questId.toString(),
-        log.questTitle ?? '',
-        log.isCompleted ? 'Yes' : 'No',
-        log.completedAt != null ? _formatDateTime(log.completedAt) : '',
-        log.notes ?? '',
+        log.uid,
+        log.proofType.name,
+        log.proofValue ?? '',
       ]);
     }
 
@@ -56,11 +113,11 @@ class ExportService {
     rows.add([
       'ID',
       'Title',
-      'Description',
-      'Reminder Time',
-      'Active',
+      'Category',
+      'Status',
       'Created At',
-      'Order',
+      'Difficulty',
+      'Estimated Minutes',
     ]);
 
     // データ行
@@ -68,11 +125,11 @@ class ExportService {
       rows.add([
         quest.id.toString(),
         quest.title,
-        '', // Questにdescriptionがない
-        '', // QuestにreminderTimeがない
-        quest.status == QuestStatus.active ? 'Yes' : 'No',
+        quest.category,
+        quest.status.name,
         _formatDateTime(quest.createdAt),
-        '', // Questにorderがない
+        quest.difficulty ?? '',
+        quest.estimatedMinutes.toString(),
       ]);
     }
 
@@ -122,8 +179,8 @@ class ExportService {
       'exportedAt': DateTime.now().toIso8601String(),
       'version': '1.0',
       'metadata': metadata ?? {},
-      'quests': quests.map((q) => q.toJson()).toList(),
-      'logs': logs.map((l) => l.toJson()).toList(),
+      'quests': quests.map(_questToJson).toList(),
+      'logs': logs.map(_questLogToJson).toList(),
     };
 
     final jsonString = const JsonEncoder.withIndent('  ').convert(data);
@@ -135,13 +192,13 @@ class ExportService {
     try {
       final data = jsonDecode(jsonString) as Map<String, dynamic>;
 
-      final quests = (data['quests'] as List?)
-              ?.map((q) => Quest.fromJson(q as Map<String, dynamic>))
+      final quests = (data['quests'] as List<dynamic>?)
+              ?.map((q) => _questFromJson(q as Map<String, dynamic>))
               .toList() ??
           [];
 
-      final logs = (data['logs'] as List?)
-              ?.map((l) => QuestLog.fromJson(l as Map<String, dynamic>))
+      final logs = (data['logs'] as List<dynamic>?)
+              ?.map((l) => _questLogFromJson(l as Map<String, dynamic>))
               .toList() ??
           [];
 
@@ -163,7 +220,7 @@ class ExportService {
 
   /// ファイルをシェア
   Future<void> shareFile(File file) async {
-    await Share.shareXFiles([XFile(file.path)], subject: 'MiniQuest Export');
+    await Share.shareXFiles([XFile(file.path)], subject: 'MinQuest Export');
   }
 
   /// 期間比較レポートを生成
@@ -175,15 +232,15 @@ class ExportService {
     required List<QuestLog> allLogs,
   }) async {
     final period1Logs = allLogs.where((log) {
-      return log.completedAt
+      return log.ts
               .isAfter(period1Start.subtract(const Duration(days: 1))) &&
-          log.completedAt.isBefore(period1End.add(const Duration(days: 1)));
+          log.ts.isBefore(period1End.add(const Duration(days: 1)));
     }).toList();
 
     final period2Logs = allLogs.where((log) {
-      return log.completedAt
+      return log.ts
               .isAfter(period2Start.subtract(const Duration(days: 1))) &&
-          log.completedAt.isBefore(period2End.add(const Duration(days: 1)));
+          log.ts.isBefore(period2End.add(const Duration(days: 1)));
     }).toList();
 
     final rows = <List<String>>[];
@@ -199,9 +256,9 @@ class ExportService {
       'Change %',
     ]);
 
-    // 総完了数
-    final p1Completed = period1Logs.where((l) => l.isCompleted).length;
-    final p2Completed = period2Logs.where((l) => l.isCompleted).length;
+    // 総完了数 (isCompleted is always true for QuestLog)
+    final p1Completed = period1Logs.length;
+    final p2Completed = period2Logs.length;
     final completedChange = p2Completed - p1Completed;
     final completedChangePercent =
         p1Completed > 0 ? (completedChange / p1Completed * 100) : 0.0;
@@ -212,23 +269,6 @@ class ExportService {
       p2Completed.toString(),
       completedChange.toString(),
       '${completedChangePercent.toStringAsFixed(1)}%',
-    ]);
-
-    // 平均完了率
-    final p1Rate = period1Logs.isEmpty
-        ? 0.0
-        : period1Logs.where((l) => l.isCompleted).length / period1Logs.length;
-    final p2Rate = period2Logs.isEmpty
-        ? 0.0
-        : period2Logs.where((l) => l.isCompleted).length / period2Logs.length;
-    final rateChange = (p2Rate - p1Rate) * 100;
-
-    rows.add([
-      'Completion Rate',
-      '${(p1Rate * 100).toStringAsFixed(1)}%',
-      '${(p2Rate * 100).toStringAsFixed(1)}%',
-      '${rateChange.toStringAsFixed(1)}%',
-      '',
     ]);
 
     // 日次平均

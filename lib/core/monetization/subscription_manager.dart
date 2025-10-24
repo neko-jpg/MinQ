@@ -107,12 +107,12 @@ class SubscriptionManager {
       if (kDebugMode) {
         print('Starting subscription: $planId');
       }
-      
+
       // 仮実装: デバッグモードでは即座に有効化
       if (kDebugMode) {
         final plan = availablePlans.firstWhere((p) => p.id == planId);
         final expiresAt = DateTime.now().add(plan.duration);
-        
+
         if (planId.contains('coaching')) {
           _currentStatus = SubscriptionStatus.coaching(plan, expiresAt);
         } else {
@@ -120,7 +120,7 @@ class SubscriptionManager {
         }
         return true;
       }
-      
+
       return false;
     } catch (e) {
       if (kDebugMode) {
@@ -137,7 +137,7 @@ class SubscriptionManager {
       if (kDebugMode) {
         print('Canceling subscription');
       }
-      
+
       _currentStatus = const SubscriptionStatus.free();
       return true;
     } catch (e) {
@@ -171,19 +171,19 @@ class SubscriptionManager {
       case PremiumFeature.detailedStats:
       case PremiumFeature.dataExport:
         return isPremiumActive;
-      
+
       case PremiumFeature.aiCoaching:
       case PremiumFeature.failurePrediction:
       case PremiumFeature.personalizedSuggestions:
         return isCoachingActive;
-      
+
       case PremiumFeature.prioritySupport:
       case PremiumFeature.customPrograms:
-        return isCoachingActive && 
-               _currentStatus.maybeWhen(
-                 coaching: (plan, _) => plan.id == coachingProId,
-                 orElse: () => false,
-               );
+        return isCoachingActive &&
+            _currentStatus.maybeWhen(
+              coaching: (plan, _) => plan.id == coachingProId,
+              orElse: () => false,
+            );
     }
   }
 }
@@ -247,7 +247,10 @@ sealed class SubscriptionStatus {
     return switch (this) {
       _FreeStatus() => free(),
       _PremiumStatus(:final plan, :final expiresAt) => premium(plan, expiresAt),
-      _CoachingStatus(:final plan, :final expiresAt) => coaching(plan, expiresAt),
+      _CoachingStatus(:final plan, :final expiresAt) => coaching(
+        plan,
+        expiresAt,
+      ),
     };
   }
 
@@ -259,9 +262,9 @@ sealed class SubscriptionStatus {
   }) {
     return switch (this) {
       _FreeStatus() => free?.call() ?? orElse(),
-      _PremiumStatus(:final plan, :final expiresAt) => 
+      _PremiumStatus(:final plan, :final expiresAt) =>
         premium?.call(plan, expiresAt) ?? orElse(),
-      _CoachingStatus(:final plan, :final expiresAt) => 
+      _CoachingStatus(:final plan, :final expiresAt) =>
         coaching?.call(plan, expiresAt) ?? orElse(),
     };
   }
@@ -273,14 +276,14 @@ class _FreeStatus extends SubscriptionStatus {
 
 class _PremiumStatus extends SubscriptionStatus {
   const _PremiumStatus(this.plan, this.expiresAt);
-  
+
   final SubscriptionPlan plan;
   final DateTime expiresAt;
 }
 
 class _CoachingStatus extends SubscriptionStatus {
   const _CoachingStatus(this.plan, this.expiresAt);
-  
+
   final SubscriptionPlan plan;
   final DateTime expiresAt;
 }

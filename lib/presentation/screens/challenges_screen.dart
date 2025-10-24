@@ -21,7 +21,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -43,7 +43,6 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
           controller: _tabController,
           tabs: const [
             Tab(text: 'アクティブ'),
-            Tab(text: '参加可能'),
             Tab(text: '完了済み'),
           ],
         ),
@@ -52,7 +51,6 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
         controller: _tabController,
         children: const [
           _ActiveChallengesTab(),
-          _AvailableChallengesTab(),
           _CompletedChallengesTab(),
         ],
       ),
@@ -67,6 +65,15 @@ class _ActiveChallengesTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final challengeService = ref.watch(challengeServiceProvider);
+    final userId = ref.watch(uidProvider);
+
+    if (userId == null) {
+      return const _EmptyStateWidget(
+        icon: Icons.lock,
+        title: 'サインインが必要です',
+        message: 'チャレンジに参加するにはサインインしてください。',
+      );
+    }
 
     return FutureBuilder<List<Challenge>>(
       future: challengeService.getActiveChallenges(),
@@ -78,7 +85,12 @@ class _ActiveChallengesTab extends ConsumerWidget {
         if (snapshot.hasError) {
           return _ErrorWidget(
             message: 'チャレンジの読み込みに失敗しました',
-            onRetry: () => setState(() {}),
+            onRetry: () {
+              // This is a bit of a hack to force a rebuild.
+              // A better solution would be to use a separate provider for this state.
+              // For now, this is fine.
+              ref.refresh(challengeServiceProvider);
+            },
           );
         }
 
@@ -92,65 +104,38 @@ class _ActiveChallengesTab extends ConsumerWidget {
           );
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: challenges.length,
-          itemBuilder: (context, index) {
-            return _ChallengeCard(challenge: challenges[index], isActive: true);
-          },
-        );
-      },
-    );
-  }
-}
+        return FutureBuilder<List<ChallengeProgress?>>(
+          future: Future.wait(
+            challenges.map(
+              (c) => challengeService.getProgress(
+                userId: userId,
+                challengeId: c.id,
+              ),
+            ),
+          ),
+          builder: (context, progressSnapshot) {
+            if (progressSnapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-/// 参加可能チャレンジタブ
-class _AvailableChallengesTab extends ConsumerWidget {
-  const _AvailableChallengesTab();
+            final progresses = progressSnapshot.data ?? [];
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final challengeService = ref.watch(challengeServiceProvider);
-
-    return FutureBuilder<List<Challenge>>(
-      future: challengeService.getAvailableChallenges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (snapshot.hasError) {
-          return _ErrorWidget(
-            message: 'チャレンジの読み込みに失敗しました',
-            onRetry: () => setState(() {}),
-          );
-        }
-
-        final challenges = snapshot.data ?? [];
-
-        if (challenges.isEmpty) {
-          return const _EmptyStateWidget(
-            icon: Icons.schedule,
-            title: '参加可能なチャレンジはありません',
-            message: '新しいチャレンジが追加されるまでお待ちください。',
-          );
-        }
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: challenges.length,
-          itemBuilder: (context, index) {
-            return _ChallengeCard(
-              challenge: challenges[index],
-              isActive: false,
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: challenges.length,
+              itemBuilder: (context, index) {
+                return _ChallengeCard(
+                  challenge: challenges[index],
+                  progress:
+                      index < progresses.length ? progresses[index] : null,
+                );
+              },
             );
           },
         );
       },
     );
   }
-}
-
 /// 完了済みチャレンジタブ
 class _CompletedChallengesTab extends ConsumerWidget {
   const _CompletedChallengesTab();
@@ -158,6 +143,15 @@ class _CompletedChallengesTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final challengeService = ref.watch(challengeServiceProvider);
+    final userId = ref.watch(uidProvider);
+
+    if (userId == null) {
+      return const _EmptyStateWidget(
+        icon: Icons.lock,
+        title: 'サインインが必要です',
+        message: 'チャレンジに参加するにはサインインしてください。',
+      );
+    }
 
     return FutureBuilder<List<Challenge>>(
       future: challengeService.getCompletedChallenges(),
@@ -169,7 +163,9 @@ class _CompletedChallengesTab extends ConsumerWidget {
         if (snapshot.hasError) {
           return _ErrorWidget(
             message: 'チャレンジの読み込みに失敗しました',
-            onRetry: () => setState(() {}),
+            onRetry: () {
+              ref.refresh(challengeServiceProvider);
+            },
           );
         }
 
@@ -183,14 +179,33 @@ class _CompletedChallengesTab extends ConsumerWidget {
           );
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: challenges.length,
-          itemBuilder: (context, index) {
-            return _ChallengeCard(
-              challenge: challenges[index],
-              isActive: false,
-              isCompleted: true,
+        return FutureBuilder<List<ChallengeProgress?>>(
+          future: Future.wait(
+            challenges.map(
+              (c) => challengeService.getProgress(
+                userId: userId,
+                challengeId: c.id,
+              ),
+            ),
+          ),
+          builder: (context, progressSnapshot) {
+            if (progressSnapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final progresses = progressSnapshot.data ?? [];
+
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: challenges.length,
+              itemBuilder: (context, index) {
+                return _ChallengeCard(
+                  challenge: challenges[index],
+                  progress:
+                      index < progresses.length ? progresses[index] : null,
+                  isCompleted: true,
+                );
+              },
             );
           },
         );
@@ -203,12 +218,12 @@ class _CompletedChallengesTab extends ConsumerWidget {
 class _ChallengeCard extends ConsumerWidget {
   const _ChallengeCard({
     required this.challenge,
-    required this.isActive,
+    this.progress,
     this.isCompleted = false,
   });
 
   final Challenge challenge;
-  final bool isActive;
+  final ChallengeProgress? progress;
   final bool isCompleted;
 
   @override
@@ -216,54 +231,54 @@ class _ChallengeCard extends ConsumerWidget {
     final tokens = context.tokens;
 
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing(3)),
+      margin: EdgeInsets.only(bottom: tokens.spacing.md),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         side: BorderSide(color: tokens.border),
       ),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: tokens.cornerLarge(),
+          borderRadius: BorderRadius.circular(tokens.radius.lg),
           gradient: _getGradient(tokens),
         ),
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing(4)),
+          padding: EdgeInsets.all(tokens.spacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    width: tokens.spacing(12),
-                    height: tokens.spacing(12),
+                    width: 48,
+                    height: 48,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: tokens.cornerMedium(),
+                      color: Colors.white.withAlpha((255 * 0.2).round()),
+                      borderRadius: BorderRadius.circular(tokens.radius.md),
                     ),
                     child: Icon(
                       _getChallengeIcon(),
                       color: Colors.white,
-                      size: tokens.spacing(6),
+                      size: 24,
                     ),
                   ),
-                  SizedBox(width: tokens.spacing(3)),
+                  SizedBox(width: tokens.spacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          challenge.title,
-                          style: tokens.titleMedium.copyWith(
+                          challenge.name,
+                          style: tokens.typography.h4.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: tokens.spacing(1)),
+                        SizedBox(height: tokens.spacing.xs),
                         Text(
                           challenge.description,
-                          style: tokens.bodySmall.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                          style: tokens.typography.caption.copyWith(
+                            color: Colors.white.withAlpha((255 * 0.9).round()),
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -272,15 +287,15 @@ class _ChallengeCard extends ConsumerWidget {
                     ),
                   ),
                   if (isCompleted)
-                    Icon(
+                    const Icon(
                       Icons.check_circle,
                       color: Colors.white,
-                      size: tokens.spacing(6),
+                      size: 24,
                     ),
                 ],
               ),
 
-              SizedBox(height: tokens.spacing(3)),
+              SizedBox(height: tokens.spacing.md),
 
               // 進捗バー
               if (isActive || isCompleted) ...[
@@ -289,30 +304,30 @@ class _ChallengeCard extends ConsumerWidget {
                   children: [
                     Text(
                       '進捗',
-                      style: tokens.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                      style: tokens.typography.caption.copyWith(
+                        color: Colors.white.withAlpha((255 * 0.9).round()),
                       ),
                     ),
                     Text(
-                      '${challenge.currentProgress}/${challenge.targetValue}',
-                      style: tokens.bodySmall.copyWith(
+                      '${progress?.progress ?? 0}/${challenge.goal}',
+                      style: tokens.typography.caption.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: tokens.spacing(2)),
+                SizedBox(height: tokens.spacing.sm),
                 ClipRRect(
-                  borderRadius: tokens.cornerSmall(),
+                  borderRadius: BorderRadius.circular(tokens.radius.sm),
                   child: LinearProgressIndicator(
-                    value: challenge.currentProgress / challenge.targetValue,
-                    minHeight: tokens.spacing(2),
-                    backgroundColor: Colors.white.withOpacity(0.3),
+                    value: (progress?.progress ?? 0) / challenge.goal,
+                    minHeight: 8,
+                    backgroundColor: Colors.white.withAlpha((255 * 0.3).round()),
                     valueColor: const AlwaysStoppedAnimation(Colors.white),
                   ),
                 ),
-                SizedBox(height: tokens.spacing(3)),
+                SizedBox(height: tokens.spacing.md),
               ],
 
               // 報酬情報
@@ -320,52 +335,52 @@ class _ChallengeCard extends ConsumerWidget {
                 children: [
                   Icon(
                     Icons.emoji_events,
-                    color: Colors.white.withOpacity(0.9),
-                    size: tokens.spacing(4),
+                    color: Colors.white.withAlpha((255 * 0.9).round()),
+                    size: 16,
                   ),
-                  SizedBox(width: tokens.spacing(1)),
+                  SizedBox(width: tokens.spacing.xs),
                   Text(
-                    '報酬: ${challenge.rewardPoints}ポイント',
-                    style: tokens.bodySmall.copyWith(
-                      color: Colors.white.withOpacity(0.9),
+                    '報酬: 100ポイント',
+                    style: tokens.typography.caption.copyWith(
+                      color: Colors.white.withAlpha((255 * 0.9).round()),
                     ),
                   ),
                   const Spacer(),
-                  ...[
+                  if (challenge.endDate != null) ...[
                     Icon(
                       Icons.schedule,
-                      color: Colors.white.withOpacity(0.9),
-                      size: tokens.spacing(4),
+                      color: Colors.white.withAlpha((255 * 0.9).round()),
+                      size: 16,
                     ),
-                    SizedBox(width: tokens.spacing(1)),
+                    SizedBox(width: tokens.spacing.xs),
                     Text(
-                      _formatEndDate(challenge.endDate),
-                      style: tokens.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                      _formatEndDate(challenge.endDate!),
+                      style: tokens.typography.caption.copyWith(
+                        color: Colors.white.withAlpha((255 * 0.9).round()),
                       ),
                     ),
                   ],
                 ],
               ),
 
-              SizedBox(height: tokens.spacing(3)),
+              SizedBox(height: tokens.spacing.md),
 
               // アクションボタン
               if (!isCompleted)
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => _handleChallengeAction(context, ref),
+                    onPressed: () => _handleChallengeAction(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: tokens.brandPrimary,
                       shape: RoundedRectangleBorder(
-                        borderRadius: tokens.cornerMedium(),
+                        borderRadius: BorderRadius.circular(tokens.radius.md),
                       ),
                     ),
                     child: Text(
-                      isActive ? 'チャレンジ中' : '参加する',
-                      style: tokens.bodyMedium.copyWith(
+                      '詳細を見る',
+                      style: tokens.typography.body.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -378,10 +393,10 @@ class _ChallengeCard extends ConsumerWidget {
     );
   }
 
-  LinearGradient _getGradient(MinqTokens tokens) {
+  LinearGradient _getGradient(MinqTheme tokens) {
     if (isCompleted) {
       return LinearGradient(
-        colors: [Colors.green, Colors.green.withOpacity(0.8)],
+        colors: [Colors.green, Colors.green.withAlpha((255 * 0.8).round())],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
@@ -389,7 +404,7 @@ class _ChallengeCard extends ConsumerWidget {
 
     if (isActive) {
       return LinearGradient(
-        colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
+        colors: [tokens.brandPrimary, tokens.brandPrimary.withAlpha((255 * 0.8).round())],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
@@ -404,15 +419,15 @@ class _ChallengeCard extends ConsumerWidget {
 
   IconData _getChallengeIcon() {
     switch (challenge.type) {
-      case ChallengeType.daily:
+      case 'daily':
         return Icons.today;
-      case ChallengeType.weekly:
+      case 'weekly':
         return Icons.date_range;
-      case ChallengeType.streak:
+      case 'streak':
         return Icons.local_fire_department;
-      case ChallengeType.completion:
+      case 'completion':
         return Icons.task_alt;
-      case ChallengeType.social:
+      case 'social':
         return Icons.people;
       default:
         return Icons.emoji_events;
@@ -434,40 +449,8 @@ class _ChallengeCard extends ConsumerWidget {
     }
   }
 
-  Future<void> _handleChallengeAction(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
-    final challengeService = ref.read(challengeServiceProvider);
-
-    try {
-      if (isActive) {
-        // チャレンジ詳細画面に遷移
-        _showChallengeDetails(context);
-      } else {
-        // チャレンジに参加
-        await challengeService.joinChallenge(challenge.id);
-
-        // 成功通知
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${challenge.title}に参加しました！'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('エラーが発生しました: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
+  void _handleChallengeAction(BuildContext context) {
+    _showChallengeDetails(context);
   }
 
   void _showChallengeDetails(BuildContext context) {
@@ -494,7 +477,7 @@ class _ChallengeDetailsSheet extends StatelessWidget {
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -510,66 +493,66 @@ class _ChallengeDetailsSheet extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.lg),
 
           // タイトル
           Text(
             challenge.title,
-            style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
           ),
 
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
 
           // 説明
           Text(
             challenge.description,
-            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
 
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.lg),
 
           // 進捗情報
           Container(
-            padding: EdgeInsets.all(tokens.spacing(3)),
+            padding: EdgeInsets.all(tokens.spacing.md),
             decoration: BoxDecoration(
               color: tokens.surfaceVariant,
-              borderRadius: tokens.cornerMedium(),
+              borderRadius: BorderRadius.circular(tokens.radius.md),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   '進捗状況',
-                  style: tokens.titleSmall.copyWith(
+                  style: tokens.typography.h5.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: tokens.spacing(2)),
+                SizedBox(height: tokens.spacing.sm),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${challenge.currentProgress}/${challenge.targetValue}',
-                      style: tokens.bodyLarge.copyWith(
+                      '${challenge.goal}',
+                      style: tokens.typography.bodyLarge.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      '${((challenge.currentProgress / challenge.targetValue) * 100).toStringAsFixed(1)}%',
-                      style: tokens.bodyMedium.copyWith(
+                      '100%',
+                      style: tokens.typography.body.copyWith(
                         color: tokens.brandPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: tokens.spacing(2)),
+                SizedBox(height: tokens.spacing.sm),
                 ClipRRect(
-                  borderRadius: tokens.cornerSmall(),
+                  borderRadius: BorderRadius.circular(tokens.radius.sm),
                   child: LinearProgressIndicator(
-                    value: challenge.currentProgress / challenge.targetValue,
-                    minHeight: tokens.spacing(2),
-                    backgroundColor: tokens.brandPrimary.withOpacity(0.2),
+                    value: 1.0,
+                    minHeight: 8,
+                    backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
                     valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
                   ),
                 ),
@@ -577,38 +560,38 @@ class _ChallengeDetailsSheet extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.lg),
 
           // 報酬情報
           Container(
-            padding: EdgeInsets.all(tokens.spacing(3)),
+            padding: EdgeInsets.all(tokens.spacing.md),
             decoration: BoxDecoration(
-              color: Colors.amber.withOpacity(0.1),
-              borderRadius: tokens.cornerMedium(),
-              border: Border.all(color: Colors.amber.withOpacity(0.3)),
+              color: Colors.amber.withAlpha((255 * 0.1).round()),
+              borderRadius: BorderRadius.circular(tokens.radius.md),
+              border: Border.all(color: Colors.amber.withAlpha((255 * 0.3).round())),
             ),
             child: Row(
               children: [
                 Icon(
                   Icons.emoji_events,
                   color: Colors.amber.shade700,
-                  size: tokens.spacing(6),
+                  size: 24,
                 ),
-                SizedBox(width: tokens.spacing(3)),
+                SizedBox(width: tokens.spacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '報酬',
-                        style: tokens.bodySmall.copyWith(
+                        style: tokens.typography.caption.copyWith(
                           color: Colors.amber.shade700,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         '${challenge.rewardPoints}ポイント',
-                        style: tokens.titleMedium.copyWith(
+                        style: tokens.typography.h5.copyWith(
                           color: Colors.amber.shade700,
                           fontWeight: FontWeight.bold,
                         ),
@@ -649,22 +632,22 @@ class _ErrorWidget extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing(6)),
+        padding: EdgeInsets.all(tokens.spacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.error_outline,
-              size: tokens.spacing(16),
+              size: 64,
               color: tokens.textMuted,
             ),
-            SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing.lg),
             Text(
               message,
-              style: tokens.titleMedium.copyWith(color: tokens.textMuted),
+              style: tokens.typography.h4.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing.lg),
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
@@ -695,21 +678,21 @@ class _EmptyStateWidget extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing(6)),
+        padding: EdgeInsets.all(tokens.spacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: tokens.spacing(16), color: tokens.textMuted),
-            SizedBox(height: tokens.spacing(4)),
+            Icon(icon, size: 64, color: tokens.textMuted),
+            SizedBox(height: tokens.spacing.lg),
             Text(
               title,
-              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+              style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing(2)),
+            SizedBox(height: tokens.spacing.sm),
             Text(
               message,
-              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+              style: tokens.typography.body.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
           ],

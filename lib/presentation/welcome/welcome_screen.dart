@@ -9,8 +9,6 @@ class WelcomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final navigation = ref.read(navigationUseCaseProvider);
 
     return Scaffold(
@@ -37,16 +35,16 @@ class WelcomeScreen extends ConsumerWidget {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(tokens.spacing(6)),
+                padding: EdgeInsets.all(tokens.spacing.lg),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: tokens.spacing(10)),
+                    SizedBox(height: tokens.spacing.xl),
                     Container(
                       width: 96,
                       height: 96,
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withOpacity(0.1),
+                        color: tokens.brandPrimary.withAlpha(26),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -55,50 +53,49 @@ class WelcomeScreen extends ConsumerWidget {
                         size: 56,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(6)),
+                    SizedBox(height: tokens.spacing.lg),
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
-                        style: textTheme.headlineLarge?.copyWith(
+                        style: tokens.typography.h1.copyWith(
                           fontWeight: FontWeight.bold,
                           color: tokens.textPrimary,
                         ),
                         children: const [TextSpan(text: 'MinQへようこそ')],
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(4)),
+                    SizedBox(height: tokens.spacing.md),
                     Text(
                       'ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。',
                       textAlign: TextAlign.center,
-                      style: textTheme.bodyLarge?.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.textSecondary,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(8)),
+                    SizedBox(height: tokens.spacing.lg),
                     const _FeatureCard(
                       icon: Icons.touch_app,
                       title: '3タップで習慣化',
                       description: '新しい習慣をたった3タップで始められます。とてもシンプルです。',
                     ),
-                    SizedBox(height: tokens.spacing(4)),
+                    SizedBox(height: tokens.spacing.md),
                     const _FeatureCard(
                       icon: Icons.groups,
                       title: '匿名ペア',
                       description: 'パートナーから、匿名で説明責任とサポートを得られます。',
                     ),
-                    SizedBox(height: tokens.spacing(4)),
+                    SizedBox(height: tokens.spacing.md),
                     const _FeatureCard(
                       icon: Icons.explore,
                       title: 'ミニクエスト',
                       description: 'あなたの目標を、達成感のある小さなクエストに変えましょう。',
                     ),
-                    SizedBox(height: tokens.spacing(6)),
+                    SizedBox(height: tokens.spacing.lg),
                   ],
                 ),
               ),
             ),
             _BottomNavigation(
-              textTheme: textTheme,
               onGetStarted: navigation.goToOnboarding,
               onLogin: navigation.goToLogin,
             ),
@@ -126,9 +123,11 @@ class _FeatureCard extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+      ),
       child: Padding(
-        padding: tokens.breathingPadding,
+        padding: EdgeInsets.all(tokens.spacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -136,27 +135,27 @@ class _FeatureCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: tokens.brandPrimary.withOpacity(0.1),
+                color: tokens.brandPrimary.withAlpha(26),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: tokens.brandPrimary),
             ),
-            SizedBox(width: tokens.spaceMD),
+            SizedBox(width: tokens.spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: tokens.titleMedium.copyWith(
+                    style: tokens.typography.h3.copyWith(
                       fontWeight: FontWeight.bold,
                       color: tokens.textPrimary,
                     ),
                   ),
-                  SizedBox(height: tokens.intimateSpace),
+                  SizedBox(height: tokens.spacing.sm),
                   Text(
                     description,
-                    style: tokens.bodyMedium.copyWith(
+                    style: tokens.typography.body.copyWith(
                       color: tokens.textSecondary,
                     ),
                   ),
@@ -172,12 +171,10 @@ class _FeatureCard extends StatelessWidget {
 
 class _BottomNavigation extends StatelessWidget {
   const _BottomNavigation({
-    required this.textTheme,
     required this.onGetStarted,
     required this.onLogin,
   });
 
-  final TextTheme textTheme;
   final VoidCallback onGetStarted;
   final VoidCallback onLogin;
 
@@ -185,9 +182,8 @@ class _BottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Padding(
-      padding: EdgeInsets.all(
-        tokens.spacing(4),
-      ).copyWith(top: tokens.spacing(2)),
+      padding: EdgeInsets.all(tokens.spacing.md)
+          .copyWith(top: tokens.spacing.sm),
       child: Column(
         children: [
           SizedBox(
@@ -202,26 +198,26 @@ class _BottomNavigation extends StatelessWidget {
                   tokens.textPrimary,
                   tokens.brandPrimary,
                 ),
-                padding: EdgeInsets.symmetric(vertical: tokens.spacing(3)),
-                textStyle: textTheme.titleMedium?.copyWith(
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing.md),
+                textStyle: tokens.typography.body.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: tokens.cornerLarge(),
+                  borderRadius: BorderRadius.circular(tokens.radius.lg),
                 ),
               ),
             ),
           ),
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('すでにアカウントをお持ちですか？', style: textTheme.bodySmall),
+              Text('すでにアカウントをお持ちですか？', style: tokens.typography.caption),
               TextButton(
                 onPressed: onLogin,
                 child: Text(
                   'ログイン',
-                  style: textTheme.bodySmall?.copyWith(
+                  style: tokens.typography.caption.copyWith(
                     color: tokens.brandPrimary,
                     fontWeight: FontWeight.bold,
                   ),

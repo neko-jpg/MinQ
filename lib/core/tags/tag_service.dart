@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// タグサービス
 class TagService {
   final FirebaseFirestore _firestore;
+  final AppLogger _logger = AppLogger();
 
   TagService({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
@@ -16,11 +17,8 @@ class TagService {
     required Color color,
   }) async {
     try {
-      final tagRef = _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('tags')
-          .doc();
+      final tagRef =
+          _firestore.collection('users').doc(userId).collection('tags').doc();
 
       await tagRef.set({
         'name': name,
@@ -28,10 +26,10 @@ class TagService {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      MinqLogger.instance.info('Tag created', metadata: {'tagId': tagRef.id, 'name': name});
+      _logger.info('Tag created', data: {'tagId': tagRef.id, 'name': name});
       return tagRef.id;
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to create tag', exception: e, stackTrace: stack);
+      _logger.error('Failed to create tag', error: e, stackTrace: stack);
       return null;
     }
   }
@@ -45,15 +43,15 @@ class TagService {
         .orderBy('name')
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        return Tag(
-          id: doc.id,
-          name: data['name'] as String,
-          color: Color(data['color'] as int),
-        );
-      }).toList();
-    });
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            return Tag(
+              id: doc.id,
+              name: data['name'] as String,
+              color: Color(data['color'] as int),
+            );
+          }).toList();
+        });
   }
 
   /// タグを削除
@@ -66,13 +64,12 @@ class TagService {
           .doc(tagId)
           .delete();
 
-      MinqLogger.instance.info('Tag deleted', metadata: {'tagId': tagId});
+      _logger.info('Tag deleted', data: {'tagId': tagId});
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to delete tag', exception: e, stackTrace: stack);
+      _logger.error('Failed to delete tag', error: e, stackTrace: stack);
     }
   }
 }
-
 
 /// タグモデル
 class Tag {
@@ -80,11 +77,7 @@ class Tag {
   final String name;
   final Color color;
 
-  Tag({
-    required this.id,
-    required this.name,
-    required this.color,
-  });
+  Tag({required this.id, required this.name, required this.color});
 }
 
 /// プリセットタグ

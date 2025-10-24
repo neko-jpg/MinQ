@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/animation_system.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../theme/animation_system.dart';
-import '../theme/spacing_system.dart';
 
 /// チュートリアルステップ
 class TutorialStep {
@@ -27,13 +27,7 @@ class TutorialStep {
 }
 
 /// チュートリアル位置
-enum TutorialPosition {
-  top,
-  bottom,
-  left,
-  right,
-  center,
-}
+enum TutorialPosition { top, bottom, left, right, center }
 
 /// チュートリアルオーバーレイ
 class TutorialOverlay extends StatefulWidget {
@@ -62,11 +56,12 @@ class TutorialOverlay extends StatefulWidget {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black54,
-      builder: (context) => TutorialOverlay(
-        steps: steps,
-        onComplete: onComplete,
-        onSkip: onSkip,
-      ),
+      builder:
+          (context) => TutorialOverlay(
+            steps: steps,
+            onComplete: onComplete,
+            onSkip: onSkip,
+          ),
     );
   }
 }
@@ -121,9 +116,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
           // 背景オーバーレイ
           GestureDetector(
             onTap: () {}, // タップを無効化
-            child: Container(
-              color: Colors.black54,
-            ),
+            child: Container(color: Colors.black54),
           ),
 
           // ターゲットのハイライト
@@ -142,7 +135,10 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withAlpha((255 * 0.3).round()),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -152,12 +148,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
           ),
 
           // 説明カード
-          _buildDescriptionCard(
-            context,
-            step,
-            targetPosition,
-            targetSize,
-          ),
+          _buildDescriptionCard(context, step, targetPosition, targetSize),
         ],
       ),
     );
@@ -176,10 +167,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
     Offset cardPosition;
     switch (step.position) {
       case TutorialPosition.top:
-        cardPosition = Offset(
-          targetPosition.dx,
-          targetPosition.dy - 200,
-        );
+        cardPosition = Offset(targetPosition.dx, targetPosition.dy - 200);
         break;
       case TutorialPosition.bottom:
         cardPosition = Offset(
@@ -188,10 +176,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
         );
         break;
       case TutorialPosition.left:
-        cardPosition = Offset(
-          targetPosition.dx - 300,
-          targetPosition.dy,
-        );
+        cardPosition = Offset(targetPosition.dx - 300, targetPosition.dy);
         break;
       case TutorialPosition.right:
         cardPosition = Offset(
@@ -220,13 +205,13 @@ class _TutorialOverlayState extends State<TutorialOverlay>
         color: Colors.transparent,
         child: Container(
           width: 300,
-          padding: EdgeInsets.all(Spacing.md),
+          padding: const EdgeInsets.all(SpacingSystem.md),
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withAlpha((255 * 0.2).round()),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -240,12 +225,8 @@ class _TutorialOverlayState extends State<TutorialOverlay>
               Row(
                 children: [
                   if (step.icon != null) ...[
-                    Icon(
-                      step.icon,
-                      color: theme.colorScheme.primary,
-                      size: 24,
-                    ),
-                    SizedBox(width: Spacing.sm),
+                    Icon(step.icon, color: theme.colorScheme.primary, size: 24),
+                    const SizedBox(width: SpacingSystem.sm),
                   ],
                   Expanded(
                     child: Text(
@@ -258,15 +239,12 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 ],
               ),
 
-              SizedBox(height: Spacing.sm),
+              const SizedBox(height: SpacingSystem.sm),
 
               // 説明
-              Text(
-                step.description,
-                style: theme.textTheme.bodyMedium,
-              ),
+              Text(step.description, style: theme.textTheme.bodyMedium),
 
-              SizedBox(height: Spacing.md),
+              const SizedBox(height: SpacingSystem.md),
 
               // 進捗インジケータ
               Row(
@@ -275,36 +253,32 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                   (index) => Container(
                     width: 8,
                     height: 8,
-                    margin: EdgeInsets.only(right: Spacing.xxs),
+                    margin: const EdgeInsets.only(right: SpacingSystem.xxs),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: index == _currentStep
                           ? theme.colorScheme.primary
-                          : theme.colorScheme.onSurface.withOpacity(0.3),
+                          : theme.colorScheme.onSurface
+                              .withAlpha((255 * 0.3).round()),
                     ),
                   ),
                 ),
               ),
 
-              SizedBox(height: Spacing.md),
+              const SizedBox(height: SpacingSystem.md),
 
               // ボタン
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // スキップボタン
-                  TextButton(
-                    onPressed: _onSkip,
-                    child: const Text('スキップ'),
-                  ),
+                  TextButton(onPressed: _onSkip, child: const Text('スキップ')),
 
                   // 次へボタン
                   ElevatedButton(
                     onPressed: _onNext,
                     child: Text(
-                      _currentStep == widget.steps.length - 1
-                          ? '完了'
-                          : '次へ',
+                      _currentStep == widget.steps.length - 1 ? '完了' : '次へ',
                     ),
                   ),
                 ],
@@ -431,13 +405,13 @@ class CoachMark extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: EdgeInsets.all(Spacing.sm),
+      padding: const EdgeInsets.all(SpacingSystem.sm),
       decoration: BoxDecoration(
         color: theme.colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withAlpha((255 * 0.1).round()),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -451,7 +425,7 @@ class CoachMark extends StatelessWidget {
             color: theme.colorScheme.onPrimaryContainer,
             size: 20,
           ),
-          SizedBox(width: Spacing.xs),
+          const SizedBox(width: SpacingSystem.xs),
           Flexible(
             child: Text(
               message,
@@ -467,12 +441,7 @@ class CoachMark extends StatelessWidget {
 }
 
 /// コーチマーク位置
-enum CoachMarkPosition {
-  top,
-  bottom,
-  left,
-  right,
-}
+enum CoachMarkPosition { top, bottom, left, right }
 
 /// ツールチップ
 class CustomTooltip extends StatelessWidget {

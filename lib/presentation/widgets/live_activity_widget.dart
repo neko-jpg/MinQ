@@ -26,10 +26,10 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
   late AnimationController _slideController;
   late Animation<double> _pulseAnimation;
   late Animation<Offset> _slideAnimation;
-  
+
   StreamSubscription<LiveActivityUpdate>? _activitySubscription;
   StreamSubscription<SocialStats>? _statsSubscription;
-  
+
   CurrentActivityStats? _currentStats;
   List<ActivityEvent> _recentActivities = [];
   SocialStats? _socialStats;
@@ -38,32 +38,27 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
   @override
   void initState() {
     super.initState();
-    
+
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
+
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.05,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, -1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _slideController, curve: Curves.easeOutBack),
+    );
 
     _startListening();
     _loadInitialData();
@@ -82,7 +77,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
     _activitySubscription = SocialProofService.instance.activityStream.listen(
       _handleActivityUpdate,
     );
-    
+
     _statsSubscription = SocialProofService.instance.statsStream.listen(
       _handleStatsUpdate,
     );
@@ -190,41 +185,41 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
           scale: _pulseAnimation.value,
           child: Container(
             padding: EdgeInsets.symmetric(
-              horizontal: tokens.spacing(3),
-              vertical: tokens.spacing(2),
+              horizontal: tokens.spacing.md,
+              vertical: tokens.spacing.sm,
             ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  tokens.brandPrimary.withOpacity(0.8),
-                  tokens.brandPrimary.withOpacity(0.6),
+                  tokens.brandPrimary.withAlpha((255 * 0.8).round()),
+                  tokens.brandPrimary.withAlpha((255 * 0.6).round()),
                 ],
               ),
-              borderRadius: tokens.cornerMedium(),
-              boxShadow: tokens.shadowSoft,
+              borderRadius: BorderRadius.circular(tokens.radius.md),
+              boxShadow: tokens.shadow.soft,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildPulsingDot(),
-                SizedBox(width: tokens.spacing(2)),
+                SizedBox(width: tokens.spacing.sm),
                 Text(
                   '${stats.totalActiveUsers}人が実行中',
-                  style: tokens.bodySmall.copyWith(
+                  style: tokens.typography.caption.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 if (stats.mostPopularCategory != null) ...[
-                  SizedBox(width: tokens.spacing(2)),
+                  SizedBox(width: tokens.spacing.sm),
                   Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing(1),
-                      vertical: tokens.spacing(0.5),
+                      horizontal: tokens.spacing.xs,
+                      vertical: tokens.spacing.xs / 2,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: tokens.cornerSmall(),
+                      color: Colors.white.withAlpha((255 * 0.2).round()),
+                      borderRadius: BorderRadius.circular(tokens.radius.sm),
                     ),
                     child: Text(
                       _getCategoryEmoji(stats.mostPopularCategory!),
@@ -254,36 +249,36 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
               scale: _pulseAnimation.value,
               child: Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(tokens.spacing(4)),
+                padding: EdgeInsets.all(tokens.spacing.lg),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
                       tokens.brandPrimary,
-                      tokens.brandPrimary.withOpacity(0.8),
+                      tokens.brandPrimary.withAlpha((255 * 0.8).round()),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: tokens.cornerLarge(),
-                  boxShadow: tokens.shadowSoft,
+                  borderRadius: BorderRadius.circular(tokens.radius.lg),
+                  boxShadow: tokens.shadow.soft,
                 ),
                 child: Column(
                   children: [
                     Row(
                       children: [
                         _buildPulsingDot(size: 12),
-                        SizedBox(width: tokens.spacing(2)),
+                        SizedBox(width: tokens.spacing.sm),
                         Text(
                           'ライブアクティビティ',
-                          style: tokens.bodyMedium.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                          style: tokens.typography.body.copyWith(
+                            color: Colors.white.withAlpha((255 * 0.9).round()),
                           ),
                         ),
                         const Spacer(),
                         _buildToggleButton(),
                       ],
                     ),
-                    SizedBox(height: tokens.spacing(3)),
+                    SizedBox(height: tokens.spacing.md),
                     Row(
                       children: [
                         Expanded(
@@ -296,7 +291,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
                         Container(
                           width: 1,
                           height: 40,
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withAlpha((255 * 0.3).round()),
                         ),
                         Expanded(
                           child: _buildStatItem(
@@ -308,7 +303,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
                         Container(
                           width: 1,
                           height: 40,
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withAlpha((255 * 0.3).round()),
                         ),
                         Expanded(
                           child: _buildStatItem(
@@ -328,13 +323,13 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
 
         // カテゴリ別統計
         if (stats.categoryStats.isNotEmpty) ...[
-          SizedBox(height: tokens.spacing(3)),
+          SizedBox(height: tokens.spacing.md),
           _buildCategoryStats(stats),
         ],
 
         // 最近のアクティビティ
         if (_recentActivities.isNotEmpty) ...[
-          SizedBox(height: tokens.spacing(3)),
+          SizedBox(height: tokens.spacing.md),
           SlideTransition(
             position: _slideAnimation,
             child: _buildRecentActivities(),
@@ -343,7 +338,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
 
         // 励ましメッセージ
         if (_socialStats?.encouragementMessages.isNotEmpty == true) ...[
-          SizedBox(height: tokens.spacing(3)),
+          SizedBox(height: tokens.spacing.md),
           _buildEncouragementMessages(),
         ],
       ],
@@ -358,7 +353,9 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.8 + 0.2 * _pulseController.value),
+            color: Colors.white.withAlpha(
+              (255 * (0.8 + 0.2 * _pulseController.value)).round(),
+            ),
             shape: BoxShape.circle,
           ),
         );
@@ -371,23 +368,19 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
 
     return Column(
       children: [
-        Icon(
-          icon,
-          color: Colors.white,
-          size: 20,
-        ),
-        SizedBox(height: tokens.spacing(1)),
+        Icon(icon, color: Colors.white, size: 20),
+        SizedBox(height: tokens.spacing.xs),
         Text(
           value,
-          style: tokens.titleMedium.copyWith(
+          style: tokens.typography.h3.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           label,
-          style: tokens.bodySmall.copyWith(
-            color: Colors.white.withOpacity(0.8),
+          style: tokens.typography.caption.copyWith(
+            color: Colors.white.withAlpha((255 * 0.8).round()),
           ),
         ),
       ],
@@ -403,7 +396,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
       },
       icon: Icon(
         _isVisible ? Icons.visibility : Icons.visibility_off,
-        color: Colors.white.withOpacity(0.8),
+        color: Colors.white.withAlpha((255 * 0.8).round()),
         size: 20,
       ),
     );
@@ -413,10 +406,10 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
     final tokens = context.tokens;
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(3)),
+      padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: tokens.cornerMedium(),
+        borderRadius: BorderRadius.circular(tokens.radius.md),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -424,17 +417,16 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
         children: [
           Text(
             'カテゴリ別アクティビティ',
-            style: tokens.bodyMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
           Wrap(
-            spacing: tokens.spacing(2),
-            runSpacing: tokens.spacing(2),
-            children: stats.categoryStats.entries.map((entry) {
-              return _buildCategoryChip(entry.key, entry.value);
-            }).toList(),
+            spacing: tokens.spacing.sm,
+            runSpacing: tokens.spacing.sm,
+            children:
+                stats.categoryStats.entries.map((entry) {
+                  return _buildCategoryChip(entry.key, entry.value);
+                }).toList(),
           ),
         ],
       ),
@@ -446,12 +438,12 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing(2),
-        vertical: tokens.spacing(1),
+        horizontal: tokens.spacing.sm,
+        vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withOpacity(0.1),
-        borderRadius: tokens.cornerSmall(),
+        color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+        borderRadius: BorderRadius.circular(tokens.radius.sm),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -460,10 +452,10 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
             _getCategoryEmoji(category),
             style: const TextStyle(fontSize: 16),
           ),
-          SizedBox(width: tokens.spacing(1)),
+          SizedBox(width: tokens.spacing.xs),
           Text(
             '$count人',
-            style: tokens.bodySmall.copyWith(
+            style: tokens.typography.caption.copyWith(
               color: tokens.brandPrimary,
               fontWeight: FontWeight.bold,
             ),
@@ -477,10 +469,10 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
     final tokens = context.tokens;
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(3)),
+      padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: tokens.cornerMedium(),
+        borderRadius: BorderRadius.circular(tokens.radius.md),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -488,24 +480,18 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
         children: [
           Row(
             children: [
-              Icon(
-                Icons.timeline,
-                color: tokens.brandPrimary,
-                size: 16,
-              ),
-              SizedBox(width: tokens.spacing(1)),
+              Icon(Icons.timeline, color: tokens.brandPrimary, size: 16),
+              SizedBox(width: tokens.spacing.xs),
               Text(
                 '最近のアクティビティ',
-                style: tokens.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
           ..._recentActivities.take(3).map((activity) {
             return Padding(
-              padding: EdgeInsets.only(bottom: tokens.spacing(1)),
+              padding: EdgeInsets.only(bottom: tokens.spacing.xs),
               child: _buildActivityItem(activity),
             );
           }),
@@ -520,15 +506,13 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
 
     return Row(
       children: [
-        Text(
-          activity.avatar,
-          style: const TextStyle(fontSize: 16),
-        ),
-        SizedBox(width: tokens.spacing(2)),
+        Text(activity.avatar, style: const TextStyle(fontSize: 16)),
+        SizedBox(width: tokens.spacing.sm),
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: tokens.bodySmall.copyWith(color: tokens.textPrimary),
+              style:
+                  tokens.typography.caption.copyWith(color: tokens.textPrimary),
               children: [
                 TextSpan(
                   text: activity.nickname,
@@ -542,7 +526,8 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
                   style: TextStyle(color: tokens.brandPrimary),
                 ),
                 TextSpan(
-                  text: activity.type == ActivityType.completion ? 'を完了' : 'を開始',
+                  text:
+                      activity.type == ActivityType.completion ? 'を完了' : 'を開始',
                 ),
               ],
             ),
@@ -550,12 +535,11 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
         ),
         Text(
           timeAgo,
-          style: tokens.bodySmall.copyWith(
-            color: tokens.textMuted,
-          ),
+          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
         ),
-        if (widget.showEncouragement && activity.type == ActivityType.start) ...[
-          SizedBox(width: tokens.spacing(2)),
+        if (widget.showEncouragement &&
+            activity.type == ActivityType.start) ...[
+          SizedBox(width: tokens.spacing.sm),
           _buildEncouragementButton(activity),
         ],
       ],
@@ -568,16 +552,12 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
     return GestureDetector(
       onTap: () => _sendEncouragement(activity.userId),
       child: Container(
-        padding: EdgeInsets.all(tokens.spacing(1)),
+        padding: EdgeInsets.all(tokens.spacing.xs),
         decoration: BoxDecoration(
-          color: tokens.encouragement.withOpacity(0.1),
-          borderRadius: tokens.cornerSmall(),
+          color: tokens.encouragement.withAlpha((255 * 0.1).round()),
+          borderRadius: BorderRadius.circular(tokens.radius.sm),
         ),
-        child: Icon(
-          Icons.favorite,
-          size: 12,
-          color: tokens.encouragement,
-        ),
+        child: Icon(Icons.favorite, size: 12, color: tokens.encouragement),
       ),
     );
   }
@@ -587,40 +567,35 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
     final messages = _socialStats!.encouragementMessages;
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(3)),
+      padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
-        color: tokens.encouragement.withOpacity(0.1),
-        borderRadius: tokens.cornerMedium(),
+        color: tokens.encouragement.withAlpha((255 * 0.1).round()),
+        borderRadius: BorderRadius.circular(tokens.radius.md),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                Icons.campaign,
-                color: tokens.encouragement,
-                size: 16,
-              ),
-              SizedBox(width: tokens.spacing(1)),
+              Icon(Icons.campaign, color: tokens.encouragement, size: 16),
+              SizedBox(width: tokens.spacing.xs),
               Text(
                 '励ましメッセージ',
-                style: tokens.bodyMedium.copyWith(
+                style: tokens.typography.body.copyWith(
                   fontWeight: FontWeight.bold,
                   color: tokens.encouragement,
                 ),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
           ...messages.map((message) {
             return Padding(
-              padding: EdgeInsets.only(bottom: tokens.spacing(1)),
+              padding: EdgeInsets.only(bottom: tokens.spacing.xs),
               child: Text(
                 message,
-                style: tokens.bodySmall.copyWith(
-                  color: tokens.textPrimary,
-                ),
+                style:
+                    tokens.typography.caption.copyWith(color: tokens.textPrimary),
               ),
             );
           }),
@@ -683,10 +658,12 @@ class LiveActivitySettingsScreen extends ConsumerStatefulWidget {
   const LiveActivitySettingsScreen({super.key});
 
   @override
-  ConsumerState<LiveActivitySettingsScreen> createState() => _LiveActivitySettingsScreenState();
+  ConsumerState<LiveActivitySettingsScreen> createState() =>
+      _LiveActivitySettingsScreenState();
 }
 
-class _LiveActivitySettingsScreenState extends ConsumerState<LiveActivitySettingsScreen> {
+class _LiveActivitySettingsScreenState
+    extends ConsumerState<LiveActivitySettingsScreen> {
   late SocialSettings _settings;
 
   @override
@@ -705,107 +682,98 @@ class _LiveActivitySettingsScreenState extends ConsumerState<LiveActivitySetting
       appBar: AppBar(
         title: Text(
           'ライブアクティビティ設定',
-          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+          style: tokens.typography.h3.copyWith(color: tokens.textPrimary),
         ),
         centerTitle: true,
         backgroundColor: tokens.background,
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(tokens.spacing(4)),
+        padding: EdgeInsets.all(tokens.spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // プライバシー設定
-            _buildSettingsSection(
-              'プライバシー設定',
-              [
-                SwitchListTile(
-                  title: const Text('アクティビティを表示'),
-                  subtitle: const Text('他のユーザーにあなたの活動を表示します'),
-                  value: _settings.showActivity,
-                  onChanged: (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(showActivity: value);
-                    });
-                  },
-                ),
-                SwitchListTile(
-                  title: const Text('交流を許可'),
-                  subtitle: const Text('他のユーザーからの励ましを受け取ります'),
-                  value: _settings.allowInteraction,
-                  onChanged: (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(allowInteraction: value);
-                    });
-                  },
-                ),
-              ],
-            ),
+            _buildSettingsSection('プライバシー設定', [
+              SwitchListTile(
+                title: const Text('アクティビティを表示'),
+                subtitle: const Text('他のユーザーにあなたの活動を表示します'),
+                value: _settings.showActivity,
+                onChanged: (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(showActivity: value);
+                  });
+                },
+              ),
+              SwitchListTile(
+                title: const Text('交流を許可'),
+                subtitle: const Text('他のユーザーからの励ましを受け取ります'),
+                value: _settings.allowInteraction,
+                onChanged: (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(allowInteraction: value);
+                  });
+                },
+              ),
+            ]),
 
-            SizedBox(height: tokens.spacing(6)),
+            SizedBox(height: tokens.spacing.xl),
 
             // 通知設定
-            _buildSettingsSection(
-              '通知設定',
-              [
-                SwitchListTile(
-                  title: const Text('触覚フィードバック'),
-                  subtitle: const Text('アクティビティ時に振動でお知らせします'),
-                  value: _settings.enableHaptics,
-                  onChanged: (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(enableHaptics: value);
-                    });
-                  },
-                ),
-                SwitchListTile(
-                  title: const Text('祝福エフェクト'),
-                  subtitle: const Text('完了時に祝福エフェクトを表示します'),
-                  value: _settings.enableCelebration,
-                  onChanged: (value) {
-                    setState(() {
-                      _settings = _settings.copyWith(enableCelebration: value);
-                    });
-                  },
-                ),
-              ],
-            ),
+            _buildSettingsSection('通知設定', [
+              SwitchListTile(
+                title: const Text('触覚フィードバック'),
+                subtitle: const Text('アクティビティ時に振動でお知らせします'),
+                value: _settings.enableHaptics,
+                onChanged: (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(enableHaptics: value);
+                  });
+                },
+              ),
+              SwitchListTile(
+                title: const Text('祝福エフェクト'),
+                subtitle: const Text('完了時に祝福エフェクトを表示します'),
+                value: _settings.enableCelebration,
+                onChanged: (value) {
+                  setState(() {
+                    _settings = _settings.copyWith(enableCelebration: value);
+                  });
+                },
+              ),
+            ]),
 
-            SizedBox(height: tokens.spacing(6)),
+            SizedBox(height: tokens.spacing.xl),
 
             // 説明
             Card(
               elevation: 0,
-              color: tokens.brandPrimary.withOpacity(0.1),
+              color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
               shape: RoundedRectangleBorder(
-                borderRadius: tokens.cornerLarge(),
+                borderRadius: BorderRadius.circular(tokens.radius.lg),
               ),
               child: Padding(
-                padding: EdgeInsets.all(tokens.spacing(4)),
+                padding: EdgeInsets.all(tokens.spacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.info,
-                          color: tokens.brandPrimary,
-                        ),
-                        SizedBox(width: tokens.spacing(2)),
+                        Icon(Icons.info, color: tokens.brandPrimary),
+                        SizedBox(width: tokens.spacing.sm),
                         Text(
                           'ライブアクティビティについて',
-                          style: tokens.bodyMedium.copyWith(
+                          style: tokens.typography.body.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: tokens.spacing(2)),
+                    SizedBox(height: tokens.spacing.sm),
                     Text(
                       'ライブアクティビティ機能では、他のユーザーと一緒に習慣に取り組んでいることを実感できます。'
                       'すべての情報は匿名化されており、個人を特定することはできません。',
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.textPrimary,
                       ),
                     ),
@@ -827,16 +795,14 @@ class _LiveActivitySettingsScreenState extends ConsumerState<LiveActivitySetting
       children: [
         Text(
           title,
-          style: tokens.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: tokens.spacing(3)),
+        SizedBox(height: tokens.spacing.md),
         Card(
           elevation: 0,
           color: tokens.surface,
           shape: RoundedRectangleBorder(
-            borderRadius: tokens.cornerLarge(),
+            borderRadius: BorderRadius.circular(tokens.radius.lg),
             side: BorderSide(color: tokens.border),
           ),
           child: Column(children: children),

@@ -19,7 +19,7 @@ class PolicyViewerScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           document.titleJa,
-          style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
+          style: tokens.typography.h5.copyWith(color: tokens.textPrimary),
         ),
         leading: IconButton(
           icon: Icon(Icons.close, color: tokens.textPrimary),
@@ -29,58 +29,59 @@ class PolicyViewerScreen extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
       ),
       body: ListView(
-        padding: EdgeInsets.all(tokens.spacing(5)),
+        padding: EdgeInsets.all(tokens.spacing.lg),
         children: <Widget>[
           Row(
             children: <Widget>[
               Icon(documentId.icon, color: tokens.brandPrimary),
-              SizedBox(width: tokens.spacing(3)),
+              SizedBox(width: tokens.spacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
                       document.titleJa,
-                      style: tokens.titleMedium.copyWith(
+                      style: tokens.typography.h4.copyWith(
                         color: tokens.textPrimary,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(1)),
+                    SizedBox(height: tokens.spacing.xs),
                     Text(
                       document.titleEn,
-                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                      style: tokens.typography.bodySmall
+                          .copyWith(color: tokens.textMuted),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.lg),
           Text(
             '最終更新日 / Last updated: ${document.lastUpdated}',
-            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
           ),
           if (document.highlightTag != null) ...<Widget>[
-            SizedBox(height: tokens.spacing(3)),
+            SizedBox(height: tokens.spacing.md),
             Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: tokens.spacing(4),
-                vertical: tokens.spacing(2.5),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 10,
               ),
               decoration: BoxDecoration(
-                color: tokens.brandPrimary.withValues(alpha: 0.1),
+                color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
                 borderRadius: tokens.cornerLarge(),
               ),
               child: Text(
                 document.highlightTag!,
-                style: tokens.bodySmall.copyWith(
+                style: tokens.typography.bodySmall.copyWith(
                   color: tokens.brandPrimary,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
           ],
-          SizedBox(height: tokens.spacing(5)),
+          SizedBox(height: tokens.spacing.lg),
           if (document.assetPath != null)
             _PolicyMarkdownCard(document: document)
           else
@@ -111,11 +112,11 @@ class _PolicyMarkdownCard extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Card(
             elevation: 0,
-            margin: EdgeInsets.only(bottom: tokens.spacing(4)),
+            margin: EdgeInsets.only(bottom: tokens.spacing.lg),
             color: tokens.surface,
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing(6)),
+              padding: EdgeInsets.all(tokens.spacing.xl),
               child: const Center(child: CircularProgressIndicator()),
             ),
           );
@@ -126,20 +127,21 @@ class _PolicyMarkdownCard extends StatelessWidget {
             snapshot.data!.trim().isEmpty) {
           return Card(
             elevation: 0,
-            margin: EdgeInsets.only(bottom: tokens.spacing(4)),
+            margin: EdgeInsets.only(bottom: tokens.spacing.lg),
             color: tokens.surface,
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing(4)),
+              padding: EdgeInsets.all(tokens.spacing.lg),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(Icons.error_outline, color: tokens.accentError),
-                  SizedBox(width: tokens.spacing(3)),
+                  SizedBox(width: tokens.spacing.md),
                   Expanded(
                     child: Text(
                       'ドキュメントを読み込めませんでした。時間を置いて再度お試しください。',
-                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                      style: tokens.typography.bodySmall
+                          .copyWith(color: tokens.textMuted),
                     ),
                   ),
                 ],
@@ -151,30 +153,35 @@ class _PolicyMarkdownCard extends StatelessWidget {
         final markdownStyle = MarkdownStyleSheet.fromTheme(
           Theme.of(context),
         ).copyWith(
-          p: tokens.bodyMedium.copyWith(color: tokens.textPrimary, height: 1.6),
-          h1: tokens.titleLarge.copyWith(
+          p: tokens.typography.body.copyWith(
+            color: tokens.textPrimary,
+            height: 1.6,
+          ),
+          h1: tokens.typography.h1.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
-          h2: tokens.titleMedium.copyWith(
+          h2: tokens.typography.h2.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
-          h3: tokens.titleSmall.copyWith(
+          h3: tokens.typography.h3.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
-          listBullet: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
-          blockquote: tokens.bodySmall.copyWith(color: tokens.textSecondary),
+          listBullet:
+              tokens.typography.bodyMedium.copyWith(color: tokens.textPrimary),
+          blockquote:
+              tokens.typography.bodySmall.copyWith(color: tokens.textSecondary),
         );
 
         return Card(
           elevation: 0,
-          margin: EdgeInsets.only(bottom: tokens.spacing(4)),
+          margin: EdgeInsets.only(bottom: tokens.spacing.lg),
           color: tokens.surface,
           shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
           child: Padding(
-            padding: EdgeInsets.all(tokens.spacing(4)),
+            padding: EdgeInsets.all(tokens.spacing.lg),
             child: MarkdownBody(
               data: snapshot.data!,
               styleSheet: markdownStyle,
@@ -197,40 +204,42 @@ class _PolicySectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      margin: EdgeInsets.only(bottom: tokens.spacing(4)),
+      margin: EdgeInsets.only(bottom: tokens.spacing.lg),
       color: tokens.surface,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing(4)),
+        padding: EdgeInsets.all(tokens.spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               section.titleJa,
-              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
+              style: tokens.typography.h5.copyWith(color: tokens.textPrimary),
             ),
-            SizedBox(height: tokens.spacing(1.5)),
+            const SizedBox(height: 6),
             Text(
               section.titleEn,
-              style: tokens.labelSmall.copyWith(color: tokens.textMuted),
+              style:
+                  tokens.typography.caption.copyWith(color: tokens.textMuted),
             ),
-            SizedBox(height: tokens.spacing(3)),
+            SizedBox(height: tokens.spacing.md),
             ...section.paragraphs.map((PolicyParagraph paragraph) {
               return Padding(
-                padding: EdgeInsets.only(bottom: tokens.spacing(3)),
+                padding: EdgeInsets.only(bottom: tokens.spacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
                       paragraph.ja,
-                      style: tokens.bodySmall.copyWith(
+                      style: tokens.typography.bodySmall.copyWith(
                         color: tokens.textPrimary,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(2)),
+                    SizedBox(height: tokens.spacing.sm),
                     Text(
                       paragraph.en,
-                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                      style: tokens.typography.bodySmall
+                          .copyWith(color: tokens.textMuted),
                     ),
                   ],
                 ),

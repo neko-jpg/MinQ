@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'models.g.dart';
 
-/// Deserialized track metadata from the ACR Cloud identify API.
+/// Metadata for a track identified by ACR Cloud.
 @JsonSerializable()
 class ACRCloudTrackMetadata {
   /// Creates a new [ACRCloudTrackMetadata].
@@ -14,7 +14,7 @@ class ACRCloudTrackMetadata {
     required this.playOffsetMs,
   });
 
-  /// Creates a new [ACRCloudTrackMetadata] from a JSON map.
+  /// Creates a new [ACRCloudTrackMetadata] from a JSON object.
   factory ACRCloudTrackMetadata.fromJson(Map<String, dynamic> json) =>
       _$ACRCloudTrackMetadataFromJson(json);
 
@@ -30,28 +30,29 @@ class ACRCloudTrackMetadata {
   /// The genres of the track.
   final List<String> genres;
 
-  /// The play offset in milliseconds.
+  /// The offset in milliseconds from the beginning of the audio sample.
   final int playOffsetMs;
 
-  /// Converts the [ACRCloudTrackMetadata] to a JSON map.
+  /// Converts this object to a JSON map.
   Map<String, dynamic> toJson() => _$ACRCloudTrackMetadataToJson(this);
 }
 
+/// A successful result from the ACR Cloud identify API.
 @JsonSerializable()
 class ACRCloudResult {
   /// Creates a new [ACRCloudResult].
   ACRCloudResult({required this.metadata, required this.score});
 
-  /// Creates a new [ACRCloudResult] from a JSON map.
+  /// Creates a new [ACRCloudResult] from a JSON object.
   factory ACRCloudResult.fromJson(Map<String, dynamic> json) =>
       _$ACRCloudResultFromJson(json);
 
-  /// The metadata for the track.
+  /// The metadata of the identified track.
   final ACRCloudTrackMetadata metadata;
 
-  /// The confidence score for the match.
+  /// The confidence score of the identification (0-100).
   final double score;
 
-  /// Converts the [ACRCloudResult] to a JSON map.
+  /// Converts this object to a JSON map.
   Map<String, dynamic> toJson() => _$ACRCloudResultToJson(this);
 }

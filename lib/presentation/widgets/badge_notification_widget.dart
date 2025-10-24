@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter/services.dart';
 import 'package:minq/domain/gamification/badge.dart' as gamification;
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// バッジ獲得通知ウィジェット
 /// 新しいバッジを獲得した時に表示されるアニメーション付き通知
@@ -104,7 +105,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final tokens = Theme.of(context).extension<MinqTheme>()!;
 
     return SlideTransition(
       position: _slideAnimation,
@@ -117,8 +118,8 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  theme.primaryColor,
-                  theme.primaryColor.withValues(alpha: 0.8),
+                  tokens.brandPrimary,
+                  tokens.brandPrimary.withAlpha(204),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -126,7 +127,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: theme.primaryColor.withValues(alpha: 0.3),
+                  color: tokens.brandPrimary.withAlpha(77),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -142,7 +143,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                       return CustomPaint(
                         painter: SparklePainter(
                           animation: _sparkleAnimation.value,
-                          color: Colors.white.withOpacity(0.6),
+                          color: Colors.white.withAlpha(153),
                         ),
                       );
                     },
@@ -161,10 +162,10 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                           width: 64,
                           height: 64,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withAlpha(51),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withAlpha(77),
                               width: 2,
                             ),
                           ),
@@ -182,15 +183,15 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                           children: [
                             Text(
                               '🎉 バッジ獲得！',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: Colors.white.withValues(alpha: 0.9),
+                              style: tokens.typography.caption.copyWith(
+                                color: Colors.white.withAlpha(230),
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               widget.badge.name,
-                              style: theme.textTheme.titleMedium?.copyWith(
+                              style: tokens.typography.body.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -198,8 +199,8 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                             const SizedBox(height: 4),
                             Text(
                               widget.badge.description,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: Colors.white.withValues(alpha: 0.8),
+                              style: tokens.typography.caption.copyWith(
+                                color: Colors.white.withAlpha(204),
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -213,7 +214,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                         onPressed: _dismiss,
                         icon: Icon(
                           Icons.close,
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withAlpha(204),
                           size: 20,
                         ),
                       ),
@@ -282,7 +283,7 @@ class SparklePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = color.withOpacity(animation * 0.8)
+          ..color = color.withAlpha((255 * animation * 0.8).toInt())
           ..style = PaintingStyle.fill;
 
     // スパークルの位置を計算
@@ -432,7 +433,7 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final tokens = Theme.of(context).extension<MinqTheme>()!;
 
     return AnimatedBuilder(
       animation: _controller,
@@ -445,11 +446,11 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
               margin: const EdgeInsets.symmetric(horizontal: 16),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: tokens.accentSuccess,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.green.withOpacity(0.3),
+                    color: tokens.accentSuccess.withAlpha(77),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -462,7 +463,7 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
                   const SizedBox(width: 8),
                   Text(
                     '+${widget.points} ポイント',
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: tokens.typography.body.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -471,8 +472,8 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
                     const SizedBox(width: 8),
                     Text(
                       '(${widget.reason})',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
+                      style: tokens.typography.caption.copyWith(
+                        color: Colors.white.withAlpha(230),
                       ),
                     ),
                   ],

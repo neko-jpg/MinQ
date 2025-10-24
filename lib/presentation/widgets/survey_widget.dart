@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// アプリ内アンケートウィジェット
 class SurveyWidget extends StatefulWidget {
@@ -107,7 +107,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
           LinearProgressIndicator(
             value: (_currentQuestionIndex + 1) / widget.survey.questions.length,
             backgroundColor: tokens.background,
-            valueColor: AlwaysStoppedAnimation<Color>(tokens.primary),
+            valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
           ),
           SizedBox(height: tokens.spacing.xs),
           Text(
@@ -119,7 +119,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
           ),
           SizedBox(height: tokens.spacing.xl),
           // 質問
-          _buildQuestion(_currentQuestion, tokens),
+          _buildQuestion(_currentQuestion),
           SizedBox(height: tokens.spacing.xl),
           // ナビゲーションボタン
           Row(
@@ -145,7 +145,8 @@ class _SurveyWidgetState extends State<SurveyWidget> {
     );
   }
 
-  Widget _buildQuestion(SurveyQuestion question, MinqTheme tokens) {
+  Widget _buildQuestion(SurveyQuestion question) {
+    final tokens = context.tokens;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -159,28 +160,30 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         if (question.isRequired)
           Text(
             ' *必須',
-            style: tokens.typography.caption.copyWith(color: tokens.error),
+            style:
+                tokens.typography.caption.copyWith(color: tokens.accentError),
           ),
         SizedBox(height: tokens.spacing.md),
-        _buildQuestionInput(question, tokens),
+        _buildQuestionInput(question),
       ],
     );
   }
 
-  Widget _buildQuestionInput(SurveyQuestion question, MinqTheme tokens) {
+  Widget _buildQuestionInput(SurveyQuestion question) {
     switch (question.type) {
       case SurveyQuestionType.multipleChoice:
-        return _buildMultipleChoice(question, tokens);
+        return _buildMultipleChoice(question);
       case SurveyQuestionType.rating:
-        return _buildRating(question, tokens);
+        return _buildRating(question);
       case SurveyQuestionType.text:
-        return _buildTextInput(question, tokens);
+        return _buildTextInput(question);
       case SurveyQuestionType.yesNo:
-        return _buildYesNo(question, tokens);
+        return _buildYesNo(question);
     }
   }
 
-  Widget _buildMultipleChoice(SurveyQuestion question, MinqTheme tokens) {
+  Widget _buildMultipleChoice(SurveyQuestion question) {
+    final tokens = context.tokens;
     return Column(
       children:
           question.options!.map((option) {
@@ -197,13 +200,13 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                 child: Container(
                   padding: EdgeInsets.all(tokens.spacing.md),
                   decoration: BoxDecoration(
-                    color:
-                        isSelected
-                            ? tokens.primary.withOpacity(0.1)
-                            : tokens.background,
+                    color: isSelected
+                        ? tokens.brandPrimary.withAlpha((255 * 0.1).round())
+                        : tokens.background,
                     borderRadius: BorderRadius.circular(tokens.radius.md),
                     border: Border.all(
-                      color: isSelected ? tokens.primary : tokens.border,
+                      color:
+                          isSelected ? tokens.brandPrimary : tokens.border,
                       width: isSelected ? 2 : 1,
                     ),
                   ),
@@ -213,8 +216,9 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                         isSelected
                             ? Icons.radio_button_checked
                             : Icons.radio_button_unchecked,
-                        color:
-                            isSelected ? tokens.primary : tokens.textSecondary,
+                        color: isSelected
+                            ? tokens.brandPrimary
+                            : tokens.textSecondary,
                       ),
                       SizedBox(width: tokens.spacing.sm),
                       Expanded(
@@ -234,7 +238,8 @@ class _SurveyWidgetState extends State<SurveyWidget> {
     );
   }
 
-  Widget _buildRating(SurveyQuestion question, MinqTheme tokens) {
+  Widget _buildRating(SurveyQuestion question) {
+    final tokens = context.tokens;
     final maxRating = question.maxRating ?? 5;
     final currentRating = _answers[question.id] as int?;
 
@@ -253,10 +258,10 @@ class _SurveyWidgetState extends State<SurveyWidget> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: isSelected ? tokens.primary : tokens.background,
+              color: isSelected ? tokens.brandPrimary : tokens.background,
               shape: BoxShape.circle,
               border: Border.all(
-                color: isSelected ? tokens.primary : tokens.border,
+                color: isSelected ? tokens.brandPrimary : tokens.border,
               ),
             ),
             child: Center(
@@ -274,7 +279,8 @@ class _SurveyWidgetState extends State<SurveyWidget> {
     );
   }
 
-  Widget _buildTextInput(SurveyQuestion question, MinqTheme tokens) {
+  Widget _buildTextInput(SurveyQuestion question) {
+    final tokens = context.tokens;
     return TextField(
       decoration: InputDecoration(
         hintText: '回答を入力してください',
@@ -291,17 +297,18 @@ class _SurveyWidgetState extends State<SurveyWidget> {
     );
   }
 
-  Widget _buildYesNo(SurveyQuestion question, MinqTheme tokens) {
+  Widget _buildYesNo(SurveyQuestion question) {
     return Row(
       children: [
-        Expanded(child: _buildYesNoButton('はい', true, tokens)),
-        SizedBox(width: tokens.spacing.md),
-        Expanded(child: _buildYesNoButton('いいえ', false, tokens)),
+        Expanded(child: _buildYesNoButton('はい', true)),
+        SizedBox(width: context.tokens.spacing.md),
+        Expanded(child: _buildYesNoButton('いいえ', false)),
       ],
     );
   }
 
-  Widget _buildYesNoButton(String label, bool value, MinqTheme tokens) {
+  Widget _buildYesNoButton(String label, bool value) {
+    final tokens = context.tokens;
     final isSelected = _answers[_currentQuestion.id] == value;
     return ElevatedButton(
       onPressed: () {
@@ -310,12 +317,13 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         });
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? tokens.primary : tokens.surface,
+        backgroundColor: isSelected ? tokens.brandPrimary : tokens.surface,
         foregroundColor: isSelected ? Colors.white : tokens.textPrimary,
         padding: EdgeInsets.symmetric(vertical: tokens.spacing.md),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(tokens.radius.md),
-          side: BorderSide(color: isSelected ? tokens.primary : tokens.border),
+          side: BorderSide(
+              color: isSelected ? tokens.brandPrimary : tokens.border),
         ),
       ),
       child: Text(label),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:minq/core/ai/habit_story_generator.dart';
 import 'package:minq/core/ai/personality_diagnosis_service.dart';
 import 'package:minq/core/ai/realtime_coach_service.dart';

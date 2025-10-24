@@ -49,7 +49,7 @@ class LoginScreen extends ConsumerWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 384), // max-w-sm
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing(6)), // p-6
+              padding: EdgeInsets.all(tokens.spacing.xl), // p-6
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -57,23 +57,23 @@ class LoginScreen extends ConsumerWidget {
                   Icon(
                     Icons.checklist, // material-symbols-outlined: checklist
                     color: tokens.brandPrimary,
-                    size: tokens.spacing(15), // text-6xl
+                    size: tokens.spacing.xl * 1.5, // text-6xl
                   ),
-                  SizedBox(height: tokens.spacing(4)), // mt-4
+                  SizedBox(height: tokens.spacing.lg), // mt-4
                   Text(
                     'MinQ',
-                    style: tokens.displaySmall.copyWith(
+                    style: tokens.typography.h1.copyWith(
                       color: tokens.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing(2)), // mt-2
+                  SizedBox(height: tokens.spacing.sm), // mt-2
                   Text(
                     '1日3タップのミニクエストで習慣化を後押しします。',
-                    style: tokens.bodyLarge.copyWith(color: tokens.textMuted),
+                    style: tokens.typography.bodyLarge.copyWith(color: tokens.textMuted),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: tokens.spacing(10)), // mb-10
+                  SizedBox(height: tokens.spacing.xl * 2), // mb-10
                   _SocialLoginButton(
                     // NOTE: Using a standard icon instead of the image from HTML
                     icon: Icons.g_mobiledata, // Placeholder for Google
@@ -81,21 +81,21 @@ class LoginScreen extends ConsumerWidget {
                     isLoading: authState.isLoading,
                     onPressed: () => _handleSignIn(ref, AuthMethod.google),
                   ),
-                  SizedBox(height: tokens.spacing(3)), // space-y-3
+                  SizedBox(height: tokens.spacing.md), // space-y-3
                   _SocialLoginButton(
                     icon: Icons.apple,
                     text: 'Appleで続行する',
                     isLoading: authState.isLoading,
                     onPressed: () => _handleSignIn(ref, AuthMethod.apple),
                   ),
-                  SizedBox(height: tokens.spacing(3)),
+                  SizedBox(height: tokens.spacing.md),
                   _SocialLoginButton(
                     icon: Icons.shield_outlined, // shield_person
                     text: 'ゲストとして試す',
                     isLoading: authState.isLoading,
                     onPressed: () => _handleDebugGuestSignIn(ref),
                   ),
-                  SizedBox(height: tokens.spacing(3)),
+                  SizedBox(height: tokens.spacing.md),
                   _SocialLoginButton(
                     icon: Icons.mail_outline, // mail
                     text: 'メールアドレスで続行する',
@@ -105,19 +105,19 @@ class LoginScreen extends ConsumerWidget {
                   const Spacer(),
                   Padding(
                     padding: EdgeInsets.symmetric(
-                      vertical: tokens.spacing(6),
+                      vertical: tokens.spacing.xl,
                     ), // py-6
                     child: RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
-                        style: tokens.labelSmall.copyWith(
+                        style: tokens.typography.caption.copyWith(
                           color: tokens.textMuted,
                         ),
                         children: <TextSpan>[
                           const TextSpan(text: '続行すると、MinQの'),
                           TextSpan(
                             text: '利用規約',
-                            style: tokens.labelSmall.copyWith(
+                            style: tokens.typography.caption.copyWith(
                               color: tokens.ensureAccessibleOnBackground(
                                 tokens.brandPrimary,
                                 tokens.background,
@@ -140,7 +140,7 @@ class LoginScreen extends ConsumerWidget {
                           const TextSpan(text: 'と'),
                           TextSpan(
                             text: 'プライバシーポリシー',
-                            style: tokens.labelSmall.copyWith(
+                            style: tokens.typography.caption.copyWith(
                               color: tokens.ensureAccessibleOnBackground(
                                 tokens.brandPrimary,
                                 tokens.background,
@@ -250,14 +250,15 @@ class _SocialLoginButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: tokens.surface, // card-light
         foregroundColor: tokens.textSecondary, // text-slate-700
-        minimumSize: Size(double.infinity, tokens.spacing(13.5)), // py-3.5
-        padding: EdgeInsets.symmetric(horizontal: tokens.spacing(6)), // px-6
+        minimumSize: Size(double.infinity, tokens.spacing.xl * 1.2), // py-3.5
+        padding: EdgeInsets.symmetric(horizontal: tokens.spacing.xl), // px-6
         shape: RoundedRectangleBorder(
-          borderRadius: tokens.cornerXLarge(), // rounded-xl
+          borderRadius:
+              BorderRadius.circular(tokens.radius.xl), // rounded-xl
           side: BorderSide(color: tokens.border), // border-slate-300
         ),
         elevation: 1,
-        shadowColor: tokens.border.withOpacity(0.5),
+        shadowColor: tokens.border.withAlpha(128),
       ),
       onPressed: isLoading ? null : onPressed,
       child: Row(
@@ -265,19 +266,19 @@ class _SocialLoginButton extends StatelessWidget {
         children: <Widget>[
           if (isLoading)
             SizedBox(
-              width: tokens.spacing(6),
-              height: tokens.spacing(6),
+              width: tokens.spacing.lg,
+              height: tokens.spacing.lg,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
                 valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
               ),
             )
           else
-            Icon(icon, size: tokens.spacing(6)), // w-6 h-6
-          SizedBox(width: tokens.spacing(3)), // gap-3
+            Icon(icon, size: tokens.spacing.lg), // w-6 h-6
+          SizedBox(width: tokens.spacing.md), // gap-3
           Text(
             text,
-            style: tokens.titleSmall.copyWith(
+            style: tokens.typography.body.copyWith(
               color: isLoading ? tokens.textMuted : tokens.textPrimary,
               fontWeight: FontWeight.w600,
             ),

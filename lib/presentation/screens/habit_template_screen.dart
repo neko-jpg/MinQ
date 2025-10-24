@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/core/templates/habit_templates.dart';
-import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 習慣テンプレート選択画面
 class HabitTemplateScreen extends ConsumerStatefulWidget {
@@ -39,13 +39,13 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withAlpha((255 * 0.9).round()),
         elevation: 0,
       ),
       body: Column(
         children: [
           // カテゴリーフィルター
-          _buildCategoryFilter(tokens),
+          _buildCategoryFilter(),
           // テンプレートリスト
           Expanded(
             child: ListView.builder(
@@ -55,7 +55,6 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
                 final template = templates[index];
                 return _TemplateCard(
                   template: template,
-                  tokens: tokens,
                   onTap: () => _selectTemplate(template),
                 );
               },
@@ -66,7 +65,8 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
     );
   }
 
-  Widget _buildCategoryFilter(MinqTheme tokens) {
+  Widget _buildCategoryFilter() {
+    final tokens = context.tokens;
     return Container(
       height: 60,
       padding: EdgeInsets.symmetric(vertical: tokens.spacing.sm),
@@ -79,7 +79,6 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
             icon: '📋',
             isSelected: _selectedCategory == null,
             onTap: () => setState(() => _selectedCategory = null),
-            tokens: tokens,
           ),
           ...HabitCategory.values.map((category) {
             return _CategoryChip(
@@ -87,7 +86,6 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
               icon: category.icon,
               isSelected: _selectedCategory == category,
               onTap: () => setState(() => _selectedCategory = category),
-              tokens: tokens,
             );
           }),
         ],
@@ -118,18 +116,17 @@ class _CategoryChip extends StatelessWidget {
   final String icon;
   final bool isSelected;
   final VoidCallback onTap;
-  final MinqTheme tokens;
 
   const _CategoryChip({
     required this.label,
     required this.icon,
     required this.isSelected,
     required this.onTap,
-    required this.tokens,
   });
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
     return Padding(
       padding: EdgeInsets.only(right: tokens.spacing.sm),
       child: FilterChip(
@@ -144,8 +141,8 @@ class _CategoryChip extends StatelessWidget {
         selected: isSelected,
         onSelected: (_) => onTap(),
         backgroundColor: tokens.surface,
-        selectedColor: tokens.primary.withOpacity(0.2),
-        checkmarkColor: tokens.primary,
+        selectedColor: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+        checkmarkColor: tokens.brandPrimary,
       ),
     );
   }
@@ -154,17 +151,16 @@ class _CategoryChip extends StatelessWidget {
 /// テンプレートカード
 class _TemplateCard extends StatelessWidget {
   final HabitTemplate template;
-  final MinqTheme tokens;
   final VoidCallback onTap;
 
   const _TemplateCard({
     required this.template,
-    required this.tokens,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
     return Card(
       margin: EdgeInsets.only(bottom: tokens.spacing.md),
       elevation: 0,
@@ -185,7 +181,7 @@ class _TemplateCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: tokens.primary.withOpacity(0.1),
+                  color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
                   borderRadius: BorderRadius.circular(tokens.radius.md),
                 ),
                 child: Center(
@@ -223,13 +219,11 @@ class _TemplateCard extends StatelessWidget {
                         _InfoChip(
                           icon: Icons.timer_outlined,
                           label: '${template.estimatedMinutes}分',
-                          tokens: tokens,
                         ),
                         SizedBox(width: tokens.spacing.xs),
                         _InfoChip(
                           icon: Icons.star_outline,
                           label: template.difficulty.displayName,
-                          tokens: tokens,
                         ),
                       ],
                     ),
@@ -249,16 +243,15 @@ class _TemplateCard extends StatelessWidget {
 class _InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
-  final MinqTheme tokens;
 
   const _InfoChip({
     required this.icon,
     required this.label,
-    required this.tokens,
   });
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: tokens.spacing.xs,
@@ -361,31 +354,28 @@ class _TemplateDetailSheet extends StatelessWidget {
               icon: Icons.timer_outlined,
               label: '推定時間',
               value: '${template.estimatedMinutes}分',
-              tokens: tokens,
             ),
             _DetailRow(
               icon: Icons.star_outline,
               label: '難易度',
               value: template.difficulty.displayName,
-              tokens: tokens,
             ),
             _DetailRow(
               icon: Icons.schedule,
               label: 'おすすめ時間',
               value: template.suggestedTimes.join(', '),
-              tokens: tokens,
             ),
             SizedBox(height: tokens.spacing.lg),
             // ヒント
             Container(
               padding: EdgeInsets.all(tokens.spacing.md),
               decoration: BoxDecoration(
-                color: tokens.primary.withOpacity(0.1),
+                color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.lightbulb_outline, color: tokens.primary),
+                  Icon(Icons.lightbulb_outline, color: tokens.brandPrimary),
                   SizedBox(width: tokens.spacing.sm),
                   Expanded(
                     child: Text(
@@ -405,10 +395,10 @@ class _TemplateDetailSheet extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onUse,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: tokens.primary,
+                  backgroundColor: tokens.brandPrimary,
                   padding: EdgeInsets.symmetric(vertical: tokens.spacing.md),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.full),
+                    borderRadius: BorderRadius.circular(999),
                   ),
                 ),
                 child: Text(
@@ -432,17 +422,16 @@ class _DetailRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  final MinqTheme tokens;
 
   const _DetailRow({
     required this.icon,
     required this.label,
     required this.value,
-    required this.tokens,
   });
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
     return Padding(
       padding: EdgeInsets.only(bottom: tokens.spacing.sm),
       child: Row(

@@ -177,7 +177,7 @@ class TFLiteUnifiedAIService {
 
       _textGenerationModel!.run(inputTensor, outputTensor);
 
-      final generatedTokens = _extractTokensFromOutput(outputTensor as List<List<double>>);
+      final generatedTokens = _extractTokensFromOutput(outputTensor);
       final response = _detokenizeText(generatedTokens);
 
       return _postProcessResponse(response);
@@ -206,17 +206,6 @@ class TFLiteUnifiedAIService {
 
     buffer.write(userMessage);
     return buffer.toString();
-  }
-
-  @Deprecated('Use recommendHabits instead')
-  Future<String> generateHabitSuggestion({
-    required Map<String, dynamic> habitData,
-    required String context,
-  }) async {
-    // This is a temporary workaround to fix a compile error.
-    // The caller should be updated to use the new `recommendHabits` method.
-    log('TFLite AI: generateHabitSuggestion is deprecated and should not be used.');
-    return '';
   }
 
   /// ルールベース応答生成（フォールバック）

@@ -54,7 +54,7 @@ class TimeConsistencyService {
 
   Future<DateTime?> _fetchServerTime() async {
     if (_customServerTimeProvider != null) {
-      return _customServerTimeProvider();
+      return _customServerTimeProvider!();
     }
 
     final request = await _httpClient.openUrl('HEAD', _probeUri);

@@ -21,14 +21,14 @@ class AiConciergeCard extends ConsumerWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         side: BorderSide(color: tokens.border),
       ),
       child: InkWell(
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         onTap: navigation.goToAiConciergeChat,
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing(4)),
+          padding: EdgeInsets.all(tokens.spacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -36,7 +36,7 @@ class AiConciergeCard extends ConsumerWidget {
                 children: [
                   Text(
                     'AIコンシェルジュ',
-                    style: tokens.titleSmall.copyWith(
+                    style: tokens.typography.h3.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -105,15 +105,15 @@ class AiConciergeCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              SizedBox(height: tokens.spacing(3)),
+              SizedBox(height: tokens.spacing.md),
               chatState.when(
                 data: (messages) => _ConversationPreview(messages: messages),
                 loading:
                     () => Row(
                       children: [
                         SizedBox(
-                          width: tokens.spacing(6),
-                          height: tokens.spacing(6),
+                          width: tokens.spacing.lg,
+                          height: tokens.spacing.lg,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation(
@@ -121,10 +121,10 @@ class AiConciergeCard extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        SizedBox(width: tokens.spacing(3)),
+                        SizedBox(width: tokens.spacing.md),
                         Text(
                           'Gemmaが準備中です...',
-                          style: tokens.bodyMedium.copyWith(
+                          style: tokens.typography.body.copyWith(
                             color: tokens.textMuted,
                           ),
                         ),
@@ -133,12 +133,12 @@ class AiConciergeCard extends ConsumerWidget {
                 error:
                     (_, __) => Text(
                       'AIコンシェルジュを読み込めませんでした。',
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.textMuted,
                       ),
                     ),
               ),
-              SizedBox(height: tokens.spacing(4)),
+              SizedBox(height: tokens.spacing.lg),
               _InputPlaceholderRow(tokens: tokens),
             ],
           ),
@@ -177,39 +177,39 @@ class _ConversationPreview extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: tokens.spacing(10),
-              height: tokens.spacing(10),
+              width: tokens.spacing.xl,
+              height: tokens.spacing.xl,
               decoration: BoxDecoration(
-                color: tokens.brandPrimary.withOpacity(0.12),
-                borderRadius: tokens.cornerLarge(),
+                color: tokens.brandPrimary.withAlpha((255 * 0.12).round()),
+                borderRadius: BorderRadius.circular(tokens.radius.lg),
               ),
               child: Icon(
                 Icons.psychology,
                 color: tokens.brandPrimary,
-                size: tokens.spacing(6),
+                size: tokens.spacing.lg,
               ),
             ),
-            SizedBox(width: tokens.spacing(3)),
+            SizedBox(width: tokens.spacing.md),
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing(3),
-                  vertical: tokens.spacing(2),
+                  horizontal: tokens.spacing.md,
+                  vertical: tokens.spacing.sm,
                 ),
                 decoration: BoxDecoration(
                   color: tokens.surfaceVariant,
-                  borderRadius: tokens.cornerLarge(),
+                  borderRadius: BorderRadius.circular(tokens.radius.lg),
                 ),
                 child: Text(
                   latestAi.text,
-                  style: tokens.bodyMedium.copyWith(height: 1.5),
+                  style: tokens.typography.body.copyWith(height: 1.5),
                 ),
               ),
             ),
           ],
         ),
         if (latestUser != null) ...[
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -219,16 +219,17 @@ class _ConversationPreview extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing(3),
-                      vertical: tokens.spacing(2),
+                      horizontal: tokens.spacing.md,
+                      vertical: tokens.spacing.sm,
                     ),
                     decoration: BoxDecoration(
-                      color: tokens.brandPrimary.withOpacity(0.12),
-                      borderRadius: tokens.cornerLarge(),
+                      color:
+                          tokens.brandPrimary.withAlpha((255 * 0.12).round()),
+                      borderRadius: BorderRadius.circular(tokens.radius.lg),
                     ),
                     child: Text(
                       latestUser.text,
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.brandPrimary,
                       ),
                       textAlign: TextAlign.right,
@@ -239,10 +240,10 @@ class _ConversationPreview extends StatelessWidget {
             ],
           ),
         ],
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.sm),
         Text(
           'タップしてGemmaと会話を始める',
-          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
         ),
       ],
     );
@@ -261,23 +262,23 @@ class _InputPlaceholderRow extends StatelessWidget {
         Expanded(
           child: Container(
             padding: EdgeInsets.symmetric(
-              horizontal: tokens.spacing(3),
-              vertical: tokens.spacing(2),
+              horizontal: tokens.spacing.md,
+              vertical: tokens.spacing.sm,
             ),
             decoration: BoxDecoration(
               color: tokens.surfaceVariant,
-              borderRadius: tokens.cornerXLarge(),
+              borderRadius: BorderRadius.circular(tokens.radius.xl),
             ),
             child: Text(
               'メッセージを入力...',
-              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+              style: tokens.typography.body.copyWith(color: tokens.textMuted),
             ),
           ),
         ),
-        SizedBox(width: tokens.spacing(2)),
+        SizedBox(width: tokens.spacing.sm),
         Container(
-          width: tokens.spacing(10),
-          height: tokens.spacing(10),
+          width: tokens.spacing.xl,
+          height: tokens.spacing.xl,
           decoration: BoxDecoration(
             color: tokens.brandPrimary,
             shape: BoxShape.circle,

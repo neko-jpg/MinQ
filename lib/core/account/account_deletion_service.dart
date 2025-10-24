@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// アカウント削除サービス
 /// GDPR/個人情報保護法に準拠したデータ削除機能
@@ -28,9 +29,9 @@ class AccountDeletionService {
       // 3. Authenticationを削除
       await user.delete();
 
-      print('✅ Account deleted successfully');
-    } catch (e) {
-      print('❌ Failed to delete account: $e');
+      logger.info('✅ Account deleted successfully');
+    } catch (e, s) {
+      logger.error('Failed to delete account', error: e, stackTrace: s);
       rethrow;
     }
   }
@@ -108,7 +109,7 @@ class AccountDeletionService {
     }
 
     await batch.commit();
-    print('✅ Firestore data deleted');
+    logger.info('✅ Firestore data deleted');
   }
 
   /// Storageのユーザーデータを削除
@@ -127,9 +128,9 @@ class AccountDeletionService {
         await _deleteStorageFolder(prefix);
       }
 
-      print('✅ Storage data deleted');
-    } catch (e) {
-      print('⚠️ Failed to delete storage data: $e');
+      logger.info('✅ Storage data deleted');
+    } catch (e, s) {
+      logger.warning('Failed to delete storage data', error: e, stackTrace: s);
       // Storageの削除に失敗してもアカウント削除は続行
     }
   }
@@ -213,7 +214,7 @@ class AccountDeletionService {
       'deletionDate': DateTime.now().add(const Duration(days: 30)),
     });
 
-    print('✅ Account deletion scheduled for 30 days from now');
+    logger.info('✅ Account deletion scheduled for 30 days from now');
   }
 
   /// 削除予約をキャンセル
@@ -228,6 +229,6 @@ class AccountDeletionService {
       'deletionDate': FieldValue.delete(),
     });
 
-    print('✅ Account deletion cancelled');
+    logger.info('✅ Account deletion cancelled');
   }
 }

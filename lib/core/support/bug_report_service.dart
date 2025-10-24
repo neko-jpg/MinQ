@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:minq/core/logging/app_logger.dart';
+import 'packagepackage:package_info_plus/package_info_plus.dart';
 
 /// バグ報告サービス
 class BugReportService {
@@ -49,10 +50,10 @@ class BugReportService {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      print('✅ Bug report submitted: ${docRef.id}');
+      logger.info('Bug report submitted', data: {'reportId': docRef.id});
       return docRef.id;
-    } catch (e) {
-      print('❌ Failed to submit bug report: $e');
+    } catch (e, s) {
+      logger.error('Failed to submit bug report', error: e, stackTrace: s);
       rethrow;
     }
   }
@@ -101,11 +102,7 @@ class BugReportService {
   Future<List<String>> _collectLogs() async {
     // TODO: 実際のログ収集ロジックを実装
     // アプリ内で保存しているログを取得
-    return [
-      'Log entry 1',
-      'Log entry 2',
-      'Log entry 3',
-    ];
+    return ['Log entry 1', 'Log entry 2', 'Log entry 3'];
   }
 
   /// スクリーンショットをアップロード
@@ -124,16 +121,15 @@ class BugReportService {
     required String userId,
     int limit = 20,
   }) async {
-    final snapshot = await _firestore
-        .collection('bugReports')
-        .where('userId', '==', userId)
-        .orderBy('createdAt', descending: true)
-        .limit(limit)
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('bugReports')
+            .where('userId', '==', userId)
+            .orderBy('createdAt', descending: true)
+            .limit(limit)
+            .get();
 
-    return snapshot.docs
-        .map((doc) => BugReport.fromFirestore(doc))
-        .toList();
+    return snapshot.docs.map((doc) => BugReport.fromFirestore(doc)).toList();
   }
 
   /// バグレポートの詳細を取得
@@ -156,16 +152,16 @@ class BugReportService {
         .doc(reportId)
         .collection('comments')
         .add({
-      'comment': comment,
-      'userId': userId,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+          'comment': comment,
+          'userId': userId,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
 
     await _firestore.collection('bugReports').doc(reportId).update({
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    print('✅ Comment added to bug report: $reportId');
+    logger.info('Comment added to bug report', data: {'reportId': reportId});
   }
 
   /// バグレポートのステータスを更新
@@ -178,7 +174,8 @@ class BugReportService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    print('✅ Bug report status updated: $reportId -> ${status.name}');
+    logger.info('Bug report status updated',
+        data: {'reportId': reportId, 'newStatus': status.name});
   }
 
   /// フィードバックを送信（バグではない一般的なフィードバック）
@@ -194,7 +191,7 @@ class BugReportService {
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    print('✅ Feedback submitted: ${docRef.id}');
+    logger.info('Feedback submitted', data: {'feedbackId': docRef.id});
     return docRef.id;
   }
 }
@@ -264,18 +261,7 @@ enum BugCategory {
 }
 
 /// バグステータス
-enum BugStatus {
-  open,
-  inProgress,
-  resolved,
-  closed,
-  wontFix,
-}
+enum BugStatus { open, inProgress, resolved, closed, wontFix }
 
 /// フィードバックタイプ
-enum FeedbackType {
-  feature,
-  improvement,
-  question,
-  other,
-}
+enum FeedbackType { feature, improvement, question, other }

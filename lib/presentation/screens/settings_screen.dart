@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +8,8 @@ import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
+import 'package:minq/presentation/common/policy_documents.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -20,60 +21,69 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isExporting = false;
+  int _versionTapCount = 0;
+  bool _developerOptionsUnlocked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkDeveloperMode();
+  }
+
+  Future<void> _checkDeveloperMode() async {
+    final prefs = ref.read(localPreferencesServiceProvider);
+    final unlocked = await prefs.isDummyDataModeEnabled();
+    if (mounted) {
+      setState(() {
+        _developerOptionsUnlocked = unlocked;
+      });
+    }
+  }
+
+  void _handleVersionTap(BuildContext context) {
+    if (_developerOptionsUnlocked) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('開発者向けオプションは既に有効です')),
+      );
+      return;
+    }
+
+    setState(() {
+      _versionTapCount++;
+    });
+
+    if (_versionTapCount >= 7) {
+      _unlockDeveloperOptions(context);
+    } else if (_versionTapCount >= 4) {
+      final remaining = 7 - _versionTapCount;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('あと$remaining回タップすると開発者向けオプションが有効になります')),
+      );
+    }
+  }
+
+  Future<void> _unlockDeveloperOptions(BuildContext context) async {
+    final prefs = ref.read(localPreferencesServiceProvider);
+    final messenger = ScaffoldMessenger.of(context);
+    await prefs.setDummyDataMode(true);
+    if (mounted) {
+      setState(() {
+        _developerOptionsUnlocked = true;
+      });
+      messenger.showSnackBar(
+        const SnackBar(content: Text('おめでとうございます！開発者向けオプションが有効になりました。')),
+      );
+    }
+  }
 
   Future<void> _showSoundProfileSheet(
     BuildContext context,
     NotificationSoundProfile current,
   ) async {
-    final tokens = context.tokens;
-    final profiles = ref.read(notificationSoundProfilesProvider);
     await showModalBottomSheet<void>(
       context: context,
       builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(tokens.spacing(4)),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '通知サウンドを選択',
-                  style: tokens.titleLarge.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: tokens.textPrimary,
-                  ),
-                ),
-                SizedBox(height: tokens.spacing(3)),
-                ...profiles.map((profile) {
-                  final isSelected = profile.id == current.id;
-                  return RadioListTile<String>(
-                    value: profile.id,
-                    groupValue: current.id,
-                    title: Text(profile.label),
-                    subtitle: Text(profile.description),
-                    onChanged: (value) async {
-                      Navigator.of(context).pop();
-                      await ref
-                          .read(notificationServiceProvider)
-                          .updateReminderSoundProfile(value!);
-                      if (mounted) {
-                        FeedbackMessenger.showSuccessToast(
-                          context,
-                          '${profile.label}を通知音に設定しました。',
-                        );
-                        ref.invalidate(
-                          selectedNotificationSoundProfileProvider,
-                        );
-                      }
-                    },
-                    selected: isSelected,
-                  );
-                }),
-              ],
-            ),
-          ),
-        );
+        return _SoundProfileSheet(currentProfile: current);
       },
     );
   }
@@ -111,8 +121,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (_isExporting) return;
 
     final exportService = ref.read(dataExportServiceProvider);
+    final messenger = ScaffoldMessenger.of(context);
     if (exportService == null) {
-      FeedbackMessenger.showErrorToast(context, 'エクスポート機能は現在ご利用いただけません。');
+      messenger.showSnackBar(
+        const SnackBar(content: Text('エクスポート機能は現在ご利用いただけません。')),
+      );
       return;
     }
 
@@ -124,17 +137,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     setState(() => _isExporting = true);
 
-    if (!mounted) {
-      return;
-    }
-
     showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (_) => const _ExportProgressDialog(),
     );
 
-    var exportCompleted = false;
+    if (!mounted) return;
+
+    final navigator = Navigator.of(context, rootNavigator: true);
     String? failureMessage;
 
     try {
@@ -182,28 +193,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       );
 
       await exportService.shareFile(exportFile);
-      exportCompleted = true;
+
+      if (mounted) {
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('データのエクスポートが完了しました。共有シートから保存または送信できます。'),
+          ),
+        );
+      }
     } catch (error, stackTrace) {
       debugPrint('Data export failed: $error\n$stackTrace');
       failureMessage = 'データのエクスポートに失敗しました。時間をおいて再試行してください。';
-    } finally {
-      if (!mounted) return;
-      final navigator = Navigator.of(context, rootNavigator: true);
-      if (navigator.canPop()) {
-        navigator.pop();
-      }
-      setState(() => _isExporting = false);
-      if (!exportCompleted && failureMessage == null) {
-        failureMessage = 'データのエクスポートに失敗しました。時間をおいて再試行してください。';
-      }
-
-      if (exportCompleted) {
-        FeedbackMessenger.showSuccessToast(
-          context,
-          'データのエクスポートが完了しました。共有シートから保存または送信できます。',
+      if (mounted) {
+        messenger.showSnackBar(
+          SnackBar(content: Text(failureMessage)),
         );
-      } else if (failureMessage != null) {
-        FeedbackMessenger.showErrorToast(context, failureMessage);
+      }
+    } finally {
+      if (mounted) {
+        if (navigator.canPop()) {
+          navigator.pop();
+        }
+        setState(() => _isExporting = false);
       }
     }
   }
@@ -218,11 +229,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final navigation = ref.read(navigationUseCaseProvider);
 
     return Scaffold(
-      backgroundColor: tokens.background,
+      backgroundColor: tokens.surface,
       appBar: AppBar(
         title: Text(
           l10n.settingsTitle,
-          style: tokens.titleMedium.copyWith(
+          style: tokens.typography.h4.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -235,12 +246,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onPressed: () => context.pop(),
           ),
         ),
-        backgroundColor: tokens.background.withOpacity(0.8),
+        backgroundColor: tokens.surface.withAlpha(204),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
       body: ListView(
-        padding: EdgeInsets.all(tokens.spacing(4)),
+        padding: EdgeInsets.all(tokens.spacing.md),
         children: <Widget>[
           _SettingsSection(
             title: l10n.settingsSectionGeneral,
@@ -253,18 +264,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     true, // This should be driven by a provider in a real app
                 onSwitchChanged: (value) async {
                   final notifier = ref.read(notificationServiceProvider);
+                  final messenger = ScaffoldMessenger.of(context);
                   if (value) {
                     await notifier.scheduleRecurringReminders(
                       NotificationService.defaultReminderTimes,
                     );
-                    if (context.mounted) {
-                      FeedbackMessenger.showSuccessToast(context, '通知を有効にしました');
-                    }
+                    messenger.showSnackBar(
+                      const SnackBar(content: Text('通知を有効にしました')),
+                    );
                   } else {
                     await notifier.cancelAll();
-                    if (context.mounted) {
-                      FeedbackMessenger.showInfoToast(context, '通知を停止しました');
-                    }
+                    messenger.showSnackBar(
+                      const SnackBar(content: Text('通知を停止しました')),
+                    );
                   }
                 },
               ),
@@ -441,13 +453,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   isSwitch: true,
                   switchValue: ref.watch(dummyDataModeProvider),
                   onSwitchChanged: (value) {
+                    final messenger = ScaffoldMessenger.of(context);
                     ref.read(dummyDataModeProvider.notifier).state = value;
                     ref
                         .read(localPreferencesServiceProvider)
                         .setDummyDataMode(value);
-                    FeedbackMessenger.showInfoToast(
-                      context,
-                      value ? 'ダミーデータモードを有効にしました' : 'ダミーデータモードを無効にしました',
+                    messenger.showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          value ? 'ダミーデータモードを有効にしました' : 'ダミーデータモードを無効にしました',
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -464,6 +480,88 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 }
 
+class _SoundProfileSheet extends ConsumerStatefulWidget {
+  const _SoundProfileSheet({required this.currentProfile});
+
+  final NotificationSoundProfile currentProfile;
+
+  @override
+  ConsumerState<_SoundProfileSheet> createState() => _SoundProfileSheetState();
+}
+
+class _SoundProfileSheetState extends ConsumerState<_SoundProfileSheet> {
+  late String _selectedProfileId;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedProfileId = widget.currentProfile.id;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final profiles = ref.watch(notificationSoundProfilesProvider);
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(tokens.spacing.md),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '通知サウンドを選択',
+              style: tokens.typography.h4.copyWith(
+                fontWeight: FontWeight.bold,
+                color: tokens.textPrimary,
+              ),
+            ),
+            SizedBox(height: tokens.spacing.md),
+            RadioGroup<String>(
+              groupValue: _selectedProfileId,
+              onChanged: (String? value) async {
+                if (value == null) return;
+                setState(() {
+                  _selectedProfileId = value;
+                });
+                final navigator = Navigator.of(context);
+                final messenger = ScaffoldMessenger.of(context);
+                await ref
+                    .read(notificationServiceProvider)
+                    .updateReminderSoundProfile(value);
+
+                if (mounted) {
+                  final selectedProfile =
+                      profiles.firstWhere((p) => p.id == value);
+                  navigator.pop();
+                  messenger.showSnackBar(
+                    SnackBar(
+                      content:
+                          Text('${selectedProfile.label}を通知音に設定しました。'),
+                    ),
+                  );
+                  ref.invalidate(
+                    selectedNotificationSoundProfileProvider,
+                  );
+                }
+              },
+              child: Column(
+                children: profiles.map((profile) {
+                  return RadioListTile<String>(
+                    value: profile.id,
+                    title: Text(profile.label),
+                    subtitle: Text(profile.description),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _SettingsSection extends StatelessWidget {
   const _SettingsSection({required this.title, required this.tiles});
 
@@ -474,18 +572,18 @@ class _SettingsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing(6)),
+      padding: EdgeInsets.only(bottom: tokens.spacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: EdgeInsets.only(
-              left: tokens.spacing(2),
-              bottom: tokens.spacing(4),
+              left: tokens.spacing.sm,
+              bottom: tokens.spacing.md,
             ),
             child: Text(
               title,
-              style: tokens.titleLarge.copyWith(
+              style: tokens.typography.h4.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
@@ -546,15 +644,15 @@ class _SettingsTileState extends State<_SettingsTile> {
 
     return Card(
       elevation: 0,
-      shadowColor: tokens.background.withOpacity(0.1),
+      shadowColor: tokens.surface.withAlpha(25),
       color: tokens.surface,
-      margin: EdgeInsets.symmetric(vertical: tokens.spacing(2)),
-      shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
+      margin: EdgeInsets.symmetric(vertical: tokens.spacing.sm),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(tokens.radius.xl)),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: widget.onTap,
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing(4)),
+          padding: EdgeInsets.all(tokens.spacing.md),
           child: Row(
             children: [
               Expanded(
@@ -563,17 +661,17 @@ class _SettingsTileState extends State<_SettingsTile> {
                   children: [
                     Text(
                       widget.title,
-                      style: tokens.bodyLarge.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: titleColor,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     if (widget.subtitle != null)
                       Padding(
-                        padding: EdgeInsets.only(top: tokens.spacing(1)),
+                        padding: EdgeInsets.only(top: tokens.spacing.xs),
                         child: Text(
                           widget.subtitle!,
-                          style: tokens.bodySmall.copyWith(
+                          style: tokens.typography.caption.copyWith(
                             color: tokens.textMuted,
                           ),
                         ),
@@ -583,8 +681,8 @@ class _SettingsTileState extends State<_SettingsTile> {
               ),
               if (widget.showProgress)
                 SizedBox(
-                  width: tokens.spacing(6),
-                  height: tokens.spacing(6),
+                  width: tokens.spacing.lg,
+                  height: tokens.spacing.lg,
                   child: CircularProgressIndicator(
                     strokeWidth: 2.5,
                     valueColor: AlwaysStoppedAnimation<Color>(
@@ -614,13 +712,13 @@ class _SettingsTileState extends State<_SettingsTile> {
               else if (widget.isStatic)
                 Text(
                   widget.staticValue ?? '',
-                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.body.copyWith(color: tokens.textMuted),
                 )
               else
                 Icon(
                   Icons.arrow_forward_ios,
                   color: tokens.textMuted,
-                  size: tokens.spacing(4),
+                  size: tokens.spacing.md,
                 ),
             ],
           ),
@@ -638,9 +736,9 @@ class _ExportProgressDialog extends StatelessWidget {
     final tokens = context.tokens;
     return Dialog(
       backgroundColor: tokens.surface,
-      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(tokens.radius.lg)),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing(4)),
+        padding: EdgeInsets.all(tokens.spacing.md),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -648,10 +746,10 @@ class _ExportProgressDialog extends StatelessWidget {
               strokeWidth: 3,
               valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
             ),
-            SizedBox(height: tokens.spacing(3)),
+            SizedBox(height: tokens.spacing.md),
             Text(
               'エクスポート準備中…',
-              style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
+              style: tokens.typography.body.copyWith(color: tokens.textPrimary),
             ),
           ],
         ),

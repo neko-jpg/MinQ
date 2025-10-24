@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// オフラインモードインジケーター
 class OfflineModeIndicator extends ConsumerWidget {
@@ -10,15 +11,16 @@ class OfflineModeIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOnline = ref.watch(networkStatusProvider);
     final tokens = context.tokens;
 
     return Stack(
       children: [
         // メインコンテンツ（オフライン時は半透明）
-        Opacity(opacity: isOnline ? 1.0 : 0.7, child: child),
+        Opacity(
+            opacity: ref.watch(networkStatusProvider).isOnline ? 1.0 : 0.7,
+            child: child),
         // オフラインバナー
-        if (!isOnline)
+        if (!ref.watch(networkStatusProvider).isOnline)
           Positioned(
             top: 0,
             left: 0,
@@ -30,7 +32,7 @@ class OfflineModeIndicator extends ConsumerWidget {
               child: Material(
                 color: Colors.orange,
                 child: Padding(
-                  padding: EdgeInsets.all(tokens.spacing(2)),
+                  padding: EdgeInsets.all(tokens.spacing.sm),
                   child: Row(
                     children: [
                       const Icon(
@@ -38,7 +40,7 @@ class OfflineModeIndicator extends ConsumerWidget {
                         color: Colors.white,
                         size: 20,
                       ),
-                      SizedBox(width: tokens.spacing(2)),
+                      SizedBox(width: tokens.spacing.sm),
                       const Expanded(
                         child: Text(
                           'オフラインモード（読み取り専用）',
@@ -74,7 +76,7 @@ class ReadOnlyModeWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOnline = ref.watch(networkStatusProvider);
+    final isOnline = ref.watch(networkStatusProvider).isOnline;
 
     if (!isOnline) {
       return AbsorbPointer(child: Opacity(opacity: 0.5, child: child));

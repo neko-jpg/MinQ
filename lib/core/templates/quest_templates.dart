@@ -85,11 +85,7 @@ extension QuestCategoryExtension on QuestCategory {
 }
 
 /// 難易度レベル
-enum DifficultyLevel {
-  easy,
-  medium,
-  hard,
-}
+enum DifficultyLevel { easy, medium, hard }
 
 extension DifficultyLevelExtension on DifficultyLevel {
   String get displayName {
@@ -151,9 +147,11 @@ class QuestTemplateRepository {
     required DifficultyLevel maxDifficulty,
   }) {
     return getAllTemplates()
-        .where((template) =>
-            preferredCategories.contains(template.category) &&
-            template.difficulty.index <= maxDifficulty.index)
+        .where(
+          (template) =>
+              preferredCategories.contains(template.category) &&
+              template.difficulty.index <= maxDifficulty.index,
+        )
         .toList();
   }
 
@@ -167,11 +165,7 @@ class QuestTemplateRepository {
       tags: ['水分補給', '健康'],
       estimatedDuration: Duration(minutes: 5),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '朝起きたらまず1杯',
-        '食事の前に1杯',
-        'ボトルを持ち歩く',
-      ],
+      tips: ['朝起きたらまず1杯', '食事の前に1杯', 'ボトルを持ち歩く'],
       icon: '💧',
     ),
     const QuestTemplate(
@@ -182,11 +176,7 @@ class QuestTemplateRepository {
       tags: ['睡眠', '健康'],
       estimatedDuration: Duration(hours: 8),
       difficulty: DifficultyLevel.medium,
-      tips: [
-        '就寝1時間前にスマホを置く',
-        '部屋を暗くする',
-        'リラックスする音楽を聴く',
-      ],
+      tips: ['就寝1時間前にスマホを置く', '部屋を暗くする', 'リラックスする音楽を聴く'],
       icon: '😴',
     ),
     const QuestTemplate(
@@ -197,11 +187,7 @@ class QuestTemplateRepository {
       tags: ['食事', '健康', '野菜'],
       estimatedDuration: Duration(minutes: 30),
       difficulty: DifficultyLevel.medium,
-      tips: [
-        'サラダから食べる',
-        '色々な色の野菜を選ぶ',
-        '作り置きを活用',
-      ],
+      tips: ['サラダから食べる', '色々な色の野菜を選ぶ', '作り置きを活用'],
       icon: '🥗',
     ),
   ];
@@ -216,11 +202,7 @@ class QuestTemplateRepository {
       tags: ['ストレッチ', '朝', '運動'],
       estimatedDuration: Duration(minutes: 10),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        'ゆっくり呼吸しながら',
-        '無理をしない',
-        '毎日同じ時間に',
-      ],
+      tips: ['ゆっくり呼吸しながら', '無理をしない', '毎日同じ時間に'],
       icon: '🤸',
     ),
     const QuestTemplate(
@@ -231,11 +213,7 @@ class QuestTemplateRepository {
       tags: ['散歩', '運動', '有酸素'],
       estimatedDuration: Duration(minutes: 30),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '快適な靴を履く',
-        '音楽やポッドキャストを聴く',
-        '景色を楽しむ',
-      ],
+      tips: ['快適な靴を履く', '音楽やポッドキャストを聴く', '景色を楽しむ'],
       icon: '🚶',
     ),
     const QuestTemplate(
@@ -246,11 +224,7 @@ class QuestTemplateRepository {
       tags: ['筋トレ', '運動', '筋肉'],
       estimatedDuration: Duration(minutes: 20),
       difficulty: DifficultyLevel.medium,
-      tips: [
-        'ウォームアップを忘れずに',
-        '正しいフォームで',
-        '休息日も大切',
-      ],
+      tips: ['ウォームアップを忘れずに', '正しいフォームで', '休息日も大切'],
       icon: '💪',
     ),
   ];
@@ -265,11 +239,7 @@ class QuestTemplateRepository {
       tags: ['読書', '学習', '本'],
       estimatedDuration: Duration(minutes: 30),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '静かな場所で',
-        'メモを取りながら',
-        '毎日同じ時間に',
-      ],
+      tips: ['静かな場所で', 'メモを取りながら', '毎日同じ時間に'],
       icon: '📚',
     ),
     const QuestTemplate(
@@ -280,11 +250,7 @@ class QuestTemplateRepository {
       tags: ['語学', '学習', '言語'],
       estimatedDuration: Duration(minutes: 15),
       difficulty: DifficultyLevel.medium,
-      tips: [
-        'アプリを活用',
-        '声に出して練習',
-        '毎日続ける',
-      ],
+      tips: ['アプリを活用', '声に出して練習', '毎日続ける'],
       icon: '🌍',
     ),
     const QuestTemplate(
@@ -295,11 +261,7 @@ class QuestTemplateRepository {
       tags: ['スキル', '学習', '成長'],
       estimatedDuration: Duration(minutes: 30),
       difficulty: DifficultyLevel.medium,
-      tips: [
-        'オンラインコースを活用',
-        '実践しながら学ぶ',
-        '進捗を記録',
-      ],
+      tips: ['オンラインコースを活用', '実践しながら学ぶ', '進捗を記録'],
       icon: '🎓',
     ),
   ];
@@ -314,11 +276,7 @@ class QuestTemplateRepository {
       tags: ['タスク', '整理', '計画'],
       estimatedDuration: Duration(minutes: 10),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '優先順位をつける',
-        '実現可能な量に',
-        '朝一番に',
-      ],
+      tips: ['優先順位をつける', '実現可能な量に', '朝一番に'],
       icon: '📝',
     ),
     const QuestTemplate(
@@ -329,11 +287,7 @@ class QuestTemplateRepository {
       tags: ['集中', '作業', 'ポモドーロ'],
       estimatedDuration: Duration(minutes: 25),
       difficulty: DifficultyLevel.medium,
-      tips: [
-        '通知をオフに',
-        'タイマーを使う',
-        '休憩も大切',
-      ],
+      tips: ['通知をオフに', 'タイマーを使う', '休憩も大切'],
       icon: '⏰',
     ),
     const QuestTemplate(
@@ -344,11 +298,7 @@ class QuestTemplateRepository {
       tags: ['振り返り', '反省', '改善'],
       estimatedDuration: Duration(minutes: 10),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '良かった点を3つ',
-        '改善点を1つ',
-        '明日の目標を設定',
-      ],
+      tips: ['良かった点を3つ', '改善点を1つ', '明日の目標を設定'],
       icon: '🔍',
     ),
   ];
@@ -363,11 +313,7 @@ class QuestTemplateRepository {
       tags: ['瞑想', 'マインドフルネス', 'リラックス'],
       estimatedDuration: Duration(minutes: 10),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '静かな場所で',
-        '呼吸に集中',
-        'アプリを活用',
-      ],
+      tips: ['静かな場所で', '呼吸に集中', 'アプリを活用'],
       icon: '🧘',
     ),
     const QuestTemplate(
@@ -378,11 +324,7 @@ class QuestTemplateRepository {
       tags: ['感謝', '日記', 'ポジティブ'],
       estimatedDuration: Duration(minutes: 5),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '小さなことでもOK',
-        '具体的に書く',
-        '寝る前に',
-      ],
+      tips: ['小さなことでもOK', '具体的に書く', '寝る前に'],
       icon: '🙏',
     ),
     const QuestTemplate(
@@ -393,11 +335,7 @@ class QuestTemplateRepository {
       tags: ['呼吸', 'リラックス', 'ストレス解消'],
       estimatedDuration: Duration(minutes: 5),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '4秒吸って、7秒止めて、8秒吐く',
-        'リラックスした姿勢で',
-        'ストレスを感じたら',
-      ],
+      tips: ['4秒吸って、7秒止めて、8秒吐く', 'リラックスした姿勢で', 'ストレスを感じたら'],
       icon: '🌬️',
     ),
   ];
@@ -412,11 +350,7 @@ class QuestTemplateRepository {
       tags: ['連絡', '友人', '家族'],
       estimatedDuration: Duration(minutes: 15),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '久しぶりの人に',
-        '近況を聞く',
-        '感謝を伝える',
-      ],
+      tips: ['久しぶりの人に', '近況を聞く', '感謝を伝える'],
       icon: '📞',
     ),
     const QuestTemplate(
@@ -427,11 +361,7 @@ class QuestTemplateRepository {
       tags: ['褒める', '感謝', 'ポジティブ'],
       estimatedDuration: Duration(minutes: 5),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '具体的に',
-        '心から',
-        '小さなことでも',
-      ],
+      tips: ['具体的に', '心から', '小さなことでも'],
       icon: '👍',
     ),
   ];
@@ -446,11 +376,7 @@ class QuestTemplateRepository {
       tags: ['日記', '書く', '記録'],
       estimatedDuration: Duration(minutes: 10),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '思ったことを自由に',
-        '毎日続ける',
-        '振り返りに活用',
-      ],
+      tips: ['思ったことを自由に', '毎日続ける', '振り返りに活用'],
       icon: '✍️',
     ),
     const QuestTemplate(
@@ -461,11 +387,7 @@ class QuestTemplateRepository {
       tags: ['絵', '描く', 'アート'],
       estimatedDuration: Duration(minutes: 15),
       difficulty: DifficultyLevel.medium,
-      tips: [
-        '上手い下手は気にしない',
-        '楽しむことが大切',
-        '毎日少しずつ',
-      ],
+      tips: ['上手い下手は気にしない', '楽しむことが大切', '毎日少しずつ'],
       icon: '🎨',
     ),
   ];
@@ -480,11 +402,7 @@ class QuestTemplateRepository {
       tags: ['家計簿', '支出', '記録'],
       estimatedDuration: Duration(minutes: 5),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        'レシートを保管',
-        'アプリを活用',
-        '毎日記録',
-      ],
+      tips: ['レシートを保管', 'アプリを活用', '毎日記録'],
       icon: '💰',
     ),
     const QuestTemplate(
@@ -495,11 +413,7 @@ class QuestTemplateRepository {
       tags: ['貯金', '節約', 'お金'],
       estimatedDuration: Duration(minutes: 1),
       difficulty: DifficultyLevel.easy,
-      tips: [
-        '小銭から始める',
-        '自動積立を活用',
-        '目標を設定',
-      ],
+      tips: ['小銭から始める', '自動積立を活用', '目標を設定'],
       icon: '🏦',
     ),
   ];

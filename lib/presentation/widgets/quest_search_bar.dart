@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエスト検索バー
 class QuestSearchBar extends StatefulWidget {
@@ -51,15 +52,15 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                     suffixIcon:
                         _controller.text.isNotEmpty
                             ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                _controller.clear();
-                                widget.onSearch('');
-                              },
-                            )
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _controller.clear();
+                                  widget.onSearch('');
+                                },
+                              )
                             : null,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(tokens.radius.full),
+                      borderRadius: BorderRadius.circular(tokens.radius.xl),
                     ),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: tokens.spacing.md,
@@ -74,7 +75,8 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                 IconButton(
                   icon: Icon(
                     _showFilters ? Icons.filter_alt : Icons.filter_alt_outlined,
-                    color: _selectedTags.isNotEmpty ? tokens.primary : null,
+                    color:
+                        _selectedTags.isNotEmpty ? tokens.brandPrimary : null,
                   ),
                   onPressed: () {
                     setState(() {
@@ -124,8 +126,9 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                             widget.onTagsChanged?.call(_selectedTags.toList());
                           },
                           backgroundColor: tokens.surface,
-                          selectedColor: tokens.primary.withOpacity(0.2),
-                          checkmarkColor: tokens.primary,
+                          selectedColor: tokens.brandPrimary
+                              .withAlpha((255 * 0.2).round()),
+                          checkmarkColor: tokens.brandPrimary,
                         );
                       }).toList(),
                 ),
@@ -302,11 +305,12 @@ class SearchHighlight extends StatelessWidget {
       return Text(text, style: style);
     }
 
-    final tokens = context.tokens;
+    final tokens = Theme.of(context).extension<MinqTheme>()!;
     final defaultHighlightStyle =
         highlightStyle ??
         TextStyle(
-          backgroundColor: tokens.primary.withOpacity(0.3),
+          backgroundColor:
+              tokens.brandPrimary.withAlpha((255 * 0.3).round()),
           fontWeight: FontWeight.bold,
         );
 

@@ -1,12 +1,11 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:minq/core/sharing/ai_share_banner_service.dart';
-import 'package:minq/core/sharing/ogp_image_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:minq/core/sharing/ai_share_banner_service.dart';
+import 'package:minq/core/sharing/ogp_image_generator.dart';
 
 /// 共有サービス
 class ShareService {
@@ -16,17 +15,12 @@ class ShareService {
   ShareService({
     OgpImageGenerator? ogpGenerator,
     AIShareBannerService? aiBannerService,
-  })  : _ogpGenerator = ogpGenerator,
-        _aiBannerService = aiBannerService;
+  }) : _ogpGenerator = ogpGenerator,
+       _aiBannerService = aiBannerService;
+
   /// テキストを共有
-  Future<void> shareText({
-    required String text,
-    String? subject,
-  }) async {
-    await Share.share(
-      text,
-      subject: subject,
-    );
+  Future<void> shareText({required String text, String? subject}) async {
+    await Share.share(text, subject: subject);
   }
 
   /// ファイルを共有
@@ -35,11 +29,7 @@ class ShareService {
     String? text,
     String? subject,
   }) async {
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      text: text,
-      subject: subject,
-    );
+    await Share.shareXFiles([XFile(file.path)], text: text, subject: subject);
   }
 
   /// 複数ファイルを共有
@@ -86,7 +76,7 @@ class ShareService {
       return;
     }
 
-    final imageFile = await _ogpGenerator.generateAchievementBanner(
+    final imageFile = await _ogpGenerator!.generateAchievementBanner(
       questTitle: questTitle,
       currentStreak: currentStreak,
       totalCompleted: totalCompleted,
@@ -103,15 +93,14 @@ class ShareService {
       return;
     }
 
-    final text = additionalText ?? ShareTemplates.questAchievement(
-      questTitle: questTitle,
-      streak: currentStreak,
-    );
+    final text =
+        additionalText ??
+        ShareTemplates.questAchievement(
+          questTitle: questTitle,
+          streak: currentStreak,
+        );
 
-    await shareFile(
-      file: imageFile,
-      text: text,
-    );
+    await shareFile(file: imageFile, text: text);
   }
 
   Future<void> shareAIGeneratedBanner({
@@ -125,7 +114,7 @@ class ShareService {
       return;
     }
 
-    final bannerBytes = await _aiBannerService.buildBanner(
+    final bannerBytes = await _aiBannerService!.buildBanner(
       title: title,
       subtitle: subtitle,
       seed: seed,
@@ -133,16 +122,14 @@ class ShareService {
     final tempDir = await getTemporaryDirectory();
     final file = File('${tempDir.path}/miinq_ai_banner.png');
     await file.writeAsBytes(bannerBytes, flush: true);
-    await shareFile(
-      file: file,
-      text: text ?? '$title\n$subtitle',
-    );
+    await shareFile(file: file, text: text ?? '$title\n$subtitle');
   }
 
   /// ウィジェットをキャプチャ
   Future<ui.Image?> _captureWidget(GlobalKey key) async {
     try {
-      final boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      final boundary =
+          key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
       if (boundary == null) return null;
 
       final image = await boundary.toImage(pixelRatio: 3.0);

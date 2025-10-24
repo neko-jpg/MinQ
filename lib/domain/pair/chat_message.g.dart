@@ -13,7 +13,8 @@ _$ChatMessageImpl _$$ChatMessageImplFromJson(Map<String, dynamic> json) =>
       text: json['text'] as String?,
       imageUrl: json['imageUrl'] as String?,
       timestamp: DateTime.parse(json['timestamp'] as String),
-      reactions: (json['reactions'] as Map<String, dynamic>?)?.map(
+      reactions:
+          (json['reactions'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, (e as num).toInt()),
           ) ??
           const {},

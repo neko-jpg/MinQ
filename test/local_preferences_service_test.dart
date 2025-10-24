@@ -21,17 +21,16 @@ void main() {
     final service = LocalPreferencesService();
     final baseTime = DateTime.utc(2024, 1, 1, 12, 0, 0);
 
-    expect(await service.registerReportAttempt(now: baseTime), isNull);
     expect(
-      await service.registerReportAttempt(
-        now: baseTime.add(const Duration(minutes: 2)),
-      ),
+      await service.registerReportAttempt(now: baseTime),
       isNull,
     );
     expect(
-      await service.registerReportAttempt(
-        now: baseTime.add(const Duration(minutes: 4)),
-      ),
+      await service.registerReportAttempt(now: baseTime.add(const Duration(minutes: 2))),
+      isNull,
+    );
+    expect(
+      await service.registerReportAttempt(now: baseTime.add(const Duration(minutes: 4))),
       isNull,
     );
 

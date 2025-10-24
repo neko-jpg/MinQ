@@ -307,12 +307,12 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
 });
 
 final referralServiceProvider = Provider<ReferralService>((ref) {
-  return ReferralService(analytics: ref.watch(analyticsServiceProvider));
+  return ReferralService(
+    analytics: ref.watch(analyticsServiceProvider),
+  );
 });
 
-final failurePredictionServiceProvider = Provider<FailurePredictionService>((
-  ref,
-) {
+final failurePredictionServiceProvider = Provider<FailurePredictionService>((ref) {
   return FailurePredictionService(
     questLogRepository: ref.watch(questLogRepositoryProvider),
     aiService: ref.watch(tfliteUnifiedAIServiceProvider),
@@ -320,20 +320,17 @@ final failurePredictionServiceProvider = Provider<FailurePredictionService>((
   );
 });
 
-final smartNotificationServiceProvider = Provider<SmartNotificationService>((
-  ref,
-) {
+final smartNotificationServiceProvider = Provider<SmartNotificationService>((ref) {
   return SmartNotificationService(
     aiService: ref.watch(tfliteUnifiedAIServiceProvider),
   );
 });
 
-final notificationPersonalizationEngineProvider =
-    Provider<NotificationPersonalizationEngine>((ref) {
-      return NotificationPersonalizationEngine(
-        aiService: ref.watch(tfliteUnifiedAIServiceProvider),
-      );
-    });
+final notificationPersonalizationEngineProvider = Provider<NotificationPersonalizationEngine>((ref) {
+  return NotificationPersonalizationEngine(
+    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
+  );
+});
 
 final reEngagementServiceProvider = Provider<ReEngagementService>((ref) {
   return ReEngagementService();
@@ -714,11 +711,11 @@ final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
   return logs.take(30).toList();
 });
 
-final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>((
-  ref,
-) {
-  return HabitAiSuggestionService();
-});
+final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>(
+  (ref) {
+    return HabitAiSuggestionService();
+  },
+);
 
 // UID provider removed - already exists above
 

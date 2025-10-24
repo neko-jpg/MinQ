@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
 /// アプリ監視サービス
-/// 
+///
 /// 稼働状況、パフォーマンス、エラーを監視し、
 /// 重大なイベントを検出・通知する
 class AppMonitoringService {
@@ -17,9 +17,9 @@ class AppMonitoringService {
     FirebaseAnalytics? analytics,
     FirebaseCrashlytics? crashlytics,
     FirebasePerformance? performance,
-  })  : _analytics = analytics ?? FirebaseAnalytics.instance,
-        _crashlytics = crashlytics ?? FirebaseCrashlytics.instance,
-        _performance = performance ?? FirebasePerformance.instance;
+  }) : _analytics = analytics ?? FirebaseAnalytics.instance,
+       _crashlytics = crashlytics ?? FirebaseCrashlytics.instance,
+       _performance = performance ?? FirebasePerformance.instance;
 
   /// 重大イベントの閾値
   static const double _criticalCrashRate = 0.05; // 5%
@@ -30,21 +30,19 @@ class AppMonitoringService {
   Future<void> trackAppLaunch() async {
     try {
       await _analytics.logAppOpen();
-      AppLogger.info('App launched');
+      logger.info('App launched');
     } catch (e, stack) {
-      AppLogger.error('Failed to track app launch', e, stack);
+      logger.error('Failed to track app launch', e, stack);
     }
   }
 
   /// 画面遷移を記録
   Future<void> trackScreenView(String screenName) async {
     try {
-      await _analytics.logScreenView(
-        screenName: screenName,
-      );
-      AppLogger.debug('Screen view: $screenName');
+      await _analytics.logScreenView(screenName: screenName);
+      logger.debug('Screen view: $screenName');
     } catch (e, stack) {
-      AppLogger.error('Failed to track screen view', e, stack);
+      logger.error('Failed to track screen view', e, stack);
     }
   }
 
@@ -54,13 +52,10 @@ class AppMonitoringService {
     Map<String, dynamic>? parameters,
   }) async {
     try {
-      await _analytics.logEvent(
-        name: action,
-        parameters: parameters,
-      );
-      AppLogger.debug('User action: $action', parameters);
+      await _analytics.logEvent(name: action, parameters: parameters);
+      logger.debug('User action: $action', parameters);
     } catch (e, stack) {
-      AppLogger.error('Failed to track user action', e, stack);
+      logger.error('Failed to track user action', e, stack);
     }
   }
 
@@ -80,13 +75,13 @@ class AppMonitoringService {
       );
 
       if (fatal) {
-        AppLogger.fatal('Fatal error recorded', error, stackTrace);
+        logger.fatal('Fatal error recorded', error, stackTrace);
         await _notifyCriticalEvent('Fatal Error', error.toString());
       } else {
-        AppLogger.error('Error recorded', error, stackTrace);
+        logger.error('Error recorded', error, stackTrace);
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to record error', e, stack);
+      logger.error('Failed to record error', e, stack);
     }
   }
 
@@ -105,10 +100,13 @@ class AppMonitoringService {
     required Duration duration,
   }) async {
     try {
-      final metric = _performance.newHttpMetric(url, HttpMethod.values.firstWhere(
-        (m) => m.name.toUpperCase() == method.toUpperCase(),
-        orElse: () => HttpMethod.Get,
-      ));
+      final metric = _performance.newHttpMetric(
+        url,
+        HttpMethod.values.firstWhere(
+          (m) => m.name.toUpperCase() == method.toUpperCase(),
+          orElse: () => HttpMethod.Get,
+        ),
+      );
 
       metric.httpResponseCode = statusCode;
       metric.requestPayloadSize = requestPayloadSize;
@@ -120,20 +118,17 @@ class AppMonitoringService {
 
       // レスポンスタイムが閾値を超えた場合
       if (duration.inMilliseconds > _criticalResponseTime) {
-        AppLogger.warning(
-          'Slow API response detected',
-          {
-            'url': url,
-            'duration': duration.inMilliseconds,
-          },
-        );
+        logger.warning('Slow API response detected', {
+          'url': url,
+          'duration': duration.inMilliseconds,
+        });
         await _notifyCriticalEvent(
           'Slow API Response',
           'URL: $url, Duration: ${duration.inMilliseconds}ms',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to record HTTP metric', e, stack);
+      logger.error('Failed to record HTTP metric', e, stack);
     }
   }
 
@@ -152,19 +147,18 @@ class AppMonitoringService {
           ...?attributes,
         },
       );
-      AppLogger.debug('Custom metric: $name = $value', attributes);
+      logger.debug('Custom metric: $name = $value', attributes);
     } catch (e, stack) {
-      AppLogger.error('Failed to record custom metric', e, stack);
+      logger.error('Failed to record custom metric', e, stack);
     }
   }
 
   /// クラッシュ率を監視
   Future<void> monitorCrashRate(double crashRate) async {
     if (crashRate > _criticalCrashRate) {
-      AppLogger.critical(
-        'Critical crash rate detected',
-        {'crash_rate': crashRate},
-      );
+      logger.fatal('Critical crash rate detected', {
+        'crash_rate': crashRate,
+      });
       await _notifyCriticalEvent(
         'High Crash Rate',
         'Current crash rate: ${(crashRate * 100).toStringAsFixed(2)}%',
@@ -175,10 +169,7 @@ class AppMonitoringService {
   /// エラー率を監視
   Future<void> monitorErrorRate(double errorRate) async {
     if (errorRate > _criticalErrorRate) {
-      AppLogger.warning(
-        'High error rate detected',
-        {'error_rate': errorRate},
-      );
+      logger.warning('High error rate detected', {'error_rate': errorRate});
       await _notifyCriticalEvent(
         'High Error Rate',
         'Current error rate: ${(errorRate * 100).toStringAsFixed(2)}%',
@@ -201,13 +192,13 @@ class AppMonitoringService {
           'user_actions': userActions,
         },
       );
-      AppLogger.info('Session recorded', {
+      logger.info('Session recorded', {
         'duration': duration.inSeconds,
         'screens': screenViews,
         'actions': userActions,
       });
     } catch (e, stack) {
-      AppLogger.error('Failed to record session', e, stack);
+      logger.error('Failed to record session', e, stack);
     }
   }
 
@@ -230,7 +221,7 @@ class AppMonitoringService {
         timestamp: DateTime.now(),
       );
     } catch (e, stack) {
-      AppLogger.error('Health check failed', e, stack);
+      logger.error('Health check failed', e, stack);
       return HealthStatus(
         isHealthy: false,
         analyticsHealthy: false,
@@ -274,7 +265,7 @@ class AppMonitoringService {
   }
 
   /// 重大イベントを通知
-  /// 
+  ///
   /// 実際の実装では、Slack/メール/PagerDutyなどに通知
   Future<void> _notifyCriticalEvent(String title, String message) async {
     try {
@@ -285,7 +276,7 @@ class AppMonitoringService {
       await _crashlytics.setCustomKey('critical_event', title);
       await _crashlytics.setCustomKey('critical_message', message);
 
-      AppLogger.critical('Critical event notification', {
+      logger.fatal('Critical event notification', {
         'title': title,
         'message': message,
       });
@@ -294,7 +285,7 @@ class AppMonitoringService {
       // await _sendSlackNotification(title, message);
       // await _sendEmailNotification(title, message);
     } catch (e, stack) {
-      AppLogger.error('Failed to notify critical event', e, stack);
+      logger.error('Failed to notify critical event', e, stack);
     }
   }
 
@@ -304,7 +295,7 @@ class AppMonitoringService {
       await _analytics.setUserProperty(name: name, value: value);
       await _crashlytics.setCustomKey(name, value);
     } catch (e, stack) {
-      AppLogger.error('Failed to set user property', e, stack);
+      logger.error('Failed to set user property', e, stack);
     }
   }
 
@@ -314,7 +305,7 @@ class AppMonitoringService {
       await _analytics.setUserId(id: userId);
       await _crashlytics.setUserIdentifier(userId);
     } catch (e, stack) {
-      AppLogger.error('Failed to set user ID', e, stack);
+      logger.error('Failed to set user ID', e, stack);
     }
   }
 }
@@ -336,12 +327,12 @@ class HealthStatus {
   });
 
   Map<String, dynamic> toJson() => {
-        'is_healthy': isHealthy,
-        'analytics_healthy': analyticsHealthy,
-        'crashlytics_healthy': crashlyticsHealthy,
-        'performance_healthy': performanceHealthy,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'is_healthy': isHealthy,
+    'analytics_healthy': analyticsHealthy,
+    'crashlytics_healthy': crashlyticsHealthy,
+    'performance_healthy': performanceHealthy,
+    'timestamp': timestamp.toIso8601String(),
+  };
 }
 
 /// 監視サービスのProvider

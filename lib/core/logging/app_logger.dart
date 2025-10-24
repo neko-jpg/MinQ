@@ -30,7 +30,6 @@ class AppLogger {
         lineLength: 120,
         colors: enableColors,
         printEmojis: enableEmojis,
-        printTime: enableTime,
       ),
       output: output,
     );
@@ -226,8 +225,7 @@ class FileLogOutput extends LogOutput {
   @override
   void output(OutputEvent event) {
     for (final line in event.lines) {
-      // ファイルに書き込む処理
-      print(line);
+      // TODO(jules): Implement file logging.
     }
   }
 }
@@ -239,7 +237,7 @@ class RemoteLogOutput extends LogOutput {
     // リモートサービスに送信する処理
     for (final line in event.lines) {
       // Crashlytics.log(line);
-      print(line);
+      // TODO(jules): Implement remote logging.
     }
   }
 }

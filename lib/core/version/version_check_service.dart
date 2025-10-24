@@ -1,7 +1,10 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/logging/app_logger.dart';
+
 import 'package:package_info_plus/package_info_plus.dart';
+
+import 'package:minq/core/logging/app_logger.dart';
 
 /// バージョン互換性チェックサービス
 

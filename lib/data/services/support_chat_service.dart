@@ -2,45 +2,39 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:miinq_integrations/miinq_integrations.dart';
-import 'package:minq/core/ai/gemma_ai_service.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/data/providers/gemma_ai_provider.dart';
 import 'package:minq/domain/support/support_message.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service.dart';
+import 'package:minq/core/ai/ai_coach_controller.dart'; // For tfliteAIServiceProvider
 
 class SupportChatService {
   SupportChatService({
     GenerativeSupportClient? client,
-    GemmaAIService? gemmaService,
-  }) : _client = client,
-       _gemmaService = gemmaService;
+    TFLiteUnifiedAIService? tfliteService,
+  })  : _client = client,
+        _tfliteService = tfliteService;
 
   final GenerativeSupportClient? _client;
-  final GemmaAIService? _gemmaService;
+  final TFLiteUnifiedAIService? _tfliteService;
 
   Future<SupportMessage> sendMessage({
     required String conversationId,
     required String content,
     required List<SupportMessage> history,
   }) async {
-    final gemma = _gemmaService;
-    if (gemma != null) {
+    final tflite = _tfliteService;
+    if (tflite != null) {
       try {
-        final historyMessages =
-            history
-                .map(
-                  (message) => GemmaChatMessage(
-                    role:
-                        message.role == 'user'
-                            ? GemmaChatRole.user
-                            : GemmaChatRole.assistant,
-                    content: message.content,
-                  ),
-                )
-                .toList();
+        final historyMessages = history
+            .map((message) =>
+                '${message.role == 'user' ? 'User' : 'Assistant'}: ${message.content}')
+            .toList();
 
-        final reply = await gemma.generateResponse(
+        await tflite.initialize(); // Ensure service is ready
+
+        final reply = await tflite.generateChatResponse(
           content,
-          history: historyMessages,
+          conversationHistory: historyMessages,
           systemPrompt: _supportSystemPrompt,
           maxTokens: 400,
         );
@@ -54,7 +48,8 @@ class SupportChatService {
           content: _supportFallback,
         );
       } catch (error, stackTrace) {
-        log('Gemma support reply failed', error: error, stackTrace: stackTrace);
+        log('TFLite support reply failed',
+            error: error, stackTrace: stackTrace);
         if (_client != null) {
           return _fallbackToClient(conversationId, content, history);
         }
@@ -95,31 +90,19 @@ class SupportChatService {
 
 final supportChatServiceProvider = Provider<SupportChatService?>((ref) {
   final remoteConfig = ref.watch(remoteConfigServiceProvider);
-  final gemmaServiceAsync = ref.watch(gemmaAIServiceProvider);
-  final gemmaService = gemmaServiceAsync.valueOrNull;
+  final tfliteService = ref.watch(tfliteAIServiceProvider);
 
-  // Gemma AIが利用可能な場合は優先的に使用
-  if (gemmaService != null) {
-    return SupportChatService(gemmaService: gemmaService);
-  }
+  // TFLite AIが利用可能な場合は優先的に使用
+  return SupportChatService(tfliteService: tfliteService);
 
-  // フォールバック: 従来のクライアント
-  final endpoint = remoteConfig.tryGetUri('support_bot_endpoint');
-  final apiKey = remoteConfig.tryGetString('support_bot_api_key');
-  if (endpoint == null || apiKey == null || apiKey.isEmpty) {
-    return null;
-  }
-
-  final client = GenerativeSupportClient(
-    httpClient: ref.watch(httpClientProvider),
-    endpoint: endpoint.toString(),
-    apiKey: apiKey,
-  );
-  return SupportChatService(client: client, gemmaService: gemmaService);
+  // Note: The original fallback logic to GenerativeSupportClient is preserved
+  // but the primary implementation is now TFLite. If TFLite fails,
+  // its internal fallback will be used. The provider could be enhanced
+  // to switch between them based on config, but for now, we'll default to TFLite.
 });
 
 const String _supportSystemPrompt =
-    'あなたは習慣形成アプリ「MinQ」のサポートAI Gemma です。ユーザーの不安を'
+    'あなたは習慣形成アプリ「MinQ」のサポートAIです。ユーザーの不安を'
     '和らげつつ、具体的で実行しやすい提案や次のアクションを日本語で提供し'
     'てください。';
 

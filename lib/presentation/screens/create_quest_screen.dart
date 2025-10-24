@@ -91,6 +91,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
   Future<void> _toggleVoiceInput() async {
     final speech = ref.read(speechInputServiceProvider);
+    final currentContext = context;
     if (_isVoiceListening) {
       await speech.stop();
       if (mounted) setState(() => _isVoiceListening = false);
@@ -99,16 +100,16 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
     try {
       final available = await speech.ensureInitialized();
+      if (!mounted) return;
+
       if (!available) {
-        if (mounted) {
-          FeedbackMessenger.showErrorSnackBar(
-            context,
-            '音声入力を使用できませんでした。マイクの権限を確認してください。',
-          );
-        }
+        FeedbackMessenger.showErrorSnackBar(
+          context,
+          '音声入力を使用できませんでした。マイクの権限を確認してください。',
+        );
         return;
       }
-      if (mounted) setState(() => _isVoiceListening = true);
+      setState(() => _isVoiceListening = true);
       await speech.startListening(
         onResult: (text) {
           if (!mounted) return;
@@ -122,10 +123,9 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         },
       );
     } catch (_) {
-      if (mounted) {
-        setState(() => _isVoiceListening = false);
-        FeedbackMessenger.showErrorSnackBar(context, '音声入力の開始に失敗しました。');
-      }
+      if (!mounted) return;
+      setState(() => _isVoiceListening = false);
+      FeedbackMessenger.showErrorSnackBar(context, '音声入力の開始に失敗しました。');
     }
   }
 
@@ -185,7 +185,8 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
   Future<void> _handleBackRequest() async {
     final shouldLeave = await _confirmDiscardChanges();
-    if (shouldLeave && mounted) {
+    if (!mounted) return;
+    if (shouldLeave) {
       context.pop();
     }
   }
@@ -198,6 +199,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
     final uid = ref.read(uidProvider);
     if (uid == null || uid.isEmpty) {
+      if (!mounted) return;
       FeedbackMessenger.showErrorSnackBar(context, 'ユーザーがサインインしていません。');
       return;
     }
@@ -214,6 +216,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
           ..createdAt = DateTime.now();
 
     await ref.read(questRepositoryProvider).addQuest(newQuest);
+    if (!mounted) return;
 
     final contactLink = _contactLinkController.text.trim();
     final contactRepository = ref.read(contactLinkRepositoryProvider);
@@ -222,6 +225,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     } else {
       await contactRepository.removeLink(newQuest.id);
     }
+    if (!mounted) return;
 
     // Schedule notifications if reminder is enabled
     if (_isReminderOn) {
@@ -239,6 +243,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
             updatedTimes.add(timeString);
             user.notificationTimes = updatedTimes;
             await userRepository.saveLocalUser(user);
+            if (!mounted) return;
 
             // Reschedule all notifications
             await notificationService.scheduleRecurringReminders(updatedTimes);
@@ -250,11 +255,10 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
       }
     }
 
-    if (mounted) {
-      FeedbackMessenger.showSuccessToast(context, '新しい習慣を作成しました！');
-      // クエスト詳細画面に遷移
-      ref.read(navigationUseCaseProvider).goToQuestDetail(newQuest.id);
-    }
+    if (!mounted) return;
+    FeedbackMessenger.showSuccessToast(context, '新しい習慣を作成しました！');
+    // クエスト詳細画面に遷移
+    ref.read(navigationUseCaseProvider).goToQuestDetail(newQuest.id);
   }
 
   List<Widget> _buildStepPages(MinqTheme tokens) {
@@ -270,7 +274,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
               onVoiceInputTap: _toggleVoiceInput,
               isListening: _isVoiceListening,
             ),
-            SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing.lg),
             _IconAndColorPicker(
               selectedIcon: _selectedIconKey,
               selectedColor: _selectedColor,
@@ -281,7 +285,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                 setState(() => _selectedColor = color);
               },
             ),
-            SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing.lg),
             _ContactLinkInput(controller: _contactLinkController),
           ],
         ),
@@ -299,7 +303,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                 setState(() => _isTimeGoal = isTime);
               },
             ),
-            SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing.lg),
             _FrequencyPicker(
               selectedDays: _selectedDays,
               onDaySelected: (int dayIndex) {
@@ -353,8 +357,9 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         if (didPop) {
           return;
         }
-        final shouldLeave = await _confirmDiscardChanges();
-        if (shouldLeave && mounted) {
+        final shouldPop = await _confirmDiscardChanges();
+        if (!mounted) return;
+        if (shouldPop) {
           context.pop();
         }
       },
@@ -364,18 +369,18 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
           child: Form(
             key: _formKey,
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing(4)),
+              padding: EdgeInsets.all(tokens.spacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   _Header(onBack: _handleBackRequest),
-                  SizedBox(height: tokens.spacing(4)),
+                  SizedBox(height: tokens.spacing.lg),
                   _StepIndicator(
                     currentStep: _currentStep,
                     totalSteps: _stepTitles.length,
                     titles: _stepTitles,
                   ),
-                  SizedBox(height: tokens.spacing(4)),
+                  SizedBox(height: tokens.spacing.lg),
                   Expanded(
                     child: PageView(
                       controller: _pageController,
@@ -388,7 +393,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                       children: _buildStepPages(tokens),
                     ),
                   ),
-                  SizedBox(height: tokens.spacing(4)),
+                  SizedBox(height: tokens.spacing.lg),
                   _StepperActions(
                     currentStep: _currentStep,
                     totalSteps: _stepTitles.length,
@@ -433,7 +438,7 @@ class _Header extends StatelessWidget {
         ),
         Text(
           '新しい習慣を追加',
-          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(width: 48),
       ],
@@ -464,29 +469,29 @@ class _StepIndicator extends StatelessWidget {
           label: 'ステップ${currentStep + 1}/$totalSteps: ${titles[currentStep]}',
           child: Text(
             'ステップ${currentStep + 1} / $totalSteps',
-            style: tokens.labelSmall.copyWith(color: tokens.textMuted),
+            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
           ),
         ),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.sm),
         Row(
           children: List<Widget>.generate(totalSteps, (int index) {
             final bool isActive = index <= currentStep;
             final Color indicatorColor =
-                isActive ? tokens.brandPrimary : tokens.border.withOpacity(0.6);
+                isActive ? tokens.brandPrimary : tokens.border.withAlpha((255 * 0.6).round());
             final bool reduceMotion =
                 MediaQuery.maybeOf(context)?.disableAnimations ?? false;
             return Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: tokens.spacing(1)),
+                padding: EdgeInsets.symmetric(horizontal: tokens.spacing.xs),
                 child: AnimatedContainer(
                   duration:
                       reduceMotion
                           ? Duration.zero
                           : const Duration(milliseconds: 220),
-                  height: tokens.spacing(2),
+                  height: tokens.spacing.sm,
                   decoration: BoxDecoration(
                     color: indicatorColor,
-                    borderRadius: tokens.cornerLarge(),
+                    borderRadius: BorderRadius.circular(tokens.radius.lg),
                   ),
                 ),
               ),
@@ -523,7 +528,7 @@ class _StepperActions extends StatelessWidget {
         Expanded(
           child: OutlinedButton(onPressed: onBack, child: const Text('戻る')),
         ),
-        SizedBox(width: tokens.spacing(3)),
+        SizedBox(width: tokens.spacing.md),
         Expanded(
           child: FilledButton(
             onPressed: isLastStep && !canSubmit ? null : () => onNext(),
@@ -554,7 +559,7 @@ class _StepPage extends StatelessWidget {
       sortKey: OrdinalSortKey(index.toDouble()),
       label: label,
       child: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: tokens.spacing(4)),
+        padding: EdgeInsets.only(bottom: tokens.spacing.lg),
         child: child,
       ),
     );
@@ -580,9 +585,9 @@ class _HabitNameInput extends StatelessWidget {
       children: <Widget>[
         Text(
           '習慣の名前',
-          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
         ),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.sm),
         TextFormField(
           controller: controller,
           validator:
@@ -595,7 +600,7 @@ class _HabitNameInput extends StatelessWidget {
             prefixIcon: const Icon(Icons.edit),
             filled: true,
             border: OutlineInputBorder(
-              borderRadius: tokens.cornerXLarge(),
+              borderRadius: BorderRadius.circular(tokens.radius.xl),
               borderSide: BorderSide.none,
             ),
             suffixIcon:
@@ -644,9 +649,9 @@ class _ContactLinkInput extends StatelessWidget {
       children: <Widget>[
         Text(
           '連絡先リンク (任意)',
-          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
         ),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.sm),
         TextFormField(
           controller: controller,
           keyboardType: TextInputType.url,
@@ -655,7 +660,7 @@ class _ContactLinkInput extends StatelessWidget {
             prefixIcon: const Icon(Icons.link),
             filled: true,
             border: OutlineInputBorder(
-              borderRadius: tokens.cornerXLarge(),
+              borderRadius: BorderRadius.circular(tokens.radius.xl),
               borderSide: BorderSide.none,
             ),
           ),
@@ -699,9 +704,9 @@ class _IconAndColorPicker extends StatelessWidget {
       children: <Widget>[
         Text(
           'アイコンと色',
-          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
         ),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.sm),
         Row(
           children: <Widget>[
             GestureDetector(
@@ -715,25 +720,31 @@ class _IconAndColorPicker extends StatelessWidget {
                 }
               },
               child: Container(
-                width: tokens.spacing(14),
-                height: tokens.spacing(14),
+                width: tokens.spacing.xxl,
+                height: tokens.spacing.xxl,
                 decoration: BoxDecoration(
                   color: selectedColor,
                   shape: BoxShape.circle,
-                  boxShadow: tokens.shadowSoft,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(25),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Icon(
                   iconDataForKey(selectedIcon),
                   color: Colors.white,
-                  size: tokens.spacing(8),
+                  size: tokens.spacing.xl,
                 ),
               ),
             ),
-            SizedBox(width: tokens.spacing(4)),
+            SizedBox(width: tokens.spacing.lg),
             Expanded(
               child: Wrap(
-                spacing: tokens.spacing(3),
-                runSpacing: tokens.spacing(2),
+                spacing: tokens.spacing.md,
+                runSpacing: tokens.spacing.sm,
                 children:
                     colors
                         .map(
@@ -745,8 +756,8 @@ class _IconAndColorPicker extends StatelessWidget {
                               label:
                                   '色を${color == selectedColor ? '選択済み' : '選択する'}',
                               child: Container(
-                                width: tokens.spacing(7),
-                                height: tokens.spacing(7),
+                                width: tokens.spacing.lg,
+                                height: tokens.spacing.lg,
                                 decoration: BoxDecoration(
                                   color: color,
                                   shape: BoxShape.circle,
@@ -791,9 +802,9 @@ class _GoalSetter extends StatelessWidget {
       children: <Widget>[
         Text(
           '目標タイプ',
-          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
         ),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.sm),
         SegmentedButton<bool>(
           segments: const <ButtonSegment<bool>>[
             ButtonSegment<bool>(value: true, label: Text('時間で管理する')),
@@ -806,15 +817,15 @@ class _GoalSetter extends StatelessWidget {
             }
           },
         ),
-        SizedBox(height: tokens.spacing(3)),
-        Text('目標値', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.md),
+        Text('目標値', style: tokens.typography.body.copyWith(color: tokens.textMuted)),
+        SizedBox(height: tokens.spacing.sm),
         TextFormField(
           controller: goalValueController,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             suffixText: isTimeGoal ? '分' : '回',
-            border: OutlineInputBorder(borderRadius: tokens.cornerXLarge()),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(tokens.radius.xl)),
           ),
         ),
       ],
@@ -839,17 +850,17 @@ class _FrequencyPicker extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('頻度', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
-        SizedBox(height: tokens.spacing(2)),
+        Text('頻度', style: tokens.typography.body.copyWith(color: tokens.textMuted)),
+        SizedBox(height: tokens.spacing.sm),
         Card(
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(tokens.radius.xl)),
           child: Padding(
-            padding: EdgeInsets.all(tokens.spacing(3)),
+            padding: EdgeInsets.all(tokens.spacing.md),
             child: Wrap(
               alignment: WrapAlignment.center,
-              spacing: tokens.spacing(3),
-              runSpacing: tokens.spacing(2),
+              spacing: tokens.spacing.md,
+              runSpacing: tokens.spacing.sm,
               children: List<Widget>.generate(days.length, (int index) {
                 final bool isSelected = selectedDays.contains(index);
                 return Semantics(
@@ -862,7 +873,7 @@ class _FrequencyPicker extends StatelessWidget {
                     onSelected: (_) => onDaySelected(index),
                     showCheckmark: false,
                     shape: const CircleBorder(),
-                    labelStyle: tokens.bodyMedium.copyWith(
+                    labelStyle: tokens.typography.body.copyWith(
                       color: isSelected ? Colors.white : tokens.textPrimary,
                     ),
                     selectedColor: tokens.brandPrimary,
@@ -898,16 +909,16 @@ class _ReminderSetter extends StatelessWidget {
       children: <Widget>[
         Text(
           'リマインダー',
-          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
         ),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.sm),
         Card(
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(tokens.radius.xl)),
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: tokens.spacing(4),
-              vertical: tokens.spacing(3),
+              horizontal: tokens.spacing.lg,
+              vertical: tokens.spacing.md,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -919,7 +930,7 @@ class _ReminderSetter extends StatelessWidget {
                     onTap: onTimeTap,
                     child: Text(
                       reminderTime.format(context),
-                      style: tokens.titleMedium.copyWith(
+                      style: tokens.typography.h5.copyWith(
                         color: tokens.textPrimary,
                       ),
                     ),

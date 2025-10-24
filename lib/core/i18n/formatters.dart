@@ -7,7 +7,10 @@ class LocalizedFormatters {
   LocalizedFormatters(this.locale);
 
   /// 日時をフォーマット
-  String formatDateTime(DateTime dateTime, {DateTimeFormat format = DateTimeFormat.medium}) {
+  String formatDateTime(
+    DateTime dateTime, {
+    DateTimeFormat format = DateTimeFormat.medium,
+  }) {
     switch (format) {
       case DateTimeFormat.short:
         return DateFormat.yMd(locale).format(dateTime);
@@ -68,9 +71,13 @@ class LocalizedFormatters {
     } else if (difference.inDays < 30) {
       return _localize('weeks_ago', {'count': (difference.inDays / 7).floor()});
     } else if (difference.inDays < 365) {
-      return _localize('months_ago', {'count': (difference.inDays / 30).floor()});
+      return _localize('months_ago', {
+        'count': (difference.inDays / 30).floor(),
+      });
     } else {
-      return _localize('years_ago', {'count': (difference.inDays / 365).floor()});
+      return _localize('years_ago', {
+        'count': (difference.inDays / 365).floor(),
+      });
     }
   }
 
@@ -104,12 +111,7 @@ class LocalizedFormatters {
 }
 
 /// 日時フォーマット
-enum DateTimeFormat {
-  short,
-  medium,
-  long,
-  full,
-}
+enum DateTimeFormat { short, medium, long, full }
 
 /// 日本語固有の整形
 class JapaneseFormatters {
@@ -130,9 +132,7 @@ class JapaneseFormatters {
 
   /// 長音記号の正規化
   static String normalizeLongVowel(String text) {
-    return text
-        .replaceAll('ー', 'ー')
-        .replaceAll('～', '〜');
+    return text.replaceAll('ー', 'ー').replaceAll('～', '〜');
   }
 
   /// 曜日を日本語で取得

@@ -35,10 +35,10 @@ class ImagePlaceholder extends StatelessWidget {
         height: height,
         decoration: BoxDecoration(
           color: bgColor,
-          borderRadius: tokens.cornerMedium(),
+          borderRadius: BorderRadius.circular(tokens.radius.md),
         ),
         child: Center(
-          child: Icon(icon, size: tokens.spacing(12), color: iColor),
+          child: Icon(icon, size: tokens.spacing.xl, color: iColor),
         ),
       ),
     );
@@ -70,7 +70,7 @@ class NetworkImageWithFallback extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return ClipRRect(
-      borderRadius: borderRadius ?? tokens.cornerMedium(),
+      borderRadius: borderRadius ?? BorderRadius.circular(tokens.radius.md),
       child: Image.network(
         imageUrl,
         width: width,
@@ -141,7 +141,7 @@ class AssetImageWithFallback extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return ClipRRect(
-      borderRadius: borderRadius ?? tokens.cornerMedium(),
+      borderRadius: borderRadius ?? BorderRadius.circular(tokens.radius.md),
       child: Image.asset(
         assetPath,
         width: width,
@@ -307,15 +307,6 @@ class OptimizedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // デバイスピクセル比を考慮したキャッシュサイズを計算
-    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final calculatedCacheWidth =
-        cacheWidth ??
-        (width != null ? (width! * devicePixelRatio).round() : null);
-    final calculatedCacheHeight =
-        cacheHeight ??
-        (height != null ? (height! * devicePixelRatio).round() : null);
-
     return NetworkImageWithFallback(
       imageUrl: imageUrl,
       width: width,

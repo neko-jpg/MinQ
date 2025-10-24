@@ -32,13 +32,5 @@ class CommunityPost extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-    id,
-    authorId,
-    authorDisplayName,
-    message,
-    createdAt,
-    likeCount,
-    flagged,
-  ];
+  List<Object?> get props => [id, authorId, authorDisplayName, message, createdAt, likeCount, flagged];
 }

@@ -26,14 +26,13 @@ class CrashRecoveryState {
     );
   }
 
-  static CrashRecoveryState initial() =>
-      const CrashRecoveryState(needsRecovery: false);
+  static CrashRecoveryState initial() => const CrashRecoveryState(needsRecovery: false);
 }
 
 class CrashRecoveryController extends StateNotifier<CrashRecoveryState> {
   CrashRecoveryController(this.ref)
-    : _store = ref.read(crashRecoveryStoreProvider),
-      super(CrashRecoveryState.initial()) {
+      : _store = ref.read(crashRecoveryStoreProvider),
+        super(CrashRecoveryState.initial()) {
     final CrashReport? report = _store.pendingReport;
     if (report != null) {
       state = CrashRecoveryState(needsRecovery: true, report: report);
@@ -58,7 +57,5 @@ class CrashRecoveryController extends StateNotifier<CrashRecoveryState> {
 }
 
 final StateNotifierProvider<CrashRecoveryController, CrashRecoveryState>
-crashRecoveryControllerProvider =
-    StateNotifierProvider<CrashRecoveryController, CrashRecoveryState>(
-      CrashRecoveryController.new,
-    );
+    crashRecoveryControllerProvider =
+    StateNotifierProvider<CrashRecoveryController, CrashRecoveryState>(CrashRecoveryController.new);

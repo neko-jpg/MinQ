@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/minq_theme_extension.dart';
-import 'package:minq/presentation/theme/minq_tokens.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエスト属性選択ウィジェット
 /// 難易度、推定時間、場所などの属性を選択
@@ -125,7 +124,8 @@ class _DifficultySelector extends StatelessWidget {
                 onChanged(selected ? difficulty['value'] : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor: tokens.primary.withOpacity(0.2),
+              selectedColor:
+                  tokens.brandPrimary.withAlpha((255 * 0.2).round()),
             );
           }).toList(),
     );
@@ -161,13 +161,14 @@ class _DurationSelector extends StatelessWidget {
             final value = duration['value'] as int;
             final isSelected = selected == value;
             return ChoiceChip(
-              label: Text(duration['label']!),
+              label: Text(duration['label'] as String),
               selected: isSelected,
               onSelected: (selected) {
                 onChanged(selected ? value : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor: tokens.primary.withOpacity(0.2),
+              selectedColor:
+                  tokens.brandPrimary.withAlpha((255 * 0.2).round()),
             );
           }).toList(),
     );
@@ -206,9 +207,9 @@ class _LocationSelector extends StatelessWidget {
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(location['icon']!),
+                  Text(location['icon'] as String),
                   SizedBox(width: tokens.spacing.xs),
-                  Text(location['label']!),
+                  Text(location['label'] as String),
                 ],
               ),
               selected: isSelected,
@@ -216,7 +217,8 @@ class _LocationSelector extends StatelessWidget {
                 onChanged(selected ? location['value'] : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor: tokens.primary.withOpacity(0.2),
+              selectedColor:
+                  tokens.brandPrimary.withAlpha((255 * 0.2).round()),
             );
           }).toList(),
     );

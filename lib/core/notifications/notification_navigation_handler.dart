@@ -11,10 +11,10 @@ class NotificationNavigationHandler {
     Map<String, dynamic>? payload,
   }) async {
     try {
-      AppLogger.info('Notification tapped', data: {
-        'type': notificationType,
-        'payload': payload,
-      });
+      logger.logJson(
+        'Notification tapped',
+        {'type': notificationType, 'payload': payload},
+      );
 
       switch (notificationType) {
         case 'quest_reminder':
@@ -53,8 +53,11 @@ class NotificationNavigationHandler {
           context.go('/');
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to handle notification tap',
-          error: e, stackTrace: stack);
+      logger.error(
+        'Failed to handle notification tap',
+        e,
+        stack,
+      );
     }
   }
 

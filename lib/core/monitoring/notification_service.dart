@@ -2,22 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:minq/core/config/environment.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
 /// 重大イベント通知サービス
-/// 
+///
 /// Slack、メール、その他の通知チャネルに
 /// 重大なイベントを通知する
 class NotificationService {
   final http.Client _client;
   final Environment _env;
 
-  NotificationService({
-    http.Client? client,
-    Environment? env,
-  })  : _client = client ?? http.Client(),
-        _env = env ?? Environment.current;
+  NotificationService({http.Client? client, Environment? env})
+    : _client = client ?? http.Client(),
+      _env = env ?? Environment.current;
 
   /// Slackに通知を送信
   Future<void> sendSlackNotification({
@@ -27,7 +26,7 @@ class NotificationService {
   }) async {
     final webhookUrl = _env.slackWebhookUrl;
     if (webhookUrl == null || webhookUrl.isEmpty) {
-      AppLogger.warning('Slack webhook URL not configured');
+      logger.warning('Slack webhook URL not configured');
       return;
     }
 
@@ -49,11 +48,7 @@ class NotificationService {
                 'value': severity.name.toUpperCase(),
                 'short': true,
               },
-              {
-                'title': 'Environment',
-                'value': _env.name,
-                'short': true,
-              },
+              {'title': 'Environment', 'value': _env.name, 'short': true},
               {
                 'title': 'Timestamp',
                 'value': DateTime.now().toIso8601String(),
@@ -73,15 +68,15 @@ class NotificationService {
       );
 
       if (response.statusCode == 200) {
-        AppLogger.info('Slack notification sent successfully');
+        logger.info('Slack notification sent successfully');
       } else {
-        AppLogger.error(
+        logger.error(
           'Failed to send Slack notification',
           'Status: ${response.statusCode}, Body: ${response.body}',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error sending Slack notification', e, stack);
+      logger.error('Error sending Slack notification', e, stack);
     }
   }
 
@@ -95,7 +90,7 @@ class NotificationService {
     // Cloud Functionsのメール送信エンドポイントを呼び出す
     final emailEndpoint = _env.emailNotificationEndpoint;
     if (emailEndpoint == null || emailEndpoint.isEmpty) {
-      AppLogger.warning('Email notification endpoint not configured');
+      logger.warning('Email notification endpoint not configured');
       return;
     }
 
@@ -114,15 +109,15 @@ class NotificationService {
       );
 
       if (response.statusCode == 200) {
-        AppLogger.info('Email notification sent successfully');
+        logger.info('Email notification sent successfully');
       } else {
-        AppLogger.error(
+        logger.error(
           'Failed to send email notification',
           'Status: ${response.statusCode}, Body: ${response.body}',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error sending email notification', e, stack);
+      logger.error('Error sending email notification', e, stack);
     }
   }
 
@@ -134,7 +129,7 @@ class NotificationService {
   }) async {
     final integrationKey = _env.pagerDutyIntegrationKey;
     if (integrationKey == null || integrationKey.isEmpty) {
-      AppLogger.warning('PagerDuty integration key not configured');
+      logger.warning('PagerDuty integration key not configured');
       return;
     }
 
@@ -161,15 +156,15 @@ class NotificationService {
       );
 
       if (response.statusCode == 202) {
-        AppLogger.info('PagerDuty alert sent successfully');
+        logger.info('PagerDuty alert sent successfully');
       } else {
-        AppLogger.error(
+        logger.error(
           'Failed to send PagerDuty alert',
           'Status: ${response.statusCode}, Body: ${response.body}',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error sending PagerDuty alert', e, stack);
+      logger.error('Error sending PagerDuty alert', e, stack);
     }
   }
 
@@ -183,29 +178,27 @@ class NotificationService {
     final futures = <Future<void>>[];
 
     // Slack通知
-    futures.add(sendSlackNotification(
-      title: title,
-      message: message,
-      severity: severity,
-    ));
+    futures.add(
+      sendSlackNotification(title: title, message: message, severity: severity),
+    );
 
     // メール通知
     if (emailRecipients != null && emailRecipients.isNotEmpty) {
-      futures.add(sendEmailNotification(
-        title: title,
-        message: message,
-        recipients: emailRecipients,
-        severity: severity,
-      ));
+      futures.add(
+        sendEmailNotification(
+          title: title,
+          message: message,
+          recipients: emailRecipients,
+          severity: severity,
+        ),
+      );
     }
 
     // クリティカルな場合はPagerDutyにも通知
     if (severity == NotificationSeverity.critical) {
-      futures.add(sendPagerDutyAlert(
-        title: title,
-        message: message,
-        severity: severity,
-      ));
+      futures.add(
+        sendPagerDutyAlert(title: title, message: message, severity: severity),
+      );
     }
 
     await Future.wait(futures);
@@ -313,12 +306,7 @@ This is an automated message from MiniQ Monitoring System.
 }
 
 /// 通知の重要度
-enum NotificationSeverity {
-  info,
-  warning,
-  error,
-  critical,
-}
+enum NotificationSeverity { info, warning, error, critical }
 
 /// 通知サービスのProvider
 final notificationServiceProvider = Provider<NotificationService>((ref) {

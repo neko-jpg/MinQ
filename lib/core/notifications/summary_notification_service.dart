@@ -50,9 +50,7 @@ class SummaryNotificationService {
       setAsGroupSummary: false,
     );
 
-    final iosDetails = DarwinNotificationDetails(
-      threadIdentifier: groupKey,
-    );
+    final iosDetails = DarwinNotificationDetails(threadIdentifier: groupKey);
 
     final details = NotificationDetails(
       android: androidDetails,
@@ -95,9 +93,7 @@ class SummaryNotificationService {
     );
 
     // iOS用のまとめ通知
-    final iosDetails = DarwinNotificationDetails(
-      threadIdentifier: groupKey,
-    );
+    final iosDetails = DarwinNotificationDetails(threadIdentifier: groupKey);
 
     final details = NotificationDetails(
       android: androidDetails,
@@ -160,7 +156,10 @@ class SummaryNotificationService {
 
   /// 全グループの通知数を取得
   int getTotalNotificationCount() {
-    return _pendingNotifications.values.fold(0, (sum, list) => sum + list.length);
+    return _pendingNotifications.values.fold(
+      0,
+      (sum, list) => sum + list.length,
+    );
   }
 }
 
@@ -410,9 +409,10 @@ class NotificationScheduler {
         _convertToRepeatInterval(schedule.repeatInterval!),
         details,
         payload: payload,
-        androidScheduleMode: schedule.exactTiming
-            ? AndroidScheduleMode.exactAllowWhileIdle
-            : AndroidScheduleMode.inexactAllowWhileIdle,
+        androidScheduleMode:
+            schedule.exactTiming
+                ? AndroidScheduleMode.exactAllowWhileIdle
+                : AndroidScheduleMode.inexactAllowWhileIdle,
       );
     } else {
       // 1回限りの通知
@@ -426,8 +426,6 @@ class NotificationScheduler {
         androidScheduleMode: schedule.exactTiming
             ? AndroidScheduleMode.exactAllowWhileIdle
             : AndroidScheduleMode.inexactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
       );
     }
   }

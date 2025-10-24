@@ -1,4 +1,3 @@
-
 /// マッチングサービス
 class MatchingService {
   /// ユーザーをマッチング
@@ -18,11 +17,13 @@ class MatchingService {
       );
 
       if (score >= preferences.minMatchScore) {
-        candidates.add(MatchCandidate(
-          user: user,
-          score: score,
-          reasons: _getMatchReasons(preferences, user),
-        ));
+        candidates.add(
+          MatchCandidate(
+            user: user,
+            score: score,
+            reasons: _getMatchReasons(preferences, user),
+          ),
+        );
       }
     }
 
@@ -52,8 +53,7 @@ class MatchingService {
     }
 
     // 言語の一致
-    if (preferences.preferredLanguages != null &&
-        candidate.languages != null) {
+    if (preferences.preferredLanguages != null && candidate.languages != null) {
       final languageMatch = _calculateLanguageMatch(
         preferences.preferredLanguages!,
         candidate.languages!,
@@ -73,8 +73,7 @@ class MatchingService {
     }
 
     // アクティビティレベルの一致
-    if (preferences.activityLevel != null &&
-        candidate.activityLevel != null) {
+    if (preferences.activityLevel != null && candidate.activityLevel != null) {
       final activityMatch = _calculateActivityMatch(
         preferences.activityLevel!,
         candidate.activityLevel!,
@@ -166,11 +165,11 @@ class MatchingService {
     }
 
     // 言語
-    if (preferences.preferredLanguages != null &&
-        candidate.languages != null) {
-      final commonLanguages = preferences.preferredLanguages!
-          .where((lang) => candidate.languages!.contains(lang))
-          .toList();
+    if (preferences.preferredLanguages != null && candidate.languages != null) {
+      final commonLanguages =
+          preferences.preferredLanguages!
+              .where((lang) => candidate.languages!.contains(lang))
+              .toList();
       if (commonLanguages.isNotEmpty) {
         reasons.add('共通言語: ${commonLanguages.join(", ")}');
       }
@@ -178,17 +177,19 @@ class MatchingService {
 
     // 目的
     if (preferences.purposes != null && candidate.purposes != null) {
-      final commonPurposes = preferences.purposes!
-          .where((purpose) => candidate.purposes!.contains(purpose))
-          .toList();
+      final commonPurposes =
+          preferences.purposes!
+              .where((purpose) => candidate.purposes!.contains(purpose))
+              .toList();
       if (commonPurposes.isNotEmpty) {
-        reasons.add('共通の目的: ${commonPurposes.map((p) => p.displayName).join(", ")}');
+        reasons.add(
+          '共通の目的: ${commonPurposes.map((p) => p.displayName).join(", ")}',
+        );
       }
     }
 
     // アクティビティレベル
-    if (preferences.activityLevel != null &&
-        candidate.activityLevel != null) {
+    if (preferences.activityLevel != null && candidate.activityLevel != null) {
       if (preferences.activityLevel == candidate.activityLevel) {
         reasons.add('同じアクティビティレベル');
       }
@@ -243,10 +244,7 @@ class TimeSlot {
   final DateTime start;
   final DateTime end;
 
-  const TimeSlot({
-    required this.start,
-    required this.end,
-  });
+  const TimeSlot({required this.start, required this.end});
 
   /// 朝（6:00-12:00）
   factory TimeSlot.morning() {
@@ -323,12 +321,7 @@ extension MatchingPurposeExtension on MatchingPurpose {
 }
 
 /// アクティビティレベル
-enum ActivityLevel {
-  low,
-  medium,
-  high,
-  veryHigh,
-}
+enum ActivityLevel { low, medium, high, veryHigh }
 
 extension ActivityLevelExtension on ActivityLevel {
   String get displayName {
@@ -391,9 +384,8 @@ class RematchAvoidanceSystem {
   final Map<String, DateTime> _cooldownExpiry = {};
   final Duration _cooldownDuration;
 
-  RematchAvoidanceSystem({
-    Duration? cooldownDuration,
-  }) : _cooldownDuration = cooldownDuration ?? const Duration(days: 7);
+  RematchAvoidanceSystem({Duration? cooldownDuration})
+    : _cooldownDuration = cooldownDuration ?? const Duration(days: 7);
 
   /// 以前マッチしたかチェック
   bool hasPreviouslyMatched(String userId, String candidateId) {

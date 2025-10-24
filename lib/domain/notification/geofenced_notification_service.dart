@@ -29,7 +29,10 @@ class GeolocationSample {
 }
 
 class GeofenceTrigger {
-  GeofenceTrigger({required this.region, required this.distance});
+  GeofenceTrigger({
+    required this.region,
+    required this.distance,
+  });
 
   final GeofenceRegion region;
   final double distance;
@@ -72,8 +75,7 @@ class GeofencedNotificationService {
     final dLat = _toRadians(lat2 - lat1);
     final dLon = _toRadians(lon2 - lon1);
 
-    final a =
-        pow(sin(dLat / 2), 2) +
+    final a = pow(sin(dLat / 2), 2) +
         cos(_toRadians(lat1)) * cos(_toRadians(lat2)) * pow(sin(dLon / 2), 2);
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
     return earthRadius * c;

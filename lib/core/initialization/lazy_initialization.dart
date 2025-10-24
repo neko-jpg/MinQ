@@ -90,9 +90,7 @@ class PrioritizedInitializationManager {
 
   /// 優先度順に初期化
   Future<void> initializeByPriority(InitializationPriority priority) async {
-    final tasks = _tasks
-        .where((task) => task.priority == priority)
-        .toList();
+    final tasks = _tasks.where((task) => task.priority == priority).toList();
 
     for (final task in tasks) {
       // 依存関係を先に初期化
@@ -179,71 +177,88 @@ class FastStartupManager {
   FastStartupManager._internal();
 
   final StartupTimer _timer = StartupTimer();
-  final PrioritizedInitializationManager _initManager = PrioritizedInitializationManager();
+  final PrioritizedInitializationManager _initManager =
+      PrioritizedInitializationManager();
   final ImagePrefetcher _imagePrefetcher = ImagePrefetcher();
 
   /// 起動最適化を初期化
   void initialize() {
     _timer.start();
-    
-    // Critical: 必須サービス
-    _initManager.addTask(InitializationTask(
-      key: 'logging',
-      initializer: _initializeLogging,
-      priority: InitializationPriority.critical,
-    ));
 
-    _initManager.addTask(InitializationTask(
-      key: 'error_handling',
-      initializer: _initializeErrorHandling,
-      priority: InitializationPriority.critical,
-    ));
+    // Critical: 必須サービス
+    _initManager.addTask(
+      InitializationTask(
+        key: 'logging',
+        initializer: _initializeLogging,
+        priority: InitializationPriority.critical,
+      ),
+    );
+
+    _initManager.addTask(
+      InitializationTask(
+        key: 'error_handling',
+        initializer: _initializeErrorHandling,
+        priority: InitializationPriority.critical,
+      ),
+    );
 
     // High: UI表示前
-    _initManager.addTask(InitializationTask(
-      key: 'theme',
-      initializer: _initializeTheme,
-      priority: InitializationPriority.high,
-    ));
+    _initManager.addTask(
+      InitializationTask(
+        key: 'theme',
+        initializer: _initializeTheme,
+        priority: InitializationPriority.high,
+      ),
+    );
 
-    _initManager.addTask(InitializationTask(
-      key: 'auth',
-      initializer: _initializeAuth,
-      priority: InitializationPriority.high,
-      dependencies: ['logging'],
-    ));
+    _initManager.addTask(
+      InitializationTask(
+        key: 'auth',
+        initializer: _initializeAuth,
+        priority: InitializationPriority.high,
+        dependencies: ['logging'],
+      ),
+    );
 
     // Medium: UI表示後
-    _initManager.addTask(InitializationTask(
-      key: 'analytics',
-      initializer: _initializeAnalytics,
-      priority: InitializationPriority.medium,
-    ));
+    _initManager.addTask(
+      InitializationTask(
+        key: 'analytics',
+        initializer: _initializeAnalytics,
+        priority: InitializationPriority.medium,
+      ),
+    );
 
-    _initManager.addTask(InitializationTask(
-      key: 'notifications',
-      initializer: _initializeNotifications,
-      priority: InitializationPriority.medium,
-    ));
+    _initManager.addTask(
+      InitializationTask(
+        key: 'notifications',
+        initializer: _initializeNotifications,
+        priority: InitializationPriority.medium,
+      ),
+    );
 
     // Low: バックグラウンド
-    _initManager.addTask(InitializationTask(
-      key: 'ai_services',
-      initializer: _initializeAIServices,
-      priority: InitializationPriority.low,
-    ));
+    _initManager.addTask(
+      InitializationTask(
+        key: 'ai_services',
+        initializer: _initializeAIServices,
+        priority: InitializationPriority.low,
+      ),
+    );
 
-    _initManager.addTask(InitializationTask(
-      key: 'image_cache',
-      initializer: _initializeImageCache,
-      priority: InitializationPriority.low,
-    ));
+    _initManager.addTask(
+      InitializationTask(
+        key: 'image_cache',
+        initializer: _initializeImageCache,
+        priority: InitializationPriority.low,
+      ),
+    );
   }
 
   /// 段階的起動
   Future<void> startStaged() async {
     _timer.recordMilestone('initialization_start');
-    
+
     // Critical services
     await _initManager.initializeByPriority(InitializationPriority.critical);
     _timer.recordMilestone('critical_complete');
@@ -255,9 +270,9 @@ class FastStartupManager {
     // Medium and Low priority services (async)
     unawaited(_initManager.initializeByPriority(InitializationPriority.medium));
     unawaited(_initManager.initializeByPriority(InitializationPriority.low));
-    
+
     _timer.recordMilestone('startup_complete');
-    
+
     if (kDebugMode) {
       _printStartupMetrics();
     }
@@ -267,10 +282,10 @@ class FastStartupManager {
   void _printStartupMetrics() {
     final results = _timer.getResults();
     final totalTime = _timer.getTotalTime();
-    
+
     print('=== Startup Metrics ===');
     print('Total startup time: ${totalTime?.inMilliseconds}ms');
-    
+
     for (final entry in results.entries) {
       print('${entry.key}: ${entry.value.inMilliseconds}ms');
     }
@@ -340,7 +355,7 @@ class MemoryOptimizer {
   void _performMemoryCleanup() {
     // 画像キャッシュクリア
     PaintingBinding.instance.imageCache.clear();
-    
+
     // ガベージコレクション促進
     if (kDebugMode) {
       print('Performing memory cleanup');
@@ -376,7 +391,7 @@ class PerformanceGuard {
   /// フレーム時間を記録
   void recordFrameTime(Duration frameTime) {
     _frameTimes.add(frameTime);
-    
+
     // 最新100フレームのみ保持
     if (_frameTimes.length > 100) {
       _frameTimes.removeAt(0);
@@ -387,17 +402,16 @@ class PerformanceGuard {
   void _analyzePerformance() {
     if (_frameTimes.isEmpty) return;
 
-    final avgFrameTime = _frameTimes.fold<int>(
-      0,
-      (sum, time) => sum + time.inMicroseconds,
-    ) / _frameTimes.length;
+    final avgFrameTime =
+        _frameTimes.fold<int>(0, (sum, time) => sum + time.inMicroseconds) /
+        _frameTimes.length;
 
     final fps = 1000000 / avgFrameTime; // マイクロ秒からFPSに変換
-    
+
     if (fps < 55) {
       print('Warning: Low FPS detected: ${fps.toStringAsFixed(1)}');
     }
-    
+
     if (kDebugMode) {
       print('Average FPS: ${fps.toStringAsFixed(1)}');
     }

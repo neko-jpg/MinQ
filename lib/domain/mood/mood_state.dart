@@ -13,6 +13,5 @@ class MoodState with _$MoodState {
     required DateTime createdAt,
   }) = _MoodState;
 
-  factory MoodState.fromJson(Map<String, dynamic> json) =>
-      _$MoodStateFromJson(json);
+  factory MoodState.fromJson(Map<String, dynamic> json) => _$MoodStateFromJson(json);
 }

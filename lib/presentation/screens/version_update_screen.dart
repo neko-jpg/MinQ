@@ -24,24 +24,24 @@ class VersionUpdateScreen extends ConsumerWidget {
       child: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(tokens.spacing(4)),
+            padding: EdgeInsets.all(tokens.spacing.lg),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.system_update, size: 80, color: tokens.brandPrimary),
-                SizedBox(height: tokens.spacing(6)),
+                SizedBox(height: tokens.spacing.xl),
                 Text(
                   _getTitle(result),
-                  style: tokens.titleLarge,
+                  style: tokens.typography.h2,
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: tokens.spacing(3)),
+                SizedBox(height: tokens.spacing.md),
                 Text(
                   _getMessage(result),
-                  style: tokens.bodyMedium,
+                  style: tokens.typography.body,
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: tokens.spacing(6)),
+                SizedBox(height: tokens.spacing.xl),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -50,7 +50,7 @@ class VersionUpdateScreen extends ConsumerWidget {
                   ),
                 ),
                 if (canDismiss) ...[
-                  SizedBox(height: tokens.spacing(3)),
+                  SizedBox(height: tokens.spacing.md),
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text('後で'),
@@ -74,11 +74,10 @@ class VersionUpdateScreen extends ConsumerWidget {
 
   String _getMessage(VersionCheckResult result) {
     return switch (result) {
-      VersionForceUpdate(:final currentVersion, :final minVersion) =>
-        'このバージョン（$currentVersion）はサポートが終了しました。\n'
+      VersionForceUpdate(:final minVersion) =>
+        'このバージョンはサポートが終了しました。\n'
             '最新バージョン（$minVersion以上）にアップデートしてください。',
       VersionUpdateAvailable(
-        :final currentVersion,
         :final recommendedVersion,
       ) =>
         '新しいバージョン（$recommendedVersion）が利用可能です。\n'

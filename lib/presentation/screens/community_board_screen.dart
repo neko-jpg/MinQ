@@ -35,8 +35,10 @@ class CommunityBoardScreen extends ConsumerWidget {
         message: message,
       );
       textController.clear();
+      if (!context.mounted) return;
       FeedbackMessenger.showSuccessToast(context, '投稿しました');
     } catch (error) {
+      if (!context.mounted) return;
       FeedbackMessenger.showErrorToast(context, '投稿に失敗しました');
     }
   }
@@ -61,28 +63,28 @@ class CommunityBoardScreen extends ConsumerWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(tokens.spacing(4)),
+              padding: EdgeInsets.all(tokens.spacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '仲間の進捗やアイデアをシェアしよう',
-                    style: tokens.titleLarge.copyWith(
+                    style: tokens.typography.h2.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing(2)),
+                  SizedBox(height: tokens.spacing.sm),
                   TextField(
                     controller: controller,
                     maxLines: 3,
                     decoration: InputDecoration(
                       hintText: '今日取り組んだことや工夫を共有しましょう',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(tokens.radius(3)),
+                        borderRadius: BorderRadius.circular(tokens.radius.md),
                       ),
                     ),
                   ),
-                  SizedBox(height: tokens.spacing(2)),
+                  SizedBox(height: tokens.spacing.sm),
                   Align(
                     alignment: Alignment.centerRight,
                     child: FilledButton.icon(
@@ -100,7 +102,7 @@ class CommunityBoardScreen extends ConsumerWidget {
                   if (posts.isEmpty) {
                     return Center(
                       child: Padding(
-                        padding: EdgeInsets.all(tokens.spacing(6)),
+                        padding: EdgeInsets.all(tokens.spacing.xl),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -109,10 +111,10 @@ class CommunityBoardScreen extends ConsumerWidget {
                               size: 64,
                               color: tokens.textMuted,
                             ),
-                            SizedBox(height: tokens.spacing(3)),
+                            SizedBox(height: tokens.spacing.md),
                             Text(
                               'まだ投稿がありません。最初の投稿者になりましょう！',
-                              style: tokens.bodyLarge,
+                              style: tokens.typography.body,
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -123,11 +125,11 @@ class CommunityBoardScreen extends ConsumerWidget {
 
                   return ListView.separated(
                     padding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing(4),
+                      horizontal: tokens.spacing.lg,
                     ),
                     itemCount: posts.length,
                     separatorBuilder:
-                        (_, __) => SizedBox(height: tokens.spacing(3)),
+                        (_, __) => SizedBox(height: tokens.spacing.md),
                     itemBuilder: (context, index) {
                       final post = posts[index];
                       return _CommunityPostCard(post: post);
@@ -138,7 +140,7 @@ class CommunityBoardScreen extends ConsumerWidget {
                 error:
                     (error, _) => Center(
                       child: Padding(
-                        padding: EdgeInsets.all(tokens.spacing(6)),
+                        padding: EdgeInsets.all(tokens.spacing.xl),
                         child: Text('投稿の読み込みに失敗しました: $error'),
                       ),
                     ),
@@ -162,7 +164,7 @@ class _CommunityPostCard extends ConsumerWidget {
     final repository = ref.watch(communityBoardRepositoryProvider);
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing(3)),
+        padding: EdgeInsets.all(tokens.spacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -171,19 +173,20 @@ class _CommunityPostCard extends ConsumerWidget {
               children: [
                 Text(
                   post.authorDisplayName,
-                  style: tokens.titleSmall.copyWith(
+                  style: tokens.typography.h5.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
                   _formatTimestamp(post.createdAt),
-                  style: tokens.labelMedium.copyWith(color: tokens.textMuted),
+                  style:
+                      tokens.typography.caption.copyWith(color: tokens.textMuted),
                 ),
               ],
             ),
-            SizedBox(height: tokens.spacing(2)),
-            Text(post.message, style: tokens.bodyLarge),
-            SizedBox(height: tokens.spacing(3)),
+            SizedBox(height: tokens.spacing.sm),
+            Text(post.message, style: tokens.typography.body),
+            SizedBox(height: tokens.spacing.md),
             Row(
               children: [
                 IconButton(
@@ -191,7 +194,7 @@ class _CommunityPostCard extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(Icons.favorite_border),
-                      SizedBox(width: tokens.spacing(1)),
+                      SizedBox(width: tokens.spacing.xs),
                       Text(post.likeCount.toString()),
                     ],
                   ),

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// マイクロインタラクション集
 ///
@@ -178,7 +179,8 @@ class _RippleEffectState extends State<RippleEffect>
           radiusAnimation: _radiusAnimation,
           opacityAnimation: _opacityAnimation,
           tapPosition: _tapPosition,
-          color: widget.rippleColor ?? Theme.of(context).primaryColor,
+          color: widget.rippleColor ??
+              Theme.of(context).extension<MinqTheme>()!.brandPrimary,
         ),
         child: widget.child,
       ),
@@ -205,10 +207,9 @@ class _RipplePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (tapPosition == null || animation.value == 0.0) return;
 
-    final paint =
-        Paint()
-          ..color = color.withOpacity(opacityAnimation.value)
-          ..style = PaintingStyle.fill;
+    final paint = Paint()
+      ..color = color.withAlpha((255 * opacityAnimation.value).round())
+      ..style = PaintingStyle.fill;
 
     final maxRadius = math.sqrt(
       size.width * size.width + size.height * size.height,
@@ -376,7 +377,7 @@ class ConfettiPainter extends CustomPainter {
         continue;
       }
 
-      paint.color = particle.color.withOpacity(1.0 - progress);
+      paint.color = particle.color.withAlpha((255 * (1.0 - progress)).round());
 
       canvas.save();
       canvas.translate(x, y);
@@ -599,7 +600,7 @@ class SparklePainter extends CustomPainter {
 
       if (opacity <= 0) continue;
 
-      paint.color = Colors.white.withOpacity(opacity * 0.8);
+      paint.color = Colors.white.withAlpha((255 * opacity * 0.8).round());
 
       final x = size.width * sparkle.x;
       final y = size.height * sparkle.y;

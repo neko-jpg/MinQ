@@ -52,7 +52,10 @@ class DNDService {
   /// DND曜日を設定
   Future<void> setDays(List<int> days) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(_keyDNDDays, days.map((d) => d.toString()).toList());
+    await prefs.setStringList(
+      _keyDNDDays,
+      days.map((d) => d.toString()).toList(),
+    );
   }
 
   /// DND曜日を取得
@@ -115,10 +118,7 @@ class DNDTimeRange {
   final TimeOfDay start;
   final TimeOfDay end;
 
-  const DNDTimeRange({
-    required this.start,
-    required this.end,
-  });
+  const DNDTimeRange({required this.start, required this.end});
 
   @override
   String toString() {
@@ -225,7 +225,13 @@ extension SnoozeDurationExtension on SnoozeDuration {
       case SnoozeDuration.tomorrow:
         // 翌日の同じ時刻まで
         final now = DateTime.now();
-        final tomorrow = DateTime(now.year, now.month, now.day + 1, now.hour, now.minute);
+        final tomorrow = DateTime(
+          now.year,
+          now.month,
+          now.day + 1,
+          now.hour,
+          now.minute,
+        );
         return tomorrow.difference(now);
     }
   }
@@ -261,8 +267,8 @@ class DNDAwareNotificationScheduler {
   DNDAwareNotificationScheduler({
     required DNDService dndService,
     required SnoozeService snoozeService,
-  })  : _dndService = dndService,
-        _snoozeService = snoozeService;
+  }) : _dndService = dndService,
+       _snoozeService = snoozeService;
 
   /// 通知を送信すべきかチェック
   Future<bool> shouldSendNotification(String notificationId) async {
@@ -316,13 +322,13 @@ class DNDAwareNotificationScheduler {
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final deferredList = prefs.getStringList(_keyDeferredNotifications) ?? [];
-    
+
     final deferredItem = {
       'id': notificationId,
       'data': notificationData,
       'deferredAt': DateTime.now().toIso8601String(),
     };
-    
+
     deferredList.add(_encodeMap(deferredItem));
     await prefs.setStringList(_keyDeferredNotifications, deferredList);
   }
@@ -331,7 +337,7 @@ class DNDAwareNotificationScheduler {
   Future<List<Map<String, dynamic>>> getDeferredNotifications() async {
     final prefs = await SharedPreferences.getInstance();
     final deferredList = prefs.getStringList(_keyDeferredNotifications) ?? [];
-    
+
     return deferredList.map((item) => _decodeMap(item)).toList();
   }
 
@@ -394,9 +400,9 @@ class DNDAwareNotificationScheduler {
 
 /// 通知アクション
 enum NotificationAction {
-  send,   // 送信
-  skip,   // スキップ（スヌーズ中）
-  defer,  // 延期（DND中）
+  send, // 送信
+  skip, // スキップ（スヌーズ中）
+  defer, // 延期（DND中）
 }
 
 /// DND設定プリセット
@@ -480,10 +486,7 @@ class TimeOfDay {
   final int hour;
   final int minute;
 
-  const TimeOfDay({
-    required this.hour,
-    required this.minute,
-  });
+  const TimeOfDay({required this.hour, required this.minute});
 
   @override
   String toString() {

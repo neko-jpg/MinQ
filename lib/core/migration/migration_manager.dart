@@ -113,13 +113,9 @@ class MigrationManager {
   final FirebaseFirestore _firestore;
   final List<Migration> _migrations;
 
-  MigrationManager({
-    FirebaseFirestore? firestore,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _migrations = [
-          MigrationV1ToV2(),
-          MigrationV2ToV3(),
-        ];
+  MigrationManager({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _migrations = [MigrationV1ToV2(), MigrationV2ToV3()];
 
   /// 必要なマイグレーションを実行
   Future<void> runMigrations({
@@ -127,17 +123,20 @@ class MigrationManager {
     required int targetVersion,
   }) async {
     if (currentVersion >= targetVersion) {
-      print('ℹ️ No migrations needed (current: $currentVersion, target: $targetVersion)');
+      print(
+        'ℹ️ No migrations needed (current: $currentVersion, target: $targetVersion)',
+      );
       return;
     }
 
     print('🚀 Starting migrations from v$currentVersion to v$targetVersion');
 
     // 必要なマイグレーションを抽出
-    final requiredMigrations = _migrations.where((migration) {
-      return migration.fromVersion >= currentVersion &&
-          migration.toVersion <= targetVersion;
-    }).toList();
+    final requiredMigrations =
+        _migrations.where((migration) {
+          return migration.fromVersion >= currentVersion &&
+              migration.toVersion <= targetVersion;
+        }).toList();
 
     // バージョン順にソート
     requiredMigrations.sort((a, b) => a.fromVersion.compareTo(b.fromVersion));
@@ -172,11 +171,12 @@ class MigrationManager {
   /// 現在のデータベースバージョンを取得
   Future<int> getCurrentDatabaseVersion() async {
     try {
-      final snapshot = await _firestore
-          .collection('_migrations')
-          .orderBy('migratedAt', descending: true)
-          .limit(1)
-          .get();
+      final snapshot =
+          await _firestore
+              .collection('_migrations')
+              .orderBy('migratedAt', descending: true)
+              .limit(1)
+              .get();
 
       if (snapshot.docs.isEmpty) {
         return 1; // 初期バージョン
@@ -238,10 +238,11 @@ class MigrationManager {
 
   /// マイグレーション履歴を取得
   Future<List<Map<String, dynamic>>> getMigrationHistory() async {
-    final snapshot = await _firestore
-        .collection('_migrations')
-        .orderBy('migratedAt', descending: true)
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('_migrations')
+            .orderBy('migratedAt', descending: true)
+            .get();
 
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
@@ -270,10 +271,7 @@ mixin VersionedModel {
 
   /// バージョン情報をMapに追加
   Map<String, dynamic> withVersion(Map<String, dynamic> data) {
-    return {
-      ...data,
-      'modelVersion': ModelVersion.current,
-    };
+    return {...data, 'modelVersion': ModelVersion.current};
   }
 }
 

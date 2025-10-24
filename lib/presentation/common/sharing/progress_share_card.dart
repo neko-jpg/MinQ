@@ -130,7 +130,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
         Container(
           padding: EdgeInsets.all(tokens.spacing(2)),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withAlpha((255 * 0.2).round()),
             borderRadius: tokens.cornerMedium(),
           ),
           child: const Icon(Icons.trending_up, color: Colors.white, size: 24),
@@ -151,7 +151,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
               Text(
                 _getStreakMessage(widget.currentStreak),
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withAlpha((255 * 0.9).round()),
                   fontSize: 14,
                 ),
               ),
@@ -239,7 +239,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.white.withAlpha((255 * 0.15).round()),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -257,7 +257,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
           Text(
             label,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withAlpha((255 * 0.8).round()),
               fontSize: 12,
             ),
           ),
@@ -295,13 +295,13 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.2),
+              style: ElevatedButton.stylefrom(
+                backgroundColor: Colors.white.withAlpha((255 * 0.2).round()),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.white.withOpacity(0.3)),
+                  side: BorderSide(color: Colors.white.withAlpha((255 * 0.3).round())),
                 ),
               ),
             ),

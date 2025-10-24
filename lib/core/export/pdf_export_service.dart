@@ -1,12 +1,13 @@
 import 'dart:io';
-
 import 'package:minq/core/logging/app_logger.dart';
 
 /// PDFエクスポートサービス
-/// 
+///
 /// 注意: pdf パッケージが必要
 /// pubspec.yaml に追加: pdf: ^3.10.0
 class PdfExportService {
+  final AppLogger logger = AppLogger();
+
   /// クエストデータをPDFにエクスポート
   Future<File?> exportQuestsToPdf({
     required List<Map<String, dynamic>> quests,
@@ -15,7 +16,7 @@ class PdfExportService {
     try {
       // TODO: pdf パッケージを使用して実装
       // final pdf = pw.Document();
-      // 
+      //
       // pdf.addPage(
       //   pw.Page(
       //     build: (context) => pw.Column(
@@ -31,10 +32,10 @@ class PdfExportService {
       // final file = File('${output.path}/quests_$userId.pdf');
       // await file.writeAsBytes(await pdf.save());
 
-      AppLogger.info('PDF export completed');
+      logger.info('PDF export completed');
       return null; // TODO: 実装後にファイルを返す
     } catch (e, stack) {
-      AppLogger.error('Failed to export PDF', error: e, stackTrace: stack);
+      logger.error('Failed to export PDF', error: e, stackTrace: stack);
       return null;
     }
   }
@@ -46,11 +47,14 @@ class PdfExportService {
   }) async {
     try {
       // TODO: 実装
-      AppLogger.info('Stats PDF export completed');
+      logger.info('Stats PDF export completed');
       return null;
     } catch (e, stack) {
-      AppLogger.error('Failed to export stats PDF',
-          error: e, stackTrace: stack);
+      logger.error(
+        'Failed to export stats PDF',
+        error: e,
+        stackTrace: stack,
+      );
       return null;
     }
   }

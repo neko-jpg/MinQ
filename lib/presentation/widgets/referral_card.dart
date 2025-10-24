@@ -33,43 +33,43 @@ class ReferralCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildSkeletonCard(MinqTokens tokens) {
+  Widget _buildSkeletonCard(MinqTheme tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         color: tokens.surfaceVariant,
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
       ),
       child: Row(
         children: [
           Container(
-            width: tokens.spacing(12),
-            height: tokens.spacing(12),
+            width: tokens.spacing.xl,
+            height: tokens.spacing.xl,
             decoration: BoxDecoration(
-              color: tokens.textMuted.withOpacity(0.3),
+              color: tokens.textMuted.withAlpha((255 * 0.3).round()),
               shape: BoxShape.circle,
             ),
           ),
-          SizedBox(width: tokens.spacing(3)),
+          SizedBox(width: tokens.spacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: tokens.spacing(20),
-                  height: tokens.spacing(4),
+                  width: 100,
+                  height: 20,
                   decoration: BoxDecoration(
-                    color: tokens.textMuted.withOpacity(0.3),
-                    borderRadius: tokens.cornerSmall(),
+                    color: tokens.textMuted.withAlpha((255 * 0.3).round()),
+                    borderRadius: BorderRadius.circular(tokens.radius.sm),
                   ),
                 ),
-                SizedBox(height: tokens.spacing(2)),
+                SizedBox(height: tokens.spacing.sm),
                 Container(
-                  width: tokens.spacing(32),
-                  height: tokens.spacing(3),
+                  width: 150,
+                  height: 15,
                   decoration: BoxDecoration(
-                    color: tokens.textMuted.withOpacity(0.3),
-                    borderRadius: tokens.cornerSmall(),
+                    color: tokens.textMuted.withAlpha((255 * 0.3).round()),
+                    borderRadius: BorderRadius.circular(tokens.radius.sm),
                   ),
                 ),
               ],
@@ -82,7 +82,7 @@ class ReferralCard extends ConsumerWidget {
 
   Widget _buildReferralCard(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     WidgetRef ref,
     ReferralStats stats,
   ) {
@@ -92,17 +92,17 @@ class ReferralCard extends ConsumerWidget {
         navigation.goToReferral();
       },
       child: Container(
-        padding: EdgeInsets.all(tokens.spacing(4)),
+        padding: EdgeInsets.all(tokens.spacing.lg),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.purple.shade400, Colors.purple.shade600],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: tokens.cornerLarge(),
+          borderRadius: BorderRadius.circular(tokens.radius.lg),
           boxShadow: [
             BoxShadow(
-              color: Colors.purple.withOpacity(0.3),
+              color: Colors.purple.withAlpha((255 * 0.3).round()),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -111,43 +111,43 @@ class ReferralCard extends ConsumerWidget {
         child: Row(
           children: [
             Container(
-              width: tokens.spacing(12),
-              height: tokens.spacing(12),
+              width: tokens.spacing.xl,
+              height: tokens.spacing.xl,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withAlpha((255 * 0.2).round()),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.people,
                 color: Colors.white,
-                size: tokens.spacing(6),
+                size: tokens.spacing.lg,
               ),
             ),
-            SizedBox(width: tokens.spacing(3)),
+            SizedBox(width: tokens.spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '友達招待',
-                    style: tokens.titleMedium.copyWith(
+                    style: tokens.typography.h3.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing(1)),
+                  SizedBox(height: tokens.spacing.xs),
                   if (stats.totalReferrals > 0)
                     Text(
                       '${stats.totalReferrals}人招待済み・成功率${(stats.conversionRate * 100).toStringAsFixed(0)}%',
-                      style: tokens.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                      style: tokens.typography.caption.copyWith(
+                        color: Colors.white.withAlpha((255 * 0.9).round()),
                       ),
                     )
                   else
                     Text(
                       '友達を招待してボーナスポイントをゲット！',
-                      style: tokens.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                      style: tokens.typography.caption.copyWith(
+                        color: Colors.white.withAlpha((255 * 0.9).round()),
                       ),
                     ),
                 ],
@@ -155,8 +155,8 @@ class ReferralCard extends ConsumerWidget {
             ),
             Icon(
               Icons.arrow_forward_ios,
-              color: Colors.white.withOpacity(0.8),
-              size: tokens.spacing(4),
+              color: Colors.white.withAlpha((255 * 0.8).round()),
+              size: tokens.spacing.lg,
             ),
           ],
         ),
@@ -195,8 +195,8 @@ class CompactReferralCard extends ConsumerWidget {
       },
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: tokens.spacing(3),
-          vertical: tokens.spacing(2),
+          horizontal: tokens.spacing.md,
+          vertical: tokens.spacing.sm,
         ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -204,16 +204,16 @@ class CompactReferralCard extends ConsumerWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: tokens.cornerMedium(),
+          borderRadius: BorderRadius.circular(tokens.radius.md),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.people, color: Colors.white, size: tokens.spacing(4)),
-            SizedBox(width: tokens.spacing(2)),
+            Icon(Icons.people, color: Colors.white, size: tokens.spacing.lg),
+            SizedBox(width: tokens.spacing.sm),
             Text(
               '友達招待',
-              style: tokens.bodySmall.copyWith(
+              style: tokens.typography.caption.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
@@ -234,18 +234,18 @@ class ReferralPromotionBanner extends ConsumerWidget {
     final tokens = context.tokens;
 
     return Container(
-      margin: EdgeInsets.all(tokens.spacing(4)),
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      margin: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.purple.shade300, Colors.purple.shade500],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         boxShadow: [
           BoxShadow(
-            color: Colors.purple.withOpacity(0.3),
+            color: Colors.purple.withAlpha((255 * 0.3).round()),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -259,26 +259,26 @@ class ReferralPromotionBanner extends ConsumerWidget {
               Icon(
                 Icons.card_giftcard,
                 color: Colors.white,
-                size: tokens.spacing(6),
+                size: tokens.spacing.lg,
               ),
-              SizedBox(width: tokens.spacing(2)),
+              SizedBox(width: tokens.spacing.sm),
               Text(
                 '特別キャンペーン',
-                style: tokens.titleMedium.copyWith(
+                style: tokens.typography.h3.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
           Text(
             '友達を招待すると、あなたも友達も\n最大3500ポイントがもらえます！',
-            style: tokens.bodyMedium.copyWith(
-              color: Colors.white.withOpacity(0.9),
+            style: tokens.typography.body.copyWith(
+              color: Colors.white.withAlpha((255 * 0.9).round()),
             ),
           ),
-          SizedBox(height: tokens.spacing(3)),
+          SizedBox(height: tokens.spacing.md),
           Row(
             children: [
               Expanded(

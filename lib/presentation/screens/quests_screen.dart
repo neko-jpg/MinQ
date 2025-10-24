@@ -64,7 +64,6 @@ class _Category {
 }
 
 class _QuestsScreenState extends ConsumerState<QuestsScreen> {
-  bool _isLoading = true;
   String _selectedCategory = _categoryRecommended;
   String _searchQuery = '';
   Timer? _searchDebounce;
@@ -74,11 +73,6 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchControllerChanged);
-    Future<void>.delayed(const Duration(milliseconds: 650), () {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    });
   }
 
   @override
@@ -228,7 +222,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
       appBar: AppBar(
         title: Text(
           l10n.questsTitle,
-          style: tokens.titleMedium.copyWith(
+          style: tokens.typography.h3.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -241,7 +235,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
             onPressed: () => context.pop(),
           ),
         ),
-        backgroundColor: tokens.background.withOpacity(0.8),
+        backgroundColor: tokens.background.withAlpha(204),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
       ),
@@ -254,7 +248,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                   SliverAppBar(
                     pinned: true,
                     toolbarHeight: 60,
-                    backgroundColor: tokens.background.withOpacity(0.8),
+                    backgroundColor: tokens.background.withAlpha(204),
                     surfaceTintColor: Colors.transparent,
                     elevation: 0,
                     flexibleSpace: _buildCategoryTabs(tokens, categories),
@@ -262,7 +256,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                   if (_selectedCategory == _categoryRecommended)
                     ..._buildAiSuggestionSlivers(tokens, aiSuggestions),
                   SliverPadding(
-                    padding: EdgeInsets.all(tokens.spacing(4)),
+                    padding: EdgeInsets.all(tokens.spacing.md),
                     sliver: _buildQuestList(
                       tokens,
                       l10n,
@@ -281,7 +275,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
 
   Widget _buildSearchBar(MinqTheme tokens, AppLocalizations l10n) {
     return Padding(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.md),
       child: TextField(
         controller: _searchController,
         onChanged: _onSearchChanged,
@@ -300,12 +294,12 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
           filled: true,
           fillColor: tokens.surface,
           border: OutlineInputBorder(
-            borderRadius: tokens.cornerFull(),
-            borderSide: BorderSide(color: tokens.border.withOpacity(0.5)),
+            borderRadius: BorderRadius.circular(tokens.radius.lg),
+            borderSide: BorderSide(color: tokens.border.withAlpha(128)),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: tokens.cornerFull(),
-            borderSide: BorderSide(color: tokens.border.withOpacity(0.5)),
+            borderRadius: BorderRadius.circular(tokens.radius.lg),
+            borderSide: BorderSide(color: tokens.border.withAlpha(128)),
           ),
         ),
       ),
@@ -320,7 +314,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
       ),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: tokens.spacing(4)),
+        padding: EdgeInsets.symmetric(horizontal: tokens.spacing.md),
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
@@ -329,7 +323,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
             onTap: () => setState(() => _selectedCategory = category.key),
             child: Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(horizontal: tokens.spacing(3)),
+              padding: EdgeInsets.symmetric(horizontal: tokens.spacing.sm),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -341,13 +335,12 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
               ),
               child: Text(
                 category.label,
-                style:
-                    isSelected
-                        ? tokens.bodyMedium.copyWith(
-                          color: tokens.brandPrimary,
-                          fontWeight: FontWeight.bold,
-                        )
-                        : tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                style: isSelected
+                    ? tokens.typography.body.copyWith(
+                        color: tokens.brandPrimary,
+                        fontWeight: FontWeight.bold,
+                      )
+                    : tokens.typography.body.copyWith(color: tokens.textMuted),
               ),
             ),
           );
@@ -407,7 +400,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
       if (trimmedQuery.isNotEmpty) {
         return SliverToBoxAdapter(
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: tokens.spacing(8)),
+            padding: EdgeInsets.symmetric(vertical: tokens.spacing.xl),
             child: _EmptySearchResults(
               query: trimmedQuery,
               onClear: _clearSearch,
@@ -418,11 +411,11 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
       }
       return SliverToBoxAdapter(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: tokens.spacing(8)),
+          padding: EdgeInsets.symmetric(vertical: tokens.spacing.xl),
           child: Center(
             child: Text(
               '該当するクエストが見つかりません',
-              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+              style: tokens.typography.body.copyWith(color: tokens.textMuted),
             ),
           ),
         ),
@@ -473,8 +466,8 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: tokens.spacing(4),
-                vertical: tokens.spacing(3),
+                horizontal: tokens.spacing.md,
+                vertical: tokens.spacing.sm,
               ),
               child: _AiSuggestionSection(suggestions: items),
             ),
@@ -486,8 +479,8 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing(4),
-                  vertical: tokens.spacing(3),
+                  horizontal: tokens.spacing.md,
+                  vertical: tokens.spacing.sm,
                 ),
                 child: _AiSuggestionSkeleton(tokens: tokens),
               ),
@@ -498,8 +491,8 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing(4),
-                  vertical: tokens.spacing(3),
+                  horizontal: tokens.spacing.md,
+                  vertical: tokens.spacing.sm,
                 ),
                 child: _AiSuggestionError(tokens: tokens),
               ),
@@ -514,7 +507,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
       onPressed: navigation.goToCreateQuest,
       label: Text(
         l10n.questsFabLabel,
-        style: tokens.bodyLarge.copyWith(
+        style: tokens.typography.body.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
@@ -522,7 +515,9 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
       icon: const Icon(Icons.add, color: Colors.white),
       backgroundColor: tokens.brandPrimary,
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: tokens.cornerFull()),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+      ),
     );
   }
 }
@@ -552,17 +547,17 @@ class _QuestsSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.md),
       children: <Widget>[
         MinqSkeleton(
-          height: tokens.spacing(13),
+          height: 52,
           borderRadius: tokens.cornerFull(),
         ),
-        SizedBox(height: tokens.spacing(4)),
+        SizedBox(height: tokens.spacing.md),
         const MinqSkeletonLine(width: double.infinity, height: 48),
-        SizedBox(height: tokens.spacing(6)),
+        SizedBox(height: tokens.spacing.lg),
         const MinqSkeletonLine(width: 150, height: 28),
-        SizedBox(height: tokens.spacing(4)),
+        SizedBox(height: tokens.spacing.md),
         const MinqSkeletonGrid(
           crossAxisCount: 2,
           itemCount: 4,
@@ -581,7 +576,7 @@ class _AiSuggestionHeader extends StatelessWidget {
     final tokens = context.tokens;
     return Text(
       'AIおすすめ',
-      style: tokens.titleLarge.copyWith(
+      style: tokens.typography.h2.copyWith(
         color: tokens.textPrimary,
         fontWeight: FontWeight.bold,
       ),
@@ -601,13 +596,13 @@ class _AiSuggestionSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _AiSuggestionHeader(),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.xs),
         SizedBox(
-          height: tokens.spacing(28),
+          height: 112,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: suggestions.length,
-            separatorBuilder: (_, __) => SizedBox(width: tokens.spacing(3)),
+            separatorBuilder: (_, __) => SizedBox(width: tokens.spacing.sm),
             itemBuilder:
                 (context, index) =>
                     _AiSuggestionCard(suggestion: suggestions[index]),
@@ -637,11 +632,11 @@ class _AiSuggestionCard extends StatelessWidget {
 
     return Container(
       width: 240,
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: tokens.cornerLarge(),
-        border: Border.all(color: tokens.border.withOpacity(0.6)),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        border: Border.all(color: tokens.border.withAlpha(153)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -649,11 +644,11 @@ class _AiSuggestionCard extends StatelessWidget {
           Row(
             children: [
               Icon(icon, size: 32, color: tokens.brandPrimary),
-              SizedBox(width: tokens.spacing(2)),
+              SizedBox(width: tokens.spacing.xs),
               Expanded(
                 child: Text(
                   template.title,
-                  style: tokens.titleSmall.copyWith(
+                  style: tokens.typography.h4.copyWith(
                     color: tokens.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
@@ -663,35 +658,35 @@ class _AiSuggestionCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing(1)),
+          SizedBox(height: tokens.spacing.xs),
           Text(
             '適合度: $confidence%',
-            style: tokens.bodySmall.copyWith(
+            style: tokens.typography.body.copyWith(
               color: tokens.brandPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.xs),
           Text(
             suggestion.rationale,
-            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.xs),
           ...suggestion.supportingFacts
               .take(2)
               .map(
                 (fact) => Padding(
-                  padding: EdgeInsets.only(bottom: tokens.spacing(1)),
+                  padding: EdgeInsets.only(bottom: tokens.spacing.xxs),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('• ', style: tokens.bodySmall),
+                      Text('• ', style: tokens.typography.caption),
                       Expanded(
                         child: Text(
                           fact,
-                          style: tokens.bodySmall.copyWith(
+                          style: tokens.typography.caption.copyWith(
                             color: tokens.textMuted,
                           ),
                         ),
@@ -717,25 +712,25 @@ class _AiSuggestionSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          height: tokens.spacing(3),
-          width: tokens.spacing(16),
+          height: 12,
+          width: 64,
           decoration: BoxDecoration(
             color: tokens.surface,
-            borderRadius: tokens.cornerSmall(),
+            borderRadius: BorderRadius.circular(tokens.radius.sm),
           ),
         ),
-        SizedBox(height: tokens.spacing(3)),
+        SizedBox(height: tokens.spacing.sm),
         SizedBox(
-          height: tokens.spacing(28),
+          height: 112,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemBuilder:
                 (_, __) => MinqSkeleton(
                   width: 220,
-                  height: tokens.spacing(28),
-                  borderRadius: tokens.cornerLarge(),
+                  height: 112,
+                  borderRadius: BorderRadius.circular(tokens.radius.lg),
                 ),
-            separatorBuilder: (_, __) => SizedBox(width: tokens.spacing(3)),
+            separatorBuilder: (_, __) => SizedBox(width: tokens.spacing.sm),
             itemCount: 3,
           ),
         ),
@@ -755,34 +750,35 @@ class _AiSuggestionError extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _AiSuggestionHeader(),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.xs),
         Container(
-          padding: EdgeInsets.all(tokens.spacing(4)),
+          padding: EdgeInsets.all(tokens.spacing.md),
           decoration: BoxDecoration(
             color: tokens.surface,
-            borderRadius: tokens.cornerLarge(),
-            border: Border.all(color: tokens.border.withOpacity(0.5)),
+            borderRadius: BorderRadius.circular(tokens.radius.lg),
+            border: Border.all(color: tokens.border.withAlpha(128)),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.auto_awesome, color: tokens.encouragement),
-              SizedBox(width: tokens.spacing(2)),
+              SizedBox(width: tokens.spacing.xs),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'AIおすすめの取得に失敗しました。',
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.encouragement,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(1)),
+                    SizedBox(height: tokens.spacing.xxs),
                     Text(
                       'ネットワークを確認し、時間をおいてから再度お試しください。',
-                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                      style:
+                          tokens.typography.caption.copyWith(color: tokens.textMuted),
                     ),
                   ],
                 ),
@@ -812,14 +808,16 @@ class _QuestCard extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      shadowColor: tokens.background.withOpacity(0.1),
+      shadowColor: tokens.background.withAlpha(25),
       color: tokens.surface,
-      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+      ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing(4)),
+          padding: EdgeInsets.all(tokens.spacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -830,26 +828,26 @@ class _QuestCard extends StatelessWidget {
                   Icon(
                     iconDataForKey(quest.iconKey),
                     color: tokens.brandPrimary,
-                    size: tokens.spacing(6),
+                    size: 24,
                   ),
-                  SizedBox(width: tokens.spacing(3)),
+                  SizedBox(width: tokens.spacing.sm),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           quest.title,
-                          style: tokens.bodyLarge.copyWith(
+                          style: tokens.typography.body.copyWith(
                             color: tokens.textPrimary,
                             fontWeight: FontWeight.w600,
                           ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
-                        SizedBox(height: tokens.spacing(1)),
+                        SizedBox(height: tokens.spacing.xxs),
                         Text(
                           categoryLabel,
-                          style: tokens.bodySmall.copyWith(
+                          style: tokens.typography.caption.copyWith(
                             color: tokens.textMuted,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -891,15 +889,15 @@ class _EmptySearchResults extends StatelessWidget {
         children: [
           Wrap(
             alignment: WrapAlignment.center,
-            spacing: tokens.spacing(2),
-            runSpacing: tokens.spacing(2),
+            spacing: tokens.spacing.xs,
+            runSpacing: tokens.spacing.xs,
             children:
                 _searchSuggestionKeywords
                     .map(
                       (keyword) => ActionChip(
                         label: Text(
                           keyword,
-                          style: tokens.bodySmall.copyWith(
+                          style: tokens.typography.body.copyWith(
                             color: tokens.textPrimary,
                           ),
                         ),
@@ -907,20 +905,20 @@ class _EmptySearchResults extends StatelessWidget {
                         backgroundColor: tokens.surface,
                         shape: StadiumBorder(
                           side: BorderSide(
-                            color: tokens.border.withOpacity(0.6),
+                            color: tokens.border.withAlpha(153),
                           ),
                         ),
                       ),
                     )
                     .toList(),
           ),
-          SizedBox(height: tokens.spacing(3)),
+          SizedBox(height: tokens.spacing.sm),
           TextButton.icon(
             onPressed: onClear,
             icon: Icon(Icons.refresh, color: tokens.brandPrimary),
             label: Text(
               '検索条件をリセット',
-              style: tokens.bodyMedium.copyWith(color: tokens.brandPrimary),
+              style: tokens.typography.body.copyWith(color: tokens.brandPrimary),
             ),
           ),
         ],

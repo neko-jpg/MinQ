@@ -25,7 +25,7 @@ class QuestDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           'クエスト詳細',
-          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+          style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
         ),
         centerTitle: true,
         leading: IconButton(
@@ -66,8 +66,8 @@ class _QuestDetailContent extends ConsumerWidget {
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: tokens.spacing(4),
-          vertical: tokens.spacing(4),
+          horizontal: tokens.spacing.md,
+          vertical: tokens.spacing.md,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -76,11 +76,11 @@ class _QuestDetailContent extends ConsumerWidget {
               elevation: 0,
               color: tokens.surface,
               shape: RoundedRectangleBorder(
-                borderRadius: tokens.cornerXLarge(),
+                borderRadius: BorderRadius.circular(tokens.radius.xl),
                 side: BorderSide(color: tokens.border),
               ),
               child: Padding(
-                padding: EdgeInsets.all(tokens.spacing(5)),
+                padding: EdgeInsets.all(tokens.spacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -88,33 +88,34 @@ class _QuestDetailContent extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: tokens.spacing(12),
-                          height: tokens.spacing(12),
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
-                            color: tokens.brandPrimary.withOpacity(0.1),
-                            borderRadius: tokens.cornerLarge(),
+                            color: tokens.brandPrimary.withAlpha(25),
+                            borderRadius:
+                                BorderRadius.circular(tokens.radius.lg),
                           ),
                           child: Icon(
                             icon,
-                            size: tokens.spacing(8),
+                            size: 32,
                             color: tokens.brandPrimary,
                           ),
                         ),
-                        SizedBox(width: tokens.spacing(4)),
+                        SizedBox(width: tokens.spacing.md),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 quest.title,
-                                style: tokens.displaySmall.copyWith(
+                                style: tokens.typography.h2.copyWith(
                                   color: tokens.textPrimary,
                                 ),
                               ),
-                              SizedBox(height: tokens.spacing(2)),
+                              SizedBox(height: tokens.spacing.xs),
                               Wrap(
-                                spacing: tokens.spacing(2),
-                                runSpacing: tokens.spacing(2),
+                                spacing: tokens.spacing.xs,
+                                runSpacing: tokens.spacing.xs,
                                 children: [
                                   _QuestInfoChip(
                                     icon: Icons.category_outlined,
@@ -131,19 +132,19 @@ class _QuestDetailContent extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: tokens.spacing(4)),
+                    SizedBox(height: tokens.spacing.md),
                     Text(
                       'このクエストについて',
-                      style: tokens.titleSmall.copyWith(
+                      style: tokens.typography.h4.copyWith(
                         color: tokens.textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing(2)),
+                    SizedBox(height: tokens.spacing.xs),
                     Text(
                       '短い時間で取り組める${quest.category}クエストです。'
                       '記録するとペアに進捗が共有され、次の継続に向けたリマインダーも届きます。',
-                      style: tokens.bodyMedium.copyWith(
+                      style: tokens.typography.body.copyWith(
                         color: tokens.textMuted,
                       ),
                     ),
@@ -154,13 +155,13 @@ class _QuestDetailContent extends ConsumerWidget {
                           return const SizedBox.shrink();
                         }
                         return Padding(
-                          padding: EdgeInsets.only(top: tokens.spacing(4)),
+                          padding: EdgeInsets.only(top: tokens.spacing.md),
                           child: _ContactLinkButton(link: sanitized),
                         );
                       },
                       loading:
                           () => Padding(
-                            padding: EdgeInsets.only(top: tokens.spacing(4)),
+                            padding: EdgeInsets.only(top: tokens.spacing.md),
                             child: const SizedBox(
                               width: 32,
                               height: 32,
@@ -181,14 +182,14 @@ class _QuestDetailContent extends ConsumerWidget {
                 navigation.goToQuestTimer(quest.id);
               },
             ),
-            SizedBox(height: tokens.spacing(2)),
+            SizedBox(height: tokens.spacing.xs),
             MinqSecondaryButton(
               label: 'このクエストを記録する',
               onPressed: () async {
                 navigation.goToRecord(quest.id);
               },
             ),
-            SizedBox(height: tokens.spacing(2)),
+            SizedBox(height: tokens.spacing.xs),
             Row(
               children: [
                 Expanded(
@@ -199,7 +200,7 @@ class _QuestDetailContent extends ConsumerWidget {
                     },
                   ),
                 ),
-                SizedBox(width: tokens.spacing(2)),
+                SizedBox(width: tokens.spacing.xs),
                 Expanded(
                   child: MinqSecondaryButton(
                     label: '一覧に戻る',
@@ -254,28 +255,28 @@ class _QuestDetailNotFound extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing(4)),
+        padding: EdgeInsets.all(tokens.spacing.md),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.search_off,
-              size: tokens.spacing(14),
+              size: 56,
               color: tokens.textMuted,
             ),
-            SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing.md),
             Text(
               'クエストが見つかりませんでした',
-              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
+              style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing(2)),
+            SizedBox(height: tokens.spacing.xs),
             Text(
               'リンクが古い可能性があります。クエスト一覧から探し直してください。',
-              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+              style: tokens.typography.body.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing.md),
             MinqSecondaryButton(
               label: 'クエスト一覧に戻る',
               onPressed: () async {
@@ -298,25 +299,25 @@ class _QuestDetailError extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing(4)),
+        padding: EdgeInsets.all(tokens.spacing.md),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.error_outline,
-              size: tokens.spacing(14),
+              size: 56,
               color: tokens.accentError,
             ),
-            SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing.md),
             Text(
               'クエスト情報を読み込めませんでした',
-              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
+              style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing(2)),
+            SizedBox(height: tokens.spacing.xs),
             Text(
               '通信状況を確認してからもう一度お試しください。',
-              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+              style: tokens.typography.body.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
           ],
@@ -337,21 +338,21 @@ class _QuestInfoChip extends StatelessWidget {
     final tokens = context.tokens;
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing(3),
-        vertical: tokens.spacing(2),
+        horizontal: tokens.spacing.sm,
+        vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withOpacity(0.1),
-        borderRadius: tokens.cornerLarge(),
+        color: tokens.brandPrimary.withAlpha(25),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: tokens.spacing(4), color: tokens.brandPrimary),
-          SizedBox(width: tokens.spacing(2)),
+          Icon(icon, size: 16, color: tokens.brandPrimary),
+          SizedBox(width: tokens.spacing.xs),
           Text(
             label,
-            style: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
+            style: tokens.typography.caption.copyWith(color: tokens.brandPrimary),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// プレミアムローディングアニメーション集
 class PremiumLoading {
@@ -96,7 +97,8 @@ class _PulseLoadingState extends State<_PulseLoading>
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.color ?? Theme.of(context).primaryColor;
+    final tokens = MinqTheme.of(context);
+    final color = widget.color ?? tokens.brandPrimary;
 
     return SizedBox(
       width: widget.size,
@@ -114,7 +116,9 @@ class _PulseLoadingState extends State<_PulseLoading>
                   height: widget.size,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: color.withOpacity(_opacityAnimation.value * 0.6),
+                    color: color.withAlpha(
+                      (255 * _opacityAnimation.value * 0.6).round(),
+                    ),
                   ),
                 ),
               ),
@@ -166,7 +170,8 @@ class _RippleLoadingState extends State<_RippleLoading>
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.color ?? Theme.of(context).primaryColor;
+    final tokens = MinqTheme.of(context);
+    final color = widget.color ?? tokens.brandPrimary;
 
     return SizedBox(
       width: widget.size,
@@ -203,7 +208,7 @@ class _RipplePainter extends CustomPainter {
 
       final paint =
           Paint()
-            ..color = color.withOpacity(opacity * 0.6)
+            ..color = color.withAlpha((255 * opacity * 0.6).round())
             ..style = PaintingStyle.stroke
             ..strokeWidth = 2.0;
 
@@ -246,7 +251,8 @@ class _SpinLoadingState extends State<_SpinLoading>
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.color ?? Theme.of(context).primaryColor;
+    final tokens = MinqTheme.of(context);
+    final color = widget.color ?? tokens.brandPrimary;
 
     return SizedBox(
       width: widget.size,
@@ -288,7 +294,7 @@ class _SpinPainter extends CustomPainter {
       final angle = (i * math.pi * 2) / 8;
       final opacity = (i + 1) / 8;
 
-      paint.color = color.withOpacity(opacity);
+      paint.color = color.withAlpha((255 * opacity).round());
 
       final startX = center.dx + math.cos(angle) * radius * 0.7;
       final startY = center.dy + math.sin(angle) * radius * 0.7;
@@ -334,7 +340,8 @@ class _DotsLoadingState extends State<_DotsLoading>
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.color ?? Theme.of(context).primaryColor;
+    final tokens = MinqTheme.of(context);
+    final color = widget.color ?? tokens.brandPrimary;
 
     return SizedBox(
       width: widget.size,
@@ -356,7 +363,7 @@ class _DotsLoadingState extends State<_DotsLoading>
                   height: widget.size * 0.15,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: color.withOpacity(0.5 + scale * 0.5),
+                    color: color.withAlpha((255 * (0.5 + scale * 0.5)).round()),
                   ),
                 ),
               );
@@ -399,7 +406,8 @@ class _WaveLoadingState extends State<_WaveLoading>
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.color ?? Theme.of(context).primaryColor;
+    final tokens = MinqTheme.of(context);
+    final color = widget.color ?? tokens.brandPrimary;
 
     return SizedBox(
       width: widget.size,
@@ -471,21 +479,22 @@ class PremiumLoadingOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = MinqTheme.of(context);
     return Stack(
       children: [
         child,
         if (isLoading)
           Container(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withAlpha((255 * 0.3).round()),
             child: Center(
               child: Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
+                  color: tokens.surface,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withAlpha((255 * 0.1).round()),
                       blurRadius: 10,
                       spreadRadius: 2,
                     ),
@@ -499,7 +508,7 @@ class PremiumLoadingOverlay extends StatelessWidget {
                       const SizedBox(height: 16),
                       Text(
                         message!,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        style: tokens.typography.body,
                         textAlign: TextAlign.center,
                       ),
                     ],

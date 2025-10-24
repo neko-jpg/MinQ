@@ -26,10 +26,7 @@ class EventSystem {
             icon: '🏆',
           ),
         ],
-        requirements: const EventRequirements(
-          minCompletions: 21,
-          minStreak: 7,
-        ),
+        requirements: const EventRequirements(minCompletions: 21, minStreak: 7),
       ),
       Event(
         id: 'spring_fitness',
@@ -91,8 +88,8 @@ class EventSystem {
   List<Event> getUpcomingEvents() {
     final now = DateTime.now();
     return _events.where((event) {
-      return now.isBefore(event.startDate);
-    }).toList()
+        return now.isBefore(event.startDate);
+      }).toList()
       ..sort((a, b) => a.startDate.compareTo(b.startDate));
   }
 
@@ -100,23 +97,25 @@ class EventSystem {
   List<Event> getPastEvents() {
     final now = DateTime.now();
     return _events.where((event) {
-      return now.isAfter(event.endDate);
-    }).toList()
+        return now.isAfter(event.endDate);
+      }).toList()
       ..sort((a, b) => b.endDate.compareTo(a.endDate));
   }
 
   /// イベント進捗を計算
   EventProgress calculateProgress(Event event, List<DateTime> completions) {
-    final eventCompletions = completions.where((completion) {
-      return completion.isAfter(event.startDate) && 
-             completion.isBefore(event.endDate);
-    }).toList();
+    final eventCompletions =
+        completions.where((completion) {
+          return completion.isAfter(event.startDate) &&
+              completion.isBefore(event.endDate);
+        }).toList();
 
     final completionCount = eventCompletions.length;
     final currentStreak = _calculateEventStreak(eventCompletions, event);
-    
-    final isCompleted = completionCount >= event.requirements.minCompletions &&
-                       currentStreak >= event.requirements.minStreak;
+
+    final isCompleted =
+        completionCount >= event.requirements.minCompletions &&
+        currentStreak >= event.requirements.minStreak;
 
     return EventProgress(
       eventId: event.id,
@@ -183,10 +182,10 @@ class Event {
 
 /// イベントタイプ
 enum EventType {
-  challenge,  // チャレンジ
-  seasonal,   // 季節イベント
-  weekly,     // 週次イベント
-  special,    // 特別イベント
+  challenge, // チャレンジ
+  seasonal, // 季節イベント
+  weekly, // 週次イベント
+  special, // 特別イベント
 }
 
 /// イベント報酬
@@ -239,10 +238,7 @@ class EventRanking {
   final String eventId;
   final List<EventRankingEntry> entries;
 
-  const EventRanking({
-    required this.eventId,
-    required this.entries,
-  });
+  const EventRanking({required this.eventId, required this.entries});
 }
 
 /// ランキングエントリー

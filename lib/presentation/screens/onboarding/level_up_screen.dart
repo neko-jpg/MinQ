@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lottie/lottie.dart';
 
 import 'package:minq/core/onboarding/progressive_onboarding.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/widgets/celebration_animation.dart';
 
 /// レベルアップ画面
 /// 新しいレベルに到達した時の演出画面
@@ -88,7 +86,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     final tokens = context.tokens;
 
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.9),
+      backgroundColor: Colors.black.withAlpha(230),
       body: SafeArea(
         child: Stack(
           children: [
@@ -98,24 +96,24 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
             // メインコンテンツ
             Center(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(tokens.spacing(6)),
+                padding: EdgeInsets.all(tokens.spacing.lg),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // レベルアップアニメーション
                     _buildLevelUpAnimation(tokens),
 
-                    SizedBox(height: tokens.spacing(8)),
+                    SizedBox(height: tokens.spacing.xl),
 
                     // レベル情報
                     _buildLevelInfo(tokens),
 
-                    SizedBox(height: tokens.spacing(8)),
+                    SizedBox(height: tokens.spacing.xl),
 
                     // 解放された機能
                     _buildUnlockedFeatures(tokens),
 
-                    SizedBox(height: tokens.spacing(10)),
+                    SizedBox(height: tokens.spacing.xl),
 
                     // 続行ボタン
                     _buildContinueButton(tokens),
@@ -126,8 +124,8 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
 
             // 閉じるボタン
             Positioned(
-              top: tokens.spacing(4),
-              right: tokens.spacing(4),
+              top: tokens.spacing.md,
+              right: tokens.spacing.md,
               child: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.close, color: Colors.white),
@@ -139,7 +137,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildBackgroundEffects(MinqTokens tokens) {
+  Widget _buildBackgroundEffects(MinqTheme tokens) {
     return Positioned.fill(
       child: AnimatedBuilder(
         animation: _mainController,
@@ -150,8 +148,8 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 center: Alignment.center,
                 radius: 1.5 * _mainController.value,
                 colors: [
-                  tokens.brandPrimary.withOpacity(0.3),
-                  Colors.purple.withOpacity(0.2),
+                  tokens.brandPrimary.withAlpha(77),
+                  Colors.purple.withAlpha(51),
                   Colors.transparent,
                 ],
               ),
@@ -162,7 +160,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildLevelUpAnimation(MinqTokens tokens) {
+  Widget _buildLevelUpAnimation(MinqTheme tokens) {
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
@@ -172,8 +170,8 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
             children: [
               // 星のアニメーション
               Container(
-                width: tokens.spacing(32),
-                height: tokens.spacing(32),
+                width: tokens.spacing.xl * 2,
+                height: tokens.spacing.xl * 2,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
@@ -181,7 +179,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.yellow.withOpacity(0.5),
+                      color: Colors.yellow.withAlpha(128),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -189,19 +187,19 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 ),
                 child: Icon(
                   Icons.star,
-                  size: tokens.spacing(20),
+                  size: tokens.spacing.lg * 2,
                   color: Colors.white,
                 ),
               ),
 
-              SizedBox(height: tokens.spacing(4)),
+              SizedBox(height: tokens.spacing.md),
 
               // レベルアップテキスト
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: Text(
                   'LEVEL UP!',
-                  style: tokens.displaySmall.copyWith(
+                  style: tokens.typography.h2.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 2,
@@ -215,22 +213,22 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildLevelInfo(MinqTokens tokens) {
+  Widget _buildLevelInfo(MinqTheme tokens) {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Container(
-        padding: EdgeInsets.all(tokens.spacing(6)),
+        padding: EdgeInsets.all(tokens.spacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withAlpha(26),
           borderRadius: tokens.cornerLarge(),
-          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+          border: Border.all(color: Colors.white.withAlpha(77), width: 1),
         ),
         child: Column(
           children: [
             // レベル番号
             Container(
-              width: tokens.spacing(20),
-              height: tokens.spacing(20),
+              width: tokens.spacing.xl,
+              height: tokens.spacing.xl,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
@@ -238,7 +236,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: tokens.brandPrimary.withOpacity(0.5),
+                    color: tokens.brandPrimary.withAlpha(128),
                     blurRadius: 10,
                     spreadRadius: 2,
                   ),
@@ -247,7 +245,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
               child: Center(
                 child: Text(
                   '${widget.newLevel}',
-                  style: tokens.displaySmall.copyWith(
+                  style: tokens.typography.h2.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -255,24 +253,24 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
               ),
             ),
 
-            SizedBox(height: tokens.spacing(4)),
+            SizedBox(height: tokens.spacing.md),
 
             // レベルタイトル
             Text(
               widget.levelInfo.title,
-              style: tokens.titleLarge.copyWith(
+              style: tokens.typography.h3.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
 
-            SizedBox(height: tokens.spacing(2)),
+            SizedBox(height: tokens.spacing.sm),
 
             // レベル説明
             Text(
               widget.levelInfo.description,
-              style: tokens.bodyLarge.copyWith(
-                color: Colors.white.withOpacity(0.8),
+              style: tokens.typography.bodyLarge.copyWith(
+                color: Colors.white.withAlpha(204),
               ),
               textAlign: TextAlign.center,
             ),
@@ -282,17 +280,17 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildUnlockedFeatures(MinqTokens tokens) {
+  Widget _buildUnlockedFeatures(MinqTheme tokens) {
     return SlideTransition(
       position: _slideAnimation,
       child: FadeTransition(
         opacity: _featuresController,
         child: Container(
-          padding: EdgeInsets.all(tokens.spacing(4)),
+          padding: EdgeInsets.all(tokens.spacing.md),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withAlpha(13),
             borderRadius: tokens.cornerLarge(),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            border: Border.all(color: Colors.white.withAlpha(51)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,12 +300,12 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                   Icon(
                     Icons.lock_open,
                     color: Colors.green.shade400,
-                    size: tokens.spacing(6),
+                    size: tokens.spacing.lg,
                   ),
-                  SizedBox(width: tokens.spacing(2)),
+                  SizedBox(width: tokens.spacing.sm),
                   Text(
                     '解放された機能',
-                    style: tokens.titleMedium.copyWith(
+                    style: tokens.typography.h4.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -315,7 +313,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 ],
               ),
 
-              SizedBox(height: tokens.spacing(4)),
+              SizedBox(height: tokens.spacing.md),
 
               ...widget.levelInfo.unlockedFeatures.map((feature) {
                 return _buildFeatureItem(tokens, feature);
@@ -327,33 +325,33 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildFeatureItem(MinqTokens tokens, String featureId) {
+  Widget _buildFeatureItem(MinqTheme tokens, String featureId) {
     final featureInfo = _getFeatureInfo(featureId);
 
     return Container(
-      margin: EdgeInsets.only(bottom: tokens.spacing(3)),
-      padding: EdgeInsets.all(tokens.spacing(3)),
+      margin: EdgeInsets.only(bottom: tokens.spacing.sm),
+      padding: EdgeInsets.all(tokens.spacing.sm),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withAlpha(26),
         borderRadius: tokens.cornerMedium(),
       ),
       child: Row(
         children: [
           Container(
-            width: tokens.spacing(10),
-            height: tokens.spacing(10),
+            width: tokens.spacing.lg,
+            height: tokens.spacing.lg,
             decoration: BoxDecoration(
-              color: Colors.green.shade400.withOpacity(0.2),
+              color: Colors.green.shade400.withAlpha(51),
               shape: BoxShape.circle,
             ),
             child: Icon(
               featureInfo.icon,
               color: Colors.green.shade400,
-              size: tokens.spacing(5),
+              size: tokens.spacing.md,
             ),
           ),
 
-          SizedBox(width: tokens.spacing(3)),
+          SizedBox(width: tokens.spacing.sm),
 
           Expanded(
             child: Column(
@@ -361,16 +359,16 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
               children: [
                 Text(
                   featureInfo.name,
-                  style: tokens.bodyMedium.copyWith(
+                  style: tokens.typography.body.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: tokens.spacing(1)),
+                SizedBox(height: tokens.spacing.xs),
                 Text(
                   featureInfo.description,
-                  style: tokens.bodySmall.copyWith(
-                    color: Colors.white.withOpacity(0.7),
+                  style: tokens.typography.bodySmall.copyWith(
+                    color: Colors.white.withAlpha(179),
                   ),
                 ),
               ],
@@ -380,14 +378,14 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
           Icon(
             Icons.check_circle,
             color: Colors.green.shade400,
-            size: tokens.spacing(5),
+            size: tokens.spacing.md,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildContinueButton(MinqTokens tokens) {
+  Widget _buildContinueButton(MinqTheme tokens) {
     return FadeTransition(
       opacity: _featuresController,
       child: SizedBox(
@@ -400,23 +398,23 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
           style: ElevatedButton.styleFrom(
             backgroundColor: tokens.brandPrimary,
             foregroundColor: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
+            padding: EdgeInsets.symmetric(vertical: tokens.spacing.md),
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             elevation: 8,
-            shadowColor: tokens.brandPrimary.withOpacity(0.5),
+            shadowColor: tokens.brandPrimary.withAlpha(128),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 '新機能を試してみる',
-                style: tokens.titleMedium.copyWith(
+                style: tokens.typography.h4.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(width: tokens.spacing(2)),
-              Icon(Icons.arrow_forward, size: tokens.spacing(5)),
+              SizedBox(width: tokens.spacing.sm),
+              Icon(Icons.arrow_forward, size: tokens.spacing.md),
             ],
           ),
         ),
@@ -489,7 +487,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
       'templates' => const FeatureInfo(
         name: 'テンプレート',
         description: '習慣のテンプレート',
-        icon: Icons.template_outlined,
+        icon: Icons.article,
       ),
       'timer' => const FeatureInfo(
         name: 'タイマー機能',

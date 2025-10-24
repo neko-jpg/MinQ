@@ -21,9 +21,9 @@ class ArchiveService {
             'archivedAt': FieldValue.serverTimestamp(),
           });
 
-      AppLogger.info('Quest archived', data: {'questId': questId});
+      logger.logJson('Quest archived', {'questId': questId});
     } catch (e, stack) {
-      AppLogger.error('Failed to archive quest', error: e, stackTrace: stack);
+      logger.error('Failed to archive quest', e, stack);
       rethrow;
     }
   }
@@ -38,9 +38,9 @@ class ArchiveService {
           .doc(questId)
           .update({'isArchived': false, 'archivedAt': null});
 
-      AppLogger.info('Quest unarchived', data: {'questId': questId});
+      logger.logJson('Quest unarchived', {'questId': questId});
     } catch (e, stack) {
-      AppLogger.error('Failed to unarchive quest', error: e, stackTrace: stack);
+      logger.error('Failed to unarchive quest', e, stack);
       rethrow;
     }
   }
@@ -71,12 +71,12 @@ class ArchiveService {
           .doc(questId)
           .delete();
 
-      AppLogger.info('Archived quest deleted', data: {'questId': questId});
+      logger.logJson('Archived quest deleted', {'questId': questId});
     } catch (e, stack) {
-      AppLogger.error(
+      logger.error(
         'Failed to delete archived quest',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       rethrow;
     }
@@ -100,15 +100,15 @@ class ArchiveService {
         await doc.reference.delete();
       }
 
-      AppLogger.info(
+      logger.logJson(
         'Old archives cleaned',
-        data: {'count': snapshot.docs.length},
+        {'count': snapshot.docs.length},
       );
     } catch (e, stack) {
-      AppLogger.error(
+      logger.error(
         'Failed to clean old archives',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
     }
   }

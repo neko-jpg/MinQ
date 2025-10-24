@@ -23,10 +23,9 @@ class StatsViewData {
   }
 
   factory StatsViewData.fromJson(String jsonString) {
-    final Map<String, dynamic> json =
-        jsonDecode(jsonString) as Map<String, dynamic>;
-    final Map<String, dynamic> heatmapJson =
-        json['heatmap'] as Map<String, dynamic>? ?? <String, dynamic>{};
+    final Map<String, dynamic> json = jsonDecode(jsonString) as Map<String, dynamic>;
+    final Map<String, dynamic> heatmapJson = json['heatmap'] as Map<String, dynamic>? ??
+        <String, dynamic>{};
     final Map<DateTime, int> decodedHeatmap = <DateTime, int>{};
     for (final MapEntry<String, dynamic> entry in heatmapJson.entries) {
       final DateTime? day = DateTime.tryParse(entry.key);
@@ -36,11 +35,9 @@ class StatsViewData {
     return StatsViewData(
       streak: json['streak'] as int? ?? 0,
       heatmap: decodedHeatmap,
-      updatedAt:
-          DateTime.tryParse(json['updatedAt'] as String? ?? '')?.toLocal() ??
+      updatedAt: DateTime.tryParse(json['updatedAt'] as String? ?? '')?.toLocal() ??
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal(),
-      weeklyCompletionRate:
-          (json['weeklyCompletionRate'] as num?)?.toDouble() ?? 0.0,
+      weeklyCompletionRate: (json['weeklyCompletionRate'] as num?)?.toDouble() ?? 0.0,
       todayCompletionCount: json['todayCompletionCount'] as int? ?? 0,
     );
   }
@@ -51,8 +48,7 @@ class StatsViewData {
   final double weeklyCompletionRate; // 0.0 to 1.0
   final int todayCompletionCount;
 
-  bool get hasCachedContent =>
-      streak > 0 || heatmap.isNotEmpty || todayCompletionCount > 0;
+  bool get hasCachedContent => streak > 0 || heatmap.isNotEmpty || todayCompletionCount > 0;
 
   String toJson() {
     final Map<String, dynamic> json = <String, dynamic>{

@@ -1,17 +1,19 @@
 import 'package:flutter/foundation.dart';
-import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// Play Integrity API サービス（改ざん対策）
-/// 
+///
 /// Google Play Integrity APIを使用してアプリの整合性を検証
 /// - アプリが改ざんされていないか
 /// - 正規のGoogle Playストアからインストールされたか
 /// - デバイスが信頼できる状態か
 class PlayIntegrityService {
-  static final PlayIntegrityService _instance = PlayIntegrityService._internal();
+  static final PlayIntegrityService _instance =
+      PlayIntegrityService._internal();
   factory PlayIntegrityService() => _instance;
   PlayIntegrityService._internal();
 
+  final AppLogger _logger = AppLogger();
   bool _initialized = false;
 
   /// 初期化
@@ -21,12 +23,15 @@ class PlayIntegrityService {
     try {
       // TODO: play_integrity パッケージを追加して実装
       // pubspec.yaml に追加: play_integrity: ^1.0.0
-      
-      MinqLogger.instance.info('PlayIntegrityService initialized');
+
+      _logger.info('PlayIntegrityService initialized');
       _initialized = true;
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to initialize PlayIntegrityService',
-        exception: e, stackTrace: stack);
+      _logger.error(
+        'Failed to initialize PlayIntegrityService',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -41,7 +46,7 @@ class PlayIntegrityService {
       // final token = await PlayIntegrity.requestIntegrityToken(
       //   nonce: _generateNonce(),
       // );
-      
+
       // デバッグモードでは常に成功
       if (kDebugMode) {
         return IntegrityResult.success();
@@ -49,12 +54,14 @@ class PlayIntegrityService {
 
       return IntegrityResult.notImplemented();
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to request integrity token',
-        exception: e, stackTrace: stack);
+      _logger.error(
+        'Failed to request integrity token',
+        error: e,
+        stackTrace: stack,
+      );
       return IntegrityResult.error(e.toString());
     }
   }
-
 
   /// 整合性を検証
   Future<bool> verifyIntegrity() async {
@@ -74,24 +81,14 @@ class IntegrityResult {
   final String? errorMessage;
   final IntegrityVerdict? verdict;
 
-  IntegrityResult._({
-    required this.isValid,
-    this.errorMessage,
-    this.verdict,
-  });
+  IntegrityResult._({required this.isValid, this.errorMessage, this.verdict});
 
   factory IntegrityResult.success({IntegrityVerdict? verdict}) {
-    return IntegrityResult._(
-      isValid: true,
-      verdict: verdict,
-    );
+    return IntegrityResult._(isValid: true, verdict: verdict);
   }
 
   factory IntegrityResult.error(String message) {
-    return IntegrityResult._(
-      isValid: false,
-      errorMessage: message,
-    );
+    return IntegrityResult._(isValid: false, errorMessage: message);
   }
 
   factory IntegrityResult.notImplemented() {

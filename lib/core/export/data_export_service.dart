@@ -36,7 +36,9 @@ class DataExportService {
     archive.addFile(ArchiveFile('stats.json', statsData.length, statsData));
 
     final metadataData = utf8.encode(encoder.convert(metadata));
-    archive.addFile(ArchiveFile('metadata.json', metadataData.length, metadataData));
+    archive.addFile(
+      ArchiveFile('metadata.json', metadataData.length, metadataData),
+    );
 
     final outputDir = await getTemporaryDirectory();
     final outputFile = File('${outputDir.path}/minq_export.zip');
@@ -54,12 +56,13 @@ class DataExportService {
 
   Future<void> exportQuestHistoryAsPdf(String userId) async {
     // 1. Fetch data
-    final questLogsSnapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('quest_logs')
-        .orderBy('completedAt', descending: true)
-        .get();
+    final questLogsSnapshot =
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('quest_logs')
+            .orderBy('completedAt', descending: true)
+            .get();
 
     final questLogs = questLogsSnapshot.docs;
 
@@ -70,15 +73,25 @@ class DataExportService {
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
           return [
-            pw.Header(level: 0, child: pw.Text('Quest Completion History', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold))),
+            pw.Header(
+              level: 0,
+              child: pw.Text(
+                'Quest Completion History',
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+            ),
             pw.Table.fromTextArray(
               headers: ['Date', 'Quest Name'],
-              data: questLogs.map((doc) {
-                final data = doc.data();
-                final date = (data['completedAt'] as Timestamp).toDate();
-                final name = data['name'] as String;
-                return [date.toLocal().toString().split(' ')[0], name];
-              }).toList(),
+              data:
+                  questLogs.map((doc) {
+                    final data = doc.data();
+                    final date = (data['completedAt'] as Timestamp).toDate();
+                    final name = data['name'] as String;
+                    return [date.toLocal().toString().split(' ')[0], name];
+                  }).toList(),
             ),
           ];
         },
@@ -90,6 +103,8 @@ class DataExportService {
     final file = File('${output.path}/quest_history.pdf');
     await file.writeAsBytes(await pdf.save());
 
-    await Share.shareXFiles([XFile(file.path)], text: 'Here is my quest history from MinQ!');
+    await Share.shareXFiles([
+      XFile(file.path),
+    ], text: 'Here is my quest history from MinQ!');
   }
 }

@@ -1,34 +1,31 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:ui';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'l10n/app_localizations.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:minq/config/flavor.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/providers/gemma_ai_provider.dart';
-import 'package:minq/presentation/controllers/progressive_onboarding_controller.dart';
-import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/services/crash_recovery_store.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
+import 'package:minq/firebase_options_dev.dart' as dev;
+import 'package:minq/firebase_options_prod.dart' as prod;
+import 'package:minq/firebase_options_stg.dart' as stg;
 import 'package:minq/presentation/controllers/crash_recovery_controller.dart';
+import 'package:minq/presentation/controllers/progressive_onboarding_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/screens/crash_recovery_screen.dart';
-import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
+import 'package:minq/presentation/theme/build_theme.dart';
 import 'package:minq/presentation/widgets/version_check_widget.dart';
-import 'package:minq/config/flavor.dart';
-import 'package:minq/features/settings/presentation/screens/theme_selection_screen.dart';
-import 'package:minq/firebase_options_dev.dart' as dev;
-import 'package:minq/firebase_options_stg.dart' as stg;
-import 'package:minq/firebase_options_prod.dart' as prod;
-
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:minq/l10n/app_localizations.dart';
 
 Future<void> main() async {
   const sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
@@ -53,8 +50,7 @@ Future<void> _bootstrapApplication() async {
   // TensorFlow Lite AIサービスは必要に応じて初期化される
   GestureBinding.instance.resamplingEnabled = true;
 
-  final SharedPreferences sharedPrefs =
-      await SharedPreferences.getInstance();
+  final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
   final crashRecoveryStore = CrashRecoveryStore(sharedPrefs);
   final operationsMetricsService = OperationsMetricsService(sharedPrefs);
   await operationsMetricsService.recordSessionStart(DateTime.now());
@@ -87,47 +83,44 @@ Future<void> _bootstrapApplication() async {
     return false;
   };
 
-      assert(() {
-        binding.addTimingsCallback((List<FrameTiming> timings) {
-          for (final timing in timings) {
-            final totalMillis = timing.totalSpan.inMilliseconds;
-            if (totalMillis > 16) {
-              MinqLogger.debug(
-                'Frame exceeded vsync budget',
-                metadata: <String, Object?>{
-                  'frameTimeMs': totalMillis,
-                  'buildTimeMs': timing.buildDuration.inMilliseconds,
-                  'rasterTimeMs': timing.rasterDuration.inMilliseconds,
-                },
-              );
-            }
-          }
-        });
-        return true;
-      }());
+  assert(() {
+    binding.addTimingsCallback((List<FrameTiming> timings) {
+      for (final timing in timings) {
+        final totalMillis = timing.totalSpan.inMilliseconds;
+        if (totalMillis > 16) {
+          MinqLogger.debug(
+            'Frame exceeded vsync budget',
+            metadata: <String, Object?>{
+              'frameTimeMs': totalMillis,
+              'buildTimeMs': timing.buildDuration.inMilliseconds,
+              'rasterTimeMs': timing.rasterDuration.inMilliseconds,
+            },
+          );
+        }
+      }
+    });
+    return true;
+  }());
 
-      const flavorString = String.fromEnvironment(
-        'FLAVOR',
-        defaultValue: 'dev',
-      );
-      final flavor = Flavor.values.firstWhere(
-        (e) => e.toString().split('.').last == flavorString,
-      );
+  const flavorString = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
+  final flavor = Flavor.values.firstWhere(
+    (e) => e.toString().split('.').last == flavorString,
+  );
 
-      final firebaseInitialized = await _initializeFirebaseIfAvailable(flavor);
+  final firebaseInitialized = await _initializeFirebaseIfAvailable(flavor);
 
-      runApp(
-        ProviderScope(
-          overrides: [
-            firebaseAvailabilityProvider.overrideWithValue(firebaseInitialized),
-            crashRecoveryStoreProvider.overrideWithValue(crashRecoveryStore),
-            operationsMetricsServiceProvider.overrideWithValue(
-              operationsMetricsService,
-            ),
-          ],
-          child: const MinQApp(),
+  runApp(
+    ProviderScope(
+      overrides: [
+        firebaseAvailabilityProvider.overrideWithValue(firebaseInitialized),
+        crashRecoveryStoreProvider.overrideWithValue(crashRecoveryStore),
+        operationsMetricsServiceProvider.overrideWithValue(
+          operationsMetricsService,
         ),
-      );
+      ],
+      child: const MinQApp(),
+    ),
+  );
 }
 
 Future<bool> _initializeFirebaseIfAvailable(Flavor flavor) async {
@@ -178,14 +171,14 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         print('Gemma AI initialization failed: $e');
       }
     });
-    
+
     // レベルアップイベントリスナー
     ref.listen<LevelUpEvent?>(levelUpEventProvider, (previous, next) {
       if (next != null && mounted) {
         _showLevelUpScreen(next);
       }
     });
-    
+
     // React to notification taps emitted by the native layer.
     _notificationTapSubscription = ref.listenManual<AsyncValue<String>>(
       notificationTapStreamProvider,
@@ -245,19 +238,21 @@ class _MinQAppState extends ConsumerState<MinQApp> {
   void _showLevelUpScreen(LevelUpEvent event) {
     // レベルアップ画面を表示
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final context = ref.read(routerProvider).routerDelegate.navigatorKey.currentContext;
+      final context =
+          ref.read(routerProvider).routerDelegate.navigatorKey.currentContext;
       if (context != null) {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => LevelUpScreen(
-            newLevel: event.newLevel,
-            levelInfo: event.levelInfo,
-            onContinue: () {
-              // レベルアップイベントをクリア
-              ref.read(levelUpEventProvider.notifier).state = null;
-            },
-          ),
+          builder:
+              (context) => LevelUpScreen(
+                newLevel: event.newLevel,
+                levelInfo: event.levelInfo,
+                onContinue: () {
+                  // レベルアップイベントをクリア
+                  ref.read(levelUpEventProvider.notifier).state = null;
+                },
+              ),
         );
       }
     });
@@ -274,8 +269,8 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     if (crashRecoveryState.needsRecovery) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: lightTheme,
-        darkTheme: darkTheme,
+        theme: buildLightTheme(),
+        darkTheme: buildDarkTheme(),
         home: const CrashRecoveryScreen(),
       );
     }
@@ -316,8 +311,8 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         debugShowCheckedModeBanner: false,
         routerConfig: router,
         title: 'MinQ',
-        theme: lightTheme,
-        darkTheme: darkTheme,
+        theme: buildLightTheme(),
+        darkTheme: buildDarkTheme(),
         themeMode: ThemeMode.system,
         locale: locale ?? const Locale('ja'),
         localizationsDelegates: const [
@@ -342,7 +337,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
                 );
                 return true;
               }());
-              effectiveTextScaler = TextScaler.linear(minScaleFactor);
+              effectiveTextScaler = const TextScaler.linear(minScaleFactor);
             } else if (approxScale > maxScaleFactor) {
               assert(() {
                 debugPrint(
@@ -350,7 +345,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
                 );
                 return true;
               }());
-              effectiveTextScaler = TextScaler.linear(maxScaleFactor);
+              effectiveTextScaler = const TextScaler.linear(maxScaleFactor);
             } else if (approxScale < minScaleFactor) {
               assert(() {
                 debugPrint(
@@ -358,7 +353,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
                 );
                 return true;
               }());
-              effectiveTextScaler = TextScaler.linear(minScaleFactor);
+              effectiveTextScaler = const TextScaler.linear(minScaleFactor);
             }
           }
 

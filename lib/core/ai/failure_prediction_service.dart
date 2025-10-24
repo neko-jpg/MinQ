@@ -83,8 +83,8 @@ class FailurePredictionService {
         suggestions: suggestions,
         analysis: analysis,
       );
-    } catch (e) {
-      await _analytics.logError('failure_prediction_failed', e.toString());
+    } catch (e, stack) {
+      await _analytics.logEvent('error', parameters: {'failure_prediction_failed': e.toString(), 'stack': stack.toString()});
       rethrow;
     }
   }
@@ -236,9 +236,7 @@ class FailurePredictionService {
   Future<double> _calculateTrendAdjustment(HabitAnalysis analysis) async {
     // 最近7日間のトレンドを分析
     const recentDays = 7;
-    final cutoffDate = DateTime.now().subtract(
-      const Duration(days: recentDays),
-    );
+    final cutoffDate = DateTime.now().subtract(Duration(days: recentDays));
 
     try {
       // 最近のログを取得（簡略化）
@@ -319,15 +317,31 @@ class FailurePredictionService {
     HabitAnalysis analysis,
     FailureRiskLevel riskLevel,
   ) async {
-    final prompt = _buildSuggestionPrompt(analysis, riskLevel);
-
     try {
-      final response = await _aiService.generateHabitSuggestion(
-        habitData: analysis.toJson(),
-        context: prompt,
+      final logs = await _questLogRepository.getQuestLogs(analysis.userId);
+      final habitLogs = logs
+          .where((log) => log.questId.toString() == analysis.habitId)
+          .toList();
+      final history = habitLogs
+          .map((log) => CompletionRecord(
+              completedAt: log.completedAt, habitId: log.questId.toString()))
+          .toList();
+
+      final prediction = await _aiService.predictFailure(
+        habitId: analysis.habitId,
+        history: history,
+        targetDate: DateTime.now(),
       );
 
-      return _parseSuggestionsFromAI(response);
+      return prediction.suggestions
+          .map((s) => FailureSuggestion(
+              id: 'ai_suggestion',
+              type: SuggestionType.strategy,
+              title: 'AIからの提案',
+              description: s,
+              priority: SuggestionPriority.medium,
+              actionable: true))
+          .toList();
     } catch (e) {
       // AI生成に失敗した場合は空のリストを返す
       return [];
@@ -406,7 +420,7 @@ class FailurePredictionService {
           title: 'タイミングの最適化',
           description:
               aiResponse.length > 100
-                  ? '${aiResponse.substring(0, 100)}...'
+                  ? aiResponse.substring(0, 100) + '...'
                   : aiResponse,
           priority: SuggestionPriority.medium,
           actionable: true,
@@ -480,8 +494,11 @@ class FailurePredictionService {
       }
 
       return results;
-    } catch (e) {
-      await _analytics.logError('get_recent_predictions_failed', e.toString());
+    } catch (e, stack) {
+      await _analytics.logEvent('error', parameters: {
+        'get_recent_predictions_failed': e.toString(),
+        'stack': stack.toString()
+      });
       return [];
     }
   }

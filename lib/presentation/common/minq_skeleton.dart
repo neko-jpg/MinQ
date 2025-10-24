@@ -56,15 +56,14 @@ class _MinqSkeletonState extends State<MinqSkeleton>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final baseColor =
-        Theme.of(context).brightness == Brightness.dark
-            ? tokens.surface.withValues(alpha: 0.35)
-            : tokens.surface.withValues(alpha: 0.6);
-    final highlightColor =
-        Theme.of(context).brightness == Brightness.dark
-            ? Colors.white.withValues(alpha: 0.25)
-            : Colors.white.withValues(alpha: 0.6);
-    final borderRadius = widget.borderRadius ?? tokens.cornerLarge();
+    final baseColor = Theme.of(context).brightness == Brightness.dark
+        ? tokens.background.surface.withAlpha((255 * 0.35).round())
+        : tokens.background.surface.withAlpha((255 * 0.6).round());
+    final highlightColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white.withAlpha((255 * 0.25).round())
+        : Colors.white.withAlpha((255 * 0.6).round());
+    final borderRadius =
+        widget.borderRadius ?? BorderRadius.circular(tokens.radius.lg);
 
     if (_reduceMotion) {
       return ClipRRect(
@@ -120,7 +119,7 @@ class MinqSkeletonLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final radius = borderRadius ?? tokens.cornerMedium();
+    final radius = borderRadius ?? BorderRadius.circular(tokens.radius.md);
     return MinqSkeleton(width: width, height: height, borderRadius: radius);
   }
 }
@@ -133,7 +132,7 @@ class MinqSkeletonAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final resolvedSize = size ?? tokens.spacing(14);
+    final resolvedSize = size ?? tokens.spacing.xxl;
     return MinqSkeleton(
       width: resolvedSize,
       height: resolvedSize,
@@ -151,16 +150,16 @@ class MinqSkeletonList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final height = itemHeight ?? tokens.spacing(18);
+    final height = itemHeight ?? tokens.spacing.xxl;
     return Column(
       children: List<Widget>.generate(itemCount, (int index) {
         return Padding(
           padding: EdgeInsets.only(
-            bottom: index == itemCount - 1 ? 0 : tokens.spacing(3),
+            bottom: index == itemCount - 1 ? 0 : tokens.spacing.sm,
           ),
           child: MinqSkeleton(
             height: height,
-            borderRadius: tokens.cornerLarge(),
+            borderRadius: BorderRadius.circular(tokens.radius.lg),
           ),
         );
       }),
@@ -185,7 +184,7 @@ class MinqSkeletonGrid extends StatelessWidget {
     final tokens = context.tokens;
     return LayoutBuilder(
       builder: (context, constraints) {
-        final spacing = tokens.spacing(3);
+        final spacing = tokens.spacing.sm;
         final totalSpacing = spacing * (crossAxisCount - 1);
         final itemWidth =
             (constraints.maxWidth - totalSpacing) / crossAxisCount;
@@ -202,7 +201,8 @@ class MinqSkeletonGrid extends StatelessWidget {
               return SizedBox(
                 width: itemWidth,
                 height: itemHeight,
-                child: MinqSkeleton(borderRadius: tokens.cornerLarge()),
+                child: MinqSkeleton(
+                    borderRadius: BorderRadius.circular(tokens.radius.lg)),
               );
             },
           ),

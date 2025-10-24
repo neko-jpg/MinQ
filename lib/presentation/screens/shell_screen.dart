@@ -173,7 +173,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
       ),
       bottomNavigationBar: SafeArea(
         top: false,
-        minimum: EdgeInsets.only(bottom: tokens.spacing(6)),
+        minimum: EdgeInsets.only(bottom: tokens.spacing.lg),
         child: BottomNavigationBar(
           currentIndex: currentIndex,
           onTap: (int index) => _onItemTapped(index, context),
@@ -224,14 +224,14 @@ class _UsageLimitOverlay extends ConsumerWidget {
 
     return Positioned.fill(
       child: Material(
-        color: Colors.black.withOpacity(0.55),
+        color: Colors.black.withAlpha(140),
         child: Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 360),
-            padding: EdgeInsets.all(tokens.spacing(5)),
+            padding: EdgeInsets.all(tokens.spacing.xl),
             decoration: BoxDecoration(
               color: tokens.surface,
-              borderRadius: tokens.cornerXLarge(),
+              borderRadius: BorderRadius.circular(tokens.radius.xl),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -239,31 +239,31 @@ class _UsageLimitOverlay extends ConsumerWidget {
               children: [
                 Icon(
                   Icons.lock_clock,
-                  size: tokens.spacing(10),
+                  size: tokens.spacing.xl,
                   color: tokens.brandPrimary,
                 ),
-                SizedBox(height: tokens.spacing(3)),
+                SizedBox(height: tokens.spacing.md),
                 Text(
                   '利用時間制限に達しました',
-                  style: tokens.titleLarge.copyWith(
+                  style: tokens.typography.h4.copyWith(
                     color: tokens.textPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: tokens.spacing(2)),
+                SizedBox(height: tokens.spacing.sm),
                 Text(
                   '本日の利用 ${_formatDuration(used)} / ${_formatDuration(dailyLimit)}',
-                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.bodyMedium.copyWith(color: tokens.textMuted),
                 ),
-                SizedBox(height: tokens.spacing(1)),
+                SizedBox(height: tokens.spacing.xs),
                 Text(
                   remaining == Duration.zero
                       ? '今日はこれ以上操作できません。'
                       : '残り時間: ${_formatDuration(remaining)}',
-                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
                 ),
-                SizedBox(height: tokens.spacing(4)),
+                SizedBox(height: tokens.spacing.lg),
                 MinqSecondaryButton(
                   label: '設定を開く',
                   onPressed: () async {

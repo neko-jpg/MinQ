@@ -14,6 +14,5 @@ class TimeCapsule with _$TimeCapsule {
     required DateTime deliveryDate,
   }) = _TimeCapsule;
 
-  factory TimeCapsule.fromJson(Map<String, dynamic> json) =>
-      _$TimeCapsuleFromJson(json);
+  factory TimeCapsule.fromJson(Map<String, dynamic> json) => _$TimeCapsuleFromJson(json);
 }

@@ -98,9 +98,10 @@ class HomeScreenV2 extends ConsumerWidget {
 
 // Provider to generate a daily motivational quote
 final dailyQuoteProvider = FutureProvider.autoDispose<String>((ref) async {
-  final gemmaService = ref.watch(gemmaAIServiceProvider);
+  final tfliteService = ref.watch(tfliteAIServiceProvider);
   // This prompt is an example. It could be more dynamic.
-  return await gemmaService.generateText(
+  await tfliteService.initialize();
+  return await tfliteService.generateChatResponse(
     'Write a short, uplifting, one-sentence motivational quote for someone starting their day.',
   );
 });

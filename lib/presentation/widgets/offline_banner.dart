@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// オフラインバナー
 /// ネットワーク接続がない場合に表示
@@ -9,28 +10,28 @@ class OfflineBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: NetworkStatusService のプロバイダーを作成して使用
-    const isOffline = false; // ref.watch(networkStatusProvider).isOffline;
+    // const isOffline = ref.watch(networkStatusProvider).isOffline;
 
-    if (!isOffline) {
-      return const SizedBox.shrink();
-    }
-
+    final tokens = Theme.of(context).extension<MinqTheme>()!;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      color: Colors.orange[700],
+      padding: EdgeInsets.symmetric(
+        horizontal: tokens.spacing.md,
+        vertical: tokens.spacing.sm,
+      ),
+      color: tokens.accentWarning,
       child: Row(
         children: [
-          const Icon(Icons.cloud_off, color: Colors.white, size: 20),
-          const SizedBox(width: 12),
-          const Expanded(
+          Icon(Icons.cloud_off, color: tokens.onPrimary, size: 20),
+          SizedBox(width: tokens.spacing.sm),
+          Expanded(
             child: Text(
               'オフラインモード - 一部機能が制限されています',
-              style: TextStyle(color: Colors.white, fontSize: 14),
+              style: tokens.typography.body.copyWith(color: tokens.onPrimary),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.info_outline, color: Colors.white),
+            icon: Icon(Icons.info_outline, color: tokens.onPrimary),
             onPressed: () => _showOfflineInfo(context),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
@@ -82,21 +83,22 @@ class OfflineEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = Theme.of(context).extension<MinqTheme>()!;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: EdgeInsets.all(tokens.spacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.cloud_off, size: 80, color: Colors.grey[400]),
-            const SizedBox(height: 24),
+            Icon(Icons.cloud_off, size: 80, color: tokens.textMuted),
+            SizedBox(height: tokens.spacing.lg),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+              style: tokens.typography.body.copyWith(color: tokens.textSecondary),
             ),
             if (onRetry != null) ...[
-              const SizedBox(height: 24),
+              SizedBox(height: tokens.spacing.lg),
               ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
@@ -116,23 +118,26 @@ class ReadOnlyModeIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = Theme.of(context).extension<MinqTheme>()!;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.symmetric(
+        horizontal: tokens.spacing.sm,
+        vertical: tokens.spacing.xs,
+      ),
       decoration: BoxDecoration(
-        color: Colors.orange[100],
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.orange[300]!),
+        color: tokens.accentWarning.withAlpha(51),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        border: Border.all(color: tokens.accentWarning.withAlpha(128)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.visibility, size: 16, color: Colors.orange[700]),
-          const SizedBox(width: 6),
+          Icon(Icons.visibility, size: 16, color: tokens.accentWarning),
+          SizedBox(width: tokens.spacing.xs),
           Text(
             '読み取り専用',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.orange[700],
+            style: tokens.typography.caption.copyWith(
+              color: tokens.accentWarning,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -158,12 +163,7 @@ class NetworkDependentWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: NetworkStatusService のプロバイダーを作成して使用
-    const isOffline = false; // ref.watch(networkStatusProvider).isOffline;
-
-    if (isOffline) {
-      return offlineWidget ??
-          OfflineEmptyState(message: offlineMessage ?? 'この機能はオフラインでは利用できません');
-    }
+    // const isOffline = ref.watch(networkStatusProvider).isOffline;
 
     return child;
   }

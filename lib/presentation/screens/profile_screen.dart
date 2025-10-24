@@ -18,7 +18,7 @@ class ProfileScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           'プロフィール',
-          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+          style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -30,14 +30,14 @@ class ProfileScreen extends ConsumerWidget {
       ),
       body: custom.SensitiveContent(
         child: ListView(
-          padding: EdgeInsets.all(tokens.spacing(5)),
+          padding: EdgeInsets.all(tokens.spacing.lg),
           children: <Widget>[
-            _buildProfileHeader(tokens),
-            SizedBox(height: tokens.spacing(6)),
+            _buildProfileHeader(context, tokens),
+            SizedBox(height: tokens.spacing.xl),
             _buildStatsRow(tokens),
-            SizedBox(height: tokens.spacing(8)),
+            const SizedBox(height: 32),
             _buildAboutSection(tokens),
-            SizedBox(height: tokens.spacing(6)),
+            SizedBox(height: tokens.spacing.xl),
             _buildMenu(context, tokens, ref),
           ],
         ),
@@ -45,12 +45,12 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileHeader(MinqTheme tokens) {
+  Widget _buildProfileHeader(BuildContext context, MinqTheme tokens) {
     return Column(
       children: <Widget>[
         Builder(
           builder: (context) {
-            final avatarSize = tokens.spacing(24);
+            const avatarSize = 96.0;
             final pixelRatio = MediaQuery.of(context).devicePixelRatio;
             final cacheDimension = (avatarSize * pixelRatio).round();
             return ClipOval(
@@ -66,20 +66,20 @@ class ProfileScreen extends ConsumerWidget {
             );
           },
         ),
-        SizedBox(height: tokens.spacing(4)),
+        const SizedBox(height: 16),
         Text(
           'Ethan',
-          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+          style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
         ),
-        SizedBox(height: tokens.spacing(1)),
+        SizedBox(height: tokens.spacing.xs),
         Text(
           '@ethan_123',
-          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+          style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
         ),
-        SizedBox(height: tokens.spacing(2)),
+        SizedBox(height: tokens.spacing.sm),
         Text(
           '2ヶ月前に参加',
-          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+          style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
         ),
       ],
     );
@@ -98,18 +98,18 @@ class ProfileScreen extends ConsumerWidget {
 
   Widget _buildAboutSection(MinqTheme tokens) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(2)),
+      padding: EdgeInsets.symmetric(horizontal: tokens.spacing.sm),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             '概要',
-            style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
+            style: tokens.typography.h5.copyWith(color: tokens.textPrimary),
           ),
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
           Text(
             '私はソフトウェアエンジニアで、コーディングとものづくりが大好きです。また、生産性向上や習慣化の大ファンでもあり、MinQを使って目標を達成できることを楽しみにしています。',
-            style: tokens.bodySmall.copyWith(
+            style: tokens.typography.bodySmall.copyWith(
               color: tokens.textMuted,
               height: 1.5,
             ),
@@ -129,14 +129,14 @@ class ProfileScreen extends ConsumerWidget {
           ListTile(
             title: Text(
               'プロフィールを編集',
-              style: tokens.bodyMedium.copyWith(
+              style: tokens.typography.bodyMedium.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
             ),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              size: tokens.spacing(4),
+              size: 16,
               color: tokens.textMuted,
             ),
             onTap: () {},
@@ -145,14 +145,14 @@ class ProfileScreen extends ConsumerWidget {
           ListTile(
             title: Text(
               '設定',
-              style: tokens.bodyMedium.copyWith(
+              style: tokens.typography.bodyMedium.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
             ),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              size: tokens.spacing(4),
+              size: 16,
               color: tokens.textMuted,
             ),
             onTap: () => ref.read(navigationUseCaseProvider).goToSettings(),
@@ -175,25 +175,25 @@ class _StatItem extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.symmetric(
-        vertical: tokens.spacing(3),
-        horizontal: tokens.spacing(6),
+        vertical: tokens.spacing.md,
+        horizontal: tokens.spacing.xl,
       ),
       decoration: BoxDecoration(
         color: tokens.surface,
         borderRadius: tokens.cornerMedium(),
-        border: Border.all(color: tokens.brandPrimary.withValues(alpha: 0.18)),
-        boxShadow: tokens.shadowSoft,
+        border: Border.all(color: tokens.brandPrimary.withAlpha(46)),
+        boxShadow: tokens.shadow.soft,
       ),
       child: Column(
         children: <Widget>[
           Text(
             value,
-            style: tokens.titleSmall.copyWith(color: tokens.brandPrimary),
+            style: tokens.typography.h5.copyWith(color: tokens.brandPrimary),
           ),
-          SizedBox(height: tokens.spacing(1)),
+          SizedBox(height: tokens.spacing.xs),
           Text(
             label,
-            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
           ),
         ],
       ),

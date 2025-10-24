@@ -44,33 +44,45 @@ class MoodTrackingService {
   Future<void> analyzeMoodHabitCorrelation(String userId) async {
     try {
       // 1. Fetch user's mood logs and quest logs
-      final moodLogsSnapshot = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('mood_logs')
-          .orderBy('createdAt', descending: true)
-          .limit(100) // Limit to recent data for performance
-          .get();
-      final questLogsSnapshot = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('quest_logs')
-          .orderBy('completedAt', descending: true)
-          .limit(300) // Limit to recent data
-          .get();
+      final moodLogsSnapshot =
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('mood_logs')
+              .orderBy('createdAt', descending: true)
+              .limit(100) // Limit to recent data for performance
+              .get();
+      final questLogsSnapshot =
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('quest_logs')
+              .orderBy('completedAt', descending: true)
+              .limit(300) // Limit to recent data
+              .get();
 
       if (moodLogsSnapshot.docs.isEmpty || questLogsSnapshot.docs.isEmpty) {
         print('Not enough data to analyze correlation.');
         return;
       }
 
-      final moodLogs = moodLogsSnapshot.docs.map((doc) => MoodState.fromJson(doc.data())).toList();
-      final questLogs = questLogsSnapshot.docs.map((doc) => doc.data()['completedAt'] as Timestamp).toList();
+      final moodLogs =
+          moodLogsSnapshot.docs
+              .map((doc) => MoodState.fromJson(doc.data()))
+              .toList();
+      final questLogs =
+          questLogsSnapshot.docs
+              .map((doc) => doc.data()['completedAt'] as Timestamp)
+              .toList();
 
       // 2. Group quests by date
       final questsByDate = <DateTime, int>{};
       for (final ts in questLogs) {
-        final date = DateTime(ts.toDate().year, ts.toDate().month, ts.toDate().day);
+        final date = DateTime(
+          ts.toDate().year,
+          ts.toDate().month,
+          ts.toDate().day,
+        );
         questsByDate.update(date, (count) => count + 1, ifAbsent: () => 1);
       }
 
@@ -82,10 +94,17 @@ class MoodTrackingService {
         int daysWithMood = 0;
         int questsOnMoodDays = 0;
 
-        final moodDays = moodLogs
-            .where((log) => log.mood == mood)
-            .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day))
-            .toSet();
+        final moodDays =
+            moodLogs
+                .where((log) => log.mood == mood)
+                .map(
+                  (log) => DateTime(
+                    log.createdAt.year,
+                    log.createdAt.month,
+                    log.createdAt.day,
+                  ),
+                )
+                .toSet();
 
         daysWithMood = moodDays.length;
 
@@ -93,7 +112,8 @@ class MoodTrackingService {
           questsOnMoodDays += questsByDate[day] ?? 0;
         }
 
-        final avgQuestsOnMoodDay = (daysWithMood > 0) ? questsOnMoodDays / daysWithMood : 0.0;
+        final avgQuestsOnMoodDay =
+            (daysWithMood > 0) ? questsOnMoodDays / daysWithMood : 0.0;
 
         correlationData[mood] = {
           'average_quests': avgQuestsOnMoodDay,
@@ -107,8 +127,9 @@ class MoodTrackingService {
         'lastCorrelationAnalysis': FieldValue.serverTimestamp(),
       });
 
-      print('Successfully analyzed and saved mood-habit correlation for user $userId.');
-
+      print(
+        'Successfully analyzed and saved mood-habit correlation for user $userId.',
+      );
     } catch (e) {
       print('Error analyzing mood-habit correlation: $e');
     }

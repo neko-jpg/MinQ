@@ -104,48 +104,48 @@ class ErrorScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.error_outline, size: 80, color: tokens.accentError),
-                SizedBox(height: tokens.spacing(6)),
+                SizedBox(height: tokens.spacing.xl),
                 Text(
                   'エラーが発生しました',
-                  style: tokens.titleLarge.copyWith(color: tokens.textPrimary),
+                  style: tokens.typography.h2.copyWith(color: tokens.textPrimary),
                 ),
-                SizedBox(height: tokens.spacing(4)),
+                SizedBox(height: tokens.spacing.lg),
                 Text(
                   _getErrorMessage(error),
                   textAlign: TextAlign.center,
-                  style: tokens.bodyMedium.copyWith(
+                  style: tokens.typography.body.copyWith(
                     color: tokens.textSecondary,
                   ),
                 ),
-                SizedBox(height: tokens.spacing(8)),
+                const SizedBox(height: 32),
                 if (onRetry != null)
                   ElevatedButton.icon(
                     onPressed: onRetry,
                     icon: const Icon(Icons.refresh),
                     label: const Text('再試行'),
                   ),
-                SizedBox(height: tokens.spacing(4)),
+                SizedBox(height: tokens.spacing.lg),
                 OutlinedButton.icon(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: const Icon(Icons.arrow_back),
                   label: const Text('戻る'),
                 ),
-                SizedBox(height: tokens.spacing(8)),
+                const SizedBox(height: 32),
                 ExpansionTile(
                   title: Text(
                     '詳細情報',
-                    style: tokens.bodyMedium.copyWith(
+                    style: tokens.typography.body.copyWith(
                       color: tokens.textPrimary,
                     ),
                   ),
                   children: [
                     Container(
-                      padding: EdgeInsets.all(tokens.spacing(4)),
+                      padding: EdgeInsets.all(tokens.spacing.lg),
                       color: tokens.surfaceAlt,
                       child: SingleChildScrollView(
                         child: Text(
                           'Error: $error\n\nStack trace:\n$stackTrace',
-                          style: tokens.bodySmall.copyWith(
+                          style: tokens.typography.bodySmall.copyWith(
                             fontFamily: 'monospace',
                             color: tokens.textSecondary,
                           ),
@@ -205,16 +205,16 @@ class ErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Container(
-      color: tokens.accentError.withOpacity(0.12),
-      padding: EdgeInsets.all(tokens.spacing(4)),
+      color: tokens.accentError.withAlpha(31),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.error, color: tokens.accentError),
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
           Text(
             message,
-            style: tokens.bodyMedium.copyWith(color: tokens.accentError),
+            style: tokens.typography.body.copyWith(color: tokens.accentError),
             textAlign: TextAlign.center,
           ),
         ],

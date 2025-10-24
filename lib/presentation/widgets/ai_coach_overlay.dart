@@ -160,18 +160,18 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
     final message = _currentMessage!;
 
     return Container(
-      margin: EdgeInsets.all(tokens.spacing(4)),
+      margin: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
             _getMessageColor(message.type),
-            _getMessageColor(message.type).withOpacity(0.8),
+            _getMessageColor(message.type).withAlpha((255 * 0.8).round()),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: tokens.cornerLarge(),
-        boxShadow: tokens.shadowSoft,
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        boxShadow: tokens.shadow.soft,
       ),
       child: AnimatedBuilder(
         animation: _pulseAnimation,
@@ -179,7 +179,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
           return Transform.scale(scale: _pulseAnimation.value, child: child);
         },
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing(4)),
+          padding: EdgeInsets.all(tokens.spacing.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -187,20 +187,20 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
               Row(
                 children: [
                   _buildCoachAvatar(message.type),
-                  SizedBox(width: tokens.spacing(3)),
+                  SizedBox(width: tokens.spacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'AIコーチ',
-                          style: tokens.bodySmall.copyWith(
-                            color: Colors.white.withOpacity(0.8),
+                          style: tokens.typography.caption.copyWith(
+                            color: Colors.white.withAlpha((255 * 0.8).round()),
                           ),
                         ),
                         Text(
                           _getMessageTypeLabel(message.type),
-                          style: tokens.bodyMedium.copyWith(
+                          style: tokens.typography.body.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -219,25 +219,25 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
                 ],
               ),
 
-              SizedBox(height: tokens.spacing(3)),
+              SizedBox(height: tokens.spacing.md),
 
               // メッセージ
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(tokens.spacing(3)),
+                padding: EdgeInsets.all(tokens.spacing.md),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: tokens.cornerMedium(),
+                  color: Colors.white.withAlpha((255 * 0.2).round()),
+                  borderRadius: BorderRadius.circular(tokens.radius.md),
                 ),
                 child: Text(
                   message.message,
-                  style: tokens.bodyMedium.copyWith(color: Colors.white),
+                  style: tokens.typography.body.copyWith(color: Colors.white),
                 ),
               ),
 
               // アクションボタン（チェックインの場合）
               if (message.type == CoachingMessageType.checkIn) ...[
-                SizedBox(height: tokens.spacing(3)),
+                SizedBox(height: tokens.spacing.md),
                 Row(
                   children: [
                     Expanded(
@@ -247,7 +247,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
                         () => _respondToCheckIn('good'),
                       ),
                     ),
-                    SizedBox(width: tokens.spacing(2)),
+                    SizedBox(width: tokens.spacing.sm),
                     Expanded(
                       child: _buildResponseButton(
                         '少し疲れました',
@@ -270,24 +270,24 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
     final message = _currentMessage!;
 
     return Container(
-      margin: EdgeInsets.all(tokens.spacing(4)),
+      margin: EdgeInsets.all(tokens.spacing.lg),
       child: GestureDetector(
         onTap: _toggleMinimize,
         child: Container(
-          padding: EdgeInsets.all(tokens.spacing(3)),
+          padding: EdgeInsets.all(tokens.spacing.md),
           decoration: BoxDecoration(
             color: _getMessageColor(message.type),
-            borderRadius: tokens.cornerLarge(),
-            boxShadow: tokens.shadowSoft,
+            borderRadius: BorderRadius.circular(tokens.radius.lg),
+            boxShadow: tokens.shadow.soft,
           ),
           child: Row(
             children: [
               _buildCoachAvatar(message.type, size: 32),
-              SizedBox(width: tokens.spacing(2)),
+              SizedBox(width: tokens.spacing.sm),
               Expanded(
                 child: Text(
                   message.message,
-                  style: tokens.bodySmall.copyWith(color: Colors.white),
+                  style: tokens.typography.caption.copyWith(color: Colors.white),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -305,7 +305,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withAlpha((255 * 0.2).round()),
         shape: BoxShape.circle,
       ),
       child: Icon(_getMessageIcon(type), color: Colors.white, size: size * 0.6),
@@ -322,13 +322,13 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
     return ElevatedButton.icon(
       onPressed: onPressed,
       icon: Icon(icon, size: 16),
-      label: Text(label, style: tokens.bodySmall),
+      label: Text(label, style: tokens.typography.caption),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white.withOpacity(0.2),
+        backgroundColor: Colors.white.withAlpha((255 * 0.2).round()),
         foregroundColor: Colors.white,
         padding: EdgeInsets.symmetric(
-          horizontal: tokens.spacing(2),
-          vertical: tokens.spacing(1),
+          horizontal: tokens.spacing.sm,
+          vertical: tokens.spacing.xs,
         ),
       ),
     );
@@ -436,14 +436,14 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
       appBar: AppBar(
         title: Text(
           'AIコーチ設定',
-          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+          style: tokens.typography.h3.copyWith(color: tokens.textPrimary),
         ),
         centerTitle: true,
         backgroundColor: tokens.background,
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(tokens.spacing(4)),
+        padding: EdgeInsets.all(tokens.spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -483,7 +483,7 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
               ),
             ]),
 
-            SizedBox(height: tokens.spacing(6)),
+            SizedBox(height: tokens.spacing.xl),
 
             // 音声設定
             if (_settings.enableVoice) ...[
@@ -504,7 +504,7 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
                 }),
               ]),
 
-              SizedBox(height: tokens.spacing(6)),
+              SizedBox(height: tokens.spacing.xl),
             ],
 
             // 頻度設定
@@ -518,7 +518,7 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
               }),
             ]),
 
-            SizedBox(height: tokens.spacing(6)),
+            SizedBox(height: tokens.spacing.xl),
 
             // テスト機能
             _buildSettingsSection('テスト', [
@@ -549,14 +549,14 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
       children: [
         Text(
           title,
-          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: tokens.spacing(3)),
+        SizedBox(height: tokens.spacing.md),
         Card(
           elevation: 0,
           color: tokens.surface,
           shape: RoundedRectangleBorder(
-            borderRadius: tokens.cornerLarge(),
+            borderRadius: BorderRadius.circular(tokens.radius.lg),
             side: BorderSide(color: tokens.border),
           ),
           child: Column(children: children),

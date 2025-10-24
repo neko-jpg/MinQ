@@ -10,7 +10,7 @@ class ReferralDeepLinkService {
     final data = '$userId:$timestamp';
     final bytes = utf8.encode(data);
     final hash = sha256.convert(bytes);
-    
+
     // 最初の8文字を使用（短くて覚えやすい）
     return hash.toString().substring(0, 8).toUpperCase();
   }
@@ -22,11 +22,7 @@ class ReferralDeepLinkService {
 
   /// ディープリンクURLを生成
   Uri generateDeepLink(String referralCode) {
-    return Uri(
-      scheme: 'minq',
-      host: 'invite',
-      path: '/$referralCode',
-    );
+    return Uri(scheme: 'minq', host: 'invite', path: '/$referralCode');
   }
 
   /// リファラルコードを検証
@@ -90,8 +86,4 @@ class ReferralReward {
   );
 }
 
-enum RewardType {
-  badge,
-  premium,
-  points,
-}
+enum RewardType { badge, premium, points }

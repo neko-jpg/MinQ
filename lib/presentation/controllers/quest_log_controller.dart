@@ -58,11 +58,7 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  Future<bool> recordProgress(
-    int questId, {
-    String? proofValue,
-    ProofType proofType = ProofType.check,
-  }) async {
+  Future<bool> recordProgress(int questId, {String? proofValue, ProofType proofType = ProofType.check}) async {
     state = const AsyncValue.loading();
 
     try {
@@ -82,14 +78,13 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
         return false;
       }
 
-      final log =
-          QuestLog()
-            ..uid = uid
-            ..questId = questId
-            ..ts = DateTime.now().toUtc()
-            ..proofType = proofType
-            ..proofValue = proofValue ?? ''
-            ..synced = false;
+      final log = QuestLog()
+        ..uid = uid
+        ..questId = questId
+        ..ts = DateTime.now().toUtc()
+        ..proofType = proofType
+        ..proofValue = proofValue ?? ''
+        ..synced = false;
 
       await logRepository.addLog(log);
 
@@ -138,19 +133,14 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
           debugPrint('New badge earned: ${badge.name}');
         }
 
-        debugPrint(
-          'Gamification: Awarded points and checked badges. New badges: ${newBadges.length}',
-        );
+        debugPrint('Gamification: Awarded points and checked badges. New badges: ${newBadges.length}');
       } catch (e) {
         debugPrint('Gamification error: $e');
         // ゲーミフィケーションエラーでもクエスト記録は成功とする
       }
 
       // Cancel auxiliary reminder if daily goal is reached
-      final completedToday = await logRepository.countLogsForDay(
-        uid,
-        DateTime.now(),
-      );
+      final completedToday = await logRepository.countLogsForDay(uid, DateTime.now());
       if (completedToday >= 3) {
         final notificationService = _ref.read(notificationServiceProvider);
         await notificationService.cancelAuxiliaryReminder();
@@ -160,9 +150,10 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
       final quest = await questRepository.getQuestById(questId);
       if (quest != null) {
         unawaited(
-          _ref
-              .read(webhookDispatchServiceProvider)
-              .dispatchQuestCompletion(quest: quest, log: log),
+          _ref.read(webhookDispatchServiceProvider).dispatchQuestCompletion(
+                quest: quest,
+                log: log,
+              ),
         );
 
         // TODO: Implement live activity, wearable sync, and fitness sync
@@ -211,10 +202,9 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final questLogControllerProvider =
-    StateNotifierProvider<QuestLogController, AsyncValue<void>>((ref) {
-      return QuestLogController(ref);
-    });
+final questLogControllerProvider = StateNotifierProvider<QuestLogController, AsyncValue<void>>((ref) {
+  return QuestLogController(ref);
+});
 
 // Provider for today's logs
 final todayLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
@@ -226,10 +216,7 @@ final todayLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
 });
 
 // Provider for checking if a quest is completed today
-final questCompletedTodayProvider = FutureProvider.family<bool, int>((
-  ref,
-  questId,
-) async {
+final questCompletedTodayProvider = FutureProvider.family<bool, int>((ref, questId) async {
   final todayLogs = await ref.watch(todayLogsProvider.future);
   return todayLogs.any((log) => log.questId == questId);
 });

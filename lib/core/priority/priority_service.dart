@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:minq/core/logging/app_logger.dart';
 
 /// 優先度レベル
-enum PriorityLevel {
-  low,
-  medium,
-  high,
-}
+enum PriorityLevel { low, medium, high }
 
 extension PriorityLevelExtension on PriorityLevel {
   /// 表示名
@@ -64,7 +61,7 @@ class PriorityService {
   final FirebaseFirestore _firestore;
 
   PriorityService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// クエストの優先度を設定
   Future<void> setPriority({
@@ -79,14 +76,14 @@ class PriorityService {
           .collection('quests')
           .doc(questId)
           .update({
-        'priority': priority.name,
-        'priorityOrder': priority.sortOrder,
-      });
+            'priority': priority.name,
+            'priorityOrder': priority.sortOrder,
+          });
 
-      AppLogger.info('Priority set', data: {
-        'questId': questId,
-        'priority': priority.name,
-      });
+      AppLogger.info(
+        'Priority set',
+        data: {'questId': questId, 'priority': priority.name},
+      );
     } catch (e, stack) {
       AppLogger.error('Failed to set priority', error: e, stackTrace: stack);
       rethrow;

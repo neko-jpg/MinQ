@@ -10,9 +10,9 @@ class GenerativeSupportClient {
     required http.Client httpClient,
     required String endpoint,
     required String apiKey,
-  })  : _httpClient = httpClient,
-        _endpoint = endpoint,
-        _apiKey = apiKey;
+  }) : _httpClient = httpClient,
+       _endpoint = endpoint,
+       _apiKey = apiKey;
 
   final http.Client _httpClient;
   final String _endpoint;
@@ -20,7 +20,10 @@ class GenerativeSupportClient {
 
   /// Generates a response from the support bot.
   Future<String> generateResponse({
+    /// A unique ID for the conversation.
     required String conversationId,
+
+    /// The messages in the conversation.
     required List<Map<String, String>> messages,
   }) async {
     final response = await _httpClient.post(
@@ -52,7 +55,7 @@ class GenerativeSupportClient {
   }
 }
 
-/// An exception thrown by the [GenerativeSupportClient].
+/// An exception thrown when the generative support API returns an error.
 @immutable
 class GenerativeSupportException implements Exception {
   /// Creates a new [GenerativeSupportException].

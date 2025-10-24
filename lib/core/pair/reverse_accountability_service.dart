@@ -1,13 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 // Provider for the service
 final reverseAccountabilityServiceProvider =
     Provider<ReverseAccountabilityService>((ref) {
-  final gamificationEngine = ref.watch(gamificationEngineProvider);
-  return ReverseAccountabilityService(FirebaseFirestore.instance, gamificationEngine);
-});
+      final gamificationEngine = ref.watch(gamificationEngineProvider);
+      return ReverseAccountabilityService(
+        FirebaseFirestore.instance,
+        gamificationEngine,
+      );
+    });
 
 class ReverseAccountabilityService {
   final FirebaseFirestore _firestore;
@@ -45,9 +49,11 @@ class ReverseAccountabilityService {
         'body': notification['body'],
       });
 
-      print("Queued push notification for pair $pairId for user $userId's success.");
+      logger.info(
+        "Queued push notification for pair $pairId for user $userId's success.",
+      );
     } catch (e) {
-      print('Error notifying pair: $e');
+      logger.error('Error notifying pair: $e');
     }
   }
 
@@ -62,18 +68,24 @@ class ReverseAccountabilityService {
       final bool user2Completed = await _hasCompletedDailyGoal(user2Id);
 
       if (user1Completed && user2Completed) {
-        print('Both users completed daily goals! Awarding Resonance Bonus.');
+        logger.info('Both users completed daily goals! Awarding Resonance Bonus.');
         await _gamificationEngine.awardPoints(
-            userId: user1Id, basePoints: 50, reason: 'Resonance Bonus!');
+          userId: user1Id,
+          basePoints: 50,
+          reason: 'Resonance Bonus!',
+        );
         await _gamificationEngine.awardPoints(
-            userId: user2Id, basePoints: 50, reason: 'Resonance Bonus!');
+          userId: user2Id,
+          basePoints: 50,
+          reason: 'Resonance Bonus!',
+        );
 
         // Maybe create a special notification for this
       } else {
-        print('Resonance bonus conditions not met.');
+        logger.info('Resonance bonus conditions not met.');
       }
     } catch (e) {
-      print('Error creating resonance bonus: $e');
+      logger.error('Error creating resonance bonus: $e');
     }
   }
 
@@ -81,13 +93,14 @@ class ReverseAccountabilityService {
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);
 
-    final snapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('quest_logs')
-        .where('completedAt', isGreaterThanOrEqualTo: startOfDay)
-        .limit(goal)
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('quest_logs')
+            .where('completedAt', isGreaterThanOrEqualTo: startOfDay)
+            .limit(goal)
+            .get();
 
     return snapshot.docs.length >= goal;
   }
@@ -99,7 +112,11 @@ class ReverseAccountabilityService {
   }) {
     // This would trigger a UI prompt with pre-written supportive message templates.
     // The logic to determine "struggling" would be more complex, e.g., based on broken streaks.
-    print('UI TRIGGER: Prompting user $activeUserId to support struggling pair $strugglingPairId.');
-    print("Suggestion: 'Your pair might be having a tough time. Send them a message of support?'");
+    logger.info(
+      'UI TRIGGER: Prompting user $activeUserId to support struggling pair $strugglingPairId.',
+    );
+    logger.info(
+      "Suggestion: 'Your pair might be having a tough time. Send them a message of support?'",
+    );
   }
 }

@@ -47,12 +47,7 @@ class GemmaAIService {
   }
 
   /// チャットメッセージの生成
-  Future<String> generateResponse(
-    String message, {
-    List<GemmaChatMessage> history = const [],
-    String? systemPrompt,
-    int maxTokens = 150,
-  }) async {
+  Future<String> generateResponse(String message) async {
     if (!_isInitialized) {
       await initialize();
     }

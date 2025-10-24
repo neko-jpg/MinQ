@@ -33,12 +33,12 @@ class FeatureFlags {
 
   /// Returns the default flag map used to seed Remote Config.
   static Map<String, Object> defaults() => const <String, Object>{
-    confettiKey: true,
-    rewardCardKey: true,
-    homeSnoozeKey: true,
-    donationVariantKey: 'control',
-    appIconVariantKey: 'classic',
-  };
+        confettiKey: true,
+        rewardCardKey: true,
+        homeSnoozeKey: true,
+        donationVariantKey: 'control',
+        appIconVariantKey: 'classic',
+      };
 
   /// Parses the [FirebaseRemoteConfig] instance into strongly-typed flags.
   static FeatureFlags fromRemoteConfig(FirebaseRemoteConfig remoteConfig) {
@@ -46,12 +46,10 @@ class FeatureFlags {
       celebrationConfettiEnabled: remoteConfig.getBool(confettiKey),
       celebrationRewardCardEnabled: remoteConfig.getBool(rewardCardKey),
       homeSuggestionSnoozeEnabled: remoteConfig.getBool(homeSnoozeKey),
-      donationExperimentVariant: remoteConfig
-          .getString(donationVariantKey)
-          .ifEmpty('control'),
-      appIconVariant: remoteConfig
-          .getString(appIconVariantKey)
-          .ifEmpty('classic'),
+      donationExperimentVariant:
+          remoteConfig.getString(donationVariantKey).ifEmpty('control'),
+      appIconVariant:
+          remoteConfig.getString(appIconVariantKey).ifEmpty('classic'),
     );
   }
 
@@ -88,12 +86,12 @@ class FeatureFlags {
 
   @override
   int get hashCode => Object.hash(
-    celebrationConfettiEnabled,
-    celebrationRewardCardEnabled,
-    homeSuggestionSnoozeEnabled,
-    donationExperimentVariant,
-    appIconVariant,
-  );
+        celebrationConfettiEnabled,
+        celebrationRewardCardEnabled,
+        homeSuggestionSnoozeEnabled,
+        donationExperimentVariant,
+        appIconVariant,
+      );
 }
 
 extension on String {

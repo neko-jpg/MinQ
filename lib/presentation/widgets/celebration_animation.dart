@@ -173,7 +173,7 @@ class ConfettiParticle {
 
     final paint =
         Paint()
-          ..color = color.withOpacity(1.0 - progress * 0.5)
+          ..color = color.withAlpha((255 * (1.0 - progress * 0.5)).round())
           ..style = PaintingStyle.fill;
 
     canvas.save();
@@ -291,7 +291,7 @@ class CheckMarkPainter extends CustomPainter {
     // 円の描画
     final circlePaint =
         Paint()
-          ..color = color.withOpacity(0.2)
+          ..color = color.withAlpha((255 * 0.2).round())
           ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, radius * circleProgress, circlePaint);

@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
+
+import 'package:minq/core/logging/app_logger.dart';
 
 /// サブスクリプション管理サービス
 ///
 /// ユーザーの課金状態を管理し、機能へのアクセス権限を制御する
 class SubscriptionService {
   final FirebaseFirestore _firestore;
-  late final String _userId;
 
   /// 現在のサブスクリプションプラン
   SubscriptionPlan _currentPlan = SubscriptionPlan.free;
@@ -21,15 +22,14 @@ class SubscriptionService {
   SubscriptionService(this._firestore);
 
   /// 初期化
-  Future<void> initialize(String userId) async {
-    _userId = userId;
+  Future<void> initialize() async {
     try {
       await _loadSubscriptionStatus();
-      MinqLogger.instance.info('Subscription service initialized', metadata: {
+      AppLogger.info('Subscription service initialized', {
         'plan': _currentPlan.name,
       });
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to initialize subscription service', exception: e, stackTrace: stack);
+      AppLogger.error('Failed to initialize subscription service', e, stack);
     }
   }
 
@@ -44,7 +44,10 @@ class SubscriptionService {
         final expiry = (sub['expiryDate'] as Timestamp).toDate();
 
         if (expiry.isAfter(DateTime.now())) {
-          _currentPlan = SubscriptionPlan.values.firstWhere((p) => p.name == planName, orElse: () => SubscriptionPlan.free);
+          _currentPlan = SubscriptionPlan.values.firstWhere(
+            (p) => p.name == planName,
+            orElse: () => SubscriptionPlan.free,
+          );
         } else {
           _currentPlan = SubscriptionPlan.free;
         }
@@ -52,7 +55,7 @@ class SubscriptionService {
         _currentPlan = SubscriptionPlan.free;
       }
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to load subscription status', exception: e, stackTrace: stack);
+      AppLogger.error('Failed to load subscription status', e, stack);
       _currentPlan = SubscriptionPlan.free;
     }
   }
@@ -61,26 +64,31 @@ class SubscriptionService {
   Future<bool> purchase(SubscriptionPlan plan) async {
     if (plan == SubscriptionPlan.free) return false;
     try {
-      MinqLogger.instance.info('Attempting to purchase subscription', metadata: {'plan': plan.name});
+      AppLogger.info('Attempting to purchase subscription', {
+        'plan': plan.name,
+      });
 
       final now = DateTime.now();
-      final expiryDate = plan == SubscriptionPlan.premiumMonthly
-          ? DateTime(now.year, now.month + 1, now.day)
-          : DateTime(now.year + 1, now.month, now.day);
+      final expiryDate =
+          plan == SubscriptionPlan.premiumMonthly
+              ? DateTime(now.year, now.month + 1, now.day)
+              : DateTime(now.year + 1, now.month, now.day);
 
       await _firestore.collection('users').doc(_userId).update({
         'subscription': {
           'plan': plan.name,
           'purchaseDate': Timestamp.now(),
           'expiryDate': Timestamp.fromDate(expiryDate),
-        }
+        },
       });
 
       _currentPlan = plan;
-      MinqLogger.instance.info('Subscription purchased successfully', metadata: {'plan': plan.name});
+      AppLogger.info('Subscription purchased successfully', {
+        'plan': plan.name,
+      });
       return true;
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to purchase subscription', exception: e, stackTrace: stack);
+      AppLogger.error('Failed to purchase subscription', e, stack);
       return false;
     }
   }
@@ -88,12 +96,14 @@ class SubscriptionService {
   /// サブスクリプションを復元
   Future<bool> restore() async {
     try {
-      MinqLogger.instance.info('Attempting to restore subscription');
+      AppLogger.info('Attempting to restore subscription');
       await _loadSubscriptionStatus();
-      MinqLogger.instance.info('Subscription restored successfully', metadata: {'plan': _currentPlan.name});
+      AppLogger.info('Subscription restored successfully', {
+        'plan': _currentPlan.name,
+      });
       return true;
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to restore subscription', exception: e, stackTrace: stack);
+      AppLogger.error('Failed to restore subscription', e, stack);
       return false;
     }
   }
@@ -101,16 +111,16 @@ class SubscriptionService {
   /// サブスクリプションをキャンセル
   Future<bool> cancel() async {
     try {
-      MinqLogger.instance.info('Attempting to cancel subscription');
+      AppLogger.info('Attempting to cancel subscription');
 
       // TODO: 実際のキャンセル処理
       // 注: iOS/Androidではアプリ内でキャンセルできないため、
       // ストアの設定画面に誘導する
 
-      MinqLogger.instance.info('Subscription cancellation initiated');
+      AppLogger.info('Subscription cancellation initiated');
       return true;
     } catch (e, stack) {
-      MinqLogger.instance.error('Failed to cancel subscription', exception: e, stackTrace: stack);
+      AppLogger.error('Failed to cancel subscription', e, stack);
       return false;
     }
   }
@@ -256,10 +266,7 @@ class FeatureLimit {
   /// 無制限かどうか
   final bool unlimited;
 
-  FeatureLimit({
-    this.maxCount,
-    this.unlimited = false,
-  });
+  FeatureLimit({this.maxCount, this.unlimited = false});
 
   /// 制限に達しているかチェック
   bool isLimitReached(int currentCount) {
@@ -278,7 +285,9 @@ class FeatureLimit {
 
 /// サブスクリプションサービスのProvider
 final subscriptionServiceProvider = Provider<SubscriptionService>((ref) {
-  return SubscriptionService(FirebaseFirestore.instance);
+  final service = SubscriptionService(FirebaseFirestore.instance);
+  service.initialize();
+  return service;
 });
 
 /// 現在のプランのProvider
