@@ -32,7 +32,7 @@ class _AccessibilitySettingsScreenState
       appBar: AppBar(
         title: Text(
           'アクセシビリティ',
-          style: tokens.typeScale.h3.copyWith(
+          style: tokens.typography.h3.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -46,7 +46,7 @@ class _AccessibilitySettingsScreenState
         elevation: 0,
       ),
       body: ListView(
-        padding: EdgeInsets.all(tokens.spaceLG),
+        padding: EdgeInsets.all(tokens.spacing.lg),
         children: [
           // 視覚設定
           _buildSection(
@@ -83,7 +83,7 @@ class _AccessibilitySettingsScreenState
               ),
             ],
           ),
-          SizedBox(height: tokens.spaceXL),
+          SizedBox(height: tokens.spacing.xl),
           // 音声設定
           _buildSection(
             title: '音声設定',
@@ -101,7 +101,7 @@ class _AccessibilitySettingsScreenState
               ),
             ],
           ),
-          SizedBox(height: tokens.spaceXL),
+          SizedBox(height: tokens.spacing.xl),
           // モーション設定
           _buildSection(
             title: 'モーション設定',
@@ -115,7 +115,7 @@ class _AccessibilitySettingsScreenState
               ),
             ],
           ),
-          SizedBox(height: tokens.spaceXL),
+          SizedBox(height: tokens.spacing.xl),
           // UI設定
           _buildSection(
             title: 'UI設定',
@@ -129,24 +129,24 @@ class _AccessibilitySettingsScreenState
               ),
             ],
           ),
-          SizedBox(height: tokens.spaceXL),
+          SizedBox(height: tokens.spacing.xl),
           // プレビュー
           _buildPreview(),
-          SizedBox(height: tokens.spaceXL),
+          SizedBox(height: tokens.spacing.xl),
           // 保存ボタン
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _saveSettings,
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: tokens.spaceLG),
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
                 shape: RoundedRectangleBorder(
                   borderRadius: tokens.cornerFull(),
                 ),
               ),
               child: Text(
                 '設定を保存',
-                style: tokens.typeScale.bodyLarge.copyWith(
+                style: tokens.typography.bodyLarge.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -169,17 +169,17 @@ class _AccessibilitySettingsScreenState
         Row(
           children: [
             Icon(icon, color: tokens.brandPrimary),
-            SizedBox(width: tokens.spaceSM),
+            SizedBox(width: tokens.spacing.sm),
             Text(
               title,
-              style: tokens.typeScale.h4.copyWith(
+              style: tokens.typography.h4.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
-        SizedBox(height: tokens.spaceMD),
+        SizedBox(height: tokens.spacing.md),
         ...children,
       ],
     );
@@ -193,7 +193,7 @@ class _AccessibilitySettingsScreenState
   }) {
     final tokens = context.tokens;
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spaceSM),
+      margin: EdgeInsets.only(bottom: tokens.spacing.sm),
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
@@ -203,11 +203,11 @@ class _AccessibilitySettingsScreenState
       child: SwitchListTile(
         title: Text(
           title,
-          style: tokens.typeScale.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+          style: tokens.typography.body.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
           subtitle,
-          style: tokens.typeScale.caption.copyWith(
+          style: tokens.typography.caption.copyWith(
             color: tokens.textSecondary,
           ),
         ),
@@ -229,7 +229,7 @@ class _AccessibilitySettingsScreenState
   }) {
     final tokens = context.tokens;
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spaceSM),
+      margin: EdgeInsets.only(bottom: tokens.spacing.sm),
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
@@ -237,7 +237,7 @@ class _AccessibilitySettingsScreenState
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spaceMD),
+        padding: EdgeInsets.all(tokens.spacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -250,13 +250,13 @@ class _AccessibilitySettingsScreenState
                     children: [
                       Text(
                         title,
-                        style: tokens.typeScale.bodyMedium.copyWith(
+                        style: tokens.typography.body.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
                         subtitle,
-                        style: tokens.typeScale.caption.copyWith(
+                        style: tokens.typography.caption.copyWith(
                           color: tokens.textSecondary,
                         ),
                       ),
@@ -265,8 +265,8 @@ class _AccessibilitySettingsScreenState
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: tokens.spaceSM,
-                    vertical: tokens.spaceBase,
+                    horizontal: tokens.spacing.sm,
+                    vertical: tokens.spacing.xs,
                   ),
                   decoration: BoxDecoration(
                     color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
@@ -274,7 +274,7 @@ class _AccessibilitySettingsScreenState
                   ),
                   child: Text(
                     valueLabel,
-                    style: tokens.typeScale.bodyMedium.copyWith(
+                    style: tokens.typography.body.copyWith(
                       color: tokens.brandPrimary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -298,7 +298,7 @@ class _AccessibilitySettingsScreenState
   Widget _buildPreview() {
     final tokens = context.tokens;
     return Container(
-      padding: EdgeInsets.all(tokens.spaceLG),
+      padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         color: _highContrast ? Colors.black : tokens.surface,
         borderRadius: tokens.cornerLarge(),
@@ -312,28 +312,29 @@ class _AccessibilitySettingsScreenState
         children: [
           Text(
             'プレビュー',
-            style: tokens.typeScale.h4.copyWith(
+            style: tokens.typography.h4.copyWith(
               color: _highContrast ? Colors.white : tokens.textPrimary,
               fontWeight: _boldText ? FontWeight.bold : FontWeight.w600,
-              fontSize: tokens.typeScale.h4.fontSize! * _textScale,
+              fontSize: tokens.typography.h4.fontSize! * _textScale,
             ),
           ),
-          SizedBox(height: tokens.spaceMD),
+          SizedBox(height: tokens.spacing.md),
           Text(
             'これは設定のプレビューです。実際の表示を確認できます。',
-            style: tokens.typeScale.bodyMedium.copyWith(
+            style: tokens.typography.body.copyWith(
               color: _highContrast ? Colors.white : tokens.textPrimary,
               fontWeight: _boldText ? FontWeight.w600 : FontWeight.normal,
-              fontSize: tokens.typeScale.bodyMedium.fontSize! * _textScale,
+              fontSize: tokens.typography.body.fontSize! * _textScale,
             ),
           ),
-          SizedBox(height: tokens.spaceMD),
+          SizedBox(height: tokens.spacing.md),
           ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(
-                horizontal: tokens.spaceLG,
-                vertical: _largeButtons ? tokens.spaceLG : tokens.spaceMD,
+                horizontal: tokens.spacing.lg,
+                vertical:
+                    _largeButtons ? tokens.spacing.lg : tokens.spacing.md,
               ),
             ),
             child: Text(

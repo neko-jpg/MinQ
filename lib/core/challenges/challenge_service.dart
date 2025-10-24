@@ -1,187 +1,187 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:in_app_review/in_app_review.dart';
+import 'package:minq/application/auth/auth_providers.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/domain/challenges/challenge.dart';
 import 'package:minq/domain/challenges/challenge_progress.dart';
 
-// Provider for the service
+// Service provider
 final challengeServiceProvider = Provider<ChallengeService>((ref) {
   final firestore = FirebaseFirestore.instance;
   final gamificationEngine = ref.watch(gamificationEngineProvider);
-  return ChallengeService(firestore, gamificationEngine);
+  final userId = ref.watch(uidProvider);
+
+  if (userId == null) {
+    throw Exception('ChallengeService requires a logged-in user');
+  }
+
+  return ChallengeService(firestore, gamificationEngine, userId);
 });
+
+// Stream provider for active challenges
+final activeChallengesProvider = StreamProvider<List<Challenge>>((ref) {
+  return ref.watch(challengeServiceProvider).getActiveChallengesStream();
+});
+
+// Stream provider for completed challenges
+final completedChallengesProvider = StreamProvider<List<Challenge>>((ref) {
+  return ref.watch(challengeServiceProvider).getCompletedChallengesStream();
+});
+
+// Stream provider for a specific challenge's progress
+final challengeProgressProvider = StreamProvider.autoDispose
+    .family<ChallengeProgress?, ChallengeProgressIdentity>((ref, identity) {
+  return ref
+      .watch(challengeServiceProvider)
+      .getChallengeProgressStream(identity.challengeId);
+});
+
+class ChallengeProgressIdentity {
+  final String userId;
+  final String challengeId;
+
+  ChallengeProgressIdentity({required this.userId, required this.challengeId});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ChallengeProgressIdentity &&
+          runtimeType == other.runtimeType &&
+          userId == other.userId &&
+          challengeId == other.challengeId;
+
+  @override
+  int get hashCode => userId.hashCode ^ challengeId.hashCode;
+}
 
 class ChallengeService {
   final FirebaseFirestore _firestore;
   final GamificationEngine _gamificationEngine;
+  final String _userId;
 
-  ChallengeService(this._firestore, this._gamificationEngine);
+  ChallengeService(this._firestore, this._gamificationEngine, this._userId);
 
-  Future<void> _createOrUpdateChallengeProgress(
-    String userId,
-    Challenge challenge,
-  ) async {
-    final progressRef = _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('challenge_progress')
-        .doc(challenge.id);
+  CollectionReference get _challengesRef => _firestore.collection('challenges');
+  CollectionReference get _progressRef => _firestore
+      .collection('users')
+      .doc(_userId)
+      .collection('challenge_progress');
 
-    await progressRef.set({
-      'userId': userId,
-      'challengeId': challenge.id,
-      'progress': 0,
-      'completed': false,
-    }, SetOptions(merge: true));
+  /// Fetches active challenges as a stream.
+  Stream<List<Challenge>> getActiveChallengesStream() {
+    return _challengesRef
+        .where('endDate', isGreaterThanOrEqualTo: DateTime.now())
+        .snapshots()
+        .asyncMap((snapshot) async {
+      final progressSnapshot = await _progressRef.get();
+      final completedIds = progressSnapshot.docs
+          .where((doc) {
+            final data = doc.data() as Map<String, dynamic>?;
+            return data?['completed'] == true;
+          })
+          .map((doc) => doc.id)
+          .toSet();
+
+      return snapshot.docs
+          .map((doc) => Challenge.fromJson(doc.data() as Map<String, dynamic>))
+          .where((challenge) => !completedIds.contains(challenge.id))
+          .toList();
+    });
   }
 
-  /// Generates a new daily challenge for a user.
-  Future<Challenge> generateDailyChallenge(String userId) async {
-    final today = DateTime.now();
-    final challengeId = 'daily_${today.year}_${today.month}_${today.day}';
-    final challenge = Challenge(
-      id: challengeId,
-      name: 'Daily Quest Champion',
-      description: 'Complete 3 quests today!',
-      type: 'daily',
-      goal: 3,
-      startDate: DateTime(today.year, today.month, today.day),
-      endDate: DateTime(today.year, today.month, today.day, 23, 59, 59),
-    );
+  /// Fetches completed challenges as a stream.
+  Stream<List<Challenge>> getCompletedChallengesStream() {
+    return _progressRef
+        .where('completed', isEqualTo: true)
+        .snapshots()
+        .asyncMap((progressSnapshot) async {
+      if (progressSnapshot.docs.isEmpty) return [];
 
-    // Store the challenge definition globally if it doesn't exist
-    await _firestore
-        .collection('challenges')
-        .doc(challenge.id)
-        .set(challenge.toJson(), SetOptions(merge: true));
-    // Create progress tracker for the user
-    await _createOrUpdateChallengeProgress(userId, challenge);
-    print('Generated daily challenge for user $userId.');
-    return challenge;
+      final challengeIds = progressSnapshot.docs.map((doc) => doc.id).toList();
+
+      // Firestore 'in' query has a limit of 10 elements.
+      // We need to fetch challenges in batches if needed.
+      final challengeFutures = <Future<DocumentSnapshot>>[];
+      for (final challengeId in challengeIds) {
+        challengeFutures.add(_challengesRef.doc(challengeId).get());
+      }
+      final challengeSnapshots = await Future.wait(challengeFutures);
+
+      return challengeSnapshots
+          .where((doc) => doc.exists)
+          .map((doc) => Challenge.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+    });
   }
 
-  /// Generates a new weekly challenge for a user.
-  Future<Challenge> generateWeeklyChallenge(String userId) async {
-    final today = DateTime.now();
-    final weekStart = today.subtract(Duration(days: today.weekday - 1));
-    final challengeId =
-        'weekly_${weekStart.year}_${weekStart.month}_${weekStart.day}';
-    final challenge = Challenge(
-      id: challengeId,
-      name: 'Weekly Warrior',
-      description: 'Complete 15 quests this week!',
-      type: 'weekly',
-      goal: 15,
-      startDate: weekStart,
-      endDate: weekStart.add(const Duration(days: 6, hours: 23, minutes: 59)),
-    );
-    await _firestore
-        .collection('challenges')
-        .doc(challenge.id)
-        .set(challenge.toJson(), SetOptions(merge: true));
-    await _createOrUpdateChallengeProgress(userId, challenge);
-    print('Generated weekly challenge for user $userId.');
-    return challenge;
-  }
-
-  /// Gets the current progress for a specific challenge.
-  Future<ChallengeProgress?> getProgress({
-    required String userId,
-    required String challengeId,
-  }) async {
-    try {
-      final doc =
-          await _firestore
-              .collection('users')
-              .doc(userId)
-              .collection('challenge_progress')
-              .doc(challengeId)
-              .get();
-      return doc.exists ? ChallengeProgress.fromJson(doc.data()!) : null;
-    } catch (e) {
-      print('Error getting challenge progress: $e');
+  /// Gets a stream of progress for a specific challenge.
+  Stream<ChallengeProgress?> getChallengeProgressStream(String challengeId) {
+    return _progressRef.doc(challengeId).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return ChallengeProgress.fromJson(
+            snapshot.data() as Map<String, dynamic>);
+      }
+      // If no progress exists, create one. This is useful for new challenges.
+      _createInitialProgress(challengeId);
       return null;
+    });
+  }
+
+  /// Creates an initial progress document if it doesn't exist.
+  Future<void> _createInitialProgress(String challengeId) async {
+    final doc = _progressRef.doc(challengeId);
+    final snapshot = await doc.get();
+    if (!snapshot.exists) {
+      await doc.set({
+        'userId': _userId,
+        'challengeId': challengeId,
+        'progress': 0,
+        'completed': false,
+      });
     }
   }
 
   /// Updates the progress of a challenge.
   Future<void> updateProgress({
-    required String userId,
     required String challengeId,
     required int incrementBy,
   }) async {
-    final progressRef = _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('challenge_progress')
-        .doc(challengeId);
+    final progressDocRef = _progressRef.doc(challengeId);
+    final challengeDoc = await _challengesRef.doc(challengeId).get();
 
-    final challengeRef = _firestore.collection('challenges').doc(challengeId);
+    if (!challengeDoc.exists) return;
+    final challenge =
+        Challenge.fromJson(challengeDoc.data() as Map<String, dynamic>);
 
-    try {
-      final challengeDoc = await challengeRef.get();
-      if (!challengeDoc.exists) throw Exception('Challenge not found');
-      final challenge = Challenge.fromJson(challengeDoc.data()!);
+    final progressSnapshot = await progressDocRef.get();
+    final currentProgress = progressSnapshot.exists
+        ? ChallengeProgress.fromJson(
+            progressSnapshot.data() as Map<String, dynamic>)
+        : null;
 
-      final progressDoc = await progressRef.get();
-      if (!progressDoc.exists) return; // No progress to update
-      final currentProgress = ChallengeProgress.fromJson(progressDoc.data()!);
+    if (currentProgress == null || currentProgress.completed) return;
 
-      if (currentProgress.completed) return; // Already completed
+    final newProgress = currentProgress.progress + incrementBy;
+    await progressDocRef.update({'progress': newProgress});
 
-      final newProgress = currentProgress.progress + incrementBy;
-      await progressRef.update({'progress': newProgress});
-
-      if (newProgress >= challenge.goal) {
-        await completeChallenge(
-          userId: userId,
-          challengeId: challengeId,
-          challenge: challenge,
-        );
-      }
-    } catch (e) {
-      print('Error updating progress for challenge $challengeId: $e');
+    if (newProgress >= challenge.goal) {
+      await _completeChallenge(challenge);
     }
   }
 
   /// Completes a challenge and awards rewards.
-  Future<void> completeChallenge({
-    required String userId,
-    required String challengeId,
-    Challenge? challenge,
-  }) async {
-    final progressRef = _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('challenge_progress')
-        .doc(challengeId);
+  Future<void> _completeChallenge(Challenge challenge) async {
+    await _progressRef.doc(challenge.id).update({
+      'completed': true,
+      'progress': challenge.goal,
+    });
 
-    try {
-      await progressRef.update({
-        'completed': true,
-        'progress': challenge?.goal ?? FieldValue.increment(0),
-      });
-      print('Completing challenge $challengeId for user $userId.');
+    await _gamificationEngine.awardPoints(
+      userId: _userId,
+      basePoints: 100, // FIXME: Use value from challenge
+      reason: 'Completed Challenge: ${challenge.name}',
+    );
 
-      await _gamificationEngine.awardPoints(
-        userId: userId,
-        basePoints: 100, // Example points
-        reason: 'Completed Challenge: ${challenge?.name ?? challengeId}',
-      );
-      // Optionally, check for new badges after awarding points
-      await _gamificationEngine.checkAndAwardBadges(userId);
-
-      // Request a review on special occasions (e.g., completing a weekly challenge)
-      if (challenge?.type == 'weekly') {
-        final InAppReview inAppReview = InAppReview.instance;
-        if (await inAppReview.isAvailable()) {
-          inAppReview.requestReview();
-          print('Requested in-app review after weekly challenge completion.');
-        }
-      }
-    } catch (e) {
-      print('Error completing challenge $challengeId: $e');
-    }
+    await _gamificationEngine.checkAndAwardBadges(_userId);
   }
 }

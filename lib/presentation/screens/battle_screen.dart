@@ -139,12 +139,15 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
           child:
               _availableBattles.isEmpty
                   ? EmptyStateWidget(
-                    icon: Icons.sports_esports,
-                    title: 'バトルがありません',
-                    subtitle: '新しいバトルを作成するか、しばらく待ってから再度確認してください',
-                    actionText: 'バトルを作成',
-                    onAction: () => _tabController.animateTo(1),
-                  )
+                      icon: Icons.sports_esports,
+                      title: 'バトルがありません',
+                      message:
+                          '新しいバトルを作成するか、しばらく待ってから再度確認してください',
+                      action: ElevatedButton(
+                        onPressed: () => _tabController.animateTo(1),
+                        child: const Text('バトルを作成'),
+                      ),
+                    )
                   : RefreshIndicator(
                     onRefresh: _loadData,
                     child: ListView.builder(
@@ -593,9 +596,11 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
           return EmptyStateWidget(
             icon: Icons.history,
             title: 'バトル履歴がありません',
-            subtitle: 'バトルに参加すると履歴が表示されます',
-            actionText: 'バトルに参加',
-            onAction: () => _tabController.animateTo(0),
+            message: 'バトルに参加すると履歴が表示されます',
+            action: ElevatedButton(
+              onPressed: () => _tabController.animateTo(0),
+              child: const Text('バトルに参加'),
+            ),
           );
         }
 

@@ -419,7 +419,7 @@ Widget _buildCompareProgressCard(
       label: '今週',
       value: thisWeekCompletions.toDouble(),
       unit: '日',
-      progress: thisWeekCompletions / weeklyGoal,
+      progress: (thisWeekCompletions / weeklyGoal).toDouble(),
       color: tokens.brandPrimary,
       icon: Icons.trending_up,
       semanticsLabel: '今週は$thisWeekCompletions日達成しています',
@@ -428,7 +428,7 @@ Widget _buildCompareProgressCard(
       label: '先週',
       value: lastWeekCompletions.toDouble(),
       unit: '日',
-      progress: lastWeekCompletions / weeklyGoal,
+      progress: (lastWeekCompletions / weeklyGoal).toDouble(),
       color: tokens.serenity,
       icon: Icons.history,
       semanticsLabel: '先週は$lastWeekCompletions日達成しました',
@@ -554,19 +554,20 @@ Widget _buildWeeklyProgressCard(
       label: '日数',
       value: weeklyCompletions.toDouble(),
       unit: '日',
-      progress: weeklyCompletions / weeklyGoal,
+      progress: (weeklyCompletions / weeklyGoal).toDouble(),
     ),
     _RingMetric(
       label: '合計時間',
       value: totalMinutes / 60,
       unit: '時間',
-      progress: (totalMinutes / 60) / (weeklyGoal * dailyGoalMinutes / 60),
+      progress:
+          ((totalMinutes / 60) / (weeklyGoal * dailyGoalMinutes / 60)).toDouble(),
     ),
     _RingMetric(
       label: '平均時間',
       value: averageMinutes,
       unit: '分',
-      progress: averageMinutes / dailyGoalMinutes,
+      progress: (averageMinutes / dailyGoalMinutes).toDouble(),
     ),
   ];
 
@@ -781,7 +782,7 @@ Widget _buildProgressRing({
               ),
               if (hasProgress)
                 CircularProgressIndicator(
-                  value: metric.progress.clamp(0.0, 1.0),
+                  value: metric.progress.clamp(0.0, 1.0).toDouble(),
                   strokeWidth: 8,
                   valueColor: AlwaysStoppedAnimation<Color>(
                     tokens.brandPrimary,
@@ -913,10 +914,10 @@ Widget _buildCalendarCard(
               return Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color:
-                      value > 0
-                          ? tokens.brandPrimary.withAlpha((255 * (value / 5.0)).round())
-                          : Colors.transparent,
+                  color: value > 0
+                      ? tokens.brandPrimary
+                          .withAlpha((255 * (value.toDouble() / 5.0)).round())
+                      : Colors.transparent,
                   shape: BoxShape.circle,
                   border:
                       isToday
@@ -1128,7 +1129,7 @@ Widget _buildWeeklyStatsCard(
                   backgroundColor: Colors.transparent,
                 ),
                 CircularProgressIndicator(
-                  value: weeklyRate.clamp(0.0, 1.0),
+                  value: weeklyRate.clamp(0.0, 1.0).toDouble(),
                   strokeWidth: 12,
                   valueColor: AlwaysStoppedAnimation<Color>(
                     weeklyRate >= 0.7

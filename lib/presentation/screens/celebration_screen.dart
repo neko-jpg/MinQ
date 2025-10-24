@@ -30,7 +30,6 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   }
 
   Future<void> _handlePostCelebrationFlows() async {
-    if (!mounted) return;
     await _maybeRequestNotificationPermission();
     if (!mounted) return;
     await _maybeTriggerInAppReview();
@@ -182,19 +181,19 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
               ],
             ),
           ),
-          SizedBox(height: tokens.spacing(4)),
+          SizedBox(height: tokens.spacing.lg),
           Text(
             titleText,
-            style: tokens.displaySmall.copyWith(
+            style: tokens.typography.h1.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.w800,
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: tokens.spacing(2)),
+          SizedBox(height: tokens.spacing.sm),
           Text(
             subtitleText,
-            style: tokens.bodyLarge.copyWith(color: tokens.textMuted),
+            style: tokens.typography.bodyLarge.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -204,62 +203,62 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
 
   Widget _buildRewardCard(MinqTheme tokens, AppLocalizations l10n) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(5)),
+      padding: EdgeInsets.symmetric(horizontal: tokens.spacing.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: tokens.spacing(2)),
+            padding: EdgeInsets.only(left: tokens.spacing.sm),
             child: Text(
               l10n.celebrationRewardTitle,
-              style: tokens.titleSmall.copyWith(
+              style: tokens.typography.h5.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          SizedBox(height: tokens.spacing(3)),
+          SizedBox(height: tokens.spacing.md),
           Material(
             color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
-            borderRadius: tokens.cornerLarge(),
+            borderRadius: BorderRadius.circular(tokens.radius.lg),
             child: InkWell(
               onTap: () {
                 /* TODO: Implement reward action */
               },
-              borderRadius: tokens.cornerLarge(),
+              borderRadius: BorderRadius.circular(tokens.radius.lg),
               child: Container(
-                padding: EdgeInsets.all(tokens.spacing(4)),
+                padding: EdgeInsets.all(tokens.spacing.lg),
                 child: Row(
                   children: <Widget>[
                     Container(
-                      width: tokens.spacing(14),
-                      height: tokens.spacing(14),
+                      width: tokens.spacing.xxl * 2,
+                      height: tokens.spacing.xxl * 2,
                       decoration: BoxDecoration(
                         color: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
-                        borderRadius: tokens.cornerLarge(),
+                        borderRadius: BorderRadius.circular(tokens.radius.lg),
                       ),
                       child: Icon(
                         Icons.self_improvement,
                         color: tokens.brandPrimary,
-                        size: tokens.spacing(8),
+                        size: tokens.spacing.xl,
                       ),
                     ),
-                    SizedBox(width: tokens.spacing(4)),
+                    SizedBox(width: tokens.spacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
                             l10n.celebrationRewardName,
-                            style: tokens.titleSmall.copyWith(
+                            style: tokens.typography.h5.copyWith(
                               color: tokens.textPrimary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: tokens.spacing(1)),
+                          SizedBox(height: tokens.spacing.xs),
                           Text(
                             l10n.celebrationRewardDescription,
-                            style: tokens.bodyMedium.copyWith(
+                            style: tokens.typography.body.copyWith(
                               color: tokens.textMuted,
                             ),
                           ),
@@ -268,7 +267,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
                     ),
                     Icon(
                       Icons.arrow_forward_ios,
-                      size: tokens.spacing(4),
+                      size: tokens.spacing.lg,
                       color: tokens.textMuted,
                     ),
                   ],
@@ -288,10 +287,10 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   ) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        tokens.spacing(4),
-        tokens.spacing(4),
-        tokens.spacing(4),
-        tokens.spacing(6),
+        tokens.spacing.lg,
+        tokens.spacing.lg,
+        tokens.spacing.lg,
+        tokens.spacing.xl,
       ),
       child: Column(
         children: [
@@ -303,14 +302,14 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
               icon: const Icon(Icons.share),
               label: const Text('達成を共有する'),
               style: OutlinedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
                 shape: RoundedRectangleBorder(
                   borderRadius: tokens.cornerFull(),
                 ),
               ),
             ),
           ),
-          SizedBox(height: tokens.spacing(3)),
+          SizedBox(height: tokens.spacing.md),
           // 完了ボタン
           SizedBox(
             width: double.infinity,
@@ -319,14 +318,14 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: tokens.brandPrimary,
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
                 shape: RoundedRectangleBorder(
                   borderRadius: tokens.cornerFull(),
                 ),
               ),
               child: Text(
                 l10n.celebrationDone,
-                style: tokens.titleMedium.copyWith(
+                style: tokens.typography.h5.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -341,11 +340,11 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   Widget _buildCloseButton(BuildContext context, MinqTheme tokens) {
     return Positioned(
       top: MediaQuery.of(context).padding.top,
-      left: tokens.spacing(2),
+      left: tokens.spacing.sm,
       child: IconButton(
         icon: Container(
-          width: tokens.spacing(12),
-          height: tokens.spacing(12),
+          width: tokens.spacing.xxl,
+          height: tokens.spacing.xxl,
           decoration: BoxDecoration(
             color: Colors.white.withAlpha(51),
             shape: BoxShape.circle,
@@ -380,18 +379,18 @@ class _NotificationEducationDialog extends StatelessWidget {
         children: [
           Text(
             l10n.notificationPermissionDialogMessage,
-            style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
+            style: tokens.typography.body.copyWith(color: tokens.textPrimary),
           ),
           if (showEducation) ...[
-            SizedBox(height: tokens.spacing(3)),
+            SizedBox(height: tokens.spacing.md),
             Text(
               l10n.notificationPermissionDialogBenefitsHeading,
-              style: tokens.bodyMedium.copyWith(
+              style: tokens.typography.body.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: tokens.spacing(2)),
+            SizedBox(height: tokens.spacing.sm),
             _DialogBullet(
               text: l10n.notificationPermissionDialogBenefitReminders,
               tokens: tokens,
@@ -405,10 +404,10 @@ class _NotificationEducationDialog extends StatelessWidget {
               tokens: tokens,
             ),
           ],
-          SizedBox(height: tokens.spacing(3)),
+          SizedBox(height: tokens.spacing.md),
           Text(
             l10n.notificationPermissionDialogFooter,
-            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
           ),
         ],
       ),
@@ -435,19 +434,19 @@ class _DialogBullet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing(1)),
+      padding: EdgeInsets.only(bottom: tokens.spacing.xs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '•',
-            style: tokens.bodyMedium.copyWith(color: tokens.brandPrimary),
+            style: tokens.typography.body.copyWith(color: tokens.brandPrimary),
           ),
-          SizedBox(width: tokens.spacing(2)),
+          SizedBox(width: tokens.spacing.sm),
           Expanded(
             child: Text(
               text,
-              style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
+              style: tokens.typography.body.copyWith(color: tokens.textPrimary),
             ),
           ),
         ],
