@@ -486,8 +486,8 @@ class TFLiteUnifiedAIService {
   }
 
   /// 出力からトークンを抽出
-  List<int> _extractTokensFromOutput(List<List<double>> output) {
-    return output[0].map((score) => score.round()).toList();
+  List<int> _extractTokensFromOutput(List<dynamic> output) {
+    return (output[0] as List<dynamic>).map((score) => (score as double).round()).toList();
   }
 
   /// 応答の後処理
