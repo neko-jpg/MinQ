@@ -750,18 +750,18 @@ final heatmapDataProvider = FutureProvider<Map<DateTime, int>>((ref) async {
 });
 
 // Gamification providers
-final gamificationEngineProvider = Provider<GamificationEngine>((ref) {
+final gamificationEngineProvider = Provider<GamificationEngine?>((ref) {
   final firestore = ref.watch(firestoreProvider);
   if (firestore == null) {
-    throw StateError('Firestore is not available');
+    return null; // Firestoreが利用できない場合はnullを返す
   }
   return GamificationEngine(firestore);
 });
 
-final rewardSystemProvider = Provider<RewardSystem>((ref) {
+final rewardSystemProvider = Provider<RewardSystem?>((ref) {
   final firestore = ref.watch(firestoreProvider);
   if (firestore == null) {
-    throw StateError('Firestore is not available');
+    return null; // Firestoreが利用できない場合はnullを返す
   }
   return RewardSystem(firestore);
 });

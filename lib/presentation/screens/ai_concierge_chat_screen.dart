@@ -29,6 +29,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(aiConciergeChatControllerProvider);
     });
+
   }
 
   @override
@@ -40,21 +41,18 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    final chatState = ref.watch(aiConciergeChatControllerProvider);
-
-    // ref.listenをbuild内で使用
     ref.listen<AsyncValue<List<AiConciergeMessage>>>(
       aiConciergeChatControllerProvider,
       (previous, next) {
-        if (!mounted || !next.hasValue) {
-          return;
-        }
+        if (!mounted || !next.hasValue) return;
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollToBottom();
+          if (mounted) _scrollToBottom();
         });
       },
     );
+
+    final tokens = context.tokens;
+    final chatState = ref.watch(aiConciergeChatControllerProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,

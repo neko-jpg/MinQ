@@ -24,42 +24,31 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  ProviderSubscription<SyncStatus>? _syncStatusSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    _syncStatusSubscription = ref.listenManual<SyncStatus>(syncStatusProvider, (
-      previous,
-      next,
-    ) {
-      if (!mounted || !next.showBanner || next.bannerMessage == null) {
-        return;
-      }
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        final messenger = ScaffoldMessenger.of(context);
-        messenger
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(next.bannerMessage!),
-              duration: const Duration(seconds: 2),
-            ),
-          );
-        ref.read(syncStatusProvider.notifier).acknowledgeBanner();
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _syncStatusSubscription?.close();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<SyncStatus>(
+      syncStatusProvider,
+      (previous, next) {
+        if (!mounted || !next.showBanner || next.bannerMessage == null) {
+          return;
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          final messenger = ScaffoldMessenger.of(context);
+          messenger
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(next.bannerMessage!),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
+        });
+      },
+    );
+
     final mediaQuery = MediaQuery.of(context);
     final syncStatus = ref.watch(syncStatusProvider);
     final homeAsync = ref.watch(homeDataProvider);

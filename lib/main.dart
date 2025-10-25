@@ -155,9 +155,6 @@ class MinQApp extends ConsumerStatefulWidget {
 }
 
 class _MinQAppState extends ConsumerState<MinQApp> {
-  late final ProviderSubscription<AsyncValue<String>>
-  _notificationTapSubscription;
-  ProviderSubscription<AsyncValue<Uri>>? _deepLinkSubscription;
 
   @override
   void initState() {
@@ -173,32 +170,14 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     });
 
     // レベルアップイベントリスナー
-    ref.listen<LevelUpEvent?>(levelUpEventProvider, (previous, next) {
-      if (next != null && mounted) {
-        _showLevelUpScreen(next);
-      }
+    Future.microtask(() {
+      _handleLevelUpEvent(ref.read(levelUpEventProvider));
+      _handleNotificationNavigation(ref.read(notificationTapStreamProvider));
+      _handleDeepLinkNavigation(ref.read(deepLinkStreamProvider));
     });
-
-    // React to notification taps emitted by the native layer.
-    _notificationTapSubscription = ref.listenManual<AsyncValue<String>>(
-      notificationTapStreamProvider,
-      (previous, next) => _handleNotificationNavigation(next),
-    );
-    _handleNotificationNavigation(_notificationTapSubscription.read());
-
-    _deepLinkSubscription = ref.listenManual<AsyncValue<Uri>>(
-      deepLinkStreamProvider,
-      (previous, next) => _handleDeepLinkNavigation(next),
-    );
-    _handleDeepLinkNavigation(_deepLinkSubscription?.read());
   }
 
-  @override
-  void dispose() {
-    _notificationTapSubscription.close();
-    _deepLinkSubscription?.close();
-    super.dispose();
-  }
+
 
   void _handleNotificationNavigation(AsyncValue<String> notification) {
     notification.whenData((route) {
@@ -235,6 +214,12 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     return null;
   }
 
+  void _handleLevelUpEvent(LevelUpEvent? event) {
+    if (event != null && mounted) {
+      _showLevelUpScreen(event);
+    }
+  }
+
   void _showLevelUpScreen(LevelUpEvent event) {
     // レベルアップ画面を表示
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -260,6 +245,22 @@ class _MinQAppState extends ConsumerState<MinQApp> {
 
   @override
   Widget build(BuildContext context) {
+    // ref.listenをbuildメソッド内で使用
+    ref.listen<LevelUpEvent?>(
+      levelUpEventProvider,
+      (previous, next) => _handleLevelUpEvent(next),
+    );
+
+    ref.listen<AsyncValue<String>>(
+      notificationTapStreamProvider,
+      (previous, next) => _handleNotificationNavigation(next),
+    );
+
+    ref.listen<AsyncValue<Uri>>(
+      deepLinkStreamProvider,
+      (previous, next) => _handleDeepLinkNavigation(next),
+    );
+
     final appStartupAsyncValue = ref.watch(appStartupProvider);
     final initializationError = ref.watch(initializationErrorProvider);
     final router = ref.watch(routerProvider);

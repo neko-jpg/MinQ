@@ -74,13 +74,18 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
   }
 
   void _startListening() {
-    _activitySubscription = SocialProofService.instance.activityStream.listen(
-      _handleActivityUpdate,
-    );
+    try {
+      _activitySubscription = SocialProofService.instance.activityStream.listen(
+        _handleActivityUpdate,
+      );
 
-    _statsSubscription = SocialProofService.instance.statsStream.listen(
-      _handleStatsUpdate,
-    );
+      _statsSubscription = SocialProofService.instance.statsStream.listen(
+        _handleStatsUpdate,
+      );
+    } catch (e) {
+      // Firebase が初期化されていない場合はスキップ
+      print('SocialProofService initialization failed: $e');
+    }
   }
 
   void _loadInitialData() async {

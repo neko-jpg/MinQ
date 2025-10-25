@@ -6,13 +6,13 @@ import 'package:minq/domain/challenges/challenge.dart';
 import 'package:minq/domain/challenges/challenge_progress.dart';
 
 // Service provider
-final challengeServiceProvider = Provider<ChallengeService>((ref) {
+final challengeServiceProvider = Provider<ChallengeService?>((ref) {
   final firestore = FirebaseFirestore.instance;
   final gamificationEngine = ref.watch(providers.gamificationEngineProvider);
   final userId = ref.watch(providers.uidProvider);
 
-  if (userId == null) {
-    throw Exception('ChallengeService requires a logged-in user');
+  if (userId == null || gamificationEngine == null) {
+    return null; // 必要な依存関係が利用できない場合はnullを返す
   }
 
   return ChallengeService(firestore, gamificationEngine, userId);
@@ -20,20 +20,30 @@ final challengeServiceProvider = Provider<ChallengeService>((ref) {
 
 // Stream provider for active challenges
 final activeChallengesProvider = StreamProvider<List<Challenge>>((ref) {
-  return ref.watch(challengeServiceProvider).getActiveChallengesStream();
+  final service = ref.watch(challengeServiceProvider);
+  if (service == null) {
+    return Stream.value(<Challenge>[]);
+  }
+  return service.getActiveChallengesStream();
 });
 
 // Stream provider for completed challenges
 final completedChallengesProvider = StreamProvider<List<Challenge>>((ref) {
-  return ref.watch(challengeServiceProvider).getCompletedChallengesStream();
+  final service = ref.watch(challengeServiceProvider);
+  if (service == null) {
+    return Stream.value(<Challenge>[]);
+  }
+  return service.getCompletedChallengesStream();
 });
 
 // Stream provider for a specific challenge's progress
 final challengeProgressProvider = StreamProvider.autoDispose
     .family<ChallengeProgress?, ChallengeProgressIdentity>((ref, identity) {
-  return ref
-      .watch(challengeServiceProvider)
-      .getChallengeProgressStream(identity.challengeId);
+  final service = ref.watch(challengeServiceProvider);
+  if (service == null) {
+    return Stream.value(null);
+  }
+  return service.getChallengeProgressStream(identity.challengeId);
 });
 
 class ChallengeProgressIdentity {
