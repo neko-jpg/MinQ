@@ -7,14 +7,6 @@ import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 class FeedbackManager {
   static bool _isInitialized = false;
 
-  /// Reset the manager state (for testing purposes)
-  @visibleForTesting
-  static void reset() {
-    _isInitialized = false;
-    HapticManager.reset();
-    AudioFeedbackManager.reset();
-  }
-
   /// Initialize both haptic and audio feedback managers
   static Future<void> initialize() async {
     if (_isInitialized) return;

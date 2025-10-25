@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:miinq_integrations/miinq_integrations.dart';
-import 'package:minq/data/providers.dart';
 import 'package:minq/domain/support/support_message.dart';
 import 'package:minq/core/ai/tflite_unified_ai_service.dart';
 import 'package:minq/core/ai/ai_coach_controller.dart'; // For tfliteAIServiceProvider
@@ -89,7 +88,6 @@ class SupportChatService {
 }
 
 final supportChatServiceProvider = Provider<SupportChatService?>((ref) {
-  final remoteConfig = ref.watch(remoteConfigServiceProvider);
   final tfliteService = ref.watch(tfliteAIServiceProvider);
 
   // TFLite AIが利用可能な場合は優先的に使用

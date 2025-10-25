@@ -19,7 +19,6 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
 
   List<HabitStory> _stories = [];
   bool _isLoading = false;
-  HabitStory? _selectedStory;
 
   @override
   void initState() {
@@ -128,7 +127,6 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
   }
 
   void _showStoryDetail(HabitStory story) {
-    setState(() => _selectedStory = story);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

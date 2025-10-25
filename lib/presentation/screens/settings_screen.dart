@@ -7,6 +7,7 @@ import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/l10n/app_localizations.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/policy_documents.dart';
 import 'package:minq/presentation/routing/app_router.dart';
@@ -202,7 +203,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         );
       }
     } catch (error, stackTrace) {
-      debugPrint('Data export failed: $error\n$stackTrace');
+      MinqLogger.error(
+        'Data export failed',
+        exception: error,
+        stackTrace: stackTrace,
+      );
       failureMessage = 'データのエクスポートに失敗しました。時間をおいて再試行してください。';
       if (mounted) {
         messenger.showSnackBar(

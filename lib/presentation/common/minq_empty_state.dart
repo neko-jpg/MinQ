@@ -30,13 +30,13 @@ class MinqEmptyState extends StatelessWidget {
             width: tokens.spacing.xxl,
             height: tokens.spacing.xxl,
             decoration: BoxDecoration(
-              color: tokens.color.brandPrimary.withAlpha((255 * 0.08).round()),
+              color: tokens.brandPrimary.withAlpha((255 * 0.08).round()),
               shape: BoxShape.circle,
             ),
             child: Icon(
               icon,
               size: tokens.spacing.xl,
-              color: tokens.color.brandPrimary,
+              color: tokens.brandPrimary,
             ),
           ),
           SizedBox(height: tokens.spacing.lg),
@@ -44,14 +44,14 @@ class MinqEmptyState extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style:
-                tokens.typography.h4.copyWith(color: tokens.color.text),
+                tokens.typography.h4.copyWith(color: tokens.textPrimary),
           ),
           SizedBox(height: tokens.spacing.sm),
           Text(
             message,
             textAlign: TextAlign.center,
             style: tokens.typography.body
-                .copyWith(color: tokens.color.textMuted),
+                .copyWith(color: tokens.textMuted),
           ),
           if (actionArea != null) ...<Widget>[
             SizedBox(height: tokens.spacing.md),

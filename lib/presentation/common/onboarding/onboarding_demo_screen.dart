@@ -13,7 +13,6 @@ class OnboardingDemoScreen extends StatefulWidget {
 class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
   bool _hasCompletedOnboarding = false;
   int _currentStep = 0;
-  final List<String> _viewedTooltips = [];
 
   @override
   void initState() {

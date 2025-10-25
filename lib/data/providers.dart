@@ -16,7 +16,6 @@ import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/config/stripe_config.dart';
 import 'package:minq/core/ai/failure_prediction_service.dart';
 import 'package:minq/core/ai/tflite_unified_ai_service_provider.dart';
-import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/export/data_export_service.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/core/gamification/reward_system.dart';
@@ -765,15 +764,6 @@ final rewardSystemProvider = Provider<RewardSystem>((ref) {
     throw StateError('Firestore is not available');
   }
   return RewardSystem(firestore);
-});
-
-final challengeServiceProvider = Provider<ChallengeService>((ref) {
-  final firestore = ref.watch(firestoreProvider);
-  if (firestore == null) {
-    throw StateError('Firestore is not available');
-  }
-  final gamificationEngine = ref.watch(gamificationEngineProvider);
-  return ChallengeService(firestore, gamificationEngine);
 });
 
 // AI providers - 既にgemma_ai_service.dartで定義されているので削除

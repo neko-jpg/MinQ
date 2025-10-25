@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/application/auth/auth_providers.dart';
+import 'package:minq/data/providers.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/domain/challenges/challenge.dart';
 import 'package:minq/domain/challenges/challenge_progress.dart';

@@ -20,7 +20,7 @@ import 'package:minq/presentation/controllers/progressive_onboarding_controller.
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/screens/crash_recovery_screen.dart';
 import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
-import 'package:minq/presentation/theme/build_theme.dart';
+import 'package:minq/presentation/theme/theme.dart';
 import 'package:minq/presentation/widgets/version_check_widget.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -329,7 +329,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
 
           TextScaler effectiveTextScaler = mediaQuery.textScaler;
           if (maxScaleFactor > minScaleFactor) {
-            final double approxScale = mediaQuery.textScaler.textScaleFactor;
+            final double approxScale = mediaQuery.textScaler.scale(1);
             if (!approxScale.isFinite || approxScale <= 0) {
               assert(() {
                 debugPrint(

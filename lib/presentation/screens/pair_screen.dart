@@ -228,19 +228,6 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     }
   }
 
-  Future<void> _findRandomPartner() async {
-    final uid = ref.read(uidProvider);
-    if (uid == null) return;
-
-    // TODO: Handle null repository gracefully
-    final pairId = await ref
-        .read(pairRepositoryProvider)!
-        .requestRandomPair(uid, _selectedCategory);
-    if (mounted && pairId == null) {
-      FeedbackMessenger.showInfoToast(context, '現在マッチング中です。順番をお待ちください。');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;

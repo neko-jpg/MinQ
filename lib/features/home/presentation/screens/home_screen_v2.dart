@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
+import 'package:minq/core/ai/ai_coach_controller.dart';
 import 'package:minq/core/progress/progress_visualization_service.dart';
+import 'package:minq/features/home/presentation/widgets/voice_input_widget.dart';
 
 // A dummy user ID for now
 const _userId = 'test_user';
+
+final userIdProvider = Provider<String>((ref) => _userId);
 
 // Data class for the progress section
 class HomeProgressData {
@@ -24,9 +28,10 @@ final homeProgressProvider = FutureProvider.autoDispose<HomeProgressData>((
   ref,
 ) async {
   final progressService = ref.watch(progressVisualizationServiceProvider);
+  final userId = ref.watch(userIdProvider);
 
   // Fetch streak
-  final streak = await progressService.calculateStreak(_userId);
+  final streak = await progressService.calculateStreak(userId);
 
   // Fetch today's quests
   final today = DateTime.now();
@@ -36,7 +41,7 @@ final homeProgressProvider = FutureProvider.autoDispose<HomeProgressData>((
   final questSnapshot =
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(_userId)
+          .doc(userId)
           .collection('quests')
           .where(
             'createdAt',
@@ -92,6 +97,7 @@ class HomeScreenV2 extends ConsumerWidget {
           _ActiveChallengesSection(),
         ],
       ),
+      floatingActionButton: const VoiceInputWidget(),
     );
   }
 }
@@ -191,13 +197,14 @@ class _ProgressTile extends StatelessWidget {
 
 final todaysQuestsProvider =
     StreamProvider.autoDispose<List<QueryDocumentSnapshot>>((ref) {
+      final userId = ref.watch(userIdProvider);
       final today = DateTime.now();
       final startOfDay = DateTime(today.year, today.month, today.day);
       final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59);
 
       return FirebaseFirestore.instance
           .collection('users')
-          .doc(_userId)
+          .doc(userId)
           .collection('quests')
           .where(
             'createdAt',
@@ -213,11 +220,12 @@ final questCompletionProvider = Provider((ref) {
     final firestore = FirebaseFirestore.instance;
     final gamification = ref.read(gamificationEngineProvider);
     final challenges = ref.read(challengeServiceProvider);
+    final userId = ref.watch(userIdProvider);
 
     // 1. Mark quest as complete
     await firestore
         .collection('users')
-        .doc(_userId)
+        .doc(userId)
         .collection('quests')
         .doc(questId)
         .update({'completed': true});
@@ -225,7 +233,7 @@ final questCompletionProvider = Provider((ref) {
     // 2. Log completion
     await firestore
         .collection('users')
-        .doc(_userId)
+        .doc(userId)
         .collection('quest_logs')
         .add({
           'questId': questId,
@@ -235,7 +243,7 @@ final questCompletionProvider = Provider((ref) {
 
     // 3. Award points
     await gamification.awardPoints(
-      userId: _userId,
+      userId: userId,
       basePoints: 10,
       reason: 'Completed quest: $questName',
     );
@@ -244,7 +252,6 @@ final questCompletionProvider = Provider((ref) {
     final dailyChallengeId =
         'daily_${DateTime.now().year}_${DateTime.now().month}_${DateTime.now().day}';
     await challenges.updateProgress(
-      userId: _userId,
       challengeId: dailyChallengeId,
       incrementBy: 1,
     );
@@ -321,10 +328,11 @@ class _TodaysQuestsSection extends ConsumerWidget {
 final activeChallengesProvider =
     StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) async* {
       final firestore = FirebaseFirestore.instance;
+      final userId = ref.watch(userIdProvider);
       final challengeProgressStream =
           firestore
               .collection('users')
-              .doc(_userId)
+              .doc(userId)
               .collection('challenge_progress')
               .where('completed', isEqualTo: false)
               .snapshots();

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/gamification/badge.dart';
 import 'package:minq/domain/gamification/points.dart';
@@ -27,7 +28,7 @@ class GamificationEngine {
     if (_firestore == null) {
       final totalPoints =
           (basePoints * difficultyMultiplier * consistencyMultiplier).round();
-      print(
+      MinqLogger.info(
         'Awarded $totalPoints points to user $userId for $reason (offline mode).',
       );
       return;
@@ -50,9 +51,9 @@ class GamificationEngine {
           .collection('points_transactions')
           .add(pointsTransaction.toJson());
 
-      print('Awarded $totalPoints points to user $userId for $reason.');
+      MinqLogger.info('Awarded $totalPoints points to user $userId for $reason.');
     } catch (e) {
-      print('Failed to award points (offline): $e');
+      MinqLogger.error('Failed to award points (offline)', exception: e);
     }
   }
 
@@ -60,7 +61,7 @@ class GamificationEngine {
   Future<List<Badge>> checkAndAwardBadges(String userId) async {
     // Firestoreが利用できない場合は空のリストを返す
     if (_firestore == null) {
-      print('Badge check skipped (offline mode).');
+      MinqLogger.info('Badge check skipped (offline mode).');
       return [];
     }
 
@@ -97,12 +98,12 @@ class GamificationEngine {
       }
 
       if (awardedBadges.isNotEmpty) {
-        print('Awarded ${awardedBadges.length} new badges to user $userId.');
+        MinqLogger.info('Awarded ${awardedBadges.length} new badges to user $userId.');
       }
 
       return awardedBadges;
     } catch (e) {
-      print('Failed to check badges (offline): $e');
+      MinqLogger.error('Failed to check badges (offline)', exception: e);
       return [];
     }
   }
@@ -144,7 +145,7 @@ class GamificationEngine {
   /// Calculates the user's current rank based on their total points.
   Future<void> calculateRank(String userId) async {
     if (_firestore == null) {
-      print('Rank calculation skipped (offline mode).');
+      MinqLogger.info('Rank calculation skipped (offline mode).');
       return;
     }
 
@@ -157,7 +158,7 @@ class GamificationEngine {
               .get();
 
       if (pointsSnapshot.docs.isEmpty) {
-        print('User $userId has no points yet.');
+        MinqLogger.info('User $userId has no points yet.');
         return;
       }
 
@@ -168,9 +169,9 @@ class GamificationEngine {
       final rank = _getRankForPoints(totalPoints);
 
       await _firestore!.collection('users').doc(userId).update({'rank': rank});
-      print('User $userId rank updated to $rank.');
+      MinqLogger.info('User $userId rank updated to $rank.');
     } catch (e) {
-      print('Failed to calculate rank (offline): $e');
+      MinqLogger.error('Failed to calculate rank (offline)', exception: e);
     }
   }
 
@@ -204,7 +205,7 @@ class GamificationEngine {
           .map((doc) => Points.fromJson(doc.data()).value)
           .fold<int>(0, (prev, current) => prev + current);
     } catch (e) {
-      print('Failed to get user points (offline): $e');
+      MinqLogger.error('Failed to get user points (offline)', exception: e);
       return 0;
     }
   }

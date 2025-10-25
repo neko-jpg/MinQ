@@ -138,20 +138,6 @@ class InAppUpdateService {
       print('❌ Failed to open App Store: $e');
     }
   }
-
-  /// バージョン比較
-  bool _isNewerVersion(String storeVersion, String currentVersion) {
-    final storeParts = storeVersion.split('.').map(int.parse).toList();
-    final currentParts = currentVersion.split('.').map(int.parse).toList();
-
-    for (int i = 0; i < storeParts.length; i++) {
-      if (i >= currentParts.length) return true;
-      if (storeParts[i] > currentParts[i]) return true;
-      if (storeParts[i] < currentParts[i]) return false;
-    }
-
-    return false;
-  }
 }
 
 /// 更新情報

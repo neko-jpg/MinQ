@@ -558,14 +558,14 @@ Widget _buildWeeklyProgressCard(
     ),
     _RingMetric(
       label: '合計時間',
-      value: totalMinutes / 60,
+      value: (totalMinutes / 60).toDouble(),
       unit: '時間',
       progress:
           ((totalMinutes / 60) / (weeklyGoal * dailyGoalMinutes / 60)).toDouble(),
     ),
     _RingMetric(
       label: '平均時間',
-      value: averageMinutes,
+      value: averageMinutes.toDouble(),
       unit: '分',
       progress: (averageMinutes / dailyGoalMinutes).toDouble(),
     ),

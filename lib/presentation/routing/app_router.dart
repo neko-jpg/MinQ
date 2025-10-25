@@ -9,7 +9,6 @@ import 'package:minq/presentation/common/policy_documents.dart';
 import 'package:minq/presentation/common/sharing/social_sharing_demo.dart';
 import 'package:minq/presentation/screens/account_deletion_screen.dart';
 import 'package:minq/presentation/screens/ai_concierge_chat_screen.dart';
-import 'package:minq/presentation/screens/ai_insights_screen.dart';
 import 'package:minq/presentation/screens/battle_screen.dart';
 import 'package:minq/presentation/screens/celebration_screen.dart';
 import 'package:minq/presentation/screens/challenges_screen.dart';
@@ -45,8 +44,6 @@ import 'package:minq/presentation/screens/streak_recovery_screen.dart';
 import 'package:minq/presentation/screens/support_screen.dart';
 import 'package:minq/presentation/screens/time_capsule_screen.dart';
 import 'package:minq/presentation/screens/weekly_report_screen.dart';
-import 'package:minq/presentation/widgets/ai_coach_overlay.dart';
-import 'package:minq/presentation/widgets/live_activity_widget.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -134,7 +131,7 @@ class AppRoutes {
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authChanges = ref.watch(authStateChangesProvider.stream);
+  final authChanges = ref.watch(authRepositoryProvider).authStateChanges;
   return GoRouter(
     initialLocation: AppRoutes.onboarding,
     navigatorKey: _rootNavigatorKey,

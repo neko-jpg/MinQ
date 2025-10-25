@@ -4,7 +4,7 @@ import 'dart:io';
 /// Provides utilities to compare the device clock with a trusted network
 /// source so that time-sensitive features (streaks, reminders) can detect
 /// tampering or large drifts.
-typedef _ServerTimeProvider = Future<DateTime?> Function();
+typedef ServerTimeProvider = Future<DateTime?> Function();
 
 class TimeConsistencyService {
   TimeConsistencyService({
@@ -12,7 +12,7 @@ class TimeConsistencyService {
     Duration tolerance = const Duration(minutes: 3),
     Uri? probeUri,
     DateTime Function()? now,
-    _ServerTimeProvider? serverTimeProvider,
+    ServerTimeProvider? serverTimeProvider,
   }) : _httpClient = httpClient ?? HttpClient(),
        _tolerance = tolerance,
        _probeUri = probeUri ?? Uri.parse('https://www.google.com'),
@@ -23,7 +23,7 @@ class TimeConsistencyService {
   final Duration _tolerance;
   final Uri _probeUri;
   final DateTime Function() _now;
-  final _ServerTimeProvider? _customServerTimeProvider;
+  final ServerTimeProvider? _customServerTimeProvider;
 
   /// Returns `true` when the device time is within [_tolerance] of the server
   /// time returned by [_probeUri]. If the probe fails we conservatively return
@@ -54,7 +54,7 @@ class TimeConsistencyService {
 
   Future<DateTime?> _fetchServerTime() async {
     if (_customServerTimeProvider != null) {
-      return _customServerTimeProvider!();
+      return _customServerTimeProvider();
     }
 
     final request = await _httpClient.openUrl('HEAD', _probeUri);

@@ -102,7 +102,7 @@ class OnboardingEngine {
     List<TourStep> steps,
   ) async {
     if (!context.mounted) return;
-    if (await hasCompletedOnOnboarding()) return;
+    if (await hasCompletedOnboarding()) return;
 
     await Navigator.of(context).push(
       MaterialPageRoute(

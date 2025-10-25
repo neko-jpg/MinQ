@@ -57,8 +57,8 @@ class _MinqSkeletonState extends State<MinqSkeleton>
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final baseColor = Theme.of(context).brightness == Brightness.dark
-        ? tokens.background.surface.withAlpha((255 * 0.35).round())
-        : tokens.background.surface.withAlpha((255 * 0.6).round());
+        ? tokens.surface.withAlpha((255 * 0.35).round())
+        : tokens.surface.withAlpha((255 * 0.6).round());
     final highlightColor = Theme.of(context).brightness == Brightness.dark
         ? Colors.white.withAlpha((255 * 0.25).round())
         : Colors.white.withAlpha((255 * 0.6).round());

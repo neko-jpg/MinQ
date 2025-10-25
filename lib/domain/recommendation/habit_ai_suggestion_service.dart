@@ -39,7 +39,7 @@ class HabitAiSuggestionService {
     if (userQuests.isEmpty && logs.isEmpty) {
       // If there's no data yet, use AI for personalized starter suggestions
       try {
-        final aiResponse = await _aiManager.generateChatResponse(
+        await _aiManager.generateChatResponse(
           'ユーザーが習慣形成アプリを始めたばかりです。初心者に最適な3つの習慣を提案してください。各習慣について、タイトル、理由、期待される効果を簡潔に説明してください。',
           systemPrompt: 'あなたは習慣形成の専門家です。初心者向けの実践的で継続しやすい習慣を提案してください。',
           maxTokens: 200,
