@@ -38,52 +38,82 @@ class AppLogger {
   }
 
   /// デバッグログ
-  void debug(String message, [dynamic error, StackTrace? stackTrace]) {
+  void debug(
+    String message, {
+    Map<String, dynamic>? data,
+    dynamic error,
+    StackTrace? stackTrace,
+  }) {
     _ensureInitialized();
+    final logMessage = _formatMessage(message, data);
     if (error != null || stackTrace != null) {
-      _logger.d(message, error: error, stackTrace: stackTrace);
+      _logger.d(logMessage, error: error, stackTrace: stackTrace);
     } else {
-      _logger.d(message);
+      _logger.d(logMessage);
     }
   }
 
   /// 情報ログ
-  void info(String message, [dynamic error, StackTrace? stackTrace]) {
+  void info(
+    String message, {
+    Map<String, dynamic>? data,
+    dynamic error,
+    StackTrace? stackTrace,
+  }) {
     _ensureInitialized();
+    final logMessage = _formatMessage(message, data);
     if (error != null || stackTrace != null) {
-      _logger.i(message, error: error, stackTrace: stackTrace);
+      _logger.i(logMessage, error: error, stackTrace: stackTrace);
     } else {
-      _logger.i(message);
+      _logger.i(logMessage);
     }
   }
 
   /// 警告ログ
-  void warning(String message, [dynamic error, StackTrace? stackTrace]) {
+  void warning(
+    String message, {
+    Map<String, dynamic>? data,
+    dynamic error,
+    StackTrace? stackTrace,
+  }) {
     _ensureInitialized();
+    final logMessage = _formatMessage(message, data);
     if (error != null || stackTrace != null) {
-      _logger.w(message, error: error, stackTrace: stackTrace);
+      _logger.w(logMessage, error: error, stackTrace: stackTrace);
     } else {
-      _logger.w(message);
+      _logger.w(logMessage);
     }
   }
 
   /// エラーログ
-  void error(String message, [dynamic error, StackTrace? stackTrace]) {
+  void error(
+    String message, {
+    Map<String, dynamic>? data,
+    dynamic error,
+    StackTrace? stackTrace,
+  }) {
     _ensureInitialized();
+    final logMessage = _formatMessage(message, data);
     if (error != null || stackTrace != null) {
-      _logger.e(message, error: error, stackTrace: stackTrace);
+      _logger.e(logMessage, error: error, stackTrace: stackTrace);
     } else {
-      _logger.e(message);
+      _logger.e(logMessage);
     }
   }
 
   /// 致命的エラーログ
-  void fatal(String message, [dynamic error, StackTrace? stackTrace]) {
+  void fatal(
+    String message, {
+    Map<String, dynamic>? data,
+    dynamic error,
+    StackTrace? stackTrace,
+  }) {
     _ensureInitialized();
+    final logMessage = _formatMessage(message, data);
     if (error != null || stackTrace != null) {
-      _logger.f(message, error: error, stackTrace: stackTrace);
+      _logger.f(logMessage, error: error, stackTrace: stackTrace);
     } else {
-      _logger.f(message);
+      _logger.f(logMessage);
     }
   }
 
@@ -192,6 +222,14 @@ class AppLogger {
     if (!_initialized) {
       initialize();
     }
+  }
+
+  String _formatMessage(String message, Map<String, dynamic>? data) {
+    if (data == null || data.isEmpty) {
+      return message;
+    }
+    final jsonString = const JsonEncoder.withIndent('  ').convert(data);
+    return '$message\n$jsonString';
   }
 }
 

@@ -66,8 +66,10 @@ class DeviceInfoService {
   Future<bool> isLowMemoryDevice() async {
     if (Platform.isAndroid) {
       final androidInfo = await _deviceInfo.androidInfo;
-      // 2GB以下を低メモリとみなす
-      return (androidInfo.totalMemory ?? 0) < 2 * 1024 * 1024 * 1024;
+      final systemFeatures = androidInfo.systemFeatures;
+      if (systemFeatures != null) {
+        return systemFeatures.contains('android.hardware.ram.low');
+      }
     }
     return false;
   }

@@ -458,7 +458,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         ),
         SizedBox(height: tokens.spacing.xs),
         DropdownButtonFormField<String>(
-          initialValue: currentValue,
+          value: currentValue,
           items: items
               .map(
                 (item) => DropdownMenuItem(

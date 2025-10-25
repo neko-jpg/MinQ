@@ -43,7 +43,11 @@ class OgpImageGenerator {
       _logger.info('OGP image generated: ${file.path}');
       return file;
     } catch (e, stack) {
-      _logger.error('Failed to generate OGP image', e, stack);
+      _logger.error(
+        'Failed to generate OGP image',
+        error: e,
+        stackTrace: stack,
+      );
       return null;
     }
   }

@@ -6,7 +6,7 @@ class ArchiveService {
   final FirebaseFirestore _firestore;
 
   ArchiveService({FirebaseFirestore? firestore})
-    : _firestore = firestore ?? FirebaseFirestore.instance;
+      : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// クエストをアーカイブ
   Future<void> archiveQuest(String userId, String questId) async {
@@ -23,7 +23,11 @@ class ArchiveService {
 
       logger.logJson('Quest archived', {'questId': questId});
     } catch (e, stack) {
-      logger.error('Failed to archive quest', e, stack);
+      logger.error(
+        'Failed to archive quest',
+        error: e,
+        stackTrace: stack,
+      );
       rethrow;
     }
   }
@@ -40,7 +44,11 @@ class ArchiveService {
 
       logger.logJson('Quest unarchived', {'questId': questId});
     } catch (e, stack) {
-      logger.error('Failed to unarchive quest', e, stack);
+      logger.error(
+        'Failed to unarchive quest',
+        error: e,
+        stackTrace: stack,
+      );
       rethrow;
     }
   }
@@ -75,8 +83,8 @@ class ArchiveService {
     } catch (e, stack) {
       logger.error(
         'Failed to delete archived quest',
-        e,
-        stack,
+        error: e,
+        stackTrace: stack,
       );
       rethrow;
     }
@@ -107,8 +115,8 @@ class ArchiveService {
     } catch (e, stack) {
       logger.error(
         'Failed to clean old archives',
-        e,
-        stack,
+        error: e,
+        stackTrace: stack,
       );
     }
   }

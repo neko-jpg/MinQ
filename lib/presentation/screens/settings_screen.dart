@@ -503,6 +503,34 @@ class _SoundProfileSheetState extends ConsumerState<_SoundProfileSheet> {
     _selectedProfileId = widget.currentProfile.id;
   }
 
+  Future<void> _onProfileSelected(
+    BuildContext context,
+    List<NotificationSoundProfile> profiles,
+    String value,
+  ) async {
+    setState(() {
+      _selectedProfileId = value;
+    });
+
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+
+    await ref
+        .read(notificationServiceProvider)
+        .updateReminderSoundProfile(value);
+
+    if (!mounted) return;
+
+    final selectedProfile = profiles.firstWhere((p) => p.id == value);
+    navigator.pop();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('${selectedProfile.label}を通知音に設定しました。'),
+      ),
+    );
+    ref.invalidate(selectedNotificationSoundProfileProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
@@ -522,43 +550,19 @@ class _SoundProfileSheetState extends ConsumerState<_SoundProfileSheet> {
               ),
             ),
             SizedBox(height: tokens.spacing.md),
-            RadioGroup<String>(
-              groupValue: _selectedProfileId,
-              onChanged: (String? value) async {
-                if (value == null) return;
-                setState(() {
-                  _selectedProfileId = value;
-                });
-                final navigator = Navigator.of(context);
-                final messenger = ScaffoldMessenger.of(context);
-                await ref
-                    .read(notificationServiceProvider)
-                    .updateReminderSoundProfile(value);
-
-                if (mounted) {
-                  final selectedProfile =
-                      profiles.firstWhere((p) => p.id == value);
-                  navigator.pop();
-                  messenger.showSnackBar(
-                    SnackBar(
-                      content:
-                          Text('${selectedProfile.label}を通知音に設定しました。'),
-                    ),
-                  );
-                  ref.invalidate(
-                    selectedNotificationSoundProfileProvider,
-                  );
-                }
-              },
-              child: Column(
-                children: profiles.map((profile) {
-                  return RadioListTile<String>(
-                    value: profile.id,
-                    title: Text(profile.label),
-                    subtitle: Text(profile.description),
-                  );
-                }).toList(),
-              ),
+            Column(
+              children: profiles.map((profile) {
+                return RadioListTile<String>(
+                  value: profile.id,
+                  groupValue: _selectedProfileId,
+                  onChanged: (value) async {
+                    if (value == null) return;
+                    await _onProfileSelected(context, profiles, value);
+                  },
+                  title: Text(profile.label),
+                  subtitle: Text(profile.description),
+                );
+              }).toList(),
             ),
           ],
         ),

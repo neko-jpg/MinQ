@@ -45,7 +45,11 @@ class PairDissolutionService {
 
       return true;
     } catch (e, stack) {
-      logger.error('Failed to dissolve pair', e, stack);
+      logger.error(
+        'Failed to dissolve pair',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }

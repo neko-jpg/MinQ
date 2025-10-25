@@ -47,7 +47,7 @@ class AccountDeletionService {
     final questsSnapshot =
         await _firestore
             .collection('quests')
-            .where('userId', '==', userId)
+            .where('userId', isEqualTo: userId)
             .get();
 
     for (final doc in questsSnapshot.docs) {
@@ -58,7 +58,7 @@ class AccountDeletionService {
     final logsSnapshot =
         await _firestore
             .collection('questLogs')
-            .where('userId', '==', userId)
+            .where('userId', isEqualTo: userId)
             .get();
 
     for (final doc in logsSnapshot.docs) {
@@ -69,7 +69,7 @@ class AccountDeletionService {
     final pairRequestsSnapshot =
         await _firestore
             .collection('pairRequests')
-            .where('fromUserId', '==', userId)
+            .where('fromUserId', isEqualTo: userId)
             .get();
 
     for (final doc in pairRequestsSnapshot.docs) {
@@ -79,7 +79,7 @@ class AccountDeletionService {
     final pairRequestsSnapshot2 =
         await _firestore
             .collection('pairRequests')
-            .where('toUserId', '==', userId)
+            .where('toUserId', isEqualTo: userId)
             .get();
 
     for (final doc in pairRequestsSnapshot2.docs) {
@@ -90,7 +90,7 @@ class AccountDeletionService {
     final achievementsSnapshot =
         await _firestore
             .collection('achievements')
-            .where('userId', '==', userId)
+            .where('userId', isEqualTo: userId)
             .get();
 
     for (final doc in achievementsSnapshot.docs) {
@@ -101,7 +101,7 @@ class AccountDeletionService {
     final notificationSettingsSnapshot =
         await _firestore
             .collection('notificationSettings')
-            .where('userId', '==', userId)
+            .where('userId', isEqualTo: userId)
             .get();
 
     for (final doc in notificationSettingsSnapshot.docs) {
@@ -162,27 +162,24 @@ class AccountDeletionService {
     final userData = userDoc.data();
 
     // クエスト情報
-    final questsSnapshot =
-        await _firestore
-            .collection('quests')
-            .where('userId', '==', userId)
-            .get();
+    final questsSnapshot = await _firestore
+        .collection('quests')
+        .where('userId', isEqualTo: userId)
+        .get();
     final quests = questsSnapshot.docs.map((doc) => doc.data()).toList();
 
     // クエストログ
-    final logsSnapshot =
-        await _firestore
-            .collection('questLogs')
-            .where('userId', '==', userId)
-            .get();
+    final logsSnapshot = await _firestore
+        .collection('questLogs')
+        .where('userId', isEqualTo: userId)
+        .get();
     final logs = logsSnapshot.docs.map((doc) => doc.data()).toList();
 
     // アチーブメント
-    final achievementsSnapshot =
-        await _firestore
-            .collection('achievements')
-            .where('userId', '==', userId)
-            .get();
+    final achievementsSnapshot = await _firestore
+        .collection('achievements')
+        .where('userId', isEqualTo: userId)
+        .get();
     final achievements =
         achievementsSnapshot.docs.map((doc) => doc.data()).toList();
 

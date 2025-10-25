@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/providers.dart';
+import 'package:minq/data/providers.dart' as providers;
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/domain/challenges/challenge.dart';
 import 'package:minq/domain/challenges/challenge_progress.dart';
@@ -8,8 +8,8 @@ import 'package:minq/domain/challenges/challenge_progress.dart';
 // Service provider
 final challengeServiceProvider = Provider<ChallengeService>((ref) {
   final firestore = FirebaseFirestore.instance;
-  final gamificationEngine = ref.watch(gamificationEngineProvider);
-  final userId = ref.watch(uidProvider);
+  final gamificationEngine = ref.watch(providers.gamificationEngineProvider);
+  final userId = ref.watch(providers.uidProvider);
 
   if (userId == null) {
     throw Exception('ChallengeService requires a logged-in user');

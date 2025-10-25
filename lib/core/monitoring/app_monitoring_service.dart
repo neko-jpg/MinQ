@@ -32,7 +32,11 @@ class AppMonitoringService {
       await _analytics.logAppOpen();
       logger.info('App launched');
     } catch (e, stack) {
-      logger.error('Failed to track app launch', e, stack);
+      logger.error(
+        'Failed to track app launch',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -42,7 +46,11 @@ class AppMonitoringService {
       await _analytics.logScreenView(screenName: screenName);
       logger.debug('Screen view: $screenName');
     } catch (e, stack) {
-      logger.error('Failed to track screen view', e, stack);
+      logger.error(
+        'Failed to track screen view',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -53,9 +61,13 @@ class AppMonitoringService {
   }) async {
     try {
       await _analytics.logEvent(name: action, parameters: parameters);
-      logger.debug('User action: $action', parameters);
+      logger.debug('User action: $action', data: parameters);
     } catch (e, stack) {
-      logger.error('Failed to track user action', e, stack);
+      logger.error(
+        'Failed to track user action',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -75,13 +87,25 @@ class AppMonitoringService {
       );
 
       if (fatal) {
-        logger.fatal('Fatal error recorded', error, stackTrace);
+        logger.fatal(
+          'Fatal error recorded',
+          error: error,
+          stackTrace: stackTrace,
+        );
         await _notifyCriticalEvent('Fatal Error', error.toString());
       } else {
-        logger.error('Error recorded', error, stackTrace);
+        logger.error(
+          'Error recorded',
+          error: error,
+          stackTrace: stackTrace,
+        );
       }
     } catch (e, stack) {
-      logger.error('Failed to record error', e, stack);
+      logger.error(
+        'Failed to record error',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -118,17 +142,24 @@ class AppMonitoringService {
 
       // レスポンスタイムが閾値を超えた場合
       if (duration.inMilliseconds > _criticalResponseTime) {
-        logger.warning('Slow API response detected', {
-          'url': url,
-          'duration': duration.inMilliseconds,
-        });
+        logger.warning(
+          'Slow API response detected',
+          data: {
+            'url': url,
+            'duration': duration.inMilliseconds,
+          },
+        );
         await _notifyCriticalEvent(
           'Slow API Response',
           'URL: $url, Duration: ${duration.inMilliseconds}ms',
         );
       }
     } catch (e, stack) {
-      logger.error('Failed to record HTTP metric', e, stack);
+      logger.error(
+        'Failed to record HTTP metric',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -147,18 +178,28 @@ class AppMonitoringService {
           ...?attributes,
         },
       );
-      logger.debug('Custom metric: $name = $value', attributes);
+      logger.debug(
+        'Custom metric: $name = $value',
+        data: attributes,
+      );
     } catch (e, stack) {
-      logger.error('Failed to record custom metric', e, stack);
+      logger.error(
+        'Failed to record custom metric',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
   /// クラッシュ率を監視
   Future<void> monitorCrashRate(double crashRate) async {
     if (crashRate > _criticalCrashRate) {
-      logger.fatal('Critical crash rate detected', {
-        'crash_rate': crashRate,
-      });
+      logger.fatal(
+        'Critical crash rate detected',
+        data: {
+          'crash_rate': crashRate,
+        },
+      );
       await _notifyCriticalEvent(
         'High Crash Rate',
         'Current crash rate: ${(crashRate * 100).toStringAsFixed(2)}%',
@@ -169,7 +210,10 @@ class AppMonitoringService {
   /// エラー率を監視
   Future<void> monitorErrorRate(double errorRate) async {
     if (errorRate > _criticalErrorRate) {
-      logger.warning('High error rate detected', {'error_rate': errorRate});
+      logger.warning(
+        'High error rate detected',
+        data: {'error_rate': errorRate},
+      );
       await _notifyCriticalEvent(
         'High Error Rate',
         'Current error rate: ${(errorRate * 100).toStringAsFixed(2)}%',
@@ -192,13 +236,20 @@ class AppMonitoringService {
           'user_actions': userActions,
         },
       );
-      logger.info('Session recorded', {
-        'duration': duration.inSeconds,
-        'screens': screenViews,
-        'actions': userActions,
-      });
+      logger.info(
+        'Session recorded',
+        data: {
+          'duration': duration.inSeconds,
+          'screens': screenViews,
+          'actions': userActions,
+        },
+      );
     } catch (e, stack) {
-      logger.error('Failed to record session', e, stack);
+      logger.error(
+        'Failed to record session',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -221,7 +272,11 @@ class AppMonitoringService {
         timestamp: DateTime.now(),
       );
     } catch (e, stack) {
-      logger.error('Health check failed', e, stack);
+      logger.error(
+        'Health check failed',
+        error: e,
+        stackTrace: stack,
+      );
       return HealthStatus(
         isHealthy: false,
         analyticsHealthy: false,
@@ -276,16 +331,23 @@ class AppMonitoringService {
       await _crashlytics.setCustomKey('critical_event', title);
       await _crashlytics.setCustomKey('critical_message', message);
 
-      logger.fatal('Critical event notification', {
-        'title': title,
-        'message': message,
-      });
+      logger.fatal(
+        'Critical event notification',
+        data: {
+          'title': title,
+          'message': message,
+        },
+      );
 
       // TODO: 実際の通知実装（Slack, Email, PagerDutyなど）
       // await _sendSlackNotification(title, message);
       // await _sendEmailNotification(title, message);
     } catch (e, stack) {
-      logger.error('Failed to notify critical event', e, stack);
+      logger.error(
+        'Failed to notify critical event',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -295,7 +357,11 @@ class AppMonitoringService {
       await _analytics.setUserProperty(name: name, value: value);
       await _crashlytics.setCustomKey(name, value);
     } catch (e, stack) {
-      logger.error('Failed to set user property', e, stack);
+      logger.error(
+        'Failed to set user property',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -305,7 +371,11 @@ class AppMonitoringService {
       await _analytics.setUserId(id: userId);
       await _crashlytics.setUserIdentifier(userId);
     } catch (e, stack) {
-      logger.error('Failed to set user ID', e, stack);
+      logger.error(
+        'Failed to set user ID',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 }
