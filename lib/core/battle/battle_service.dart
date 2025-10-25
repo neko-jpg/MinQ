@@ -351,6 +351,8 @@ class BattleService {
           break;
       }
 
+      log('BattleService: ランキング集計開始日 - $startDate');
+
       // TODO: 実際の実装では、ユーザーの統計データを集計
       // ここでは簡略化してサンプルデータを返す
       final rankings = <BattleRanking>[

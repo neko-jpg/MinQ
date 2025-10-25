@@ -235,8 +235,6 @@ class FailurePredictionService {
   /// トレンド調整を計算
   Future<double> _calculateTrendAdjustment(HabitAnalysis analysis) async {
     // 最近7日間のトレンドを分析
-    const recentDays = 7;
-    final cutoffDate = DateTime.now().subtract(Duration(days: recentDays));
 
     try {
       // 最近のログを取得（簡略化）

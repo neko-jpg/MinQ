@@ -228,7 +228,6 @@ class WeeklyReportService {
 
   /// トレンド方向の決定
   TrendDirection _determineTrendDirection(WeeklyData data) {
-    final completionRate = data.totalCompletions / (data.totalHabits * 7);
     final improvement = _calculateImprovement(data);
 
     if (improvement > 0.05) return TrendDirection.upward;
@@ -757,7 +756,6 @@ class WeeklyReportService {
     // 簡略化された相関計算
     if (data.moods.length < 2) return 0.0;
 
-    final moodScores = data.moods.map((m) => m.score).toList();
     final dailyCompletions = <DateTime, int>{};
 
     for (final completion in data.completions) {
