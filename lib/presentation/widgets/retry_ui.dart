@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// リトライUI
 class RetryUI extends StatelessWidget {
@@ -22,7 +23,7 @@ class RetryUI extends StatelessWidget {
           const Icon(Icons.error_outline, size: 64, color: Colors.grey),
           const SizedBox(height: 16),
           Text(
-            message ?? 'サーバーへの接続に失敗しました',
+            message ?? AppLocalizations.of(context)!.serverConnectionFailed,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
@@ -33,7 +34,7 @@ class RetryUI extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('再試行'),
+              label: Text(AppLocalizations.of(context)!.retry),
             ),
         ],
       ),

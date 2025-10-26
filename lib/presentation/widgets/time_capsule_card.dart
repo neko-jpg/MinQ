@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minq/domain/time_capsule/time_capsule.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 class TimeCapsuleCard extends StatelessWidget {
   const TimeCapsuleCard({
@@ -63,7 +64,9 @@ class TimeCapsuleCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isDelivered ? '配信済み' : '配信待ち',
+                          isDelivered 
+                            ? AppLocalizations.of(context)!.delivered 
+                            : AppLocalizations.of(context)!.pending,
                           style: tokens.typography.caption.copyWith(
                             color:
                                 isDelivered
@@ -73,7 +76,10 @@ class TimeCapsuleCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${capsule.createdAt.year}年${capsule.createdAt.month}月${capsule.createdAt.day}日作成',
+                          AppLocalizations.of(context)!.createdOn
+                            .replaceAll('{year}', capsule.createdAt.year.toString())
+                            .replaceAll('{month}', capsule.createdAt.month.toString())
+                            .replaceAll('{day}', capsule.createdAt.day.toString()),
                           style: tokens.typography.caption.copyWith(
                             color: tokens.textMuted,
                           ),
@@ -92,7 +98,7 @@ class TimeCapsuleCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(tokens.radius.sm),
                       ),
                       child: Text(
-                        '開封可能',
+                        AppLocalizations.of(context)!.canOpen,
                         style: tokens.typography.caption.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -110,7 +116,8 @@ class TimeCapsuleCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(tokens.radius.sm),
                       ),
                       child: Text(
-                        '$daysUntilDelivery日後',
+                        AppLocalizations.of(context)!.daysUntil
+                          .replaceAll('{days}', daysUntilDelivery.toString()),
                         style: tokens.typography.caption.copyWith(
                           color: tokens.textMuted,
                           fontWeight: FontWeight.bold,
@@ -139,7 +146,10 @@ class TimeCapsuleCard extends StatelessWidget {
                   Icon(Icons.calendar_today, size: 16, color: tokens.textMuted),
                   SizedBox(width: tokens.spacing.xs),
                   Text(
-                    '配信日: ${capsule.deliveryDate.year}年${capsule.deliveryDate.month}月${capsule.deliveryDate.day}日',
+                    AppLocalizations.of(context)!.deliveryDate
+                      .replaceAll('{year}', capsule.deliveryDate.year.toString())
+                      .replaceAll('{month}', capsule.deliveryDate.month.toString())
+                      .replaceAll('{day}', capsule.deliveryDate.day.toString()),
                     style:
                         tokens.typography.caption.copyWith(color: tokens.textMuted),
                   ),
@@ -239,7 +249,7 @@ class _OpeningAnimationState extends State<_OpeningAnimation>
                   const Icon(Icons.auto_awesome, size: 16, color: Colors.white),
                   SizedBox(width: tokens.spacing.xs),
                   Text(
-                    'タップして開封',
+                    AppLocalizations.of(context)!.tapToOpen,
                     style: tokens.typography.caption.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

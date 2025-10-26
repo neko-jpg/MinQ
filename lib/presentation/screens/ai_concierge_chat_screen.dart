@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:minq/data/providers/gemma_ai_provider.dart';
+
 import 'package:minq/presentation/controllers/ai_concierge_chat_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -472,8 +472,8 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
   }
 
   Future<void> _showDiagnostics() async {
-    final gemmaService = await ref.read(gemmaAIServiceProvider.future);
-    final diagnostics = await gemmaService.getDiagnosticInfo();
+    // AI診断機能は現在利用できません
+    const diagnostics = 'AI診断機能は現在メンテナンス中です。';
 
     if (!mounted) return;
 
@@ -559,9 +559,8 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
 
   Future<void> _forceResetAI() async {
     try {
-      final gemmaService = await ref.read(gemmaAIServiceProvider.future);
-      await gemmaService.forceReset();
-
+      // AI リセット機能は現在利用できません
+      
       // チャットも再初期化
       await ref
           .read(aiConciergeChatControllerProvider.notifier)

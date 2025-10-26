@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// アプリ内アンケートウィジェット
 class SurveyWidget extends StatefulWidget {
@@ -111,7 +112,9 @@ class _SurveyWidgetState extends State<SurveyWidget> {
           ),
           SizedBox(height: tokens.spacing.xs),
           Text(
-            '質問 ${_currentQuestionIndex + 1} / ${widget.survey.questions.length}',
+            AppLocalizations.of(context)!.question
+              .replaceAll('{current}', (_currentQuestionIndex + 1).toString())
+              .replaceAll('{total}', widget.survey.questions.length.toString()),
             style: tokens.typography.caption.copyWith(
               color: tokens.textSecondary,
             ),
@@ -128,14 +131,16 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: _previousQuestion,
-                    child: const Text('戻る'),
+                    child: Text(AppLocalizations.of(context)!.back),
                   ),
                 ),
               if (_currentQuestionIndex > 0) SizedBox(width: tokens.spacing.md),
               Expanded(
                 child: ElevatedButton(
                   onPressed: _canProceed ? _nextQuestion : null,
-                  child: Text(_isLastQuestion ? '送信' : '次へ'),
+                  child: Text(_isLastQuestion 
+                    ? AppLocalizations.of(context)!.submit 
+                    : AppLocalizations.of(context)!.next),
                 ),
               ),
             ],
@@ -159,7 +164,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         ),
         if (question.isRequired)
           Text(
-            ' *必須',
+            AppLocalizations.of(context)!.required,
             style:
                 tokens.typography.caption.copyWith(color: tokens.accentError),
           ),
@@ -283,7 +288,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
     final tokens = context.tokens;
     return TextField(
       decoration: InputDecoration(
-        hintText: '回答を入力してください',
+        hintText: AppLocalizations.of(context)!.pleaseEnterAnswer,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(tokens.radius.md),
         ),
@@ -300,9 +305,9 @@ class _SurveyWidgetState extends State<SurveyWidget> {
   Widget _buildYesNo(SurveyQuestion question) {
     return Row(
       children: [
-        Expanded(child: _buildYesNoButton('はい', true)),
+        Expanded(child: _buildYesNoButton(AppLocalizations.of(context)!.yes, true)),
         SizedBox(width: context.tokens.spacing.md),
-        Expanded(child: _buildYesNoButton('いいえ', false)),
+        Expanded(child: _buildYesNoButton(AppLocalizations.of(context)!.no, false)),
       ],
     );
   }
@@ -391,31 +396,37 @@ class SurveyResponse {
 
 /// サンプルアンケート
 class SampleSurveys {
-  static Survey get userSatisfaction => const Survey(
+  static Survey userSatisfaction(BuildContext context) => Survey(
     id: 'user_satisfaction_2025',
-    title: 'ユーザー満足度調査',
-    description: 'MinQをより良くするため、ご意見をお聞かせください',
+    title: AppLocalizations.of(context)!.userSatisfactionSurvey,
+    description: AppLocalizations.of(context)!.userSatisfactionDescription,
     questions: [
       SurveyQuestion(
         id: 'q1',
-        text: 'MinQの使いやすさを5段階で評価してください',
+        text: AppLocalizations.of(context)!.usabilityRating,
         type: SurveyQuestionType.rating,
         maxRating: 5,
       ),
       SurveyQuestion(
         id: 'q2',
-        text: '最も気に入っている機能は何ですか？',
+        text: AppLocalizations.of(context)!.mostLikedFeature,
         type: SurveyQuestionType.multipleChoice,
-        options: ['クエスト管理', 'ペア機能', '統計・グラフ', '通知機能', 'その他'],
+        options: [
+          AppLocalizations.of(context)!.questManagement, 
+          AppLocalizations.of(context)!.pairFeature, 
+          AppLocalizations.of(context)!.statisticsGraphs, 
+          AppLocalizations.of(context)!.notificationFeature, 
+          AppLocalizations.of(context)!.other
+        ],
       ),
       SurveyQuestion(
         id: 'q3',
-        text: '友人にMinQを勧めますか？',
+        text: AppLocalizations.of(context)!.wouldRecommendMinq,
         type: SurveyQuestionType.yesNo,
       ),
       SurveyQuestion(
         id: 'q4',
-        text: '改善してほしい点があれば教えてください',
+        text: AppLocalizations.of(context)!.improvementSuggestions,
         type: SurveyQuestionType.text,
         isRequired: false,
       ),

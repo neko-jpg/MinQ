@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:minq/presentation/theme/color_tokens.dart';
+import 'package:minq/presentation/theme/design_tokens.dart';
 
 class MinqRadius {
   const MinqRadius({
@@ -117,9 +118,47 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     required this.easeOutBack,
     required this.easeInOutQuart,
     required this.bounceOut,
-  });
+  }) : tokens = MinqColorTokens(
+         primary: brandPrimary,
+         primaryHover: primaryHover,
+         primaryContainer: surface,
+         onPrimary: primaryForeground,
+         onPrimaryContainer: textPrimary,
+         secondary: accentSecondary,
+         secondaryContainer: surfaceAlt,
+         onSecondary: secondaryForeground,
+         onSecondaryContainer: textSecondary,
+         tertiary: joyAccent,
+         tertiaryContainer: surface,
+         onTertiary: primaryForeground,
+         onTertiaryContainer: textPrimary,
+         error: accentError,
+         errorContainer: surface,
+         onError: primaryForeground,
+         onErrorContainer: textPrimary,
+         warning: accentWarning,
+         warningContainer: surface,
+         onWarning: primaryForeground,
+         onWarningContainer: textPrimary,
+         success: accentSuccess,
+         successContainer: surface,
+         onSuccess: primaryForeground,
+         onSuccessContainer: textPrimary,
+         surface: surface,
+         onSurface: textPrimary,
+         surfaceVariant: surfaceAlt,
+         onSurfaceVariant: textSecondary,
+         outline: border,
+         outlineVariant: divider,
+         shadow: const Color(0x1A000000),
+         scrim: const Color(0x80000000),
+         inverseSurface: textPrimary,
+         onInverseSurface: surface,
+         inversePrimary: surface,
+       );
 
   final Brightness brightness;
+  final MinqColorTokens tokens;
   final Color brandPrimary;
   final Color primaryHover;
   final Color accentSecondary;
@@ -198,7 +237,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   EdgeInsets get respectfulPadding => EdgeInsets.all(spacing.md);
   EdgeInsets get dramaticPadding => EdgeInsets.all(spacing.xl);
 
-  // Accessibility helpers
+  // Enhanced accessibility helpers
   bool isHighContrastMode(BuildContext context) {
     return MediaQuery.of(context).highContrast;
   }
@@ -209,6 +248,34 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
 
   Color getAccessibleBackgroundColor(BuildContext context) {
     return isHighContrastMode(context) ? highContrastBackground : background;
+  }
+
+  /// Ensure minimum touch target size for accessibility (44pt)
+  BoxConstraints get minTouchTargetConstraints => const BoxConstraints(
+    minWidth: minTouchTargetSize,
+    minHeight: minTouchTargetSize,
+  );
+
+  /// Get accessible button padding that ensures minimum touch target
+  EdgeInsets getAccessibleButtonPadding({
+    EdgeInsets? basePadding,
+    required Size contentSize,
+  }) {
+    final base = basePadding ?? EdgeInsets.symmetric(
+      horizontal: spacing.md,
+      vertical: spacing.sm,
+    );
+    
+    final totalWidth = contentSize.width + base.horizontal;
+    final totalHeight = contentSize.height + base.vertical;
+    
+    final additionalHorizontal = (minTouchTargetSize - totalWidth).clamp(0.0, double.infinity) / 2;
+    final additionalVertical = (minTouchTargetSize - totalHeight).clamp(0.0, double.infinity) / 2;
+    
+    return EdgeInsets.symmetric(
+      horizontal: base.horizontal / 2 + additionalHorizontal,
+      vertical: base.vertical / 2 + additionalVertical,
+    );
   }
 
   /// Returns a version of [base] that meets WCAG AA contrast on [background].

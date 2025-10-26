@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Import all the social and premium feature services
 import 'lib/core/pair/reverse_accountability_service.dart';
 import 'lib/core/referral/referral_deep_link_service.dart';
-import 'lib/core/monetization/subscription_manager.dart';
+import 'lib/core/monetization/subscription_manager.dart' as sub_manager;
 import 'lib/core/monetization/streak_recovery_purchase.dart';
 import 'lib/core/ai/social_proof_service.dart';
 import 'lib/core/community/guild_service.dart';
@@ -188,7 +188,7 @@ class SocialPremiumFeaturesValidator {
         passed++;
 
         // Test feature access
-        final hasAdFree = manager.hasFeatureAccess(PremiumFeature.adFree);
+        final hasAdFree = manager.hasFeatureAccess(sub_manager.PremiumFeature.adFree);
         results.add('✅ Feature Access Check: Method available (adFree: $hasAdFree)');
         passed++;
 

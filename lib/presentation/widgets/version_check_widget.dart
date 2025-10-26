@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/version/version_check_service.dart';
 import 'package:minq/presentation/screens/version_update_screen.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// バージョンチェックを行い、必要に応じて更新画面を表示するウィジェット
 class VersionCheckWidget extends ConsumerStatefulWidget {
@@ -51,15 +52,14 @@ class _VersionCheckWidgetState extends ConsumerState<VersionCheckWidget> {
           barrierDismissible: true,
           builder:
               (context) => AlertDialog(
-                title: const Text('新しいバージョンがあります'),
+                title: Text(AppLocalizations.of(context)!.newVersionAvailable),
                 content: Text(
-                  '新しいバージョン（${result.recommendedVersion}）が利用可能です。\n'
-                  'より快適にご利用いただくため、アップデートをおすすめします。',
+                  AppLocalizations.of(context)!.newVersionMessage.replaceAll('{version}', result.recommendedVersion),
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('後で'),
+                    child: Text(AppLocalizations.of(context)!.later),
                   ),
                   FilledButton(
                     onPressed: () {
@@ -74,7 +74,7 @@ class _VersionCheckWidgetState extends ConsumerState<VersionCheckWidget> {
                         ),
                       );
                     },
-                    child: const Text('詳細を見る'),
+                    child: Text(AppLocalizations.of(context)!.viewDetails),
                   ),
                 ],
               ),

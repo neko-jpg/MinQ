@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエストタイマーウィジェット
@@ -133,7 +134,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                     ),
                   ),
                   Text(
-                    _getStatusText(),
+                    _getStatusText(context),
                     style: tokens.typography.body.copyWith(
                       color: tokens.textSecondary,
                     ),
@@ -151,7 +152,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                 // 開始ボタン
                 _TimerButton(
                   icon: Icons.play_arrow,
-                  label: '開始',
+                  label: AppLocalizations.of(context)!.start,
                   onPressed: _startTimer,
                   isPrimary: true,
                 ),
@@ -159,7 +160,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                 // 再開ボタン
                 _TimerButton(
                   icon: Icons.play_arrow,
-                  label: '再開',
+                  label: AppLocalizations.of(context)!.resume,
                   onPressed: _resumeTimer,
                   isPrimary: true,
                 ),
@@ -167,21 +168,21 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                 // リセットボタン
                 _TimerButton(
                   icon: Icons.refresh,
-                  label: 'リセット',
+                  label: AppLocalizations.of(context)!.reset,
                   onPressed: _resetTimer,
                 ),
               ] else ...[
                 // 一時停止ボタン
                 _TimerButton(
                   icon: Icons.pause,
-                  label: '一時停止',
+                  label: AppLocalizations.of(context)!.pause,
                   onPressed: _pauseTimer,
                 ),
                 SizedBox(width: tokens.spacing.md),
                 // 完了ボタン
                 _TimerButton(
                   icon: Icons.check,
-                  label: '完了',
+                  label: AppLocalizations.of(context)!.complete,
                   onPressed: _completeTimer,
                   isPrimary: true,
                 ),
@@ -190,7 +191,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
           ),
           if (widget.onCancel != null) ...[
             SizedBox(height: tokens.spacing.md),
-            TextButton(onPressed: _cancelTimer, child: const Text('キャンセル')),
+            TextButton(onPressed: _cancelTimer, child: Text(AppLocalizations.of(context)!.cancel)),
           ],
         ],
       ),
@@ -203,15 +204,16 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
     return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
   }
 
-  String _getStatusText() {
+  String _getStatusText(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (_remainingSeconds == 0) {
-      return '完了！';
+      return l10n.completed;
     } else if (_isPaused) {
-      return '一時停止中';
+      return l10n.paused;
     } else if (_isRunning) {
-      return '実行中';
+      return l10n.running;
     } else {
-      return '準備完了';
+      return l10n.ready;
     }
   }
 }
@@ -290,7 +292,7 @@ class QuestTimerScreen extends StatelessWidget {
             onComplete: () {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(const SnackBar(content: Text('タイマー完了！')));
+              ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.timerCompleted)));
               Navigator.of(context).pop(true);
             },
             onCancel: () {
@@ -355,7 +357,7 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
               ),
               SizedBox(width: tokens.spacing.sm),
               Text(
-                _isWorkSession ? '作業セッション' : '休憩',
+                _isWorkSession ? AppLocalizations.of(context)!.workSession : AppLocalizations.of(context)!.breakTime,
                 style: tokens.typography.body.copyWith(
                   color: tokens.textPrimary,
                   fontWeight: FontWeight.bold,

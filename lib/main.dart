@@ -9,17 +9,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/config/flavor.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/data/providers/gemma_ai_provider.dart';
+
 import 'package:minq/data/services/crash_recovery_store.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/firebase_options_dev.dart' as dev;
 import 'package:minq/firebase_options_prod.dart' as prod;
 import 'package:minq/firebase_options_stg.dart' as stg;
-import 'package:minq/presentation/controllers/crash_recovery_controller.dart';
+import 'package:minq/core/initialization/optimal_initialization_service.dart';
 import 'package:minq/presentation/controllers/progressive_onboarding_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
-import 'package:minq/presentation/screens/crash_recovery_screen.dart';
 import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
+import 'package:minq/presentation/screens/organic_splash_screen.dart';
 import 'package:minq/presentation/theme/theme.dart';
 import 'package:minq/presentation/widgets/version_check_widget.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -159,16 +159,6 @@ class _MinQAppState extends ConsumerState<MinQApp> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      try {
-        final gemma = await ref.read(gemmaAIServiceProvider.future);
-        await gemma.initialize();
-      } catch (e) {
-        // Gemma AIの初期化に失敗した場合はログに記録
-        print('Gemma AI initialization failed: $e');
-      }
-    });
-
     // レベルアップイベントリスナー
     Future.microtask(() {
       _handleLevelUpEvent(ref.read(levelUpEventProvider));
@@ -261,52 +251,47 @@ class _MinQAppState extends ConsumerState<MinQApp> {
       (previous, next) => _handleDeepLinkNavigation(next),
     );
 
-    final appStartupAsyncValue = ref.watch(appStartupProvider);
-    final initializationError = ref.watch(initializationErrorProvider);
+    final appStartupAsyncValue = ref.watch(optimizedAppStartupProvider);
     final router = ref.watch(routerProvider);
     final locale = ref.watch(appLocaleControllerProvider);
-    final crashRecoveryState = ref.watch(crashRecoveryControllerProvider);
 
-    if (crashRecoveryState.needsRecovery) {
-      return MaterialApp(
+    // クラッシュリカバリダイアログを削除し、サイレントリカバリを実装
+    // エラーが発生した場合でも有機的スプラッシュ画面を表示
+
+    return switch (appStartupAsyncValue) {
+      AsyncLoading() => MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: buildLightTheme(),
         darkTheme: buildDarkTheme(),
-        home: const CrashRecoveryScreen(),
-      );
-    }
-
-    if (initializationError != null) {
-      return MaterialApp(
+        themeMode: ThemeMode.system,
+        home: const OrganicSplashScreen(),
+      ),
+      AsyncError(:final error) => MaterialApp(
         debugShowCheckedModeBanner: false,
+        theme: buildLightTheme(),
+        darkTheme: buildDarkTheme(),
+        themeMode: ThemeMode.system,
         home: Scaffold(
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Startup Error: $initializationError'),
+                const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                const SizedBox(height: 16),
+                Text('初期化エラーが発生しました'),
+                const SizedBox(height: 8),
+                Text('$error', style: const TextStyle(fontSize: 12)),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    ref.invalidate(appStartupProvider);
+                    ref.invalidate(optimizedAppStartupProvider);
                   },
-                  child: const Text('Retry'),
+                  child: const Text('再試行'),
                 ),
               ],
             ),
           ),
         ),
-      );
-    }
-
-    return switch (appStartupAsyncValue) {
-      AsyncLoading() => const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(body: Center(child: CircularProgressIndicator())),
-      ),
-      AsyncError(:final error) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(body: Center(child: Text('Startup Error: $error'))),
       ),
       AsyncData() => MaterialApp.router(
         debugShowCheckedModeBanner: false,
@@ -315,14 +300,14 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         theme: buildLightTheme(),
         darkTheme: buildDarkTheme(),
         themeMode: ThemeMode.system,
-        locale: locale ?? const Locale('ja'),
+        locale: locale,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: const [Locale('ja')],
+        supportedLocales: AppLocalizations.supportedLocales,
         builder: (BuildContext context, Widget? child) {
           final mediaQuery = MediaQuery.of(context);
           const double minScaleFactor = 1.0;
@@ -364,9 +349,12 @@ class _MinQAppState extends ConsumerState<MinQApp> {
           );
         },
       ),
-      _ => const MaterialApp(
+      _ => MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Scaffold(body: Center(child: Text('Initializing...'))),
+        theme: buildLightTheme(),
+        darkTheme: buildDarkTheme(),
+        themeMode: ThemeMode.system,
+        home: const OrganicSplashScreen(),
       ),
     };
   }

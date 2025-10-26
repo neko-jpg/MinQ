@@ -1,11 +1,8 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/presentation/controllers/ai_concierge_chat_controller.dart';
+import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-
-enum _ConciergeMenuOption { insights, clearHistory }
 
 class AiConciergeCard extends ConsumerWidget {
   const AiConciergeCard({super.key});
@@ -13,9 +10,7 @@ class AiConciergeCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final chatState = ref.watch(aiConciergeChatControllerProvider);
     final navigation = ref.read(navigationUseCaseProvider);
-    final notifier = ref.read(aiConciergeChatControllerProvider.notifier);
 
     return Card(
       elevation: 0,
@@ -26,7 +21,7 @@ class AiConciergeCard extends ConsumerWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(tokens.radius.lg),
-        onTap: navigation.goToAiConciergeChat,
+        onTap: navigation.goToAiInsights,
         child: Padding(
           padding: EdgeInsets.all(tokens.spacing.lg),
           child: Column(
@@ -34,112 +29,74 @@ class AiConciergeCard extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Text(
-                    'AIコンシェルジュ',
-                    style: tokens.typography.h3.copyWith(
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    padding: EdgeInsets.all(tokens.spacing.sm),
+                    decoration: BoxDecoration(
+                      color: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+                      borderRadius: BorderRadius.circular(tokens.radius.md),
+                    ),
+                    child: Icon(
+                      Icons.psychology,
+                      color: tokens.brandPrimary,
+                      size: 20,
                     ),
                   ),
-                  const Spacer(),
-                  PopupMenuButton<_ConciergeMenuOption>(
-                    icon: Icon(Icons.more_horiz, color: tokens.textMuted),
-                    itemBuilder:
-                        (context) => const [
-                          PopupMenuItem<_ConciergeMenuOption>(
-                            value: _ConciergeMenuOption.insights,
-                            child: Text('AIからのインサイト'),
-                          ),
-                          PopupMenuItem<_ConciergeMenuOption>(
-                            value: _ConciergeMenuOption.clearHistory,
-                            child: Text('チャット履歴を削除'),
-                          ),
-                        ],
-                    onSelected: (option) async {
-                      switch (option) {
-                        case _ConciergeMenuOption.insights:
-                          navigation.goToAiInsights();
-                          break;
-                        case _ConciergeMenuOption.clearHistory:
-                          final confirmed = await showDialog<bool>(
-                            context: context,
-                            builder:
-                                (context) => AlertDialog(
-                                  title: const Text('チャット履歴を削除'),
-                                  content: const Text(
-                                    'すべてのチャット履歴を削除しますか？この操作は取り消せません。',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed:
-                                          () =>
-                                              Navigator.of(context).pop(false),
-                                      child: const Text('キャンセル'),
-                                    ),
-                                    FilledButton(
-                                      onPressed:
-                                          () => Navigator.of(context).pop(true),
-                                      style: FilledButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                      ),
-                                      child: const Text('削除'),
-                                    ),
-                                  ],
-                                ),
-                          );
-                          if (confirmed == true) {
-                            await notifier.resetConversation();
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context)
-                                ..hideCurrentSnackBar()
-                                ..showSnackBar(
-                                  const SnackBar(
-                                    content: Text('チャット履歴を削除しました'),
-                                    duration: Duration(seconds: 2),
-                                  ),
-                                );
-                            }
-                          }
-                          break;
-                      }
-                    },
+                  SizedBox(width: tokens.spacing.md),
+                  Expanded(
+                    child: Text(
+                      'AIインサイト',
+                      style: tokens.typography.h3.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: tokens.textMuted,
+                    size: 16,
                   ),
                 ],
               ),
               SizedBox(height: tokens.spacing.md),
-              chatState.when(
-                data: (messages) => _ConversationPreview(messages: messages),
-                loading:
-                    () => Row(
-                      children: [
-                        SizedBox(
-                          width: tokens.spacing.lg,
-                          height: tokens.spacing.lg,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(
-                              tokens.brandPrimary,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: tokens.spacing.md),
-                        Text(
-                          'Gemmaが準備中です...',
-                          style: tokens.typography.body.copyWith(
-                            color: tokens.textMuted,
-                          ),
-                        ),
-                      ],
+              
+              // Insights preview
+              _InsightsPreview(tokens: tokens),
+              
+              SizedBox(height: tokens.spacing.lg),
+              
+              // Action button
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  horizontal: tokens.spacing.md,
+                  vertical: tokens.spacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+                  borderRadius: BorderRadius.circular(tokens.radius.md),
+                  border: Border.all(
+                    color: tokens.brandPrimary.withAlpha((255 * 0.3).round()),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.insights,
+                      color: tokens.brandPrimary,
+                      size: 16,
                     ),
-                error:
-                    (_, __) => Text(
-                      'AIコンシェルジュを読み込めませんでした。',
+                    SizedBox(width: tokens.spacing.sm),
+                    Text(
+                      'データ分析を見る',
                       style: tokens.typography.body.copyWith(
-                        color: tokens.textMuted,
+                        color: tokens.brandPrimary,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
+                  ],
+                ),
               ),
-              SizedBox(height: tokens.spacing.lg),
-              _InputPlaceholderRow(tokens: tokens),
             ],
           ),
         ),
@@ -148,144 +105,161 @@ class AiConciergeCard extends ConsumerWidget {
   }
 }
 
-class _ConversationPreview extends StatelessWidget {
-  const _ConversationPreview({required this.messages});
-
-  final List<AiConciergeMessage> messages;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    final latestAi = messages.lastWhere(
-      (message) => !message.isUser,
-      orElse:
-          () =>
-              messages.isNotEmpty
-                  ? messages.last
-                  : AiConciergeMessage(
-                    text: 'Gemmaが今日のインサイトを準備中です。',
-                    isUser: false,
-                    timestamp: DateTime.now(),
-                  ),
-    );
-    final latestUser = messages.lastWhereOrNull((message) => message.isUser);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: tokens.spacing.xl,
-              height: tokens.spacing.xl,
-              decoration: BoxDecoration(
-                color: tokens.brandPrimary.withAlpha((255 * 0.12).round()),
-                borderRadius: BorderRadius.circular(tokens.radius.lg),
-              ),
-              child: Icon(
-                Icons.psychology,
-                color: tokens.brandPrimary,
-                size: tokens.spacing.lg,
-              ),
-            ),
-            SizedBox(width: tokens.spacing.md),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing.md,
-                  vertical: tokens.spacing.sm,
-                ),
-                decoration: BoxDecoration(
-                  color: tokens.surfaceVariant,
-                  borderRadius: BorderRadius.circular(tokens.radius.lg),
-                ),
-                child: Text(
-                  latestAi.text,
-                  style: tokens.typography.body.copyWith(height: 1.5),
-                ),
-              ),
-            ),
-          ],
-        ),
-        if (latestUser != null) ...[
-          SizedBox(height: tokens.spacing.sm),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing.md,
-                      vertical: tokens.spacing.sm,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          tokens.brandPrimary.withAlpha((255 * 0.12).round()),
-                      borderRadius: BorderRadius.circular(tokens.radius.lg),
-                    ),
-                    child: Text(
-                      latestUser.text,
-                      style: tokens.typography.body.copyWith(
-                        color: tokens.brandPrimary,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-        SizedBox(height: tokens.spacing.sm),
-        Text(
-          'タップしてGemmaと会話を始める',
-          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
-        ),
-      ],
-    );
-  }
-}
-
-class _InputPlaceholderRow extends StatelessWidget {
-  const _InputPlaceholderRow({required this.tokens});
+class _InsightsPreview extends StatelessWidget {
+  const _InsightsPreview({required this.tokens});
 
   final MinqTheme tokens;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: tokens.spacing.md,
-              vertical: tokens.spacing.sm,
-            ),
-            decoration: BoxDecoration(
-              color: tokens.surfaceVariant,
-              borderRadius: BorderRadius.circular(tokens.radius.xl),
-            ),
-            child: Text(
-              'メッセージを入力...',
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
-            ),
+        Text(
+          'あなたの習慣データを分析',
+          style: tokens.typography.body.copyWith(
+            color: tokens.textSecondary,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(width: tokens.spacing.sm),
-        Container(
-          width: tokens.spacing.xl,
-          height: tokens.spacing.xl,
-          decoration: BoxDecoration(
-            color: tokens.brandPrimary,
-            shape: BoxShape.circle,
+        SizedBox(height: tokens.spacing.md),
+        
+        // Real insights preview
+        Consumer(
+          builder: (context, ref, child) {
+            final streakAsync = ref.watch(streakProvider);
+            final statsAsync = ref.watch(statsDataProvider);
+            final aiInsightsAsync = ref.watch(aiInsightsProvider);
+            
+            return Row(
+              children: [
+                Expanded(
+                  child: statsAsync.when(
+                    data: (stats) => _buildInsightItem(
+                      '完了率',
+                      '${(stats.weeklyCompletionRate * 100).round()}%',
+                      Icons.trending_up,
+                      stats.weeklyCompletionRate > 0.7 ? Colors.green : Colors.orange,
+                      tokens,
+                    ),
+                    loading: () => _buildInsightItem(
+                      '完了率',
+                      '-',
+                      Icons.trending_up,
+                      Colors.grey,
+                      tokens,
+                    ),
+                    error: (_, __) => _buildInsightItem(
+                      '完了率',
+                      '-',
+                      Icons.trending_up,
+                      Colors.grey,
+                      tokens,
+                    ),
+                  ),
+                ),
+                SizedBox(width: tokens.spacing.md),
+                Expanded(
+                  child: streakAsync.when(
+                    data: (streak) => _buildInsightItem(
+                      'ストリーク',
+                      '${streak}日',
+                      Icons.local_fire_department,
+                      streak > 0 ? Colors.orange : Colors.grey,
+                      tokens,
+                    ),
+                    loading: () => _buildInsightItem(
+                      'ストリーク',
+                      '-',
+                      Icons.local_fire_department,
+                      Colors.grey,
+                      tokens,
+                    ),
+                    error: (_, __) => _buildInsightItem(
+                      'ストリーク',
+                      '-',
+                      Icons.local_fire_department,
+                      Colors.grey,
+                      tokens,
+                    ),
+                  ),
+                ),
+                SizedBox(width: tokens.spacing.md),
+                Expanded(
+                  child: aiInsightsAsync.when(
+                    data: (insights) => _buildInsightItem(
+                      '提案',
+                      '${insights.recommendations.length}件',
+                      Icons.lightbulb_outline,
+                      insights.recommendations.isNotEmpty ? Colors.blue : Colors.grey,
+                      tokens,
+                    ),
+                    loading: () => _buildInsightItem(
+                      '提案',
+                      '-',
+                      Icons.lightbulb_outline,
+                      Colors.grey,
+                      tokens,
+                    ),
+                    error: (_, __) => _buildInsightItem(
+                      '提案',
+                      '-',
+                      Icons.lightbulb_outline,
+                      Colors.grey,
+                      tokens,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        
+        SizedBox(height: tokens.spacing.md),
+        
+        Text(
+          'パーソナライズされた分析とアドバイスを確認できます',
+          style: tokens.typography.caption.copyWith(
+            color: tokens.textMuted,
           ),
-          child: const Icon(Icons.send, color: Colors.white),
         ),
       ],
+    );
+  }
+
+  Widget _buildInsightItem(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+    MinqTheme tokens,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing.sm),
+      decoration: BoxDecoration(
+        color: color.withAlpha((255 * 0.1).round()),
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 16),
+          SizedBox(height: tokens.spacing.xs),
+          Text(
+            value,
+            style: tokens.typography.body.copyWith(
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          Text(
+            label,
+            style: tokens.typography.caption.copyWith(
+              color: tokens.textMuted,
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

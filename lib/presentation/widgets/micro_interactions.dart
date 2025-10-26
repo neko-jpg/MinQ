@@ -475,6 +475,188 @@ class _CountUpAnimationState extends State<CountUpAnimation>
   }
 }
 
+/// Enhanced hover effect for interactive elements
+class HoverEffect extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  final Color? hoverColor;
+  final double hoverElevation;
+  final Duration duration;
+
+  const HoverEffect({
+    super.key,
+    required this.child,
+    this.onTap,
+    this.hoverColor,
+    this.hoverElevation = 4.0,
+    this.duration = const Duration(milliseconds: 200),
+  });
+
+  @override
+  State<HoverEffect> createState() => _HoverEffectState();
+}
+
+class _HoverEffectState extends State<HoverEffect>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _elevationAnimation;
+  late Animation<Color?> _colorAnimation;
+  bool _isHovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
+    _elevationAnimation = Tween<double>(
+      begin: 0.0,
+      end: widget.hoverElevation,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onEnter(PointerEvent details) {
+    setState(() => _isHovered = true);
+    _controller.forward();
+  }
+
+  void _onExit(PointerEvent details) {
+    setState(() => _isHovered = false);
+    _controller.reverse();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = MinqTheme.of(context);
+    
+    _colorAnimation = ColorTween(
+      begin: Colors.transparent,
+      end: widget.hoverColor ?? tokens.hoverState,
+    ).animate(_controller);
+
+    return MouseRegion(
+      onEnter: _onEnter,
+      onExit: _onExit,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Container(
+              decoration: BoxDecoration(
+                color: _colorAnimation.value,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: _elevationAnimation.value > 0
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(25),
+                          blurRadius: _elevationAnimation.value * 2,
+                          offset: Offset(0, _elevationAnimation.value),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: widget.child,
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// Magnetic button effect - button follows cursor slightly
+class MagneticEffect extends StatefulWidget {
+  final Widget child;
+  final double magneticStrength;
+  final Duration duration;
+
+  const MagneticEffect({
+    super.key,
+    required this.child,
+    this.magneticStrength = 0.3,
+    this.duration = const Duration(milliseconds: 150),
+  });
+
+  @override
+  State<MagneticEffect> createState() => _MagneticEffectState();
+}
+
+class _MagneticEffectState extends State<MagneticEffect>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+  Offset _targetOffset = Offset.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onHover(PointerEvent details, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final localPosition = details.localPosition;
+    final distance = localPosition - center;
+    
+    _targetOffset = distance * widget.magneticStrength;
+    
+    _offsetAnimation = Tween<Offset>(
+      begin: _offsetAnimation.value,
+      end: _targetOffset,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    
+    _controller.forward(from: 0.0);
+  }
+
+  void _onExit(PointerEvent details) {
+    _offsetAnimation = Tween<Offset>(
+      begin: _offsetAnimation.value,
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    
+    _controller.forward(from: 0.0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = Size(constraints.maxWidth, constraints.maxHeight);
+        
+        return MouseRegion(
+          onHover: (event) => _onHover(event, size),
+          onExit: _onExit,
+          child: AnimatedBuilder(
+            animation: _offsetAnimation,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: _offsetAnimation.value,
+                child: widget.child,
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
 /// スパークルエフェクト - キラキラ光るアニメーション
 class SparkleEffect extends StatefulWidget {
   final Widget child;

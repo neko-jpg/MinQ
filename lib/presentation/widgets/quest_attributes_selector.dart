@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエスト属性選択ウィジェット
@@ -31,7 +32,7 @@ class QuestAttributesSelector extends StatelessWidget {
         // 難易度選択
         if (onDifficultyChanged != null) ...[
           Text(
-            '難易度',
+            AppLocalizations.of(context)!.difficulty,
             style: tokens.typography.body.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
@@ -49,7 +50,7 @@ class QuestAttributesSelector extends StatelessWidget {
         // 推定時間選択
         if (onEstimatedMinutesChanged != null) ...[
           Text(
-            '推定時間',
+            AppLocalizations.of(context)!.estimatedTime,
             style: tokens.typography.body.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
@@ -67,7 +68,7 @@ class QuestAttributesSelector extends StatelessWidget {
         // 場所選択
         if (onLocationChanged != null) ...[
           Text(
-            '場所',
+            AppLocalizations.of(context)!.location,
             style: tokens.typography.body.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
@@ -97,18 +98,21 @@ class _DifficultySelector extends StatelessWidget {
     required this.tokens,
   });
 
-  static const difficulties = [
-    {'value': 'easy', 'label': '簡単', 'icon': '⭐'},
-    {'value': 'medium', 'label': '普通', 'icon': '⭐⭐'},
-    {'value': 'hard', 'label': '難しい', 'icon': '⭐⭐⭐'},
-  ];
+  static List<Map<String, String>> getDifficulties(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      {'value': 'easy', 'label': l10n.difficultyEasy, 'icon': '⭐'},
+      {'value': 'medium', 'label': l10n.difficultyMedium, 'icon': '⭐⭐'},
+      {'value': 'hard', 'label': l10n.difficultyHard, 'icon': '⭐⭐⭐'},
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       spacing: tokens.spacing.sm,
       children:
-          difficulties.map((difficulty) {
+          getDifficulties(context).map((difficulty) {
             final isSelected = selected == difficulty['value'];
             return ChoiceChip(
               label: Row(
@@ -144,20 +148,23 @@ class _DurationSelector extends StatelessWidget {
     required this.tokens,
   });
 
-  static const durations = [
-    {'value': 5, 'label': '5分'},
-    {'value': 10, 'label': '10分'},
-    {'value': 15, 'label': '15分'},
-    {'value': 30, 'label': '30分'},
-    {'value': 60, 'label': '1時間'},
-  ];
+  static List<Map<String, dynamic>> getDurations(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      {'value': 5, 'label': l10n.duration5min},
+      {'value': 10, 'label': l10n.duration10min},
+      {'value': 15, 'label': l10n.duration15min},
+      {'value': 30, 'label': l10n.duration30min},
+      {'value': 60, 'label': l10n.duration1hour},
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       spacing: tokens.spacing.sm,
       children:
-          durations.map((duration) {
+          getDurations(context).map((duration) {
             final value = duration['value'] as int;
             final isSelected = selected == value;
             return ChoiceChip(
@@ -187,13 +194,16 @@ class _LocationSelector extends StatelessWidget {
     required this.tokens,
   });
 
-  static const locations = [
-    {'value': 'home', 'label': '自宅', 'icon': '🏠'},
-    {'value': 'gym', 'label': 'ジム', 'icon': '🏋️'},
-    {'value': 'office', 'label': 'オフィス', 'icon': '🏢'},
-    {'value': 'outdoor', 'label': '屋外', 'icon': '🌳'},
-    {'value': 'library', 'label': '図書館', 'icon': '📚'},
-  ];
+  static List<Map<String, String>> getLocations(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      {'value': 'home', 'label': l10n.locationHome, 'icon': '🏠'},
+      {'value': 'gym', 'label': l10n.locationGym, 'icon': '🏋️'},
+      {'value': 'office', 'label': l10n.locationOffice, 'icon': '🏢'},
+      {'value': 'outdoor', 'label': l10n.locationOutdoor, 'icon': '🌳'},
+      {'value': 'library', 'label': l10n.locationLibrary, 'icon': '📚'},
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +211,7 @@ class _LocationSelector extends StatelessWidget {
       spacing: tokens.spacing.sm,
       runSpacing: tokens.spacing.sm,
       children:
-          locations.map((location) {
+          getLocations(context).map((location) {
             final isSelected = selected == location['value'];
             return ChoiceChip(
               label: Row(

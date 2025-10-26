@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/ai/ai_integration_manager.dart';
 import 'package:minq/core/ai/tflite_unified_ai_service.dart';

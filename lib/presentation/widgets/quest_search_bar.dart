@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエスト検索バー
@@ -47,7 +48,7 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                 child: TextField(
                   controller: _controller,
                   decoration: InputDecoration(
-                    hintText: 'クエストを検索...',
+                    hintText: AppLocalizations.of(context)!.searchQuests,
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon:
                         _controller.text.isNotEmpty
@@ -99,7 +100,7 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'タグでフィルター',
+                  AppLocalizations.of(context)!.filterByTags,
                   style: tokens.typography.caption.copyWith(
                     color: tokens.textSecondary,
                     fontWeight: FontWeight.bold,
@@ -142,7 +143,7 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                       widget.onTagsChanged?.call([]);
                     },
                     icon: const Icon(Icons.clear_all),
-                    label: const Text('フィルターをクリア'),
+                    label: Text(AppLocalizations.of(context)!.clearFilters),
                   ),
                 ],
               ],

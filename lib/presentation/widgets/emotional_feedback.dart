@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 import 'package:minq/core/audio/sound_effects_service.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -352,7 +353,7 @@ class _ComfortDialogState extends State<_ComfortDialog>
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('ありがとう'),
+                    child: Text(AppLocalizations.of(context)!.thankYou),
                   ),
                 ],
               ),

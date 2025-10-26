@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:minq/data/providers.dart';
@@ -129,7 +130,7 @@ class ReferralCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '友達招待',
+                    AppLocalizations.of(context)!.friendInvitationTitle,
                     style: tokens.typography.h3.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -138,14 +139,16 @@ class ReferralCard extends ConsumerWidget {
                   SizedBox(height: tokens.spacing.xs),
                   if (stats.totalReferrals > 0)
                     Text(
-                      '${stats.totalReferrals}人招待済み・成功率${(stats.conversionRate * 100).toStringAsFixed(0)}%',
+                      AppLocalizations.of(context)!.invitedFriends
+                        .replaceAll('{count}', stats.totalReferrals.toString())
+                        .replaceAll('{rate}', (stats.conversionRate * 100).toStringAsFixed(0)),
                       style: tokens.typography.caption.copyWith(
                         color: Colors.white.withAlpha((255 * 0.9).round()),
                       ),
                     )
                   else
                     Text(
-                      '友達を招待してボーナスポイントをゲット！',
+                      AppLocalizations.of(context)!.inviteFriendsBonus,
                       style: tokens.typography.caption.copyWith(
                         color: Colors.white.withAlpha((255 * 0.9).round()),
                       ),
@@ -212,7 +215,7 @@ class CompactReferralCard extends ConsumerWidget {
             Icon(Icons.people, color: Colors.white, size: tokens.spacing.lg),
             SizedBox(width: tokens.spacing.sm),
             Text(
-              '友達招待',
+              AppLocalizations.of(context)!.friendInvitationTitle,
               style: tokens.typography.caption.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -263,7 +266,7 @@ class ReferralPromotionBanner extends ConsumerWidget {
               ),
               SizedBox(width: tokens.spacing.sm),
               Text(
-                '特別キャンペーン',
+                AppLocalizations.of(context)!.specialCampaignTitle,
                 style: tokens.typography.h3.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -273,7 +276,7 @@ class ReferralPromotionBanner extends ConsumerWidget {
           ),
           SizedBox(height: tokens.spacing.sm),
           Text(
-            '友達を招待すると、あなたも友達も\n最大3500ポイントがもらえます！',
+            AppLocalizations.of(context)!.inviteFriendsPoints,
             style: tokens.typography.body.copyWith(
               color: Colors.white.withAlpha((255 * 0.9).round()),
             ),
@@ -291,7 +294,7 @@ class ReferralPromotionBanner extends ConsumerWidget {
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.purple.shade600,
                   ),
-                  child: const Text('今すぐ招待'),
+                  child: Text(AppLocalizations.of(context)!.inviteNow),
                 ),
               ),
             ],

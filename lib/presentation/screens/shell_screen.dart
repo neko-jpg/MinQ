@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
+import 'package:minq/presentation/common/layout/responsive_layout.dart';
+import 'package:minq/presentation/common/layout/safe_scaffold.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/controllers/usage_limit_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
@@ -81,9 +83,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     final String location = GoRouterState.of(context).uri.toString();
     if (location.startsWith(AppRoutes.stats)) return 1;
     if (location.startsWith(AppRoutes.challenges)) return 2;
-    if (location.startsWith(AppRoutes.pair)) return 3;
-    if (location.startsWith(AppRoutes.quests)) return 4;
-    if (location.startsWith(AppRoutes.settings)) return 5;
+    if (location.startsWith(AppRoutes.profile) || location.startsWith(AppRoutes.settings)) return 3;
     return 0;
   }
 
@@ -105,13 +105,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
         navigation.goToChallenges();
         break;
       case 3:
-        navigation.goToPair();
-        break;
-      case 4:
-        navigation.goToQuests();
-        break;
-      case 5:
-        navigation.goToSettings();
+        navigation.goToProfile();
         break;
     }
     FeedbackManager.selected();
@@ -140,22 +134,12 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
         label: 'チャレンジ',
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.groups_outlined),
-        activeIcon: Icon(Icons.groups),
-        label: 'ペア',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.checklist_outlined),
-        activeIcon: Icon(Icons.checklist),
-        label: 'クエスト',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.settings_outlined),
-        activeIcon: Icon(Icons.settings),
-        label: '設定',
+        icon: Icon(Icons.person_outlined),
+        activeIcon: Icon(Icons.person),
+        label: 'プロフィール',
       ),
     ];
-    assert(navItems.length <= 6, 'ボトムナビゲーションのタブ数は6個以下にしてください。');
+    assert(navItems.length <= 4, 'ボトムナビゲーションのタブ数は4個以下にしてください。');
 
     final scaffold = Scaffold(
       body: PageTransitionSwitcher(
@@ -173,18 +157,26 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
       ),
       bottomNavigationBar: SafeArea(
         top: false,
-        minimum: EdgeInsets.only(bottom: tokens.spacing.lg),
-        child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: (int index) => _onItemTapped(index, context),
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: tokens.brandPrimary,
-          unselectedItemColor: tokens.textMuted,
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-          backgroundColor: tokens.surface,
-          elevation: 0,
-          items: navItems,
+        child: ResponsiveLayoutBuilder(
+          builder: (context, screenType, constraints) {
+            return Container(
+              height: ResponsiveLayout.minTouchTarget + 36,
+              padding: EdgeInsets.symmetric(vertical: tokens.spacing.sm),
+              child: BottomNavigationBar(
+                currentIndex: currentIndex,
+                onTap: (int index) => _onItemTapped(index, context),
+                type: BottomNavigationBarType.fixed,
+                selectedItemColor: tokens.brandPrimary,
+                unselectedItemColor: tokens.textMuted,
+                selectedFontSize: screenType == ScreenType.mobile ? 12 : 14,
+                unselectedFontSize: screenType == ScreenType.mobile ? 10 : 12,
+                backgroundColor: tokens.surface,
+                elevation: 0,
+                iconSize: screenType == ScreenType.mobile ? 24 : 28,
+                items: navItems,
+              ),
+            );
+          },
         ),
       ),
     );

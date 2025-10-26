@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// チュートリアルステップ
 class TutorialStep {
@@ -272,13 +273,15 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // スキップボタン
-                  TextButton(onPressed: _onSkip, child: const Text('スキップ')),
+                  TextButton(onPressed: _onSkip, child: Text(AppLocalizations.of(context)!.skip)),
 
                   // 次へボタン
                   ElevatedButton(
                     onPressed: _onNext,
                     child: Text(
-                      _currentStep == widget.steps.length - 1 ? '完了' : '次へ',
+                      _currentStep == widget.steps.length - 1 
+                        ? AppLocalizations.of(context)!.complete 
+                        : AppLocalizations.of(context)!.next,
                     ),
                   ),
                 ],

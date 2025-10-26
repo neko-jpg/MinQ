@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/onboarding/progressive_onboarding.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -564,14 +565,16 @@ class LevelProgressWidget extends ConsumerWidget {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('レベル詳細'),
+            title: Text(AppLocalizations.of(context)!.levelDetails),
             content: Text(
-              '現在レベル: ${progress.currentLevel}\n進捗: ${(progress.progress * 100).toInt()}%',
+              AppLocalizations.of(context)!.levelDetailsMessage
+                .replaceAll('{level}', progress.currentLevel.toString())
+                .replaceAll('{progress}', (progress.progress * 100).toInt().toString()),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('閉じる'),
+                child: Text(AppLocalizations.of(context)!.close),
               ),
             ],
           ),

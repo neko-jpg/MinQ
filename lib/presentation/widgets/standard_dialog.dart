@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:minq/presentation/theme/elevation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// 標準ダイアログ - 統一されたダイアログコンポーネント
 class StandardDialog extends StatelessWidget {
@@ -32,9 +33,10 @@ class StandardDialog extends StatelessWidget {
     required String title,
     required String message,
     String confirmText = 'OK',
-    String cancelText = 'キャンセル',
+    String? cancelText,
     bool destructive = false,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<bool>(
       context: context,
       builder:
@@ -44,7 +46,7 @@ class StandardDialog extends StatelessWidget {
             type: destructive ? DialogType.destructive : DialogType.normal,
             actions: [
               DialogAction(
-                label: cancelText,
+                label: cancelText ?? l10n.cancel,
                 onPressed: () => Navigator.of(context).pop(false),
                 isCancel: true,
               ),
@@ -277,7 +279,7 @@ extension DialogExtension on BuildContext {
     required String title,
     required String message,
     String confirmText = 'OK',
-    String cancelText = 'キャンセル',
+    String? cancelText,
     bool destructive = false,
   }) {
     return StandardDialog.showConfirm(
