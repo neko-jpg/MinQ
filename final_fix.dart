@@ -7,6 +7,7 @@ void main() async {
 Future<void> finalFix() async {
   final libDir = Directory('lib');
   if (!libDir.existsSync()) {
+    // ignore: avoid_print
     print('lib directory not found');
     return;
   }
@@ -31,9 +32,11 @@ Future<void> fixFile(File file) async {
 
     if (content != originalContent) {
       await file.writeAsString(content);
+      // ignore: avoid_print
       print('Applied final fixes to: ${file.path}');
     }
   } catch (e) {
+    // ignore: avoid_print
     print('Error processing ${file.path}: $e');
   }
 }

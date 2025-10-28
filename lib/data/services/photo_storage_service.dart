@@ -84,7 +84,7 @@ class PhotoStorageService {
     // The suggested replacement, Namespace.url, is not a string and causes a type error.
     // ignore: deprecated_member_use
     final hashedName = _uuid.v5(
-      Uuid.NAMESPACE_URL,
+      '6ba7b811-9dad-11d1-80b4-00c04fd430c8',
       '$ownerUid-$questId-${DateTime.now().toUtc().toIso8601String()}-${sanitizedBytes.length}',
     );
     final sanitizedPath = p.join(directory.path, '$hashedName.jpg');
@@ -103,8 +103,12 @@ class PhotoStorageService {
   Future<Directory> _ensurePhotoDirectory(String ownerUid) async {
     final root = await _documentsDirectoryBuilder();
     final dir = Directory(p.join(root.path, 'proof_photos', ownerUid));
-    if (!(await dir.exists())) {
+    try {
       await dir.create(recursive: true);
+    } on FileSystemException catch (e) {
+      if (!e.message.contains('File exists')) {
+        rethrow;
+      }
     }
     return dir;
   }

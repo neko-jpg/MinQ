@@ -401,8 +401,6 @@ class AccessibleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accessibilitySettings = AccessibilitySettings.fromMediaQuery(context);
-    
     Widget button = Material(
       color: backgroundColor ?? Theme.of(context).colorScheme.primary,
       borderRadius: borderRadius ?? BorderRadius.circular(8),
@@ -443,7 +441,10 @@ class FocusHelper {
   static void announce(String message, {bool assertive = false}) {
     SemanticsService.announce(
       message,
-      assertive ? Assertiveness.assertive : Assertiveness.polite,
+      // TODO(you): This should be derived from the context's Directionality.
+      // For now, hardcoding LTR as it's the dominant direction for the app.
+      TextDirection.ltr,
+      assertiveness: assertive ? Assertiveness.assertive : Assertiveness.polite,
     );
   }
 
@@ -531,6 +532,7 @@ class ContrastValidator {
       adjusted = Color.lerp(
         original,
         Color.fromARGB(
+          // ignore: deprecated_member_use
           original.alpha,
           (targetLuminance * 255).round(),
           (targetLuminance * 255).round(),

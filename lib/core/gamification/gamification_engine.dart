@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/audio/sound_effects_service.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/gamification/badge.dart' as gamification;
-import 'package:flutter/widgets.dart';
 import 'package:minq/domain/gamification/points.dart';
 import 'package:minq/presentation/theme/haptics_system.dart';
 import 'package:minq/presentation/widgets/badge_notification_widget.dart';
@@ -49,7 +49,7 @@ class GamificationEngine {
     if (playSound) {
       await SoundEffectsService.instance.play(SoundType.coin);
     }
-
+    if (context != null && !context.mounted) return;
     if (showNotification && context != null) {
       PointsNotificationOverlay.show(context, totalPoints, reason);
     }
@@ -81,7 +81,8 @@ class GamificationEngine {
       
       // Check for level progression after awarding points
       await _checkLevelProgression(userId, context);
-      
+      // ignore: use_build_context_synchronously
+      if (context != null && !context.mounted) return;
     } catch (e) {
       MinqLogger.error('Failed to award points (offline)', exception: e);
       // Revert local cache on failure
@@ -147,10 +148,12 @@ class GamificationEngine {
           }
 
           if (showNotification && context != null) {
+            if (!context.mounted) return awardedBadges;
             BadgeNotificationOverlay.show(context, newBadge);
             // Delay between multiple badge notifications
             if (awardedBadges.length > 1) {
               await Future.delayed(const Duration(seconds: 2));
+              if (!context.mounted) return awardedBadges;
             }
           }
         }

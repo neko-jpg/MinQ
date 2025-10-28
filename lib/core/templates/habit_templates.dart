@@ -339,23 +339,6 @@ class HabitTemplate {
     };
   }
 
-  String _categoryToString(HabitCategory category) {
-    return switch (category) {
-      HabitCategory.health => '健康',
-      HabitCategory.learning => '学習',
-      HabitCategory.productivity => '生産性',
-      HabitCategory.mindfulness => 'マインドフルネス',
-      HabitCategory.social => '社交',
-    };
-  }
-
-  String _difficultyToString(HabitDifficulty difficulty) {
-    return switch (difficulty) {
-      HabitDifficulty.easy => '簡単',
-      HabitDifficulty.medium => '普通',
-      HabitDifficulty.hard => '難しい',
-    };
-  }
 }
 
 /// 習慣カテゴリー

@@ -183,7 +183,6 @@ class FastStartupManager {
   final StartupTimer _timer = StartupTimer();
   final PrioritizedInitializationManager _initManager =
       PrioritizedInitializationManager();
-  final ImagePrefetcher _imagePrefetcher = ImagePrefetcher();
 
   /// 起動最適化を初期化
   void initialize() {

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/gamification/reward.dart';
 
@@ -18,7 +19,7 @@ class RewardSystem {
   Future<List<Reward>> getAvailableRewards() async {
     // Firestoreが利用できない場合は空のリストを返す
     if (_firestore == null) {
-      print('Rewards unavailable (offline mode)');
+      MinqLogger.info('Rewards unavailable (offline mode)');
       return [];
     }
 
@@ -26,7 +27,7 @@ class RewardSystem {
       final snapshot = await _firestore.collection('rewards').get();
       return snapshot.docs.map((doc) => Reward.fromJson(doc.data())).toList();
     } catch (e) {
-      print('Error fetching rewards: $e');
+      MinqLogger.error('Error fetching rewards', exception: e);
       return [];
     }
   }
@@ -38,7 +39,7 @@ class RewardSystem {
   }) async {
     // Firestoreが利用できない場合は失敗
     if (_firestore == null) {
-      print('Reward redemption unavailable (offline mode)');
+      MinqLogger.info('Reward redemption unavailable (offline mode)');
       return false;
     }
 
@@ -82,7 +83,7 @@ class RewardSystem {
         return true;
       });
     } catch (e) {
-      print('Error redeeming reward: $e');
+      MinqLogger.error('Error redeeming reward', exception: e);
       return false;
     }
   }
@@ -131,7 +132,7 @@ class RewardSystem {
     try {
       // Firestoreが利用できない場合はローカルログのみ
       if (_firestore == null) {
-        print(
+        MinqLogger.info(
           'Surprise reward generated (offline mode): ${selectedReward.name}',
         );
         return selectedReward;
@@ -145,12 +146,12 @@ class RewardSystem {
             .doc(userId)
             .collection('points_transactions')
             .add({
-              'value': points,
-              'reason': 'Surprise Reward: ${selectedReward.name}',
-              'createdAt': FieldValue.serverTimestamp(),
-              'userId': userId,
-            });
-        print('Awarded $points surprise points to user $userId');
+          'value': points,
+          'reason': 'Surprise Reward: ${selectedReward.name}',
+          'createdAt': FieldValue.serverTimestamp(),
+          'userId': userId,
+        });
+        MinqLogger.info('Awarded $points surprise points to user $userId');
       } else {
         await _firestore
             .collection('users')
@@ -158,11 +159,12 @@ class RewardSystem {
             .collection('user_rewards')
             .doc(selectedReward.id)
             .set(selectedReward.toJson());
-        print('Awarded surprise reward ${selectedReward.name} to user $userId');
+        MinqLogger.info(
+            'Awarded surprise reward ${selectedReward.name} to user $userId');
       }
       return selectedReward;
     } catch (e) {
-      print('Error generating variable reward: $e');
+      MinqLogger.error('Error generating variable reward', exception: e);
       return null;
     }
   }

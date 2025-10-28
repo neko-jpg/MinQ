@@ -89,7 +89,7 @@ class HealthSyncService {
       final value = (point.value as NumericHealthValue).numericValue;
       aggregatedData.update(
         point.type,
-        (sum) => sum + value,
+        (currentValue) => currentValue + value,
         ifAbsent: () => value,
       );
     }

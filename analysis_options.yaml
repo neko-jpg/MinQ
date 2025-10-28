@@ -21,6 +21,7 @@ analyzer:
     unused_element: warning
     # 未使用のフィールドを警告として扱う
     unused_field: warning
+    extra_positional_arguments_could_be_named: ignore
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"

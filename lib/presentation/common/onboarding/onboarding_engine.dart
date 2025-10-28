@@ -108,6 +108,7 @@ class OnboardingEngine {
     if (!context.mounted) return;
     if (await hasCompletedOnboarding()) return;
 
+    if (!context.mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => InteractiveTourScreen(steps: steps),
@@ -121,6 +122,7 @@ class OnboardingEngine {
     if (!context.mounted) return;
     if (await hasSeenTooltip(tooltipId)) return;
 
+    if (!context.mounted) return;
     // ホーム画面のガイドを表示
     await _showOverlayGuide(
       context,
@@ -136,6 +138,7 @@ class OnboardingEngine {
     if (!context.mounted) return;
     if (await hasSeenTooltip(tooltipId)) return;
 
+    if (!context.mounted) return;
     await _showOverlayGuide(
       context,
       tooltipId,
@@ -150,6 +153,7 @@ class OnboardingEngine {
     if (!context.mounted) return;
     if (await hasSeenTooltip(tooltipId)) return;
 
+    if (!context.mounted) return;
     await _showOverlayGuide(
       context,
       tooltipId,
@@ -164,6 +168,7 @@ class OnboardingEngine {
     if (!context.mounted) return;
     if (await hasSeenTooltip(tooltipId)) return;
 
+    if (!context.mounted) return;
     await _showOverlayGuide(
       context,
       tooltipId,

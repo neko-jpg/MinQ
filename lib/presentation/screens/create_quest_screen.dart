@@ -238,6 +238,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         // Update user's notification times to include this quest's reminder
         final userRepository = ref.read(userRepositoryProvider);
         final user = await userRepository.getUserById(uid);
+        if (!mounted) return;
         if (user != null) {
           final updatedTimes = List<String>.from(user.notificationTimes);
           if (!updatedTimes.contains(timeString)) {
@@ -407,6 +408,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                     onNext: () async {
                       if (_isLastStep) {
                         await _saveQuest();
+                        if (!mounted) return;
                       } else {
                         await _goToStep(_currentStep + 1);
                       }

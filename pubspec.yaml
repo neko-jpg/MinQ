@@ -67,7 +67,7 @@ dependencies:
   timezone: any
   animations: any
   flutter_staggered_animations: any
-  share_plus: any
+  share_plus: ^12.0.0
   connectivity_plus: any
   flutter_markdown: any
   in_app_review: any

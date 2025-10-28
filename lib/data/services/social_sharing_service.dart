@@ -279,8 +279,12 @@ class SocialSharingService {
     final directory = await getTemporaryDirectory();
     final shareDir = Directory('${directory.path}/$_shareDirectory');
 
-    if (!await shareDir.exists()) {
+    try {
       await shareDir.create(recursive: true);
+    } on FileSystemException catch (e) {
+      if (!e.message.contains('File exists')) {
+        rethrow;
+      }
     }
 
     final file = File('${shareDir.path}/$fileName.png');
@@ -330,9 +334,9 @@ class SocialSharingService {
       final directory = await getTemporaryDirectory();
       final shareDir = Directory('${directory.path}/$_shareDirectory');
 
-      if (await shareDir.exists()) {
-        await shareDir.delete(recursive: true);
-      }
+      await shareDir.delete(recursive: true);
+    } on FileSystemException {
+      // Ignore if the directory doesn't exist
     } catch (e) {
       debugPrint('Failed to cleanup temp files: $e');
     }

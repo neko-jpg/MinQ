@@ -41,7 +41,7 @@ class DeviceInfoService {
   /// デバイスサイズカテゴリーを取得
   DeviceSizeCategory getDeviceSizeCategory(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final diagonal = _calculateDiagonal(size.width, size.height);
+    final diagonal = _calculateDiagonal(context, size.width, size.height);
 
     if (diagonal < 6.0) {
       return DeviceSizeCategory.small;
@@ -55,8 +55,8 @@ class DeviceInfoService {
   }
 
   /// 対角線の長さを計算（インチ）
-  double _calculateDiagonal(double width, double height) {
-    final pixelRatio = WidgetsBinding.instance.window.devicePixelRatio;
+  double _calculateDiagonal(BuildContext context, double width, double height) {
+    final pixelRatio = View.of(context).devicePixelRatio;
     final widthInches = width / (pixelRatio * 160);
     final heightInches = height / (pixelRatio * 160);
     return sqrt(widthInches * widthInches + heightInches * heightInches);

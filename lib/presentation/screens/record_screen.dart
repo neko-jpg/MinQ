@@ -377,6 +377,7 @@ class _RecordForm extends ConsumerWidget {
       }
 
       final proceed = await _handleModerationWarning(context, result);
+      // ignore: use_build_context_synchronously
       if (!proceed || !context.mounted) return;
 
       final controller = ref.read(questLogControllerProvider.notifier);
@@ -546,7 +547,7 @@ class _FocusMusicTile extends ConsumerWidget {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${result.title} / ${result.artists.join(', ')}'),
+          content: Text('${result.title} / ${result.artists.join(", ")}'),
         ),
       );
     } catch (error) {
@@ -684,11 +685,11 @@ Future<bool> _handleModerationWarning(
   if (!proceed) {
     try {
       final file = File(result.path);
-      if (await file.exists()) {
-        await file.delete();
-      }
+      await file.delete();
+    } on FileSystemException {
+      // Ignore if the file doesn't exist
     } catch (_) {
-      // Ignore cleanup errors.
+      // Ignore other cleanup errors.
     }
   }
   return proceed;

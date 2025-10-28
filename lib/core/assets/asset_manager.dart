@@ -1,3 +1,5 @@
+import 'package:minq/data/logging/minq_logger.dart';
+
 /// アセット管理システム
 /// アイコンセット固定、不要削除、ツリーシェイク対応
 class AssetManager {
@@ -98,7 +100,7 @@ class AssetValidator {
       // 開発環境でのみ検証
       for (final asset in AssetManager.requiredAssets) {
         // アセットの存在確認ロジック
-        print('Validating asset: $asset');
+        MinqLogger.info('Validating asset: $asset');
       }
       return true;
     }());

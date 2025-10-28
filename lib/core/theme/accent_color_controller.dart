@@ -44,6 +44,7 @@ extension AccentColorExtension on AccentColor {
 
   /// MaterialColorを生成
   MaterialColor get materialColor {
+    // ignore: deprecated_member_use
     return MaterialColor(color.value, <int, Color>{
       50: color.withAlpha(26),
       100: color.withAlpha(51),

@@ -332,11 +332,12 @@ ${story.visualElements.hashtags.join(' ')}
 #MinQ #習慣形成 #継続力
 ''';
 
-      if (files.isNotEmpty) {
-        await Share.shareXFiles(files, text: shareText, subject: story.title);
-      } else {
-        await Share.share(shareText, subject: story.title);
-      }
+      final params = ShareParams(
+        text: shareText,
+        subject: story.title,
+        files: files,
+      );
+      await SharePlus.instance.share(params);
 
       log('HabitStory: ストーリー共有完了');
     } catch (e) {

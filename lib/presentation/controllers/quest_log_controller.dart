@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/providers.dart';
+import 'package:minq/core/gamification/gamification_engine.dart';
+import 'package:minq/data/providers.dart' hide gamificationEngineProvider;
 import 'package:minq/domain/log/quest_log.dart';
 
 class QuestLogController extends StateNotifier<AsyncValue<void>> {
@@ -101,11 +101,12 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
 
       // ゲーミフィケーション: ポイント付与とバッジチェック
       try {
-        final gamificationEngine = _ref.read(gamificationEngineProvider);
+        final gamificationEngine =
+            _ref.read(gamificationEngineProvider) as GamificationEngine?;
 
         // Firestoreが利用できない場合はスキップ（ログ記録は成功とみなす）
         if (gamificationEngine == null) {
-          state = AsyncValue.data(todayLogs);
+          state = const AsyncValue.data(null);
           return true;
         }
 

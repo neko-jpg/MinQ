@@ -166,10 +166,11 @@ class CalendarExportService {
 
   /// ICSファイルを共有
   Future<void> shareICS(File icsFile) async {
-    await Share.shareXFiles(
-      [XFile(icsFile.path)],
+    final params = ShareParams(
       subject: 'MiniQuest カレンダー',
+      files: [XFile(icsFile.path)],
     );
+    await SharePlus.instance.share(params);
   }
 }
 

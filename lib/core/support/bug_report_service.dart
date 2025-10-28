@@ -103,7 +103,7 @@ class BugReportService {
   Future<List<String>> _collectLogs() async {
     // TODO: 実際のログ収集ロジックを実装
     // アプリ内で保存しているログを取得
-    logger.info('Log collection is not implemented yet.');
+    logger.info('Log collection is not implemented yet.', data: null);
     return [];
   }
 

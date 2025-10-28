@@ -1,14 +1,13 @@
 import 'dart:async';
 
+import 'package:logger/logger.dart';
 import 'package:minq/core/logging/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:logger/logger.dart';
 
 /// 通知スロットリングサービス - 連続通知を抑制
 class NotificationThrottleService {
   static const String _keyLastNotificationTime = 'last_notification_time_';
   static const String _keyNotificationCount = 'notification_count_';
-  static const String _keyBatchedNotifications = 'batched_notifications';
 
   // デバウンス設定: 同じ種類の通知は最低この間隔を空ける
   static const Duration _debounceInterval = Duration(seconds: 30);

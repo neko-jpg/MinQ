@@ -410,13 +410,8 @@ class AdvancedFeatureValidator {
   }
   
   Future<FeatureStatus> _checkFile(String filePath, List<String> requiredElements) async {
-    final file = File(filePath);
-    
-    if (!await file.exists()) {
-      return FeatureStatus(false, 'File not found', ['Missing file: $filePath']);
-    }
-    
     try {
+      final file = File(filePath);
       final content = await file.readAsString();
       final missingElements = <String>[];
       final foundElements = <String>[];
@@ -441,6 +436,8 @@ class AdvancedFeatureValidator {
       ];
       
       return FeatureStatus(isWorking, message, details);
+    } on FileSystemException {
+      return FeatureStatus(false, 'File not found', ['Missing file: $filePath']);
     } catch (e) {
       return FeatureStatus(false, 'Error reading file: $e', ['File: $filePath']);
     }

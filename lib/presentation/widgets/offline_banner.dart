@@ -78,7 +78,7 @@ class OfflineEmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.cloud_off, size: 80, color: MinqTokens.textSecondary),
+            const Icon(Icons.cloud_off, size: 80, color: MinqTokens.textSecondary),
             SizedBox(height: MinqTokens.spacing(4)),
             Text(
               message,

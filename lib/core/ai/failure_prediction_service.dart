@@ -405,30 +405,6 @@ class FailurePredictionService {
     return suggestions;
   }
 
-  /// AI応答から提案を解析
-  List<FailureSuggestion> _parseSuggestionsFromAI(String aiResponse) {
-    // 簡略化された解析（実際はより高度な自然言語処理を使用）
-    final suggestions = <FailureSuggestion>[];
-
-    if (aiResponse.contains('時間') || aiResponse.contains('タイミング')) {
-      suggestions.add(
-        FailureSuggestion(
-          id: 'ai_timing',
-          type: SuggestionType.timing,
-          title: 'タイミングの最適化',
-          description:
-              aiResponse.length > 100
-                  ? '${aiResponse.substring(0, 100)}...'
-                  : aiResponse,
-          priority: SuggestionPriority.medium,
-          actionable: true,
-        ),
-      );
-    }
-
-    return suggestions;
-  }
-
   /// 提案の重複除去とソート
   List<FailureSuggestion> _deduplicateAndSort(
     List<FailureSuggestion> suggestions,
@@ -524,21 +500,6 @@ class FailurePredictionService {
   // ヘルパーメソッド
   String _generatePredictionId() {
     return '${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(1000)}';
-  }
-
-  String _buildSuggestionPrompt(
-    HabitAnalysis analysis,
-    FailureRiskLevel riskLevel,
-  ) {
-    return '''
-習慣分析データ:
-- 全体成功率: ${(analysis.successRate * 100).toStringAsFixed(1)}%
-- リスクレベル: ${riskLevel.name}
-- 曜日別成功率: ${analysis.successByDay}
-- 時間帯別成功率: ${analysis.successByTime}
-
-この習慣の失敗リスクを下げるための具体的で実行可能な提案を3つ生成してください。
-''';
   }
 
   String _getDayName(int weekday) {

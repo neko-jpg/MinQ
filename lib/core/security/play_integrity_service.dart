@@ -70,9 +70,9 @@ class PlayIntegrityService {
   }
 
   /// Nonceを生成
-  String _generateNonce() {
-    return DateTime.now().millisecondsSinceEpoch.toString();
-  }
+  // String _generateNonce() {
+  //   return DateTime.now().millisecondsSinceEpoch.toString();
+  // }
 }
 
 /// 整合性検証結果

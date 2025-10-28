@@ -6,8 +6,8 @@ import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/domain/gamification/badge.dart' as gamification;
 import 'package:minq/presentation/common/celebration/celebration_system.dart';
 import 'package:minq/presentation/theme/haptics_system.dart';
-import 'package:minq/presentation/theme/minq_tokens.dart';
-import 'package:minq/presentation/widgets/enhanced_achievement_notification.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/widgets/badge_notification_widget.dart';
 
 /// Provider for the comprehensive gamification service
 final comprehensiveGamificationServiceProvider = Provider<ComprehensiveGamificationService>((ref) {
@@ -27,7 +27,6 @@ class ComprehensiveGamificationService {
   
   // Configuration
   static const Duration _cacheExpiry = Duration(minutes: 5);
-  static const int _maxCacheSize = 100;
 
   ComprehensiveGamificationService(this._gamificationEngine);
 
@@ -64,7 +63,9 @@ class ComprehensiveGamificationService {
         playSound: true,
         hapticFeedback: true,
       );
-      
+      // ignore: use_build_context_synchronously
+      if (!context.mounted) return GamificationResult()..hasError = true;
+
       result.pointsAwarded = (basePoints * _getDifficultyMultiplier(difficulty) * streakMultiplier).round();
       
       // Award time bonus if applicable
@@ -76,6 +77,8 @@ class ComprehensiveGamificationService {
           context: context,
           showNotification: true,
         );
+        // ignore: use_build_context_synchronously
+        if (!context.mounted) return GamificationResult()..hasError = true;
         result.bonusPoints = timeBonus;
       }
       
@@ -87,7 +90,9 @@ class ComprehensiveGamificationService {
         playSound: true,
         hapticFeedback: true,
       );
-      
+      // ignore: use_build_context_synchronously
+      if (!context.mounted) return GamificationResult()..hasError = true;
+
       result.newBadges = newBadges;
       
       // Check for level progression
@@ -98,6 +103,8 @@ class ComprehensiveGamificationService {
         result.leveledUp = true;
         result.newLevel = levelInfo.currentLevel;
         await _showLevelUpCelebration(context, levelInfo);
+        // ignore: use_build_context_synchronously
+        if (!context.mounted) return GamificationResult()..hasError = true;
       }
       
       // Update cache
@@ -107,6 +114,8 @@ class ComprehensiveGamificationService {
       // Show celebration for significant achievements
       if (result.shouldShowCelebration()) {
         await _showAchievementCelebration(context, result);
+        // ignore: use_build_context_synchronously
+        if (!context.mounted) return GamificationResult()..hasError = true;
       }
       
       MinqLogger.info('Quest completed successfully for user $userId');
@@ -134,6 +143,7 @@ class ComprehensiveGamificationService {
     // Special celebrations for milestone streaks
     if (_isStreakMilestone(streakDays)) {
       await _showStreakMilestoneCelebration(context, streakDays);
+      if (!context.mounted) return;
     }
   }
 
@@ -174,6 +184,7 @@ class ComprehensiveGamificationService {
     
     // Show special comeback celebration
     await _showComebackCelebration(context);
+    if (!context.mounted) return;
   }
 
   /// Get user's current level info with caching
@@ -272,6 +283,7 @@ class ComprehensiveGamificationService {
     await SoundEffectsService.instance.play(SoundType.levelUp);
     
     // Show celebration system
+    if (!context.mounted) return;
     CelebrationSystem.showCelebration(
       context,
       config: CelebrationConfig(
@@ -289,7 +301,8 @@ class ComprehensiveGamificationService {
     if (result.newBadges.isNotEmpty) {
       // Show enhanced badge notifications
       for (final badge in result.newBadges) {
-        EnhancedAchievementOverlay.show(context, badge);
+        if (!context.mounted) return;
+        BadgeNotificationOverlay.show(context, badge);
         // Delay between multiple badges
         if (result.newBadges.length > 1) {
           await Future.delayed(const Duration(seconds: 3));
@@ -304,6 +317,7 @@ class ComprehensiveGamificationService {
     
     // Show general celebration for high point awards
     if (result.totalPoints >= 50) {
+      if (!context.mounted) return;
       CelebrationSystem.showCelebration(
         context,
         config: const CelebrationConfig(
@@ -319,6 +333,7 @@ class ComprehensiveGamificationService {
   /// Show streak milestone celebration
   Future<void> _showStreakMilestoneCelebration(BuildContext context, int streakDays) async {
     final config = CelebrationSystem.getStreakCelebration(streakDays, MinqTheme.light());
+    if (!context.mounted) return;
     CelebrationSystem.showCelebration(context, config: config);
   }
 
@@ -326,7 +341,7 @@ class ComprehensiveGamificationService {
   Future<void> _showComebackCelebration(BuildContext context) async {
     await HapticsSystem.success();
     await SoundEffectsService.instance.play(SoundType.success);
-    
+    if (!context.mounted) return;
     CelebrationSystem.showCelebration(
       context,
       config: const CelebrationConfig(
@@ -337,21 +352,6 @@ class ComprehensiveGamificationService {
         duration: Duration(seconds: 3),
       ),
     );
-  }
-
-  /// Clean up old cache entries
-  void _cleanupCache() {
-    if (_levelCache.length > _maxCacheSize) {
-      final oldestEntries = _lastCacheUpdate.entries
-          .toList()
-          ..sort((a, b) => a.value.compareTo(b.value));
-      
-      final entriesToRemove = oldestEntries.take(_levelCache.length - _maxCacheSize);
-      for (final entry in entriesToRemove) {
-        _levelCache.remove(entry.key);
-        _lastCacheUpdate.remove(entry.key);
-      }
-    }
   }
 
   /// Dispose resources

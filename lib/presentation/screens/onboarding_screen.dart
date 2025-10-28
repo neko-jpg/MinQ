@@ -14,7 +14,7 @@ class OnboardingScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         leading: Navigator.canPop(context)
-            ? BackButton(color: MinqTokens.textPrimary)
+            ? const BackButton(color: MinqTokens.textPrimary)
             : null,
         automaticallyImplyLeading: false,
       ),
@@ -39,7 +39,7 @@ class OnboardingScreen extends ConsumerWidget {
                         color: MinqTokens.brandPrimary.withAlpha(26),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.checklist,
                         color: MinqTokens.brandPrimary,
                         size: 56,
@@ -65,19 +65,19 @@ class OnboardingScreen extends ConsumerWidget {
                       ),
                     ),
                     SizedBox(height: MinqTokens.spacing(6)),
-                    _FeatureCard(
+                    const _FeatureCard(
                       icon: Icons.touch_app,
                       title: '3タップで習慣化',
                       description: '新しい習慣をたった3タップで始められます。とてもシンプルです。',
                     ),
                     SizedBox(height: MinqTokens.spacing(3)),
-                    _FeatureCard(
+                    const _FeatureCard(
                       icon: Icons.groups,
                       title: '匿名ペア',
                       description: 'パートナーから、匿名で説明責任とサポートを得られます。',
                     ),
                     SizedBox(height: MinqTokens.spacing(3)),
-                    _FeatureCard(
+                    const _FeatureCard(
                       icon: Icons.explore,
                       title: 'ミニクエスト',
                       description: 'あなたの目標を、達成感のある小さなクエストに変えましょう。',
@@ -87,7 +87,7 @@ class OnboardingScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            _BottomNavigation(),
+            const _BottomNavigation(),
           ],
         ),
       ),
@@ -96,7 +96,7 @@ class OnboardingScreen extends ConsumerWidget {
 }
 
 class _FeatureCard extends StatelessWidget {
-  _FeatureCard({
+  const _FeatureCard({
     required this.icon,
     required this.title,
     required this.description,
@@ -157,7 +157,7 @@ class _FeatureCard extends StatelessWidget {
 }
 
 class _BottomNavigation extends ConsumerWidget {
-  _BottomNavigation();
+  const _BottomNavigation();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -188,7 +188,7 @@ class _BottomNavigation extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('すでにアカウントをお持ちですか？', style: MinqTokens.bodySmall),
+              const Text('すでにアカウントをお持ちですか？', style: MinqTokens.bodySmall),
               TextButton(
                 onPressed:
                     () => ref.read(navigationUseCaseProvider).goToLogin(),

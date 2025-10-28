@@ -33,7 +33,10 @@ class AccessibilityService {
   void announce(String message, {bool assertive = false}) {
     SemanticsService.announce(
       message,
-      assertive ? Assertiveness.assertive : Assertiveness.polite,
+      // TODO(you): This should be derived from the context's Directionality.
+      // For now, hardcoding LTR as it's the dominant direction for the app.
+      TextDirection.ltr,
+      assertiveness: assertive ? Assertiveness.assertive : Assertiveness.polite,
     );
   }
 

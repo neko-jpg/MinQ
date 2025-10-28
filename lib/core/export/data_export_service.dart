@@ -51,7 +51,11 @@ class DataExportService {
   }
 
   Future<void> shareFile(File file) async {
-    await Share.shareXFiles([XFile(file.path)], text: 'My MinQ Data Export');
+    final params = ShareParams(
+      text: 'My MinQ Data Export',
+      files: [XFile(file.path)],
+    );
+    await SharePlus.instance.share(params);
   }
 
   Future<void> exportQuestHistoryAsPdf(String userId) async {
@@ -83,7 +87,7 @@ class DataExportService {
                 ),
               ),
             ),
-            pw.Table.fromTextArray(
+            pw.TableHelper.fromTextArray(
               headers: ['Date', 'Quest Name'],
               data:
                   questLogs.map((doc) {
@@ -103,8 +107,10 @@ class DataExportService {
     final file = File('${output.path}/quest_history.pdf');
     await file.writeAsBytes(await pdf.save());
 
-    await Share.shareXFiles([
-      XFile(file.path),
-    ], text: 'Here is my quest history from MinQ!');
+    final params = ShareParams(
+      text: 'Here is my quest history from MinQ!',
+      files: [XFile(file.path)],
+    );
+    await SharePlus.instance.share(params);
   }
 }

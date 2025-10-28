@@ -3,9 +3,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/core/sharing/ai_share_banner_service.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
-import 'package:minq/core/logging/app_logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -22,7 +22,8 @@ class ShareService {
 
   /// テキストを共有
   Future<void> shareText({required String text, String? subject}) async {
-    await Share.share(text, subject: subject);
+    final params = ShareParams(text: text, subject: subject);
+    await SharePlus.instance.share(params);
   }
 
   /// ファイルを共有
@@ -31,7 +32,12 @@ class ShareService {
     String? text,
     String? subject,
   }) async {
-    await Share.shareXFiles([XFile(file.path)], text: text, subject: subject);
+    final params = ShareParams(
+      text: text,
+      subject: subject,
+      files: [XFile(file.path)],
+    );
+    await SharePlus.instance.share(params);
   }
 
   /// 複数ファイルを共有
@@ -40,11 +46,12 @@ class ShareService {
     String? text,
     String? subject,
   }) async {
-    await Share.shareXFiles(
-      files.map((f) => XFile(f.path)).toList(),
+    final params = ShareParams(
       text: text,
       subject: subject,
+      files: files.map((f) => XFile(f.path)).toList(),
     );
+    await SharePlus.instance.share(params);
   }
 
   /// ウィジェットを画像として共有

@@ -161,9 +161,12 @@ class ContextAwareService {
         return null;
       }
 
+      const locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.low,
+        timeLimit: Duration(seconds: 10),
+      );
       return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: locationSettings,
       );
     } catch (e) {
       log('ContextAwareService: 位置情報取得エラー - $e');

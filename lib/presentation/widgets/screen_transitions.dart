@@ -175,6 +175,7 @@ class _MorphingTransition extends StatelessWidget {
           transform: Matrix4.identity()
             ..setEntry(3, 2, 0.001)
             ..rotateY(progress * 0.5)
+            // ignore: deprecated_member_use
             ..scale(0.8 + (0.2 * progress)),
           child: Opacity(
             opacity: progress,
@@ -214,8 +215,10 @@ class SharedElementTransition extends StatelessWidget {
         return AnimatedBuilder(
           animation: animation,
           builder: (context, child) {
-            return Transform.scale(
-              scale: 1.0 + (animation.value * 0.1),
+            return Transform(
+              // ignore: deprecated_member_use
+              transform: Matrix4.identity()..scale(1.0 + (animation.value * 0.1)),
+              alignment: Alignment.center,
               child: Material(
                 color: Colors.transparent,
                 child: direction == HeroFlightDirection.push

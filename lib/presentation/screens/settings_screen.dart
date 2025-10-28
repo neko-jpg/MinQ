@@ -248,34 +248,36 @@ class _SoundProfileSheetState extends ConsumerState<_SoundProfileSheet> {
               ),
             ),
             SizedBox(height: MinqTokens.spacing(4)),
-            Column(
-              children: profiles.map((profile) {
-                return ListTile(
-                  title: Text(
-                    profile.label,
-                    style: MinqTokens.titleMedium.copyWith(
-                      color: MinqTokens.textPrimary,
+            RadioGroup<String>(
+              groupValue: _selectedProfileId,
+              onChanged: (value) async {
+                if (value == null) return;
+                await _onProfileSelected(context, profiles, value);
+              },
+              child: Column(
+                children: profiles.map((profile) {
+                  return ListTile(
+                    title: Text(
+                      profile.label,
+                      style: MinqTokens.titleMedium.copyWith(
+                        color: MinqTokens.textPrimary,
+                      ),
                     ),
-                  ),
-                  subtitle: Text(
-                    profile.description,
-                    style: MinqTokens.bodyMedium.copyWith(
-                      color: MinqTokens.textSecondary,
+                    subtitle: Text(
+                      profile.description,
+                      style: MinqTokens.bodyMedium.copyWith(
+                        color: MinqTokens.textSecondary,
+                      ),
                     ),
-                  ),
-                  leading: Radio<String>(
-                    value: profile.id,
-                    groupValue: _selectedProfileId,
-                    onChanged: (value) async {
-                      if (value == null) return;
-                      await _onProfileSelected(context, profiles, value);
+                    leading: Radio<String>(
+                      value: profile.id,
+                    ),
+                    onTap: () async {
+                      await _onProfileSelected(context, profiles, profile.id);
                     },
-                  ),
-                  onTap: () async {
-                    await _onProfileSelected(context, profiles, profile.id);
-                  },
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
           ],
         ),
@@ -444,7 +446,7 @@ class _EssentialSettingsTileState extends State<_EssentialSettingsTile> {
                       ),
                     )
                   else
-                    Icon(
+                    const Icon(
                       Icons.chevron_right,
                       color: MinqTokens.textSecondary,
                       size: 24,

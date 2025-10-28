@@ -16,7 +16,7 @@ class DatabaseLifecycleManager {
   bool _isInitializing = false;
   bool _isDisposed = false;
   final List<StreamSubscription> _subscriptions = [];
-  final Completer<void> _initializationCompleter = const Completer<void>();
+  final Completer<void> _initializationCompleter = Completer<void>();
   
   /// Get the current Isar instance
   Isar? get isar => _isar;

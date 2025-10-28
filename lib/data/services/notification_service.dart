@@ -592,11 +592,11 @@ class NotificationService {
     try {
       final directory = await getApplicationSupportDirectory();
       final file = File(p.join(directory.path, _storageFileName));
-      if (await file.exists()) {
-        final contents = await file.readAsString();
-        final jsonMap = jsonDecode(contents) as Map<String, dynamic>;
-        _state = _NotificationState.fromJson(jsonMap);
-      }
+      final contents = await file.readAsString();
+      final jsonMap = jsonDecode(contents) as Map<String, dynamic>;
+      _state = _NotificationState.fromJson(jsonMap);
+    } on FileSystemException {
+      // Don't log, this is an expected condition on first run.
     } catch (error) {
       debugPrint('Failed to load notification state: $error');
     }

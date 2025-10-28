@@ -338,10 +338,10 @@ class DailySummaryNotificationService {
 
 /// 通知バッジ管理サービス
 class NotificationBadgeService {
-  final FlutterLocalNotificationsPlugin _notifications;
+  // final FlutterLocalNotificationsPlugin _notifications;
   int _badgeCount = 0;
 
-  NotificationBadgeService(this._notifications);
+  NotificationBadgeService(/*this._notifications*/);
 
   /// バッジ数を取得
   int get badgeCount => _badgeCount;
@@ -371,97 +371,97 @@ class NotificationBadgeService {
   }
 }
 
-/// 通知スケジューラー
-class NotificationScheduler {
-  final FlutterLocalNotificationsPlugin _notifications;
+// /// 通知スケジューラー
+// class NotificationScheduler {
+//   final FlutterLocalNotificationsPlugin _notifications;
 
-  NotificationScheduler(this._notifications);
+//   NotificationScheduler(this._notifications);
 
-  /// スケジュール通知を設定
-  Future<void> scheduleNotification({
-    required int id,
-    required String title,
-    required String body,
-    required NotificationSchedule schedule,
-    String? channelId,
-    String? payload,
-  }) async {
-    final androidDetails = AndroidNotificationDetails(
-      channelId ?? NotificationChannelId.normal,
-      '通常の通知',
-      importance: Importance.defaultImportance,
-      priority: Priority.defaultPriority,
-    );
+//   /// スケジュール通知を設定
+//   Future<void> scheduleNotification({
+//     required int id,
+//     required String title,
+//     required String body,
+//     required NotificationSchedule schedule,
+//     String? channelId,
+//     String? payload,
+//   }) async {
+//     final androidDetails = AndroidNotificationDetails(
+//       channelId ?? NotificationChannelId.normal,
+//       '通常の通知',
+//       importance: Importance.defaultImportance,
+//       priority: Priority.defaultPriority,
+//     );
 
-    const iosDetails = DarwinNotificationDetails();
+//     const iosDetails = DarwinNotificationDetails();
 
-    final details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
+//     final details = NotificationDetails(
+//       android: androidDetails,
+//       iOS: iosDetails,
+//     );
 
-    if (schedule.repeatInterval != null) {
-      // 繰り返し通知
-      await _notifications.periodicallyShow(
-        id,
-        title,
-        body,
-        _convertToRepeatInterval(schedule.repeatInterval!),
-        details,
-        payload: payload,
-        androidScheduleMode:
-            schedule.exactTiming
-                ? AndroidScheduleMode.exactAllowWhileIdle
-                : AndroidScheduleMode.inexactAllowWhileIdle,
-      );
-    } else {
-      // 1回限りの通知
-      await _notifications.zonedSchedule(
-        id,
-        title,
-        body,
-        _convertToTZDateTime(schedule.scheduledTime),
-        details,
-        payload: payload,
-        androidScheduleMode: schedule.exactTiming
-            ? AndroidScheduleMode.exactAllowWhileIdle
-            : AndroidScheduleMode.inexactAllowWhileIdle,
-      );
-    }
-  }
+//     if (schedule.repeatInterval != null) {
+//       // 繰り返し通知
+//       await _notifications.periodicallyShow(
+//         id,
+//         title,
+//         body,
+//         _convertToRepeatInterval(schedule.repeatInterval!),
+//         details,
+//         payload: payload,
+//         androidScheduleMode:
+//             schedule.exactTiming
+//                 ? AndroidScheduleMode.exactAllowWhileIdle
+//                 : AndroidScheduleMode.inexactAllowWhileIdle,
+//       );
+//     } else {
+//       // 1回限りの通知
+//       await _notifications.zonedSchedule(
+//         id,
+//         title,
+//         body,
+//         _convertToTZDateTime(schedule.scheduledTime),
+//         details,
+//         payload: payload,
+//         androidScheduleMode: schedule.exactTiming
+//             ? AndroidScheduleMode.exactAllowWhileIdle
+//             : AndroidScheduleMode.inexactAllowWhileIdle,
+//       );
+//     }
+//   }
 
-  /// RepeatIntervalに変換
-  RepeatInterval _convertToRepeatInterval(Duration duration) {
-    if (duration.inDays >= 7) {
-      return RepeatInterval.weekly;
-    } else if (duration.inDays >= 1) {
-      return RepeatInterval.daily;
-    } else if (duration.inHours >= 1) {
-      return RepeatInterval.hourly;
-    } else {
-      return RepeatInterval.everyMinute;
-    }
-  }
+//   /// RepeatIntervalに変換
+//   RepeatInterval _convertToRepeatInterval(Duration duration) {
+//     if (duration.inDays >= 7) {
+//       return RepeatInterval.weekly;
+//     } else if (duration.inDays >= 1) {
+//       return RepeatInterval.daily;
+//     } else if (duration.inHours >= 1) {
+//       return RepeatInterval.hourly;
+//     } else {
+//       return RepeatInterval.everyMinute;
+//     }
+//   }
 
-  /// TZDateTimeに変換（timezone パッケージが必要）
-  dynamic _convertToTZDateTime(DateTime dateTime) {
-    // timezone パッケージを使用してTZDateTimeに変換
-    // ここでは簡略化のためdynamicを返す
-    return dateTime;
-  }
+//   /// TZDateTimeに変換（timezone パッケージが必要）
+//   dynamic _convertToTZDateTime(DateTime dateTime) {
+//     // timezone パッケージを使用してTZDateTimeに変換
+//     // ここでは簡略化のためdynamicを返す
+//     return dateTime;
+//   }
 
-  /// スケジュール通知をキャンセル
-  Future<void> cancelScheduledNotification(int id) async {
-    await _notifications.cancel(id);
-  }
+//   /// スケジュール通知をキャンセル
+//   Future<void> cancelScheduledNotification(int id) async {
+//     await _notifications.cancel(id);
+//   }
 
-  /// 全てのスケジュール通知をキャンセル
-  Future<void> cancelAllScheduledNotifications() async {
-    await _notifications.cancelAll();
-  }
+//   /// 全てのスケジュール通知をキャンセル
+//   Future<void> cancelAllScheduledNotifications() async {
+//     await _notifications.cancelAll();
+//   }
 
-  /// 保留中の通知を取得
-  Future<List<PendingNotificationRequest>> getPendingNotifications() async {
-    return await _notifications.pendingNotificationRequests();
-  }
-}
+//   /// 保留中の通知を取得
+//   Future<List<PendingNotificationRequest>> getPendingNotifications() async {
+//     return await _notifications.pendingNotificationRequests();
+//   }
+// }

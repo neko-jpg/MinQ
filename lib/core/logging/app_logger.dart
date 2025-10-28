@@ -456,10 +456,10 @@ class SecureFileOutput extends LogOutput {
     if (!kDebugMode) {
       // In production, implement secure file logging
       // This is a placeholder for actual file logging implementation
-      for (final line in event.lines) {
-        // TODO: Implement secure file logging with rotation
-        // File logging should be implemented with proper security measures
-      }
+      // for (final line in event.lines) {
+      //   // TODO: Implement secure file logging with rotation
+      //   // File logging should be implemented with proper security measures
+      // }
     }
   }
 }
