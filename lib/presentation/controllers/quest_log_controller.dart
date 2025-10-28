@@ -103,6 +103,12 @@ class QuestLogController extends StateNotifier<AsyncValue<void>> {
       try {
         final gamificationEngine = _ref.read(gamificationEngineProvider);
 
+        // Firestoreが利用できない場合はスキップ（ログ記録は成功とみなす）
+        if (gamificationEngine == null) {
+          state = AsyncValue.data(todayLogs);
+          return true;
+        }
+
         // クエスト完了でポイント付与
         await gamificationEngine.awardPoints(
           userId: uid,

@@ -3,7 +3,6 @@ import 'package:minq/core/logging/app_logger.dart';
 
 /// Feature Flag Kill Switch
 /// Remote Configのみで機能を即時停止
-import 'package:flutter/material.dart';
 
 class KillSwitch {
   final FirebaseRemoteConfig _remoteConfig;

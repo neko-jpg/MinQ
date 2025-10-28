@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 
 // Provider for the service
 final ecosystemMappingServiceProvider = Provider<EcosystemMappingService>((
@@ -15,7 +16,10 @@ class EcosystemMappingService {
 
   /// Analyzes the correlations and interdependencies between a user's habits.
   Future<Map<String, dynamic>> analyzeEcosystem(String userId) async {
-    print('Analyzing habit ecosystem for user $userId.');
+    MinqLogger.info(
+      'Analyzing habit ecosystem for user',
+      metadata: {'userId': userId},
+    );
     final questLogsSnapshot =
         await _firestore
             .collection('users')
@@ -26,7 +30,10 @@ class EcosystemMappingService {
             .get();
 
     if (questLogsSnapshot.docs.length < 20) {
-      print('Not enough data to analyze ecosystem.');
+      MinqLogger.info(
+        'Not enough data to analyze ecosystem',
+        metadata: {'userId': userId, 'questCount': questLogsSnapshot.docs.length},
+      );
       return {};
     }
 
@@ -67,13 +74,19 @@ class EcosystemMappingService {
       'habitEcosystem': ecosystemData,
     });
 
-    print('Ecosystem analysis complete for user $userId.');
+    MinqLogger.info(
+      'Ecosystem analysis complete for user',
+      metadata: {'userId': userId},
+    );
     return ecosystemData;
   }
 
   /// Identifies the "keystone" habit that has the most positive impact on other habits.
   Future<String?> identifyKeystoneHabit(String userId) async {
-    print('Identifying keystone habit for user $userId.');
+    MinqLogger.info(
+      'Identifying keystone habit for user',
+      metadata: {'userId': userId},
+    );
     final userDoc = await _firestore.collection('users').doc(userId).get();
     final ecosystem =
         userDoc.data()?['habitEcosystem'] as Map<String, dynamic>?;

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 /// 軽量なルールベースAIサービス
-/// Gemmaモデルの問題が解決するまでの一時的な代替案
+/// TensorFlow Lite AIサービスの代替として使用される軽量な実装
 class LightweightAIService {
   static const List<String> _greetings = [
     'こんにちは！MinQのAIコンシェルジュです。今日も習慣づくりを頑張りましょう！',

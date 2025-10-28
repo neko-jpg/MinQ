@@ -39,7 +39,7 @@ class HabitAiSuggestionService {
     if (userQuests.isEmpty && logs.isEmpty) {
       // If there's no data yet, use AI for personalized starter suggestions
       try {
-        final aiResponse = await _aiManager.generateChatResponse(
+        await _aiManager.generateChatResponse(
           'ユーザーが習慣形成アプリを始めたばかりです。初心者に最適な3つの習慣を提案してください。各習慣について、タイトル、理由、期待される効果を簡潔に説明してください。',
           systemPrompt: 'あなたは習慣形成の専門家です。初心者向けの実践的で継続しやすい習慣を提案してください。',
           maxTokens: 200,
@@ -57,7 +57,7 @@ class HabitAiSuggestionService {
               template: template,
               confidence: 0.55,
               headline: '最初の一歩に最適',
-              rationale: 'Gemma AIが分析: まだ履歴が少ないため、取り組みやすいテンプレートを選びました。',
+              rationale: 'AIが分析: まだ履歴が少ないため、取り組みやすいテンプレートを選びました。',
               supportingFacts: const <String>['実行時間が15分以内で完了します'],
             ),
           )
@@ -137,11 +137,12 @@ class HabitAiSuggestionService {
             systemPrompt: 'あなたは習慣形成の専門家です。魅力的で実践的な提案文を作成してください。',
             maxTokens: 100,
           );
-          if (aiEnhancement.isNotEmpty) {
+          if (aiEnhancement.isNotEmpty && aiEnhancement.trim().length > 10) {
             enhancedRationale = 'TensorFlow Lite AI提案: $aiEnhancement';
           }
         } catch (e) {
-          // Keep original rationale on error
+          // Keep original rationale on error - TensorFlow Lite service handles fallbacks internally
+          print('AI enhancement failed, using rule-based rationale: $e');
         }
       }
 

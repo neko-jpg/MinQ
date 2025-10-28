@@ -1,10 +1,15 @@
 import 'package:isar/isar.dart';
+import 'package:meta/meta.dart';
 import 'package:minq/domain/quest/quest.dart';
 
 class QuestRepository {
   QuestRepository(this._isar);
 
   final Isar _isar;
+
+  /// Protected getter for subclasses to access Isar instance
+  @protected
+  Isar get isar => _isar;
 
   static const List<Map<String, dynamic>> _templateSeedData = [
     {'title': '英単語を3個音読する', 'category': '学習', 'minutes': 3, 'iconKey': 'book'},

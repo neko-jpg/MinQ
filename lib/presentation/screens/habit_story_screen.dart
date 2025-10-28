@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:minq/core/ai/habit_story_generator.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/domain/quest/quest.dart';
+import 'package:minq/domain/stats/stats_view_data.dart';
+import 'package:minq/presentation/controllers/stats_data_controller.dart';
 import 'package:minq/presentation/widgets/empty_state_widget.dart';
 
 /// ハビットストーリー画面
@@ -19,7 +24,6 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
 
   List<HabitStory> _stories = [];
   bool _isLoading = false;
-  HabitStory? _selectedStory;
 
   @override
   void initState() {
@@ -38,18 +42,38 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
     setState(() => _isLoading = true);
 
     try {
-      // サンプルデータでストーリーを生成
-      final sampleData = HabitProgressData(
-        habitTitle: '朝の瞑想',
-        category: 'mindfulness',
-        currentStreak: 7,
-        totalCompletions: 25,
-        weeklyCompletionRate: 0.85,
-        averageWeeklyMood: 4.2,
+      // 実際のユーザーデータでストーリーを生成
+      final user = await ref.read(localUserProvider.future);
+      if (user == null) {
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      final quests = await ref.read(userQuestsProvider.future);
+      final logs = await ref.read(recentLogsProvider.future);
+      final streak = await ref.read(streakProvider.future);
+      final StatsViewData statsData = await ref.read(statsDataProvider.future);
+
+      if (quests.isEmpty) {
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      // 最も活発な習慣を選択
+      final mostActiveQuest = _findMostActiveQuest(quests, logs);
+      final questLogs = logs.where((log) => log.questId == mostActiveQuest.id).toList();
+
+      final habitData = HabitProgressData(
+        habitTitle: mostActiveQuest.title,
+        category: mostActiveQuest.category,
+        currentStreak: streak,
+        totalCompletions: questLogs.length,
+        weeklyCompletionRate: statsData.weeklyCompletionRate,
+        averageWeeklyMood: 4.0, // デフォルト値（将来的にムード追跡機能から取得）
         todayMood: 4,
-        activeHabits: 3,
-        achievements: ['7日連続達成', '週間目標クリア'],
-        startDate: DateTime.now().subtract(const Duration(days: 25)),
+        activeHabits: quests.length,
+        achievements: _generateAchievements(streak, questLogs.length),
+        startDate: mostActiveQuest.createdAt,
       );
 
       final stories = <HabitStory>[];
@@ -63,7 +87,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
         try {
           final story = await _storyGenerator.generateStory(
             type: type,
-            progressData: sampleData,
+            progressData: habitData,
           );
           stories.add(story);
         } catch (e) {
@@ -128,7 +152,6 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
   }
 
   void _showStoryDetail(HabitStory story) {
-    setState(() => _selectedStory = story);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -810,5 +833,49 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
 
   String _formatDateTime(DateTime date) {
     return '${date.year}/${date.month}/${date.day} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+  }
+
+  /// Find the most active quest based on recent logs
+  Quest _findMostActiveQuest(List<Quest> quests, List<QuestLog> logs) {
+    if (quests.isEmpty) throw StateError('No quests available');
+
+    final questActivity = <int, int>{};
+    for (final log in logs) {
+      questActivity[log.questId] = (questActivity[log.questId] ?? 0) + 1;
+    }
+
+    // Find quest with most activity, fallback to first quest
+    Quest mostActive = quests.first;
+    int maxActivity = 0;
+
+    for (final quest in quests) {
+      final activity = questActivity[quest.id] ?? 0;
+      if (activity > maxActivity) {
+        maxActivity = activity;
+        mostActive = quest;
+      }
+    }
+
+    return mostActive;
+  }
+
+  /// Generate achievements based on streak and completion count
+  List<String> _generateAchievements(int streak, int completions) {
+    final achievements = <String>[];
+
+    if (streak >= 7) {
+      achievements.add('${streak}日連続達成');
+    }
+    if (streak >= 21) {
+      achievements.add('3週間継続達成');
+    }
+    if (completions >= 10) {
+      achievements.add('10回完了達成');
+    }
+    if (completions >= 30) {
+      achievements.add('30回完了達成');
+    }
+
+    return achievements.isEmpty ? ['継続中'] : achievements;
   }
 }

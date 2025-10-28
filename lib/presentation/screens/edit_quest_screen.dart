@@ -405,7 +405,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
 
     return PopScope(
       canPop: !_hasUnsavedChanges,
-      onPopInvoked: (bool didPop) async {
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
         if (didPop) {
           return;
         }

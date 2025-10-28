@@ -5,6 +5,8 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/domain/challenges/challenge.dart';
 import 'package:minq/domain/challenges/challenge_progress.dart';
+import 'package:minq/presentation/common/layout/responsive_layout.dart';
+import 'package:minq/presentation/common/layout/safe_scaffold.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// チャレンジ画面
@@ -36,7 +38,8 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
-    return Scaffold(
+    return SafeScaffold(
+      enableResponsiveLayout: false, // Let TabBarView handle its own layout
       appBar: AppBar(
         title: const Text('チャレンジ'),
         backgroundColor: tokens.surface,
@@ -61,6 +64,24 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
       ),
     );
   }
+
+  /// Calculate reward points based on challenge difficulty and duration
+  int _calculateReward(Challenge challenge) {
+    final duration = challenge.endDate.difference(challenge.startDate).inDays;
+    final baseReward = challenge.goal * 10; // 10 points per goal unit
+    final durationBonus = (duration / 7).ceil() * 25; // 25 points per week
+
+    switch (challenge.type) {
+      case 'daily':
+        return baseReward + durationBonus;
+      case 'weekly':
+        return (baseReward * 1.5).round() + durationBonus;
+      case 'event':
+        return (baseReward * 2).round() + durationBonus;
+      default:
+        return baseReward + durationBonus;
+    }
+  }
 }
 
 /// アクティブチャレンジタブ
@@ -80,12 +101,14 @@ class _ActiveChallengesTab extends ConsumerWidget {
             message: '新しいチャレンジに参加して、特別な報酬を獲得しましょう！',
           );
         }
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: challenges.length,
-          itemBuilder: (context, index) {
-            return _ChallengeCard(challenge: challenges[index]);
-          },
+        return ResponsiveLayout.constrainedContainer(
+          child: ListView.builder(
+            padding: context.responsivePadding,
+            itemCount: challenges.length,
+            itemBuilder: (context, index) {
+              return _ChallengeCard(challenge: challenges[index]);
+            },
+          ),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -114,15 +137,17 @@ class _CompletedChallengesTab extends ConsumerWidget {
             message: 'チャレンジに参加して、達成の喜びを味わいましょう！',
           );
         }
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: challenges.length,
-          itemBuilder: (context, index) {
-            return _ChallengeCard(
-              challenge: challenges[index],
-              isCompleted: true,
-            );
-          },
+        return ResponsiveLayout.constrainedContainer(
+          child: ListView.builder(
+            padding: context.responsivePadding,
+            itemCount: challenges.length,
+            itemBuilder: (context, index) {
+              return _ChallengeCard(
+                challenge: challenges[index],
+                isCompleted: true,
+              );
+            },
+          ),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -242,7 +267,7 @@ class _ChallengeCard extends ConsumerWidget {
                   ),
                   SizedBox(width: tokens.spacing.xs),
                   Text(
-                    '報酬: 100ポイント', // FIXME: Hardcoded value
+                    '報酬: ${_calculateReward(challenge)}ポイント',
                     style: tokens.typography.caption.copyWith(
                       color: Colors.white.withAlpha((255 * 0.9).round()),
                     ),
@@ -266,19 +291,21 @@ class _ChallengeCard extends ConsumerWidget {
                 SizedBox(height: tokens.spacing.md),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => _showChallengeDetails(context, challenge),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: tokens.brandPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(tokens.radius.md),
+                  child: ResponsiveLayout.ensureTouchTarget(
+                    child: ElevatedButton(
+                      onPressed: () => _showChallengeDetails(context, challenge),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: tokens.brandPrimary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(tokens.radius.md),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      '詳細を見る',
-                      style: tokens.typography.body.copyWith(
-                        fontWeight: FontWeight.bold,
+                      child: Text(
+                        '詳細を見る',
+                        style: tokens.typography.body.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -532,7 +559,7 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
                         ),
                       ),
                       Text(
-                        '100ポイント', // FIXME: Hardcoded
+                        '${_calculateReward(challenge)}ポイント',
                         style: tokens.typography.h5.copyWith(
                           color: Colors.amber.shade700,
                           fontWeight: FontWeight.bold,

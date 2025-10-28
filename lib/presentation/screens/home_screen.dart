@@ -1,7 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/navigation/navigation_use_case.dart';
 import 'package:minq/domain/home/home_view_data.dart';
+import 'package:minq/presentation/common/layout/responsive_layout.dart';
+import 'package:minq/presentation/common/layout/safe_scaffold.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
@@ -24,88 +27,53 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  ProviderSubscription<SyncStatus>? _syncStatusSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    _syncStatusSubscription = ref.listenManual<SyncStatus>(syncStatusProvider, (
-      previous,
-      next,
-    ) {
-      if (!mounted || !next.showBanner || next.bannerMessage == null) {
-        return;
-      }
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        final messenger = ScaffoldMessenger.of(context);
-        messenger
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(next.bannerMessage!),
-              duration: const Duration(seconds: 2),
-            ),
-          );
-        ref.read(syncStatusProvider.notifier).acknowledgeBanner();
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _syncStatusSubscription?.close();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
+    ref.listen<SyncStatus>(
+      syncStatusProvider,
+      (previous, next) {
+        if (!mounted || !next.showBanner || next.bannerMessage == null) {
+          return;
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          final messenger = ScaffoldMessenger.of(context);
+          messenger
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(next.bannerMessage!),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
+        });
+      },
+    );
+
     final syncStatus = ref.watch(syncStatusProvider);
     final homeAsync = ref.watch(homeDataProvider);
 
-    return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            const double maxWidth = 640;
-            Widget child = homeAsync.when(
-              loading: () => const _HomeScreenSkeleton(),
-              error:
-                  (error, _) => _HomeStateMessage(
-                    icon: Icons.error_outline,
-                    title: 'ホームデータの取得に失敗しました',
-                    message: '通信状態を確認して再度お試しください。',
-                    action: FilledButton.icon(
-                      onPressed: () => ref.invalidate(homeDataProvider),
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('再読み込み'),
-                    ),
-                  ),
-              data:
-                  (data) => _HomeContent(
-                    data: data,
-                    isOffline: syncStatus.phase == SyncPhase.offline,
-                    onRetry: () => ref.invalidate(homeDataProvider),
-                  ),
-            );
-
-            if (constraints.maxWidth > maxWidth) {
-              child = Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: maxWidth),
-                  child: child,
-                ),
-              );
-            }
-
-            return Padding(
-              padding: EdgeInsets.only(bottom: mediaQuery.padding.bottom),
-              child: child,
-            );
-          },
+    return SafeScaffold(
+      body: homeAsync.when(
+        loading: () => const _HomeScreenSkeleton(),
+        error: (error, _) => _HomeStateMessage(
+          icon: Icons.error_outline,
+          title: 'ホームデータの取得に失敗しました',
+          message: '通信状態を確認して再度お試しください。',
+          action: ResponsiveLayout.ensureTouchTarget(
+            child: FilledButton.icon(
+              onPressed: () => ref.invalidate(homeDataProvider),
+              icon: const Icon(Icons.refresh),
+              label: const Text('再読み込み'),
+            ),
+          ),
+        ),
+        data: (data) => _HomeContent(
+          data: data,
+          isOffline: syncStatus.phase == SyncPhase.offline,
+          onRetry: () => ref.invalidate(homeDataProvider),
         ),
       ),
     );
@@ -129,11 +97,9 @@ class _HomeContent extends StatelessWidget {
     final miniQuests =
         data.quests.where((quest) => quest.category == 'MiniQuest').toList();
 
-    return ListView(
-      padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.lg,
-        vertical: tokens.spacing.lg,
-      ),
+    return SafeScrollView(
+      enableResponsiveLayout: true,
+      maxContentWidth: ResponsiveLayout.maxContentWidth,
       children: [
         if (isOffline) ...[
           _HomeOfflineNotice(onRetry: onRetry),
@@ -247,13 +213,15 @@ class _TodayFocusCard extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: tokens.spacing.md),
-                  FilledButton.icon(
-                    onPressed: navigation.goToCreateMiniQuest,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: tokens.brandPrimary,
+                  ResponsiveLayout.ensureTouchTarget(
+                    child: FilledButton.icon(
+                      onPressed: navigation.goToCreateMiniQuest,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: tokens.brandPrimary,
+                      ),
+                      icon: const Icon(Icons.add_task),
+                      label: const Text('MiniQuestを作成'),
                     ),
-                    icon: const Icon(Icons.add_task),
-                    label: const Text('MiniQuestを作成'),
                   ),
                 ],
               ),
@@ -345,18 +313,22 @@ class _MiniQuestsSection extends ConsumerWidget {
           ],
         ),
         SizedBox(height: tokens.spacing.sm),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: display.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 1.45,
-          ),
-          itemBuilder:
-              (context, index) => _MiniQuestTile(quest: display[index]),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final columns = context.responsiveColumns(maxColumns: 2);
+            return GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: display.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: columns,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: context.isMobile ? 1.45 : 1.2,
+              ),
+              itemBuilder: (context, index) => _MiniQuestTile(quest: display[index]),
+            );
+          },
         ),
       ],
     );
@@ -468,43 +440,45 @@ class _WeeklyStreakCard extends StatelessWidget {
               style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing.md),
-            Row(
+            SafeRow(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children:
                   weekDays.map((day) {
                     final isToday = DateUtils.isSameDay(day.date, now);
-                    return Column(
-                      children: [
-                        Text(
-                          _weekdayName(day.date.weekday),
-                          style: tokens.typography.caption.copyWith(
-                            color:
-                                isToday ? tokens.textPrimary : tokens.textMuted,
-                            fontWeight:
-                                isToday ? FontWeight.bold : FontWeight.normal,
+                    return Flexible(
+                      child: Column(
+                        children: [
+                          SafeText(
+                            _weekdayName(day.date.weekday),
+                            style: tokens.typography.caption.copyWith(
+                              color:
+                                  isToday ? tokens.textPrimary : tokens.textMuted,
+                              fontWeight:
+                                  isToday ? FontWeight.bold : FontWeight.normal,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: tokens.spacing.sm),
-                        Container(
-                          width: tokens.spacing.xl,
-                          height: tokens.spacing.xl,
-                          decoration: BoxDecoration(
-                            color:
+                          SizedBox(height: tokens.spacing.sm),
+                          Container(
+                            width: tokens.spacing.xl,
+                            height: tokens.spacing.xl,
+                            decoration: BoxDecoration(
+                              color:
+                                  day.hasLog
+                                      ? tokens.brandPrimary
+                                      : tokens.surfaceVariant,
+                              shape: BoxShape.circle,
+                            ),
+                            child:
                                 day.hasLog
-                                    ? tokens.brandPrimary
-                                    : tokens.surfaceVariant,
-                            shape: BoxShape.circle,
+                                    ? const Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 16,
+                                    )
+                                    : null,
                           ),
-                          child:
-                              day.hasLog
-                                  ? const Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 16,
-                                  )
-                                  : null,
-                        ),
-                      ],
+                        ],
+                      ),
                     );
                   }).toList(),
             ),

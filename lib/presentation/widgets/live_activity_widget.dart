@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/ai/social_proof_service.dart';
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class LiveActivityWidget extends ConsumerStatefulWidget {
@@ -74,13 +76,19 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
   }
 
   void _startListening() {
-    _activitySubscription = SocialProofService.instance.activityStream.listen(
-      _handleActivityUpdate,
-    );
+    try {
+      _activitySubscription = SocialProofService.instance.activityStream.listen(
+        _handleActivityUpdate,
+      );
 
-    _statsSubscription = SocialProofService.instance.statsStream.listen(
-      _handleStatsUpdate,
-    );
+      _statsSubscription = SocialProofService.instance.statsStream.listen(
+        _handleStatsUpdate,
+      );
+    } catch (e) {
+      // Firebase が初期化されていない場合はスキップ
+      logger.warning('SocialProofService initialization failed',
+        data: {'error': e.toString()});
+    }
   }
 
   void _loadInitialData() async {
@@ -696,8 +704,8 @@ class _LiveActivitySettingsScreenState
             // プライバシー設定
             _buildSettingsSection('プライバシー設定', [
               SwitchListTile(
-                title: const Text('アクティビティを表示'),
-                subtitle: const Text('他のユーザーにあなたの活動を表示します'),
+                title: Text(AppLocalizations.of(context)!.showActivity),
+                subtitle: Text(AppLocalizations.of(context)!.showActivitySubtitle),
                 value: _settings.showActivity,
                 onChanged: (value) {
                   setState(() {
@@ -706,8 +714,8 @@ class _LiveActivitySettingsScreenState
                 },
               ),
               SwitchListTile(
-                title: const Text('交流を許可'),
-                subtitle: const Text('他のユーザーからの励ましを受け取ります'),
+                title: Text(AppLocalizations.of(context)!.allowInteraction),
+                subtitle: Text(AppLocalizations.of(context)!.allowInteractionSubtitle),
                 value: _settings.allowInteraction,
                 onChanged: (value) {
                   setState(() {
@@ -722,8 +730,8 @@ class _LiveActivitySettingsScreenState
             // 通知設定
             _buildSettingsSection('通知設定', [
               SwitchListTile(
-                title: const Text('触覚フィードバック'),
-                subtitle: const Text('アクティビティ時に振動でお知らせします'),
+                title: Text(AppLocalizations.of(context)!.hapticFeedback),
+                subtitle: Text(AppLocalizations.of(context)!.hapticFeedbackSubtitle),
                 value: _settings.enableHaptics,
                 onChanged: (value) {
                   setState(() {
@@ -732,8 +740,8 @@ class _LiveActivitySettingsScreenState
                 },
               ),
               SwitchListTile(
-                title: const Text('祝福エフェクト'),
-                subtitle: const Text('完了時に祝福エフェクトを表示します'),
+                title: Text(AppLocalizations.of(context)!.celebrationEffects),
+                subtitle: Text(AppLocalizations.of(context)!.celebrationEffectsSubtitle),
                 value: _settings.enableCelebration,
                 onChanged: (value) {
                   setState(() {

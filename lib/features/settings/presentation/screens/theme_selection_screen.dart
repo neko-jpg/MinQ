@@ -19,6 +19,7 @@ class ThemeNotifier extends StateNotifier<Color> {
 
   Future<void> setTheme(Color color) async {
     final prefs = await SharedPreferences.getInstance();
+    // ignore: deprecated_member_use
     await prefs.setInt(_themeColorKey, color.value);
     state = color;
   }
@@ -66,7 +67,7 @@ class ThemeSelectionScreen extends ConsumerWidget {
                   shape: BoxShape.circle,
                   border: Border.all(
                     color:
-                        selectedColor.value == color.value
+                        selectedColor == color
                             ? Theme.of(context).colorScheme.onSurface
                             : Colors.transparent,
                     width: 3,

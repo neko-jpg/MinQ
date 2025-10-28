@@ -22,6 +22,10 @@ class _AccessibilitySettingsScreenState
   bool _boldText = false;
   bool _largeButtons = false;
   bool _simplifiedUI = false;
+  bool _screenReaderOptimized = false;
+  bool _hapticFeedback = true;
+  bool _soundFeedback = true;
+  double _buttonSize = 1.0;
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +130,50 @@ class _AccessibilitySettingsScreenState
                 subtitle: '必要最小限の機能のみ表示',
                 value: _simplifiedUI,
                 onChanged: (value) => setState(() => _simplifiedUI = value),
+              ),
+              _buildSliderTile(
+                title: 'ボタンサイズ',
+                subtitle: 'タップしやすさを調整',
+                value: _buttonSize,
+                min: 0.8,
+                max: 1.5,
+                divisions: 7,
+                onChanged: (value) => setState(() => _buttonSize = value),
+                valueLabel: '${(_buttonSize * 100).toInt()}%',
+              ),
+            ],
+          ),
+          SizedBox(height: tokens.spacing.xl),
+          // スクリーンリーダー設定
+          _buildSection(
+            title: 'スクリーンリーダー',
+            icon: Icons.accessibility_new,
+            children: [
+              _buildSwitchTile(
+                title: 'スクリーンリーダー最適化',
+                subtitle: '読み上げに最適化された表示',
+                value: _screenReaderOptimized,
+                onChanged: (value) => setState(() => _screenReaderOptimized = value),
+              ),
+            ],
+          ),
+          SizedBox(height: tokens.spacing.xl),
+          // フィードバック設定
+          _buildSection(
+            title: 'フィードバック',
+            icon: Icons.vibration,
+            children: [
+              _buildSwitchTile(
+                title: '触覚フィードバック',
+                subtitle: 'ボタンタップ時の振動',
+                value: _hapticFeedback,
+                onChanged: (value) => setState(() => _hapticFeedback = value),
+              ),
+              _buildSwitchTile(
+                title: '音声フィードバック',
+                subtitle: '操作時の効果音',
+                value: _soundFeedback,
+                onChanged: (value) => setState(() => _soundFeedback = value),
               ),
             ],
           ),

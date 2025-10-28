@@ -36,6 +36,7 @@ class AIIntegrationManager {
   Stream<AIEvent> get eventStream => _eventController.stream;
 
   /// AI統合システムの初期化
+  /// TensorFlow Lite AIサービスを中心とした統合初期化
   Future<void> initialize({
     required String userId,
     AISettings? settings,
@@ -43,24 +44,43 @@ class AIIntegrationManager {
     if (_isInitialized) return;
 
     try {
-      log('AIIntegration: 統合AI初期化開始');
+      log('AIIntegration: 統合AI初期化開始 (TensorFlow Lite)');
 
       _settings = settings ?? const AISettings();
 
-      // 基盤AIサービスの初期化
+      // 基盤AIサービスの初期化（TensorFlow Lite）
       await _unifiedAI.initialize();
+
+      // ヘルスチェックを実行
+      final isHealthy = await _unifiedAI.healthCheck();
+      if (!isHealthy) {
+        log('AIIntegration: TensorFlow Lite AIサービスのヘルスチェックに失敗、フォールバックモードで続行');
+      }
 
       // 各AIサービスの初期化
       if (_settings.enableRealtimeCoach) {
         // リアルタイムコーチは必要時に初期化
+        log('AIIntegration: リアルタイムコーチ機能が有効化されました');
       }
 
       if (_settings.enableSocialProof) {
-        await _socialProof.startSocialProof(userId: userId);
+        try {
+          await _socialProof.startSocialProof(userId: userId);
+          log('AIIntegration: ソーシャルプルーフ機能が初期化されました');
+        } catch (e) {
+          log('AIIntegration: ソーシャルプルーフ初期化エラー - $e');
+          // 非クリティカルなので続行
+        }
       }
 
       if (_settings.enableWeeklyReports) {
-        _weeklyReport.startWeeklyReports();
+        try {
+          _weeklyReport.startWeeklyReports();
+          log('AIIntegration: 週次レポート機能が初期化されました');
+        } catch (e) {
+          log('AIIntegration: 週次レポート初期化エラー - $e');
+          // 非クリティカルなので続行
+        }
       }
 
       _isInitialized = true;
@@ -68,22 +88,28 @@ class AIIntegrationManager {
       _eventController.add(
         AIEvent(
           type: AIEventType.initialized,
-          message: 'AI統合システムが初期化されました',
+          message: 'TensorFlow Lite AI統合システムが初期化されました',
           timestamp: DateTime.now(),
         ),
       );
 
-      log('AIIntegration: 統合AI初期化完了');
+      log('AIIntegration: 統合AI初期化完了 (TensorFlow Lite)');
     } catch (e, stackTrace) {
       log('AIIntegration: 初期化エラー - $e', stackTrace: stackTrace);
       _eventController.add(
         AIEvent(
           type: AIEventType.error,
-          message: '初期化エラー: $e',
+          message: 'TensorFlow Lite AI初期化エラー: $e',
           timestamp: DateTime.now(),
         ),
       );
-      rethrow;
+
+      // AIServiceExceptionとして再スロー
+      throw AIServiceException(
+        'AI統合システムの初期化に失敗しました: $e',
+        code: 'AI_INTEGRATION_INIT_FAILED',
+        originalError: e,
+      );
     }
   }
 

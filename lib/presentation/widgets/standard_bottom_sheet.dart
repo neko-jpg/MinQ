@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 import 'package:minq/presentation/theme/elevation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
@@ -91,7 +92,7 @@ class StandardBottomSheet extends StatelessWidget {
     required String title,
     required String message,
     String confirmText = 'OK',
-    String cancelText = 'キャンセル',
+    String? cancelText,
     bool destructive = false,
   }) {
     return show<bool>(
@@ -103,7 +104,7 @@ class StandardBottomSheet extends StatelessWidget {
       ),
       actions: [
         BottomSheetAction(
-          label: cancelText,
+          label: cancelText ?? AppLocalizations.of(context)!.cancel,
           onPressed: (context) => Navigator.of(context).pop(false),
           isCancel: true,
         ),
@@ -311,7 +312,7 @@ extension BottomSheetExtension on BuildContext {
     required String title,
     required String message,
     String confirmText = 'OK',
-    String cancelText = 'キャンセル',
+    String? cancelText,
     bool destructive = false,
   }) {
     return StandardBottomSheet.showConfirm(

@@ -42,17 +42,24 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
       final referralService = ref.read(referralServiceProvider);
       final link = await referralService.generateInviteLink(userId: uid);
 
-      setState(() {
-        _inviteLink = link;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-
       if (mounted) {
-        FeedbackMessenger.showErrorSnackBar(context, '招待リンクの生成に失敗しました');
+        setState(() {
+          _inviteLink = link;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        // WidgetsBinding.instance.addPostFrameCallbackを使用してScaffoldが構築された後に実行
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            FeedbackMessenger.showErrorSnackBar(context, '招待リンクの生成に失敗しました');
+          }
+        });
       }
     }
   }

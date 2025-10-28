@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:minq/data/providers.dart';
@@ -145,7 +146,7 @@ class FailurePredictionWidget extends ConsumerWidget {
                     side: BorderSide(color: Colors.red.shade600),
                     foregroundColor: Colors.red.shade600,
                   ),
-                  child: const Text('詳細分析'),
+                  child: Text(AppLocalizations.of(context)!.detailedAnalysis),
                 ),
               ),
 
@@ -161,7 +162,7 @@ class FailurePredictionWidget extends ConsumerWidget {
                     backgroundColor: Colors.red.shade600,
                     foregroundColor: Colors.white,
                   ),
-                  child: const Text('改善提案'),
+                  child: Text(AppLocalizations.of(context)!.improvementSuggestion),
                 ),
               ),
             ],
@@ -243,7 +244,7 @@ class FailurePredictionWidget extends ConsumerWidget {
                   size: tokens.spacing.lg,
                 ),
                 SizedBox(width: tokens.spacing.sm),
-                const Text('AI改善提案'),
+                Text(AppLocalizations.of(context)!.aiImprovementSuggestion),
               ],
             ),
             content: Column(
@@ -279,14 +280,14 @@ class FailurePredictionWidget extends ConsumerWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('閉じる'),
+                child: Text(AppLocalizations.of(context)!.close),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   // 詳細分析画面に遷移
                 },
-                child: const Text('詳細を見る'),
+                child: Text(AppLocalizations.of(context)!.viewDetails),
               ),
             ],
           ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -93,24 +92,24 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
           return Transform.scale(
             scale: _pulseAnimation.value,
             child: Container(
-              margin: EdgeInsets.all(tokens.spacing(4)),
+              margin: EdgeInsets.all(tokens.spacing.lg),
               decoration: BoxDecoration(
                 gradient: _getGradientForStreak(widget.currentStreak),
-                borderRadius: tokens.cornerLarge(),
-                boxShadow: tokens.shadowStrong,
+                borderRadius: BorderRadius.circular(tokens.radius.lg),
+                boxShadow: tokens.shadow.strong,
               ),
               child: Padding(
-                padding: EdgeInsets.all(tokens.spacing(6)),
+                padding: EdgeInsets.all(tokens.spacing.xl),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHeader(),
-                    SizedBox(height: tokens.spacing(5)),
+                    SizedBox(height: tokens.spacing.lg),
                     _buildMainStats(),
-                    SizedBox(height: tokens.spacing(4)),
+                    SizedBox(height: tokens.spacing.md),
                     _buildSubStats(),
                     if (widget.showShareButton) ...[
-                      SizedBox(height: tokens.spacing(5)),
+                      SizedBox(height: tokens.spacing.lg),
                       _buildShareButton(),
                     ],
                   ],
@@ -128,14 +127,14 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
     return Row(
       children: [
         Container(
-          padding: EdgeInsets.all(tokens.spacing(2)),
+          padding: EdgeInsets.all(tokens.spacing.sm),
           decoration: BoxDecoration(
             color: Colors.white.withAlpha((255 * 0.2).round()),
-            borderRadius: tokens.cornerMedium(),
+            borderRadius: BorderRadius.circular(tokens.radius.md),
           ),
           child: const Icon(Icons.trending_up, color: Colors.white, size: 24),
         ),
-        SizedBox(width: tokens.spacing(3)),
+        SizedBox(width: tokens.spacing.md),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,18 +166,18 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
     final tokens = context.tokens;
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing(3),
-        vertical: tokens.spacing(1.5),
+        horizontal: tokens.spacing.md,
+        vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(tokens.spacing(5)),
+        borderRadius: BorderRadius.circular(tokens.spacing.lg),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text('🔥', style: TextStyle(fontSize: 16)),
-          SizedBox(width: tokens.spacing(1)),
+          SizedBox(width: tokens.spacing.xs),
           Text(
             '${widget.currentStreak}',
             style: TextStyle(
@@ -295,13 +294,21 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              style: ElevatedButton.stylefrom(
-                backgroundColor: Colors.white.withAlpha((255 * 0.2).round()),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.white.withAlpha((255 * 0.3).round())),
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(
+                  Colors.white.withAlpha((255 * 0.2).round()),
+                ),
+                foregroundColor: WidgetStateProperty.all(Colors.white),
+                padding: WidgetStateProperty.all(
+                  const EdgeInsets.symmetric(vertical: 12),
+                ),
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                      color: Colors.white.withAlpha((255 * 0.3).round()),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -329,9 +336,11 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       final file = await File('${tempDir.path}/minq_progress.png').create();
       await file.writeAsBytes(pngBytes);
 
-      await Share.shareXFiles([
-        XFile(file.path),
-      ], text: 'MinQで${widget.currentStreak}日連続で目標達成中！ #MinQ #習慣化アプリ');
+      final params = ShareParams(
+        files: [XFile(file.path)],
+        text: 'MinQで${widget.currentStreak}日連続で目標達成中！ #MinQ #習慣化アプリ',
+      );
+      await SharePlus.instance.share(params);
 
       // TODO: Implement logEvent
       // ref.read(analyticsServiceProvider).logEvent(
@@ -409,18 +418,6 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
     if (streak >= 7) return '素晴らしい継続！';
     if (streak >= 3) return '良いペース！';
     return '継続中！';
-  }
-
-  String _getMotivationalMessage() {
-    final messages = [
-      '毎日コツコツ、継続は力なり！',
-      '小さな積み重ねが大きな変化を生む',
-      '今日も一歩前進！',
-      '習慣化で人生が変わる',
-      '継続こそが最大の才能',
-    ];
-
-    return messages[Random().nextInt(messages.length)];
   }
 }
 

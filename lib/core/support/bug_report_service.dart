@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:minq/core/logging/app_logger.dart';
-import 'packagepackage:package_info_plus/package_info_plus.dart';
+import 'package:minq/data/logging/minq_logger.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 /// バグ報告サービス
 class BugReportService {
@@ -50,10 +50,10 @@ class BugReportService {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      logger.info('Bug report submitted', data: {'reportId': docRef.id});
+      MinqLogger.info('Bug report submitted', metadata: {'reportId': docRef.id});
       return docRef.id;
     } catch (e, s) {
-      logger.error('Failed to submit bug report', error: e, stackTrace: s);
+      MinqLogger.error('Failed to submit bug report', error: e, stackTrace: s);
       rethrow;
     }
   }
@@ -102,7 +102,7 @@ class BugReportService {
   Future<List<String>> _collectLogs() async {
     // TODO: 実際のログ収集ロジックを実装
     // アプリ内で保存しているログを取得
-    return ['Log entry 1', 'Log entry 2', 'Log entry 3'];
+    return [];
   }
 
   /// スクリーンショットをアップロード
@@ -161,7 +161,7 @@ class BugReportService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    logger.info('Comment added to bug report', data: {'reportId': reportId});
+    MinqLogger.info('Comment added to bug report', metadata: {'reportId': reportId});
   }
 
   /// バグレポートのステータスを更新
@@ -174,8 +174,8 @@ class BugReportService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    logger.info('Bug report status updated',
-        data: {'reportId': reportId, 'newStatus': status.name});
+    MinqLogger.info('Bug report status updated',
+        metadata: {'reportId': reportId, 'newStatus': status.name});
   }
 
   /// フィードバックを送信（バグではない一般的なフィードバック）
@@ -191,7 +191,7 @@ class BugReportService {
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    logger.info('Feedback submitted', data: {'feedbackId': docRef.id});
+    MinqLogger.info('Feedback submitted', metadata: {'feedbackId': docRef.id});
     return docRef.id;
   }
 }

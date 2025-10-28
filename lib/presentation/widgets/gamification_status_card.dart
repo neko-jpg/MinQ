@@ -21,6 +21,11 @@ class GamificationStatusCard extends ConsumerWidget {
 
     final gamificationEngine = ref.watch(gamificationEngineProvider);
 
+    // Firestoreが利用できない場合は空のウィジェットを返す
+    if (gamificationEngine == null) {
+      return const SizedBox.shrink();
+    }
+
     return FutureBuilder<Map<String, dynamic>>(
       future: _loadGamificationData(gamificationEngine, uid),
       builder: (context, snapshot) {

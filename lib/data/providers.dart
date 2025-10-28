@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -14,10 +15,20 @@ import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/config/stripe_config.dart';
+import 'package:minq/core/ai/ai_insights_service.dart';
 import 'package:minq/core/ai/failure_prediction_service.dart';
+import 'package:minq/core/ai/personality_diagnosis_service.dart';
 import 'package:minq/core/ai/tflite_unified_ai_service_provider.dart';
-import 'package:minq/core/challenges/challenge_service.dart';
+import 'package:minq/domain/time_capsule/time_capsule.dart';
+import 'package:minq/core/ai/weekly_report_service.dart';
+import 'package:minq/core/battle/battle_service.dart';
+import 'package:minq/core/community/guild_service.dart';
+import 'package:minq/core/mood/mood_tracking_service.dart';
+import 'package:minq/core/time_capsule/time_capsule_service.dart';
+import 'package:minq/core/database/database_lifecycle_manager.dart';
+import 'package:minq/core/database/firestore_enhanced_operations.dart';
 import 'package:minq/core/export/data_export_service.dart';
+import 'package:minq/core/utils/firestore_retry.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/core/gamification/reward_system.dart';
 import 'package:minq/core/logging/app_logger.dart';
@@ -31,15 +42,23 @@ import 'package:minq/core/sharing/ogp_image_generator.dart';
 import 'package:minq/core/sharing/share_service.dart';
 import 'package:minq/data/repositories/community_board_repository.dart';
 import 'package:minq/data/repositories/contact_link_repository.dart';
+import 'package:minq/data/repositories/enhanced_quest_log_repository.dart';
+import 'package:minq/data/repositories/enhanced_quest_repository.dart';
 import 'package:minq/data/repositories/firebase_auth_repository.dart';
 import 'package:minq/data/repositories/pair_repository.dart';
 import 'package:minq/data/repositories/quest_log_repository.dart';
 import 'package:minq/data/repositories/quest_repository.dart';
+import 'package:minq/data/repositories/time_capsule_repository.dart';
 import 'package:minq/data/repositories/user_repository.dart';
 import 'package:minq/data/services/analytics_service.dart';
 import 'package:minq/data/services/app_locale_controller.dart';
 import 'package:minq/data/services/connectivity_service.dart';
+import 'package:minq/core/initialization/optimal_initialization_service.dart';
+import 'package:minq/core/navigation/navigation_use_case.dart';
 import 'package:minq/data/services/crash_recovery_store.dart';
+
+// Export navigation provider
+export 'package:minq/core/navigation/navigation_use_case.dart' show navigationUseCaseProvider;
 import 'package:minq/data/services/deep_link_service.dart';
 import 'package:minq/data/services/firestore_sync_service.dart';
 import 'package:minq/data/services/focus_music_service.dart';
@@ -350,9 +369,28 @@ final dataExportServiceProvider = Provider<DataExportService?>((ref) {
 //   return FeatureFlagsNotifier(ref.watch(remoteConfigProvider));
 // });
 
+final isarServiceProvider = Provider<IsarService>((ref) {
+  final service = IsarService();
+
+  // Add disposal callback
+  ref.onDispose(() async {
+    await service.dispose();
+  });
+
+  return service;
+});
+
 final isarProvider = FutureProvider<Isar>((ref) async {
-  final isarService = IsarService();
-  return isarService.init();
+  final isarService = ref.watch(isarServiceProvider);
+
+  return isarService.init(
+    onProgress: (message, progress) {
+      // Log initialization progress in debug mode
+      if (kDebugMode) {
+        debugPrint('Database init: $message (${(progress * 100).toInt()}%)');
+      }
+    },
+  );
 });
 
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
@@ -366,7 +404,7 @@ QuestRepository _buildQuestRepository(Ref ref) {
   if (isar == null) {
     throw StateError('Isar instance is not yet initialised');
   }
-  return QuestRepository(isar);
+  return EnhancedQuestRepository(isar);
 }
 
 QuestLogRepository _buildQuestLogRepository(Ref ref) {
@@ -374,7 +412,7 @@ QuestLogRepository _buildQuestLogRepository(Ref ref) {
   if (isar == null) {
     throw StateError('Isar instance is not yet initialised');
   }
-  return QuestLogRepository(isar);
+  return EnhancedQuestLogRepository(isar);
 }
 
 UserRepository _buildUserRepository(Ref ref) {
@@ -386,6 +424,14 @@ UserRepository _buildUserRepository(Ref ref) {
   return UserRepository(isar, authRepository);
 }
 
+TimeCapsuleRepository _buildTimeCapsuleRepository(Ref ref) {
+  final isar = ref.watch(isarProvider).value;
+  if (isar == null) {
+    throw StateError('Isar instance is not yet initialised');
+  }
+  return TimeCapsuleRepository(isar);
+}
+
 final questRepositoryProvider = Provider<QuestRepository>(
   _buildQuestRepository,
 );
@@ -393,6 +439,7 @@ final questLogRepositoryProvider = Provider<QuestLogRepository>(
   _buildQuestLogRepository,
 );
 final userRepositoryProvider = Provider<UserRepository>(_buildUserRepository);
+final timeCapsuleRepositoryProvider = Provider<TimeCapsuleRepository>(_buildTimeCapsuleRepository);
 
 final pairRepositoryProvider = Provider<PairRepository?>((ref) {
   final firestore = ref.watch(firestoreProvider);
@@ -401,6 +448,26 @@ final pairRepositoryProvider = Provider<PairRepository?>((ref) {
     return null;
   }
   return PairRepository(firestore, storage);
+});
+
+final enhancedFirestoreServiceProvider = Provider<EnhancedFirestoreService?>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    return null;
+  }
+
+  final service = EnhancedFirestoreService(
+    firestore: firestore,
+    retryConfig: RetryConfig.networkConfig,
+    maxRequestsPerSecond: 10,
+  );
+
+  // Add disposal callback
+  ref.onDispose(() async {
+    await service.dispose();
+  });
+
+  return service;
 });
 
 final firestoreSyncServiceProvider = Provider<FirestoreSyncService?>((ref) {
@@ -750,30 +817,97 @@ final heatmapDataProvider = FutureProvider<Map<DateTime, int>>((ref) async {
   return ref.read(questLogRepositoryProvider).getHeatmapData(user.uid);
 });
 
+final timeCapsuleListProvider = FutureProvider<List<TimeCapsule>>((ref) async {
+  await _ensureStartup(ref);
+  final user = await ref.watch(localUserProvider.future);
+  if (user == null) {
+    return [];
+  }
+  return ref.read(timeCapsuleRepositoryProvider).getTimeCapsules(user.uid);
+});
+
+final deliveredTimeCapsuleListProvider = FutureProvider<List<TimeCapsule>>((ref) async {
+  await _ensureStartup(ref);
+  final user = await ref.watch(localUserProvider.future);
+  if (user == null) {
+    return [];
+  }
+  return ref.read(timeCapsuleRepositoryProvider).getDeliveredTimeCapsules(user.uid);
+});
+
+final pendingTimeCapsuleListProvider = FutureProvider<List<TimeCapsule>>((ref) async {
+  await _ensureStartup(ref);
+  final user = await ref.watch(localUserProvider.future);
+  if (user == null) {
+    return [];
+  }
+  return ref.read(timeCapsuleRepositoryProvider).getPendingTimeCapsules(user.uid);
+});
+
+final timeCapsuleStatsProvider = FutureProvider<TimeCapsuleStats>((ref) async {
+  await _ensureStartup(ref);
+  final user = await ref.watch(localUserProvider.future);
+  if (user == null) {
+    return const TimeCapsuleStats(total: 0, delivered: 0, pending: 0);
+  }
+  return ref.read(timeCapsuleRepositoryProvider).getStats(user.uid);
+});
+
 // Gamification providers
-final gamificationEngineProvider = Provider<GamificationEngine>((ref) {
+final gamificationEngineProvider = Provider<GamificationEngine?>((ref) {
   final firestore = ref.watch(firestoreProvider);
   if (firestore == null) {
-    throw StateError('Firestore is not available');
+    return null; // Firestoreが利用できない場合はnullを返す
   }
   return GamificationEngine(firestore);
 });
 
-final rewardSystemProvider = Provider<RewardSystem>((ref) {
+final rewardSystemProvider = Provider<RewardSystem?>((ref) {
   final firestore = ref.watch(firestoreProvider);
   if (firestore == null) {
-    throw StateError('Firestore is not available');
+    return null; // Firestoreが利用できない場合はnullを返す
   }
   return RewardSystem(firestore);
 });
 
-final challengeServiceProvider = Provider<ChallengeService>((ref) {
-  final firestore = ref.watch(firestoreProvider);
-  if (firestore == null) {
-    throw StateError('Firestore is not available');
-  }
-  final gamificationEngine = ref.watch(gamificationEngineProvider);
-  return ChallengeService(firestore, gamificationEngine);
+// AI providers - TensorFlow Lite AI service is used instead
+final aiInsightsServiceProvider = Provider<AIInsightsService>((ref) {
+  return AIInsightsService.instance;
 });
 
-// AI providers - 既にgemma_ai_service.dartで定義されているので削除
+// Advanced feature providers
+final guildServiceProvider = Provider<GuildService>((ref) {
+  return GuildService.instance;
+});
+
+final battleServiceProvider = Provider<BattleService>((ref) {
+  return BattleService.instance;
+});
+
+final personalityDiagnosisServiceProvider = Provider<PersonalityDiagnosisService>((ref) {
+  return PersonalityDiagnosisService.instance;
+});
+
+final weeklyReportServiceProvider = Provider<WeeklyReportService>((ref) {
+  return WeeklyReportService.instance;
+});
+
+final timeCapsuleServiceProvider = Provider<TimeCapsuleService>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    throw Exception('Firestore not available');
+  }
+  return TimeCapsuleService(firestore);
+});
+
+final moodTrackingServiceProvider = Provider<MoodTrackingService>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    throw Exception('Firestore not available');
+  }
+  return MoodTrackingService(firestore);
+});
+
+// Navigation provider
+// Note: This is defined in navigation_use_case.dart and exported here for convenience
+// The actual provider is defined there to avoid circular dependencies

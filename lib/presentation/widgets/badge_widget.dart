@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/design_tokens.dart';
 
 /// バッジの種類
 enum BadgeType {
@@ -81,34 +82,37 @@ class BadgeWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final theme = Theme.of(context);
-    final bgColor = backgroundColor ?? theme.colorScheme.error;
-    final fgColor = textColor ?? theme.colorScheme.onError;
+    final tokens = context.tokens;
+    final bgColor = backgroundColor ?? tokens.colors.error;
+    final fgColor = textColor ?? tokens.colors.onError;
 
     switch (type) {
       case BadgeType.dot:
-        return _buildDotBadge(bgColor);
+        return _buildDotBadge(tokens, bgColor);
       case BadgeType.numeric:
-        return _buildNumericBadge(context, bgColor, fgColor);
+        return _buildNumericBadge(tokens, bgColor, fgColor);
       case BadgeType.text:
-        return _buildTextBadge(context, bgColor, fgColor);
+        return _buildTextBadge(tokens, bgColor, fgColor);
     }
   }
 
-  Widget _buildDotBadge(Color color) {
+  Widget _buildDotBadge(MinqDesignTokens tokens, Color color) {
     return Container(
-      width: 8,
-      height: 8,
+      width: MinqSpacingTokens.sm,
+      height: MinqSpacingTokens.sm,
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: 1.5),
+        border: Border.all(
+          color: tokens.colors.surface,
+          width: 1.5,
+        ),
       ),
     );
   }
 
   Widget _buildNumericBadge(
-    BuildContext context,
+    MinqDesignTokens tokens,
     Color bgColor,
     Color fgColor,
   ) {
@@ -121,25 +125,27 @@ class BadgeWidget extends StatelessWidget {
 
     return Container(
       constraints: BoxConstraints(
-        minWidth: isLarge ? 20 : 16,
-        minHeight: isLarge ? 20 : 16,
+        minWidth: isLarge ? tokens.spacing.xl : tokens.spacing.lg,
+        minHeight: isLarge ? tokens.spacing.xl : tokens.spacing.lg,
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: isLarge ? 8.0 : 4.0,
-        vertical: 4.0,
+        horizontal: isLarge ? tokens.spacing.sm : tokens.spacing.xs,
+        vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(isLarge ? 10 : 8),
-        border: Border.all(color: Colors.white, width: 1.5),
+        borderRadius: tokens.radius.fullRadius,
+        border: Border.all(
+          color: tokens.colors.surface,
+          width: 1.5,
+        ),
       ),
       child: Center(
         child: Text(
           displayText,
-          style: TextStyle(
-            fontSize: isLarge ? 10 : 9,
-            fontWeight: FontWeight.bold,
+          style: tokens.typography.labelSmall.copyWith(
             color: fgColor,
+            fontWeight: FontWeight.bold,
             height: 1.0,
           ),
         ),
@@ -147,24 +153,29 @@ class BadgeWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildTextBadge(BuildContext context, Color bgColor, Color fgColor) {
+  Widget _buildTextBadge(MinqDesignTokens tokens, Color bgColor, Color fgColor) {
     if (text == null || text!.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: tokens.spacing.sm,
+        vertical: tokens.spacing.xs,
+      ),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white, width: 1.5),
+        borderRadius: tokens.radius.smRadius,
+        border: Border.all(
+          color: tokens.colors.surface,
+          width: 1.5,
+        ),
       ),
       child: Text(
         text!,
-        style: TextStyle(
-          fontSize: 9,
-          fontWeight: FontWeight.bold,
+        style: tokens.typography.labelSmall.copyWith(
           color: fgColor,
+          fontWeight: FontWeight.bold,
           height: 1.0,
         ),
       ),

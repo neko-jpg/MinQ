@@ -332,7 +332,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Gemma AI サポートチャット',
+              'AI サポートチャット',
               style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
             ),
             SizedBox(height: tokens.spacing.sm),

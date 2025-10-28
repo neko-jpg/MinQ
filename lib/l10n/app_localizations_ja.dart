@@ -194,10 +194,10 @@ class AppLocalizationsJa extends AppLocalizations {
       '時間内にバディが見つかりませんでした。もう一度試すか、後で再試行してください。';
 
   @override
-  String get retry => '再試行する';
+  String get retry => '再試行';
 
   @override
-  String get cancel => 'キャンセルする';
+  String get cancel => 'キャンセル';
 
   @override
   String get messageSentFailed => 'メッセージの送信に失敗しました';
@@ -232,7 +232,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get enable => '有効にする';
 
   @override
-  String get later => 'あとで';
+  String get later => '後で';
 
   @override
   String get shareFailed => '進捗のシェアに失敗しました。もう一度お試しください。';
@@ -283,7 +283,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get block => 'ブロックする';
 
   @override
-  String get report => '報告する';
+  String get report => '報告';
 
   @override
   String get areYouSure => 'よろしいですか？';
@@ -434,4 +434,516 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get pairGoalProductivity => '生産性';
+
+  @override
+  String get newVersionAvailable => '新しいバージョンがあります';
+
+  @override
+  String newVersionMessage(Object version) {
+    return '新しいバージョン（$version）が利用可能です。\nより快適にご利用いただくため、アップデートをおすすめします。';
+  }
+
+  @override
+  String get viewDetails => '詳細を見る';
+
+  @override
+  String get skip => 'スキップ';
+
+  @override
+  String get complete => '完了';
+
+  @override
+  String get next => '次へ';
+
+  @override
+  String get delivered => '配信済み';
+
+  @override
+  String get pending => '配信待ち';
+
+  @override
+  String get canOpen => '開封可能';
+
+  @override
+  String deliveryDate(int year, int month, int day) {
+    return '配信日: $year年$month月$day日';
+  }
+
+  @override
+  String get tapToOpen => 'タップして開封';
+
+  @override
+  String question(int current, int total) {
+    return '質問 $current / $total';
+  }
+
+  @override
+  String get submit => '送信';
+
+  @override
+  String get send => '送信';
+
+  @override
+  String get pleaseEnterAnswer => '回答を入力してください';
+
+  @override
+  String get yes => 'はい';
+
+  @override
+  String get no => 'いいえ';
+
+  @override
+  String get userSatisfactionSurvey => 'ユーザー満足度調査';
+
+  @override
+  String get userSatisfactionDescription => 'MinQをより良くするため、ご意見をお聞かせください';
+
+  @override
+  String get mostLikedFeature => '最も気に入っている機能は何ですか？';
+
+  @override
+  String get questManagement => 'クエスト管理';
+
+  @override
+  String get pairFeature => 'ペア機能';
+
+  @override
+  String get statisticsGraphs => '統計・グラフ';
+
+  @override
+  String get notificationFeature => '通知機能';
+
+  @override
+  String get other => 'その他';
+
+  @override
+  String get wouldRecommendMinq => '友人にMinQを勧めますか？';
+
+  @override
+  String get improvementSuggestions => '改善してほしい点があれば教えてください';
+
+  @override
+  String get serverConnectionFailed => 'サーバーへの接続に失敗しました';
+
+  @override
+  String get friendInvitation => '友達招待';
+
+  @override
+  String get inviteFriendsForBonus => '友達を招待してボーナスポイントをゲット！';
+
+  @override
+  String get specialCampaign => '特別キャンペーン';
+
+  @override
+  String get inviteFriendsMessage => '友達を招待すると、あなたも友達も\n最大3500ポイントがもらえます！';
+
+  @override
+  String get inviteNow => '今すぐ招待';
+
+  @override
+  String get start => '開始';
+
+  @override
+  String get resume => '再開';
+
+  @override
+  String get reset => 'リセット';
+
+  @override
+  String get pause => '一時停止';
+
+  @override
+  String get completed => '完了！';
+
+  @override
+  String get paused => '一時停止中';
+
+  @override
+  String get timerCompleted => 'タイマー完了！';
+
+  @override
+  String get clearFilters => 'フィルターをクリア';
+
+  @override
+  String get offlineMode => 'オフラインモード';
+
+  @override
+  String get noInternetConnection =>
+      'インターネット接続がありません。\n\n一部の機能が正常に動作しない可能性があります。\n接続を確認して再度お試しください。';
+
+  @override
+  String get offline => 'オフライン';
+
+  @override
+  String get offlineOperationNotAvailable => 'オフラインのため、この操作は実行できません';
+
+  @override
+  String get showActivity => 'アクティビティを表示';
+
+  @override
+  String get showActivitySubtitle => '他のユーザーにあなたの活動を表示します';
+
+  @override
+  String get allowInteraction => '交流を許可';
+
+  @override
+  String get allowInteractionSubtitle => '他のユーザーからの励ましを受け取ります';
+
+  @override
+  String get hapticFeedback => '触覚フィードバック';
+
+  @override
+  String get hapticFeedbackSubtitle => 'アクティビティ時に振動でお知らせします';
+
+  @override
+  String get celebrationEffects => '祝福エフェクト';
+
+  @override
+  String get celebrationEffectsSubtitle => '完了時に祝福エフェクトを表示します';
+
+  @override
+  String get levelDetails => 'レベル詳細';
+
+  @override
+  String levelDetailsMessage(int level, int progress) {
+    return '現在レベル: $level\n進捗: $progress%';
+  }
+
+  @override
+  String get close => '閉じる';
+
+  @override
+  String get editHabitScreen => '習慣編集画面に移動します';
+
+  @override
+  String get addNewHabit => '新しい習慣を追加します';
+
+  @override
+  String get executeHabitToday => '今日の習慣を実行しましょう';
+
+  @override
+  String get createMiniHabit => 'ミニ習慣を作成します';
+
+  @override
+  String get navigateToChallenges => 'チャレンジ画面に移動します';
+
+  @override
+  String get executePrevention => '対策を実行';
+
+  @override
+  String get executeNow => '今すぐ実行';
+
+  @override
+  String get showPreventionPlan => '対策プランを表示します';
+
+  @override
+  String get navigateToHabitExecution => '習慣実行画面に移動します';
+
+  @override
+  String get errorOccurred => 'エラーが発生しました';
+
+  @override
+  String get detailedAnalysis => '詳細分析';
+
+  @override
+  String get improvementSuggestion => '改善提案';
+
+  @override
+  String get createQuest => 'クエストを作成';
+
+  @override
+  String get viewTodaysQuests => '今日のクエストを見る';
+
+  @override
+  String get findPair => 'ペアを探す';
+
+  @override
+  String get allowPermission => '権限を許可';
+
+  @override
+  String get thankYou => 'ありがとう';
+
+  @override
+  String get voiceTest => '音声テスト';
+
+  @override
+  String get voiceTestSubtitle => '音声コーチングをテストします';
+
+  @override
+  String get weeklyAchievementHeatmap => '週間達成ヒートマップ';
+
+  @override
+  String get privacySettings => 'プライバシー設定';
+
+  @override
+  String get notificationSettings => '通知設定';
+
+  @override
+  String get test => 'テスト';
+
+  @override
+  String get priorityHigh => '高';
+
+  @override
+  String get priorityMedium => '中';
+
+  @override
+  String get priorityLow => '低';
+
+  @override
+  String createdOn(int year, int month, int day) {
+    return '$year年$month月$day日作成';
+  }
+
+  @override
+  String daysUntil(int days) {
+    return '$days日後';
+  }
+
+  @override
+  String get required => ' *必須';
+
+  @override
+  String get usabilityRating => 'MinQの使いやすさを5段階で評価してください';
+
+  @override
+  String get friendInvitationTitle => '友達招待';
+
+  @override
+  String invitedFriends(int count, int rate) {
+    return '$count人招待済み・成功率$rate%';
+  }
+
+  @override
+  String get inviteFriendsBonus => '友達を招待してボーナスポイントをゲット！';
+
+  @override
+  String get specialCampaignTitle => '特別キャンペーン';
+
+  @override
+  String get inviteFriendsPoints => '友達を招待すると、あなたも友達も\n最大3500ポイントがもらえます！';
+
+  @override
+  String get searchQuests => 'クエストを検索...';
+
+  @override
+  String get filterByTags => 'タグでフィルター';
+
+  @override
+  String get difficulty => '難易度';
+
+  @override
+  String get estimatedTime => '推定時間';
+
+  @override
+  String get location => '場所';
+
+  @override
+  String get difficultyEasy => '簡単';
+
+  @override
+  String get difficultyMedium => '普通';
+
+  @override
+  String get difficultyHard => '難しい';
+
+  @override
+  String get duration5min => '5分';
+
+  @override
+  String get duration10min => '10分';
+
+  @override
+  String get duration15min => '15分';
+
+  @override
+  String get duration30min => '30分';
+
+  @override
+  String get duration1hour => '1時間';
+
+  @override
+  String get locationHome => '自宅';
+
+  @override
+  String get locationGym => 'ジム';
+
+  @override
+  String get locationOffice => 'オフィス';
+
+  @override
+  String get locationOutdoor => '屋外';
+
+  @override
+  String get locationLibrary => '図書館';
+
+  @override
+  String get progress => '進捗';
+
+  @override
+  String get ready => '準備完了';
+
+  @override
+  String get running => '実行中';
+
+  @override
+  String get workSession => '作業セッション';
+
+  @override
+  String get breakTime => '休憩';
+
+  @override
+  String get messageTest => 'メッセージテスト';
+
+  @override
+  String get messageTestSubtitle => 'コーチングメッセージをテストします';
+
+  @override
+  String intervalMinutes(int minutes) {
+    return '$minutes分間隔';
+  }
+
+  @override
+  String minutesShort(int minutes) {
+    return '$minutes分';
+  }
+
+  @override
+  String get getStarted => '始める';
+
+  @override
+  String get aiImprovementSuggestion => 'AI改善提案';
+
+  @override
+  String get alreadyHaveAccount => 'すでにアカウントをお持ちですか？';
+
+  @override
+  String get newsAndChangelog => 'お知らせ・変更履歴';
+
+  @override
+  String get communityBoard => 'コミュニティ掲示板';
+
+  @override
+  String get post => '投稿する';
+
+  @override
+  String failedToLoadPosts(String error) {
+    return '投稿の読み込みに失敗しました: $error';
+  }
+
+  @override
+  String get deleteHabit => '習慣を削除';
+
+  @override
+  String deleteHabitConfirm(String title) {
+    return '「$title」を削除しますか？この操作は取り消せません。';
+  }
+
+  @override
+  String get delete => '削除';
+
+  @override
+  String get previous => '戻る';
+
+  @override
+  String get update => '更新する';
+
+  @override
+  String get discardChanges => '変更を破棄しますか？';
+
+  @override
+  String get unsavedChangesWillBeLost => '保存されていない変更は失われます。';
+
+  @override
+  String get discard => '破棄';
+
+  @override
+  String get habitName => '習慣名';
+
+  @override
+  String get targetValue => '目標値';
+
+  @override
+  String get reload => '再読み込み';
+
+  @override
+  String get loadingReminders => 'リマインダーを読み込み中…';
+
+  @override
+  String get addTime => '時間を追加';
+
+  @override
+  String get notSignedInCannotRecord => 'サインインしていないため記録できません。';
+
+  @override
+  String get photoCancelled => '写真の撮影がキャンセルされました。';
+
+  @override
+  String get bgmPlaybackFailed => 'BGMの再生に失敗しました。';
+
+  @override
+  String get bgmIdentificationUnavailable => 'BGMの識別は現在ご利用いただけません';
+
+  @override
+  String get couldNotIdentifySong => '楽曲を特定できませんでした';
+
+  @override
+  String get bgmIdentificationFailed => 'BGMの識別に失敗しました';
+
+  @override
+  String get stop => '停止';
+
+  @override
+  String get play => '再生';
+
+  @override
+  String get confirmPhoto => '写真を確認してください';
+
+  @override
+  String get retakePhoto => '再撮影';
+
+  @override
+  String get useThisPhoto => 'この写真を使用';
+
+  @override
+  String get showOfflineQueue => 'オフラインキューを表示';
+
+  @override
+  String get openSettings => '設定を開く';
+
+  @override
+  String get selfReportInstead => '代わりに自己申告する';
+
+  @override
+  String get save => '保存する';
+
+  @override
+  String get viewQuests => 'クエストを見る';
+
+  @override
+  String get startNow => '今すぐ始める';
+
+  @override
+  String get csvFormat => 'CSV形式';
+
+  @override
+  String get imageFormat => '画像形式';
+
+  @override
+  String get exportFeatureUnavailable => 'エクスポート機能は現在利用できません';
+
+  @override
+  String get statsDataExported => '統計データをエクスポートしました';
+
+  @override
+  String get exportFailed => 'エクスポートに失敗しました';
+
+  @override
+  String get imageExportInPreparation => '画像エクスポート機能は準備中です';
+
+  @override
+  String get backToQuestList => 'クエスト一覧に戻る';
+
+  @override
+  String get questNotFound => 'クエストが見つかりません';
 }

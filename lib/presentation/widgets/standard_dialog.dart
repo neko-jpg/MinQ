@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/design_tokens.dart';
 
 import 'package:minq/presentation/theme/elevation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// 標準ダイアログ - 統一されたダイアログコンポーネント
 class StandardDialog extends StatelessWidget {
@@ -32,9 +34,10 @@ class StandardDialog extends StatelessWidget {
     required String title,
     required String message,
     String confirmText = 'OK',
-    String cancelText = 'キャンセル',
+    String? cancelText,
     bool destructive = false,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<bool>(
       context: context,
       builder:
@@ -44,7 +47,7 @@ class StandardDialog extends StatelessWidget {
             type: destructive ? DialogType.destructive : DialogType.normal,
             actions: [
               DialogAction(
-                label: cancelText,
+                label: cancelText ?? l10n.cancel,
                 onPressed: () => Navigator.of(context).pop(false),
                 isCancel: true,
               ),
@@ -131,7 +134,7 @@ class StandardDialog extends StatelessWidget {
           children: [
             // アイコン
             if (icon != null || type != DialogType.normal) ...[
-              Center(child: _buildIcon()),
+              Center(child: _buildIcon(context)),
               SpacingSystem.vSpaceMD,
             ],
 
@@ -167,28 +170,29 @@ class StandardDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildIcon() {
+  Widget _buildIcon(BuildContext context) {
     if (icon != null) return icon!;
 
+    final colors = context.tokens.colors;
     IconData iconData;
     Color iconColor;
 
     switch (type) {
       case DialogType.success:
         iconData = Icons.check_circle;
-        iconColor = const Color(0xFF10B981);
+        iconColor = colors.success;
         break;
       case DialogType.error:
         iconData = Icons.error;
-        iconColor = const Color(0xFFEF4444);
+        iconColor = colors.error;
         break;
       case DialogType.warning:
         iconData = Icons.warning;
-        iconColor = const Color(0xFFF59E0B);
+        iconColor = colors.warning;
         break;
       case DialogType.destructive:
         iconData = Icons.warning;
-        iconColor = const Color(0xFFEF4444);
+        iconColor = colors.error;
         break;
       case DialogType.normal:
         return const SizedBox.shrink();
@@ -226,14 +230,14 @@ class StandardDialog extends StatelessWidget {
 
   Widget _buildActionButton(BuildContext context, DialogAction action) {
     if (action.isPrimary) {
+      final colors = context.tokens.colors;
       return ElevatedButton(
         onPressed: action.onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor:
-              action.isDestructive
-                  ? const Color(0xFFEF4444)
-                  : Theme.of(context).colorScheme.primary,
-          foregroundColor: Colors.white,
+              action.isDestructive ? colors.error : colors.primary,
+          foregroundColor:
+              action.isDestructive ? colors.onError : colors.onPrimary,
         ),
         child: Text(action.label),
       );
@@ -277,7 +281,7 @@ extension DialogExtension on BuildContext {
     required String title,
     required String message,
     String confirmText = 'OK',
-    String cancelText = 'キャンセル',
+    String? cancelText,
     bool destructive = false,
   }) {
     return StandardDialog.showConfirm(

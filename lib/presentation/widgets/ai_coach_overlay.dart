@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/ai/realtime_coach_service.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -523,14 +524,14 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
             // テスト機能
             _buildSettingsSection('テスト', [
               ListTile(
-                title: const Text('音声テスト'),
-                subtitle: const Text('音声コーチングをテストします'),
+                title: Text(AppLocalizations.of(context)!.voiceTest),
+                subtitle: Text(AppLocalizations.of(context)!.voiceTestSubtitle),
                 trailing: const Icon(Icons.play_arrow),
                 onTap: _testVoiceCoaching,
               ),
               ListTile(
-                title: const Text('メッセージテスト'),
-                subtitle: const Text('コーチングメッセージをテストします'),
+                title: Text(AppLocalizations.of(context)!.messageTest),
+                subtitle: Text(AppLocalizations.of(context)!.messageTestSubtitle),
                 trailing: const Icon(Icons.message),
                 onTap: _testMessage,
               ),
@@ -613,12 +614,17 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
 
     return ListTile(
       title: Text(title),
-      subtitle: Text('$minutes分間隔'),
+      subtitle: Text(AppLocalizations.of(context)!.intervalMinutes
+        .replaceAll('{minutes}', minutes.toString())),
       trailing: DropdownButton<int>(
         value: minutes,
         items:
             [1, 3, 5, 10, 15, 30].map((min) {
-              return DropdownMenuItem(value: min, child: Text('$min分'));
+              return DropdownMenuItem(
+                value: min,
+                child: Text(AppLocalizations.of(context)!.minutesShort
+                  .replaceAll('{minutes}', min.toString()))
+              );
             }).toList(),
         onChanged: (value) {
           if (value != null) {

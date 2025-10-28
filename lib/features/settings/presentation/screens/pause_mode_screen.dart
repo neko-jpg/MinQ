@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:minq/features/home/presentation/screens/home_screen_v2.dart';
 
 const String _pauseModeKey = 'is_pause_mode_enabled';
 
 class PauseModeNotifier extends StateNotifier<bool> {
-  PauseModeNotifier() : super(false) {
+  PauseModeNotifier(this.ref) : super(false) {
     _loadState();
   }
+  final Ref ref;
 
   Future<void> _loadState() async {
     final prefs = await SharedPreferences.getInstance();
@@ -22,9 +23,10 @@ class PauseModeNotifier extends StateNotifier<bool> {
 
     // Also update the backend state
     try {
+      final userId = ref.read(userIdProvider);
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(_userId) // Using dummy user ID
+          .doc(userId) // Using dummy user ID
           .update({'isPaused': isEnabled});
     } catch (e) {
       print('Error updating backend pause state: $e');
@@ -39,7 +41,7 @@ class PauseModeNotifier extends StateNotifier<bool> {
 }
 
 final pauseModeProvider = StateNotifierProvider<PauseModeNotifier, bool>((ref) {
-  return PauseModeNotifier();
+  return PauseModeNotifier(ref);
 });
 
 class PauseModeScreen extends ConsumerWidget {

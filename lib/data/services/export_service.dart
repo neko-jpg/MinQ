@@ -220,7 +220,12 @@ class ExportService {
 
   /// ファイルをシェア
   Future<void> shareFile(File file) async {
-    await Share.shareXFiles([XFile(file.path)], subject: 'MinQuest Export');
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path)],
+        subject: 'MinQuest Export',
+      ),
+    );
   }
 
   /// 期間比較レポートを生成

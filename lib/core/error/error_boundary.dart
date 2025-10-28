@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -49,8 +50,11 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
     widget.onError?.call(error, stackTrace);
 
     // ログに記録
-    print('❌ Error caught by ErrorBoundary: $error');
-    print('Stack trace: $stackTrace');
+    MinqLogger.error(
+      'Error caught by ErrorBoundary',
+      exception: error,
+      stackTrace: stackTrace,
+    );
   }
 
   void _reset() {
@@ -187,8 +191,11 @@ class GlobalErrorHandler {
   }
 
   static void _logError(Object error, StackTrace? stackTrace) {
-    print('❌ Global error: $error');
-    print('Stack trace: $stackTrace');
+    MinqLogger.error(
+      'Global error caught',
+      exception: error,
+      stackTrace: stackTrace,
+    );
 
     // TODO: Crashlytics や Sentry に送信
     // FirebaseCrashlytics.instance.recordError(error, stackTrace);

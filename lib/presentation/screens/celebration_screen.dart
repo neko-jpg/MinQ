@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
@@ -85,7 +86,8 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
             .maybeRequestReview(currentStreak: currentStreak);
       }
     } catch (error) {
-      debugPrint('In-app review trigger skipped: $error');
+      logger.debug('In-app review trigger skipped',
+        data: {'error': error.toString()});
     }
   }
 
@@ -103,7 +105,8 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
         totalCompleted: totalCompleted,
       );
     } catch (error) {
-      debugPrint('Share failed: $error');
+      logger.error('Share failed',
+        data: {'error': error.toString()});
       if (mounted) {
         ScaffoldMessenger.of(
           context,

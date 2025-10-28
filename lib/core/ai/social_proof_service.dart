@@ -14,7 +14,18 @@ class SocialProofService {
 
   SocialProofService._();
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore? _firestore;
+  FirebaseFirestore get firestore {
+    if (_firestore == null) {
+      try {
+        _firestore = FirebaseFirestore.instance;
+      } catch (e) {
+        // Firebase が初期化されていない場合はnullを返す
+        throw Exception('Firebase is not initialized');
+      }
+    }
+    return _firestore!;
+  }
 
   StreamSubscription<QuerySnapshot>? _activitySubscription;
   StreamSubscription<QuerySnapshot>? _liveUsersSubscription;
@@ -78,7 +89,7 @@ class SocialProofService {
     if (_currentUserId == null) return;
 
     try {
-      await _firestore.collection('live_users').doc(_currentUserId).set({
+      await firestore.collection('live_users').doc(_currentUserId).set({
         'userId': _currentUserId,
         'isOnline': true,
         'lastSeen': FieldValue.serverTimestamp(),
@@ -102,7 +113,7 @@ class SocialProofService {
     if (_currentUserId == null) return;
 
     try {
-      await _firestore.collection('live_users').doc(_currentUserId).update({
+      await firestore.collection('live_users').doc(_currentUserId).update({
         'isOnline': false,
         'lastSeen': FieldValue.serverTimestamp(),
         'currentActivity': null,
@@ -116,7 +127,7 @@ class SocialProofService {
 
   /// アクティビティの監視開始
   void _startListeningToActivities() {
-    _activitySubscription = _firestore
+    _activitySubscription = firestore
         .collection('live_activities')
         .where(
           'timestamp',
@@ -133,7 +144,7 @@ class SocialProofService {
 
   /// ライブユーザーの監視開始
   void _startListeningToLiveUsers() {
-    _liveUsersSubscription = _firestore
+    _liveUsersSubscription = firestore
         .collection('live_users')
         .where('isOnline', isEqualTo: true)
         .where(
@@ -267,7 +278,7 @@ class SocialProofService {
 
     try {
       // ライブアクティビティに記録
-      await _firestore.collection('live_activities').add({
+      await firestore.collection('live_activities').add({
         'userId': _currentUserId,
         'habitId': habitId,
         'habitTitle': habitTitle,
@@ -280,7 +291,7 @@ class SocialProofService {
       });
 
       // ユーザーの現在のアクティビティを更新
-      await _firestore.collection('live_users').doc(_currentUserId).update({
+      await firestore.collection('live_users').doc(_currentUserId).update({
         'currentActivity': {
           'habitId': habitId,
           'habitTitle': habitTitle,
@@ -313,7 +324,7 @@ class SocialProofService {
 
     try {
       // ライブアクティビティに記録
-      await _firestore.collection('live_activities').add({
+      await firestore.collection('live_activities').add({
         'userId': _currentUserId,
         'habitId': habitId,
         'habitTitle': habitTitle,
@@ -326,7 +337,7 @@ class SocialProofService {
       });
 
       // ユーザーの現在のアクティビティをクリア
-      await _firestore.collection('live_users').doc(_currentUserId).update({
+      await firestore.collection('live_users').doc(_currentUserId).update({
         'currentActivity': null,
         'lastSeen': FieldValue.serverTimestamp(),
       });
@@ -369,7 +380,7 @@ class SocialProofService {
       return;
 
     try {
-      await _firestore.collection('encouragements').add({
+      await firestore.collection('encouragements').add({
         'fromUserId': _currentUserId,
         'toUserId': targetUserId,
         'type': stampType.name,
@@ -641,7 +652,7 @@ class SocialProofService {
 
     // プライバシー設定の更新
     if (_currentUserId != null) {
-      _firestore.collection('live_users').doc(_currentUserId).update({
+      firestore.collection('live_users').doc(_currentUserId).update({
         'settings': {
           'showActivity': settings.showActivity,
           'allowInteraction': settings.allowInteraction,

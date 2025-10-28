@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:minq/core/onboarding/progressive_onboarding.dart';
@@ -287,7 +288,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('閉じる'),
+                    child: Text(AppLocalizations.of(context)!.close),
                   ),
                 ),
                 SizedBox(width: tokens.spacing.md),
@@ -301,7 +302,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
                       backgroundColor: tokens.brandPrimary,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('進捗を確認'),
+                    child: Text(AppLocalizations.of(context)!.progress),
                   ),
                 ),
               ],
@@ -539,11 +540,11 @@ class FeatureUnlockDialog extends ConsumerWidget {
               color: tokens.textMuted,
             ),
             SizedBox(height: tokens.spacing.lg),
-            Text('エラーが発生しました', style: tokens.typography.h3),
+            Text(AppLocalizations.of(context)!.errorOccurred, style: tokens.typography.h3),
             SizedBox(height: tokens.spacing.lg),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('閉じる'),
+              child: Text(AppLocalizations.of(context)!.close),
             ),
           ],
         ),

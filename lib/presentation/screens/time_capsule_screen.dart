@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/core/monetization/subscription_manager.dart';
 import 'package:minq/core/time_capsule/time_capsule_service.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/time_capsule/time_capsule.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
+import 'package:minq/presentation/screens/subscription_premium_screen.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/time_capsule_card.dart';
 
@@ -35,6 +37,12 @@ class _TimeCapsuleScreenState extends ConsumerState<TimeCapsuleScreen>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final subscriptionManager = ref.watch(subscriptionManagerProvider);
+    final hasAccess = subscriptionManager.hasFeatureAccess(PremiumFeature.premiumThemes);
+
+    if (!hasAccess) {
+      return _buildPremiumRequiredScreen(context, tokens);
+    }
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -58,6 +66,80 @@ class _TimeCapsuleScreenState extends ConsumerState<TimeCapsuleScreen>
       body: TabBarView(
         controller: _tabController,
         children: const [_CreateTimeCapsuleTab(), _TimeCapsuleListTab()],
+      ),
+    );
+  }
+
+  Widget _buildPremiumRequiredScreen(BuildContext context, MinqTheme tokens) {
+    return Scaffold(
+      backgroundColor: tokens.background,
+      appBar: AppBar(
+        title: Text(
+          'タイムカプセル',
+          style: tokens.typography.h3.copyWith(color: tokens.textPrimary),
+        ),
+        centerTitle: true,
+        backgroundColor: tokens.background,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
+      ),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(tokens.spacing.xl),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.workspace_premium,
+                size: 80,
+                color: tokens.brandPrimary,
+              ),
+              SizedBox(height: tokens.spacing.lg),
+              Text(
+                'プレミアム機能',
+                style: tokens.typography.h2.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: tokens.spacing.md),
+              Text(
+                'タイムカプセル機能はプレミアムプランでご利用いただけます。\n未来の自分にメッセージを送って、成長を記録しましょう。',
+                style: tokens.typography.body.copyWith(
+                  color: tokens.textMuted,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: tokens.spacing.xl),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SubscriptionPremiumScreen(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: tokens.brandPrimary,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
+                  ),
+                  child: Text(
+                    'プレミアムプランを見る',
+                    style: tokens.typography.h4.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -335,56 +417,145 @@ class _TimeCapsuleListTab extends ConsumerWidget {
       child: Column(
         children: [
           // 統計カード
-          Card(
-            elevation: 0,
-            color: tokens.surface,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(tokens.radius.lg),
-              side: BorderSide(color: tokens.border),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.lg),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _StatItem(
-                      icon: Icons.schedule_send,
-                      label: '送信済み',
-                      value: '3',
-                      color: tokens.brandPrimary,
+          Consumer(
+            builder: (context, ref, child) {
+              final statsAsync = ref.watch(timeCapsuleStatsProvider);
+
+              return statsAsync.when(
+                data: (stats) => Card(
+                  elevation: 0,
+                  color: tokens.surface,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(tokens.radius.lg),
+                    side: BorderSide(color: tokens.border),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(tokens.spacing.lg),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _StatItem(
+                            icon: Icons.schedule_send,
+                            label: '送信済み',
+                            value: '${stats.pending}',
+                            color: tokens.brandPrimary,
+                          ),
+                        ),
+                        Container(width: 1, height: 40, color: tokens.border),
+                        Expanded(
+                          child: _StatItem(
+                            icon: Icons.mail,
+                            label: '配信済み',
+                            value: '${stats.delivered}',
+                            color: tokens.encouragement,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Container(width: 1, height: 40, color: tokens.border),
-                  Expanded(
-                    child: _StatItem(
-                      icon: Icons.mail,
-                      label: '配信済み',
-                      value: '1',
-                      color: tokens.encouragement,
+                ),
+                loading: () => Card(
+                  elevation: 0,
+                  color: tokens.surface,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(tokens.radius.lg),
+                    side: BorderSide(color: tokens.border),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(tokens.spacing.lg),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+                ),
+                error: (error, stack) => Card(
+                  elevation: 0,
+                  color: tokens.surface,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(tokens.radius.lg),
+                    side: BorderSide(color: tokens.border),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(tokens.spacing.lg),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _StatItem(
+                            icon: Icons.schedule_send,
+                            label: '送信済み',
+                            value: '-',
+                            color: tokens.brandPrimary,
+                          ),
+                        ),
+                        Container(width: 1, height: 40, color: tokens.border),
+                        Expanded(
+                          child: _StatItem(
+                            icon: Icons.mail,
+                            label: '配信済み',
+                            value: '-',
+                            color: tokens.encouragement,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
 
           SizedBox(height: tokens.spacing.lg),
 
           // タイムカプセル一覧
           Expanded(
-            child: ListView.builder(
-              itemCount: 4, // TODO: 実際のデータ数
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: tokens.spacing.md),
-                  child: TimeCapsuleCard(
-                    // TODO: 実際のTimeCapsuleオブジェクトを渡す
-                    capsule: _mockTimeCapsules[index],
-                    onTap:
-                        () => _showTimeCapsuleDetail(
-                          context,
-                          _mockTimeCapsules[index],
+            child: Consumer(
+              builder: (context, ref, child) {
+                final timeCapsuleAsync = ref.watch(timeCapsuleListProvider);
+
+                return timeCapsuleAsync.when(
+                  data: (timeCapsules) {
+                    if (timeCapsules.isEmpty) {
+                      return _buildEmptyState(tokens);
+                    }
+
+                    return ListView.builder(
+                      itemCount: timeCapsules.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: tokens.spacing.md),
+                          child: TimeCapsuleCard(
+                            capsule: timeCapsules[index],
+                            onTap: () => _showTimeCapsuleDetail(
+                              context,
+                              timeCapsules[index],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) => Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: tokens.textMuted,
                         ),
+                        SizedBox(height: tokens.spacing.md),
+                        Text(
+                          'タイムカプセルを読み込めませんでした',
+                          style: tokens.typography.body.copyWith(
+                            color: tokens.textMuted,
+                          ),
+                        ),
+                        SizedBox(height: tokens.spacing.md),
+                        ElevatedButton(
+                          onPressed: () => ref.refresh(timeCapsuleListProvider),
+                          child: const Text('再試行'),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -404,41 +575,41 @@ class _TimeCapsuleListTab extends ConsumerWidget {
     );
   }
 
-  // TODO: 実際のデータプロバイダーに置き換える
-  static final List<TimeCapsule> _mockTimeCapsules = [
-    TimeCapsule(
-      id: '1',
-      userId: 'user1',
-      message: '毎日瞑想を続けています。心が穏やかになりますように。',
-      prediction: 'あなたの努力が実を結び、素晴らしい成果を上げていることでしょう。',
-      createdAt: DateTime.now().subtract(const Duration(days: 100)),
-      deliveryDate: DateTime.now().add(const Duration(days: 265)),
-    ),
-    TimeCapsule(
-      id: '2',
-      userId: 'user1',
-      message: '新しい言語を学び始めました。1年後には流暢に話せるようになっていたいです。',
-      prediction: '新しいスキルを身につけ、より自信に満ちた自分になっているはずです。',
-      createdAt: DateTime.now().subtract(const Duration(days: 50)),
-      deliveryDate: DateTime.now().add(const Duration(days: 315)),
-    ),
-    TimeCapsule(
-      id: '3',
-      userId: 'user1',
-      message: '健康的な生活を心がけています。運動も食事も気をつけています。',
-      prediction: '困難を乗り越え、以前よりも強くなった自分を発見するでしょう。',
-      createdAt: DateTime.now().subtract(const Duration(days: 200)),
-      deliveryDate: DateTime.now().subtract(const Duration(days: 10)), // 配信済み
-    ),
-    TimeCapsule(
-      id: '4',
-      userId: 'user1',
-      message: '新しい仕事に挑戦することにしました。不安もありますが、頑張ります。',
-      prediction: '目標に向かって着実に歩み続け、理想の自分に近づいているでしょう。',
-      createdAt: DateTime.now().subtract(const Duration(days: 30)),
-      deliveryDate: DateTime.now().add(const Duration(days: 335)),
-    ),
-  ];
+  Widget _buildEmptyState(MinqTheme tokens) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.schedule,
+            size: 64,
+            color: tokens.textMuted,
+          ),
+          SizedBox(height: tokens.spacing.md),
+          Text(
+            'まだタイムカプセルがありません',
+            style: tokens.typography.h4.copyWith(
+              color: tokens.textPrimary,
+            ),
+          ),
+          SizedBox(height: tokens.spacing.sm),
+          Text(
+            '未来の自分へメッセージを送ってみませんか？',
+            style: tokens.typography.body.copyWith(
+              color: tokens.textMuted,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: tokens.spacing.lg),
+          ElevatedButton.icon(
+            onPressed: () => _showCreateTimeCapsuleDialog(context),
+            icon: const Icon(Icons.add),
+            label: const Text('タイムカプセルを作成'),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _StatItem extends StatelessWidget {

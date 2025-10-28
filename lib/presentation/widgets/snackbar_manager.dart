@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/design_tokens.dart';
 
 /// SnackBarグローバルマネージャー
 /// 重複排他、優先度管理、キュー処理
@@ -20,6 +21,7 @@ class SnackBarManager {
 
   /// SnackBarを表示
   void show({
+    required BuildContext context,
     required String message,
     SnackBarType type = SnackBarType.info,
     Duration duration = const Duration(seconds: 3),
@@ -29,6 +31,7 @@ class SnackBarManager {
     bool dismissible = true,
   }) {
     final request = _SnackBarRequest(
+      context: context,
       message: message,
       type: type,
       duration: duration,
@@ -49,12 +52,14 @@ class SnackBarManager {
 
   /// 成功メッセージ
   void showSuccess(
+    BuildContext context,
     String message, {
     Duration duration = const Duration(seconds: 3),
     String? actionLabel,
     VoidCallback? onAction,
   }) {
     show(
+      context: context,
       message: message,
       type: SnackBarType.success,
       duration: duration,
@@ -65,12 +70,14 @@ class SnackBarManager {
 
   /// エラーメッセージ
   void showError(
+    BuildContext context,
     String message, {
     Duration duration = const Duration(seconds: 4),
     String? actionLabel,
     VoidCallback? onAction,
   }) {
     show(
+      context: context,
       message: message,
       type: SnackBarType.error,
       duration: duration,
@@ -82,12 +89,14 @@ class SnackBarManager {
 
   /// 警告メッセージ
   void showWarning(
+    BuildContext context,
     String message, {
     Duration duration = const Duration(seconds: 3),
     String? actionLabel,
     VoidCallback? onAction,
   }) {
     show(
+      context: context,
       message: message,
       type: SnackBarType.warning,
       duration: duration,
@@ -98,12 +107,14 @@ class SnackBarManager {
 
   /// 情報メッセージ
   void showInfo(
+    BuildContext context,
     String message, {
     Duration duration = const Duration(seconds: 3),
     String? actionLabel,
     VoidCallback? onAction,
   }) {
     show(
+      context: context,
       message: message,
       type: SnackBarType.info,
       duration: duration,
@@ -141,37 +152,41 @@ class SnackBarManager {
     _queue.remove(request);
 
     _isShowing = true;
-    _showSnackBar(request);
+    _showSnackBar(request.context, request);
   }
 
   /// SnackBarを実際に表示
-  void _showSnackBar(_SnackBarRequest request) {
+  void _showSnackBar(BuildContext context, _SnackBarRequest request) {
+    final colors = context.tokens.colors;
     final snackBar = SnackBar(
       content: Row(
         children: [
-          _getIcon(request.type),
+          _getIcon(context, request.type),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(request.message, style: const TextStyle(fontSize: 14)),
+            child: Text(
+              request.message,
+              style: TextStyle(
+                fontSize: 14,
+                color: _getForegroundColor(context, request.type),
+              ),
+            ),
           ),
         ],
       ),
-      backgroundColor: _getBackgroundColor(request.type),
+      backgroundColor: _getBackgroundColor(context, request.type),
       duration: request.duration,
-      action:
-          request.actionLabel != null
-              ? SnackBarAction(
-                label: request.actionLabel!,
-                textColor: Colors.white,
-                onPressed: request.onAction ?? () {},
-              )
-              : null,
+      action: request.actionLabel != null
+          ? SnackBarAction(
+              label: request.actionLabel!,
+              textColor: _getForegroundColor(context, request.type),
+              onPressed: request.onAction ?? () {},
+            )
+          : null,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       dismissDirection:
-          request.dismissible
-              ? DismissDirection.horizontal
-              : DismissDirection.none,
+          request.dismissible ? DismissDirection.horizontal : DismissDirection.none,
     );
 
     _messenger?.showSnackBar(snackBar).closed.then((_) {
@@ -181,7 +196,8 @@ class SnackBarManager {
   }
 
   /// タイプに応じたアイコンを取得
-  Widget _getIcon(SnackBarType type) {
+  Widget _getIcon(BuildContext context, SnackBarType type) {
+    final colors = context.tokens.colors;
     IconData iconData;
     switch (type) {
       case SnackBarType.success:
@@ -198,26 +214,43 @@ class SnackBarManager {
         break;
     }
 
-    return Icon(iconData, color: Colors.white, size: 20);
+    return Icon(iconData, color: _getForegroundColor(context, type), size: 20);
   }
 
   /// タイプに応じた背景色を取得
-  Color _getBackgroundColor(SnackBarType type) {
+  Color _getBackgroundColor(BuildContext context, SnackBarType type) {
+    final colors = context.tokens.colors;
     switch (type) {
       case SnackBarType.success:
-        return const Color(0xFF10B981);
+        return colors.successContainer;
       case SnackBarType.error:
-        return const Color(0xFFEF4444);
+        return colors.errorContainer;
       case SnackBarType.warning:
-        return const Color(0xFFF59E0B);
+        return colors.warningContainer;
       case SnackBarType.info:
-        return const Color(0xFF3B82F6);
+        return colors.primaryContainer;
+    }
+  }
+
+  /// タイプに応じた前景色（テキストやアイコンの色）を取得
+  Color _getForegroundColor(BuildContext context, SnackBarType type) {
+    final colors = context.tokens.colors;
+    switch (type) {
+      case SnackBarType.success:
+        return colors.onSuccessContainer;
+      case SnackBarType.error:
+        return colors.onErrorContainer;
+      case SnackBarType.warning:
+        return colors.onWarningContainer;
+      case SnackBarType.info:
+        return colors.onPrimaryContainer;
     }
   }
 }
 
 /// SnackBarリクエスト
 class _SnackBarRequest {
+  final BuildContext context;
   final String message;
   final SnackBarType type;
   final Duration duration;
@@ -227,6 +260,7 @@ class _SnackBarRequest {
   final bool dismissible;
 
   _SnackBarRequest({
+    required this.context,
     required this.message,
     required this.type,
     required this.duration,
@@ -250,21 +284,21 @@ extension SnackBarExtension on BuildContext {
 
   /// 成功メッセージを表示
   void showSuccess(String message) {
-    SnackBarManager().showSuccess(message);
+    SnackBarManager().showSuccess(this, message);
   }
 
   /// エラーメッセージを表示
   void showError(String message) {
-    SnackBarManager().showError(message);
+    SnackBarManager().showError(this, message);
   }
 
   /// 警告メッセージを表示
   void showWarning(String message) {
-    SnackBarManager().showWarning(message);
+    SnackBarManager().showWarning(this, message);
   }
 
   /// 情報メッセージを表示
   void showInfo(String message) {
-    SnackBarManager().showInfo(message);
+    SnackBarManager().showInfo(this, message);
   }
 }

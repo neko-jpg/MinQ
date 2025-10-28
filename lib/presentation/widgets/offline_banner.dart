@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -46,19 +47,8 @@ class OfflineBanner extends ConsumerWidget {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('オフラインモード'),
-            content: const Text(
-              'インターネット接続がありません。\n\n'
-              '利用可能な機能:\n'
-              '• クエストの記録\n'
-              '• 進捗の確認\n'
-              '• 統計の表示\n\n'
-              '制限される機能:\n'
-              '• データの同期\n'
-              '• ペア機能\n'
-              '• 共有機能\n\n'
-              'インターネットに接続すると、自動的にデータが同期されます。',
-            ),
+            title: Text(AppLocalizations.of(context)!.offlineMode),
+            content: Text(AppLocalizations.of(context)!.noInternetConnection),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -102,7 +92,7 @@ class OfflineEmptyState extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('再試行'),
+                label: Text(AppLocalizations.of(context)!.retry),
               ),
             ],
           ],
@@ -179,7 +169,7 @@ void showOfflineDialog(BuildContext context) {
             children: [
               Icon(Icons.cloud_off, color: Colors.orange),
               SizedBox(width: 12),
-              Text('オフライン'),
+              Text(AppLocalizations.of(context)!.offline),
             ],
           ),
           content: const Text(
@@ -204,7 +194,7 @@ void showOfflineSnackBar(BuildContext context) {
         children: [
           Icon(Icons.cloud_off, color: Colors.white),
           SizedBox(width: 12),
-          Expanded(child: Text('オフラインのため、この操作は実行できません')),
+          Expanded(child: Text(AppLocalizations.of(context)!.offlineOperationNotAvailable)),
         ],
       ),
       backgroundColor: Colors.orange[700],

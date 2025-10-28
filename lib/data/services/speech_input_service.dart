@@ -29,7 +29,7 @@ class SpeechInputService {
       },
       listenFor: const Duration(seconds: 40),
       pauseFor: const Duration(seconds: 4),
-      partialResults: true,
+      listenOptions: SpeechListenOptions(partialResults: true),
     );
   }
 

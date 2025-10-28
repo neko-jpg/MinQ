@@ -33,6 +33,7 @@ import 'package:minq/presentation/screens/personality_diagnosis_screen.dart';
 import 'package:minq/presentation/screens/policy_viewer_screen.dart';
 import 'package:minq/presentation/screens/profile_screen.dart';
 import 'package:minq/presentation/screens/profile_setting_screen.dart';
+import 'package:minq/presentation/screens/profile_management_screen.dart';
 import 'package:minq/presentation/screens/quest_detail_screen.dart';
 import 'package:minq/presentation/screens/quest_timer_screen.dart';
 import 'package:minq/presentation/screens/quests_screen.dart';
@@ -45,8 +46,6 @@ import 'package:minq/presentation/screens/streak_recovery_screen.dart';
 import 'package:minq/presentation/screens/support_screen.dart';
 import 'package:minq/presentation/screens/time_capsule_screen.dart';
 import 'package:minq/presentation/screens/weekly_report_screen.dart';
-import 'package:minq/presentation/widgets/ai_coach_overlay.dart';
-import 'package:minq/presentation/widgets/live_activity_widget.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -97,6 +96,7 @@ class AppRoutes {
   static const celebration = '/celebration';
   static const socialSharingDemo = '/social-sharing-demo';
   static const profile = '/profile';
+  static const profileManagement = '/profile/management';
   static const policy = '/policy/:id';
   static const support = '/support';
   static const createQuest = '/quests/create';
@@ -128,13 +128,13 @@ class AppRoutes {
   static const liveActivitySettings = '/live-activity-settings';
   static const home = '/';
   static const stats = '/stats';
-  static const pair = '/pair';
   static const quests = '/quests';
   static const settings = '/settings';
+  static const pair = '/pair';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authChanges = ref.watch(authStateChangesProvider.stream);
+  final authChanges = ref.watch(authRepositoryProvider).authStateChanges;
   return GoRouter(
     initialLocation: AppRoutes.onboarding,
     navigatorKey: _rootNavigatorKey,
@@ -229,12 +229,32 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
       ),
       GoRoute(
-        path: AppRoutes.profile,
+        path: AppRoutes.pair,
         pageBuilder:
             (context, state) => buildPageWithTransition<void>(
               context: context,
               state: state,
-              child: const ProfileScreen(),
+              child: const BuddyListScreen(),
+              transitionType: SharedAxisTransitionType.horizontal,
+            ),
+      ),
+      GoRoute(
+        path: AppRoutes.quests,
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const QuestsScreen(),
+              transitionType: SharedAxisTransitionType.horizontal,
+            ),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        pageBuilder:
+            (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const SettingsScreen(),
               transitionType: SharedAxisTransitionType.vertical,
             ),
       ),
@@ -368,10 +388,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return buildPageWithTransition<void>(
             context: context,
             state: state,
-            child: Scaffold(
-              appBar: AppBar(title: const Text('AIインサイト')),
-              body: const Center(child: Text('AIインサイト画面（準備中）')),
-            ),
+            child: const AiInsightsScreen(),
             transitionType: SharedAxisTransitionType.horizontal,
           );
         },
@@ -527,10 +544,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             (context, state) => buildPageWithTransition<void>(
               context: context,
               state: state,
-              child: Scaffold(
-                appBar: AppBar(title: const Text('AI Coach Settings')),
-                body: const Center(child: Text('Coming Soon')),
-              ),
+              child: const PersonalityDiagnosisScreen(),
               transitionType: SharedAxisTransitionType.horizontal,
             ),
       ),
@@ -540,10 +554,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             (context, state) => buildPageWithTransition<void>(
               context: context,
               state: state,
-              child: Scaffold(
-                appBar: AppBar(title: const Text('Live Activity Settings')),
-                body: const Center(child: Text('Coming Soon')),
-              ),
+              child: const MoodTrackingScreen(),
               transitionType: SharedAxisTransitionType.horizontal,
             ),
       ),
@@ -569,28 +580,24 @@ final routerProvider = Provider<GoRouter>((ref) {
                     const NoTransitionPage(child: StatsScreen()),
           ),
           GoRoute(
-            path: AppRoutes.pair,
-            pageBuilder:
-                (context, state) =>
-                    const NoTransitionPage(child: BuddyListScreen()),
-          ),
-          GoRoute(
-            path: AppRoutes.quests,
-            pageBuilder:
-                (context, state) =>
-                    const NoTransitionPage(child: QuestsScreen()),
-          ),
-          GoRoute(
-            path: AppRoutes.settings,
-            pageBuilder:
-                (context, state) =>
-                    const NoTransitionPage(child: SettingsScreen()),
-          ),
-          GoRoute(
             path: AppRoutes.challenges,
             pageBuilder:
                 (context, state) =>
                     const NoTransitionPage(child: ChallengesScreen()),
+          ),
+          GoRoute(
+            path: AppRoutes.profile,
+            pageBuilder:
+                (context, state) =>
+                    const NoTransitionPage(child: ProfileScreen()),
+          ),
+          GoRoute(
+            path: '/profile-management',
+            pageBuilder: (context, state) => buildPageWithTransition<void>(
+              context: context,
+              state: state,
+              child: const ProfileManagementScreen(),
+            ),
           ),
         ],
       ),
@@ -610,6 +617,7 @@ class NavigationUseCase {
   void goToCelebration() => _router.push(AppRoutes.celebration);
   void goToSocialSharingDemo() => _router.push(AppRoutes.socialSharingDemo);
   void goToProfile() => _router.push(AppRoutes.profile);
+  void goToProfileManagement() => _router.push('/profile-management');
   void goToPolicy(PolicyDocumentId documentId) =>
       _router.push(AppRoutes.policy.replaceFirst(':id', documentId.name));
   void goToSupport() => _router.push(AppRoutes.support);
@@ -670,7 +678,3 @@ class NavigationUseCase {
   void goToBugReport() => _router.push(AppRoutes.support);
 }
 
-final navigationUseCaseProvider = Provider<NavigationUseCase>((ref) {
-  final router = ref.watch(routerProvider);
-  return NavigationUseCase(router);
-});

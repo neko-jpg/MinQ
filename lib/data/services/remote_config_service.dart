@@ -13,15 +13,15 @@ class RemoteConfigService {
     if (_remoteConfig == null) return;
 
     try {
-      await _remoteConfig!.setConfigSettings(
+      await _remoteConfig.setConfigSettings(
         RemoteConfigSettings(
           fetchTimeout: _fetchTimeout,
           minimumFetchInterval: _minimumFetchInterval,
         ),
       );
 
-      await _remoteConfig!.setDefaults(_defaultValues);
-      await _remoteConfig!.fetchAndActivate();
+      await _remoteConfig.setDefaults(_defaultValues);
+      await _remoteConfig.fetchAndActivate();
 
       debugPrint('Remote Config initialized');
     } catch (e) {
@@ -161,10 +161,6 @@ class RemoteConfigService {
 
   String _getString(String key) {
     return _remoteConfig?.getString(key) ?? _defaultValues[key] as String;
-  }
-
-  double _getDouble(String key) {
-    return _remoteConfig?.getDouble(key) ?? _defaultValues[key] as double;
   }
 
   // A/B Testing helper

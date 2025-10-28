@@ -25,27 +25,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   @override
   void initState() {
     super.initState();
-    ref.listen<SyncStatus>(syncStatusProvider, (
-      previous,
-      next,
-    ) {
-      if (!mounted) return;
-      if (next.showBanner && next.bannerMessage != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
-          final messenger = ScaffoldMessenger.of(context);
-          messenger.hideCurrentSnackBar();
-          messenger.showSnackBar(
-            SnackBar(
-              content: Text(next.bannerMessage!),
-              duration: const Duration(seconds: 2),
-            ),
-          );
-          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
-        });
-      }
-    });
-
     // Stats画面表示時にレビューリクエストを試行
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _maybeRequestReview();
@@ -73,12 +52,30 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    ref.listen<SyncStatus>(
+      syncStatusProvider,
+      (previous, next) {
+        if (!mounted ||
+            !next.showBanner ||
+            next.bannerMessage == null) {
+          return;
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.hideCurrentSnackBar();
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(next.bannerMessage!),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
+        });
+      },
+    );
+
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context)!;
     final statsAsync = ref.watch(statsDataProvider);
@@ -558,14 +555,14 @@ Widget _buildWeeklyProgressCard(
     ),
     _RingMetric(
       label: '合計時間',
-      value: totalMinutes / 60,
+      value: (totalMinutes / 60).toDouble(),
       unit: '時間',
       progress:
           ((totalMinutes / 60) / (weeklyGoal * dailyGoalMinutes / 60)).toDouble(),
     ),
     _RingMetric(
       label: '平均時間',
-      value: averageMinutes,
+      value: averageMinutes.toDouble(),
       unit: '分',
       progress: (averageMinutes / dailyGoalMinutes).toDouble(),
     ),

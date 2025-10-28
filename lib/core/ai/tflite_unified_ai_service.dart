@@ -8,6 +8,7 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 
 /// TensorFlow Liteベースの統合AIサービス
 /// すべてのAI機能を一元化し、最高のパフォーマンスを提供
+/// Gemma AIの代替として安定したローカルAI処理を実現
 class TFLiteUnifiedAIService {
   static TFLiteUnifiedAIService? _instance;
   static TFLiteUnifiedAIService get instance =>
@@ -27,22 +28,49 @@ class TFLiteUnifiedAIService {
 
   // 初期化状態
   bool _isInitialized = false;
+  bool _initializationFailed = false;
   final Completer<void> _initCompleter = Completer<void>();
 
+  // エラーハンドリング
+  int _consecutiveErrors = 0;
+  static const int _maxConsecutiveErrors = 3;
+  DateTime? _lastErrorTime;
+
   /// サービスの初期化
+  /// エラーハンドリングとフォールバック機能を含む
   Future<void> initialize() async {
     if (_isInitialized) return;
+    if (_initializationFailed) {
+      throw StateError('TFLite AI service initialization failed permanently');
+    }
+
     if (!_initCompleter.isCompleted) {
       try {
-        await _loadModels();
-        await _loadVocabulary();
+        log('TFLite AI: 初期化開始...');
+
+        // モデルとボキャブラリの並列読み込み
+        await Future.wait([
+          _loadModels(),
+          _loadVocabulary(),
+        ]);
+
         _isInitialized = true;
+        _consecutiveErrors = 0;
         _initCompleter.complete();
-        log('TFLite AI: 統合AIサービスが初期化されました');
+        log('TFLite AI: 統合AIサービスが正常に初期化されました');
       } catch (e, stackTrace) {
         log('TFLite AI: 初期化エラー - $e', stackTrace: stackTrace);
+        _initializationFailed = true;
+
         if (!_initCompleter.isCompleted) {
-          _initCompleter.completeError(e, stackTrace);
+          _initCompleter.completeError(
+            AIServiceException(
+              'TensorFlow Lite AI service initialization failed: $e',
+              code: 'INIT_FAILED',
+              originalError: e,
+            ),
+            stackTrace,
+          );
         }
       }
     }
@@ -148,16 +176,25 @@ class TFLiteUnifiedAIService {
   // ========== テキスト生成機能 ==========
 
   /// AIチャット応答生成
+  /// エラーハンドリングとフォールバック機能付き
   Future<String> generateChatResponse(
     String userMessage, {
     List<String> conversationHistory = const [],
     String? systemPrompt,
     int maxTokens = 150,
   }) async {
-    await initialize();
+    if (!await _ensureInitialized()) {
+      return _generateRuleBasedResponse(userMessage);
+    }
 
     try {
+      // エラー回復チェック
+      if (_shouldUseRuleBasedFallback()) {
+        return _generateRuleBasedResponse(userMessage);
+      }
+
       if (_textGenerationModel == null) {
+        log('TFLite AI: テキスト生成モデルが利用できません、ルールベースにフォールバック');
         return _generateRuleBasedResponse(userMessage);
       }
 
@@ -169,6 +206,7 @@ class TFLiteUnifiedAIService {
       final tokens = _tokenizeText(context);
 
       if (tokens.isEmpty) {
+        log('TFLite AI: トークン化に失敗、ルールベースにフォールバック');
         return _generateRuleBasedResponse(userMessage);
       }
 
@@ -179,11 +217,14 @@ class TFLiteUnifiedAIService {
 
       final generatedTokens = _extractTokensFromOutput(outputTensor);
       final response = _detokenizeText(generatedTokens);
+      final processedResponse = _postProcessResponse(response);
 
-      return _postProcessResponse(response);
+      // 成功時はエラーカウンターをリセット
+      _consecutiveErrors = 0;
+
+      return processedResponse.isNotEmpty ? processedResponse : _generateRuleBasedResponse(userMessage);
     } catch (e) {
-      log('TFLite AI: テキスト生成エラー - $e');
-      return _generateRuleBasedResponse(userMessage);
+      return _handleError('テキスト生成', e, () => _generateRuleBasedResponse(userMessage));
     }
   }
 
@@ -249,15 +290,22 @@ class TFLiteUnifiedAIService {
   // ========== 感情分析機能 ==========
 
   /// テキストの感情分析
+  /// エラーハンドリングとフォールバック機能付き
   Future<SentimentResult> analyzeSentiment(String text) async {
-    await initialize();
+    if (!await _ensureInitialized()) {
+      return _analyzeSentimentRuleBased(text);
+    }
 
     try {
-      if (_sentimentModel == null) {
+      if (_shouldUseRuleBasedFallback() || _sentimentModel == null) {
         return _analyzeSentimentRuleBased(text);
       }
 
       final tokens = _tokenizeText(text);
+      if (tokens.isEmpty) {
+        return _analyzeSentimentRuleBased(text);
+      }
+
       final inputTensor = _prepareInputTensor(tokens, maxLength: 64);
       final outputTensor = List.filled(
         3,
@@ -267,14 +315,17 @@ class TFLiteUnifiedAIService {
       _sentimentModel!.run(inputTensor, outputTensor);
 
       final scores = outputTensor[0] as List<double>;
+
+      // 成功時はエラーカウンターをリセット
+      _consecutiveErrors = 0;
+
       return SentimentResult(
-        positive: scores[2],
-        neutral: scores[1],
-        negative: scores[0],
+        positive: scores[2].clamp(0.0, 1.0),
+        neutral: scores[1].clamp(0.0, 1.0),
+        negative: scores[0].clamp(0.0, 1.0),
       );
     } catch (e) {
-      log('TFLite AI: 感情分析エラー - $e');
-      return _analyzeSentimentRuleBased(text);
+      return _handleError('感情分析', e, () => _analyzeSentimentRuleBased(text));
     }
   }
 
@@ -307,16 +358,19 @@ class TFLiteUnifiedAIService {
   // ========== 推薦システム ==========
 
   /// 習慣推薦
+  /// エラーハンドリングとフォールバック機能付き
   Future<List<HabitRecommendation>> recommendHabits({
     required List<String> userHabits,
     required List<String> completedHabits,
     required Map<String, double> preferences,
     int limit = 5,
   }) async {
-    await initialize();
+    if (!await _ensureInitialized()) {
+      return _generateRuleBasedRecommendations(userHabits, limit);
+    }
 
     try {
-      if (_recommendationModel == null) {
+      if (_shouldUseRuleBasedFallback() || _recommendationModel == null) {
         return _generateRuleBasedRecommendations(userHabits, limit);
       }
 
@@ -325,6 +379,11 @@ class TFLiteUnifiedAIService {
         completedHabits,
         preferences,
       );
+
+      if (features.isEmpty) {
+        return _generateRuleBasedRecommendations(userHabits, limit);
+      }
+
       final inputTensor = [features].reshape([1, features.length]);
       final outputTensor = List.filled(
         100,
@@ -334,10 +393,14 @@ class TFLiteUnifiedAIService {
       _recommendationModel!.run(inputTensor, outputTensor);
 
       final scores = outputTensor[0] as List<double>;
-      return _extractTopRecommendations(scores, limit);
+      final recommendations = _extractTopRecommendations(scores, limit);
+
+      // 成功時はエラーカウンターをリセット
+      _consecutiveErrors = 0;
+
+      return recommendations.isNotEmpty ? recommendations : _generateRuleBasedRecommendations(userHabits, limit);
     } catch (e) {
-      log('TFLite AI: 推薦エラー - $e');
-      return _generateRuleBasedRecommendations(userHabits, limit);
+      return _handleError('習慣推薦', e, () => _generateRuleBasedRecommendations(userHabits, limit));
     }
   }
 
@@ -378,25 +441,37 @@ class TFLiteUnifiedAIService {
   // ========== 失敗予測 ==========
 
   /// 習慣失敗の予測
+  /// エラーハンドリングとフォールバック機能付き
   Future<FailurePrediction> predictFailure({
     required String habitId,
     required List<CompletionRecord> history,
     required DateTime targetDate,
   }) async {
-    await initialize();
+    if (!await _ensureInitialized()) {
+      return _predictFailureRuleBased(history, targetDate);
+    }
 
     try {
-      if (_predictionModel == null) {
+      if (_shouldUseRuleBasedFallback() || _predictionModel == null) {
         return _predictFailureRuleBased(history, targetDate);
       }
 
       final features = _encodeFailureFeatures(history, targetDate);
+
+      if (features.isEmpty) {
+        return _predictFailureRuleBased(history, targetDate);
+      }
+
       final inputTensor = [features].reshape([1, features.length]);
       final outputTensor = List.filled(1, 0.0).reshape([1, 1]);
 
       _predictionModel!.run(inputTensor, outputTensor);
 
-      final riskScore = outputTensor[0][0] as double;
+      final riskScore = (outputTensor[0][0] as double).clamp(0.0, 1.0);
+
+      // 成功時はエラーカウンターをリセット
+      _consecutiveErrors = 0;
+
       return FailurePrediction(
         riskScore: riskScore,
         confidence: 0.8,
@@ -404,8 +479,7 @@ class TFLiteUnifiedAIService {
         suggestions: _generatePreventionSuggestions(riskScore),
       );
     } catch (e) {
-      log('TFLite AI: 失敗予測エラー - $e');
-      return _predictFailureRuleBased(history, targetDate);
+      return _handleError('失敗予測', e, () => _predictFailureRuleBased(history, targetDate));
     }
   }
 
@@ -651,16 +725,92 @@ class TFLiteUnifiedAIService {
     return suggestions;
   }
 
+  // ========== エラーハンドリングとフォールバック ==========
+
+  /// 初期化の確認とフォールバック
+  Future<bool> _ensureInitialized() async {
+    try {
+      if (!_isInitialized && !_initializationFailed) {
+        await initialize();
+      }
+      return _isInitialized;
+    } catch (e) {
+      log('TFLite AI: 初期化確認エラー - $e');
+      return false;
+    }
+  }
+
+  /// ルールベースフォールバックを使用すべきかチェック
+  bool _shouldUseRuleBasedFallback() {
+    // 連続エラーが多い場合はフォールバック
+    if (_consecutiveErrors >= _maxConsecutiveErrors) {
+      return true;
+    }
+
+    // 最近エラーが発生した場合は一時的にフォールバック
+    if (_lastErrorTime != null) {
+      final timeSinceError = DateTime.now().difference(_lastErrorTime!);
+      if (timeSinceError.inMinutes < 5) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /// エラーハンドリングの共通処理
+  T _handleError<T>(String operation, dynamic error, T Function() fallback) {
+    _consecutiveErrors++;
+    _lastErrorTime = DateTime.now();
+
+    log('TFLite AI: $operation エラー (連続エラー: $_consecutiveErrors) - $error');
+
+    // 重大なエラーの場合は診断情報を記録
+    if (_consecutiveErrors >= _maxConsecutiveErrors) {
+      log('TFLite AI: 連続エラーが上限に達しました。ルールベースモードに切り替えます。');
+    }
+
+    return fallback();
+  }
+
+  /// サービスの健全性チェック
+  Future<bool> healthCheck() async {
+    try {
+      if (!_isInitialized) {
+        return false;
+      }
+
+      // 簡単なテスト実行
+      final testResult = await analyzeSentiment('テスト');
+      return testResult.positive >= 0.0 && testResult.negative >= 0.0 && testResult.neutral >= 0.0;
+    } catch (e) {
+      log('TFLite AI: ヘルスチェック失敗 - $e');
+      return false;
+    }
+  }
+
+  /// エラー状態のリセット
+  void resetErrorState() {
+    _consecutiveErrors = 0;
+    _lastErrorTime = null;
+    log('TFLite AI: エラー状態をリセットしました');
+  }
+
   /// 診断情報の取得
   Future<Map<String, dynamic>> getDiagnosticInfo() async {
     return {
       'isInitialized': _isInitialized,
+      'initializationFailed': _initializationFailed,
+      'consecutiveErrors': _consecutiveErrors,
+      'lastErrorTime': _lastErrorTime?.toIso8601String(),
+      'usingFallback': _shouldUseRuleBasedFallback(),
       'textGenerationModel': _textGenerationModel != null,
       'sentimentModel': _sentimentModel != null,
       'recommendationModel': _recommendationModel != null,
       'predictionModel': _predictionModel != null,
       'vocabulary': _vocabulary?.length ?? 0,
-      'status': 'TFLite AI Service is running',
+      'status': _isInitialized ? 'TFLite AI Service is running' : 'Service not initialized',
+      'healthCheck': await healthCheck(),
     };
   }
 
@@ -748,4 +898,42 @@ class CompletionRecord {
   final String habitId;
 
   CompletionRecord({required this.completedAt, required this.habitId});
+}
+
+// ========== カスタム例外クラス ==========
+
+/// AI サービス例外の基底クラス
+abstract class MinqException implements Exception {
+  final String message;
+  final String? code;
+  final dynamic originalError;
+
+  const MinqException(this.message, {this.code, this.originalError});
+
+  @override
+  String toString() => 'MinqException: $message${code != null ? ' (code: $code)' : ''}';
+}
+
+/// AI サービス関連の例外
+class AIServiceException extends MinqException {
+  const AIServiceException(super.message, {super.code, super.originalError});
+
+  @override
+  String toString() => 'AIServiceException: $message${code != null ? ' (code: $code)' : ''}';
+}
+
+/// データベース関連の例外
+class DatabaseException extends MinqException {
+  const DatabaseException(super.message, {super.code, super.originalError});
+
+  @override
+  String toString() => 'DatabaseException: $message${code != null ? ' (code: $code)' : ''}';
+}
+
+/// ネットワーク関連の例外
+class NetworkException extends MinqException {
+  const NetworkException(super.message, {super.code, super.originalError});
+
+  @override
+  String toString() => 'NetworkException: $message${code != null ? ' (code: $code)' : ''}';
 }
