@@ -1,17 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/ai/ai_insights.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/widgets/charts/completion_trend_chart.dart';
 import 'package:minq/presentation/widgets/charts/category_distribution_chart.dart';
-import 'package:minq/presentation/widgets/insights/recommendation_card.dart';
-import 'package:minq/presentation/widgets/insights/progress_summary_card.dart';
+import 'package:minq/presentation/widgets/charts/completion_trend_chart.dart';
 import 'package:minq/presentation/widgets/insights/failure_prediction_card.dart';
+import 'package:minq/presentation/widgets/insights/progress_summary_card.dart';
+import 'package:minq/presentation/widgets/insights/recommendation_card.dart';
 
 /// AI Insights Dashboard Screen
 class AiInsightsScreen extends ConsumerStatefulWidget {
@@ -351,7 +351,7 @@ class _AiInsightsScreenState extends ConsumerState<AiInsightsScreen> {
     setState(() => _isRefreshing = true);
     
     try {
-      await ref.refresh(aiInsightsProvider.future);
+      unawaited(ref.refresh(aiInsightsProvider.future));
     } finally {
       if (mounted) {
         setState(() => _isRefreshing = false);

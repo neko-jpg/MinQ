@@ -5,7 +5,6 @@ import 'package:minq/domain/pair/pair.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
-import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/screens/pair_screen.dart'
     show userPairProvider;
 import 'package:minq/presentation/theme/minq_theme.dart';

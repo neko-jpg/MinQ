@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 /// バグ報告サービス
@@ -50,10 +50,11 @@ class BugReportService {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      MinqLogger.info('Bug report submitted', metadata: {'reportId': docRef.id});
+      logger.info('Bug report submitted', data: {'reportId': docRef.id});
       return docRef.id;
     } catch (e, s) {
-      MinqLogger.error('Failed to submit bug report', error: e, stackTrace: s);
+      logger.error('Failed to submit bug report',
+          error: e, stackTrace: s);
       rethrow;
     }
   }
@@ -102,6 +103,7 @@ class BugReportService {
   Future<List<String>> _collectLogs() async {
     // TODO: 実際のログ収集ロジックを実装
     // アプリ内で保存しているログを取得
+    logger.info('Log collection is not implemented yet.');
     return [];
   }
 
@@ -161,7 +163,7 @@ class BugReportService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    MinqLogger.info('Comment added to bug report', metadata: {'reportId': reportId});
+    logger.info('Comment added to bug report', data: {'reportId': reportId});
   }
 
   /// バグレポートのステータスを更新
@@ -174,8 +176,8 @@ class BugReportService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    MinqLogger.info('Bug report status updated',
-        metadata: {'reportId': reportId, 'newStatus': status.name});
+    logger.info('Bug report status updated',
+        data: {'reportId': reportId, 'newStatus': status.name});
   }
 
   /// フィードバックを送信（バグではない一般的なフィードバック）
@@ -191,7 +193,7 @@ class BugReportService {
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    MinqLogger.info('Feedback submitted', metadata: {'feedbackId': docRef.id});
+    logger.info('Feedback submitted', data: {'feedbackId': docRef.id});
     return docRef.id;
   }
 }

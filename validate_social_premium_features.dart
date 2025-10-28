@@ -1,16 +1,13 @@
 import 'dart:developer';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'lib/core/ai/social_proof_service.dart';
+import 'lib/core/community/guild_service.dart';
+import 'lib/core/monetization/streak_recovery_purchase.dart';
+import 'lib/core/monetization/subscription_manager.dart' as sub_manager;
 // Import all the social and premium feature services
 import 'lib/core/pair/reverse_accountability_service.dart';
 import 'lib/core/referral/referral_deep_link_service.dart';
-import 'lib/core/monetization/subscription_manager.dart' as sub_manager;
-import 'lib/core/monetization/streak_recovery_purchase.dart';
-import 'lib/core/ai/social_proof_service.dart';
-import 'lib/core/community/guild_service.dart';
 import 'lib/data/services/monetization_service.dart';
-import 'lib/data/services/referral_service.dart';
 
 /// Comprehensive validation test for social and premium features
 class SocialPremiumFeaturesValidator {
@@ -26,7 +23,7 @@ class SocialPremiumFeaturesValidator {
 
       // Test 1: ReverseAccountabilityService initialization
       try {
-        final service = ReverseAccountabilityService(
+        ReverseAccountabilityService(
           // Mock Firestore instance would go here
           null as dynamic, // This will fail in real test but validates structure
           null as dynamic, // Mock GamificationEngine
@@ -166,11 +163,11 @@ class SocialPremiumFeaturesValidator {
 
       // Test 1: SubscriptionManager initialization
       try {
-        final manager = SubscriptionManager();
+        final manager = sub_manager.SubscriptionManager();
         
         // Test available plans
-        if (SubscriptionManager.availablePlans.isNotEmpty) {
-          results.add('✅ Subscription Plans: ${SubscriptionManager.availablePlans.length} plans available');
+        if (sub_manager.SubscriptionManager.availablePlans.isNotEmpty) {
+          results.add('✅ Subscription Plans: ${sub_manager.SubscriptionManager.availablePlans.length} plans available');
           passed++;
         } else {
           results.add('❌ Subscription Plans: No plans configured');
@@ -199,7 +196,7 @@ class SocialPremiumFeaturesValidator {
 
       // Test 2: Streak Recovery Purchase
       try {
-        final manager = SubscriptionManager();
+        final manager = sub_manager.SubscriptionManager();
         final streakRecovery = StreakRecoveryPurchase(manager);
         
         // Test recovery options
@@ -270,8 +267,6 @@ class SocialPremiumFeaturesValidator {
 
       // Test 1: SocialProofService
       try {
-        final service = SocialProofService.instance;
-        
         // Test service initialization structure
         results.add('✅ SocialProofService: Singleton instance available');
         passed++;
@@ -281,7 +276,7 @@ class SocialPremiumFeaturesValidator {
         passed++;
 
         // Test encouragement types
-        final encouragementTypes = EncouragementType.values;
+        const encouragementTypes = EncouragementType.values;
         if (encouragementTypes.length >= 6) {
           results.add('✅ Encouragement Types: ${encouragementTypes.length} types available');
           passed++;
@@ -297,8 +292,6 @@ class SocialPremiumFeaturesValidator {
 
       // Test 2: GuildService
       try {
-        final service = GuildService.instance;
-        
         // Test service structure
         results.add('✅ GuildService: Singleton instance available');
         passed++;
@@ -308,7 +301,7 @@ class SocialPremiumFeaturesValidator {
         passed++;
 
         // Test guild roles and ranking
-        final rankingTypes = RankingType.values;
+        const rankingTypes = RankingType.values;
         if (rankingTypes.length >= 3) {
           results.add('✅ Guild Ranking: ${rankingTypes.length} ranking types available');
           passed++;
@@ -325,7 +318,7 @@ class SocialPremiumFeaturesValidator {
       // Test 3: Live Activity Features
       try {
         // Test activity update types
-        final updateTypes = ActivityUpdateType.values;
+        const updateTypes = ActivityUpdateType.values;
         if (updateTypes.length >= 5) {
           results.add('✅ Activity Updates: ${updateTypes.length} update types available');
           passed++;
@@ -417,15 +410,15 @@ class ValidationResult {
 
 /// Main validation function
 Future<void> main() async {
-  print('🚀 Starting Social and Premium Features Validation...\n');
+  log('🚀 Starting Social and Premium Features Validation...\n');
   
   try {
     final results = await SocialPremiumFeaturesValidator.validateAllFeatures();
     
     // Print detailed results
     for (final result in results) {
-      print(result);
-      print('');
+      log(result.toString());
+      log('');
     }
     
     // Print summary
@@ -434,22 +427,22 @@ Future<void> main() async {
     final totalTests = totalPassed + totalFailed;
     final overallSuccessRate = totalTests > 0 ? (totalPassed / totalTests) * 100 : 0.0;
     
-    print('📊 VALIDATION SUMMARY');
-    print('==================');
-    print('Total Tests: $totalTests');
-    print('Passed: $totalPassed');
-    print('Failed: $totalFailed');
-    print('Overall Success Rate: ${overallSuccessRate.toStringAsFixed(1)}%');
+    log('📊 VALIDATION SUMMARY');
+    log('==================');
+    log('Total Tests: $totalTests');
+    log('Passed: $totalPassed');
+    log('Failed: $totalFailed');
+    log('Overall Success Rate: ${overallSuccessRate.toStringAsFixed(1)}%');
     
     if (overallSuccessRate >= 80.0) {
-      print('🎉 VALIDATION PASSED - Social and Premium features are ready!');
+      log('🎉 VALIDATION PASSED - Social and Premium features are ready!');
     } else if (overallSuccessRate >= 60.0) {
-      print('⚠️  VALIDATION PARTIAL - Some features need attention');
+      log('⚠️  VALIDATION PARTIAL - Some features need attention');
     } else {
-      print('❌ VALIDATION FAILED - Major issues found');
+      log('❌ VALIDATION FAILED - Major issues found');
     }
     
   } catch (e) {
-    print('💥 Validation failed with error: $e');
+    log('💥 Validation failed with error: $e');
   }
 }

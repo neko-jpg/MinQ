@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/core/sharing/ai_share_banner_service.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
+import 'package:minq/core/logging/app_logger.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// 共有サービス
 class ShareService {
@@ -77,7 +78,7 @@ class ShareService {
       return;
     }
 
-    final imageFile = await _ogpGenerator!.generateAchievementBanner(
+    final imageFile = await _ogpGenerator.generateAchievementBanner(
       questTitle: questTitle,
       currentStreak: currentStreak,
       totalCompleted: totalCompleted,
@@ -115,7 +116,7 @@ class ShareService {
       return;
     }
 
-    final bannerBytes = await _aiBannerService!.buildBanner(
+    final bannerBytes = await _aiBannerService.buildBanner(
       title: title,
       subtitle: subtitle,
       seed: seed,
@@ -136,7 +137,7 @@ class ShareService {
       final image = await boundary.toImage(pixelRatio: 3.0);
       return image;
     } catch (e) {
-      MinqLogger.error('❌ Failed to capture widget', exception: e);
+      logger.error('Failed to capture widget', error: e);
       return null;
     }
   }

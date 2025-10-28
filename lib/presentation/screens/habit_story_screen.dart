@@ -864,7 +864,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
     final achievements = <String>[];
     
     if (streak >= 7) {
-      achievements.add('${streak}日連続達成');
+      achievements.add('$streak日連続達成');
     }
     if (streak >= 21) {
       achievements.add('3週間継続達成');

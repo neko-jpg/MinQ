@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/feedback/audio_feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/haptic_manager.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 祝福演出の種類
@@ -35,54 +34,54 @@ class CelebrationSystem {
   static final Random _random = Random();
 
   /// 利用可能な祝福演出のリストを生成（デザイントークンを使用）
-  static List<CelebrationConfig> _getCelebrations(MinqColorTokens colors) => [
+  static List<CelebrationConfig> _getCelebrations(MinqTheme theme) => [
     CelebrationConfig(
       type: CelebrationType.confetti,
       message: '素晴らしい！🎉',
-      primaryColor: colors.warning, // Golden color
-      secondaryColor: colors.error,
+      primaryColor: theme.tokens.warning, // Golden color
+      secondaryColor: theme.tokens.error,
     ),
     CelebrationConfig(
       type: CelebrationType.fireworks,
       message: 'やったね！🎆',
-      primaryColor: colors.secondary,
-      secondaryColor: colors.warning,
+      primaryColor: theme.tokens.secondary,
+      secondaryColor: theme.tokens.warning,
     ),
     CelebrationConfig(
       type: CelebrationType.sparkles,
       message: 'キラキラ✨',
-      primaryColor: colors.warning,
-      secondaryColor: colors.tertiary,
+      primaryColor: theme.tokens.warning,
+      secondaryColor: theme.tokens.tertiary,
     ),
     CelebrationConfig(
       type: CelebrationType.trophy,
       message: 'チャンピオン！🏆',
-      primaryColor: colors.warning,
-      secondaryColor: colors.success,
+      primaryColor: theme.tokens.warning,
+      secondaryColor: theme.tokens.success,
     ),
     CelebrationConfig(
       type: CelebrationType.mascot,
       message: 'がんばったね！🐱',
-      primaryColor: colors.error,
-      secondaryColor: colors.warning,
+      primaryColor: theme.tokens.error,
+      secondaryColor: theme.tokens.warning,
     ),
     CelebrationConfig(
       type: CelebrationType.golden,
       message: 'ゴールド達成！⭐',
-      primaryColor: colors.warning,
-      secondaryColor: colors.primary,
+      primaryColor: theme.tokens.warning,
+      secondaryColor: theme.tokens.primary,
     ),
   ];
 
   /// ランダムな祝福演出を取得（デザイントークンを使用）
-  static CelebrationConfig getRandomCelebration(MinqColorTokens colors) {
-    final celebrations = _getCelebrations(colors);
+  static CelebrationConfig getRandomCelebration(MinqTheme theme) {
+    final celebrations = _getCelebrations(theme);
     return celebrations[_random.nextInt(celebrations.length)];
   }
 
   /// 特定の祝福演出を取得（デザイントークンを使用）
-  static CelebrationConfig getCelebration(CelebrationType type, MinqColorTokens colors) {
-    final celebrations = _getCelebrations(colors);
+  static CelebrationConfig getCelebration(CelebrationType type, MinqTheme theme) {
+    final celebrations = _getCelebrations(theme);
     return celebrations.firstWhere(
       (config) => config.type == type,
       orElse: () => celebrations.first,
@@ -96,7 +95,7 @@ class CelebrationSystem {
     VoidCallback? onComplete,
   }) {
     final theme = Theme.of(context).extension<MinqTheme>()!;
-    final celebrationConfig = config ?? getRandomCelebration(theme.tokens);
+    final celebrationConfig = config ?? getRandomCelebration(theme);
 
     // ハプティックフィードバック
     if (celebrationConfig.hapticFeedback) {
@@ -125,41 +124,41 @@ class CelebrationSystem {
   }
 
   /// 連続達成記録に応じた特別な祝福演出
-  static CelebrationConfig getStreakCelebration(int streak, MinqColorTokens colors) {
+  static CelebrationConfig getStreakCelebration(int streak, MinqTheme theme) {
     if (streak >= 100) {
       return CelebrationConfig(
         type: CelebrationType.golden,
         message: '100日達成！伝説の継続者🌟',
         duration: const Duration(seconds: 5),
-        primaryColor: colors.primary,
-        secondaryColor: colors.secondary,
+        primaryColor: theme.tokens.primary,
+        secondaryColor: theme.tokens.secondary,
       );
     } else if (streak >= 50) {
       return CelebrationConfig(
         type: CelebrationType.trophy,
         message: '50日達成！継続マスター🏆',
         duration: const Duration(seconds: 4),
-        primaryColor: colors.primary,
-        secondaryColor: colors.secondary,
+        primaryColor: theme.tokens.primary,
+        secondaryColor: theme.tokens.secondary,
       );
     } else if (streak >= 30) {
       return CelebrationConfig(
         type: CelebrationType.fireworks,
         message: '30日達成！習慣化成功🎆',
         duration: const Duration(seconds: 4),
-        primaryColor: colors.primary,
-        secondaryColor: colors.secondary,
+        primaryColor: theme.tokens.primary,
+        secondaryColor: theme.tokens.secondary,
       );
     } else if (streak >= 7) {
       return CelebrationConfig(
         type: CelebrationType.confetti,
         message: '1週間達成！素晴らしい🎉',
         duration: const Duration(seconds: 3),
-        primaryColor: colors.primary,
-        secondaryColor: colors.secondary,
+        primaryColor: theme.tokens.primary,
+        secondaryColor: theme.tokens.secondary,
       );
     } else {
-      return getRandomCelebration(colors);
+      return getRandomCelebration(theme);
     }
   }
 }

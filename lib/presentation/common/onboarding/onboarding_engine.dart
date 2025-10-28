@@ -66,15 +66,19 @@ class OnboardingEngine {
 
     switch (screenId) {
       case 'home':
+        if (!context.mounted) return;
         await _showHomeScreenGuide(context);
         break;
       case 'quest_creation':
+        if (!context.mounted) return;
         await _showQuestCreationGuide(context);
         break;
       case 'stats':
+        if (!context.mounted) return;
         await _showStatsScreenGuide(context);
         break;
       case 'pair':
+        if (!context.mounted) return;
         await _showPairScreenGuide(context);
         break;
     }

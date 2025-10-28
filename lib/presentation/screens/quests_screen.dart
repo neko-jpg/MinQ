@@ -11,7 +11,6 @@ import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
-import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class QuestsScreen extends ConsumerStatefulWidget {

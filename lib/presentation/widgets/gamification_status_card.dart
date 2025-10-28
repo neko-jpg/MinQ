@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/gamification/gamification_engine.dart'
     show GamificationEngine;
 import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// ゲーミフィケーションステータスカード
 /// ホーム画面に表示されるポイント、ランク、バッジ情報
@@ -12,7 +11,9 @@ class GamificationStatusCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     final uid = ref.watch(uidProvider);
 
     if (uid == null) {
@@ -32,28 +33,28 @@ class GamificationStatusCard extends ConsumerWidget {
         if (!snapshot.hasData) {
           return Card(
             elevation: 0,
-            color: tokens.surface,
+            color: colorScheme.surface,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(tokens.radius.lg),
-              side: BorderSide(color: tokens.border),
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: colorScheme.outline),
             ),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.lg),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
                   SizedBox(
-                    width: tokens.spacing.lg,
-                    height: tokens.spacing.lg,
+                    width: 24,
+                    height: 24,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
+                      valueColor: AlwaysStoppedAnimation(colorScheme.primary),
                     ),
                   ),
-                  SizedBox(width: tokens.spacing.md),
+                  const SizedBox(width: 12),
                   Text(
                     '読み込み中...',
                     style:
-                        tokens.typography.body.copyWith(color: tokens.textMuted),
+                        textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -70,34 +71,34 @@ class GamificationStatusCard extends ConsumerWidget {
 
         return Card(
           elevation: 0,
-          color: tokens.surface,
+          color: colorScheme.surface,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.radius.lg),
-            side: BorderSide(color: tokens.border),
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: colorScheme.outline),
           ),
           child: Padding(
-            padding: EdgeInsets.all(tokens.spacing.lg),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
                     Container(
-                      width: tokens.spacing.xl,
-                      height: tokens.spacing.xl,
+                      width: 48,
+                      height: 48,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            tokens.brandPrimary,
-                            tokens.brandPrimary.withAlpha((255 * 0.6).round()),
+                            colorScheme.primary,
+                            colorScheme.primary.withAlpha((255 * 0.6).round()),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
-                        borderRadius: BorderRadius.circular(tokens.radius.lg),
+                        borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: tokens.brandPrimary
+                            color: colorScheme.primary
                                 .withAlpha((255 * 0.3).round()),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
@@ -107,26 +108,26 @@ class GamificationStatusCard extends ConsumerWidget {
                       child: Icon(
                         rankIcon,
                         color: Colors.white,
-                        size: tokens.spacing.lg,
+                        size: 24,
                       ),
                     ),
-                    SizedBox(width: tokens.spacing.md),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             rank,
-                            style: tokens.typography.h3.copyWith(
-                              color: tokens.textPrimary,
+                            style: textTheme.headlineSmall?.copyWith(
+                              color: colorScheme.onSurface,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: tokens.spacing.xs),
+                          const SizedBox(height: 4),
                           Text(
                             '$points ポイント',
-                            style: tokens.typography.body.copyWith(
-                              color: tokens.brandPrimary,
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.primary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -135,12 +136,12 @@ class GamificationStatusCard extends ConsumerWidget {
                     ),
                     Icon(
                       Icons.arrow_forward_ios,
-                      size: tokens.spacing.lg,
-                      color: tokens.textMuted,
+                      size: 16,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ],
                 ),
-                SizedBox(height: tokens.spacing.md),
+                const SizedBox(height: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -149,28 +150,28 @@ class GamificationStatusCard extends ConsumerWidget {
                       children: [
                         Text(
                           '次のランクまで',
-                          style: tokens.typography.caption.copyWith(
-                            color: tokens.textMuted,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                         Text(
                           '${nextRankPoints - points} ポイント',
-                          style: tokens.typography.caption.copyWith(
-                            color: tokens.textPrimary,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurface,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: tokens.spacing.sm),
+                    const SizedBox(height: 8),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(tokens.radius.sm),
+                      borderRadius: BorderRadius.circular(8),
                       child: LinearProgressIndicator(
                         value: progress,
-                        minHeight: tokens.spacing.sm,
+                        minHeight: 8,
                         backgroundColor:
-                            tokens.brandPrimary.withAlpha((255 * 0.1).round()),
-                        valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
+                            colorScheme.primary.withAlpha((255 * 0.1).round()),
+                        valueColor: AlwaysStoppedAnimation(colorScheme.primary),
                       ),
                     ),
                   ],

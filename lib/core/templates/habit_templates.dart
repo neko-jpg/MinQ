@@ -316,7 +316,7 @@ class HabitTemplate {
       icon: icon,
       category: _categoryToQuestCategory(category),
       difficulty: _difficultyToDifficultyLevel(difficulty),
-      estimatedMinutes: estimatedMinutes,
+      estimatedDuration: Duration(minutes: estimatedMinutes),
       tips: [tips],
     );
   }

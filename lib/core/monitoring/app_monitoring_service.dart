@@ -60,7 +60,7 @@ class AppMonitoringService {
     Map<String, dynamic>? parameters,
   }) async {
     try {
-      await _analytics.logEvent(name: action, parameters: parameters);
+      await _analytics.logEvent(name: action, parameters: parameters?.cast<String, Object>());
       logger.debug('User action: $action', data: parameters);
     } catch (e, stack) {
       logger.error(

@@ -1,8 +1,9 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/ai/realtime_coach_service.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class AICoachOverlay extends ConsumerStatefulWidget {
@@ -611,19 +612,18 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
     ValueChanged<Duration> onChanged,
   ) {
     final minutes = value.inMinutes;
+    final String intervalText = AppLocalizations.of(context)!.intervalMinutes(minutes);
 
     return ListTile(
       title: Text(title),
-      subtitle: Text(AppLocalizations.of(context)!.intervalMinutes
-        .replaceAll('{minutes}', minutes.toString())),
+      subtitle: Text(intervalText),
       trailing: DropdownButton<int>(
         value: minutes,
         items:
             [1, 3, 5, 10, 15, 30].map((min) {
               return DropdownMenuItem(
                 value: min, 
-                child: Text(AppLocalizations.of(context)!.minutesShort
-                  .replaceAll('{minutes}', min.toString()))
+                child: Text(AppLocalizations.of(context)!.minutesShort(min))
               );
             }).toList(),
         onChanged: (value) {

@@ -5,7 +5,7 @@ import 'package:minq/core/providers/clock_provider.dart';
 class TimeFormatter {
   final Clock clock;
 
-  TimeFormatter({Clock? clock}) : clock = clock ?? Clock();
+  TimeFormatter({Clock? clock}) : clock = clock ?? const SystemClock();
 
   /// 相対時刻表現（例: 3分前、2時間前）
   String relative(DateTime dateTime, {String? locale}) {

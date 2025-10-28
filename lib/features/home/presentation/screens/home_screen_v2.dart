@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/ai/ai_coach_controller.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
-import 'package:minq/core/ai/ai_coach_controller.dart';
 import 'package:minq/core/progress/progress_visualization_service.dart';
 import 'package:minq/features/home/presentation/widgets/voice_input_widget.dart';
 
@@ -251,7 +251,7 @@ final questCompletionProvider = Provider((ref) {
     // 4. Update challenges
     final dailyChallengeId =
         'daily_${DateTime.now().year}_${DateTime.now().month}_${DateTime.now().day}';
-    await challenges.updateProgress(
+    await challenges?.updateProgress(
       challengeId: dailyChallengeId,
       incrementBy: 1,
     );

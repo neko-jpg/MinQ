@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:minq/data/logging/minq_logger.dart';
+
 /// アプリ内更新サービス
 /// Android: In-App Update API
 /// iOS: App Store強制更新チェック
@@ -39,7 +41,7 @@ class InAppUpdateService {
         updateType: UpdateType.none,
       );
     } catch (e) {
-      print('❌ Failed to check Android update: $e');
+      MinqLogger.error('Failed to check Android update', exception: e);
       return const UpdateInfo(
         isUpdateAvailable: false,
         updateType: UpdateType.none,
@@ -76,7 +78,7 @@ class InAppUpdateService {
         updateType: UpdateType.none,
       );
     } catch (e) {
-      print('❌ Failed to check iOS update: $e');
+      MinqLogger.error('Failed to check iOS update', exception: e);
       return const UpdateInfo(
         isUpdateAvailable: false,
         updateType: UpdateType.none,
@@ -93,7 +95,7 @@ class InAppUpdateService {
       // await InAppUpdate.startFlexibleUpdate();
       return true;
     } catch (e) {
-      print('❌ Failed to start flexible update: $e');
+      MinqLogger.error('Failed to start flexible update', exception: e);
       return false;
     }
   }
@@ -107,7 +109,7 @@ class InAppUpdateService {
       // await InAppUpdate.performImmediateUpdate();
       return true;
     } catch (e) {
-      print('❌ Failed to start immediate update: $e');
+      MinqLogger.error('Failed to start immediate update', exception: e);
       return false;
     }
   }
@@ -120,7 +122,7 @@ class InAppUpdateService {
       // TODO: in_app_update パッケージを使用
       // await InAppUpdate.completeFlexibleUpdate();
     } catch (e) {
-      print('❌ Failed to complete flexible update: $e');
+      MinqLogger.error('Failed to complete flexible update', exception: e);
     }
   }
 
@@ -135,7 +137,7 @@ class InAppUpdateService {
       //   await launchUrl(Uri.parse(url));
       // }
     } catch (e) {
-      print('❌ Failed to open App Store: $e');
+      MinqLogger.error('Failed to open App Store', exception: e);
     }
   }
 }

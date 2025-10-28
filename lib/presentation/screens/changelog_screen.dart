@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 変更履歴・お知らせセンター画面

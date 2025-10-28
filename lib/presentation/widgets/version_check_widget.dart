@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/version/version_check_service.dart';
-import 'package:minq/presentation/screens/version_update_screen.dart';
 import 'package:minq/l10n/app_localizations.dart';
+import 'package:minq/presentation/screens/version_update_screen.dart';
 
 /// バージョンチェックを行い、必要に応じて更新画面を表示するウィジェット
 class VersionCheckWidget extends ConsumerStatefulWidget {
@@ -54,7 +54,7 @@ class _VersionCheckWidgetState extends ConsumerState<VersionCheckWidget> {
               (context) => AlertDialog(
                 title: Text(AppLocalizations.of(context)!.newVersionAvailable),
                 content: Text(
-                  AppLocalizations.of(context)!.newVersionMessage.replaceAll('{version}', result.recommendedVersion),
+                  AppLocalizations.of(context)!.newVersionMessage(result.recommendedVersion),
                 ),
                 actions: [
                   TextButton(

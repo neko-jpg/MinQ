@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:minq/data/services/analytics_service.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// 招待/リファラルサービス
 /// 招待リンク生成、トラッキング、報酬管理

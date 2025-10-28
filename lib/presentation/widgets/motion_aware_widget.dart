@@ -249,12 +249,11 @@ class AccessiblePageTransition extends PageRouteBuilder {
     required this.child,
     this.duration = const Duration(milliseconds: 300),
     this.reverseDuration = const Duration(milliseconds: 300),
-    RouteSettings? settings,
+    super.settings,
   }) : super(
           pageBuilder: (context, animation, secondaryAnimation) => child,
           transitionDuration: duration,
           reverseTransitionDuration: reverseDuration,
-          settings: settings,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             final accessibilityService = AccessibilityService.instance;
             final accessibilitySettings = accessibilityService.getCurrentSettings(context);

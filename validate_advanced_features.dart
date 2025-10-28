@@ -1,9 +1,10 @@
-#!/usr/bin/env dart
+/*
+ * Comprehensive validation script for advanced features
+ * Tests progressive onboarding, level systems, mood tracking, time capsule,
+ * event systems, challenges, and all 49 master task features
+ */
 
-/// Comprehensive validation script for advanced features
-/// Tests progressive onboarding, level systems, mood tracking, time capsule,
-/// event systems, challenges, and all 49 master task features
-
+import 'dart:developer';
 import 'dart:io';
 
 
@@ -12,7 +13,7 @@ class AdvancedFeatureValidator {
   final List<ValidationResult> results = [];
   
   Future<void> validateAllFeatures() async {
-    print('🚀 Starting Advanced Features Validation...\n');
+    log('🚀 Starting Advanced Features Validation...\n');
     
     // Test progressive onboarding and level systems
     await _validateProgressiveOnboarding();
@@ -29,12 +30,12 @@ class AdvancedFeatureValidator {
     // Generate comprehensive report
     await _generateValidationReport();
     
-    print('\n✅ Advanced Features Validation Complete!');
-    print('📊 Report generated: $reportFile');
+    log('\n✅ Advanced Features Validation Complete!');
+    log('📊 Report generated: $reportFile');
   }
   
   Future<void> _validateProgressiveOnboarding() async {
-    print('📚 Validating Progressive Onboarding & Level Systems...');
+    log('📚 Validating Progressive Onboarding & Level Systems...');
     
     final features = [
       'Progressive Onboarding Controller',
@@ -51,7 +52,7 @@ class AdvancedFeatureValidator {
   }
   
   Future<void> _validateMoodTrackingAndTimeCapsule() async {
-    print('🎭 Validating Mood Tracking & Time Capsule Features...');
+    log('🎭 Validating Mood Tracking & Time Capsule Features...');
     
     final features = [
       'Mood Tracking Screen',
@@ -69,7 +70,7 @@ class AdvancedFeatureValidator {
   }
   
   Future<void> _validateEventSystemsAndChallenges() async {
-    print('🎯 Validating Event Systems & Challenges...');
+    log('🎯 Validating Event Systems & Challenges...');
     
     final features = [
       'Event System Core',
@@ -88,7 +89,7 @@ class AdvancedFeatureValidator {
   }
   
   Future<void> _validateMasterTaskFeatures() async {
-    print('🏆 Validating All 49 Master Task Features...');
+    log('🏆 Validating All 49 Master Task Features...');
     
     final masterFeatures = [
       // AI Features (7 features)
@@ -164,10 +165,10 @@ class AdvancedFeatureValidator {
   Future<ValidationResult> _validateFeature(String featureName, Future<FeatureStatus> Function(String) validator) async {
     try {
       final status = await validator(featureName);
-      print('  ${status.isWorking ? '✅' : '❌'} $featureName: ${status.message}');
+      log('  ${status.isWorking ? '✅' : '❌'} $featureName: ${status.message}');
       return ValidationResult(featureName, status.isWorking, status.message, status.details);
     } catch (e) {
-      print('  ❌ $featureName: Error during validation - $e');
+      log('  ❌ $featureName: Error during validation - $e');
       return ValidationResult(featureName, false, 'Validation error: $e', []);
     }
   }
@@ -528,6 +529,7 @@ class AdvancedFeatureValidator {
     report.writeln('4. Validate performance under load');
     report.writeln('5. Prepare for production deployment');
     
+    // ignore: avoid_slow_async_io
     await File(reportFile).writeAsString(report.toString());
   }
 }

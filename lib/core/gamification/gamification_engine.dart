@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/audio/sound_effects_service.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/gamification/badge.dart' as gamification;
+import 'package:flutter/widgets.dart';
 import 'package:minq/domain/gamification/points.dart';
 import 'package:minq/presentation/theme/haptics_system.dart';
 import 'package:minq/presentation/widgets/badge_notification_widget.dart';
@@ -18,7 +18,7 @@ final gamificationEngineProvider = Provider<GamificationEngine>((ref) {
 class GamificationEngine {
   final FirebaseFirestore? _firestore;
   final Map<String, int> _localPoints = {};
-  final Map<String, List<Badge>> _localBadges = {};
+  final Map<String, List<gamification.Badge>> _localBadges = {};
   final Map<String, int> _streakData = {};
 
   GamificationEngine(this._firestore);
@@ -71,7 +71,7 @@ class GamificationEngine {
     );
 
     try {
-      await _firestore!
+      await _firestore
           .collection('users')
           .doc(userId)
           .collection('points_transactions')
@@ -104,11 +104,11 @@ class GamificationEngine {
     }
 
     try {
-      final userBadgesRef = _firestore!
+      final userBadgesRef = _firestore
           .collection('users')
           .doc(userId)
           .collection('badges');
-      final questLogsRef = _firestore!
+      final questLogsRef = _firestore
           .collection('users')
           .doc(userId)
           .collection('quest_logs');
@@ -309,7 +309,7 @@ class GamificationEngine {
 
     try {
       final pointsSnapshot =
-          await _firestore!
+          await _firestore
               .collection('users')
               .doc(userId)
               .collection('points_transactions')
@@ -326,7 +326,7 @@ class GamificationEngine {
 
       final rank = _getRankForPoints(totalPoints);
 
-      await _firestore!.collection('users').doc(userId).update({'rank': rank});
+      await _firestore.collection('users').doc(userId).update({'rank': rank});
       MinqLogger.info('User $userId rank updated to $rank.');
     } catch (e) {
       MinqLogger.error('Failed to calculate rank (offline)', exception: e);
@@ -349,7 +349,7 @@ class GamificationEngine {
 
     try {
       final pointsSnapshot =
-          await _firestore!
+          await _firestore
               .collection('users')
               .doc(userId)
               .collection('points_transactions')
@@ -404,7 +404,7 @@ class GamificationEngine {
     }
 
     try {
-      final questLogsRef = _firestore!
+      final questLogsRef = _firestore
           .collection('users')
           .doc(userId)
           .collection('quest_logs')
@@ -446,7 +446,6 @@ class GamificationEngine {
   /// Check for level progression and show celebration
   Future<void> _checkLevelProgression(String userId, BuildContext? context) async {
     final currentPoints = await getUserPoints(userId);
-    final currentRank = getRankForPoints(currentPoints);
     
     // Check if user has leveled up (this would need to be stored and compared)
     // For now, we'll trigger celebration on certain point milestones

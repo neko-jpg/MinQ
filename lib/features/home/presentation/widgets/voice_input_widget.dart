@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/features/home/presentation/screens/home_screen_v2.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
@@ -43,7 +44,7 @@ final voiceQuestCompleterProvider = Provider.autoDispose((ref) {
       await ref.read(questCompletionProvider)(questId, questName);
       return true;
     }
-    print("Quest '$questName' not found or already completed.");
+    MinqLogger.debug("Quest '$questName' not found or already completed.");
     return false;
   };
 });
@@ -69,8 +70,8 @@ class _VoiceInputWidgetState extends ConsumerState<VoiceInputWidget> {
     final speech = ref.read(speechToTextProvider);
     if (!_isListening) {
       bool available = await speech.initialize(
-        onStatus: (val) => print('onStatus: $val'),
-        onError: (val) => print('onError: $val'),
+        onStatus: (val) => MinqLogger.debug('onStatus: $val'),
+        onError: (val) => MinqLogger.error('onError: $val'),
       );
       if (available) {
         setState(() => _isListening = true);
@@ -78,7 +79,7 @@ class _VoiceInputWidgetState extends ConsumerState<VoiceInputWidget> {
           onResult: (val) => setState(() => _lastWords = val.recognizedWords),
         );
       } else {
-        print('The user has denied the use of speech recognition.');
+        MinqLogger.info('The user has denied the use of speech recognition.');
       }
     } else {
       setState(() => _isListening = false);

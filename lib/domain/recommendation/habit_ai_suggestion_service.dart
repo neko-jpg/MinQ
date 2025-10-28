@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:minq/core/ai/ai_integration_manager.dart';
 import 'package:minq/core/templates/quest_templates.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/quest/quest.dart';
 
@@ -142,7 +143,9 @@ class HabitAiSuggestionService {
           }
         } catch (e) {
           // Keep original rationale on error - TensorFlow Lite service handles fallbacks internally
-          print('AI enhancement failed, using rule-based rationale: $e');
+          MinqLogger.info(
+            'AI enhancement failed, using rule-based rationale: $e',
+          );
         }
       }
 

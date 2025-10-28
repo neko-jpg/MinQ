@@ -11,7 +11,6 @@ class AppProviderObserver extends ProviderObserver {
       lineLength: 80,
       colors: true,
       printEmojis: true,
-      printTime: true,
     ),
   );
 
@@ -81,8 +80,8 @@ class AppProviderObserver extends ProviderObserver {
     _logger.e(
       '❌ Provider Failed: ${provider.name ?? provider.runtimeType}\n'
       'Error: $error',
-      error,
-      stackTrace,
+      error: error,
+      stackTrace: stackTrace,
     );
   }
 }

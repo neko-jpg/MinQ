@@ -418,7 +418,7 @@ class FailurePredictionService {
           title: 'タイミングの最適化',
           description:
               aiResponse.length > 100
-                  ? aiResponse.substring(0, 100) + '...'
+                  ? '${aiResponse.substring(0, 100)}...'
                   : aiResponse,
           priority: SuggestionPriority.medium,
           actionable: true,

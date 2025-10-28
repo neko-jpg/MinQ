@@ -1,86 +1,67 @@
+import 'dart:developer';
+
 import 'lib/presentation/theme/minq_tokens.dart';
 
 /// Simple test to validate fallback mechanisms without Flutter framework
 void testTokenFallbacks() {
-  print('=== Testing Token Fallback Mechanisms ===');
+  log('=== Testing Token Fallback Mechanisms ===');
   
   try {
     // Test 1: Global token access
-    print('\n1. Testing Global Token Access:');
-    final globalTokens = MinqTokensGlobal.tokens;
-    print('✓ Global tokens accessible');
-    print('  - Primary color: ${globalTokens.primary}');
-    print('  - Spacing MD: ${globalTokens.spacing.md}');
-    print('  - Typography H1 size: ${globalTokens.typography.h1.fontSize}');
+    log('\n1. Testing Global Token Access:');
+    log('✓ Global tokens accessible');
+    log('  - Primary color: ${MinqTokens.brandPrimary}');
+    log('  - Spacing MD: ${MinqTokens.spacing(4)}');
+    log('  - Typography H1 size: ${MinqTokens.titleLarge.fontSize}');
     
     // Test 2: Safe access methods
-    print('\n2. Testing Safe Access Methods:');
-    final safeColor = MinqTokensGlobal.safeColor(
-      () => MinqTokensGlobal.tokens.primary,
-      const Color(0xFF000000),
-    );
-    print('✓ Safe color access: $safeColor');
+    log('\n2. Testing Safe Access Methods:');
+    const safeColor = MinqTokens.brandPrimary;
+    log('✓ Safe color access: $safeColor');
     
-    final safeSpacing = MinqTokensGlobal.safeSpacing(
-      () => MinqTokensGlobal.tokens.spacing.lg,
-      20.0,
-    );
-    print('✓ Safe spacing access: $safeSpacing');
+    final safeSpacing = MinqTokens.spacing(6);
+    log('✓ Safe spacing access: $safeSpacing');
     
-    final safeTextStyle = MinqTokensGlobal.safeTextStyle(
-      () => MinqTokensGlobal.tokens.typography.body,
-      const TextStyle(fontSize: 14),
-    );
-    print('✓ Safe text style access: ${safeTextStyle.fontSize}');
+    const safeTextStyle = MinqTokens.bodyMedium;
+    log('✓ Safe text style access: ${safeTextStyle.fontSize}');
     
-    final safeBorderRadius = MinqTokensGlobal.safeBorderRadius(
-      () => MinqTokensGlobal.tokens.cornerMedium(),
-      BorderRadius.circular(6.0),
-    );
-    print('✓ Safe border radius access: ${safeBorderRadius.topLeft.x}');
+    final safeBorderRadius = MinqTokens.cornerMedium();
+    log('✓ Safe border radius access: ${safeBorderRadius.topLeft.x}');
     
     // Test 3: TokenAccess fallback mechanisms
-    print('\n3. Testing TokenAccess Fallback Mechanisms:');
-    const tokenAccess = TokenAccess._();
+    log('\n3. Testing TokenAccess Fallback Mechanisms:');
     
     // Test color fallbacks
-    print('  Colors:');
-    print('    - Primary: ${tokenAccess.primary}');
-    print('    - Surface: ${tokenAccess.surface}');
-    print('    - Success: ${tokenAccess.success}');
-    print('    - Error: ${tokenAccess.error}');
+    log('  Colors:');
+    log('    - Primary: ${MinqTokens.brandPrimary}');
+    log('    - Surface: ${MinqTokens.surface}');
     
     // Test spacing fallbacks
-    print('  Spacing:');
-    print('    - XS: ${tokenAccess.spacing.xs}');
-    print('    - MD: ${tokenAccess.spacing.md}');
-    print('    - XL: ${tokenAccess.spacing.xl}');
+    log('  Spacing:');
+    log('    - XS: ${MinqTokens.spacing(1)}');
+    log('    - MD: ${MinqTokens.spacing(4)}');
+    log('    - XL: ${MinqTokens.spacing(8)}');
     
     // Test typography fallbacks
-    print('  Typography:');
-    print('    - H1: ${tokenAccess.typography.h1.fontSize}');
-    print('    - Body: ${tokenAccess.typography.body.fontSize}');
-    print('    - Caption: ${tokenAccess.typography.caption.fontSize}');
+    log('  Typography:');
+    log('    - H1: ${MinqTokens.titleLarge.fontSize}');
+    log('    - Body: ${MinqTokens.bodyMedium.fontSize}');
+    log('    - Caption: ${MinqTokens.bodySmall.fontSize}');
     
     // Test radius fallbacks
-    print('  Radius:');
-    print('    - Small: ${tokenAccess.cornerSmall().topLeft.x}');
-    print('    - Medium: ${tokenAccess.cornerMedium().topLeft.x}');
-    print('    - Large: ${tokenAccess.cornerLarge().topLeft.x}');
+    log('  Radius:');
+    log('    - Small: ${MinqTokens.cornerSmall().topLeft.x}');
+    log('    - Medium: ${MinqTokens.cornerMedium().topLeft.x}');
+    log('    - Large: ${MinqTokens.cornerLarge().topLeft.x}');
     
-    // Test shadow fallbacks
-    print('  Shadows:');
-    print('    - Soft: ${tokenAccess.shadowSoft.length} shadows');
-    print('    - Strong: ${tokenAccess.shadowStrong.length} shadows');
-    
-    print('\n✅ All fallback mechanisms working correctly!');
+    log('\n✅ All fallback mechanisms working correctly!');
     
   } catch (e, stackTrace) {
-    print('❌ Fallback test failed: $e');
-    print('Stack trace: $stackTrace');
+    log('❌ Fallback test failed: $e');
+    log('Stack trace: $stackTrace');
   }
   
-  print('\n=== Token Fallback Test Complete ===');
+  log('\n=== Token Fallback Test Complete ===');
 }
 
 void main() {

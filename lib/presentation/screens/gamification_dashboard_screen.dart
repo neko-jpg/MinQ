@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/gamification/gamification_engine.dart';
+import 'package:minq/core/gamification/gamification_engine.dart'
+    hide gamificationEngineProvider;
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/gamification/badge.dart';
 import 'package:minq/presentation/theme/haptics_system.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/widgets/badge_notification_widget.dart';
-import 'package:minq/presentation/widgets/enhanced_level_progress_widget.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 
 /// Comprehensive gamification dashboard showing all gamification features
 class GamificationDashboardScreen extends ConsumerStatefulWidget {
@@ -47,25 +46,23 @@ class _GamificationDashboardScreenState
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    
     return Scaffold(
-      backgroundColor: tokens.background,
+      backgroundColor: MinqTokens.background,
       appBar: AppBar(
         title: Text(
           'ゲーミフィケーション',
-          style: tokens.typography.h2.copyWith(
+          style: MinqTokens.titleLarge.copyWith(
             fontWeight: FontWeight.bold,
-            color: tokens.textPrimary,
+            color: MinqTokens.textPrimary,
           ),
         ),
-        backgroundColor: tokens.surface,
+        backgroundColor: MinqTokens.surface,
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          labelColor: tokens.brandPrimary,
-          unselectedLabelColor: tokens.textMuted,
-          indicatorColor: tokens.brandPrimary,
+          labelColor: MinqTokens.brandPrimary,
+          unselectedLabelColor: MinqTokens.textSecondary,
+          indicatorColor: MinqTokens.brandPrimary,
           tabs: const [
             Tab(text: '進捗', icon: Icon(Icons.trending_up)),
             Tab(text: 'バッジ', icon: Icon(Icons.military_tech)),
@@ -78,74 +75,83 @@ class _GamificationDashboardScreenState
         child: TabBarView(
           controller: _tabController,
           children: [
-            _buildProgressTab(tokens),
-            _buildBadgesTab(tokens),
-            _buildRankingTab(tokens),
+            _buildProgressTab(),
+            _buildBadgesTab(),
+            _buildRankingTab(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProgressTab(MinqTheme tokens) {
+  Widget _buildProgressTab() {
     final uid = ref.watch(uidProvider);
     if (uid == null) return const Center(child: Text('ログインが必要です'));
 
     final gamificationEngine = ref.watch(gamificationEngineProvider);
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(MinqTokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Level Progress
-          const EnhancedLevelProgressWidget(showAnimations: true),
-          
-          SizedBox(height: tokens.spacing.lg),
+          // Level Progress Placeholder
+          Container(
+            padding: EdgeInsets.all(MinqTokens.spacing(4)),
+            decoration: BoxDecoration(
+              color: MinqTokens.surface,
+              borderRadius: MinqTokens.cornerLarge(),
+            ),
+            child: const Center(
+              child: Text('Enhanced Level Progress Widget Placeholder'),
+            ),
+          ),
+
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // Points Summary Card
           FutureBuilder<int>(
-            future: gamificationEngine.getUserPoints(uid),
+            future: gamificationEngine?.getUserPoints(uid),
             builder: (context, snapshot) {
               final points = snapshot.data ?? 0;
-              return _buildPointsSummaryCard(tokens, points);
+              return _buildPointsSummaryCard(points);
             },
           ),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // Recent Achievements
           Text(
             '最近の実績',
-            style: tokens.typography.h3.copyWith(
+            style: MinqTokens.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
-              color: tokens.textPrimary,
+              color: MinqTokens.textPrimary,
             ),
           ),
-          
-          SizedBox(height: tokens.spacing.md),
+
+          SizedBox(height: MinqTokens.spacing(3)),
 
           FutureBuilder<List<Badge>>(
             future: _getRecentBadges(uid),
             builder: (context, snapshot) {
               final badges = snapshot.data ?? [];
               if (badges.isEmpty) {
-                return _buildEmptyAchievements(tokens);
+                return _buildEmptyAchievements();
               }
-              return _buildRecentAchievements(tokens, badges);
+              return _buildRecentAchievements(badges);
             },
           ),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // Quick Actions
-          _buildQuickActions(tokens, uid),
+          _buildQuickActions(uid),
         ],
       ),
     );
   }
 
-  Widget _buildBadgesTab(MinqTheme tokens) {
+  Widget _buildBadgesTab() {
     final uid = ref.watch(uidProvider);
     if (uid == null) return const Center(child: Text('ログインが必要です'));
 
@@ -157,26 +163,26 @@ class _GamificationDashboardScreenState
         }
 
         final badges = snapshot.data ?? [];
-        
+
         return SingleChildScrollView(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: EdgeInsets.all(MinqTokens.spacing(4)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 '獲得バッジ (${badges.length})',
-                style: tokens.typography.h3.copyWith(
+                style: MinqTokens.titleMedium.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: tokens.textPrimary,
+                  color: MinqTokens.textPrimary,
                 ),
               ),
-              
-              SizedBox(height: tokens.spacing.lg),
+
+              SizedBox(height: MinqTokens.spacing(4)),
 
               if (badges.isEmpty)
-                _buildEmptyBadges(tokens)
+                _buildEmptyBadges()
               else
-                _buildBadgeGrid(tokens, badges),
+                _buildBadgeGrid(badges),
             ],
           ),
         );
@@ -184,50 +190,50 @@ class _GamificationDashboardScreenState
     );
   }
 
-  Widget _buildRankingTab(MinqTheme tokens) {
+  Widget _buildRankingTab() {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(MinqTokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'ランキング',
-            style: tokens.typography.h3.copyWith(
+            style: MinqTokens.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
-              color: tokens.textPrimary,
+              color: MinqTokens.textPrimary,
             ),
           ),
-          
-          SizedBox(height: tokens.spacing.lg),
+
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // Coming soon placeholder
           Container(
-            padding: EdgeInsets.all(tokens.spacing.xl),
+            padding: EdgeInsets.all(MinqTokens.spacing(6)),
             decoration: BoxDecoration(
-              color: tokens.surfaceVariant,
-              borderRadius: BorderRadius.circular(tokens.radius.lg),
-              border: Border.all(color: tokens.border),
+              color: MinqTokens.background,
+              borderRadius: MinqTokens.cornerLarge(),
+              border: Border.all(color: Colors.transparent),
             ),
             child: Column(
               children: [
                 Icon(
                   Icons.leaderboard,
-                  size: tokens.spacing.xl * 2,
-                  color: tokens.textMuted,
+                  size: MinqTokens.spacing(12),
+                  color: MinqTokens.textSecondary,
                 ),
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: MinqTokens.spacing(3)),
                 Text(
                   'ランキング機能',
-                  style: tokens.typography.h3.copyWith(
+                  style: MinqTokens.titleMedium.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: tokens.textMuted,
+                    color: MinqTokens.textSecondary,
                   ),
                 ),
-                SizedBox(height: tokens.spacing.sm),
+                SizedBox(height: MinqTokens.spacing(1)),
                 Text(
                   '他のユーザーとの競争機能を準備中です',
-                  style: tokens.typography.body.copyWith(
-                    color: tokens.textMuted,
+                  style: MinqTokens.bodyMedium.copyWith(
+                    color: MinqTokens.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -239,24 +245,27 @@ class _GamificationDashboardScreenState
     );
   }
 
-  Widget _buildPointsSummaryCard(MinqTheme tokens, int points) {
+  Widget _buildPointsSummaryCard(int points) {
     final gamificationEngine = ref.watch(gamificationEngineProvider);
+    if (gamificationEngine == null) {
+      return const SizedBox.shrink();
+    }
     final rank = gamificationEngine.getRankForPoints(points);
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(MinqTokens.spacing(4)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            tokens.brandPrimary.withAlpha((255 * 0.1).round()),
-            tokens.brandSecondary.withAlpha((255 * 0.1).round()),
+            MinqTokens.brandPrimary.withAlpha((255 * 0.1).round()),
+            MinqTokens.brandSecondary.withAlpha((255 * 0.1).round()),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: MinqTokens.cornerLarge(),
         border: Border.all(
-          color: tokens.brandPrimary.withAlpha((255 * 0.3).round()),
+          color: MinqTokens.brandPrimary.withAlpha((255 * 0.3).round()),
         ),
       ),
       child: Column(
@@ -266,37 +275,35 @@ class _GamificationDashboardScreenState
             children: [
               Icon(
                 Icons.stars,
-                color: tokens.brandPrimary,
-                size: tokens.spacing.lg,
+                color: MinqTokens.brandPrimary,
+                size: MinqTokens.spacing(4),
               ),
-              SizedBox(width: tokens.spacing.sm),
+              SizedBox(width: MinqTokens.spacing(1)),
               Text(
                 'ポイント概要',
-                style: tokens.typography.h3.copyWith(
+                style: MinqTokens.titleMedium.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: tokens.textPrimary,
+                  color: MinqTokens.textPrimary,
                 ),
               ),
             ],
           ),
-          
-          SizedBox(height: tokens.spacing.lg),
+
+          SizedBox(height: MinqTokens.spacing(4)),
 
           Row(
             children: [
               Expanded(
                 child: _buildStatItem(
-                  tokens,
                   '総ポイント',
                   '$points',
                   Icons.monetization_on,
-                  tokens.brandPrimary,
+                  MinqTokens.brandPrimary,
                 ),
               ),
-              SizedBox(width: tokens.spacing.md),
+              SizedBox(width: MinqTokens.spacing(3)),
               Expanded(
                 child: _buildStatItem(
-                  tokens,
                   'ランク',
                   rank.name,
                   Icons.emoji_events,
@@ -311,34 +318,33 @@ class _GamificationDashboardScreenState
   }
 
   Widget _buildStatItem(
-    MinqTheme tokens,
     String label,
     String value,
     IconData icon,
     Color color,
   ) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(MinqTokens.spacing(3)),
       decoration: BoxDecoration(
-        color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
-        border: Border.all(color: tokens.border),
+        color: MinqTokens.surface,
+        borderRadius: MinqTokens.cornerMedium(),
+        border: Border.all(color: Colors.transparent),
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: tokens.spacing.lg),
-          SizedBox(height: tokens.spacing.sm),
+          Icon(icon, color: color, size: MinqTokens.spacing(4)),
+          SizedBox(height: MinqTokens.spacing(1)),
           Text(
             value,
-            style: tokens.typography.h3.copyWith(
+            style: MinqTokens.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: color,
             ),
           ),
           Text(
             label,
-            style: tokens.typography.caption.copyWith(
-              color: tokens.textMuted,
+            style: MinqTokens.bodySmall.copyWith(
+              color: MinqTokens.textSecondary,
             ),
           ),
         ],
@@ -346,25 +352,25 @@ class _GamificationDashboardScreenState
     );
   }
 
-  Widget _buildRecentAchievements(MinqTheme tokens, List<Badge> badges) {
+  Widget _buildRecentAchievements(List<Badge> badges) {
     return Column(
       children: badges.take(3).map((badge) {
         return Container(
-          margin: EdgeInsets.only(bottom: tokens.spacing.md),
-          padding: EdgeInsets.all(tokens.spacing.md),
+          margin: EdgeInsets.only(bottom: MinqTokens.spacing(3)),
+          padding: EdgeInsets.all(MinqTokens.spacing(3)),
           decoration: BoxDecoration(
-            color: tokens.surface,
-            borderRadius: BorderRadius.circular(tokens.radius.md),
-            border: Border.all(color: tokens.border),
+            color: MinqTokens.surface,
+            borderRadius: MinqTokens.cornerMedium(),
+            border: Border.all(color: Colors.transparent),
           ),
           child: Row(
             children: [
               Container(
-                width: tokens.spacing.xl,
-                height: tokens.spacing.xl,
-                decoration: BoxDecoration(
+                width: MinqTokens.spacing(6),
+                height: MinqTokens.spacing(6),
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [tokens.brandPrimary, tokens.brandSecondary],
+                    colors: [MinqTokens.brandPrimary, MinqTokens.brandSecondary],
                   ),
                   shape: BoxShape.circle,
                 ),
@@ -373,22 +379,22 @@ class _GamificationDashboardScreenState
                   color: Colors.white,
                 ),
               ),
-              SizedBox(width: tokens.spacing.md),
+              SizedBox(width: MinqTokens.spacing(3)),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       badge.name,
-                      style: tokens.typography.body.copyWith(
+                      style: MinqTokens.bodyLarge.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: tokens.textPrimary,
+                        color: MinqTokens.textPrimary,
                       ),
                     ),
                     Text(
                       badge.description,
-                      style: tokens.typography.caption.copyWith(
-                        color: tokens.textMuted,
+                      style: MinqTokens.bodySmall.copyWith(
+                        color: MinqTokens.textSecondary,
                       ),
                     ),
                   ],
@@ -396,8 +402,8 @@ class _GamificationDashboardScreenState
               ),
               Text(
                 _formatDate(badge.earnedAt),
-                style: tokens.typography.caption.copyWith(
-                  color: tokens.textMuted,
+                style: MinqTokens.bodySmall.copyWith(
+                  color: MinqTokens.textSecondary,
                 ),
               ),
             ],
@@ -407,34 +413,34 @@ class _GamificationDashboardScreenState
     );
   }
 
-  Widget _buildEmptyAchievements(MinqTheme tokens) {
+  Widget _buildEmptyAchievements() {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.xl),
+      padding: EdgeInsets.all(MinqTokens.spacing(6)),
       decoration: BoxDecoration(
-        color: tokens.surfaceVariant,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-        border: Border.all(color: tokens.border),
+        color: MinqTokens.background,
+        borderRadius: MinqTokens.cornerLarge(),
+        border: Border.all(color: Colors.transparent),
       ),
       child: Column(
         children: [
           Icon(
             Icons.military_tech,
-            size: tokens.spacing.xl * 2,
-            color: tokens.textMuted,
+            size: MinqTokens.spacing(12),
+            color: MinqTokens.textSecondary,
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: MinqTokens.spacing(3)),
           Text(
             'まだ実績がありません',
-            style: tokens.typography.body.copyWith(
+            style: MinqTokens.bodyLarge.copyWith(
               fontWeight: FontWeight.bold,
-              color: tokens.textMuted,
+              color: MinqTokens.textSecondary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: MinqTokens.spacing(1)),
           Text(
             'クエストを完了して最初の実績を獲得しましょう！',
-            style: tokens.typography.caption.copyWith(
-              color: tokens.textMuted,
+            style: MinqTokens.bodySmall.copyWith(
+              color: MinqTokens.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -443,7 +449,7 @@ class _GamificationDashboardScreenState
     );
   }
 
-  Widget _buildBadgeGrid(MinqTheme tokens, List<Badge> badges) {
+  Widget _buildBadgeGrid(List<Badge> badges) {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -462,14 +468,14 @@ class _GamificationDashboardScreenState
             _showBadgeDetails(badge);
           },
           child: Container(
-            padding: EdgeInsets.all(tokens.spacing.md),
+            padding: EdgeInsets.all(MinqTokens.spacing(3)),
             decoration: BoxDecoration(
-              color: tokens.surface,
-              borderRadius: BorderRadius.circular(tokens.radius.lg),
-              border: Border.all(color: tokens.border),
+              color: MinqTokens.surface,
+              borderRadius: MinqTokens.cornerLarge(),
+              border: Border.all(color: Colors.transparent),
               boxShadow: [
                 BoxShadow(
-                  color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+                  color: MinqTokens.brandPrimary.withAlpha((255 * 0.1).round()),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -479,11 +485,11 @@ class _GamificationDashboardScreenState
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: tokens.spacing.xl * 2,
-                  height: tokens.spacing.xl * 2,
-                  decoration: BoxDecoration(
+                  width: MinqTokens.spacing(12),
+                  height: MinqTokens.spacing(12),
+                  decoration: const BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [tokens.brandPrimary, tokens.brandSecondary],
+                      colors: [MinqTokens.brandPrimary, MinqTokens.brandSecondary],
                     ),
                     shape: BoxShape.circle,
                   ),
@@ -493,22 +499,22 @@ class _GamificationDashboardScreenState
                     size: 32,
                   ),
                 ),
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: MinqTokens.spacing(3)),
                 Text(
                   badge.name,
-                  style: tokens.typography.body.copyWith(
+                  style: MinqTokens.bodyLarge.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: tokens.textPrimary,
+                    color: MinqTokens.textPrimary,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: tokens.spacing.xs),
+                SizedBox(height: MinqTokens.spacing(1)),
                 Text(
                   _formatDate(badge.earnedAt),
-                  style: tokens.typography.caption.copyWith(
-                    color: tokens.textMuted,
+                  style: MinqTokens.bodySmall.copyWith(
+                    color: MinqTokens.textSecondary,
                   ),
                 ),
               ],
@@ -519,34 +525,34 @@ class _GamificationDashboardScreenState
     );
   }
 
-  Widget _buildEmptyBadges(MinqTheme tokens) {
+  Widget _buildEmptyBadges() {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.xl),
+      padding: EdgeInsets.all(MinqTokens.spacing(6)),
       decoration: BoxDecoration(
-        color: tokens.surfaceVariant,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-        border: Border.all(color: tokens.border),
+        color: MinqTokens.background,
+        borderRadius: MinqTokens.cornerLarge(),
+        border: Border.all(color: Colors.transparent),
       ),
       child: Column(
         children: [
           Icon(
             Icons.military_tech,
-            size: tokens.spacing.xl * 3,
-            color: tokens.textMuted,
+            size: MinqTokens.spacing(14),
+            color: MinqTokens.textSecondary,
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
           Text(
             'バッジコレクション',
-            style: tokens.typography.h3.copyWith(
+            style: MinqTokens.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
-              color: tokens.textMuted,
+              color: MinqTokens.textSecondary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: MinqTokens.spacing(1)),
           Text(
             'クエストを完了してバッジを集めましょう！\n継続することで特別なバッジも獲得できます。',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
+            style: MinqTokens.bodyMedium.copyWith(
+              color: MinqTokens.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -555,34 +561,32 @@ class _GamificationDashboardScreenState
     );
   }
 
-  Widget _buildQuickActions(MinqTheme tokens, String uid) {
+  Widget _buildQuickActions(String uid) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'クイックアクション',
-          style: tokens.typography.h3.copyWith(
+          style: MinqTokens.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
-            color: tokens.textPrimary,
+            color: MinqTokens.textPrimary,
           ),
         ),
-        
-        SizedBox(height: tokens.spacing.md),
+
+        SizedBox(height: MinqTokens.spacing(3)),
 
         Row(
           children: [
             Expanded(
               child: _buildActionButton(
-                tokens,
                 'テストポイント獲得',
                 Icons.add_circle,
                 () => _awardTestPoints(uid),
               ),
             ),
-            SizedBox(width: tokens.spacing.md),
+            SizedBox(width: MinqTokens.spacing(3)),
             Expanded(
               child: _buildActionButton(
-                tokens,
                 'バッジチェック',
                 Icons.military_tech,
                 () => _checkBadges(uid),
@@ -595,7 +599,6 @@ class _GamificationDashboardScreenState
   }
 
   Widget _buildActionButton(
-    MinqTheme tokens,
     String label,
     IconData icon,
     VoidCallback onTap,
@@ -606,26 +609,26 @@ class _GamificationDashboardScreenState
         onTap();
       },
       child: Container(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(MinqTokens.spacing(3)),
         decoration: BoxDecoration(
-          color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
-          borderRadius: BorderRadius.circular(tokens.radius.md),
+          color: MinqTokens.brandPrimary.withAlpha((255 * 0.1).round()),
+          borderRadius: MinqTokens.cornerMedium(),
           border: Border.all(
-            color: tokens.brandPrimary.withAlpha((255 * 0.3).round()),
+            color: MinqTokens.brandPrimary.withAlpha((255 * 0.3).round()),
           ),
         ),
         child: Column(
           children: [
             Icon(
               icon,
-              color: tokens.brandPrimary,
-              size: tokens.spacing.lg,
+              color: MinqTokens.brandPrimary,
+              size: MinqTokens.spacing(4),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: MinqTokens.spacing(1)),
             Text(
               label,
-              style: tokens.typography.caption.copyWith(
-                color: tokens.brandPrimary,
+              style: MinqTokens.bodySmall.copyWith(
+                color: MinqTokens.brandPrimary,
                 fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.center,
@@ -677,7 +680,7 @@ class _GamificationDashboardScreenState
 
   Future<void> _awardTestPoints(String uid) async {
     final gamificationEngine = ref.read(gamificationEngineProvider);
-    await gamificationEngine.awardHabitPoints(
+    await gamificationEngine?.awardHabitPoints(
       userId: uid,
       action: HabitAction.questComplete,
       context: context,
@@ -687,7 +690,7 @@ class _GamificationDashboardScreenState
 
   Future<void> _checkBadges(String uid) async {
     final gamificationEngine = ref.read(gamificationEngineProvider);
-    await gamificationEngine.checkAndAwardBadges(uid, context: context);
+    await gamificationEngine?.checkAndAwardBadges(uid, context: context);
     setState(() {}); // Refresh the UI
   }
 

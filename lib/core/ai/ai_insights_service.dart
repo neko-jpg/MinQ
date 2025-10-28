@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:math' as math;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/ai/tflite_unified_ai_service.dart' as tflite;
@@ -239,7 +238,7 @@ class AIInsightsService {
       final shortHabits = quests.where((q) => q.estimatedMinutes <= 5).length;
       if (shortHabits < quests.length * 0.5 && quests.isNotEmpty) {
         recommendations.add(
-          PersonalizedRecommendation(
+          const PersonalizedRecommendation(
             id: 'time_optimization',
             type: RecommendationType.timeOptimization,
             title: '短時間習慣を増やしてみませんか？',
@@ -255,7 +254,7 @@ class AIInsightsService {
       // Motivational boost for high performers
       if (completionRate > 0.8) {
         recommendations.add(
-          PersonalizedRecommendation(
+          const PersonalizedRecommendation(
             id: 'motivational_boost',
             type: RecommendationType.motivationalBoost,
             title: '素晴らしい継続力です！',
@@ -295,7 +294,7 @@ class AIInsightsService {
       final categoryPerformance = <String, double>{};
       for (final quest in quests) {
         final questLogs = logs.where((log) => log.questId == quest.id).length;
-        final expectedLogs = 30; // Last 30 days
+        const expectedLogs = 30; // Last 30 days
         categoryPerformance[quest.category] = 
             (categoryPerformance[quest.category] ?? 0.0) + (questLogs / expectedLogs);
       }
@@ -421,7 +420,7 @@ class AIInsightsService {
       );
     } else if (currentStreak == 0) {
       insights.add(
-        ProgressInsight(
+        const ProgressInsight(
           title: 'ストリークを始めましょう',
           description: '新しいストリークを開始する絶好のタイミングです。',
           type: InsightType.opportunity,
@@ -507,7 +506,7 @@ class AIInsightsService {
     return AIInsights(
       userId: userId,
       generatedAt: DateTime.now(),
-      trends: HabitCompletionTrends(
+      trends: const HabitCompletionTrends(
         weeklyTrends: {'Week 1': 0.5, 'Week 2': 0.6, 'Week 3': 0.7, 'Week 4': 0.8},
         dailyTrends: {'Mon': 0.7, 'Tue': 0.8, 'Wed': 0.6, 'Thu': 0.9, 'Fri': 0.5, 'Sat': 0.4, 'Sun': 0.6},
         categoryDistribution: {'学習': 2, '運動': 1, 'セルフケア': 1},
@@ -521,7 +520,7 @@ class AIInsightsService {
 
   List<PersonalizedRecommendation> _getFallbackRecommendations() {
     return [
-      PersonalizedRecommendation(
+      const PersonalizedRecommendation(
         id: 'fallback_1',
         type: RecommendationType.motivationalBoost,
         title: '継続は力なり',
@@ -535,7 +534,7 @@ class AIInsightsService {
   }
 
   ProgressAnalysis _getFallbackProgressAnalysis() {
-    return ProgressAnalysis(
+    return const ProgressAnalysis(
       currentStreak: 3.0,
       longestStreak: 7.0,
       weeklyCompletionRate: 0.7,

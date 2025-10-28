@@ -7,7 +7,6 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
-import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CreateQuestScreen extends ConsumerStatefulWidget {
@@ -259,6 +258,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
     if (!mounted) return;
     FeedbackMessenger.showSuccessToast(context, '新しい習慣を作成しました！');
+    if (!mounted) return;
     // クエスト詳細画面に遷移
     ref.read(navigationUseCaseProvider).goToQuestDetail(newQuest.id);
   }

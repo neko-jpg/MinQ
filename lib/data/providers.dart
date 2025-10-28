@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -19,19 +19,15 @@ import 'package:minq/core/ai/ai_insights_service.dart';
 import 'package:minq/core/ai/failure_prediction_service.dart';
 import 'package:minq/core/ai/personality_diagnosis_service.dart';
 import 'package:minq/core/ai/tflite_unified_ai_service_provider.dart';
-import 'package:minq/domain/time_capsule/time_capsule.dart';
 import 'package:minq/core/ai/weekly_report_service.dart';
 import 'package:minq/core/battle/battle_service.dart';
 import 'package:minq/core/community/guild_service.dart';
-import 'package:minq/core/mood/mood_tracking_service.dart';
-import 'package:minq/core/time_capsule/time_capsule_service.dart';
-import 'package:minq/core/database/database_lifecycle_manager.dart';
 import 'package:minq/core/database/firestore_enhanced_operations.dart';
 import 'package:minq/core/export/data_export_service.dart';
-import 'package:minq/core/utils/firestore_retry.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/core/gamification/reward_system.dart';
 import 'package:minq/core/logging/app_logger.dart';
+import 'package:minq/core/mood/mood_tracking_service.dart';
 import 'package:minq/core/network/network_status_service.dart';
 import 'package:minq/core/notifications/notification_personalization_engine.dart';
 import 'package:minq/core/notifications/re_engagement_service.dart';
@@ -40,6 +36,7 @@ import 'package:minq/core/reminders/multiple_reminder_service.dart';
 import 'package:minq/core/sharing/ai_share_banner_service.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
 import 'package:minq/core/sharing/share_service.dart';
+import 'package:minq/core/utils/firestore_retry.dart';
 import 'package:minq/data/repositories/community_board_repository.dart';
 import 'package:minq/data/repositories/contact_link_repository.dart';
 import 'package:minq/data/repositories/enhanced_quest_log_repository.dart';
@@ -48,17 +45,11 @@ import 'package:minq/data/repositories/firebase_auth_repository.dart';
 import 'package:minq/data/repositories/pair_repository.dart';
 import 'package:minq/data/repositories/quest_log_repository.dart';
 import 'package:minq/data/repositories/quest_repository.dart';
-import 'package:minq/data/repositories/time_capsule_repository.dart';
 import 'package:minq/data/repositories/user_repository.dart';
 import 'package:minq/data/services/analytics_service.dart';
 import 'package:minq/data/services/app_locale_controller.dart';
 import 'package:minq/data/services/connectivity_service.dart';
-import 'package:minq/core/initialization/optimal_initialization_service.dart';
-import 'package:minq/core/navigation/navigation_use_case.dart';
 import 'package:minq/data/services/crash_recovery_store.dart';
-
-// Export navigation provider
-export 'package:minq/core/navigation/navigation_use_case.dart' show navigationUseCaseProvider;
 import 'package:minq/data/services/deep_link_service.dart';
 import 'package:minq/data/services/firestore_sync_service.dart';
 import 'package:minq/data/services/focus_music_service.dart';
@@ -85,6 +76,9 @@ import 'package:minq/domain/recommendation/daily_focus_service.dart';
 import 'package:minq/domain/recommendation/habit_ai_suggestion_service.dart';
 import 'package:minq/domain/user/user.dart' as minq_user;
 import 'package:speech_to_text/speech_to_text.dart';
+
+// Export navigation provider
+export 'package:minq/core/navigation/navigation_use_case.dart' show navigationUseCaseProvider;
 
 final httpClientProvider = Provider<http.Client>((ref) {
   final client = http.Client();
@@ -424,14 +418,6 @@ UserRepository _buildUserRepository(Ref ref) {
   return UserRepository(isar, authRepository);
 }
 
-TimeCapsuleRepository _buildTimeCapsuleRepository(Ref ref) {
-  final isar = ref.watch(isarProvider).value;
-  if (isar == null) {
-    throw StateError('Isar instance is not yet initialised');
-  }
-  return TimeCapsuleRepository(isar);
-}
-
 final questRepositoryProvider = Provider<QuestRepository>(
   _buildQuestRepository,
 );
@@ -439,7 +425,6 @@ final questLogRepositoryProvider = Provider<QuestLogRepository>(
   _buildQuestLogRepository,
 );
 final userRepositoryProvider = Provider<UserRepository>(_buildUserRepository);
-final timeCapsuleRepositoryProvider = Provider<TimeCapsuleRepository>(_buildTimeCapsuleRepository);
 
 final pairRepositoryProvider = Provider<PairRepository?>((ref) {
   final firestore = ref.watch(firestoreProvider);
@@ -817,42 +802,6 @@ final heatmapDataProvider = FutureProvider<Map<DateTime, int>>((ref) async {
   return ref.read(questLogRepositoryProvider).getHeatmapData(user.uid);
 });
 
-final timeCapsuleListProvider = FutureProvider<List<TimeCapsule>>((ref) async {
-  await _ensureStartup(ref);
-  final user = await ref.watch(localUserProvider.future);
-  if (user == null) {
-    return [];
-  }
-  return ref.read(timeCapsuleRepositoryProvider).getTimeCapsules(user.uid);
-});
-
-final deliveredTimeCapsuleListProvider = FutureProvider<List<TimeCapsule>>((ref) async {
-  await _ensureStartup(ref);
-  final user = await ref.watch(localUserProvider.future);
-  if (user == null) {
-    return [];
-  }
-  return ref.read(timeCapsuleRepositoryProvider).getDeliveredTimeCapsules(user.uid);
-});
-
-final pendingTimeCapsuleListProvider = FutureProvider<List<TimeCapsule>>((ref) async {
-  await _ensureStartup(ref);
-  final user = await ref.watch(localUserProvider.future);
-  if (user == null) {
-    return [];
-  }
-  return ref.read(timeCapsuleRepositoryProvider).getPendingTimeCapsules(user.uid);
-});
-
-final timeCapsuleStatsProvider = FutureProvider<TimeCapsuleStats>((ref) async {
-  await _ensureStartup(ref);
-  final user = await ref.watch(localUserProvider.future);
-  if (user == null) {
-    return const TimeCapsuleStats(total: 0, delivered: 0, pending: 0);
-  }
-  return ref.read(timeCapsuleRepositoryProvider).getStats(user.uid);
-});
-
 // Gamification providers
 final gamificationEngineProvider = Provider<GamificationEngine?>((ref) {
   final firestore = ref.watch(firestoreProvider);
@@ -890,14 +839,6 @@ final personalityDiagnosisServiceProvider = Provider<PersonalityDiagnosisService
 
 final weeklyReportServiceProvider = Provider<WeeklyReportService>((ref) {
   return WeeklyReportService.instance;
-});
-
-final timeCapsuleServiceProvider = Provider<TimeCapsuleService>((ref) {
-  final firestore = ref.watch(firestoreProvider);
-  if (firestore == null) {
-    throw Exception('Firestore not available');
-  }
-  return TimeCapsuleService(firestore);
 });
 
 final moodTrackingServiceProvider = Provider<MoodTrackingService>((ref) {

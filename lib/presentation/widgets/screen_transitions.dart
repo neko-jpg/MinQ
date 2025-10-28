@@ -19,12 +19,11 @@ class PolishedPageRoute<T> extends PageRouteBuilder<T> {
     this.reverseDuration = const Duration(milliseconds: 250),
     this.curve = Curves.easeOutCubic,
     this.reverseCurve = Curves.easeInCubic,
-    RouteSettings? settings,
+    super.settings,
   }) : super(
           pageBuilder: (context, animation, secondaryAnimation) => page,
           transitionDuration: duration,
           reverseTransitionDuration: reverseDuration,
-          settings: settings,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return _buildTransition(
               child: child,

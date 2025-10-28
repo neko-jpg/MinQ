@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/design_tokens.dart';
 
 /// ペア成立時の祝アニメーション
 /// 軽量で視覚的に楽しい演出
@@ -86,7 +87,10 @@ class _CelebrationAnimationState extends State<CelebrationAnimation>
             animation: _confettiController,
             builder: (context, child) {
               return CustomPaint(
-                painter: ConfettiPainter(progress: _confettiController.value),
+                painter: ConfettiPainter(
+                  progress: _confettiController.value,
+                  context: context,
+                ),
               );
             },
           ),
@@ -115,9 +119,11 @@ class _CelebrationAnimationState extends State<CelebrationAnimation>
 class ConfettiPainter extends CustomPainter {
   final double progress;
   final List<ConfettiParticle> particles;
+  final BuildContext context;
 
-  ConfettiPainter({required this.progress})
-    : particles = List.generate(30, (index) => ConfettiParticle(index));
+  ConfettiPainter({required this.progress, required this.context})
+      : particles = List.generate(
+            30, (index) => ConfettiParticle(index, context));
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -143,8 +149,9 @@ class ConfettiParticle {
   late final Color color;
   late final double size;
 
-  ConfettiParticle(this.seed) {
+  ConfettiParticle(this.seed, BuildContext context) {
     final random = math.Random(seed);
+    final themeColors = context.tokens.colors;
     startX = random.nextDouble();
     startY = -0.1;
     velocityX = (random.nextDouble() - 0.5) * 0.5;
@@ -154,12 +161,12 @@ class ConfettiParticle {
 
     // カラフルな色
     final colors = [
-      const Color(0xFFFF6B6B),
-      const Color(0xFF4ECDC4),
-      const Color(0xFFFFE66D),
-      const Color(0xFF95E1D3),
-      const Color(0xFFF38181),
-      const Color(0xFFAA96DA),
+      themeColors.primary,
+      themeColors.secondary,
+      themeColors.tertiary,
+      themeColors.success,
+      themeColors.warning,
+      themeColors.error,
     ];
     color = colors[random.nextInt(colors.length)];
   }

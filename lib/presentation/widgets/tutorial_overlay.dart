@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:minq/l10n/app_localizations.dart';
 
 /// チュートリアルステップ
 class TutorialStep {

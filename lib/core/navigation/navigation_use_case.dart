@@ -1,87 +1,79 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:minq/presentation/common/policy_documents.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 
-/// Navigation use case for handling app navigation
 class NavigationUseCase {
-  const NavigationUseCase(this._router);
-
   final GoRouter _router;
+  NavigationUseCase(this._router);
 
-  /// Navigate to home screen
-  void goHome() {
-    _router.go(AppRoutes.home);
+  void goToOnboarding() => _router.go(AppRoutes.onboarding);
+  void goToLogin() => _router.push(AppRoutes.login);
+  void goToRecord(int questId) => _router.push(
+    AppRoutes.record.replaceFirst(':questId', questId.toString()),
+  );
+  void goToCelebration() => _router.push(AppRoutes.celebration);
+  void goToSocialSharingDemo() => _router.push(AppRoutes.socialSharingDemo);
+  void goToProfile() => _router.push(AppRoutes.profile);
+  void goToProfileManagement() => _router.push('/profile-management');
+  void goToPolicy(PolicyDocumentId documentId) =>
+      _router.push(AppRoutes.policy.replaceFirst(':id', documentId.name));
+  void goToSupport() => _router.push(AppRoutes.support);
+  void goToCommunityBoard() => _router.push(AppRoutes.communityBoard);
+  void goToCreateQuest() => _router.push(AppRoutes.createQuest);
+  void goToEditQuest(int questId) => _router.push(
+    AppRoutes.editQuest.replaceFirst(':questId', questId.toString()),
+  );
+  void goToQuestDetail(int questId) => _router.push(
+    AppRoutes.questDetail.replaceFirst(':questId', questId.toString()),
+  );
+  void goToNotificationSettings() =>
+      _router.push(AppRoutes.notificationSettings);
+  void goToProfileSettings() => _router.push(AppRoutes.profileSettings);
+  void goToAccountDeletion() => _router.push(AppRoutes.accountDeletion);
+  void goToPairMatching({String? code}) {
+    final uri = Uri(
+      path: AppRoutes.pairMatching,
+      queryParameters: code != null ? {'code': code} : null,
+    );
+    _router.push(uri.toString());
   }
 
-  /// Navigate to stats screen
-  void goToStats() {
-    _router.go(AppRoutes.stats);
-  }
-
-  /// Navigate to challenges screen
-  void goToChallenges() {
-    _router.go(AppRoutes.challenges);
-  }
-
-  /// Navigate to profile screen
-  void goToProfile() {
-    _router.go(AppRoutes.profile);
-  }
-
-  /// Navigate to settings screen
-  void goToSettings() {
-    _router.go(AppRoutes.settings);
-  }
-
-  /// Navigate to AI insights screen
-  void goToAiInsights() {
-    _router.go(AppRoutes.aiInsights);
-  }
-
-  /// Navigate to profile management screen
-  void goToProfileManagement() {
-    _router.go(AppRoutes.profileManagement);
-  }
-
-  /// Navigate to create mini quest screen
-  void goToCreateMiniQuest() {
-    _router.go(AppRoutes.createMiniQuest);
-  }
-
-  /// Navigate to quests screen
-  void goToQuests() {
-    _router.go(AppRoutes.quests);
-  }
-
-  /// Navigate to login screen
-  void goToLogin() {
-    _router.go(AppRoutes.login);
-  }
-
-  /// Navigate to quest detail screen
-  void goToQuestDetail(String questId) {
-    _router.go(AppRoutes.questDetail.replaceAll(':questId', questId));
-  }
-
-  /// Navigate to create quest screen
-  void goToCreateQuest() {
-    _router.go(AppRoutes.createQuest);
-  }
-
-  /// Navigate to celebration screen
-  void goToCelebration() {
-    _router.go(AppRoutes.celebration);
-  }
-
-  /// Navigate to referral screen
-  void goToReferral() {
-    _router.go(AppRoutes.referral);
-  }
-
-  /// Navigate to habit analysis screen
-  void goToHabitAnalysis(String habitId, String analysisType) {
-    _router.go(AppRoutes.habitAnalysis.replaceAll(':habitId', habitId));
-  }
+  void goToPairChat(String pairId) =>
+      _router.push(AppRoutes.pairChat.replaceFirst(':pairId', pairId));
+  void goToAiConciergeChat() => _router.push(AppRoutes.aiConciergeChat);
+  void goToAiInsights() => _router.push(AppRoutes.aiInsights);
+  void goToHabitStory() => _router.push(AppRoutes.habitStory);
+  void goToBattle() => _router.push(AppRoutes.battle);
+  void goToPersonalityDiagnosis() =>
+      _router.push(AppRoutes.personalityDiagnosis);
+  void goToWeeklyReport() => _router.push(AppRoutes.weeklyReport);
+  void goToGuild() => _router.push(AppRoutes.guild);
+  void goToCreateMiniQuest() => _router.push(AppRoutes.createMiniQuest);
+  void goToChallenges() => _router.go(AppRoutes.challenges);
+  void goToQuestTimer(int questId) => _router.push(
+    AppRoutes.questTimer.replaceFirst(':questId', questId.toString()),
+  );
+  void goToReferral() => _router.push(AppRoutes.referral);
+  void goToHabitAnalysis(String habitId, String habitName) => _router.push(
+    '${AppRoutes.habitAnalysis.replaceFirst(':habitId', habitId)}?name=${Uri.encodeComponent(habitName)}',
+  );
+  void goToMoodTracking() => _router.push(AppRoutes.moodTracking);
+  void goToStreakRecovery(int questId) => _router.push(
+    AppRoutes.streakRecovery.replaceFirst(':questId', questId.toString()),
+  );
+  void goToEvents() => _router.push(AppRoutes.events);
+  void goToAICoachSettings() => _router.push(AppRoutes.aiCoachSettings);
+  void goToLiveActivitySettings() =>
+      _router.push(AppRoutes.liveActivitySettings);
+  void goHome() => _router.go(AppRoutes.home);
+  void goToStats() => _router.go(AppRoutes.stats);
+  void goToPair() => _router.go(AppRoutes.pair);
+  void goToQuests() => _router.go(AppRoutes.quests);
+  void goToSettings() => _router.go(AppRoutes.settings);
+  void goToHelpCenter() => _router.push(AppRoutes.support);
+  void goToBugReport() => _router.push(AppRoutes.support);
 }
 
 /// Provider for navigation use case

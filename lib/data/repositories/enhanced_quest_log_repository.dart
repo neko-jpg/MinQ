@@ -113,11 +113,11 @@ class EnhancedQuestLogRepository extends QuestLogRepository with DatabasePerform
           .sortByTsDesc();
       
       if (offset > 0) {
-        query = query.offset(offset);
+        query = query.offset(offset) as QueryBuilder<QuestLog, QuestLog, QAfterSortBy>;
       }
       
       if (limit != null) {
-        query = query.limit(limit);
+        query = query.limit(limit) as QueryBuilder<QuestLog, QuestLog, QAfterSortBy>;
       }
       
       return await query.findAll();

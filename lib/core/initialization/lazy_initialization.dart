@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 
 /// 遅延初期化マネージャー
 class LazyInitializationManager {
@@ -131,7 +132,10 @@ class ImagePrefetcher {
         await precacheImage(NetworkImage(url), context);
         _prefetchedImages.add(url);
       } catch (e) {
-        print('Failed to prefetch image: $url');
+        MinqLogger.warn(
+          'Failed to prefetch image',
+          metadata: {'url': url, 'error': e.toString()},
+        );
       }
     }
   }
@@ -283,13 +287,10 @@ class FastStartupManager {
     final results = _timer.getResults();
     final totalTime = _timer.getTotalTime();
 
-    print('=== Startup Metrics ===');
-    print('Total startup time: ${totalTime?.inMilliseconds}ms');
-
-    for (final entry in results.entries) {
-      print('${entry.key}: ${entry.value.inMilliseconds}ms');
-    }
-    print('=====================');
+    MinqLogger.debug('Startup Metrics', metadata: {
+      'totalTimeMs': totalTime?.inMilliseconds,
+      'milestones': results.map((key, value) => MapEntry(key, value.inMilliseconds)),
+    });
   }
 
   // 初期化メソッド群
@@ -357,9 +358,7 @@ class MemoryOptimizer {
     PaintingBinding.instance.imageCache.clear();
 
     // ガベージコレクション促進
-    if (kDebugMode) {
-      print('Performing memory cleanup');
-    }
+    MinqLogger.debug('Performing memory cleanup');
   }
 
   /// 停止
@@ -409,12 +408,10 @@ class PerformanceGuard {
     final fps = 1000000 / avgFrameTime; // マイクロ秒からFPSに変換
 
     if (fps < 55) {
-      print('Warning: Low FPS detected: ${fps.toStringAsFixed(1)}');
+      MinqLogger.warn('Low FPS detected', metadata: {'fps': fps});
     }
 
-    if (kDebugMode) {
-      print('Average FPS: ${fps.toStringAsFixed(1)}');
-    }
+    MinqLogger.debug('Average FPS', metadata: {'fps': fps});
   }
 
   /// 停止

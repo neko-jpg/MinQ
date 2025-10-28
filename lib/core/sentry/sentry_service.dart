@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// Sentryサービス
 class SentryService {
@@ -14,7 +15,7 @@ class SentryService {
 
     // リリースビルドでのみ有効化
     if (!kReleaseMode) {
-      print('Sentry is disabled in debug mode');
+      logger.info('Sentry is disabled in debug mode');
       return;
     }
 
@@ -31,7 +32,7 @@ class SentryService {
     if (!_initialized) return;
 
     // TODO: Sentry.captureException()を実装
-    print('Sentry: Captured exception: $exception');
+    logger.info('Sentry: Captured exception: $exception');
   }
 
   /// メッセージを記録
@@ -42,7 +43,7 @@ class SentryService {
     if (!_initialized) return;
 
     // TODO: Sentry.captureMessage()を実装
-    print('Sentry: Captured message: $message');
+    logger.info('Sentry: Captured message: $message');
   }
 
   /// ユーザー情報を設定

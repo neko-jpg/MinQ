@@ -5,8 +5,8 @@ import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/domain/gamification/badge.dart' as gamification;
 import 'package:minq/presentation/common/celebration/celebration_system.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
 import 'package:minq/presentation/theme/haptics_system.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 import 'package:minq/presentation/widgets/enhanced_achievement_notification.dart';
 
 /// Provider for the comprehensive gamification service
@@ -318,7 +318,7 @@ class ComprehensiveGamificationService {
 
   /// Show streak milestone celebration
   Future<void> _showStreakMilestoneCelebration(BuildContext context, int streakDays) async {
-    final config = CelebrationSystem.getStreakCelebration(streakDays);
+    final config = CelebrationSystem.getStreakCelebration(streakDays, MinqTheme.light());
     CelebrationSystem.showCelebration(context, config: config);
   }
 

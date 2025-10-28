@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:developer' as developer;
 import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:minq/core/error/exceptions.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
 /// Comprehensive crash prevention and recovery service
@@ -88,7 +86,7 @@ class CrashPreventionService {
     
     // Listen for system memory pressure warnings
     SystemChannels.system.setMessageHandler((message) async {
-      if (message?['type'] == 'memoryPressure') {
+      if (message is Map && message['type'] == 'memoryPressure') {
         await _handleMemoryPressure();
       }
       return null;
@@ -256,7 +254,7 @@ class CrashPreventionService {
     return _criticalErrorPatterns.any((pattern) => errorString.contains(pattern));
   }
   
-  /// Handle critical errors that require immediate action
+  /// Handle critical errors that require immediate attention
   void _handleCriticalError(CrashReport report) {
     logger.error(
       'CRITICAL ERROR DETECTED',

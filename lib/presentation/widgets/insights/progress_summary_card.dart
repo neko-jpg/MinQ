@@ -148,7 +148,7 @@ class ProgressSummaryCard extends StatelessWidget {
   Widget _buildScoreCircle(double score, MinqTheme tokens) {
     final color = _getScoreColor(score);
     
-    return Container(
+    return SizedBox(
       width: 60,
       height: 60,
       child: Stack(
@@ -170,7 +170,7 @@ class ProgressSummaryCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${(score * 100).toStringAsFixed(0)}',
+                  (score * 100).toStringAsFixed(0),
                   style: tokens.typography.h4.copyWith(
                     fontWeight: FontWeight.bold,
                     color: color,

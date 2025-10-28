@@ -501,7 +501,6 @@ class _HoverEffectState extends State<HoverEffect>
   late AnimationController _controller;
   late Animation<double> _elevationAnimation;
   late Animation<Color?> _colorAnimation;
-  bool _isHovered = false;
 
   @override
   void initState() {
@@ -521,12 +520,10 @@ class _HoverEffectState extends State<HoverEffect>
   }
 
   void _onEnter(PointerEvent details) {
-    setState(() => _isHovered = true);
     _controller.forward();
   }
 
   void _onExit(PointerEvent details) {
-    setState(() => _isHovered = false);
     _controller.reverse();
   }
 

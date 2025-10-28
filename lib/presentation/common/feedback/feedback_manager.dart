@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/presentation/common/feedback/audio_feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 
@@ -18,9 +18,10 @@ class FeedbackManager {
       ]);
       _isInitialized = true;
     } catch (e) {
-      if (kDebugMode) {
-        print('FeedbackManager: Initialization failed: $e');
-      }
+      MinqLogger.warn(
+        'FeedbackManager: Initialization failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 

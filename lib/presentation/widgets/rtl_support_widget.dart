@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 
 /// Widget that provides RTL (Right-to-Left) support and cultural adaptations
 class RTLSupportWidget extends StatelessWidget {

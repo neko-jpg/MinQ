@@ -27,6 +27,10 @@ class PointsDisplayWidget extends ConsumerWidget {
 
     final gamificationEngine = ref.watch(providers.gamificationEngineProvider);
 
+    if (gamificationEngine == null) {
+      return _buildSkeleton(tokens, compact);
+    }
+
     return FutureBuilder<Map<String, dynamic>>(
       future: _loadPointsData(gamificationEngine, uid),
       builder: (context, snapshot) {
@@ -309,6 +313,16 @@ class RankProgressWidget extends ConsumerWidget {
     }
 
     final gamificationEngine = ref.watch(providers.gamificationEngineProvider);
+
+    if (gamificationEngine == null) {
+      return Container(
+        height: 100,
+        decoration: BoxDecoration(
+          color: tokens.surfaceVariant,
+          borderRadius: BorderRadius.circular(tokens.radius.md),
+        ),
+      );
+    }
 
     return FutureBuilder<Map<String, dynamic>>(
       future: _loadRankData(gamificationEngine, uid),

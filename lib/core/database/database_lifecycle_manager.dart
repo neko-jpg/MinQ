@@ -31,7 +31,7 @@ class DatabaseLifecycleManager {
     Function(String message, double progress)? onProgress,
   }) async {
     if (_isDisposed) {
-      throw DatabaseException('Database manager has been disposed');
+      throw const DatabaseException('Database manager has been disposed');
     }
     
     if (_isar != null) {
@@ -95,7 +95,7 @@ class DatabaseLifecycleManager {
       );
       
       throw DatabaseException(
-        'Failed to initialize database: ${error}',
+        'Failed to initialize database: $error',
         originalError: error,
       );
     } finally {
@@ -144,7 +144,7 @@ class DatabaseLifecycleManager {
       final savedBytes = sizeBefore - sizeAfter;
       
       if (savedBytes > 0) {
-        developer.log('Storage optimization completed. Saved ${savedBytes} bytes');
+        developer.log('Storage optimization completed. Saved $savedBytes bytes');
       }
       
     } catch (error) {

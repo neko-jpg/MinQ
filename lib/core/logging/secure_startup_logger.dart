@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:flutter/foundation.dart';
-import 'package:minq/core/error/exceptions.dart';
 
 /// Secure logging system for startup operations that prevents sensitive data exposure
 class SecureStartupLogger {

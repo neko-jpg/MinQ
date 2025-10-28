@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/domain/ai/ai_insights.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// Card widget for displaying personalized recommendations
@@ -150,7 +150,7 @@ class RecommendationCard extends StatelessWidget {
     
     return Column(
       children: [
-        Container(
+        SizedBox(
           width: 40,
           height: 40,
           child: Stack(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
 
 /// Enhanced screen reader and accessibility helper
 /// Provides comprehensive WCAG AA compliant accessibility features
@@ -498,8 +497,8 @@ class ContrastValidator {
 
   /// Get accessible text color for given background
   static Color getAccessibleTextColor(Color background, {bool preferDark = true}) {
-    final lightText = const Color(0xFFFFFFFF);
-    final darkText = const Color(0xFF000000);
+    const lightText = Color(0xFFFFFFFF);
+    const darkText = Color(0xFF000000);
     
     final lightContrast = calculateContrastRatio(lightText, background);
     final darkContrast = calculateContrastRatio(darkText, background);

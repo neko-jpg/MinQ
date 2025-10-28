@@ -244,7 +244,7 @@ class StreakProtectionConfig {
   /// 厳格な設定
   static const strict = StreakProtectionConfig(
     maxSkipsPerMonth: 1,
-    maxPauseDays = 7,
+    maxPauseDays: 7,
     allowWeekendSkip: false,
     allowHolidaySkip: false,
   );

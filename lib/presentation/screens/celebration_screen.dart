@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/l10n/app_localizations.dart';
-import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CelebrationScreen extends ConsumerStatefulWidget {
@@ -37,16 +36,20 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   }
 
   Future<void> _maybeRequestNotificationPermission() async {
+    // Capture context-dependent variables before the first await.
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+    final tokens = context.tokens;
+
     final notificationService = ref.read(notificationServiceProvider);
     final shouldShow = await notificationService.shouldRequestPermission();
 
     if (!shouldShow || !mounted) return;
 
-    final l10n = AppLocalizations.of(context)!;
     final prefs = ref.read(localPreferencesServiceProvider);
     final hasEducated = await prefs.hasShownNotificationEducation();
-    final tokens = context.tokens;
 
+    if (!mounted) return;
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,

@@ -62,18 +62,18 @@ class AccessibleElevatedButton extends StatelessWidget {
     
     return baseStyle.copyWith(
       // Ensure minimum touch target size
-      minimumSize: MaterialStateProperty.all(
+      minimumSize: WidgetStateProperty.all(
         const Size(44.0, 44.0),
       ),
       // Ensure adequate padding
-      padding: MaterialStateProperty.all(
+      padding: WidgetStateProperty.all(
         EdgeInsets.symmetric(
           horizontal: tokens.spacing.lg,
           vertical: tokens.spacing.md,
         ),
       ),
       // Ensure accessible colors
-      backgroundColor: MaterialStateProperty.resolveWith((states) {
+      backgroundColor: WidgetStateProperty.resolveWith((states) {
         final originalColor = baseStyle.backgroundColor?.resolve(states) ?? 
                             tokens.brandPrimary;
         return tokens.ensureAccessibleOnBackground(
@@ -81,7 +81,7 @@ class AccessibleElevatedButton extends StatelessWidget {
           tokens.background,
         );
       }),
-      foregroundColor: MaterialStateProperty.resolveWith((states) {
+      foregroundColor: WidgetStateProperty.resolveWith((states) {
         final backgroundColor = baseStyle.backgroundColor?.resolve(states) ?? 
                               tokens.brandPrimary;
         return tokens.ensureAccessibleOnBackground(
@@ -150,16 +150,16 @@ class AccessibleTextButton extends StatelessWidget {
     final baseStyle = style ?? TextButton.styleFrom();
     
     return baseStyle.copyWith(
-      minimumSize: MaterialStateProperty.all(
+      minimumSize: WidgetStateProperty.all(
         const Size(44.0, 44.0),
       ),
-      padding: MaterialStateProperty.all(
+      padding: WidgetStateProperty.all(
         EdgeInsets.symmetric(
           horizontal: tokens.spacing.lg,
           vertical: tokens.spacing.md,
         ),
       ),
-      foregroundColor: MaterialStateProperty.resolveWith((states) {
+      foregroundColor: WidgetStateProperty.resolveWith((states) {
         final originalColor = baseStyle.foregroundColor?.resolve(states) ?? 
                             tokens.brandPrimary;
         return tokens.ensureAccessibleOnBackground(
@@ -326,7 +326,7 @@ class AccessibleSwitch extends StatelessWidget {
     Widget switchWidget = Switch(
       value: value,
       onChanged: onChanged,
-      activeColor: activeColor ?? tokens.brandPrimary,
+      activeThumbColor: activeColor ?? tokens.brandPrimary,
       inactiveThumbColor: inactiveThumbColor,
       inactiveTrackColor: inactiveTrackColor,
       autofocus: autofocus,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
-import 'package:minq/presentation/widgets/micro_interactions.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 
 /// Polished button components with refined designs, shadows, and gradients
 /// Replaces basic circular button shapes with professional UI components
@@ -44,7 +43,7 @@ class _PolishedPrimaryButtonState extends State<PolishedPrimaryButton>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: MinqAnimationTokens.fast,
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 
@@ -53,7 +52,7 @@ class _PolishedPrimaryButtonState extends State<PolishedPrimaryButton>
       end: 0.96,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: MinqAnimationTokens.easeOut,
+      curve: Curves.easeOut,
     ));
 
     _shadowAnimation = Tween<double>(
@@ -61,7 +60,7 @@ class _PolishedPrimaryButtonState extends State<PolishedPrimaryButton>
       end: 0.5,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: MinqAnimationTokens.easeOut,
+      curve: Curves.easeOut,
     ));
   }
 
@@ -96,7 +95,6 @@ class _PolishedPrimaryButtonState extends State<PolishedPrimaryButton>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
     final isEnabled = widget.onPressed != null && !widget.isLoading;
 
     return Semantics(
@@ -115,73 +113,73 @@ class _PolishedPrimaryButtonState extends State<PolishedPrimaryButton>
               scale: _scaleAnimation.value,
               child: Container(
                 width: widget.width,
-                height: widget.height ?? MinqSpacingTokens.minTouchTarget,
+                height: widget.height ?? 48,
                 constraints: const BoxConstraints(
-                  minWidth: MinqSpacingTokens.minTouchTarget,
-                  minHeight: MinqSpacingTokens.minTouchTarget,
+                  minWidth: 48,
+                  minHeight: 48,
                 ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: isEnabled
                         ? [
-                            tokens.colors.primary,
-                            tokens.colors.primaryHover,
+                            MinqTokens.brandPrimary,
+                            MinqTokens.brandSecondary,
                           ]
                         : [
-                            tokens.colors.outline,
-                            tokens.colors.outlineVariant,
+                            const Color(0xFFE5E7EB),
+                            const Color(0xFFD1D5DB),
                           ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: tokens.radius.mdRadius,
+                  borderRadius: MinqTokens.cornerMedium(),
                   boxShadow: isEnabled
-                      ? tokens.elevation.md.map((shadow) {
-                          return BoxShadow(
-                            color: shadow.color.withAlpha(
-                              (shadow.color.alpha * _shadowAnimation.value).round(),
+                      ? [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(
+                              (51 * _shadowAnimation.value).round(),
                             ),
-                            blurRadius: shadow.blurRadius,
-                            offset: shadow.offset,
-                          );
-                        }).toList()
+                            blurRadius: 10 * _shadowAnimation.value,
+                            offset: const Offset(0, 5),
+                          ),
+                        ]
                       : null,
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: Padding(
-                    padding: widget.padding ?? 
+                    padding: widget.padding ??
                         EdgeInsets.symmetric(
-                          horizontal: tokens.spacing.lg,
-                          vertical: tokens.spacing.md,
+                          horizontal: MinqTokens.spacing(6),
+                          vertical: MinqTokens.spacing(4),
                         ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (widget.isLoading)
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation(
-                                tokens.colors.onPrimary,
+                                Colors.white,
                               ),
                             ),
                           )
                         else if (widget.icon != null) ...[
                           Icon(
                             widget.icon,
-                            color: tokens.colors.onPrimary,
+                            color: Colors.white,
                             size: 18,
                           ),
                           const SizedBox(width: 8),
                         ],
                         if (!widget.isLoading)
                           DefaultTextStyle(
-                            style: tokens.typography.labelLarge.copyWith(
-                              color: tokens.colors.onPrimary,
+                            style: MinqTokens.bodyLarge.copyWith(
+                              color: Colors.white,
                               fontWeight: FontWeight.w600,
                             ),
                             child: widget.child,
@@ -223,7 +221,8 @@ class PolishedSecondaryButton extends StatefulWidget {
   });
 
   @override
-  State<PolishedSecondaryButton> createState() => _PolishedSecondaryButtonState();
+  State<PolishedSecondaryButton> createState() =>
+      _PolishedSecondaryButtonState();
 }
 
 class _PolishedSecondaryButtonState extends State<PolishedSecondaryButton>
@@ -237,7 +236,7 @@ class _PolishedSecondaryButtonState extends State<PolishedSecondaryButton>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: MinqAnimationTokens.fast,
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 
@@ -246,7 +245,7 @@ class _PolishedSecondaryButtonState extends State<PolishedSecondaryButton>
       end: 0.98,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: MinqAnimationTokens.easeOut,
+      curve: Curves.easeOut,
     ));
   }
 
@@ -281,12 +280,11 @@ class _PolishedSecondaryButtonState extends State<PolishedSecondaryButton>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
     final isEnabled = widget.onPressed != null && !widget.isLoading;
 
     _backgroundAnimation = ColorTween(
-      begin: tokens.colors.surface,
-      end: tokens.colors.surfaceContainer,
+      begin: MinqTokens.surface,
+      end: MinqTokens.background,
     ).animate(_controller);
 
     return Semantics(
@@ -305,57 +303,65 @@ class _PolishedSecondaryButtonState extends State<PolishedSecondaryButton>
               scale: _scaleAnimation.value,
               child: Container(
                 width: widget.width,
-                height: widget.height ?? MinqSpacingTokens.minTouchTarget,
+                height: widget.height ?? 48,
                 constraints: const BoxConstraints(
-                  minWidth: MinqSpacingTokens.minTouchTarget,
-                  minHeight: MinqSpacingTokens.minTouchTarget,
+                  minWidth: 48,
+                  minHeight: 48,
                 ),
                 decoration: BoxDecoration(
                   color: _backgroundAnimation.value,
-                  borderRadius: tokens.radius.mdRadius,
+                  borderRadius: MinqTokens.cornerMedium(),
                   border: Border.all(
                     color: isEnabled
-                        ? tokens.colors.outline
-                        : tokens.colors.outlineVariant,
+                        ? const Color(0xFFE5E7EB)
+                        : const Color(0xFFD1D5DB),
                     width: 1.5,
                   ),
-                  boxShadow: isEnabled ? tokens.elevation.sm : null,
+                  boxShadow: isEnabled
+                      ? [
+                          const BoxShadow(
+                            color: Color(0x1A000000),
+                            blurRadius: 2,
+                            offset: Offset(0, 1),
+                          )
+                        ]
+                      : null,
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: Padding(
-                    padding: widget.padding ?? 
+                    padding: widget.padding ??
                         EdgeInsets.symmetric(
-                          horizontal: tokens.spacing.lg,
-                          vertical: tokens.spacing.md,
+                          horizontal: MinqTokens.spacing(6),
+                          vertical: MinqTokens.spacing(4),
                         ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (widget.isLoading)
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation(
-                                tokens.colors.primary,
+                                MinqTokens.brandPrimary,
                               ),
                             ),
                           )
                         else if (widget.icon != null) ...[
                           Icon(
                             widget.icon,
-                            color: tokens.colors.primary,
+                            color: MinqTokens.brandPrimary,
                             size: 18,
                           ),
                           const SizedBox(width: 8),
                         ],
                         if (!widget.isLoading)
                           DefaultTextStyle(
-                            style: tokens.typography.labelLarge.copyWith(
-                              color: tokens.colors.primary,
+                            style: MinqTokens.bodyLarge.copyWith(
+                              color: MinqTokens.brandPrimary,
                               fontWeight: FontWeight.w600,
                             ),
                             child: widget.child,
@@ -393,10 +399,12 @@ class PolishedFloatingActionButton extends StatefulWidget {
   });
 
   @override
-  State<PolishedFloatingActionButton> createState() => _PolishedFloatingActionButtonState();
+  State<PolishedFloatingActionButton> createState() =>
+      _PolishedFloatingActionButtonState();
 }
 
-class _PolishedFloatingActionButtonState extends State<PolishedFloatingActionButton>
+class _PolishedFloatingActionButtonState
+    extends State<PolishedFloatingActionButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -407,7 +415,7 @@ class _PolishedFloatingActionButtonState extends State<PolishedFloatingActionBut
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: MinqAnimationTokens.fast,
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 
@@ -416,7 +424,7 @@ class _PolishedFloatingActionButtonState extends State<PolishedFloatingActionBut
       end: 0.92,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: MinqAnimationTokens.easeOut,
+      curve: Curves.easeOut,
     ));
 
     _shadowAnimation = Tween<double>(
@@ -424,7 +432,7 @@ class _PolishedFloatingActionButtonState extends State<PolishedFloatingActionBut
       end: 0.3,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: MinqAnimationTokens.easeOut,
+      curve: Curves.easeOut,
     ));
   }
 
@@ -459,10 +467,11 @@ class _PolishedFloatingActionButtonState extends State<PolishedFloatingActionBut
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
     final size = widget.mini ? 40.0 : 56.0;
-    final backgroundColor = widget.backgroundColor ?? tokens.colors.primary;
-    final foregroundColor = widget.foregroundColor ?? tokens.colors.onPrimary;
+    final backgroundColor =
+        widget.backgroundColor ?? MinqTokens.brandPrimary;
+    final foregroundColor =
+        widget.foregroundColor ?? MinqTokens.surface;
 
     return Semantics(
       label: widget.semanticLabel,
@@ -491,15 +500,15 @@ class _PolishedFloatingActionButtonState extends State<PolishedFloatingActionBut
                     end: Alignment.bottomRight,
                   ),
                   shape: BoxShape.circle,
-                  boxShadow: tokens.elevation.lg.map((shadow) {
-                    return BoxShadow(
-                      color: shadow.color.withAlpha(
-                        (shadow.color.alpha * _shadowAnimation.value).round(),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(
+                        (51 * _shadowAnimation.value).round(),
                       ),
-                      blurRadius: shadow.blurRadius * 1.5,
-                      offset: shadow.offset,
-                    );
-                  }).toList(),
+                      blurRadius: 10 * _shadowAnimation.value,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
                 child: Material(
                   color: Colors.transparent,
@@ -559,7 +568,7 @@ class _PolishedIconButtonState extends State<PolishedIconButton>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: MinqAnimationTokens.fast,
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 
@@ -568,7 +577,7 @@ class _PolishedIconButtonState extends State<PolishedIconButton>
       end: 0.95,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: MinqAnimationTokens.easeOut,
+      curve: Curves.easeOut,
     ));
   }
 
@@ -603,8 +612,7 @@ class _PolishedIconButtonState extends State<PolishedIconButton>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-    final iconColor = widget.color ?? tokens.colors.onSurface;
+    final iconColor = widget.color ?? MinqTokens.textPrimary;
 
     _backgroundAnimation = ColorTween(
       begin: Colors.transparent,
@@ -627,14 +635,15 @@ class _PolishedIconButtonState extends State<PolishedIconButton>
               scale: _scaleAnimation.value,
               child: Container(
                 constraints: const BoxConstraints(
-                  minWidth: MinqSpacingTokens.minTouchTarget,
-                  minHeight: MinqSpacingTokens.minTouchTarget,
+                  minWidth: 48,
+                  minHeight: 48,
                 ),
                 decoration: BoxDecoration(
                   color: _backgroundAnimation.value,
-                  borderRadius: tokens.radius.smRadius,
+                  borderRadius: MinqTokens.cornerSmall(),
                 ),
-                padding: widget.padding ?? EdgeInsets.all(tokens.spacing.sm),
+                padding:
+                    widget.padding ?? EdgeInsets.all(MinqTokens.spacing(2)),
                 child: Icon(
                   widget.icon,
                   color: iconColor,
@@ -679,7 +688,7 @@ class _PolishedTextButtonState extends State<PolishedTextButton>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: MinqAnimationTokens.fast,
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 
@@ -688,7 +697,7 @@ class _PolishedTextButtonState extends State<PolishedTextButton>
       end: 0.98,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: MinqAnimationTokens.easeOut,
+      curve: Curves.easeOut,
     ));
   }
 
@@ -723,11 +732,9 @@ class _PolishedTextButtonState extends State<PolishedTextButton>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-
     _backgroundAnimation = ColorTween(
       begin: Colors.transparent,
-      end: tokens.colors.primary.withAlpha(15),
+      end: MinqTokens.brandPrimary.withAlpha(15),
     ).animate(_controller);
 
     return Semantics(
@@ -746,22 +753,22 @@ class _PolishedTextButtonState extends State<PolishedTextButton>
               scale: _scaleAnimation.value,
               child: Container(
                 constraints: const BoxConstraints(
-                  minWidth: MinqSpacingTokens.minTouchTarget,
-                  minHeight: MinqSpacingTokens.minTouchTarget,
+                  minWidth: 48,
+                  minHeight: 48,
                 ),
                 decoration: BoxDecoration(
                   color: _backgroundAnimation.value,
-                  borderRadius: tokens.radius.smRadius,
+                  borderRadius: MinqTokens.cornerSmall(),
                 ),
-                padding: widget.padding ?? 
+                padding: widget.padding ??
                     EdgeInsets.symmetric(
-                      horizontal: tokens.spacing.md,
-                      vertical: tokens.spacing.sm,
+                      horizontal: MinqTokens.spacing(4),
+                      vertical: MinqTokens.spacing(2),
                     ),
                 child: Center(
                   child: DefaultTextStyle(
-                    style: tokens.typography.labelLarge.copyWith(
-                      color: tokens.colors.primary,
+                    style: MinqTokens.bodyLarge.copyWith(
+                      color: MinqTokens.brandPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                     child: widget.child,

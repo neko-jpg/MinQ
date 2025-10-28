@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/foundation.dart';
 import 'package:minq/core/error/exceptions.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
@@ -9,9 +8,6 @@ class _GenericMinqException extends MinqException {
   const _GenericMinqException(
     super.message, {
     super.code,
-    super.originalError,
-    super.stackTrace,
-    super.context,
   });
 }
 
@@ -298,7 +294,7 @@ class ErrorRecoveryManager {
       }
       
       return RecoveryResult.failure(
-        _GenericMinqException('No fallback operation available'),
+        const _GenericMinqException('No fallback operation available'),
         RecoveryStrategy.failGracefully,
       );
       

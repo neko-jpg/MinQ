@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/domain/ai/ai_insights.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// Card widget for displaying failure prediction alerts
@@ -174,7 +174,7 @@ class FailurePredictionCard extends StatelessWidget {
   }
 
   Widget _buildRiskScoreCircle(double riskScore, Color color, MinqTheme tokens) {
-    return Container(
+    return SizedBox(
       width: 50,
       height: 50,
       child: Stack(
@@ -225,10 +225,10 @@ class FailurePredictionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.only(top: 6),
+            margin: const EdgeInsets.only(top: 6),
             width: 6,
             height: 6,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.red,
               shape: BoxShape.circle,
             ),
@@ -254,10 +254,10 @@ class FailurePredictionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.only(top: 6),
+            margin: const EdgeInsets.only(top: 6),
             width: 6,
             height: 6,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.green,
               shape: BoxShape.circle,
             ),
@@ -321,18 +321,18 @@ class FailurePredictionCard extends StatelessWidget {
 
   void _handlePreventAction(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Text(AppLocalizations.of(context)!.showPreventionPlan),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
 
   void _handleStartHabit(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Text(AppLocalizations.of(context)!.navigateToHabitExecution),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

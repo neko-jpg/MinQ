@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minq/l10n/app_localizations.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 import 'package:minq/presentation/widgets/micro_interactions.dart';
 
 /// Polished card components with enhanced shadows, gradients, and visual hierarchy
@@ -50,7 +50,7 @@ class _PolishedCardState extends State<PolishedCard>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: MinqAnimationTokens.fast,
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 
@@ -59,7 +59,7 @@ class _PolishedCardState extends State<PolishedCard>
       end: widget.interactive ? 0.98 : 1.0,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: MinqAnimationTokens.easeOut,
+      curve: Curves.easeOut,
     ));
 
     _shadowAnimation = Tween<double>(
@@ -67,7 +67,7 @@ class _PolishedCardState extends State<PolishedCard>
       end: widget.interactive ? 1.5 : 1.0,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: MinqAnimationTokens.easeOut,
+      curve: Curves.easeOut,
     ));
   }
 
@@ -102,32 +102,31 @@ class _PolishedCardState extends State<PolishedCard>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-
     Widget cardContent = Container(
       width: widget.width,
       height: widget.height,
       margin: widget.margin,
-      padding: widget.padding ?? EdgeInsets.all(tokens.spacing.lg),
+      padding: widget.padding ?? EdgeInsets.all(MinqTokens.spacing(4)),
       decoration: BoxDecoration(
-        color: widget.gradient == null ? 
-            (widget.backgroundColor ?? tokens.colors.surface) : null,
+        color: widget.gradient == null
+            ? (widget.backgroundColor ?? MinqTokens.surface)
+            : null,
         gradient: widget.gradient,
-        borderRadius: tokens.radius.lgRadius,
+        borderRadius: MinqTokens.cornerLarge(),
         boxShadow: widget.elevated
-            ? tokens.elevation.md.map((shadow) {
-                return BoxShadow(
-                  color: shadow.color.withAlpha(
-                    (shadow.color.alpha * _shadowAnimation.value).round(),
+            ? [
+                BoxShadow(
+                  color: Colors.black.withAlpha(
+                    (25 * _shadowAnimation.value).round(),
                   ),
-                  blurRadius: shadow.blurRadius * _shadowAnimation.value,
-                  offset: shadow.offset,
-                );
-              }).toList()
+                  blurRadius: 10 * _shadowAnimation.value,
+                  offset: const Offset(0, 5),
+                ),
+              ]
             : null,
         border: !widget.elevated
             ? Border.all(
-                color: tokens.colors.outlineVariant,
+                color: const Color(0xFFE5E7EB),
                 width: 1,
               )
             : null,
@@ -186,10 +185,9 @@ class PolishedFeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-    final primary = primaryColor ?? tokens.colors.primary;
-    final secondary = secondaryColor ?? 
-        Color.lerp(primary, Colors.white, 0.2) ?? primary;
+    final primary = primaryColor ?? MinqTokens.brandPrimary;
+    final secondary =
+        secondaryColor ?? Color.lerp(primary, Colors.white, 0.2) ?? primary;
 
     return PolishedCard(
       interactive: isEnabled && onTap != null,
@@ -206,7 +204,7 @@ class PolishedFeatureCard extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
               color: Colors.white.withAlpha(51),
-              borderRadius: tokens.radius.mdRadius,
+              borderRadius: MinqTokens.cornerMedium(),
             ),
             child: Icon(
               icon,
@@ -214,23 +212,23 @@ class PolishedFeatureCard extends StatelessWidget {
               size: 24,
             ),
           ),
-          SizedBox(width: tokens.spacing.md),
+          SizedBox(width: MinqTokens.spacing(4)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: tokens.typography.titleMedium.copyWith(
+                  style: MinqTokens.titleMedium.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 if (subtitle != null) ...[
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: MinqTokens.spacing(1)),
                   Text(
                     subtitle!,
-                    style: tokens.typography.bodySmall.copyWith(
+                    style: MinqTokens.bodySmall.copyWith(
                       color: Colors.white.withAlpha(204),
                     ),
                   ),
@@ -239,7 +237,7 @@ class PolishedFeatureCard extends StatelessWidget {
             ),
           ),
           if (trailing != null) ...[
-            SizedBox(width: tokens.spacing.sm),
+            SizedBox(width: MinqTokens.spacing(2)),
             trailing!,
           ] else if (onTap != null)
             Icon(
@@ -276,8 +274,7 @@ class PolishedStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-    final accent = accentColor ?? tokens.colors.primary;
+    final accent = accentColor ?? MinqTokens.brandPrimary;
 
     return PolishedCard(
       interactive: onTap != null,
@@ -293,7 +290,7 @@ class PolishedStatsCard extends StatelessWidget {
                   height: 32,
                   decoration: BoxDecoration(
                     color: accent.withAlpha(25),
-                    borderRadius: tokens.radius.smRadius,
+                    borderRadius: MinqTokens.cornerSmall(),
                   ),
                   child: Icon(
                     icon,
@@ -301,40 +298,40 @@ class PolishedStatsCard extends StatelessWidget {
                     size: 18,
                   ),
                 ),
-                SizedBox(width: tokens.spacing.sm),
+                SizedBox(width: MinqTokens.spacing(2)),
               ],
               Expanded(
                 child: Text(
                   title,
-                  style: tokens.typography.bodyMedium.copyWith(
-                    color: tokens.colors.onSurfaceVariant,
+                  style: MinqTokens.bodyMedium.copyWith(
+                    color: MinqTokens.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: MinqTokens.spacing(4)),
           Text(
             value,
-            style: tokens.typography.headlineMedium.copyWith(
-              color: tokens.colors.onSurface,
+            style: MinqTokens.titleLarge.copyWith(
+              color: MinqTokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
           if (subtitle != null) ...[
-            SizedBox(height: tokens.spacing.xs),
+            SizedBox(height: MinqTokens.spacing(1)),
             Text(
               subtitle!,
-              style: tokens.typography.bodySmall.copyWith(
-                color: tokens.colors.onSurfaceVariant,
+              style: MinqTokens.bodySmall.copyWith(
+                color: MinqTokens.textSecondary,
               ),
             ),
           ],
           if (progress != null) ...[
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: MinqTokens.spacing(4)),
             ClipRRect(
-              borderRadius: tokens.radius.xsRadius,
+              borderRadius: MinqTokens.cornerSmall(),
               child: LinearProgressIndicator(
                 value: progress,
                 backgroundColor: accent.withAlpha(25),
@@ -372,10 +369,9 @@ class PolishedActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-    final accent = isDestructive 
-        ? tokens.colors.error 
-        : (accentColor ?? tokens.colors.primary);
+    final accent = isDestructive
+        ? const Color(0xFFEF4444)
+        : (accentColor ?? MinqTokens.brandPrimary);
 
     return PolishedCard(
       child: Column(
@@ -389,7 +385,7 @@ class PolishedActionCard extends StatelessWidget {
                   height: 40,
                   decoration: BoxDecoration(
                     color: accent.withAlpha(25),
-                    borderRadius: tokens.radius.mdRadius,
+                    borderRadius: MinqTokens.cornerMedium(),
                   ),
                   child: Icon(
                     icon,
@@ -397,49 +393,47 @@ class PolishedActionCard extends StatelessWidget {
                     size: 20,
                   ),
                 ),
-                SizedBox(width: tokens.spacing.md),
+                SizedBox(width: MinqTokens.spacing(4)),
               ],
               Expanded(
                 child: Text(
                   title,
-                  style: tokens.typography.titleMedium.copyWith(
-                    color: tokens.colors.onSurface,
+                  style: MinqTokens.titleMedium.copyWith(
+                    color: MinqTokens.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: MinqTokens.spacing(2)),
           Text(
             description,
-            style: tokens.typography.bodyMedium.copyWith(
-              color: tokens.colors.onSurfaceVariant,
+            style: MinqTokens.bodyMedium.copyWith(
+              color: MinqTokens.textSecondary,
               height: 1.4,
             ),
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(6)),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: onAction,
               style: ElevatedButton.styleFrom(
                 backgroundColor: accent,
-                foregroundColor: isDestructive 
-                    ? tokens.colors.onError 
-                    : tokens.colors.onPrimary,
+                foregroundColor: Colors.white,
                 elevation: 0,
                 shadowColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
-                  borderRadius: tokens.radius.mdRadius,
+                  borderRadius: MinqTokens.cornerMedium(),
                 ),
                 padding: EdgeInsets.symmetric(
-                  vertical: tokens.spacing.md,
+                  vertical: MinqTokens.spacing(4),
                 ),
               ),
               child: Text(
                 actionText,
-                style: tokens.typography.labelLarge.copyWith(
+                style: MinqTokens.bodyLarge.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -473,7 +467,8 @@ class PolishedNotificationCard extends StatefulWidget {
   });
 
   @override
-  State<PolishedNotificationCard> createState() => _PolishedNotificationCardState();
+  State<PolishedNotificationCard> createState() =>
+      _PolishedNotificationCardState();
 }
 
 class _PolishedNotificationCardState extends State<PolishedNotificationCard>
@@ -486,7 +481,7 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
   void initState() {
     super.initState();
     _dismissController = AnimationController(
-      duration: MinqAnimationTokens.medium,
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
@@ -495,7 +490,7 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _dismissController,
-      curve: MinqAnimationTokens.easeInOut,
+      curve: Curves.easeInOut,
     ));
 
     _fadeAnimation = Tween<double>(
@@ -503,7 +498,7 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
       end: 0.0,
     ).animate(CurvedAnimation(
       parent: _dismissController,
-      curve: MinqAnimationTokens.easeInOut,
+      curve: Curves.easeInOut,
     ));
   }
 
@@ -520,8 +515,7 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-    final accent = widget.accentColor ?? tokens.colors.primary;
+    final accent = widget.accentColor ?? MinqTokens.brandPrimary;
 
     return AnimatedBuilder(
       animation: _dismissController,
@@ -541,7 +535,7 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
                       height: 36,
                       decoration: BoxDecoration(
                         color: accent.withAlpha(25),
-                        borderRadius: tokens.radius.smRadius,
+                        borderRadius: MinqTokens.cornerSmall(),
                       ),
                       child: Icon(
                         widget.icon,
@@ -549,7 +543,7 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
                         size: 18,
                       ),
                     ),
-                    SizedBox(width: tokens.spacing.md),
+                    SizedBox(width: MinqTokens.spacing(4)),
                   ],
                   Expanded(
                     child: Column(
@@ -557,16 +551,16 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
                       children: [
                         Text(
                           widget.title,
-                          style: tokens.typography.titleSmall.copyWith(
-                            color: tokens.colors.onSurface,
+                          style: MinqTokens.bodyLarge.copyWith(
+                            color: MinqTokens.textPrimary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(height: tokens.spacing.xs),
+                        SizedBox(height: MinqTokens.spacing(1)),
                         Text(
                           widget.message,
-                          style: tokens.typography.bodySmall.copyWith(
-                            color: tokens.colors.onSurfaceVariant,
+                          style: MinqTokens.bodySmall.copyWith(
+                            color: MinqTokens.textSecondary,
                             height: 1.3,
                           ),
                         ),
@@ -574,19 +568,19 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
                     ),
                   ),
                   if (widget.isDismissible) ...[
-                    SizedBox(width: tokens.spacing.sm),
+                    SizedBox(width: MinqTokens.spacing(2)),
                     GestureDetector(
                       onTap: _handleDismiss,
                       child: Container(
                         width: 32,
                         height: 32,
                         decoration: BoxDecoration(
-                          color: tokens.colors.onSurfaceVariant.withAlpha(25),
-                          borderRadius: tokens.radius.smRadius,
+                          color: MinqTokens.textSecondary.withAlpha(25),
+                          borderRadius: MinqTokens.cornerSmall(),
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.close,
-                          color: tokens.colors.onSurfaceVariant,
+                          color: MinqTokens.textSecondary,
                           size: 16,
                         ),
                       ),
@@ -636,7 +630,7 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
   void initState() {
     super.initState();
     _progressController = AnimationController(
-      duration: MinqAnimationTokens.slow,
+      duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
 
@@ -645,7 +639,7 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
       end: widget.progress,
     ).animate(CurvedAnimation(
       parent: _progressController,
-      curve: MinqAnimationTokens.easeOut,
+      curve: Curves.easeOut,
     ));
 
     _progressController.forward();
@@ -660,7 +654,7 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
         end: widget.progress,
       ).animate(CurvedAnimation(
         parent: _progressController,
-        curve: MinqAnimationTokens.easeOut,
+        curve: Curves.easeOut,
       ));
       _progressController.forward(from: 0.0);
     }
@@ -674,8 +668,7 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-    final accent = widget.accentColor ?? tokens.colors.primary;
+    final accent = widget.accentColor ?? MinqTokens.brandPrimary;
 
     return PolishedCard(
       interactive: widget.onTap != null,
@@ -691,7 +684,7 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
                   height: 40,
                   decoration: BoxDecoration(
                     color: accent.withAlpha(25),
-                    borderRadius: tokens.radius.mdRadius,
+                    borderRadius: MinqTokens.cornerMedium(),
                   ),
                   child: Icon(
                     widget.icon,
@@ -699,7 +692,7 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
                     size: 20,
                   ),
                 ),
-                SizedBox(width: tokens.spacing.md),
+                SizedBox(width: MinqTokens.spacing(4)),
               ],
               Expanded(
                 child: Column(
@@ -707,17 +700,17 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
                   children: [
                     Text(
                       widget.title,
-                      style: tokens.typography.titleMedium.copyWith(
-                        color: tokens.colors.onSurface,
+                      style: MinqTokens.titleMedium.copyWith(
+                        color: MinqTokens.textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     if (widget.subtitle != null) ...[
-                      SizedBox(height: tokens.spacing.xs),
+                      SizedBox(height: MinqTokens.spacing(1)),
                       Text(
                         widget.subtitle!,
-                        style: tokens.typography.bodySmall.copyWith(
-                          color: tokens.colors.onSurfaceVariant,
+                        style: MinqTokens.bodySmall.copyWith(
+                          color: MinqTokens.textSecondary,
                         ),
                       ),
                     ],
@@ -726,14 +719,14 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
               ),
               Text(
                 widget.progressText,
-                style: tokens.typography.labelLarge.copyWith(
+                style: MinqTokens.bodyLarge.copyWith(
                   color: accent,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(6)),
           AnimatedBuilder(
             animation: _progressAnimation,
             builder: (context, child) {
@@ -744,22 +737,22 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
                     children: [
                       Text(
                         AppLocalizations.of(context)!.progress,
-                        style: tokens.typography.bodySmall.copyWith(
-                          color: tokens.colors.onSurfaceVariant,
+                        style: MinqTokens.bodySmall.copyWith(
+                          color: MinqTokens.textSecondary,
                         ),
                       ),
                       Text(
                         '${(_progressAnimation.value * 100).round()}%',
-                        style: tokens.typography.bodySmall.copyWith(
-                          color: tokens.colors.onSurfaceVariant,
+                        style: MinqTokens.bodySmall.copyWith(
+                          color: MinqTokens.textSecondary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.sm),
+                  SizedBox(height: MinqTokens.spacing(2)),
                   ClipRRect(
-                    borderRadius: tokens.radius.xsRadius,
+                    borderRadius: MinqTokens.cornerSmall(),
                     child: LinearProgressIndicator(
                       value: _progressAnimation.value,
                       backgroundColor: accent.withAlpha(25),

@@ -103,7 +103,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
             children: [
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: _selectedCategory,
+                  initialValue: _selectedCategory,
                   decoration: const InputDecoration(
                     labelText: 'カテゴリ',
                     border: OutlineInputBorder(),

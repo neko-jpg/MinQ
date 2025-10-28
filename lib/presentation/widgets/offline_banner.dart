@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/l10n/app_localizations.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 
 /// オフラインバナー
 /// ネットワーク接続がない場合に表示
@@ -13,26 +13,25 @@ class OfflineBanner extends ConsumerWidget {
     // TODO: NetworkStatusService のプロバイダーを作成して使用
     // const isOffline = ref.watch(networkStatusProvider).isOffline;
 
-    final tokens = Theme.of(context).extension<MinqTheme>()!;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.md,
-        vertical: tokens.spacing.sm,
+        horizontal: MinqTokens.spacing(4),
+        vertical: MinqTokens.spacing(2),
       ),
-      color: tokens.accentWarning,
+      color: Colors.orange,
       child: Row(
         children: [
-          Icon(Icons.cloud_off, color: tokens.onPrimary, size: 20),
-          SizedBox(width: tokens.spacing.sm),
+          const Icon(Icons.cloud_off, color: Colors.white, size: 20),
+          SizedBox(width: MinqTokens.spacing(2)),
           Expanded(
             child: Text(
               'オフラインモード - 一部機能が制限されています',
-              style: tokens.typography.body.copyWith(color: tokens.onPrimary),
+              style: MinqTokens.bodyMedium.copyWith(color: Colors.white),
             ),
           ),
           IconButton(
-            icon: Icon(Icons.info_outline, color: tokens.onPrimary),
+            icon: const Icon(Icons.info_outline, color: Colors.white),
             onPressed: () => _showOfflineInfo(context),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
@@ -73,26 +72,25 @@ class OfflineEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = Theme.of(context).extension<MinqTheme>()!;
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.xl),
+        padding: EdgeInsets.all(MinqTokens.spacing(6)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.cloud_off, size: 80, color: tokens.textMuted),
-            SizedBox(height: tokens.spacing.lg),
+            Icon(Icons.cloud_off, size: 80, color: MinqTokens.textSecondary),
+            SizedBox(height: MinqTokens.spacing(4)),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: tokens.typography.body.copyWith(color: tokens.textSecondary),
+              style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
             ),
             if (onRetry != null) ...[
-              SizedBox(height: tokens.spacing.lg),
+              SizedBox(height: MinqTokens.spacing(4)),
               ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: Text(AppLocalizations.of(context)!.retry),
+                label: const Text('Retry'),
               ),
             ],
           ],
@@ -108,26 +106,25 @@ class ReadOnlyModeIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = Theme.of(context).extension<MinqTheme>()!;
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.sm,
-        vertical: tokens.spacing.xs,
+        horizontal: MinqTokens.spacing(2),
+        vertical: MinqTokens.spacing(1),
       ),
       decoration: BoxDecoration(
-        color: tokens.accentWarning.withAlpha(51),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-        border: Border.all(color: tokens.accentWarning.withAlpha(128)),
+        color: Colors.orange.withAlpha(51),
+        borderRadius: MinqTokens.cornerLarge(),
+        border: Border.all(color: Colors.orange.withAlpha(128)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.visibility, size: 16, color: tokens.accentWarning),
-          SizedBox(width: tokens.spacing.xs),
+          const Icon(Icons.visibility, size: 16, color: Colors.orange),
+          SizedBox(width: MinqTokens.spacing(1)),
           Text(
             '読み取り専用',
-            style: tokens.typography.caption.copyWith(
-              color: tokens.accentWarning,
+            style: MinqTokens.bodySmall.copyWith(
+              color: Colors.orange,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -165,10 +162,10 @@ void showOfflineDialog(BuildContext context) {
     context: context,
     builder:
         (context) => AlertDialog(
-          title: const Row(
+          title: Row(
             children: [
-              Icon(Icons.cloud_off, color: Colors.orange),
-              SizedBox(width: 12),
+              const Icon(Icons.cloud_off, color: Colors.orange),
+              const SizedBox(width: 12),
               Text(AppLocalizations.of(context)!.offline),
             ],
           ),
@@ -190,10 +187,10 @@ void showOfflineDialog(BuildContext context) {
 void showOfflineSnackBar(BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: const Row(
+      content: Row(
         children: [
-          Icon(Icons.cloud_off, color: Colors.white),
-          SizedBox(width: 12),
+          const Icon(Icons.cloud_off, color: Colors.white),
+          const SizedBox(width: 12),
           Expanded(child: Text(AppLocalizations.of(context)!.offlineOperationNotAvailable)),
         ],
       ),

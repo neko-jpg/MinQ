@@ -47,24 +47,29 @@ const QuestSchema = CollectionSchema(
       name: r'iconKey',
       type: IsarType.string,
     ),
-    r'location': PropertySchema(
+    r'isTemplate': PropertySchema(
       id: 6,
+      name: r'isTemplate',
+      type: IsarType.bool,
+    ),
+    r'location': PropertySchema(
+      id: 7,
       name: r'location',
       type: IsarType.string,
     ),
     r'owner': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'owner',
       type: IsarType.string,
     ),
     r'status': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'status',
       type: IsarType.string,
       enumMap: _QueststatusEnumValueMap,
     ),
     r'title': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'title',
       type: IsarType.string,
     )
@@ -74,7 +79,21 @@ const QuestSchema = CollectionSchema(
   deserialize: _questDeserialize,
   deserializeProp: _questDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'isTemplate': IndexSchema(
+      id: -257207582910097603,
+      name: r'isTemplate',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'isTemplate',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {},
   getId: _questGetId,
@@ -126,10 +145,11 @@ void _questSerialize(
   writer.writeString(offsets[3], object.difficulty);
   writer.writeLong(offsets[4], object.estimatedMinutes);
   writer.writeString(offsets[5], object.iconKey);
-  writer.writeString(offsets[6], object.location);
-  writer.writeString(offsets[7], object.owner);
-  writer.writeString(offsets[8], object.status.name);
-  writer.writeString(offsets[9], object.title);
+  writer.writeBool(offsets[6], object.isTemplate);
+  writer.writeString(offsets[7], object.location);
+  writer.writeString(offsets[8], object.owner);
+  writer.writeString(offsets[9], object.status.name);
+  writer.writeString(offsets[10], object.title);
 }
 
 Quest _questDeserialize(
@@ -146,12 +166,13 @@ Quest _questDeserialize(
   object.estimatedMinutes = reader.readLong(offsets[4]);
   object.iconKey = reader.readStringOrNull(offsets[5]);
   object.id = id;
-  object.location = reader.readStringOrNull(offsets[6]);
-  object.owner = reader.readString(offsets[7]);
+  object.isTemplate = reader.readBool(offsets[6]);
+  object.location = reader.readStringOrNull(offsets[7]);
+  object.owner = reader.readString(offsets[8]);
   object.status =
-      _QueststatusValueEnumMap[reader.readStringOrNull(offsets[8])] ??
+      _QueststatusValueEnumMap[reader.readStringOrNull(offsets[9])] ??
           QuestStatus.active;
-  object.title = reader.readString(offsets[9]);
+  object.title = reader.readString(offsets[10]);
   return object;
 }
 
@@ -175,13 +196,15 @@ P _questDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
+      return (reader.readString(offset)) as P;
+    case 9:
       return (_QueststatusValueEnumMap[reader.readStringOrNull(offset)] ??
           QuestStatus.active) as P;
-    case 9:
+    case 10:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -213,6 +236,14 @@ extension QuestQueryWhereSort on QueryBuilder<Quest, Quest, QWhere> {
   QueryBuilder<Quest, Quest, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<Quest, Quest, QAfterWhere> anyIsTemplate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'isTemplate'),
+      );
     });
   }
 }
@@ -280,6 +311,51 @@ extension QuestQueryWhere on QueryBuilder<Quest, Quest, QWhereClause> {
         upper: upperId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<Quest, Quest, QAfterWhereClause> isTemplateEqualTo(
+      bool isTemplate) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'isTemplate',
+        value: [isTemplate],
+      ));
+    });
+  }
+
+  QueryBuilder<Quest, Quest, QAfterWhereClause> isTemplateNotEqualTo(
+      bool isTemplate) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isTemplate',
+              lower: [],
+              upper: [isTemplate],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isTemplate',
+              lower: [isTemplate],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isTemplate',
+              lower: [isTemplate],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isTemplate',
+              lower: [],
+              upper: [isTemplate],
+              includeUpper: false,
+            ));
+      }
     });
   }
 }
@@ -934,6 +1010,16 @@ extension QuestQueryFilter on QueryBuilder<Quest, Quest, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Quest, Quest, QAfterFilterCondition> isTemplateEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isTemplate',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<Quest, Quest, QAfterFilterCondition> locationIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1543,6 +1629,18 @@ extension QuestQuerySortBy on QueryBuilder<Quest, Quest, QSortBy> {
     });
   }
 
+  QueryBuilder<Quest, Quest, QAfterSortBy> sortByIsTemplate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isTemplate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Quest, Quest, QAfterSortBy> sortByIsTemplateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isTemplate', Sort.desc);
+    });
+  }
+
   QueryBuilder<Quest, Quest, QAfterSortBy> sortByLocation() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'location', Sort.asc);
@@ -1677,6 +1775,18 @@ extension QuestQuerySortThenBy on QueryBuilder<Quest, Quest, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Quest, Quest, QAfterSortBy> thenByIsTemplate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isTemplate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Quest, Quest, QAfterSortBy> thenByIsTemplateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isTemplate', Sort.desc);
+    });
+  }
+
   QueryBuilder<Quest, Quest, QAfterSortBy> thenByLocation() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'location', Sort.asc);
@@ -1766,6 +1876,12 @@ extension QuestQueryWhereDistinct on QueryBuilder<Quest, Quest, QDistinct> {
     });
   }
 
+  QueryBuilder<Quest, Quest, QDistinct> distinctByIsTemplate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isTemplate');
+    });
+  }
+
   QueryBuilder<Quest, Quest, QDistinct> distinctByLocation(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1835,6 +1951,12 @@ extension QuestQueryProperty on QueryBuilder<Quest, Quest, QQueryProperty> {
   QueryBuilder<Quest, String?, QQueryOperations> iconKeyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'iconKey');
+    });
+  }
+
+  QueryBuilder<Quest, bool, QQueryOperations> isTemplateProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isTemplate');
     });
   }
 

@@ -23,7 +23,7 @@ class RewardSystem {
     }
 
     try {
-      final snapshot = await _firestore!.collection('rewards').get();
+      final snapshot = await _firestore.collection('rewards').get();
       return snapshot.docs.map((doc) => Reward.fromJson(doc.data())).toList();
     } catch (e) {
       print('Error fetching rewards: $e');
@@ -42,11 +42,11 @@ class RewardSystem {
       return false;
     }
 
-    final userRef = _firestore!.collection('users').doc(userId);
-    final rewardRef = _firestore!.collection('rewards').doc(rewardId);
+    final userRef = _firestore.collection('users').doc(userId);
+    final rewardRef = _firestore.collection('rewards').doc(rewardId);
 
     try {
-      return await _firestore!.runTransaction((transaction) async {
+      return await _firestore.runTransaction((transaction) async {
         // 1. Get current user points and the reward details
         final rewardSnapshot = await transaction.get(rewardRef);
         if (!rewardSnapshot.exists) {
@@ -140,7 +140,7 @@ class RewardSystem {
       // For consumable point pouches, directly award points instead of adding to inventory
       if (selectedReward.type == 'consumable') {
         final points = selectedReward.name.contains('Small') ? 25 : 50;
-        await _firestore!
+        await _firestore
             .collection('users')
             .doc(userId)
             .collection('points_transactions')
@@ -152,7 +152,7 @@ class RewardSystem {
             });
         print('Awarded $points surprise points to user $userId');
       } else {
-        await _firestore!
+        await _firestore
             .collection('users')
             .doc(userId)
             .collection('user_rewards')

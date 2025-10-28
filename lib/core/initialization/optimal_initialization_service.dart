@@ -3,9 +3,10 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/startup/startup_performance_manager.dart';
-import 'package:minq/core/startup/crash_prevention_service.dart';
 import 'package:minq/core/logging/secure_startup_logger.dart';
+import 'package:minq/core/startup/crash_prevention_service.dart';
+import 'package:minq/core/startup/startup_performance_manager.dart';
+import 'package:minq/core/database/database_lifecycle_manager.dart';
 import 'package:minq/data/providers.dart';
 
 /// 最適化された初期化サービス
@@ -152,10 +153,7 @@ class OptimalInitializationService {
       final userRepo = ref.read(userRepositoryProvider);
       var localUser = await userRepo.getUserById(uid);
       
-      if (localUser == null) {
-        // 新規ユーザーの作成
-        localUser = await _createNewUser(ref, uid);
-      }
+      localUser ??= await _createNewUser(ref, uid);
       
       // ストリーク情報の更新
       await _updateStreakInfo(ref, localUser);

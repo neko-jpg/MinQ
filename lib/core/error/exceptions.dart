@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 
 /// Base exception class for all MinQ application exceptions
 abstract class MinqException implements Exception {
@@ -19,7 +18,7 @@ abstract class MinqException implements Exception {
   @override
   String toString() {
     final buffer = StringBuffer();
-    buffer.write('${runtimeType}: $message');
+    buffer.write('$runtimeType: $message');
     
     if (code != null) {
       buffer.write(' (code: $code)');
@@ -501,6 +500,5 @@ class _GenericMinqException extends MinqException {
     super.code,
     super.originalError,
     super.stackTrace,
-    super.context,
   });
 }

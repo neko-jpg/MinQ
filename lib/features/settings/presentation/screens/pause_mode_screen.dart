@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/features/home/presentation/screens/home_screen_v2.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const String _pauseModeKey = 'is_pause_mode_enabled';
 
@@ -29,7 +30,7 @@ class PauseModeNotifier extends StateNotifier<bool> {
           .doc(userId) // Using dummy user ID
           .update({'isPaused': isEnabled});
     } catch (e) {
-      print('Error updating backend pause state: $e');
+      MinqLogger.error('Error updating backend pause state: $e');
       // Optionally, revert the local state if backend fails
       await prefs.setBool(_pauseModeKey, !isEnabled);
       state = !isEnabled;

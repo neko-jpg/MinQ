@@ -115,6 +115,7 @@ dependencies:
   riverpod: any
   lottie: any
   geolocator: any
+  meta: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

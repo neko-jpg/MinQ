@@ -73,7 +73,7 @@ class MinqTypography {
 }
 
 class MinqTheme extends ThemeExtension<MinqTheme> {
-  const MinqTheme({
+  MinqTheme({
     required this.brightness,
     required this.brandPrimary,
     required this.primaryHover,
@@ -122,6 +122,10 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
          primary: brandPrimary,
          primaryHover: primaryHover,
          primaryContainer: surface,
+        background: background,
+        onBackground: textPrimary,
+        surfaceContainer: surfaceAlt,
+        surfaceContainerHigh: divider,
          onPrimary: primaryForeground,
          onPrimaryContainer: textPrimary,
          secondary: accentSecondary,

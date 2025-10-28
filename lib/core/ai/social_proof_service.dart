@@ -376,8 +376,9 @@ class SocialProofService {
     required String targetUserId,
     required EncouragementType stampType,
   }) async {
-    if (!_isActive || _currentUserId == null || !_settings.allowInteraction)
+    if (!_isActive || _currentUserId == null || !_settings.allowInteraction) {
       return;
+    }
 
     try {
       await firestore.collection('encouragements').add({

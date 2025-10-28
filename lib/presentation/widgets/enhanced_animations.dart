@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
 
 /// Enhanced animations and micro-interactions for polished UI
 /// Provides smooth transitions and delightful user feedback

@@ -10,7 +10,6 @@ import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/controllers/home_data_controller.dart';
 import 'package:minq/presentation/controllers/sync_status_controller.dart';
-import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/ai_concierge_card.dart';
 import 'package:minq/presentation/widgets/failure_prediction_widget.dart';
@@ -135,18 +134,19 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Welcome Home',
-          style: tokens.typography.h2.copyWith(fontWeight: FontWeight.bold),
+          style: textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: tokens.spacing.sm),
+        const SizedBox(height: 8),
         Text(
           '今日のフォーカスとMiniQuestをチェックして、一日のスタートを切りましょう。',
-          style: tokens.typography.body.copyWith(color: tokens.textMuted),
+          style: textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant),
         ),
       ],
     );
@@ -160,7 +160,9 @@ class _TodayFocusCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     final focus = data.focus;
     final quests = data.quests;
     final focusQuest =
@@ -178,14 +180,14 @@ class _TodayFocusCard extends ConsumerWidget {
     final navigation = ref.read(navigationUseCaseProvider);
 
     return Card(
-      color: tokens.surface,
+      color: colorScheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-        side: BorderSide(color: tokens.border),
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: colorScheme.outline),
       ),
       elevation: 0,
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             Expanded(
@@ -194,30 +196,31 @@ class _TodayFocusCard extends ConsumerWidget {
                 children: [
                   Text(
                     'Today’s Focus',
-                    style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                    style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  const SizedBox(height: 4),
                   Text(
                     focusQuest?.title ?? 'AIがあなたの習慣を学習中です',
-                    style: tokens.typography.h3.copyWith(
+                    style: textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  const SizedBox(height: 4),
                   Text(
                     focus?.headline ?? 'MiniQuestを作成して取り組むと、ここに今日のおすすめが表示されます。',
-                    style: tokens.typography.body.copyWith(color: tokens.textMuted),
+                    style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: tokens.spacing.md),
+                  const SizedBox(height: 12),
                   ResponsiveLayout.ensureTouchTarget(
-                    child: FilledButton.icon(
+                    child: ElevatedButton.icon(
                       onPressed: navigation.goToCreateMiniQuest,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: tokens.brandPrimary,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: colorScheme.onPrimary,
                       ),
                       icon: const Icon(Icons.add_task),
                       label: const Text('MiniQuestを作成'),
@@ -226,10 +229,10 @@ class _TodayFocusCard extends ConsumerWidget {
                 ],
               ),
             ),
-            SizedBox(width: tokens.spacing.lg),
+            const SizedBox(width: 16),
             SizedBox(
-              width: tokens.spacing.xl * 2,
-              height: tokens.spacing.xl * 2,
+              width: 64,
+              height: 64,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -237,8 +240,8 @@ class _TodayFocusCard extends ConsumerWidget {
                     child: CircularProgressIndicator(
                       value: progress,
                       strokeWidth: 8,
-                      valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
-                      backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+                      valueColor: AlwaysStoppedAnimation(colorScheme.primary),
+                      backgroundColor: colorScheme.primary.withAlpha((255 * 0.1).round()),
                     ),
                   ),
                   Icon(
@@ -248,8 +251,8 @@ class _TodayFocusCard extends ConsumerWidget {
                           fallback: Icons.auto_awesome,
                         )
                         : Icons.auto_awesome,
-                    size: tokens.spacing.xl,
-                    color: tokens.brandPrimary,
+                    size: 32,
+                    color: colorScheme.primary,
                   ),
                 ],
               ),
@@ -268,24 +271,26 @@ class _MiniQuestsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     final navigation = ref.read(navigationUseCaseProvider);
 
     if (miniQuests.isEmpty) {
       return Card(
-        color: tokens.surface,
+        color: colorScheme.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.lg),
-          side: BorderSide(color: tokens.border),
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: colorScheme.outline),
         ),
         elevation: 0,
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: const EdgeInsets.all(16),
           child: MinqEmptyState(
             icon: Icons.auto_awesome,
             title: 'MiniQuestはまだありません',
             message: 'まずは1件MiniQuestを作成して、習慣づくりを始めましょう。',
-            actionArea: FilledButton(
+            actionArea: ElevatedButton(
               onPressed: navigation.goToCreateMiniQuest,
               child: const Text('MiniQuestを作成'),
             ),
@@ -304,7 +309,7 @@ class _MiniQuestsSection extends ConsumerWidget {
           children: [
             Text(
               'Your Mini-Quests',
-              style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: navigation.goToQuests,
@@ -312,7 +317,7 @@ class _MiniQuestsSection extends ConsumerWidget {
             ),
           ],
         ),
-        SizedBox(height: tokens.spacing.sm),
+        const SizedBox(height: 8),
         LayoutBuilder(
           builder: (context, constraints) {
             final columns = context.responsiveColumns(maxColumns: 2);
@@ -342,39 +347,41 @@ class _MiniQuestTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [tokens.brandPrimary, tokens.brandPrimary.withAlpha((255 * 0.75).round())],
+          colors: [colorScheme.primary, colorScheme.primary.withAlpha((255 * 0.75).round())],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(16),
       ),
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                width: tokens.spacing.lg + tokens.spacing.sm,
-                height: tokens.spacing.lg + tokens.spacing.sm,
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
                   color: Colors.white.withAlpha((255 * 0.2).round()),
-                  borderRadius: BorderRadius.circular(tokens.radius.md),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   iconDataForKey(quest.iconKey, fallback: Icons.task_alt),
                   color: Colors.white,
-                  size: tokens.spacing.lg,
+                  size: 24,
                 ),
               ),
               const Spacer(),
               Container(
-                width: tokens.spacing.lg,
-                height: tokens.spacing.lg,
+                width: 24,
+                height: 24,
                 decoration: BoxDecoration(
                   color: Colors.white.withAlpha((255 * 0.25).round()),
                   shape: BoxShape.circle,
@@ -383,10 +390,10 @@ class _MiniQuestTile extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.md),
+          const SizedBox(height: 12),
           Text(
             quest.title,
-            style: tokens.typography.bodyLarge.copyWith(
+            style: textTheme.bodyLarge?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w600,
             ),
@@ -394,10 +401,10 @@ class _MiniQuestTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           if (quest.estimatedMinutes > 0) ...[
-            SizedBox(height: tokens.spacing.xs),
+            const SizedBox(height: 4),
             Text(
               '${quest.estimatedMinutes}分',
-              style: tokens.typography.caption.copyWith(color: Colors.white70),
+              style: textTheme.bodySmall?.copyWith(color: Colors.white70),
             ),
           ],
         ],
@@ -413,7 +420,9 @@ class _WeeklyStreakCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     final now = DateTime.now();
     final weekDays = List.generate(7, (index) {
       final date = now.subtract(Duration(days: 6 - index));
@@ -424,23 +433,23 @@ class _WeeklyStreakCard extends StatelessWidget {
     });
 
     return Card(
-      color: tokens.surface,
+      color: colorScheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-        side: BorderSide(color: tokens.border),
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: colorScheme.outline),
       ),
       elevation: 0,
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Weekly Streak',
-              style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: tokens.spacing.md),
-            SafeRow(
+            const SizedBox(height: 12),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children:
                   weekDays.map((day) {
@@ -448,24 +457,24 @@ class _WeeklyStreakCard extends StatelessWidget {
                     return Flexible(
                       child: Column(
                         children: [
-                          SafeText(
+                          Text(
                             _weekdayName(day.date.weekday),
-                            style: tokens.typography.caption.copyWith(
+                            style: textTheme.bodySmall?.copyWith(
                               color:
-                                  isToday ? tokens.textPrimary : tokens.textMuted,
+                                  isToday ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
                               fontWeight:
                                   isToday ? FontWeight.bold : FontWeight.normal,
                             ),
                           ),
-                          SizedBox(height: tokens.spacing.sm),
+                          const SizedBox(height: 8),
                           Container(
-                            width: tokens.spacing.xl,
-                            height: tokens.spacing.xl,
+                            width: 32,
+                            height: 32,
                             decoration: BoxDecoration(
                               color:
                                   day.hasLog
-                                      ? tokens.brandPrimary
-                                      : tokens.surfaceVariant,
+                                      ? colorScheme.primary
+                                      : colorScheme.surfaceContainerHighest,
                               shape: BoxShape.circle,
                             ),
                             child:
@@ -515,15 +524,14 @@ class _HomeScreenSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
     return ListView(
-      padding: EdgeInsets.all(tokens.spacing.lg),
-      children: [
-        MinqSkeleton(height: tokens.spacing.xl * 2),
-        SizedBox(height: tokens.spacing.lg),
-        MinqSkeleton(height: tokens.spacing.xl * 3),
-        SizedBox(height: tokens.spacing.lg),
-        MinqSkeleton(height: tokens.spacing.xl * 4),
+      padding: const EdgeInsets.all(16),
+      children: const [
+        MinqSkeleton(height: 64),
+        SizedBox(height: 16),
+        MinqSkeleton(height: 96),
+        SizedBox(height: 16),
+        MinqSkeleton(height: 128),
       ],
     );
   }
@@ -544,28 +552,30 @@ class _HomeStateMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.xl),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: tokens.spacing.xl * 1.5, color: tokens.textMuted),
-            SizedBox(height: tokens.spacing.lg),
+            Icon(icon, size: 48, color: colorScheme.onSurfaceVariant),
+            const SizedBox(height: 16),
             Text(
               title,
-              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+              style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing.sm),
+            const SizedBox(height: 8),
             Text(
               message,
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             if (action != null) ...[
-              SizedBox(height: tokens.spacing.lg),
+              const SizedBox(height: 16),
               action!,
             ],
           ],
@@ -582,22 +592,23 @@ class _HomeOfflineNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.orange.withAlpha((255 * 0.1).round()),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.orange.withAlpha((255 * 0.3).round())),
       ),
       child: Row(
         children: [
-          Icon(Icons.cloud_off, color: Colors.orange, size: tokens.spacing.lg),
-          SizedBox(width: tokens.spacing.md),
+          const Icon(Icons.cloud_off, color: Colors.orange, size: 24),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               'オフラインモードです',
-              style: tokens.typography.body.copyWith(color: Colors.orange),
+              style: textTheme.bodyMedium?.copyWith(color: Colors.orange),
             ),
           ),
           TextButton(onPressed: onRetry, child: const Text('再接続')),

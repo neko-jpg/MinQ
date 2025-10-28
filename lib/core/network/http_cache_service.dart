@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:minq/core/logging/app_logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// HTTPキャッシュサービス
 class HttpCacheService {
@@ -34,11 +35,11 @@ class HttpCacheService {
         return null;
       }
 
-      AppLogger.info('Cache hit', data: {'url': url});
+      logger.info('Cache hit', data: {'url': url});
 
       return CachedResponse(data: cachedData, meta: meta);
     } catch (e, stack) {
-      AppLogger.error('Failed to get cache', error: e, stackTrace: stack);
+      logger.error('Failed to get cache', error: e, stackTrace: stack);
       return null;
     }
   }
@@ -70,12 +71,12 @@ class HttpCacheService {
       await prefs.setString(cacheKey, data);
       await prefs.setString(metaKey, jsonEncode(meta.toJson()));
 
-      AppLogger.info(
+      logger.info(
         'Cache saved',
         data: {'url': url, 'expiresAt': expiresAt.toIso8601String()},
       );
     } catch (e, stack) {
-      AppLogger.error('Failed to save cache', error: e, stackTrace: stack);
+      logger.error('Failed to save cache', error: e, stackTrace: stack);
     }
   }
 
@@ -86,7 +87,7 @@ class HttpCacheService {
       await prefs.remove(_getCacheKey(url));
       await prefs.remove(_getMetaKey(url));
     } catch (e, stack) {
-      AppLogger.error('Failed to remove cache', error: e, stackTrace: stack);
+      logger.error('Failed to remove cache', error: e, stackTrace: stack);
     }
   }
 
@@ -102,9 +103,9 @@ class HttpCacheService {
         }
       }
 
-      AppLogger.info('All cache cleared');
+      logger.info('All cache cleared');
     } catch (e, stack) {
-      AppLogger.error('Failed to clear cache', error: e, stackTrace: stack);
+      logger.error('Failed to clear cache', error: e, stackTrace: stack);
     }
   }
 
@@ -126,9 +127,9 @@ class HttpCacheService {
         }
       }
 
-      AppLogger.info('Expired cache cleaned');
+      logger.info('Expired cache cleaned');
     } catch (e, stack) {
-      AppLogger.error(
+      logger.error(
         'Failed to clean expired cache',
         error: e,
         stackTrace: stack,
@@ -154,7 +155,7 @@ class HttpCacheService {
 
       return totalSize;
     } catch (e, stack) {
-      AppLogger.error('Failed to get cache size', error: e, stackTrace: stack);
+      logger.error('Failed to get cache size', error: e, stackTrace: stack);
       return 0;
     }
   }

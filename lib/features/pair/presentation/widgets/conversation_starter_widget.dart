@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 
 // In a real app, this would be part of a service that fetches from a remote source.
 final conversationPromptsProvider = Provider<List<String>>((ref) {
@@ -21,7 +22,7 @@ class ChatService {
     required String text,
   }) async {
     // This is a placeholder for the actual chat sending logic.
-    print("Sending message to pair '$pairId': $text");
+    MinqLogger.debug("Sending message to pair '$pairId': $text");
     // In a real implementation, this would interact with Firestore or another chat backend.
   }
 }

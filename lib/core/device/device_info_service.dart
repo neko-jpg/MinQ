@@ -67,10 +67,8 @@ class DeviceInfoService {
     if (Platform.isAndroid) {
       final androidInfo = await _deviceInfo.androidInfo;
       final systemFeatures = androidInfo.systemFeatures;
-      if (systemFeatures != null) {
-        return systemFeatures.contains('android.hardware.ram.low');
-      }
-    }
+      return systemFeatures.contains('android.hardware.ram.low');
+        }
     return false;
   }
 

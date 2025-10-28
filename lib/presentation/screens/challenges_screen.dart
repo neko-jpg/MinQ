@@ -1,13 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:minq/data/providers.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
+import 'package:minq/data/providers.dart';
 import 'package:minq/domain/challenges/challenge.dart';
 import 'package:minq/domain/challenges/challenge_progress.dart';
 import 'package:minq/presentation/common/layout/responsive_layout.dart';
 import 'package:minq/presentation/common/layout/safe_scaffold.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
+
+/// Calculate reward points based on challenge difficulty and duration
+int calculateReward(Challenge challenge) {
+  final duration = challenge.endDate.difference(challenge.startDate).inDays;
+  final baseReward = challenge.goal * 10; // 10 points per goal unit
+  final durationBonus = (duration / 7).ceil() * 25; // 25 points per week
+
+  switch (challenge.type) {
+    case 'daily':
+      return baseReward + durationBonus;
+    case 'weekly':
+      return (baseReward * 1.5).round() + durationBonus;
+    case 'event':
+      return (baseReward * 2).round() + durationBonus;
+    default:
+      return baseReward + durationBonus;
+  }
+}
 
 /// チャレンジ画面
 /// 期間限定チャレンジやイベントを表示・参加できる画面
@@ -36,19 +54,17 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return SafeScaffold(
       enableResponsiveLayout: false, // Let TabBarView handle its own layout
       appBar: AppBar(
         title: const Text('チャレンジ'),
-        backgroundColor: tokens.surface,
+        backgroundColor: MinqTokens.surface,
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          labelColor: tokens.onSurface,
-          unselectedLabelColor: tokens.textMuted,
-          indicatorColor: tokens.brandPrimary,
+          labelColor: MinqTokens.textPrimary,
+          unselectedLabelColor: MinqTokens.textSecondary,
+          indicatorColor: MinqTokens.brandPrimary,
           tabs: const [
             Tab(text: 'アクティブ'),
             Tab(text: '完了済み'),
@@ -63,24 +79,6 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
         ],
       ),
     );
-  }
-
-  /// Calculate reward points based on challenge difficulty and duration
-  int _calculateReward(Challenge challenge) {
-    final duration = challenge.endDate.difference(challenge.startDate).inDays;
-    final baseReward = challenge.goal * 10; // 10 points per goal unit
-    final durationBonus = (duration / 7).ceil() * 25; // 25 points per week
-    
-    switch (challenge.type) {
-      case 'daily':
-        return baseReward + durationBonus;
-      case 'weekly':
-        return (baseReward * 1.5).round() + durationBonus;
-      case 'event':
-        return (baseReward * 2).round() + durationBonus;
-      default:
-        return baseReward + durationBonus;
-    }
   }
 }
 
@@ -103,7 +101,7 @@ class _ActiveChallengesTab extends ConsumerWidget {
         }
         return ResponsiveLayout.constrainedContainer(
           child: ListView.builder(
-            padding: context.responsivePadding,
+            padding: EdgeInsets.all(MinqTokens.spacing(4)),
             itemCount: challenges.length,
             itemBuilder: (context, index) {
               return _ChallengeCard(challenge: challenges[index]);
@@ -139,7 +137,7 @@ class _CompletedChallengesTab extends ConsumerWidget {
         }
         return ResponsiveLayout.constrainedContainer(
           child: ListView.builder(
-            padding: context.responsivePadding,
+            padding: EdgeInsets.all(MinqTokens.spacing(4)),
             itemCount: challenges.length,
             itemBuilder: (context, index) {
               return _ChallengeCard(
@@ -171,7 +169,6 @@ class _ChallengeCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
     final userId = ref.watch(uidProvider);
     final progressState = ref.watch(
       challengeProgressProvider(
@@ -180,19 +177,19 @@ class _ChallengeCard extends ConsumerWidget {
     );
 
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing.md),
+      margin: EdgeInsets.only(bottom: MinqTokens.spacing(3)),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-        side: BorderSide(color: tokens.border),
+        borderRadius: MinqTokens.cornerLarge(),
+        side: const BorderSide(color: Colors.transparent),
       ),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(tokens.radius.lg),
-          gradient: _getGradient(tokens),
+          borderRadius: MinqTokens.cornerLarge(),
+          gradient: _getGradient(),
         ),
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: EdgeInsets.all(MinqTokens.spacing(4)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -203,7 +200,7 @@ class _ChallengeCard extends ConsumerWidget {
                     height: 48,
                     decoration: BoxDecoration(
                       color: Colors.white.withAlpha((255 * 0.2).round()),
-                      borderRadius: BorderRadius.circular(tokens.radius.md),
+                      borderRadius: MinqTokens.cornerMedium(),
                     ),
                     child: Icon(
                       _getChallengeIcon(challenge.type),
@@ -211,22 +208,22 @@ class _ChallengeCard extends ConsumerWidget {
                       size: 24,
                     ),
                   ),
-                  SizedBox(width: tokens.spacing.md),
+                  SizedBox(width: MinqTokens.spacing(3)),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           challenge.name,
-                          style: tokens.typography.h4.copyWith(
+                          style: MinqTokens.titleMedium.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: tokens.spacing.xs),
+                        SizedBox(height: MinqTokens.spacing(1)),
                         Text(
                           challenge.description,
-                          style: tokens.typography.caption.copyWith(
+                          style: MinqTokens.bodySmall.copyWith(
                             color: Colors.white.withAlpha((255 * 0.9).round()),
                           ),
                           maxLines: 2,
@@ -243,21 +240,20 @@ class _ChallengeCard extends ConsumerWidget {
                     ),
                 ],
               ),
-              SizedBox(height: tokens.spacing.md),
+              SizedBox(height: MinqTokens.spacing(3)),
               progressState.when(
                 data: (progress) => _buildProgressSection(
                   context,
-                  tokens,
                   progress,
                 ),
                 loading: () =>
                     const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white))),
                 error: (e, s) => Text(
                   '進捗の読み込み失敗',
-                  style: tokens.typography.caption.copyWith(color: Colors.white),
+                  style: MinqTokens.bodySmall.copyWith(color: Colors.white),
                 ),
               ),
-              SizedBox(height: tokens.spacing.md),
+              SizedBox(height: MinqTokens.spacing(3)),
               Row(
                 children: [
                   Icon(
@@ -265,10 +261,10 @@ class _ChallengeCard extends ConsumerWidget {
                     color: Colors.white.withAlpha((255 * 0.9).round()),
                     size: 16,
                   ),
-                  SizedBox(width: tokens.spacing.xs),
+                  SizedBox(width: MinqTokens.spacing(1)),
                   Text(
-                    '報酬: ${_calculateReward(challenge)}ポイント',
-                    style: tokens.typography.caption.copyWith(
+                    '報酬: ${calculateReward(challenge)}ポイント',
+                    style: MinqTokens.bodySmall.copyWith(
                       color: Colors.white.withAlpha((255 * 0.9).round()),
                     ),
                   ),
@@ -278,17 +274,17 @@ class _ChallengeCard extends ConsumerWidget {
                     color: Colors.white.withAlpha((255 * 0.9).round()),
                     size: 16,
                   ),
-                  SizedBox(width: tokens.spacing.xs),
+                  SizedBox(width: MinqTokens.spacing(1)),
                   Text(
                     _formatEndDate(challenge.endDate),
-                    style: tokens.typography.caption.copyWith(
+                    style: MinqTokens.bodySmall.copyWith(
                       color: Colors.white.withAlpha((255 * 0.9).round()),
                     ),
                   ),
                 ],
               ),
               if (!isCompleted) ...[
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: MinqTokens.spacing(3)),
                 SizedBox(
                   width: double.infinity,
                   child: ResponsiveLayout.ensureTouchTarget(
@@ -296,14 +292,14 @@ class _ChallengeCard extends ConsumerWidget {
                       onPressed: () => _showChallengeDetails(context, challenge),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        foregroundColor: tokens.brandPrimary,
+                        foregroundColor: MinqTokens.brandPrimary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(tokens.radius.md),
+                          borderRadius: MinqTokens.cornerMedium(),
                         ),
                       ),
                       child: Text(
                         '詳細を見る',
-                        style: tokens.typography.body.copyWith(
+                        style: MinqTokens.bodyMedium.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -320,7 +316,6 @@ class _ChallengeCard extends ConsumerWidget {
 
   Widget _buildProgressSection(
     BuildContext context,
-    MinqTheme tokens,
     ChallengeProgress? progress,
   ) {
     final progressValue = progress?.progress ?? 0;
@@ -334,22 +329,22 @@ class _ChallengeCard extends ConsumerWidget {
           children: [
             Text(
               '進捗',
-              style: tokens.typography.caption.copyWith(
+              style: MinqTokens.bodySmall.copyWith(
                 color: Colors.white.withAlpha((255 * 0.9).round()),
               ),
             ),
             Text(
               '$progressValue/$goal',
-              style: tokens.typography.caption.copyWith(
+              style: MinqTokens.bodySmall.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
-        SizedBox(height: tokens.spacing.sm),
+        SizedBox(height: MinqTokens.spacing(1)),
         ClipRRect(
-          borderRadius: BorderRadius.circular(tokens.radius.sm),
+          borderRadius: MinqTokens.cornerSmall(),
           child: LinearProgressIndicator(
             value: percentage,
             minHeight: 8,
@@ -361,7 +356,7 @@ class _ChallengeCard extends ConsumerWidget {
     );
   }
 
-  LinearGradient _getGradient(MinqTheme tokens) {
+  LinearGradient _getGradient() {
     if (isCompleted) {
       return LinearGradient(
         colors: [
@@ -374,8 +369,8 @@ class _ChallengeCard extends ConsumerWidget {
     }
     return LinearGradient(
       colors: [
-        tokens.brandPrimary,
-        tokens.brandPrimary.withAlpha((255 * 0.8).round()),
+        MinqTokens.brandPrimary,
+        MinqTokens.brandPrimary.withAlpha((255 * 0.8).round()),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -436,7 +431,6 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
     final userId = ref.watch(uidProvider);
     final progressState = ref.watch(
       challengeProgressProvider(
@@ -446,7 +440,7 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(MinqTokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -455,32 +449,32 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: tokens.textMuted,
+                color: MinqTokens.textSecondary,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
           Text(
             challenge.name,
-            style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+            style: MinqTokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: MinqTokens.spacing(1)),
           Text(
             challenge.description,
-            style: tokens.typography.body.copyWith(color: tokens.textMuted),
+            style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
           progressState.when(
             data: (progress) {
               final progressValue = progress?.progress ?? 0;
               final goal = challenge.goal;
               final percentage = goal > 0 ? progressValue / goal : 0.0;
               return Container(
-                padding: EdgeInsets.all(tokens.spacing.md),
+                padding: EdgeInsets.all(MinqTokens.spacing(3)),
                 decoration: BoxDecoration(
-                  color: tokens.surfaceVariant,
-                  borderRadius: BorderRadius.circular(tokens.radius.md),
+                  color: MinqTokens.background,
+                  borderRadius: MinqTokens.cornerMedium(),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,37 +482,37 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
                     Text(
                       '進捗状況',
                       style:
-                          tokens.typography.h5.copyWith(fontWeight: FontWeight.bold),
+                          MinqTokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: tokens.spacing.sm),
+                    SizedBox(height: MinqTokens.spacing(1)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           '$progressValue / $goal',
-                          style: tokens.typography.bodyLarge.copyWith(
+                          style: MinqTokens.bodyLarge.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           NumberFormat.percentPattern().format(percentage),
-                          style: tokens.typography.body.copyWith(
-                            color: tokens.brandPrimary,
+                          style: MinqTokens.bodyMedium.copyWith(
+                            color: MinqTokens.brandPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: tokens.spacing.sm),
+                    SizedBox(height: MinqTokens.spacing(1)),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(tokens.radius.sm),
+                      borderRadius: MinqTokens.cornerSmall(),
                       child: LinearProgressIndicator(
                         value: percentage,
                         minHeight: 8,
                         backgroundColor:
-                            tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+                            MinqTokens.brandPrimary.withAlpha((255 * 0.2).round()),
                         valueColor:
-                            AlwaysStoppedAnimation(tokens.brandPrimary),
+                            const AlwaysStoppedAnimation(MinqTokens.brandPrimary),
                       ),
                     ),
                   ],
@@ -529,12 +523,12 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
                 const Center(child: CircularProgressIndicator()),
             error: (e, s) => const Text('進捗の読み込みに失敗しました'),
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
           Container(
-            padding: EdgeInsets.all(tokens.spacing.md),
+            padding: EdgeInsets.all(MinqTokens.spacing(3)),
             decoration: BoxDecoration(
               color: Colors.amber.withAlpha((255 * 0.1).round()),
-              borderRadius: BorderRadius.circular(tokens.radius.md),
+              borderRadius: MinqTokens.cornerMedium(),
               border: Border.all(
                 color: Colors.amber.withAlpha((255 * 0.3).round()),
               ),
@@ -546,21 +540,21 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
                   color: Colors.amber.shade700,
                   size: 24,
                 ),
-                SizedBox(width: tokens.spacing.md),
+                SizedBox(width: MinqTokens.spacing(3)),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '報酬',
-                        style: tokens.typography.caption.copyWith(
+                        style: MinqTokens.bodySmall.copyWith(
                           color: Colors.amber.shade700,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        '${_calculateReward(challenge)}ポイント',
-                        style: tokens.typography.h5.copyWith(
+                        '${calculateReward(challenge)}ポイント',
+                        style: MinqTokens.titleMedium.copyWith(
                           color: Colors.amber.shade700,
                           fontWeight: FontWeight.bold,
                         ),
@@ -594,26 +588,24 @@ class _ErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.xl),
+        padding: EdgeInsets.all(MinqTokens.spacing(6)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.error_outline,
               size: 64,
-              color: tokens.textMuted,
+              color: MinqTokens.textSecondary,
             ),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: MinqTokens.spacing(4)),
             Text(
               message,
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: MinqTokens.spacing(4)),
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
@@ -640,25 +632,23 @@ class _EmptyStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.xl),
+        padding: EdgeInsets.all(MinqTokens.spacing(6)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 64, color: tokens.textMuted),
-            SizedBox(height: tokens.spacing.lg),
+            Icon(icon, size: 64, color: MinqTokens.textSecondary),
+            SizedBox(height: MinqTokens.spacing(4)),
             Text(
               title,
-              style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+              style: MinqTokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: MinqTokens.spacing(1)),
             Text(
               message,
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
               textAlign: TextAlign.center,
             ),
           ],

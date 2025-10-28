@@ -5,10 +5,9 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-
-import 'package:minq/core/ai/tflite_unified_ai_service.dart';
 
 /// ハビットストーリー自動生成サービス
 /// Instagram Stories風の美しいビジュアルストーリーを自動生成

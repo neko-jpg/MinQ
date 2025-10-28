@@ -7,15 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/config/flavor.dart';
+import 'package:minq/core/initialization/optimal_initialization_service.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
-
 import 'package:minq/data/services/crash_recovery_store.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/firebase_options_dev.dart' as dev;
 import 'package:minq/firebase_options_prod.dart' as prod;
 import 'package:minq/firebase_options_stg.dart' as stg;
-import 'package:minq/core/initialization/optimal_initialization_service.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/controllers/progressive_onboarding_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
@@ -24,8 +24,6 @@ import 'package:minq/presentation/theme/theme.dart';
 import 'package:minq/presentation/widgets/version_check_widget.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:minq/l10n/app_localizations.dart';
 
 Future<void> main() async {
   const sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
@@ -278,7 +276,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
               children: [
                 const Icon(Icons.error_outline, size: 64, color: Colors.red),
                 const SizedBox(height: 16),
-                Text('初期化エラーが発生しました'),
+                const Text('初期化エラーが発生しました'),
                 const SizedBox(height: 8),
                 Text('$error', style: const TextStyle(fontSize: 12)),
                 const SizedBox(height: 16),

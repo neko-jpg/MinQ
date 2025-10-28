@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/l10n/app_localizations.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 class UserBehaviorHeatmap extends StatelessWidget {
   const UserBehaviorHeatmap({

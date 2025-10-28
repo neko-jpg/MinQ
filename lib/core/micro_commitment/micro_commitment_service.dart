@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 import 'package:uuid/uuid.dart';
 
@@ -37,9 +38,9 @@ class MicroCommitmentService {
             'createdAt': FieldValue.serverTimestamp(),
             'originalQuestId': originalQuestId,
           });
-      print("Creating micro-quest '$title' for user $userId.");
+      logger.info("Creating micro-quest '$title' for user $userId.");
     } catch (e) {
-      print('Error creating micro-quest: $e');
+      logger.error('Error creating micro-quest: $e');
     }
   }
 
@@ -75,12 +76,12 @@ class MicroCommitmentService {
       if (daysDifference <= 7) {
         final suggestion =
             "You've been consistent with '$microQuestName'! Ready to make it a regular habit?";
-        print(suggestion);
+        logger.info(suggestion);
         // In a real app, this might set a flag in the user's profile to show a UI prompt.
         return suggestion;
       }
     } catch (e) {
-      print('Error suggesting expansion for $microQuestName: $e');
+      logger.error('Error suggesting expansion for $microQuestName: $e');
     }
     return null;
   }
@@ -93,10 +94,10 @@ class MicroCommitmentService {
     // This method's primary role is to trigger a UI change.
     // The logic here is simplified to demonstrate the concept.
     // In a real app, this might use a state management solution to show a dialog.
-    print(
+    logger.info(
       "UI TRIGGER: Offer micro-fallback for '$failedQuestName' to user $userId.",
     );
-    print(
+    logger.info(
       "Suggestion: 'Feeling stuck on $failedQuestName? How about trying a 1-minute version instead?'",
     );
 

@@ -20,6 +20,9 @@ class Quest {
 
   String? iconKey;
 
+  @Index()
+  bool isTemplate = false;
+
   @Enumerated(EnumType.name)
   late QuestStatus status;
 

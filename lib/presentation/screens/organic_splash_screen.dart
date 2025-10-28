@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 
 /// 有機的な成長アニメーションを持つスプラッシュ画面
 /// 種から芽、葉、完全なアイコンへの4段階の成長を表現
@@ -25,7 +24,6 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
   late Animation<double> _sproutGrowth;
   late Animation<double> _leafExpansion;
   late Animation<double> _finalScale;
-  late Animation<Color?> _backgroundTransition;
   late Animation<double> _iconOpacity;
   
   GrowthStage _currentStage = GrowthStage.seed;
@@ -33,7 +31,6 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
   Timer? _minimumDurationTimer;
   
   static const Duration _minAnimationDuration = Duration(milliseconds: 1500);
-  static const Duration _maxAnimationDuration = Duration(milliseconds: 2000);
 
   @override
   void initState() {
@@ -100,15 +97,6 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
       curve: const Interval(0.87, 1.0, curve: Curves.easeOut),
     ));
 
-    // 背景色の変化
-    _backgroundTransition = ColorTween(
-      begin: const Color(0xFF8B4513), // 土色
-      end: const Color(0xFFFFFFFF),   // 白
-    ).animate(CurvedAnimation(
-      parent: _backgroundController,
-      curve: Curves.easeInOut,
-    ));
-
     // アニメーション進行に応じてステージを更新
     _masterController.addListener(_updateGrowthStage);
   }
@@ -147,8 +135,6 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
     final animationFuture = _masterController.forward();
     final backgroundAnimationFuture = _backgroundController.forward();
     
-    // 初期化プロセスの監視はbuildメソッドで行う
-    
     // 最小アニメーション時間を保証
     _minimumDurationTimer = Timer(_minAnimationDuration, () {
       if (_initializationComplete && mounted) {
@@ -157,11 +143,6 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
     });
     
     await Future.wait([animationFuture, backgroundAnimationFuture]);
-  }
-
-  void _watchInitialization() {
-    // アプリ初期化の監視をbuildメソッドで行う
-    // ここでは何もしない
   }
 
   void _completeAndNavigate() {
@@ -182,11 +163,10 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     // アプリ初期化の監視をbuildメソッドで行う
-    ref.listen<AsyncValue<void>>(optimizedAppStartupProvider, (previous, next) {
+    ref.listen<AsyncValue<void>>(appStartupProvider, (previous, next) {
       next.when(
         data: (_) {
           _initializationComplete = true;
@@ -233,7 +213,7 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
                         finalScale: _finalScale.value,
                         iconOpacity: _iconOpacity.value,
                         isDark: isDark,
-                        primaryColor: tokens.brandPrimary,
+                        primaryColor: MinqTokens.brandPrimary,
                       ),
                     ),
                   ),
@@ -247,8 +227,8 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
                     child: ShaderMask(
                       shaderCallback: (bounds) => LinearGradient(
                         colors: [
-                          tokens.brandPrimary,
-                          tokens.brandPrimary.withOpacity(0.8),
+                          MinqTokens.brandPrimary,
+                          Color.lerp(MinqTokens.brandPrimary, Colors.transparent, 0.2)!,
                         ],
                       ).createShader(bounds),
                       child: const Text(
@@ -369,7 +349,7 @@ class OrganicGrowthPainter extends CustomPainter {
     final radius = 8.0 * seedPulse;
     
     // 種の影
-    paint.color = Colors.black.withOpacity(0.2);
+    paint.color = Color.lerp(Colors.black, Colors.transparent, 0.8)!;
     canvas.drawCircle(center + const Offset(2, 2), radius, paint);
     
     // 種本体
@@ -386,7 +366,7 @@ class OrganicGrowthPainter extends CustomPainter {
 
   void _drawSprout(Canvas canvas, Offset center, Paint paint) {
     // 種（小さくなる）
-    final seedRadius = 6.0;
+    const seedRadius = 6.0;
     paint.color = const Color(0xFF8B4513);
     canvas.drawCircle(center + const Offset(0, 20), seedRadius, paint);
     
@@ -492,15 +472,15 @@ class OrganicGrowthPainter extends CustomPainter {
     final iconSize = 50.0 * finalScale;
     
     // アイコンの背景円
-    paint.color = primaryColor.withOpacity(iconOpacity);
+    paint.color = Color.lerp(primaryColor, Colors.transparent, 1 - iconOpacity)!;
     canvas.drawCircle(center, iconSize, paint);
     
     // アイコンの影
-    paint.color = Colors.black.withOpacity(0.1 * iconOpacity);
+    paint.color = Color.lerp(Colors.black, Colors.transparent, 1 - (0.1 * iconOpacity))!;
     canvas.drawCircle(center + const Offset(3, 3), iconSize, paint);
     
     // アイコン内のシンボル（簡単な葉っぱマーク）
-    paint.color = Colors.white.withOpacity(iconOpacity);
+    paint.color = Color.lerp(Colors.white, Colors.transparent, 1 - iconOpacity)!;
     paint.style = PaintingStyle.fill;
     
     final symbolPath = Path();

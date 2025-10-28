@@ -77,7 +77,7 @@ class FirestoreEnhancedOperations {
             action: () async {
               final snapshot = await docRef.get();
               if (snapshot.exists) {
-                throw ConflictException('Document already exists');
+                throw const ConflictException('Document already exists');
               }
               return docRef.set(data, options);
             },
@@ -97,7 +97,7 @@ class FirestoreEnhancedOperations {
             action: () async {
               final snapshot = await docRef.get();
               if (snapshot.exists) {
-                throw ConflictException('Document conflict detected');
+                throw const ConflictException('Document conflict detected');
               }
               return docRef.set(data, options);
             },
@@ -281,7 +281,7 @@ enum BatchOperationType {
 
 /// Conflict exception for Firestore operations
 class ConflictException extends DatabaseException {
-  const ConflictException(String message) : super(message, code: 'conflict');
+  const ConflictException(super.message) : super(code: 'conflict');
 }
 
 /// Enhanced Firestore service with connection management

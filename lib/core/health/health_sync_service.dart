@@ -7,6 +7,9 @@ import 'package:minq/core/logging/app_logger.dart';
 // Provider for the service
 final healthSyncServiceProvider = Provider<HealthSyncService>((ref) {
   final challengeService = ref.watch(challengeServiceProvider);
+  if (challengeService == null) {
+    throw Exception('ChallengeService not available');
+  }
   return HealthSyncService(challengeService);
 });
 
@@ -156,12 +159,10 @@ class HealthSyncService {
           'weekly_${DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).year}_${DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).month}_${DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).day}';
 
       await _challengeService.updateProgress(
-        userId: userId,
         challengeId: dailyChallengeId,
         incrementBy: completedQuestsCount,
       );
       await _challengeService.updateProgress(
-        userId: userId,
         challengeId: weeklyChallengeId,
         incrementBy: completedQuestsCount,
       );

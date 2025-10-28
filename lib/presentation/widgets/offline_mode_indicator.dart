@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 
 /// オフラインモードインジケーター
 class OfflineModeIndicator extends ConsumerWidget {
@@ -11,7 +11,6 @@ class OfflineModeIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
 
     return Stack(
       children: [
@@ -32,7 +31,7 @@ class OfflineModeIndicator extends ConsumerWidget {
               child: Material(
                 color: Colors.orange,
                 child: Padding(
-                  padding: EdgeInsets.all(tokens.spacing.sm),
+                  padding: EdgeInsets.all(MinqTokens.spacing(2)),
                   child: Row(
                     children: [
                       const Icon(
@@ -40,7 +39,7 @@ class OfflineModeIndicator extends ConsumerWidget {
                         color: Colors.white,
                         size: 20,
                       ),
-                      SizedBox(width: tokens.spacing.sm),
+                      SizedBox(width: MinqTokens.spacing(2)),
                       const Expanded(
                         child: Text(
                           'オフラインモード（読み取り専用）',

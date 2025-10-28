@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/celebration/celebration_system.dart';
 import 'package:minq/presentation/common/sharing/progress_share_card.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// ソーシャルシェア機能のデモ画面
 class SocialSharingDemo extends StatefulWidget {
@@ -64,24 +65,33 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
                 ),
                 _buildCelebrationButton(
                   '7日達成',
-                  () => CelebrationSystem.showCelebration(
-                    context,
-                    config: CelebrationSystem.getStreakCelebration(7),
-                  ),
+                  () {
+                    final theme = Theme.of(context).extension<MinqTheme>()!;
+                    CelebrationSystem.showCelebration(
+                      context,
+                      config: CelebrationSystem.getStreakCelebration(7, theme),
+                    );
+                  },
                 ),
                 _buildCelebrationButton(
                   '30日達成',
-                  () => CelebrationSystem.showCelebration(
-                    context,
-                    config: CelebrationSystem.getStreakCelebration(30),
-                  ),
+                  () {
+                    final theme = Theme.of(context).extension<MinqTheme>()!;
+                    CelebrationSystem.showCelebration(
+                      context,
+                      config: CelebrationSystem.getStreakCelebration(30, theme),
+                    );
+                  },
                 ),
                 _buildCelebrationButton(
                   '100日達成',
-                  () => CelebrationSystem.showCelebration(
-                    context,
-                    config: CelebrationSystem.getStreakCelebration(100),
-                  ),
+                  () {
+                    final theme = Theme.of(context).extension<MinqTheme>()!;
+                    CelebrationSystem.showCelebration(
+                      context,
+                      config: CelebrationSystem.getStreakCelebration(100, theme),
+                    );
+                  },
                 ),
               ],
             ),

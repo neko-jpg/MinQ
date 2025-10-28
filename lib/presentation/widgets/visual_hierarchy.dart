@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minq/l10n/app_localizations.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 
 /// Enhanced visual hierarchy components for consistent spacing and layout
 /// Provides proper visual organization and information architecture with polished design
@@ -26,13 +26,12 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-
     return Container(
-      padding: padding ?? EdgeInsets.symmetric(
-        horizontal: tokens.spacing.lg,
-        vertical: tokens.spacing.md,
-      ),
+      padding: padding ??
+          EdgeInsets.symmetric(
+            horizontal: MinqTokens.spacing(6),
+            vertical: MinqTokens.spacing(4),
+          ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -41,10 +40,10 @@ class SectionHeader extends StatelessWidget {
               if (icon != null) ...[
                 Icon(
                   icon,
-                  color: tokens.colors.primary,
+                  color: MinqTokens.brandPrimary,
                   size: 20,
                 ),
-                SizedBox(width: tokens.spacing.sm),
+                SizedBox(width: MinqTokens.spacing(2)),
               ],
               Expanded(
                 child: Column(
@@ -52,17 +51,17 @@ class SectionHeader extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: tokens.typography.headlineSmall.copyWith(
-                        color: tokens.colors.onSurface,
+                      style: MinqTokens.titleMedium.copyWith(
+                        color: MinqTokens.textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     if (subtitle != null) ...[
-                      SizedBox(height: tokens.spacing.xs),
+                      SizedBox(height: MinqTokens.spacing(1)),
                       Text(
                         subtitle!,
-                        style: tokens.typography.bodyMedium.copyWith(
-                          color: tokens.colors.onSurfaceVariant,
+                        style: MinqTokens.bodyMedium.copyWith(
+                          color: MinqTokens.textSecondary,
                         ),
                       ),
                     ],
@@ -73,9 +72,9 @@ class SectionHeader extends StatelessWidget {
             ],
           ),
           if (showDivider) ...[
-            SizedBox(height: tokens.spacing.md),
-            Divider(
-              color: tokens.colors.outlineVariant,
+            SizedBox(height: MinqTokens.spacing(4)),
+            const Divider(
+              color: Color(0xFFE5E7EB),
               height: 1,
             ),
           ],
@@ -108,17 +107,15 @@ class ContentSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-
     return Container(
-      margin: margin ?? EdgeInsets.only(bottom: tokens.spacing.lg),
-      padding: padding ?? EdgeInsets.all(tokens.spacing.lg),
+      margin: margin ?? EdgeInsets.only(bottom: MinqTokens.spacing(6)),
+      padding: padding ?? EdgeInsets.all(MinqTokens.spacing(6)),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: borderRadius ?? tokens.radius.lgRadius,
+        borderRadius: borderRadius ?? MinqTokens.cornerLarge(),
         border: showBorder
             ? Border.all(
-                color: tokens.colors.outlineVariant,
+                color: const Color(0xFFE5E7EB),
                 width: 1,
               )
             : null,
@@ -129,12 +126,12 @@ class ContentSection extends StatelessWidget {
           if (title != null) ...[
             Text(
               title!,
-              style: tokens.typography.titleLarge.copyWith(
-                color: tokens.colors.onSurface,
+              style: MinqTokens.titleLarge.copyWith(
+                color: MinqTokens.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: MinqTokens.spacing(4)),
           ],
           ...children.map((child) {
             final index = children.indexOf(child);
@@ -142,7 +139,7 @@ class ContentSection extends StatelessWidget {
               children: [
                 child,
                 if (index < children.length - 1)
-                  SizedBox(height: tokens.spacing.md),
+                  SizedBox(height: MinqTokens.spacing(4)),
               ],
             );
           }),
@@ -175,8 +172,6 @@ class InfoHierarchy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-
     return Padding(
       padding: padding ?? EdgeInsets.zero,
       child: Row(
@@ -184,7 +179,7 @@ class InfoHierarchy extends StatelessWidget {
         children: [
           if (leading != null) ...[
             leading!,
-            SizedBox(width: tokens.spacing.md),
+            SizedBox(width: MinqTokens.spacing(4)),
           ],
           Expanded(
             child: Column(
@@ -192,26 +187,26 @@ class InfoHierarchy extends StatelessWidget {
               children: [
                 Text(
                   primary,
-                  style: tokens.typography.titleMedium.copyWith(
-                    color: tokens.colors.onSurface,
+                  style: MinqTokens.titleMedium.copyWith(
+                    color: MinqTokens.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 if (secondary != null) ...[
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: MinqTokens.spacing(1)),
                   Text(
                     secondary!,
-                    style: tokens.typography.bodyMedium.copyWith(
-                      color: tokens.colors.onSurfaceVariant,
+                    style: MinqTokens.bodyMedium.copyWith(
+                      color: MinqTokens.textSecondary,
                     ),
                   ),
                 ],
                 if (tertiary != null) ...[
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: MinqTokens.spacing(1)),
                   Text(
                     tertiary!,
-                    style: tokens.typography.bodySmall.copyWith(
-                      color: tokens.colors.onSurfaceVariant,
+                    style: MinqTokens.bodySmall.copyWith(
+                      color: MinqTokens.textSecondary,
                     ),
                   ),
                 ],
@@ -219,7 +214,7 @@ class InfoHierarchy extends StatelessWidget {
             ),
           ),
           if (trailing != null) ...[
-            SizedBox(width: tokens.spacing.md),
+            SizedBox(width: MinqTokens.spacing(4)),
             trailing!,
           ],
         ],
@@ -253,11 +248,10 @@ class MetricDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-    final accent = accentColor ?? tokens.colors.primary;
+    final accent = accentColor ?? MinqTokens.brandPrimary;
 
     return Container(
-      padding: padding ?? EdgeInsets.all(tokens.spacing.lg),
+      padding: padding ?? EdgeInsets.all(MinqTokens.spacing(6)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -267,7 +261,7 @@ class MetricDisplay extends StatelessWidget {
               height: 32,
               decoration: BoxDecoration(
                 color: accent.withAlpha(25),
-                borderRadius: tokens.radius.smRadius,
+                borderRadius: MinqTokens.cornerSmall(),
               ),
               child: Icon(
                 icon,
@@ -275,7 +269,7 @@ class MetricDisplay extends StatelessWidget {
                 size: 18,
               ),
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: MinqTokens.spacing(4)),
           ],
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -283,45 +277,45 @@ class MetricDisplay extends StatelessWidget {
             children: [
               Text(
                 value,
-                style: tokens.typography.displaySmall.copyWith(
-                  color: tokens.colors.onSurface,
+                style: MinqTokens.titleLarge.copyWith(
+                  color: MinqTokens.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               if (unit != null) ...[
-                SizedBox(width: tokens.spacing.xs),
+                SizedBox(width: MinqTokens.spacing(1)),
                 Text(
                   unit!,
-                  style: tokens.typography.titleMedium.copyWith(
-                    color: tokens.colors.onSurfaceVariant,
+                  style: MinqTokens.titleMedium.copyWith(
+                    color: MinqTokens.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ],
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: MinqTokens.spacing(2)),
           Row(
             children: [
               Expanded(
                 child: Text(
                   label,
-                  style: tokens.typography.bodyMedium.copyWith(
-                    color: tokens.colors.onSurfaceVariant,
+                  style: MinqTokens.bodyMedium.copyWith(
+                    color: MinqTokens.textSecondary,
                   ),
                 ),
               ),
               if (changeText != null) ...[
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: tokens.spacing.sm,
-                    vertical: tokens.spacing.xs,
+                    horizontal: MinqTokens.spacing(2),
+                    vertical: MinqTokens.spacing(1),
                   ),
                   decoration: BoxDecoration(
                     color: isPositive
-                        ? tokens.colors.success.withAlpha(25)
-                        : tokens.colors.error.withAlpha(25),
-                    borderRadius: tokens.radius.smRadius,
+                        ? const Color(0xFF10B981).withAlpha(25)
+                        : const Color(0xFFEF4444).withAlpha(25),
+                    borderRadius: MinqTokens.cornerSmall(),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -329,17 +323,17 @@ class MetricDisplay extends StatelessWidget {
                       Icon(
                         isPositive ? Icons.trending_up : Icons.trending_down,
                         color: isPositive
-                            ? tokens.colors.success
-                            : tokens.colors.error,
+                            ? const Color(0xFF10B981)
+                            : const Color(0xFFEF4444),
                         size: 14,
                       ),
-                      SizedBox(width: tokens.spacing.xs),
+                      SizedBox(width: MinqTokens.spacing(1)),
                       Text(
                         changeText!,
-                        style: tokens.typography.bodySmall.copyWith(
+                        style: MinqTokens.bodySmall.copyWith(
                           color: isPositive
-                              ? tokens.colors.success
-                              : tokens.colors.error,
+                              ? const Color(0xFF10B981)
+                              : const Color(0xFFEF4444),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -374,48 +368,47 @@ class StatusIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-    
     Color backgroundColor;
     Color textColor;
     IconData defaultIcon;
 
     switch (type) {
       case StatusType.success:
-        backgroundColor = tokens.colors.success.withAlpha(25);
-        textColor = tokens.colors.success;
+        backgroundColor = const Color(0xFF10B981).withAlpha(25);
+        textColor = const Color(0xFF10B981);
         defaultIcon = Icons.check_circle;
         break;
       case StatusType.warning:
-        backgroundColor = tokens.colors.warning.withAlpha(25);
-        textColor = tokens.colors.warning;
+        backgroundColor = const Color(0xFFF59E0B).withAlpha(25);
+        textColor = const Color(0xFFF59E0B);
         defaultIcon = Icons.warning;
         break;
       case StatusType.error:
-        backgroundColor = tokens.colors.error.withAlpha(25);
-        textColor = tokens.colors.error;
+        backgroundColor = const Color(0xFFEF4444).withAlpha(25);
+        textColor = const Color(0xFFEF4444);
         defaultIcon = Icons.error;
         break;
       case StatusType.info:
-        backgroundColor = tokens.colors.primary.withAlpha(25);
-        textColor = tokens.colors.primary;
+        backgroundColor = MinqTokens.brandPrimary.withAlpha(25);
+        textColor = MinqTokens.brandPrimary;
         defaultIcon = Icons.info;
         break;
       case StatusType.neutral:
-        backgroundColor = tokens.colors.outline.withAlpha(25);
-        textColor = tokens.colors.onSurfaceVariant;
+        backgroundColor = const Color(0xFF9CA3AF).withAlpha(25);
+        textColor = MinqTokens.textSecondary;
         defaultIcon = Icons.circle;
         break;
     }
 
     return Container(
-      padding: padding ?? EdgeInsets.symmetric(
-        horizontal: tokens.spacing.md,
-        vertical: tokens.spacing.sm,
-      ),
+      padding: padding ??
+          EdgeInsets.symmetric(
+            horizontal: MinqTokens.spacing(4),
+            vertical: MinqTokens.spacing(2),
+          ),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: tokens.radius.smRadius,
+        borderRadius: MinqTokens.cornerSmall(),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -426,11 +419,11 @@ class StatusIndicator extends StatelessWidget {
               color: textColor,
               size: 16,
             ),
-            SizedBox(width: tokens.spacing.sm),
+            SizedBox(width: MinqTokens.spacing(2)),
           ],
           Text(
             text,
-            style: tokens.typography.bodySmall.copyWith(
+            style: MinqTokens.bodySmall.copyWith(
               color: textColor,
               fontWeight: FontWeight.w600,
             ),
@@ -456,7 +449,6 @@ class PriorityIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
     final l10n = AppLocalizations.of(context)!;
     
     Color color;
@@ -465,17 +457,17 @@ class PriorityIndicator extends StatelessWidget {
 
     switch (level) {
       case PriorityLevel.high:
-        color = tokens.colors.error;
+        color = const Color(0xFFEF4444);
         defaultText = l10n.priorityHigh;
         icon = Icons.keyboard_arrow_up;
         break;
       case PriorityLevel.medium:
-        color = tokens.colors.warning;
+        color = const Color(0xFFF59E0B);
         defaultText = l10n.priorityMedium;
         icon = Icons.remove;
         break;
       case PriorityLevel.low:
-        color = tokens.colors.success;
+        color = const Color(0xFF10B981);
         defaultText = l10n.priorityLow;
         icon = Icons.keyboard_arrow_down;
         break;
@@ -483,12 +475,12 @@ class PriorityIndicator extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.sm,
-        vertical: tokens.spacing.xs,
+        horizontal: MinqTokens.spacing(2),
+        vertical: MinqTokens.spacing(1),
       ),
       decoration: BoxDecoration(
         color: color.withAlpha(25),
-        borderRadius: tokens.radius.smRadius,
+        borderRadius: MinqTokens.cornerSmall(),
         border: Border.all(
           color: color.withAlpha(76),
           width: 1,
@@ -503,10 +495,10 @@ class PriorityIndicator extends StatelessWidget {
             size: 14,
           ),
           if (showText) ...[
-            SizedBox(width: tokens.spacing.xs),
+            SizedBox(width: MinqTokens.spacing(1)),
             Text(
               text ?? defaultText,
-              style: tokens.typography.bodySmall.copyWith(
+              style: MinqTokens.bodySmall.copyWith(
                 color: color,
                 fontWeight: FontWeight.w600,
               ),
@@ -541,8 +533,6 @@ class CalloutBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqDesignTokens.of(context);
-    
     Color backgroundColor;
     Color borderColor;
     Color iconColor;
@@ -550,36 +540,36 @@ class CalloutBox extends StatelessWidget {
 
     switch (type) {
       case CalloutType.info:
-        backgroundColor = tokens.colors.primary.withAlpha(15);
-        borderColor = tokens.colors.primary.withAlpha(76);
-        iconColor = tokens.colors.primary;
+        backgroundColor = MinqTokens.brandPrimary.withAlpha(15);
+        borderColor = MinqTokens.brandPrimary.withAlpha(76);
+        iconColor = MinqTokens.brandPrimary;
         defaultIcon = Icons.info_outline;
         break;
       case CalloutType.success:
-        backgroundColor = tokens.colors.success.withAlpha(15);
-        borderColor = tokens.colors.success.withAlpha(76);
-        iconColor = tokens.colors.success;
+        backgroundColor = const Color(0xFF10B981).withAlpha(15);
+        borderColor = const Color(0xFF10B981).withAlpha(76);
+        iconColor = const Color(0xFF10B981);
         defaultIcon = Icons.check_circle_outline;
         break;
       case CalloutType.warning:
-        backgroundColor = tokens.colors.warning.withAlpha(15);
-        borderColor = tokens.colors.warning.withAlpha(76);
-        iconColor = tokens.colors.warning;
+        backgroundColor = const Color(0xFFF59E0B).withAlpha(15);
+        borderColor = const Color(0xFFF59E0B).withAlpha(76);
+        iconColor = const Color(0xFFF59E0B);
         defaultIcon = Icons.warning_amber_outlined;
         break;
       case CalloutType.error:
-        backgroundColor = tokens.colors.error.withAlpha(15);
-        borderColor = tokens.colors.error.withAlpha(76);
-        iconColor = tokens.colors.error;
+        backgroundColor = const Color(0xFFEF4444).withAlpha(15);
+        borderColor = const Color(0xFFEF4444).withAlpha(76);
+        iconColor = const Color(0xFFEF4444);
         defaultIcon = Icons.error_outline;
         break;
     }
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(MinqTokens.spacing(6)),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: tokens.radius.mdRadius,
+        borderRadius: MinqTokens.cornerMedium(),
         border: Border.all(
           color: borderColor,
           width: 1,
@@ -593,40 +583,40 @@ class CalloutBox extends StatelessWidget {
             color: iconColor,
             size: 20,
           ),
-          SizedBox(width: tokens.spacing.md),
+          SizedBox(width: MinqTokens.spacing(4)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: tokens.typography.titleSmall.copyWith(
-                    color: tokens.colors.onSurface,
+                  style: MinqTokens.bodyLarge.copyWith(
+                    color: MinqTokens.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: tokens.spacing.sm),
+                SizedBox(height: MinqTokens.spacing(2)),
                 Text(
                   content,
-                  style: tokens.typography.bodyMedium.copyWith(
-                    color: tokens.colors.onSurfaceVariant,
+                  style: MinqTokens.bodyMedium.copyWith(
+                    color: MinqTokens.textSecondary,
                     height: 1.4,
                   ),
                 ),
                 if (action != null) ...[
-                  SizedBox(height: tokens.spacing.md),
+                  SizedBox(height: MinqTokens.spacing(4)),
                   action!,
                 ],
               ],
             ),
           ),
           if (isDismissible) ...[
-            SizedBox(width: tokens.spacing.sm),
+            SizedBox(width: MinqTokens.spacing(2)),
             GestureDetector(
               onTap: onDismiss,
-              child: Icon(
+              child: const Icon(
                 Icons.close,
-                color: tokens.colors.onSurfaceVariant,
+                color: MinqTokens.textSecondary,
                 size: 18,
               ),
             ),

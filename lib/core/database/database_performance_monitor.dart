@@ -120,7 +120,7 @@ class DatabasePerformanceMonitor {
   /// Calculate operation statistics
   PerformanceStatistics _calculateStatistics(List<Duration> times) {
     if (times.isEmpty) {
-      return PerformanceStatistics(
+      return const PerformanceStatistics(
         averageDuration: Duration.zero,
         minDuration: Duration.zero,
         maxDuration: Duration.zero,
@@ -277,7 +277,7 @@ class PerformanceReport {
   /// Get summary of performance issues
   String getSummary() {
     final buffer = StringBuffer();
-    buffer.writeln('Performance Report - ${reportTimestamp}');
+    buffer.writeln('Performance Report - $reportTimestamp');
     buffer.writeln('');
     
     // Operation statistics

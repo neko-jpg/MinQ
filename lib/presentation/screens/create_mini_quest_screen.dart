@@ -6,7 +6,6 @@ import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/controllers/home_data_controller.dart';
-import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CreateMiniQuestScreen extends ConsumerStatefulWidget {

@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
-
 import 'package:minq/core/logging/app_logger.dart';
+import 'package:minq/data/providers.dart';
 
 /// サブスクリプション管理サービス
 ///
 /// ユーザーの課金状態を管理し、機能へのアクセス権限を制御する
 class SubscriptionService {
   final FirebaseFirestore _firestore;
+  final String _userId;
+  final AppLogger _logger = AppLogger();
 
   /// 現在のサブスクリプションプラン
   SubscriptionPlan _currentPlan = SubscriptionPlan.free;
@@ -19,17 +20,18 @@ class SubscriptionService {
   /// プレミアムユーザーかどうか
   bool get isPremium => _currentPlan != SubscriptionPlan.free;
 
-  SubscriptionService(this._firestore);
+  SubscriptionService(this._firestore, this._userId);
 
   /// 初期化
   Future<void> initialize() async {
     try {
       await _loadSubscriptionStatus();
-      AppLogger.info('Subscription service initialized', {
+      _logger.info('Subscription service initialized', data: {
         'plan': _currentPlan.name,
       });
     } catch (e, stack) {
-      AppLogger.error('Failed to initialize subscription service', e, stack);
+      _logger.error('Failed to initialize subscription service',
+          error: e, stackTrace: stack);
     }
   }
 
@@ -55,7 +57,8 @@ class SubscriptionService {
         _currentPlan = SubscriptionPlan.free;
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to load subscription status', e, stack);
+      _logger.error('Failed to load subscription status',
+          error: e, stackTrace: stack);
       _currentPlan = SubscriptionPlan.free;
     }
   }
@@ -64,7 +67,7 @@ class SubscriptionService {
   Future<bool> purchase(SubscriptionPlan plan) async {
     if (plan == SubscriptionPlan.free) return false;
     try {
-      AppLogger.info('Attempting to purchase subscription', {
+      _logger.info('Attempting to purchase subscription', data: {
         'plan': plan.name,
       });
 
@@ -83,12 +86,13 @@ class SubscriptionService {
       });
 
       _currentPlan = plan;
-      AppLogger.info('Subscription purchased successfully', {
+      _logger.info('Subscription purchased successfully', data: {
         'plan': plan.name,
       });
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to purchase subscription', e, stack);
+      _logger.error('Failed to purchase subscription',
+          error: e, stackTrace: stack);
       return false;
     }
   }
@@ -96,14 +100,15 @@ class SubscriptionService {
   /// サブスクリプションを復元
   Future<bool> restore() async {
     try {
-      AppLogger.info('Attempting to restore subscription');
+      _logger.info('Attempting to restore subscription');
       await _loadSubscriptionStatus();
-      AppLogger.info('Subscription restored successfully', {
+      _logger.info('Subscription restored successfully', data: {
         'plan': _currentPlan.name,
       });
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to restore subscription', e, stack);
+      _logger.error('Failed to restore subscription',
+          error: e, stackTrace: stack);
       return false;
     }
   }
@@ -111,16 +116,17 @@ class SubscriptionService {
   /// サブスクリプションをキャンセル
   Future<bool> cancel() async {
     try {
-      AppLogger.info('Attempting to cancel subscription');
+      _logger.info('Attempting to cancel subscription');
 
       // TODO: 実際のキャンセル処理
       // 注: iOS/Androidではアプリ内でキャンセルできないため、
       // ストアの設定画面に誘導する
 
-      AppLogger.info('Subscription cancellation initiated');
+      _logger.info('Subscription cancellation initiated');
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to cancel subscription', e, stack);
+      _logger.error('Failed to cancel subscription',
+          error: e, stackTrace: stack);
       return false;
     }
   }
@@ -285,7 +291,11 @@ class FeatureLimit {
 
 /// サブスクリプションサービスのProvider
 final subscriptionServiceProvider = Provider<SubscriptionService>((ref) {
-  final service = SubscriptionService(FirebaseFirestore.instance);
+  final uid = ref.watch(uidProvider);
+  if (uid == null) {
+    throw Exception('User not authenticated');
+  }
+  final service = SubscriptionService(FirebaseFirestore.instance, uid);
   service.initialize();
   return service;
 });

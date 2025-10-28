@@ -9,7 +9,6 @@ import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/controllers/stats_data_controller.dart';
 import 'package:minq/presentation/controllers/sync_status_controller.dart';
-import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class StatsScreen extends ConsumerStatefulWidget {

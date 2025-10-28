@@ -846,10 +846,12 @@ class SentimentResult {
   });
 
   SentimentType get dominantSentiment {
-    if (positive > neutral && positive > negative)
+    if (positive > neutral && positive > negative) {
       return SentimentType.positive;
-    if (negative > neutral && negative > positive)
+    }
+    if (negative > neutral && negative > positive) {
       return SentimentType.negative;
+    }
     return SentimentType.neutral;
   }
 }

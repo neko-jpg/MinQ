@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:minq/core/navigation/navigation_use_case.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/routing/app_router.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// 失敗予測ウィジェット
 /// ホーム画面に表示される失敗リスク警告カード
@@ -13,7 +11,6 @@ class FailurePredictionWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
     final uid = ref.watch(uidProvider);
 
     if (uid == null) {
@@ -28,21 +25,22 @@ class FailurePredictionWidget extends ConsumerWidget {
         }
 
         final highRiskHabits = snapshot.data!;
-        return _buildPredictionCard(context, tokens, ref, highRiskHabits);
+        return _buildPredictionCard(context, ref, highRiskHabits);
       },
     );
   }
 
   Widget _buildPredictionCard(
     BuildContext context,
-    MinqTheme tokens,
     WidgetRef ref,
     List<String> highRiskHabits,
   ) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     final navigation = ref.read(navigationUseCaseProvider);
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -52,7 +50,7 @@ class FailurePredictionWidget extends ConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
             color: Colors.red.withAlpha((255 * 0.3).round()), width: 2),
       ),
@@ -63,20 +61,20 @@ class FailurePredictionWidget extends ConsumerWidget {
           Row(
             children: [
               Container(
-                width: tokens.spacing.xl,
-                height: tokens.spacing.xl,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: Colors.red.withAlpha((255 * 0.2).round()),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.warning,
                   color: Colors.red,
-                  size: tokens.spacing.lg,
+                  size: 16,
                 ),
               ),
 
-              SizedBox(width: tokens.spacing.md),
+              const SizedBox(width: 12),
 
               Expanded(
                 child: Column(
@@ -84,15 +82,15 @@ class FailurePredictionWidget extends ConsumerWidget {
                   children: [
                     Text(
                       'AI失敗予測',
-                      style: tokens.typography.h3.copyWith(
+                      style: textTheme.headlineSmall?.copyWith(
                         color: Colors.red.shade700,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing.xs),
+                    const SizedBox(height: 4),
                     Text(
                       '${highRiskHabits.length}個の習慣で失敗リスクが検出されました',
-                      style: tokens.typography.caption.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         color: Colors.red.shade600,
                       ),
                     ),
@@ -103,30 +101,30 @@ class FailurePredictionWidget extends ConsumerWidget {
               Icon(
                 Icons.arrow_forward_ios,
                 color: Colors.red.shade600,
-                size: tokens.spacing.lg,
+                size: 16,
               ),
             ],
           ),
 
-          SizedBox(height: tokens.spacing.lg),
+          const SizedBox(height: 16),
 
           // リスク習慣リスト
           ...highRiskHabits.take(3).map((habitId) {
-            return _buildRiskHabitItem(tokens, habitId, navigation);
+            return _buildRiskHabitItem(context, habitId, navigation);
           }),
 
           if (highRiskHabits.length > 3) ...[
-            SizedBox(height: tokens.spacing.sm),
+            const SizedBox(height: 8),
             Text(
               '他${highRiskHabits.length - 3}個の習慣',
-              style: tokens.typography.caption.copyWith(
+              style: textTheme.bodySmall?.copyWith(
                 color: Colors.red.shade600,
                 fontStyle: FontStyle.italic,
               ),
             ),
           ],
 
-          SizedBox(height: tokens.spacing.lg),
+          const SizedBox(height: 16),
 
           // アクションボタン
           Row(
@@ -150,13 +148,13 @@ class FailurePredictionWidget extends ConsumerWidget {
                 ),
               ),
 
-              SizedBox(width: tokens.spacing.md),
+              const SizedBox(width: 12),
 
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
                     // 改善提案を表示
-                    _showImprovementSuggestions(context, tokens);
+                    _showImprovementSuggestions(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red.shade600,
@@ -173,21 +171,23 @@ class FailurePredictionWidget extends ConsumerWidget {
   }
 
   Widget _buildRiskHabitItem(
-    MinqTheme tokens,
+    BuildContext context,
     String habitId,
     NavigationUseCase navigation,
   ) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     // TODO: 実際の習慣名を取得
     final habitName = 'クエスト #$habitId';
 
     return GestureDetector(
       onTap: () => navigation.goToHabitAnalysis(habitId, habitName),
       child: Container(
-        margin: EdgeInsets.only(bottom: tokens.spacing.sm),
-        padding: EdgeInsets.all(tokens.spacing.md),
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white.withAlpha((255 * 0.7).round()),
-          borderRadius: BorderRadius.circular(tokens.radius.md),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
               color: Colors.red.withAlpha((255 * 0.2).round())),
         ),
@@ -196,30 +196,30 @@ class FailurePredictionWidget extends ConsumerWidget {
             Icon(
               Icons.trending_down,
               color: Colors.red.shade600,
-              size: tokens.spacing.lg,
+              size: 24,
             ),
 
-            SizedBox(width: tokens.spacing.sm),
+            const SizedBox(width: 8),
 
             Expanded(
               child: Text(
                 habitName,
-                style: tokens.typography.body.copyWith(fontWeight: FontWeight.w600),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
 
             Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: tokens.spacing.sm,
-                vertical: tokens.spacing.xs,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
               ),
               decoration: BoxDecoration(
                 color: Colors.red.shade600,
-                borderRadius: BorderRadius.circular(tokens.radius.sm),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 '高リスク',
-                style: tokens.typography.caption.copyWith(
+                style: textTheme.bodySmall?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -231,19 +231,19 @@ class FailurePredictionWidget extends ConsumerWidget {
     );
   }
 
-  void _showImprovementSuggestions(BuildContext context, MinqTheme tokens) {
+  void _showImprovementSuggestions(BuildContext context) {
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
             title: Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.lightbulb_outline,
                   color: Colors.orange,
-                  size: tokens.spacing.lg,
+                  size: 24,
                 ),
-                SizedBox(width: tokens.spacing.sm),
+                const SizedBox(width: 8),
                 Text(AppLocalizations.of(context)!.aiImprovementSuggestion),
               ],
             ),
@@ -252,25 +252,25 @@ class FailurePredictionWidget extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildSuggestionItem(
-                  tokens,
+                  context,
                   '時間帯を変更',
                   '成功率の高い朝の時間帯に変更してみましょう',
                   Icons.schedule,
                 ),
 
-                SizedBox(height: tokens.spacing.md),
+                const SizedBox(height: 12),
 
                 _buildSuggestionItem(
-                  tokens,
+                  context,
                   '習慣を簡単に',
                   'より小さく、達成しやすい目標に調整しましょう',
                   Icons.tune,
                 ),
 
-                SizedBox(height: tokens.spacing.md),
+                const SizedBox(height: 12),
 
                 _buildSuggestionItem(
-                  tokens,
+                  context,
                   'リマインダー設定',
                   '忘れないように通知を設定しましょう',
                   Icons.notifications,
@@ -295,17 +295,20 @@ class FailurePredictionWidget extends ConsumerWidget {
   }
 
   Widget _buildSuggestionItem(
-    MinqTheme tokens,
+    BuildContext context,
     String title,
     String description,
     IconData icon,
   ) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.orange, size: tokens.spacing.md),
+        Icon(icon, color: Colors.orange, size: 20),
 
-        SizedBox(width: tokens.spacing.sm),
+        const SizedBox(width: 8),
 
         Expanded(
           child: Column(
@@ -313,12 +316,12 @@ class FailurePredictionWidget extends ConsumerWidget {
             children: [
               Text(
                 title,
-                style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: tokens.spacing.xs),
+              const SizedBox(height: 4),
               Text(
                 description,
-                style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
               ),
             ],
           ),
@@ -343,7 +346,8 @@ class CompactFailurePredictionWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     final uid = ref.watch(uidProvider);
 
     if (uid == null) {
@@ -367,28 +371,28 @@ class CompactFailurePredictionWidget extends ConsumerWidget {
             }
           },
           child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: tokens.spacing.md,
-              vertical: tokens.spacing.sm,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
             ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [Colors.red.shade400, Colors.orange.shade500],
               ),
-              borderRadius: BorderRadius.circular(tokens.radius.md),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
+                const Icon(
                   Icons.warning,
                   color: Colors.white,
-                  size: tokens.spacing.lg,
+                  size: 16,
                 ),
-                SizedBox(width: tokens.spacing.sm),
+                const SizedBox(width: 8),
                 Text(
                   'リスク$riskCount件',
-                  style: tokens.typography.caption.copyWith(
+                  style: textTheme.bodySmall?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),

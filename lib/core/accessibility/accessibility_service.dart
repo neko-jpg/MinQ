@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/semantics.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'screen_reader_helper.dart';
+import 'package:minq/core/accessibility/screen_reader_helper.dart';
 
 /// Comprehensive accessibility service for WCAG AA compliance
 class AccessibilityService {

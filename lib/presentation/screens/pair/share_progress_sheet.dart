@@ -153,7 +153,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
         ),
         SizedBox(height: tokens.spacing.sm),
         DropdownButtonFormField<String>(
-          value: _selectedQuest,
+          initialValue: _selectedQuest,
           items: ['運動', '勉強', '読書']
               .map((e) => DropdownMenuItem(value: e, child: Text(e)))
               .toList(),

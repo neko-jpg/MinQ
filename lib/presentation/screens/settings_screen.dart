@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/domain/notification/notification_sound_profile.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/layout/responsive_layout.dart';
 import 'package:minq/presentation/common/layout/safe_scaffold.dart';
 import 'package:minq/presentation/common/policy_documents.dart';
-import 'package:minq/presentation/routing/app_router.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -28,7 +25,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _loadThemePreference() async {
-    final prefs = ref.read(localPreferencesServiceProvider);
+    // final prefs = ref.read(localPreferencesServiceProvider);
     // TODO: Load actual theme preference from storage
     setState(() {
       _isDarkMode = false; // Default to light mode for now
@@ -47,18 +44,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Future<void> _showSoundProfileSheet(
-    BuildContext context,
-    NotificationSoundProfile current,
-  ) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      builder: (context) {
-        return _SoundProfileSheet(currentProfile: current);
-      },
-    );
-  }
-
   void _showAdvancedSettings(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
@@ -69,26 +54,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
-    final selectedSoundProfile = ref.watch(
-      selectedNotificationSoundProfileProvider,
-    );
     final navigation = ref.read(navigationUseCaseProvider);
 
     return SafeScaffold(
-      backgroundColor: tokens.colors.background,
+      backgroundColor: MinqTokens.background,
       appBar: AppBar(
         title: Text(
-          l10n.settingsTitle,
-          style: tokens.typography.headlineSmall.copyWith(
-            color: tokens.colors.onBackground,
+          '設定',
+          style: MinqTokens.titleMedium.copyWith(
+            color: MinqTokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
         leading: Tooltip(
-          message: l10n.back,
+          message: '戻る',
           child: ResponsiveLayout.ensureTouchTarget(
             child: IconButton(
               icon: const Icon(Icons.arrow_back),
@@ -105,7 +85,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
         ],
-        backgroundColor: tokens.colors.surface.withAlpha(204),
+        backgroundColor: Color.lerp(MinqTokens.surface, Colors.transparent, 0.2),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -124,7 +104,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 icon: Icons.person_outline,
                 onTap: () => navigation.goToProfileManagement(),
               ),
-              
+
               // 2. Theme Toggle (prominent placement as requested)
               _EssentialSettingsTile(
                 title: 'テーマ',
@@ -134,7 +114,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 switchValue: _isDarkMode,
                 onSwitchChanged: _toggleTheme,
               ),
-              
+
               // 3. Notifications (consolidated notification settings)
               _EssentialSettingsTile(
                 title: '通知設定',
@@ -142,7 +122,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 icon: Icons.notifications_outlined,
                 onTap: navigation.goToNotificationSettings,
               ),
-              
+
               // 4. AI Coach Settings (consolidated AI options)
               _EssentialSettingsTile(
                 title: 'AIコーチ設定',
@@ -169,7 +149,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 icon: Icons.help_outline,
                 onTap: navigation.goToHelpCenter,
               ),
-              
+
               // 6. Contact Support
               _EssentialSettingsTile(
                 title: 'お問い合わせ',
@@ -177,7 +157,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 icon: Icons.feedback_outlined,
                 onTap: navigation.goToBugReport,
               ),
-              
+
               // 7. Rate App
               _EssentialSettingsTile(
                 title: 'アプリを評価する',
@@ -188,7 +168,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   await reviewService.openStoreListing();
                 },
               ),
-              
+
               // 8. Privacy Policy (essential legal requirement)
               _EssentialSettingsTile(
                 title: 'プライバシーポリシー',
@@ -252,48 +232,48 @@ class _SoundProfileSheetState extends ConsumerState<_SoundProfileSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
     final profiles = ref.watch(notificationSoundProfilesProvider);
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.all(MinqSpacingTokens.lg),
+        padding: EdgeInsets.all(MinqTokens.spacing(4)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '通知サウンドを選択',
-              style: tokens.typography.headlineSmall.copyWith(
+              style: MinqTokens.titleMedium.copyWith(
                 fontWeight: FontWeight.bold,
-                color: tokens.colors.onSurface,
+                color: MinqTokens.textPrimary,
               ),
             ),
-            SizedBox(height: MinqSpacingTokens.lg),
+            SizedBox(height: MinqTokens.spacing(4)),
             Column(
               children: profiles.map((profile) {
-                return RadioListTile<String>(
-                  value: profile.id,
-                  groupValue: _selectedProfileId,
-                  onChanged: (value) async {
-                    if (value == null) return;
-                    await _onProfileSelected(context, profiles, value);
-                  },
+                return ListTile(
                   title: Text(
                     profile.label,
-                    style: tokens.typography.titleMedium.copyWith(
-                      color: tokens.colors.onSurface,
+                    style: MinqTokens.titleMedium.copyWith(
+                      color: MinqTokens.textPrimary,
                     ),
                   ),
                   subtitle: Text(
                     profile.description,
-                    style: tokens.typography.bodyMedium.copyWith(
-                      color: tokens.colors.onSurfaceVariant,
+                    style: MinqTokens.bodyMedium.copyWith(
+                      color: MinqTokens.textSecondary,
                     ),
                   ),
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: MinqSpacingTokens.md,
-                    vertical: MinqSpacingTokens.sm,
+                  leading: Radio<String>(
+                    value: profile.id,
+                    groupValue: _selectedProfileId,
+                    onChanged: (value) async {
+                      if (value == null) return;
+                      await _onProfileSelected(context, profiles, value);
+                    },
                   ),
+                  onTap: () async {
+                    await _onProfileSelected(context, profiles, profile.id);
+                  },
                 );
               }).toList(),
             ),
@@ -312,21 +292,20 @@ class _SettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
     return Padding(
-      padding: EdgeInsets.only(bottom: MinqSpacingTokens.xxl),
+      padding: EdgeInsets.only(bottom: MinqTokens.spacing(6)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: EdgeInsets.only(
-              left: MinqSpacingTokens.sm,
-              bottom: MinqSpacingTokens.lg,
+              left: MinqTokens.spacing(2),
+              bottom: MinqTokens.spacing(4),
             ),
             child: Text(
               title,
-              style: tokens.typography.titleLarge.copyWith(
-                color: tokens.colors.onBackground,
+              style: MinqTokens.titleLarge.copyWith(
+                color: MinqTokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -373,30 +352,29 @@ class _EssentialSettingsTileState extends State<_EssentialSettingsTile> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return Semantics(
       button: !widget.isSwitch,
       label: widget.title,
       hint: widget.subtitle,
       child: Card(
         elevation: 0,
-        shadowColor: tokens.colors.shadow.withAlpha(25),
-        color: tokens.colors.surface,
-        margin: EdgeInsets.symmetric(vertical: MinqSpacingTokens.sm),
+        shadowColor: Colors.black.withAlpha(25),
+        color: MinqTokens.surface,
+        margin: EdgeInsets.symmetric(vertical: MinqTokens.spacing(2)),
         shape: RoundedRectangleBorder(
-          borderRadius: tokens.radius.mdRadius,
+          borderRadius: MinqTokens.cornerMedium(),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: widget.isSwitch ? null : widget.onTap,
-          borderRadius: tokens.radius.mdRadius,
+          borderRadius: MinqTokens.cornerMedium(),
           child: ConstrainedBox(
             constraints: const BoxConstraints(
-              minHeight: MinqSpacingTokens.minTouchTarget, // Ensure 44pt minimum
+              minHeight: 44, // Ensure 44pt minimum
             ),
             child: Padding(
-              padding: EdgeInsets.all(MinqSpacingTokens.lg), // Increased padding for larger touch area
+              padding:
+                  EdgeInsets.all(MinqTokens.spacing(4)), // Increased padding
               child: Row(
                 children: [
                   // Icon container with proper sizing
@@ -405,18 +383,18 @@ class _EssentialSettingsTileState extends State<_EssentialSettingsTile> {
                       width: 48, // Larger icon container
                       height: 48,
                       decoration: BoxDecoration(
-                        color: tokens.colors.primaryContainer,
-                        borderRadius: tokens.radius.smRadius,
+                        color: MinqTokens.brandPrimary.withAlpha(25),
+                        borderRadius: MinqTokens.cornerSmall(),
                       ),
                       child: Icon(
                         widget.icon,
-                        color: tokens.colors.primary,
+                        color: MinqTokens.brandPrimary,
                         size: 24, // Larger icon size
                       ),
                     ),
-                    SizedBox(width: MinqSpacingTokens.lg),
+                    SizedBox(width: MinqTokens.spacing(4)),
                   ],
-                  
+
                   // Content area
                   Expanded(
                     child: Column(
@@ -425,24 +403,24 @@ class _EssentialSettingsTileState extends State<_EssentialSettingsTile> {
                       children: [
                         Text(
                           widget.title,
-                          style: tokens.typography.titleMedium.copyWith(
-                            color: tokens.colors.onSurface,
+                          style: MinqTokens.titleMedium.copyWith(
+                            color: MinqTokens.textPrimary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         if (widget.subtitle != null) ...[
-                          SizedBox(height: MinqSpacingTokens.xs),
+                          SizedBox(height: MinqTokens.spacing(1)),
                           Text(
                             widget.subtitle!,
-                            style: tokens.typography.bodyMedium.copyWith(
-                              color: tokens.colors.onSurfaceVariant,
+                            style: MinqTokens.bodyMedium.copyWith(
+                              color: MinqTokens.textSecondary,
                             ),
                           ),
                         ],
                       ],
                     ),
                   ),
-                  
+
                   // Action area (switch or arrow)
                   if (widget.isSwitch)
                     Semantics(
@@ -453,21 +431,22 @@ class _EssentialSettingsTileState extends State<_EssentialSettingsTile> {
                           setState(() => _currentSwitchValue = value);
                           widget.onSwitchChanged?.call(value);
                         },
-                        thumbColor: WidgetStatePropertyAll<Color>(
-                          tokens.colors.onPrimary,
+                        thumbColor: const WidgetStatePropertyAll<Color>(
+                          Colors.white,
                         ),
-                        trackColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                        trackColor:
+                            WidgetStateProperty.resolveWith<Color?>((states) {
                           if (states.contains(WidgetState.selected)) {
-                            return tokens.colors.primary;
+                            return MinqTokens.brandPrimary;
                           }
-                          return tokens.colors.outline;
+                          return Colors.grey.shade300;
                         }),
                       ),
                     )
                   else
                     Icon(
                       Icons.chevron_right,
-                      color: tokens.colors.onSurfaceVariant,
+                      color: MinqTokens.textSecondary,
                       size: 24,
                     ),
                 ],
@@ -486,28 +465,18 @@ class _SettingsTile extends StatefulWidget {
     required this.title,
     this.subtitle,
     this.onTap,
-    this.isSwitch = false,
-    this.switchValue = false,
-    this.onSwitchChanged,
     this.isDelete = false,
-    this.isDownload = false,
     this.isStatic = false,
     this.staticValue,
-    this.showProgress = false,
     this.icon,
   });
 
   final String title;
   final String? subtitle;
   final VoidCallback? onTap;
-  final bool isSwitch;
-  final bool switchValue;
-  final ValueChanged<bool>? onSwitchChanged;
   final bool isDelete;
-  final bool isDownload;
   final bool isStatic;
   final String? staticValue;
-  final bool showProgress;
   final IconData? icon;
 
   @override
@@ -515,38 +484,28 @@ class _SettingsTile extends StatefulWidget {
 }
 
 class _SettingsTileState extends State<_SettingsTile> {
-  late bool _currentSwitchValue;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentSwitchValue = widget.switchValue;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    final titleColor = widget.isDelete 
-        ? tokens.colors.error 
-        : tokens.colors.onSurface;
+    final titleColor =
+        widget.isDelete ? Colors.red : MinqTokens.textPrimary;
 
     return Card(
       elevation: 0,
-      shadowColor: tokens.colors.shadow.withAlpha(25),
-      color: tokens.colors.surface,
-      margin: EdgeInsets.symmetric(vertical: MinqSpacingTokens.sm),
+      shadowColor: Colors.black.withAlpha(25),
+      color: MinqTokens.surface,
+      margin: EdgeInsets.symmetric(vertical: MinqTokens.spacing(2)),
       shape: RoundedRectangleBorder(
-        borderRadius: tokens.radius.mdRadius,
+        borderRadius: MinqTokens.cornerMedium(),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: widget.onTap,
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            minHeight: MinqSpacingTokens.minTouchTarget,
+            minHeight: 44,
           ),
           child: Padding(
-            padding: EdgeInsets.all(MinqSpacingTokens.md),
+            padding: EdgeInsets.all(MinqTokens.spacing(3)),
             child: Row(
               children: [
                 if (widget.icon != null) ...[
@@ -554,16 +513,16 @@ class _SettingsTileState extends State<_SettingsTile> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: tokens.colors.primaryContainer,
-                      borderRadius: tokens.radius.smRadius,
+                      color: MinqTokens.brandPrimary.withAlpha(25),
+                      borderRadius: MinqTokens.cornerSmall(),
                     ),
                     child: Icon(
                       widget.icon,
-                      color: tokens.colors.primary,
+                      color: MinqTokens.brandPrimary,
                       size: 20,
                     ),
                   ),
-                  SizedBox(width: MinqSpacingTokens.md),
+                  SizedBox(width: MinqTokens.spacing(3)),
                 ],
                 Expanded(
                   child: Column(
@@ -571,68 +530,38 @@ class _SettingsTileState extends State<_SettingsTile> {
                     children: [
                       Text(
                         widget.title,
-                        style: tokens.typography.bodyMedium.copyWith(
+                        style: MinqTokens.bodyMedium.copyWith(
                           color: titleColor,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       if (widget.subtitle != null)
                         Padding(
-                          padding: EdgeInsets.only(top: MinqSpacingTokens.xs),
+                          padding: EdgeInsets.only(top: MinqTokens.spacing(1)),
                           child: Text(
                             widget.subtitle!,
-                            style: tokens.typography.bodySmall.copyWith(
-                              color: tokens.colors.onSurfaceVariant,
+                            style: MinqTokens.bodySmall.copyWith(
+                              color: MinqTokens.textSecondary,
                             ),
                           ),
                         ),
                     ],
                   ),
                 ),
-                if (widget.showProgress)
-                  SizedBox(
-                    width: MinqSpacingTokens.lg,
-                    height: MinqSpacingTokens.lg,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        tokens.colors.primary,
-                      ),
-                    ),
-                  )
-                else if (widget.isSwitch)
-                  Switch(
-                    value: _currentSwitchValue,
-                    onChanged: (value) {
-                      setState(() => _currentSwitchValue = value);
-                      widget.onSwitchChanged?.call(value);
-                    },
-                    thumbColor: WidgetStatePropertyAll<Color>(
-                      tokens.colors.onPrimary,
-                    ),
-                    trackColor: WidgetStateProperty.resolveWith<Color?>((states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return tokens.colors.primary;
-                      }
-                      return tokens.colors.outline;
-                    }),
-                  )
-                else if (widget.isDelete)
+                if (widget.isDelete)
                   Icon(Icons.delete, color: titleColor)
-                else if (widget.isDownload)
-                  Icon(Icons.download, color: tokens.colors.onSurfaceVariant)
                 else if (widget.isStatic)
                   Text(
                     widget.staticValue ?? '',
-                    style: tokens.typography.bodyMedium.copyWith(
-                      color: tokens.colors.onSurfaceVariant,
+                    style: MinqTokens.bodyMedium.copyWith(
+                      color: MinqTokens.textSecondary,
                     ),
                   )
                 else
                   Icon(
                     Icons.chevron_right,
-                    color: tokens.colors.onSurfaceVariant,
-                    size: MinqSpacingTokens.lg,
+                    color: MinqTokens.textSecondary,
+                    size: MinqTokens.spacing(4),
                   ),
               ],
             ),
@@ -648,7 +577,6 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
     final navigation = ref.read(navigationUseCaseProvider);
 
     return DraggableScrollableSheet(
@@ -658,9 +586,9 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
       builder: (context, scrollController) {
         return Container(
           decoration: BoxDecoration(
-            color: tokens.colors.surface,
+            color: MinqTokens.surface,
             borderRadius: BorderRadius.vertical(
-              top: tokens.radius.xlRadius.topLeft,
+              top: MinqTokens.cornerLarge().topLeft,
             ),
           ),
           child: Column(
@@ -669,21 +597,21 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
               Container(
                 width: 40,
                 height: 4,
-                margin: EdgeInsets.symmetric(vertical: MinqSpacingTokens.md),
+                margin: EdgeInsets.symmetric(vertical: MinqTokens.spacing(3)),
                 decoration: BoxDecoration(
-                  color: tokens.colors.onSurfaceVariant.withAlpha(100),
+                  color: MinqTokens.textSecondary.withAlpha(100),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               // Title
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: MinqSpacingTokens.md),
+                padding: EdgeInsets.symmetric(horizontal: MinqTokens.spacing(3)),
                 child: Row(
                   children: [
                     Text(
                       'その他の設定',
-                      style: tokens.typography.headlineSmall.copyWith(
-                        color: tokens.colors.onSurface,
+                      style: MinqTokens.titleMedium.copyWith(
+                        color: MinqTokens.textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -701,7 +629,7 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
               Expanded(
                 child: ListView(
                   controller: scrollController,
-                  padding: EdgeInsets.all(MinqSpacingTokens.md),
+                  padding: EdgeInsets.all(MinqTokens.spacing(3)),
                   children: [
                     // Advanced Features (previously hidden)
                     _SettingsSection(
@@ -718,12 +646,6 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
                           subtitle: '他のユーザーと習慣で対戦',
                           icon: Icons.sports_esports_outlined,
                           onTap: navigation.goToBattle,
-                        ),
-                        _SettingsTile(
-                          title: 'タイムカプセル',
-                          subtitle: '未来の自分にメッセージを送る',
-                          icon: Icons.schedule_send_outlined,
-                          onTap: navigation.goToTimeCapsule,
                         ),
                         _SettingsTile(
                           title: 'ムード追跡',
@@ -767,7 +689,7 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    
+
                     // Advanced Settings (developer/power user options)
                     _SettingsSection(
                       title: '詳細設定',
@@ -779,7 +701,8 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
                           onTap: () {
                             // TODO: Implement data export
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('データエクスポート機能は準備中です')),
+                              const SnackBar(
+                                  content: Text('データエクスポート機能は準備中です')),
                             );
                           },
                         ),
@@ -787,9 +710,10 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
                           title: '利用規約',
                           subtitle: 'サービス利用規約を確認',
                           icon: Icons.description_outlined,
-                          onTap: () => navigation.goToPolicy(PolicyDocumentId.terms),
+                          onTap: () =>
+                              navigation.goToPolicy(PolicyDocumentId.terms),
                         ),
-                        _SettingsTile(
+                        const _SettingsTile(
                           title: 'アプリバージョン',
                           subtitle: 'バージョン 1.0.0',
                           icon: Icons.info_outline,

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
-
 import 'package:minq/core/assets/app_icons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 

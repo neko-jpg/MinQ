@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import 'package:minq/domain/ai/ai_insights.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 

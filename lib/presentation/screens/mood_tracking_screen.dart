@@ -2,11 +2,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/core/mood/mood_tracking_service.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 import 'package:minq/presentation/widgets/mood_selector_widget.dart';
 
 class MoodTrackingScreen extends ConsumerStatefulWidget {
@@ -34,17 +33,15 @@ class _MoodTrackingScreenState extends ConsumerState<MoodTrackingScreen>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return Scaffold(
-      backgroundColor: tokens.background,
+      backgroundColor: MinqTokens.background,
       appBar: AppBar(
         title: Text(
           'ムード追跡',
-          style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
+          style: MinqTokens.titleMedium.copyWith(color: MinqTokens.textPrimary),
         ),
         centerTitle: true,
-        backgroundColor: tokens.background,
+        backgroundColor: MinqTokens.background,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -145,11 +142,10 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
     final selectedMoodData = _moodOptions[_selectedMood]!;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(MinqTokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -158,29 +154,29 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
             elevation: 0,
             color: selectedMoodData.color.withAlpha((255 * 0.1).round()),
             shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(tokens.radius.lg)),
+                borderRadius: MinqTokens.cornerLarge()),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.lg),
+              padding: EdgeInsets.all(MinqTokens.spacing(4)),
               child: Column(
                 children: [
                   Text(
                     selectedMoodData.emoji,
                     style: const TextStyle(fontSize: 64),
                   ),
-                  SizedBox(height: tokens.spacing.sm),
+                  SizedBox(height: MinqTokens.spacing(2)),
                   Text(
                     '今の気分はいかがですか？',
-                    style: tokens.typography.h4.copyWith(
-                      color: tokens.textPrimary,
+                    style: MinqTokens.titleMedium.copyWith(
+                      color: MinqTokens.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: tokens.spacing.sm),
+                  SizedBox(height: MinqTokens.spacing(2)),
                   Text(
                     '気分を記録することで、習慣との関係性を分析できます',
-                    style: tokens.typography.body.copyWith(color: tokens.textMuted),
+                    style: MinqTokens.bodyMedium
+                        .copyWith(color: MinqTokens.textSecondary),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -188,17 +184,17 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
             ),
           ),
 
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: MinqTokens.spacing(6)),
 
           // 気分選択
           Text(
             '気分を選択',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textPrimary,
+            style: MinqTokens.bodyMedium.copyWith(
+              color: MinqTokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: MinqTokens.spacing(3)),
           MoodSelectorWidget(
             moodOptions: _moodOptions,
             selectedMood: _selectedMood,
@@ -227,27 +223,26 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
             },
           ),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // 評価スライダー
           Text(
             '詳細な評価 ($_selectedRating/5)',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textPrimary,
+            style: MinqTokens.bodyMedium.copyWith(
+              color: MinqTokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: MinqTokens.spacing(2)),
           Card(
             elevation: 0,
-            color: tokens.surface,
+            color: MinqTokens.surface,
             shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(tokens.radius.lg),
-              side: BorderSide(color: tokens.border),
+              borderRadius: MinqTokens.cornerLarge(),
+              side: const BorderSide(color: Colors.transparent),
             ),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.lg),
+              padding: EdgeInsets.all(MinqTokens.spacing(4)),
               child: Column(
                 children: [
                   Row(
@@ -255,22 +250,20 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
                     children: [
                       Text(
                         '1',
-                        style: tokens.typography.caption.copyWith(
-                          color: tokens.textMuted,
-                        ),
+                        style: MinqTokens.bodySmall
+                            .copyWith(color: MinqTokens.textSecondary),
                       ),
                       Text(
                         selectedMoodData.description,
-                        style: tokens.typography.body.copyWith(
+                        style: MinqTokens.bodyMedium.copyWith(
                           color: selectedMoodData.color,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         '5',
-                        style: tokens.typography.caption.copyWith(
-                          color: tokens.textMuted,
-                        ),
+                        style: MinqTokens.bodySmall
+                            .copyWith(color: MinqTokens.textSecondary),
                       ),
                     ],
                   ),
@@ -278,7 +271,8 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
                     data: SliderTheme.of(context).copyWith(
                       activeTrackColor: selectedMoodData.color,
                       thumbColor: selectedMoodData.color,
-                      overlayColor: selectedMoodData.color.withAlpha((255 * 0.2).round()),
+                      overlayColor:
+                          selectedMoodData.color.withAlpha((255 * 0.2).round()),
                     ),
                     child: Slider(
                       value: _selectedRating.toDouble(),
@@ -297,18 +291,16 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
             ),
           ),
 
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: MinqTokens.spacing(6)),
 
           // 記録ボタン
           MinqPrimaryButton(
             label: '気分を記録する',
             icon: Icons.favorite,
             onPressed: _isLoading ? null : _recordMood,
-            // TODO(Jules): isLoading is not a valid parameter. I should fix this later.
-            // isLoading: _isLoading,
           ),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // 今日の記録履歴
           _TodayMoodHistory(),
@@ -323,10 +315,8 @@ class _MoodGraphTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
-
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(MinqTokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -335,7 +325,7 @@ class _MoodGraphTab extends ConsumerWidget {
             children: [
               Text(
                 '表示期間',
-                style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
+                style: MinqTokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               SegmentedButton<int>(
@@ -352,58 +342,56 @@ class _MoodGraphTab extends ConsumerWidget {
             ],
           ),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // 気分推移グラフ
           Card(
             elevation: 0,
-            color: tokens.surface,
+            color: MinqTokens.surface,
             shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(tokens.radius.lg),
-              side: BorderSide(color: tokens.border),
+              borderRadius: MinqTokens.cornerLarge(),
+              side: const BorderSide(color: Colors.transparent),
             ),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.lg),
+              padding: EdgeInsets.all(MinqTokens.spacing(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '気分の推移',
-                    style: tokens.typography.h4.copyWith(
+                    style: MinqTokens.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.lg),
+                  SizedBox(height: MinqTokens.spacing(4)),
                   SizedBox(height: 200, child: _MoodLineChart()),
                 ],
               ),
             ),
           ),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // 気分分布
           Card(
             elevation: 0,
-            color: tokens.surface,
+            color: MinqTokens.surface,
             shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(tokens.radius.lg),
-              side: BorderSide(color: tokens.border),
+              borderRadius: MinqTokens.cornerLarge(),
+              side: const BorderSide(color: Colors.transparent),
             ),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.lg),
+              padding: EdgeInsets.all(MinqTokens.spacing(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '気分の分布',
-                    style: tokens.typography.h4.copyWith(
+                    style: MinqTokens.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.lg),
+                  SizedBox(height: MinqTokens.spacing(4)),
                   SizedBox(height: 200, child: _MoodPieChart()),
                 ],
               ),
@@ -420,10 +408,8 @@ class _MoodAnalysisTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
-
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(MinqTokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -434,99 +420,99 @@ class _MoodAnalysisTab extends ConsumerWidget {
             onPressed: () => _runCorrelationAnalysis(context, ref),
           ),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // 相関分析結果
           Card(
             elevation: 0,
-            color: tokens.surface,
+            color: MinqTokens.surface,
             shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(tokens.radius.lg),
-              side: BorderSide(color: tokens.border),
+              borderRadius: MinqTokens.cornerLarge(),
+              side: const BorderSide(color: Colors.transparent),
             ),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.lg),
+              padding: EdgeInsets.all(MinqTokens.spacing(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.insights, color: tokens.brandPrimary),
-                      SizedBox(width: tokens.spacing.sm),
+                      const Icon(Icons.insights, color: MinqTokens.brandPrimary),
+                      SizedBox(width: MinqTokens.spacing(2)),
                       Text(
                         '習慣との相関分析',
-                        style: tokens.typography.h4.copyWith(
+                        style: MinqTokens.titleMedium.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.md),
+                  SizedBox(height: MinqTokens.spacing(3)),
                   _CorrelationInsights(),
                 ],
               ),
             ),
           ),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // AIインサイト
           Card(
             elevation: 0,
-            color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+            color: MinqTokens.brandPrimary.withAlpha((255 * 0.1).round()),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(tokens.radius.lg)),
+                borderRadius: MinqTokens.cornerLarge()),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.lg),
+              padding: EdgeInsets.all(MinqTokens.spacing(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.psychology, color: tokens.brandPrimary),
-                      SizedBox(width: tokens.spacing.sm),
+                      const Icon(Icons.psychology,
+                          color: MinqTokens.brandPrimary),
+                      SizedBox(width: MinqTokens.spacing(2)),
                       Text(
                         'AIインサイト',
-                        style: tokens.typography.h4.copyWith(
+                        style: MinqTokens.titleMedium.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.md),
+                  SizedBox(height: MinqTokens.spacing(3)),
                   _AIInsights(),
                 ],
               ),
             ),
           ),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: MinqTokens.spacing(4)),
 
           // 改善提案
           Card(
             elevation: 0,
-            color: tokens.encouragement.withAlpha((255 * 0.1).round()),
+            color: Colors.orange.withAlpha((255 * 0.1).round()),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(tokens.radius.lg)),
+                borderRadius: MinqTokens.cornerLarge()),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.lg),
+              padding: EdgeInsets.all(MinqTokens.spacing(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.lightbulb, color: tokens.encouragement),
-                      SizedBox(width: tokens.spacing.sm),
+                      const Icon(Icons.lightbulb, color: Colors.orange),
+                      SizedBox(width: MinqTokens.spacing(2)),
                       Text(
                         '改善提案',
-                        style: tokens.typography.h4.copyWith(
+                        style: MinqTokens.titleMedium.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.md),
+                  SizedBox(height: MinqTokens.spacing(3)),
                   _ImprovementSuggestions(),
                 ],
               ),
@@ -566,29 +552,28 @@ class _MoodAnalysisTab extends ConsumerWidget {
 class _TodayMoodHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return Card(
       elevation: 0,
-      color: tokens.surface,
+      color: MinqTokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-        side: BorderSide(color: tokens.border),
+        borderRadius: MinqTokens.cornerLarge(),
+        side: const BorderSide(color: Colors.transparent),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: EdgeInsets.all(MinqTokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '今日の記録',
-              style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
+              style: MinqTokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: MinqTokens.spacing(2)),
             // TODO: 実際のデータを表示
             Text(
               '記録がありません',
-              style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+              style:
+                  MinqTokens.bodySmall.copyWith(color: MinqTokens.textSecondary),
             ),
           ],
         ),
@@ -674,8 +659,6 @@ class _MoodPieChart extends StatelessWidget {
 class _CorrelationInsights extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return Column(
       children: [
         const _InsightItem(
@@ -684,7 +667,7 @@ class _CorrelationInsights extends StatelessWidget {
           description: '平均3.2個の習慣を完了',
           color: Colors.green,
         ),
-        SizedBox(height: tokens.spacing.sm),
+        SizedBox(height: MinqTokens.spacing(2)),
         const _InsightItem(
           icon: Icons.trending_down,
           title: '悪い気分の日',
@@ -699,12 +682,10 @@ class _CorrelationInsights extends StatelessWidget {
 class _AIInsights extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return Text(
       'あなたの気分が良い日は、習慣の継続率が78%高くなる傾向があります。'
       '特に朝の瞑想を行った日は、一日を通して気分が安定しています。',
-      style: tokens.typography.bodyMedium.copyWith(color: tokens.textPrimary),
+      style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textPrimary),
     );
   }
 }
@@ -712,8 +693,6 @@ class _AIInsights extends StatelessWidget {
 class _ImprovementSuggestions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return Column(
       children: [
         const _SuggestionItem(
@@ -721,7 +700,7 @@ class _ImprovementSuggestions extends StatelessWidget {
           title: '朝のルーティン',
           description: '気分を上げる朝の習慣を追加してみましょう',
         ),
-        SizedBox(height: tokens.spacing.sm),
+        SizedBox(height: MinqTokens.spacing(2)),
         const _SuggestionItem(
           icon: Icons.self_improvement,
           title: 'マインドフルネス',
@@ -747,30 +726,29 @@ class _InsightItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return Row(
       children: [
         Container(
-          padding: EdgeInsets.all(tokens.spacing.sm),
+          padding: EdgeInsets.all(MinqTokens.spacing(2)),
           decoration: BoxDecoration(
             color: color.withAlpha((255 * 0.1).round()),
-            borderRadius: BorderRadius.circular(tokens.radius.md),
+            borderRadius: MinqTokens.cornerMedium(),
           ),
           child: Icon(icon, color: color, size: 20),
         ),
-        SizedBox(width: tokens.spacing.md),
+        SizedBox(width: MinqTokens.spacing(3)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
+                style: MinqTokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
                 description,
-                style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: MinqTokens.bodySmall
+                    .copyWith(color: MinqTokens.textSecondary),
               ),
             ],
           ),
@@ -793,30 +771,29 @@ class _SuggestionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return Row(
       children: [
         Container(
-          padding: EdgeInsets.all(tokens.spacing.sm),
+          padding: EdgeInsets.all(MinqTokens.spacing(2)),
           decoration: BoxDecoration(
-            color: tokens.encouragement.withAlpha((255 * 0.1).round()),
-            borderRadius: BorderRadius.circular(tokens.radius.md),
+            color: Colors.orange.withAlpha((255 * 0.1).round()),
+            borderRadius: MinqTokens.cornerMedium(),
           ),
-          child: Icon(icon, color: tokens.encouragement, size: 20),
+          child: const Icon(Icons.lightbulb, color: Colors.orange, size: 20),
         ),
-        SizedBox(width: tokens.spacing.md),
+        SizedBox(width: MinqTokens.spacing(3)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
+                style: MinqTokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
                 description,
-                style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: MinqTokens.bodySmall
+                    .copyWith(color: MinqTokens.textSecondary),
               ),
             ],
           ),

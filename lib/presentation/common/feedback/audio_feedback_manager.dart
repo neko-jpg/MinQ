@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Manages audio feedback across the application with user preferences support
@@ -25,9 +26,10 @@ class AudioFeedbackManager {
       _isEnabled = prefs.getBool(_audioEnabledKey) ?? true;
       _isInitialized = true;
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Failed to initialize preferences: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Failed to initialize preferences',
+        metadata: {'error': e.toString()},
+      );
       _isEnabled = true;
       _isInitialized = true;
     }
@@ -43,9 +45,10 @@ class AudioFeedbackManager {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_audioEnabledKey, enabled);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Failed to save preference: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Failed to save preference',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 
@@ -60,9 +63,10 @@ class AudioFeedbackManager {
       // to play custom success sounds
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Success sound failed: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Success sound failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 
@@ -76,9 +80,10 @@ class AudioFeedbackManager {
       // In production, this would be a custom encouraging sound
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Encouragement sound failed: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Encouragement sound failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 
@@ -90,9 +95,10 @@ class AudioFeedbackManager {
     try {
       await SystemSound.play(SystemSoundType.alert);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Notification sound failed: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Notification sound failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 
@@ -104,9 +110,10 @@ class AudioFeedbackManager {
     try {
       await SystemSound.play(SystemSoundType.alert);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Error sound failed: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Error sound failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 
@@ -118,9 +125,10 @@ class AudioFeedbackManager {
     try {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Button tap sound failed: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Button tap sound failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 
@@ -137,9 +145,10 @@ class AudioFeedbackManager {
       await Future.delayed(const Duration(milliseconds: 100));
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Achievement sound failed: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Achievement sound failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 
@@ -153,9 +162,10 @@ class AudioFeedbackManager {
       await Future.delayed(const Duration(milliseconds: 50));
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Streak sound failed: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Streak sound failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 
@@ -172,9 +182,10 @@ class AudioFeedbackManager {
       await Future.delayed(const Duration(milliseconds: 100));
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Level up sound failed: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Level up sound failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 
@@ -186,9 +197,10 @@ class AudioFeedbackManager {
     try {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Toggle sound failed: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Toggle sound failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 
@@ -200,9 +212,10 @@ class AudioFeedbackManager {
     try {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
-      if (kDebugMode) {
-        print('AudioFeedbackManager: Swipe sound failed: $e');
-      }
+      MinqLogger.warn(
+        'AudioFeedbackManager: Swipe sound failed',
+        metadata: {'error': e.toString()},
+      );
     }
   }
 }

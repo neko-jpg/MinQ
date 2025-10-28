@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:minq/core/error/exceptions.dart';
-import 'package:minq/core/logging/app_logger.dart';
 
 /// リトライ戦略
 enum RetryStrategy {

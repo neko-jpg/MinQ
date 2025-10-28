@@ -1,3 +1,5 @@
+import 'package:minq/data/logging/minq_logger.dart';
+
 /// コンテンツモデレーションサービス
 class ContentModerationService {
   final NGWordFilter _ngWordFilter;
@@ -423,7 +425,10 @@ class ReportSystem {
   /// コンテンツを自動非表示
   Future<void> _autoHideContent(String contentId) async {
     // TODO: Firestoreでコンテンツを非表示にする
-    print('⚠️ Content auto-hidden: $contentId');
+    MinqLogger.warn(
+      'Content auto-hidden due to reports',
+      metadata: {'contentId': contentId},
+    );
   }
 
   /// 通報を取得
