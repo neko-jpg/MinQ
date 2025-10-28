@@ -13,12 +13,7 @@ ThemeData buildLightTheme() {
   // Also include legacy MinqTheme for backward compatibility
   final minqTheme = MinqTheme.light();
   
-  return themeData.copyWith(
-    extensions: <ThemeExtension<dynamic>>[
-      ...themeData.extensions.values,
-      minqTheme,
-    ],
-  );
+  return themeData.copyWith(extensions: _mergeExtensions(themeData, minqTheme));
 }
 
 /// Build dark theme using MinQ design tokens
@@ -32,10 +27,24 @@ ThemeData buildDarkTheme() {
   // Also include legacy MinqTheme for backward compatibility
   final minqTheme = MinqTheme.dark();
   
-  return themeData.copyWith(
-    extensions: <ThemeExtension<dynamic>>[
-      ...themeData.extensions.values,
-      minqTheme,
-    ],
-  );
+  return themeData.copyWith(extensions: _mergeExtensions(themeData, minqTheme));
+}
+
+List<ThemeExtension<dynamic>> _mergeExtensions(
+  ThemeData themeData,
+  MinqTheme minqTheme,
+) {
+  final List<ThemeExtension<dynamic>> extensions = <ThemeExtension<dynamic>>[];
+
+  for (final ThemeExtension<dynamic> extension
+      in themeData.extensions.values) {
+    // Remove any existing MinqTheme to avoid duplicates.
+    if (extension is MinqTheme) {
+      continue;
+    }
+    extensions.add(extension);
+  }
+
+  extensions.add(minqTheme);
+  return extensions;
 }

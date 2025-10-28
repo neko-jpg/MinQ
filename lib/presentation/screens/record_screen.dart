@@ -484,6 +484,7 @@ class _FocusMusicPanel extends ConsumerWidget {
                 try {
                   await service.stop();
                 } catch (error) {
+                  if (!context.mounted) return;
                   FeedbackMessenger.showErrorSnackBar(
                     context,
                     'BGMの停止に失敗しました。',

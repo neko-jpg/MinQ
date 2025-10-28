@@ -80,9 +80,11 @@ class GamificationEngine {
       MinqLogger.info('Awarded $totalPoints points to user $userId for $reason.');
       
       // Check for level progression after awarding points
-      await _checkLevelProgression(userId, context);
-      // ignore: use_build_context_synchronously
-      if (context != null && !context.mounted) return;
+      if (context != null && context.mounted) {
+        await _checkLevelProgression(userId, context);
+      } else {
+        await _checkLevelProgression(userId, null);
+      }
     } catch (e) {
       MinqLogger.error('Failed to award points (offline)', exception: e);
       // Revert local cache on failure
@@ -454,7 +456,7 @@ class GamificationEngine {
     // For now, we'll trigger celebration on certain point milestones
     final milestones = [500, 1500, 3500, 7000, 12000, 20000, 35000, 60000];
     
-    if (milestones.contains(currentPoints) && context != null) {
+      if (milestones.contains(currentPoints) && context != null && context.mounted) {
       await HapticsSystem.levelUp();
       await SoundEffectsService.instance.play(SoundType.levelUp);
       

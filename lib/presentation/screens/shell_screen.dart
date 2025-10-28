@@ -25,6 +25,7 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
   DateTime? _lastNavTap;
   static const Duration _navThrottle = Duration(milliseconds: 500);
   DateTime? _sessionStartedAt;
+  DateTime? _lastBackPress;
 
   @override
   void initState() {
@@ -83,7 +84,9 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     final String location = GoRouterState.of(context).uri.toString();
     if (location.startsWith(AppRoutes.stats)) return 1;
     if (location.startsWith(AppRoutes.challenges)) return 2;
-    if (location.startsWith(AppRoutes.profile) || location.startsWith(AppRoutes.settings)) return 3;
+    if (location.startsWith(AppRoutes.profile) ||
+        location.startsWith(AppRoutes.settings))
+      return 3;
     return 0;
   }
 
@@ -181,12 +184,39 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
       ),
     );
 
+    final guardedScaffold = WillPopScope(
+      onWillPop: () async {
+        final router = GoRouter.of(context);
+        if (router.canPop()) {
+          router.pop();
+          return false;
+        }
+
+        if (currentIndex != 0) {
+          ref.read(navigationUseCaseProvider).goHome();
+          return false;
+        }
+
+        final now = DateTime.now();
+        if (_lastBackPress == null ||
+            now.difference(_lastBackPress!) > const Duration(seconds: 2)) {
+          _lastBackPress = now;
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(const SnackBar(content: Text('もう一度押すとアプリを終了します')));
+          return false;
+        }
+        return true;
+      },
+      child: scaffold,
+    );
+
     if (!usageLimitState.isBlocked) {
-      return scaffold;
+      return guardedScaffold;
     }
 
     return Stack(
-      children: [scaffold, _UsageLimitOverlay(state: usageLimitState)],
+      children: [guardedScaffold, _UsageLimitOverlay(state: usageLimitState)],
     );
   }
 }
@@ -246,14 +276,18 @@ class _UsageLimitOverlay extends ConsumerWidget {
                 SizedBox(height: tokens.spacing.sm),
                 Text(
                   '本日の利用 ${_formatDuration(used)} / ${_formatDuration(dailyLimit)}',
-                  style: tokens.typography.bodyMedium.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.bodyMedium.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
                 SizedBox(height: tokens.spacing.xs),
                 Text(
                   remaining == Duration.zero
                       ? '今日はこれ以上操作できません。'
                       : '残り時間: ${_formatDuration(remaining)}',
-                  style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.bodySmall.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
                 SizedBox(height: tokens.spacing.lg),
                 MinqSecondaryButton(

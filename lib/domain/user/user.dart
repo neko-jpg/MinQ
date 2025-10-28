@@ -11,6 +11,16 @@ class User {
   @Index(unique: true, replace: true)
   late String uid;
 
+  @Index(caseSensitive: false)
+  String displayName = '';
+
+  @Index(unique: true, replace: true, caseSensitive: false)
+  String? handle;
+
+  String bio = '';
+  String avatarSeed = 'seed-01';
+  List<String> focusTags = <String>[];
+
   late DateTime createdAt;
   late List<String> notificationTimes;
   late String privacy;

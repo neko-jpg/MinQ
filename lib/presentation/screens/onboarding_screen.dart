@@ -1,94 +1,150 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/theme/minq_tokens.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 class OnboardingScreen extends ConsumerWidget {
   const OnboardingScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+    final navigation = ref.read(navigationUseCaseProvider);
+
     return Scaffold(
-      backgroundColor: MinqTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        leading: Navigator.canPop(context)
-            ? const BackButton(color: MinqTokens.textPrimary)
-            : null,
-        automaticallyImplyLeading: false,
-      ),
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
+      backgroundColor: tokens.background,
+      body: Stack(
+        children: [
+          Positioned.fill(child: _OnboardingBackground(tokens: tokens)),
+          Positioned.fill(
+            child: SafeArea(
+              child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: MinqTokens.spacing(4),
-                ).copyWith(
-                    top: MinqTokens.spacing(6), bottom: MinqTokens.spacing(3)),
+                  horizontal: tokens.spacing.lg,
+                  vertical: tokens.spacing.xl,
+                ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: MinqTokens.spacing(6)),
-                    Container(
-                      width: 96,
-                      height: 96,
-                      decoration: BoxDecoration(
-                        color: MinqTokens.brandPrimary.withAlpha(26),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.checklist,
-                        color: MinqTokens.brandPrimary,
-                        size: 56,
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: TextButton(
+                        onPressed: navigation.goToLogin,
+                        child: const Text('ログインへ'),
                       ),
                     ),
-                    SizedBox(height: MinqTokens.spacing(4)),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: MinqTokens.titleLarge.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: MinqTokens.textPrimary,
-                        ),
-                        children: const [TextSpan(text: 'MinQへようこそ')],
-                      ),
-                    ),
-                    SizedBox(height: MinqTokens.spacing(3)),
+                    SizedBox(height: tokens.spacing.xl),
                     Text(
-                      'ミニクエストと匿名サポートを通じて、最小限の努力で習慣を築きましょう。',
-                      textAlign: TextAlign.center,
-                      style: MinqTokens.bodyLarge.copyWith(
-                        color: MinqTokens.textSecondary,
+                      'あなたの毎日を\nクエストに変えよう',
+                      style: tokens.typography.h2.copyWith(
+                        color: tokens.textPrimary,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
-                    SizedBox(height: MinqTokens.spacing(6)),
-                    const _FeatureCard(
-                      icon: Icons.touch_app,
-                      title: '3タップで習慣化',
-                      description: '新しい習慣をたった3タップで始められます。とてもシンプルです。',
+                    SizedBox(height: tokens.spacing.md),
+                    Text(
+                      'MinQは、続けたい習慣を冒険のように楽しめる'
+                      'タスク管理アプリです。',
+                      style: tokens.typography.bodyLarge.copyWith(
+                        color: tokens.textSecondary,
+                      ),
                     ),
-                    SizedBox(height: MinqTokens.spacing(3)),
-                    const _FeatureCard(
-                      icon: Icons.groups,
-                      title: '匿名ペア',
-                      description: 'パートナーから、匿名で説明責任とサポートを得られます。',
+                    SizedBox(height: tokens.spacing.xl),
+                    Expanded(
+                      child: ListView(
+                        padding: EdgeInsets.zero,
+                        children: const [
+                          _FeatureCard(
+                            icon: Icons.auto_graph,
+                            title: '1日3分のクエスト設計',
+                            description:
+                                'タスクを小さなクエストに分割し、達成感を'
+                                '積み上げられます。',
+                          ),
+                          _FeatureCard(
+                            icon: Icons.groups_outlined,
+                            title: '仲間と励まし合えるギルド',
+                            description:
+                                '同じ目標を持つ仲間と進捗を共有し、'
+                                'モチベーションを保てます。',
+                          ),
+                          _FeatureCard(
+                            icon: Icons.psychology_alt_outlined,
+                            title: 'AIコーチが24時間サポート',
+                            description:
+                                'オフラインでも使えるAIが、次に取り組むべき'
+                                'クエストを提案します。',
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: MinqTokens.spacing(3)),
-                    const _FeatureCard(
-                      icon: Icons.explore,
-                      title: 'ミニクエスト',
-                      description: 'あなたの目標を、達成感のある小さなクエストに変えましょう。',
+                    SizedBox(height: tokens.spacing.lg),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        onPressed: navigation.goToLogin,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: tokens.brandPrimary,
+                          padding: EdgeInsets.symmetric(
+                            vertical: tokens.spacing.md,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              tokens.radius.lg,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          '始めてみる',
+                          style: tokens.typography.button.copyWith(
+                            color: tokens.primaryForeground,
+                          ),
+                        ),
+                      ),
                     ),
-                    SizedBox(height: MinqTokens.spacing(4)),
+                    SizedBox(height: tokens.spacing.sm),
+                    Center(
+                      child: TextButton(
+                        onPressed: navigation.goToLogin,
+                        child: const Text('すでにアカウントがあります'),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-            const _BottomNavigation(),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OnboardingBackground extends StatelessWidget {
+  const _OnboardingBackground({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [tokens.background, tokens.surfaceAlt],
+        ),
+      ),
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: Container(
+          margin: const EdgeInsets.all(32),
+          width: 220,
+          height: 220,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(180),
+            color: tokens.accentSecondary.withOpacity(0.08),
+          ),
         ),
       ),
     );
@@ -108,99 +164,49 @@ class _FeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: MinqTokens.surface,
-      shape:
-          RoundedRectangleBorder(borderRadius: MinqTokens.cornerLarge()),
-      child: Padding(
-        padding: EdgeInsets.all(MinqTokens.spacing(3)),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: MinqTokens.brandPrimary.withAlpha(26),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: MinqTokens.brandPrimary),
-            ),
-            SizedBox(width: MinqTokens.spacing(3)),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: MinqTokens.titleMedium.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: MinqTokens.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: MinqTokens.spacing(1)),
-                  Text(
-                    description,
-                    style: MinqTokens.bodyMedium.copyWith(
-                      color: MinqTokens.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+    final tokens = context.tokens;
+
+    return Container(
+      margin: EdgeInsets.only(bottom: tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing.lg),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        boxShadow: tokens.shadow.soft,
       ),
-    );
-  }
-}
-
-class _BottomNavigation extends ConsumerWidget {
-  const _BottomNavigation();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0).copyWith(top: 8),
-      child: Column(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: () => ref.read(navigationUseCaseProvider).goToLogin(),
-              icon: const Icon(Icons.arrow_forward),
-              label: const Text('始める'),
-              style: FilledButton.styleFrom(
-                backgroundColor: MinqTokens.brandPrimary,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: MinqTokens.spacing(3)),
-                textStyle: MinqTokens.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: MinqTokens.cornerLarge(),
-                ),
-              ),
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: tokens.brandPrimary.withOpacity(0.12),
             ),
+            child: Icon(icon, color: tokens.brandPrimary),
           ),
-          SizedBox(height: MinqTokens.spacing(3)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('すでにアカウントをお持ちですか？', style: MinqTokens.bodySmall),
-              TextButton(
-                onPressed:
-                    () => ref.read(navigationUseCaseProvider).goToLogin(),
-                child: Text(
-                  'ログイン',
-                  style: MinqTokens.bodySmall.copyWith(
-                    color: MinqTokens.brandPrimary,
-                    fontWeight: FontWeight.bold,
+          SizedBox(width: tokens.spacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: tokens.typography.h4.copyWith(
+                    color: tokens.textPrimary,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-              ),
-            ],
+                SizedBox(height: tokens.spacing.xs),
+                Text(
+                  description,
+                  style: tokens.typography.bodyMedium.copyWith(
+                    color: tokens.textSecondary,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

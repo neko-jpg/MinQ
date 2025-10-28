@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/common/layout/responsive_layout.dart';
-import 'package:minq/presentation/common/layout/safe_scaffold.dart';
-import 'package:minq/presentation/common/security/sensitive_content.dart'
-    as custom;
+import 'package:minq/domain/user/user.dart' as minq_user;
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -14,296 +11,445 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final userAsync = ref.watch(localUserProvider);
 
-    return SafeScaffold(
+    return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
-        title: Text(
-          'プロフィール',
-          style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
+        title: const Text('Profile'),
+        backgroundColor: tokens.background,
         surfaceTintColor: Colors.transparent,
-        leading: ResponsiveLayout.ensureTouchTarget(
-          child: IconButton(
-            icon: Icon(Icons.arrow_back, color: tokens.textPrimary),
-            onPressed: () => context.pop(),
-          ),
-        ),
-      ),
-      body: custom.SensitiveContent(
-        child: SafeScrollView(
-          children: <Widget>[
-            _buildProfileHeader(context, tokens),
-            SizedBox(height: tokens.spacing.xl),
-            _buildStatsRow(tokens),
-            const SizedBox(height: 32),
-            _buildAboutSection(tokens),
-            SizedBox(height: tokens.spacing.xl),
-            _buildMenu(context, tokens, ref),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProfileHeader(BuildContext context, MinqTheme tokens) {
-    return Column(
-      children: <Widget>[
-        Builder(
-          builder: (context) {
-            const avatarSize = 96.0;
-            final pixelRatio = MediaQuery.of(context).devicePixelRatio;
-            final cacheDimension = (avatarSize * pixelRatio).round();
-            return ClipOval(
-              child: Image.network(
-                'https://i.pravatar.cc/150?img=3',
-                width: avatarSize,
-                height: avatarSize,
-                cacheWidth: cacheDimension,
-                cacheHeight: cacheDimension,
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-              ),
-            );
-          },
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Ethan',
-          style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
-        ),
-        SizedBox(height: tokens.spacing.xs),
-        Text(
-          '@ethan_123',
-          style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
-        ),
-        SizedBox(height: tokens.spacing.sm),
-        Text(
-          '2ヶ月前に参加',
-          style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatsRow(MinqTheme tokens) {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        _StatItem(label: '連続', value: '12'),
-        _StatItem(label: 'ペア', value: '3'),
-        _StatItem(label: 'クエスト', value: '2'),
-      ],
-    );
-  }
-
-  Widget _buildAboutSection(MinqTheme tokens) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: tokens.spacing.sm),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            '概要',
-            style: tokens.typography.h5.copyWith(color: tokens.textPrimary),
-          ),
-          SizedBox(height: tokens.spacing.sm),
-          Text(
-            '私はソフトウェアエンジニアで、コーディングとものづくりが大好きです。また、生産性向上や習慣化の大ファンでもあり、MinQを使って目標を達成できることを楽しみにしています。',
-            style: tokens.typography.bodySmall.copyWith(
-              color: tokens.textMuted,
-              height: 1.5,
-            ),
+        centerTitle: true,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit_outlined),
+            tooltip: 'Edit profile',
+            onPressed: () => context.push('/profile-management'),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildMenu(BuildContext context, MinqTheme tokens, WidgetRef ref) {
-    final navigation = ref.read(navigationUseCaseProvider);
-    
-    return Column(
-      children: [
-        // Main Features Section
-        Card(
-          elevation: 0,
-          color: tokens.surface,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
-          child: Column(
-            children: <Widget>[
-              _buildMenuItem(
-                context,
-                tokens,
-                title: 'プロフィールを編集',
-                icon: Icons.edit_outlined,
-                onTap: () => navigation.goToProfileSettings(),
-              ),
-              const Divider(height: 1),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: 'ペア',
-                subtitle: '友達と一緒に習慣を継続',
-                icon: Icons.groups_outlined,
-                onTap: () => navigation.goToPair(),
-              ),
-              const Divider(height: 1),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: 'クエスト',
-                subtitle: '習慣をクエストとして管理',
-                icon: Icons.checklist_outlined,
-                onTap: () => navigation.goToQuests(),
-              ),
-              const Divider(height: 1),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: 'AIインサイト',
-                subtitle: 'データに基づく習慣分析',
-                icon: Icons.insights_outlined,
-                onTap: () => navigation.goToAiInsights(),
-              ),
-            ],
-          ),
-        ),
-        
-        SizedBox(height: tokens.spacing.lg),
-        
-        // Settings Section with Hamburger Menu
-        Card(
-          elevation: 0,
-          color: tokens.surface,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
-          child: ExpansionTile(
-            leading: Icon(Icons.menu, color: tokens.textPrimary),
-            title: Text(
-              '設定とその他',
-              style: tokens.typography.bodyMedium.copyWith(
-                color: tokens.textPrimary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            children: [
-              _buildMenuItem(
-                context,
-                tokens,
-                title: '設定',
-                icon: Icons.settings_outlined,
-                onTap: () => navigation.goToSettings(),
-                isInExpansion: true,
-              ),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: '通知設定',
-                icon: Icons.notifications_outlined,
-                onTap: () => navigation.goToNotificationSettings(),
-                isInExpansion: true,
-              ),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: '友達招待',
-                icon: Icons.person_add_outlined,
-                onTap: () => navigation.goToReferral(),
-                isInExpansion: true,
-              ),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: 'ヘルプセンター',
-                icon: Icons.help_outline,
-                onTap: () => navigation.goToHelpCenter(),
-                isInExpansion: true,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMenuItem(
-    BuildContext context,
-    MinqTheme tokens, {
-    required String title,
-    String? subtitle,
-    required IconData icon,
-    required VoidCallback onTap,
-    bool isInExpansion = false,
-  }) {
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.lg,
-        vertical: isInExpansion ? tokens.spacing.xs : tokens.spacing.sm,
+      body: userAsync.when(
+        data:
+            (user) =>
+                user == null
+                    ? const _EmptyProfileView()
+                    : _ProfileContent(user: user),
+        error: (_, __) => const _ProfileErrorView(),
+        loading: () => const Center(child: CircularProgressIndicator()),
       ),
-      minTileHeight: ResponsiveLayout.minTouchTarget + 12, // Ensure proper touch target
-      leading: Icon(
-        icon,
-        color: tokens.textPrimary,
-        size: 24,
-      ),
-      title: Text(
-        title,
-        style: tokens.typography.bodyMedium.copyWith(
-          color: tokens.textPrimary,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      subtitle: subtitle != null
-          ? Text(
-              subtitle,
-              style: tokens.typography.bodySmall.copyWith(
-                color: tokens.textMuted,
-              ),
-            )
-          : null,
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        size: 16,
-        color: tokens.textMuted,
-      ),
-      onTap: onTap,
     );
   }
 }
 
-class _StatItem extends StatelessWidget {
-  const _StatItem({required this.label, required this.value});
+class _ProfileContent extends StatelessWidget {
+  const _ProfileContent({required this.user});
+
+  final minq_user.User user;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
+    return ListView(
+      padding: EdgeInsets.symmetric(
+        horizontal: tokens.spacing.lg,
+        vertical: tokens.spacing.lg,
+      ),
+      children: [
+        _ProfileHeader(user: user),
+        SizedBox(height: tokens.spacing.xl),
+        _StatsRow(user: user),
+        if (user.bio.isNotEmpty) ...[
+          SizedBox(height: tokens.spacing.xl),
+          _SectionCard(
+            title: 'About',
+            child: Text(
+              user.bio,
+              style: tokens.typography.bodyMedium.copyWith(
+                color: tokens.textSecondary,
+                height: 1.5,
+              ),
+            ),
+          ),
+        ],
+        SizedBox(height: tokens.spacing.xl),
+        _SectionCard(
+          title: 'Focus tags',
+          child:
+              user.focusTags.isEmpty
+                  ? Text(
+                    'No tags yet. Open the edit screen to add a few focus areas.',
+                    style: tokens.typography.bodySmall.copyWith(
+                      color: tokens.textMuted,
+                    ),
+                  )
+                  : Wrap(
+                    spacing: tokens.spacing.sm,
+                    runSpacing: tokens.spacing.sm,
+                    children:
+                        user.focusTags
+                            .map(
+                              (tag) => Chip(
+                                label: Text(tag),
+                                backgroundColor: tokens.brandPrimary.withAlpha(
+                                  (255 * 0.12).round(),
+                                ),
+                                labelStyle: tokens.typography.bodySmall
+                                    .copyWith(color: tokens.brandPrimary),
+                              ),
+                            )
+                            .toList(),
+                  ),
+        ),
+        SizedBox(height: tokens.spacing.xl),
+        _SectionCard(
+          title: 'Recent progress',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _ProgressRow(
+                label: 'Current streak',
+                value: '${user.currentStreak} days',
+                progress: (user.currentStreak / 21).clamp(0.0, 1.0),
+              ),
+              SizedBox(height: tokens.spacing.md),
+              _ProgressRow(
+                label: 'Best streak',
+                value: '${user.longestStreak} days',
+                progress: (user.longestStreak / 30).clamp(0.0, 1.0),
+              ),
+              SizedBox(height: tokens.spacing.md),
+              _ProgressRow(
+                label: 'Total points',
+                value: '${user.totalPoints} pts',
+                progress: (user.totalPoints / 500).clamp(0.0, 1.0),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileHeader extends StatelessWidget {
+  const _ProfileHeader({required this.user});
+
+  final minq_user.User user;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final initials = _initials(user.displayName);
+    final color = _avatarColor(tokens, user.avatarSeed);
+    final handle =
+        user.handle == null || user.handle!.isEmpty ? null : '@${user.handle}';
+
+    return Column(
+      children: [
+        Container(
+          width: 110,
+          height: 110,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [color, tokens.brandPrimary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: tokens.shadow.soft,
+          ),
+          child: Center(
+            child: Text(
+              initials,
+              style: tokens.typography.h3.copyWith(
+                color: tokens.primaryForeground,
+                fontSize: 36,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: tokens.spacing.md),
+        Text(
+          user.displayName.isEmpty ? 'Adventurer' : user.displayName,
+          style: tokens.typography.h4.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        if (handle != null) ...[
+          SizedBox(height: tokens.spacing.xs),
+          Text(
+            handle,
+            style: tokens.typography.bodySmall.copyWith(
+              color: tokens.textMuted,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  String _initials(String displayName) {
+    final trimmed = displayName.trim();
+    if (trimmed.isEmpty) {
+      return 'M';
+    }
+    final firstLetters =
+        trimmed
+            .split(RegExp(r'\s+'))
+            .where((part) => part.isNotEmpty)
+            .take(2)
+            .map(_firstLetter)
+            .where((letter) => letter.isNotEmpty)
+            .toList();
+    if (firstLetters.isEmpty) {
+      return 'M';
+    }
+    return firstLetters.join();
+  }
+
+  String _firstLetter(String value) {
+    final iterator = value.runes.iterator;
+    if (!iterator.moveNext()) {
+      return '';
+    }
+    final first = String.fromCharCode(iterator.current);
+    return first.toUpperCase();
+  }
+
+  Color _avatarColor(MinqTheme tokens, String seed) {
+    final palette = <Color>[
+      tokens.brandPrimary,
+      tokens.accentSecondary,
+      tokens.encouragement,
+      tokens.serenity,
+      tokens.warmth,
+    ];
+    final index = seed.hashCode.abs() % palette.length;
+    return palette[index];
+  }
+}
+
+class _StatsRow extends StatelessWidget {
+  const _StatsRow({required this.user});
+
+  final minq_user.User user;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
+    return Row(
+      children: [
+        Expanded(
+          child: _StatTile(
+            label: 'Level',
+            value: user.currentLevel.toString(),
+            icon: Icons.workspace_premium_outlined,
+          ),
+        ),
+        SizedBox(width: tokens.spacing.md),
+        Expanded(
+          child: _StatTile(
+            label: 'Points',
+            value: user.totalPoints.toString(),
+            icon: Icons.bolt_outlined,
+          ),
+        ),
+        SizedBox(width: tokens.spacing.md),
+        Expanded(
+          child: _StatTile(
+            label: 'Best streak',
+            value: '${user.longestStreak} days',
+            icon: Icons.local_fire_department_outlined,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatTile extends StatelessWidget {
+  const _StatTile({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
 
   final String label;
   final String value;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: tokens.spacing.md,
-        horizontal: tokens.spacing.xl,
-      ),
+      padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: tokens.cornerMedium(),
-        border: Border.all(color: tokens.brandPrimary.withAlpha(46)),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         boxShadow: tokens.shadow.soft,
       ),
       child: Column(
-        children: <Widget>[
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: tokens.brandPrimary),
+          SizedBox(height: tokens.spacing.sm),
           Text(
             value,
-            style: tokens.typography.h5.copyWith(color: tokens.brandPrimary),
+            style: tokens.typography.h4.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           SizedBox(height: tokens.spacing.xs),
           Text(
             label,
-            style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+            style: tokens.typography.bodySmall.copyWith(
+              color: tokens.textMuted,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionCard extends StatelessWidget {
+  const _SectionCard({required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing.lg),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        boxShadow: tokens.shadow.soft,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: tokens.typography.h4.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: tokens.spacing.sm),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _ProgressRow extends StatelessWidget {
+  const _ProgressRow({
+    required this.label,
+    required this.value,
+    required this.progress,
+  });
+
+  final String label;
+  final String value;
+  final double progress;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: tokens.typography.bodySmall.copyWith(
+                  color: tokens.textMuted,
+                ),
+              ),
+            ),
+            Text(
+              value,
+              style: tokens.typography.bodyMedium.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: tokens.spacing.xs),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(tokens.radius.sm),
+          child: LinearProgressIndicator(
+            value: progress,
+            backgroundColor: colorScheme.surfaceContainerHighest,
+            valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
+            minHeight: 6,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EmptyProfileView extends StatelessWidget {
+  const _EmptyProfileView();
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.hourglass_empty, size: 48, color: tokens.textMuted),
+          SizedBox(height: tokens.spacing.md),
+          Text(
+            'Could not find local profile data.',
+            style: tokens.typography.bodyMedium.copyWith(
+              color: tokens.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileErrorView extends StatelessWidget {
+  const _ProfileErrorView();
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.error_outline, size: 48, color: tokens.accentError),
+          SizedBox(height: tokens.spacing.md),
+          Text(
+            'Unable to load profile. Please try again later.',
+            style: tokens.typography.bodyMedium.copyWith(
+              color: tokens.textSecondary,
+            ),
           ),
         ],
       ),

@@ -108,6 +108,11 @@ class AuthController extends StateNotifier<AuthState> {
       final newUser =
           minq_user.User()
             ..uid = uid
+            ..displayName = 'Adventurer'
+            ..handle = null
+            ..bio = ''
+            ..avatarSeed = 'seed-01'
+            ..focusTags = <String>[]
             ..createdAt = DateTime.now()
             ..notificationTimes = List.of(
               NotificationService.defaultReminderTimes,
@@ -175,6 +180,11 @@ class AuthController extends StateNotifier<AuthState> {
     final existingUser = await userRepository.getUserById(_guestUserId);
     if (existingUser == null) {
       await _initializeUserProfile(_guestUserId);
+    } else if (existingUser.displayName.isEmpty) {
+      await userRepository.upsertProfile(
+        _guestUserId,
+        displayName: 'Guest Adventurer',
+      );
     }
 
     state = state.copyWith(

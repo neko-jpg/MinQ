@@ -5,7 +5,7 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
-import 'package:minq/presentation/controllers/home_data_controller.dart';
+import 'package:minq/presentation/controllers/sync_status_controller.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CreateMiniQuestScreen extends ConsumerStatefulWidget {
@@ -17,21 +17,136 @@ class CreateMiniQuestScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _goalValueController = TextEditingController(
-    text: '10',
-  );
+  final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
+  final _goalController = TextEditingController(text: '10');
 
-  String _selectedIconKey = 'spa';
-  Color _selectedColor = const Color(0xFF37CBFA);
+  String _iconKey = questIconCatalog.first.key;
+  Color _accentColor = _miniQuestColors.first;
   bool _isTimeGoal = true;
 
   @override
   void dispose() {
     _titleController.dispose();
-    _goalValueController.dispose();
+    _goalController.dispose();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final syncStatus = ref.watch(syncStatusProvider);
+
+    return Scaffold(
+      backgroundColor: tokens.background,
+      appBar: AppBar(
+        backgroundColor: tokens.background,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+          tooltip: '戻る',
+        ),
+        title: const Text('MiniQuest を作成'),
+        centerTitle: true,
+      ),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: EdgeInsets.all(tokens.spacing.lg),
+          children: [
+            if (syncStatus.phase == SyncPhase.offline)
+              _OfflineHint(tokens: tokens),
+            SizedBox(height: tokens.spacing.lg),
+            _PreviewCard(
+              iconKey: _iconKey,
+              accentColor: _accentColor,
+              title: _titleController.text,
+              isTimeGoal: _isTimeGoal,
+              goalValue: _goalController.text,
+            ),
+            SizedBox(height: tokens.spacing.xl),
+            _SectionHeader(
+              title: 'クエストの概要',
+              subtitle: '習慣にしたいアクションを短い言葉で表現しましょう。',
+            ),
+            SizedBox(height: tokens.spacing.md),
+            TextFormField(
+              controller: _titleController,
+              textCapitalization: TextCapitalization.sentences,
+              maxLength: 40,
+              decoration: const InputDecoration(
+                labelText: 'タイトル',
+                hintText: '例：朝のストレッチを5分',
+              ),
+              onChanged: (_) => setState(() {}),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'タイトルを入力してください。';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: tokens.spacing.xl),
+            _SectionHeader(title: '目標タイプ', subtitle: '計測したい単位を選び、目標値を設定します。'),
+            SizedBox(height: tokens.spacing.md),
+            SegmentedButton<bool>(
+              segments: const [
+                ButtonSegment<bool>(value: true, label: Text('時間で管理')),
+                ButtonSegment<bool>(value: false, label: Text('回数で管理')),
+              ],
+              selected: {_isTimeGoal},
+              onSelectionChanged: (selection) {
+                setState(() => _isTimeGoal = selection.first);
+              },
+            ),
+            SizedBox(height: tokens.spacing.md),
+            TextFormField(
+              controller: _goalController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: '目標値',
+                suffixText: _isTimeGoal ? '分' : '回',
+              ),
+              validator: (value) {
+                final parsed = int.tryParse(value ?? '');
+                if (parsed == null || parsed <= 0) {
+                  return '1以上の数値を入力してください。';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: tokens.spacing.xl),
+            _SectionHeader(title: 'アイコンとカラー', subtitle: '視覚的なモチベーションにつながります。'),
+            SizedBox(height: tokens.spacing.md),
+            _IconSelector(
+              selectedKey: _iconKey,
+              onChanged: (key) => setState(() => _iconKey = key),
+            ),
+            SizedBox(height: tokens.spacing.md),
+            _ColorSelector(
+              selected: _accentColor,
+              onChanged: (color) => setState(() => _accentColor = color),
+            ),
+            SizedBox(height: tokens.spacing.xl),
+            FilledButton(
+              onPressed: _saveMiniQuest,
+              style: FilledButton.styleFrom(
+                backgroundColor: tokens.brandPrimary,
+                minimumSize: const Size.fromHeight(52),
+              ),
+              child: Text(
+                'MiniQuest を保存',
+                style: tokens.typography.button.copyWith(
+                  color: tokens.primaryForeground,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _saveMiniQuest() async {
@@ -43,7 +158,7 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
     if (uid == null || uid.isEmpty) {
       FeedbackMessenger.showErrorSnackBar(
         context,
-        'MiniQuestを作成するにはサインインが必要です。',
+        'MiniQuest を保存するにはログインが必要です。',
       );
       return;
     }
@@ -54,298 +169,259 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
           ..title = _titleController.text.trim()
           ..category = 'MiniQuest'
           ..estimatedMinutes =
-              _isTimeGoal
-                  ? (int.tryParse(_goalValueController.text.trim()) ?? 0)
-                  : 0
-          ..iconKey = _selectedIconKey
+              _isTimeGoal ? int.parse(_goalController.text.trim()) : 0
+          ..iconKey = _iconKey
           ..status = QuestStatus.active
           ..createdAt = DateTime.now();
 
     try {
       await ref.read(questRepositoryProvider).addQuest(quest);
-
-      // プロバイダーを無効化してデータを再読み込み
       ref.invalidate(homeDataProvider);
       ref.invalidate(recentLogsProvider);
       ref.invalidate(userQuestsProvider);
 
-      if (!mounted) {
-        return;
-      }
-
-      // 成功メッセージを表示
-      FeedbackMessenger.showSuccessToast(context, 'MiniQuestを作成しました！');
-
-      // 少し待ってからホーム画面に遷移（プロバイダーの更新を待つ）
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      if (!mounted) {
-        return;
-      }
-
-      // ホーム画面に遷移
+      if (!mounted) return;
+      FeedbackMessenger.showSuccessToast(context, 'MiniQuest を保存しました。');
+      await Future.delayed(const Duration(milliseconds: 250));
+      if (!mounted) return;
       ref.read(navigationUseCaseProvider).goHome();
-    } catch (e) {
-      if (!mounted) {
-        return;
-      }
-      FeedbackMessenger.showErrorSnackBar(context, 'MiniQuestの作成に失敗しました: $e');
+    } catch (error) {
+      if (!mounted) return;
+      FeedbackMessenger.showErrorSnackBar(context, '保存に失敗しました: $error');
     }
   }
+}
 
-  Future<void> _onChooseIcon() async {
-    final selected = await showDialog<String>(
-      context: context,
-      builder: (context) => const _IconPickerDialog(),
-    );
-    if (selected != null && selected != _selectedIconKey) {
-      setState(() => _selectedIconKey = selected);
-    }
-  }
+class _PreviewCard extends StatelessWidget {
+  const _PreviewCard({
+    required this.iconKey,
+    required this.accentColor,
+    required this.title,
+    required this.isTimeGoal,
+    required this.goalValue,
+  });
+
+  final String iconKey;
+  final Color accentColor;
+  final String title;
+  final bool isTimeGoal;
+  final String goalValue;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final icon = questIconCatalog.firstWhere(
+      (entry) => entry.key == iconKey,
+      orElse: () => questIconCatalog.first,
+    );
 
-    return Scaffold(
-      backgroundColor: tokens.background,
-      appBar: AppBar(
-        backgroundColor: tokens.background,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          tooltip: '戻る',
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'MiniQuestを作成',
-          style: tokens.typography.h4.copyWith(
-            color: tokens.textPrimary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing.lg),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: tokens.radius.lg,
+        boxShadow: tokens.shadow.soft,
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(tokens.spacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'MiniQuestのタイトル',
-                style: tokens.typography.body.copyWith(
-                  color: tokens.textMuted,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: tokens.spacing.sm),
-              TextFormField(
-                controller: _titleController,
-                validator:
-                    (value) =>
-                        (value == null || value.trim().isEmpty)
-                            ? 'タイトルを入力してください。'
-                            : null,
-                decoration: InputDecoration(
-                  hintText: '例：朝のストレッチ10分',
-                  prefixIcon: const Icon(Icons.edit),
-                  filled: true,
-                  fillColor: tokens.surface,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
-                    borderSide: BorderSide(color: tokens.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
-                    borderSide: BorderSide(color: tokens.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
-                    borderSide: BorderSide(
-                      color: tokens.brandPrimary,
-                      width: 2,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: tokens.spacing.lg),
-              Text(
-                'アイコンとカラー',
-                style: tokens.typography.body.copyWith(
-                  color: tokens.textMuted,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: tokens.spacing.sm),
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: _onChooseIcon,
-                    child: Container(
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        color: tokens.surface,
-                        borderRadius: BorderRadius.circular(tokens.radius.lg),
-                        border: Border.all(color: tokens.border),
-                      ),
-                      child: Icon(
-                        iconDataForKey(_selectedIconKey),
-                        size: 40,
-                        color: tokens.brandPrimary,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: tokens.spacing.lg),
-                  Expanded(
-                    child: Wrap(
-                      spacing: tokens.spacing.sm,
-                      runSpacing: tokens.spacing.sm,
-                      children:
-                          _miniQuestColors
-                              .map(
-                                (color) => GestureDetector(
-                                  onTap:
-                                      () => setState(
-                                        () => _selectedColor = color,
-                                      ),
-                                  child: Container(
-                                    width: 28,
-                                    height: 28,
-                                    decoration: BoxDecoration(
-                                      color: color,
-                                      shape: BoxShape.circle,
-                                      border:
-                                          _selectedColor == color
-                                              ? Border.all(
-                                                color: Colors.white,
-                                                width: 2,
-                                              )
-                                              : null,
-                                    ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: tokens.spacing.lg),
-              Text(
-                '目標タイプ',
-                style: tokens.typography.body.copyWith(
-                  color: tokens.textMuted,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: tokens.spacing.sm),
-              SegmentedButton<bool>(
-                segments: const [
-                  ButtonSegment<bool>(value: true, label: Text('時間で記録')),
-                  ButtonSegment<bool>(value: false, label: Text('回数で記録')),
-                ],
-                selected: {_isTimeGoal},
-                onSelectionChanged: (selection) {
-                  setState(() => _isTimeGoal = selection.first);
-                },
-              ),
-              SizedBox(height: tokens.spacing.md),
-              Text(
-                '目標値',
-                style: tokens.typography.body.copyWith(
-                  color: tokens.textMuted,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: tokens.spacing.sm),
-              TextFormField(
-                controller: _goalValueController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  suffixText: _isTimeGoal ? '分' : '回',
-                  filled: true,
-                  fillColor: tokens.surface,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
-                    borderSide: BorderSide(color: tokens.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
-                    borderSide: BorderSide(color: tokens.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
-                    borderSide: BorderSide(
-                      color: tokens.brandPrimary,
-                      width: 2,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: tokens.spacing.xxl),
-              FilledButton(
-                onPressed: _saveMiniQuest,
-                style: FilledButton.styleFrom(
-                  backgroundColor: tokens.brandPrimary,
-                  minimumSize: const Size(double.infinity, 48),
-                ),
-                child: const Text('MiniQuestを保存'),
-              ),
-            ],
+      child: Row(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: accentColor.withOpacity(0.15),
+            ),
+            child: Icon(icon.icon, color: accentColor),
           ),
-        ),
+          SizedBox(width: tokens.spacing.lg),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title.isEmpty ? '新しい MiniQuest' : title,
+                  style: tokens.typography.titleMedium.copyWith(
+                    color: tokens.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(height: tokens.spacing.xs),
+                Text(
+                  '${goalValue.isEmpty ? '-' : goalValue}'
+                  '${isTimeGoal ? '分' : '回'}',
+                  style: tokens.typography.bodySmall.copyWith(
+                    color: tokens.textMuted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _IconPickerDialog extends StatelessWidget {
-  const _IconPickerDialog();
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title, this.subtitle});
+
+  final String title;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    return AlertDialog(
-      backgroundColor: tokens.surface,
-      title: const Text('アイコンを選択'),
-      content: SizedBox(
-        width: double.maxFinite,
-        child: GridView.builder(
-          shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: tokens.typography.titleMedium.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.w700,
           ),
-          itemCount: questIconCatalog.length,
-          itemBuilder: (context, index) {
-            final icon = questIconCatalog[index];
-            return GestureDetector(
-              onTap: () => Navigator.of(context).pop(icon.key),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: tokens.surfaceVariant,
-                  borderRadius: BorderRadius.circular(tokens.radius.lg),
+        ),
+        if (subtitle != null) ...[
+          SizedBox(height: tokens.spacing.xs),
+          Text(
+            subtitle!,
+            style: tokens.typography.bodySmall.copyWith(
+              color: tokens.textMuted,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _IconSelector extends StatelessWidget {
+  const _IconSelector({required this.selectedKey, required this.onChanged});
+
+  final String selectedKey;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
+    return SizedBox(
+      height: 88,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: questIconCatalog.length,
+        separatorBuilder: (_, __) => SizedBox(width: tokens.spacing.md),
+        itemBuilder: (context, index) {
+          final item = questIconCatalog[index];
+          final isSelected = item.key == selectedKey;
+          return GestureDetector(
+            onTap: () => onChanged(item.key),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: 72,
+              decoration: BoxDecoration(
+                color:
+                    isSelected
+                        ? tokens.brandPrimary.withOpacity(0.15)
+                        : tokens.surface,
+                borderRadius: tokens.radius.lg,
+                border: Border.all(
+                  color: isSelected ? tokens.brandPrimary : tokens.border,
                 ),
-                child: Icon(icon.icon, size: 28),
+              ),
+              child: Icon(
+                item.icon,
+                color: isSelected ? tokens.brandPrimary : tokens.textMuted,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ColorSelector extends StatelessWidget {
+  const _ColorSelector({required this.selected, required this.onChanged});
+
+  final Color selected;
+  final ValueChanged<Color> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
+    return Wrap(
+      spacing: tokens.spacing.md,
+      runSpacing: tokens.spacing.md,
+      children:
+          _miniQuestColors.map((color) {
+            final isSelected = color == selected;
+            return GestureDetector(
+              onTap: () => onChanged(color),
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color,
+                  border: Border.all(
+                    color: isSelected ? tokens.primaryForeground : Colors.white,
+                    width: 2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withOpacity(0.35),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
               ),
             );
-          },
-        ),
+          }).toList(),
+    );
+  }
+}
+
+class _OfflineHint extends StatelessWidget {
+  const _OfflineHint({required this.tokens});
+
+  final MinqTheme tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing.md),
+      decoration: BoxDecoration(
+        color: Colors.orange.withOpacity(0.12),
+        borderRadius: tokens.radius.lg,
+        border: Border.all(color: Colors.orange.withOpacity(0.4)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.wifi_off, color: Colors.orange),
+          SizedBox(width: tokens.spacing.sm),
+          Expanded(
+            child: Text(
+              'オフラインで作成した MiniQuest は、接続が復帰した際に自動で同期します。',
+              style: tokens.typography.bodySmall.copyWith(
+                color: Colors.orange.shade700,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-const List<Color> _miniQuestColors = <Color>[
-  Color(0xFF37CBFA),
-  Color(0xFFFF6B6B),
-  Color(0xFF4ECDC4),
-  Color(0xFFFFA07A),
-  Color(0xFF9B59B6),
-  Color(0xFFFFD166),
+const List<Color> _miniQuestColors = [
+  Color(0xFF4F46E5),
+  Color(0xFF22D3EE),
+  Color(0xFFEF4444),
+  Color(0xFFF59E0B),
+  Color(0xFF10B981),
+  Color(0xFF6366F1),
 ];

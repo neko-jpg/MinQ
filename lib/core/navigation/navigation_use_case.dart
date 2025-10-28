@@ -15,7 +15,7 @@ class NavigationUseCase {
   );
   void goToCelebration() => _router.push(AppRoutes.celebration);
   void goToSocialSharingDemo() => _router.push(AppRoutes.socialSharingDemo);
-  void goToProfile() => _router.push(AppRoutes.profile);
+  void goToProfile() => _router.go(AppRoutes.profile);
   void goToProfileManagement() => _router.push('/profile-management');
   void goToPolicy(PolicyDocumentId documentId) =>
       _router.push(AppRoutes.policy.replaceFirst(':id', documentId.name));

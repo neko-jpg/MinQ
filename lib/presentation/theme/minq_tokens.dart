@@ -6,12 +6,12 @@ class MinqTokens {
   const MinqTokens._();
 
   // カラートークン
-  static const Color brandPrimary = Color(0xFF6366F1);
+  static const Color brandPrimary = Color(0xFF4F46E5);
   static const Color brandSecondary = Color(0xFF8B5CF6);
-  static const Color textPrimary = Color(0xFF1F2937);
-  static const Color textSecondary = Color(0xFF6B7280);
+  static const Color textPrimary = Color(0xFF0F172A);
+  static const Color textSecondary = Color(0xFF475569);
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color background = Color(0xFFF9FAFB);
+  static const Color background = Color(0xFFF4F6FB);
 
   // スペーシングトークン
   static double spacing(int multiplier) => multiplier * 4.0;

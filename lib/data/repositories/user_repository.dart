@@ -26,6 +26,39 @@ class UserRepository {
     });
   }
 
+  Future<void> upsertProfile(
+    String uid, {
+    String? displayName,
+    String? handle,
+    String? bio,
+    String? avatarSeed,
+    List<String>? focusTags,
+  }) async {
+    await _isar.writeTxn(() async {
+      final user = await getUserById(uid);
+      if (user == null) {
+        return;
+      }
+      if (displayName != null) {
+        user.displayName = displayName.trim();
+      }
+      if (handle != null) {
+        final trimmed = handle.trim();
+        user.handle = trimmed.isEmpty ? null : trimmed.toLowerCase();
+      }
+      if (bio != null) {
+        user.bio = bio.trim();
+      }
+      if (avatarSeed != null && avatarSeed.trim().isNotEmpty) {
+        user.avatarSeed = avatarSeed.trim();
+      }
+      if (focusTags != null) {
+        user.focusTags = focusTags.map((tag) => tag.trim()).toList();
+      }
+      await _isar.users.put(user);
+    });
+  }
+
   Future<void> updateNotificationTimes(String uid, List<String> times) async {
     await _isar.writeTxn(() async {
       final user = await getUserById(uid);

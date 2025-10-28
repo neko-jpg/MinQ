@@ -52,46 +52,67 @@ class ComprehensiveGamificationService {
       final timeBonus = _calculateTimeBonus(DateTime.now());
       
       // Award base points
-      await _gamificationEngine.awardPoints(
-        userId: userId,
-        basePoints: basePoints,
-        reason: 'クエスト完了',
-        difficultyMultiplier: _getDifficultyMultiplier(difficulty),
-        consistencyMultiplier: streakMultiplier,
-        context: context,
-        showNotification: true,
-        playSound: true,
-        hapticFeedback: true,
-      );
-      // ignore: use_build_context_synchronously
-      if (!context.mounted) return GamificationResult()..hasError = true;
+      if (context.mounted) {
+        await _gamificationEngine.awardPoints(
+          userId: userId,
+          basePoints: basePoints,
+          reason: 'クエスト完了',
+          difficultyMultiplier: _getDifficultyMultiplier(difficulty),
+          consistencyMultiplier: streakMultiplier,
+          context: context,
+          showNotification: true,
+          playSound: true,
+          hapticFeedback: true,
+        );
+      } else {
+        await _gamificationEngine.awardPoints(
+          userId: userId,
+          basePoints: basePoints,
+          reason: 'クエスト完了',
+          difficultyMultiplier: _getDifficultyMultiplier(difficulty),
+          consistencyMultiplier: streakMultiplier,
+          showNotification: false,
+          playSound: false,
+          hapticFeedback: false,
+        );
+      }
 
       result.pointsAwarded = (basePoints * _getDifficultyMultiplier(difficulty) * streakMultiplier).round();
       
       // Award time bonus if applicable
       if (timeBonus > 0) {
-        await _gamificationEngine.awardPoints(
-          userId: userId,
-          basePoints: timeBonus,
-          reason: 'タイムボーナス',
-          context: context,
-          showNotification: true,
-        );
-        // ignore: use_build_context_synchronously
-        if (!context.mounted) return GamificationResult()..hasError = true;
+        if (context.mounted) {
+          await _gamificationEngine.awardPoints(
+            userId: userId,
+            basePoints: timeBonus,
+            reason: 'タイムボーナス',
+            context: context,
+            showNotification: true,
+          );
+        } else {
+          await _gamificationEngine.awardPoints(
+            userId: userId,
+            basePoints: timeBonus,
+            reason: 'タイムボーナス',
+            showNotification: false,
+            playSound: false,
+            hapticFeedback: false,
+          );
+        }
         result.bonusPoints = timeBonus;
       }
       
       // Check for new badges
-      final newBadges = await _gamificationEngine.checkAndAwardBadges(
-        userId,
-        context: context,
-        showNotification: true,
-        playSound: true,
-        hapticFeedback: true,
-      );
-      // ignore: use_build_context_synchronously
-      if (!context.mounted) return GamificationResult()..hasError = true;
+      final newBadges =
+          context.mounted
+              ? await _gamificationEngine.checkAndAwardBadges(
+                  userId,
+                  context: context,
+                  showNotification: true,
+                  playSound: true,
+                  hapticFeedback: true,
+                )
+              : await _gamificationEngine.checkAndAwardBadges(userId);
 
       result.newBadges = newBadges;
       
@@ -102,9 +123,9 @@ class ComprehensiveGamificationService {
       if (levelInfo.currentLevel > previousLevel) {
         result.leveledUp = true;
         result.newLevel = levelInfo.currentLevel;
-        await _showLevelUpCelebration(context, levelInfo);
-        // ignore: use_build_context_synchronously
-        if (!context.mounted) return GamificationResult()..hasError = true;
+        if (context.mounted) {
+          await _showLevelUpCelebration(context, levelInfo);
+        }
       }
       
       // Update cache
@@ -113,9 +134,9 @@ class ComprehensiveGamificationService {
       
       // Show celebration for significant achievements
       if (result.shouldShowCelebration()) {
-        await _showAchievementCelebration(context, result);
-        // ignore: use_build_context_synchronously
-        if (!context.mounted) return GamificationResult()..hasError = true;
+        if (context.mounted) {
+          await _showAchievementCelebration(context, result);
+        }
       }
       
       MinqLogger.info('Quest completed successfully for user $userId');
@@ -141,9 +162,8 @@ class ComprehensiveGamificationService {
     );
     
     // Special celebrations for milestone streaks
-    if (_isStreakMilestone(streakDays)) {
+    if (_isStreakMilestone(streakDays) && context.mounted) {
       await _showStreakMilestoneCelebration(context, streakDays);
-      if (!context.mounted) return;
     }
   }
 
@@ -182,9 +202,9 @@ class ComprehensiveGamificationService {
       context: context,
     );
     
-    // Show special comeback celebration
-    await _showComebackCelebration(context);
-    if (!context.mounted) return;
+    if (context.mounted) {
+      await _showComebackCelebration(context);
+    }
   }
 
   /// Get user's current level info with caching

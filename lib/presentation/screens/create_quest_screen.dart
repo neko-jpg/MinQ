@@ -360,10 +360,11 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         if (didPop) {
           return;
         }
+        final router = GoRouter.of(context);
         final shouldPop = await _confirmDiscardChanges();
         if (!mounted) return;
         if (shouldPop) {
-          context.pop();
+          router.pop();
         }
       },
       child: Scaffold(

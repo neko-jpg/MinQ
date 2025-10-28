@@ -12,39 +12,39 @@ class MinqThemeConfig {
     primary: MinqTokens.brandPrimary,
     onPrimary: Colors.white,
     secondary: MinqTokens.brandSecondary,
-    onSecondary: Colors.white,
-    error: Colors.red.shade700,
+    onSecondary: const Color(0xFF0F172A),
+    error: const Color(0xFFEF4444),
     onError: Colors.white,
     surface: MinqTokens.surface,
     onSurface: MinqTokens.textPrimary,
     // Sensible defaults for other colors
-    primaryContainer: Color.lerp(MinqTokens.brandPrimary, Colors.transparent, 0.9),
-    onPrimaryContainer: MinqTokens.brandPrimary,
-    secondaryContainer: Color.lerp(MinqTokens.brandSecondary, Colors.transparent, 0.9),
-    onSecondaryContainer: MinqTokens.brandSecondary,
-    surfaceContainerHighest: MinqTokens.background,
+    primaryContainer: const Color(0xFFE6E7FF),
+    onPrimaryContainer: const Color(0xFF312E81),
+    secondaryContainer: const Color(0xFFD1FAE5),
+    onSecondaryContainer: const Color(0xFF065F46),
+    surfaceContainerHighest: const Color(0xFFE7ECFB),
     onSurfaceVariant: MinqTokens.textSecondary,
-    outline: Color.lerp(MinqTokens.textSecondary, Colors.transparent, 0.5),
+    outline: const Color(0xFFD0D7E5),
   );
 
   static final ColorScheme _darkColorScheme = ColorScheme(
     brightness: Brightness.dark,
-    primary: MinqTokens.brandPrimary,
+    primary: const Color(0xFFA5B4FC),
     onPrimary: Colors.white,
-    secondary: MinqTokens.brandSecondary,
+    secondary: const Color(0xFF2DD4BF),
     onSecondary: Colors.white,
-    error: Colors.red.shade400,
-    onError: Colors.black,
-    surface: const Color(0xFF1F2937), // Dark grey
-    onSurface: MinqTokens.background,
+    error: const Color(0xFFF87171),
+    onError: const Color(0xFF0B1120),
+    surface: const Color(0xFF111827),
+    onSurface: const Color(0xFFE2E8F0),
     // Sensible defaults for other colors
-    primaryContainer: Color.lerp(MinqTokens.brandPrimary, Colors.transparent, 0.8),
-    onPrimaryContainer: Colors.white,
-    secondaryContainer: Color.lerp(MinqTokens.brandSecondary, Colors.transparent, 0.8),
-    onSecondaryContainer: Colors.white,
-    surfaceContainerHighest: const Color(0xFF374151),
-    onSurfaceVariant: Color.lerp(MinqTokens.background, Colors.transparent, 0.2),
-    outline: Color.lerp(MinqTokens.background, Colors.transparent, 0.5),
+    primaryContainer: const Color(0xFF312E81),
+    onPrimaryContainer: const Color(0xFFE0E7FF),
+    secondaryContainer: const Color(0xFF0F766E),
+    onSecondaryContainer: const Color(0xFFD1FAE5),
+    surfaceContainerHighest: const Color(0xFF1F2937),
+    onSurfaceVariant: const Color(0xFF94A3B8),
+    outline: const Color(0xFF334155),
   );
 
   static final TextTheme _textTheme = TextTheme(
@@ -93,7 +93,9 @@ class MinqThemeConfig {
         style: ElevatedButton.styleFrom(
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
-          shape: RoundedRectangleBorder(borderRadius: MinqTokens.cornerMedium()),
+          shape: RoundedRectangleBorder(
+            borderRadius: MinqTokens.cornerMedium(),
+          ),
           padding: EdgeInsets.symmetric(
             horizontal: MinqTokens.spacing(4),
             vertical: MinqTokens.spacing(3),
@@ -105,8 +107,10 @@ class MinqThemeConfig {
         style: OutlinedButton.styleFrom(
           foregroundColor: colorScheme.primary,
           side: BorderSide(color: colorScheme.outline),
-          shape: RoundedRectangleBorder(borderRadius: MinqTokens.cornerMedium()),
-           padding: EdgeInsets.symmetric(
+          shape: RoundedRectangleBorder(
+            borderRadius: MinqTokens.cornerMedium(),
+          ),
+          padding: EdgeInsets.symmetric(
             horizontal: MinqTokens.spacing(4),
             vertical: MinqTokens.spacing(3),
           ),
@@ -116,7 +120,9 @@ class MinqThemeConfig {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: colorScheme.primary,
-          shape: RoundedRectangleBorder(borderRadius: MinqTokens.cornerMedium()),
+          shape: RoundedRectangleBorder(
+            borderRadius: MinqTokens.cornerMedium(),
+          ),
           padding: EdgeInsets.symmetric(
             horizontal: MinqTokens.spacing(4),
             vertical: MinqTokens.spacing(3),
@@ -139,8 +145,12 @@ class MinqThemeConfig {
           borderRadius: MinqTokens.cornerSmall(),
           borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
-        labelStyle: _textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
-        hintStyle: _textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+        labelStyle: _textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        hintStyle: _textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: colorScheme.primary,
@@ -166,7 +176,7 @@ class MinqThemeConfig {
         titleTextStyle: _textTheme.headlineSmall,
         contentTextStyle: _textTheme.bodyMedium,
       ),
-       tabBarTheme: TabBarThemeData(
+      tabBarTheme: TabBarThemeData(
         labelColor: colorScheme.primary,
         unselectedLabelColor: colorScheme.onSurfaceVariant,
         labelStyle: _textTheme.titleSmall,

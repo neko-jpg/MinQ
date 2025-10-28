@@ -1,515 +1,269 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/theme/minq_tokens.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
-/// 有機的な成長アニメーションを持つスプラッシュ画面
-/// 種から芽、葉、完全なアイコンへの4段階の成長を表現
+/// Brand-first splash experience with a calmer pace and minimum dwell time.
 class OrganicSplashScreen extends ConsumerStatefulWidget {
   const OrganicSplashScreen({super.key});
 
   @override
-  ConsumerState<OrganicSplashScreen> createState() => _OrganicSplashScreenState();
+  ConsumerState<OrganicSplashScreen> createState() =>
+      _OrganicSplashScreenState();
 }
 
 class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _masterController;
-  late AnimationController _backgroundController;
-  
-  late Animation<double> _seedPulse;
-  late Animation<double> _sproutGrowth;
-  late Animation<double> _leafExpansion;
-  late Animation<double> _finalScale;
-  late Animation<double> _iconOpacity;
-  
-  GrowthStage _currentStage = GrowthStage.seed;
-  bool _initializationComplete = false;
-  Timer? _minimumDurationTimer;
-  
-  static const Duration _minAnimationDuration = Duration(milliseconds: 1500);
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<Decoration> _background;
+  late final Animation<double> _logoScale;
+  late final Animation<double> _logoOpacity;
+  late final Animation<double> _haloOpacity;
+  late final Animation<double> _wordmarkOpacity;
+  late final Animation<double> _taglineOpacity;
+
+  bool _pointerPressed = false;
+
+  static const Duration _totalDuration = Duration(milliseconds: 1800);
 
   @override
   void initState() {
     super.initState();
-    _initializeAnimations();
-    _startGrowthSequence();
-  }
+    _controller = AnimationController(vsync: this, duration: _totalDuration)
+      ..forward();
 
-  void _initializeAnimations() {
-    // メインアニメーションコントローラー（1.5-2.0秒）
-    _masterController = AnimationController(
-      duration: _minAnimationDuration,
-      vsync: this,
+    _background = DecorationTween(
+      begin: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF1B1F3B), Color(0xFF101527)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      end: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF4F46E5), Color(0xFF22D3EE)],
+          begin: Alignment(0.2, -1.0),
+          end: Alignment.bottomRight,
+        ),
+      ),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.85, curve: Curves.easeInOutCubic),
+      ),
     );
 
-    // 背景色変化用コントローラー
-    _backgroundController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
-      vsync: this,
+    _logoScale = Tween<double>(begin: 0.72, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.15, 0.6, curve: Curves.easeOutBack),
+      ),
     );
 
-    // 種の脈動アニメーション (0.0-0.4s)
-    _seedPulse = Tween<double>(
-      begin: 0.8,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _masterController,
-      curve: const Interval(0.0, 0.27, curve: Curves.easeInOut),
-    ));
+    _logoOpacity = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.1, 0.45, curve: Curves.easeOut),
+    );
 
-    // 芽の成長アニメーション (0.4-0.9s)
-    _sproutGrowth = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _masterController,
-      curve: const Interval(0.27, 0.6, curve: Curves.easeOutBack),
-    ));
+    _haloOpacity = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.2, 0.7, curve: Curves.decelerate),
+    );
 
-    // 葉っぱの展開アニメーション (0.9-1.3s)
-    _leafExpansion = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _masterController,
-      curve: const Interval(0.6, 0.87, curve: Curves.elasticOut),
-    ));
+    _wordmarkOpacity = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.45, 0.85, curve: Curves.easeIn),
+    );
 
-    // 最終スケールアニメーション (1.3-1.5s)
-    _finalScale = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _masterController,
-      curve: const Interval(0.87, 1.0, curve: Curves.easeOutBack),
-    ));
+    _taglineOpacity = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.65, 1.0, curve: Curves.easeIn),
+    );
 
-    // アイコンの透明度
-    _iconOpacity = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _masterController,
-      curve: const Interval(0.87, 1.0, curve: Curves.easeOut),
-    ));
-
-    // アニメーション進行に応じてステージを更新
-    _masterController.addListener(_updateGrowthStage);
-  }
-
-  void _updateGrowthStage() {
-    final progress = _masterController.value;
-    GrowthStage newStage;
-    
-    if (progress < 0.27) {
-      newStage = GrowthStage.seed;
-    } else if (progress < 0.6) {
-      newStage = GrowthStage.sprout;
-    } else if (progress < 0.87) {
-      newStage = GrowthStage.leafGrowth;
-    } else {
-      newStage = GrowthStage.mature;
-    }
-    
-    if (newStage != _currentStage) {
-      setState(() {
-        _currentStage = newStage;
-      });
-      
-      // 触覚フィードバック
-      if (newStage != GrowthStage.seed) {
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
         HapticFeedback.lightImpact();
       }
-    }
-  }
-
-  Future<void> _startGrowthSequence() async {
-    // 初期化開始の触覚フィードバック
-    HapticFeedback.mediumImpact();
-    
-    // アニメーションと初期化を並列実行
-    final animationFuture = _masterController.forward();
-    final backgroundAnimationFuture = _backgroundController.forward();
-    
-    // 最小アニメーション時間を保証
-    _minimumDurationTimer = Timer(_minAnimationDuration, () {
-      if (_initializationComplete && mounted) {
-        _completeAndNavigate();
-      }
     });
-    
-    await Future.wait([animationFuture, backgroundAnimationFuture]);
-  }
-
-  void _completeAndNavigate() {
-    // 完了の触覚フィードバック
-    HapticFeedback.heavyImpact();
-    
-    // 遷移は main.dart の MaterialApp.router が自動的に処理
-    // ここでは何もしない（クラッシュリカバリダイアログもスキップ）
   }
 
   @override
   void dispose() {
-    _masterController.dispose();
-    _backgroundController.dispose();
-    _minimumDurationTimer?.cancel();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    // アプリ初期化の監視をbuildメソッドで行う
-    ref.listen<AsyncValue<void>>(appStartupProvider, (previous, next) {
-      next.when(
-        data: (_) {
-          _initializationComplete = true;
-          // アニメーションが完了していれば即座に遷移
-          if (_masterController.isCompleted && mounted) {
-            _completeAndNavigate();
-          }
-        },
-        loading: () {
-          // 初期化中は何もしない
-        },
-        error: (error, stackTrace) {
-          // エラーが発生した場合でも遷移を続行
-          _initializationComplete = true;
-          if (mounted) {
-            _completeAndNavigate();
-          }
-        },
-      );
-    });
-    
+    final theme = Theme.of(context);
+    final tokens = context.tokens;
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      body: AnimatedBuilder(
-        animation: Listenable.merge([_masterController, _backgroundController]),
-        builder: (context, child) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: _buildBackgroundGradient(isDark),
-            ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // メイン成長アニメーション
-                  SizedBox(
-                    width: 160,
-                    height: 160,
-                    child: CustomPaint(
-                      painter: OrganicGrowthPainter(
-                        stage: _currentStage,
-                        seedPulse: _seedPulse.value,
-                        sproutGrowth: _sproutGrowth.value,
-                        leafExpansion: _leafExpansion.value,
-                        finalScale: _finalScale.value,
-                        iconOpacity: _iconOpacity.value,
-                        isDark: isDark,
-                        primaryColor: MinqTokens.brandPrimary,
-                      ),
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 32),
-                  
-                  // アプリ名（最終段階で表示）
-                  AnimatedOpacity(
-                    opacity: _currentStage == GrowthStage.mature ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 300),
-                    child: ShaderMask(
-                      shaderCallback: (bounds) => LinearGradient(
-                        colors: [
-                          MinqTokens.brandPrimary,
-                          Color.lerp(MinqTokens.brandPrimary, Colors.transparent, 0.2)!,
-                        ],
-                      ).createShader(bounds),
-                      child: const Text(
-                        'MinQ',
-                        style: TextStyle(
-                          fontSize: 42,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 8),
-                  
-                  // サブタイトル
-                  AnimatedOpacity(
-                    opacity: _currentStage == GrowthStage.mature ? 0.8 : 0.0,
-                    duration: const Duration(milliseconds: 300),
-                    child: Text(
-                      '習慣の種を育てよう',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+      backgroundColor: colorScheme.background,
+      body: Semantics(
+        label: 'MinQを起動しています',
+        hint: '長押しでスキップできます',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onLongPressStart: (_) {
+            _pointerPressed = true;
+            HapticFeedback.mediumImpact();
+            _controller.forward(from: 1.0);
+          },
+          onLongPressEnd: (_) {
+            _pointerPressed = false;
+          },
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return DecoratedBox(
+                decoration: _background.value,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _buildHalo(context),
+                    _buildLogo(context),
+                    _buildWordmark(context),
+                    _buildFooter(context, tokens),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
 
-  LinearGradient _buildBackgroundGradient(bool isDark) {
-    final progress = _backgroundController.value;
-    
-    if (isDark) {
-      return LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          Color.lerp(const Color(0xFF2D1B0E), const Color(0xFF1A1A1A), progress)!,
-          Color.lerp(const Color(0xFF4A2C1A), const Color(0xFF2A2A2A), progress)!,
-          Color.lerp(const Color(0xFF654321), const Color(0xFF3A3A3A), progress)!,
-        ],
-      );
-    } else {
-      return LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          Color.lerp(const Color(0xFF8B4513), const Color(0xFFF8FAFC), progress)!,
-          Color.lerp(const Color(0xFFA0522D), const Color(0xFFE2E8F0), progress)!,
-          Color.lerp(const Color(0xFFCD853F), const Color(0xFFCBD5E1), progress)!,
-        ],
-      );
-    }
-  }
-}
+  Widget _buildHalo(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final opacity = _haloOpacity.value;
 
-/// 成長段階の列挙型
-enum GrowthStage {
-  seed,      // 種の段階
-  sprout,    // 発芽段階
-  leafGrowth,// 葉っぱ成長
-  mature,    // 成熟したアイコン
-}
-
-/// 有機的な成長アニメーションを描画するカスタムペインター
-class OrganicGrowthPainter extends CustomPainter {
-  final GrowthStage stage;
-  final double seedPulse;
-  final double sproutGrowth;
-  final double leafExpansion;
-  final double finalScale;
-  final double iconOpacity;
-  final bool isDark;
-  final Color primaryColor;
-
-  OrganicGrowthPainter({
-    required this.stage,
-    required this.seedPulse,
-    required this.sproutGrowth,
-    required this.leafExpansion,
-    required this.finalScale,
-    required this.iconOpacity,
-    required this.isDark,
-    required this.primaryColor,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final paint = Paint()..style = PaintingStyle.fill;
-
-    switch (stage) {
-      case GrowthStage.seed:
-        _drawSeed(canvas, center, paint);
-        break;
-      case GrowthStage.sprout:
-        _drawSprout(canvas, center, paint);
-        break;
-      case GrowthStage.leafGrowth:
-        _drawLeafGrowth(canvas, center, paint);
-        break;
-      case GrowthStage.mature:
-        _drawMatureIcon(canvas, center, paint);
-        break;
-    }
-  }
-
-  void _drawSeed(Canvas canvas, Offset center, Paint paint) {
-    final radius = 8.0 * seedPulse;
-    
-    // 種の影
-    paint.color = Color.lerp(Colors.black, Colors.transparent, 0.8)!;
-    canvas.drawCircle(center + const Offset(2, 2), radius, paint);
-    
-    // 種本体
-    paint.color = const Color(0xFF8B4513);
-    canvas.drawCircle(center, radius, paint);
-    
-    // 種の模様
-    paint.color = const Color(0xFF654321);
-    paint.strokeWidth = 1.5;
-    paint.style = PaintingStyle.stroke;
-    canvas.drawCircle(center, radius * 0.7, paint);
-    paint.style = PaintingStyle.fill;
-  }
-
-  void _drawSprout(Canvas canvas, Offset center, Paint paint) {
-    // 種（小さくなる）
-    const seedRadius = 6.0;
-    paint.color = const Color(0xFF8B4513);
-    canvas.drawCircle(center + const Offset(0, 20), seedRadius, paint);
-    
-    // 芽の茎
-    final stemHeight = 40.0 * sproutGrowth;
-    paint.color = const Color(0xFF228B22);
-    paint.strokeWidth = 4.0;
-    paint.strokeCap = StrokeCap.round;
-    paint.style = PaintingStyle.stroke;
-    
-    final stemPath = Path();
-    stemPath.moveTo(center.dx, center.dy + 20);
-    stemPath.quadraticBezierTo(
-      center.dx - 5, center.dy + 10 - stemHeight * 0.5,
-      center.dx, center.dy + 20 - stemHeight,
-    );
-    canvas.drawPath(stemPath, paint);
-    
-    // 小さな葉っぱ
-    if (sproutGrowth > 0.5) {
-      paint.style = PaintingStyle.fill;
-      paint.color = const Color(0xFF32CD32);
-      
-      final leafSize = 8.0 * (sproutGrowth - 0.5) * 2;
-      final leafCenter = Offset(center.dx, center.dy + 20 - stemHeight);
-      
-      final leafPath = Path();
-      leafPath.moveTo(leafCenter.dx, leafCenter.dy);
-      leafPath.quadraticBezierTo(
-        leafCenter.dx - leafSize, leafCenter.dy - leafSize * 0.5,
-        leafCenter.dx - leafSize * 0.5, leafCenter.dy - leafSize,
-      );
-      leafPath.quadraticBezierTo(
-        leafCenter.dx, leafCenter.dy - leafSize * 0.5,
-        leafCenter.dx, leafCenter.dy,
-      );
-      canvas.drawPath(leafPath, paint);
-    }
-  }
-
-  void _drawLeafGrowth(Canvas canvas, Offset center, Paint paint) {
-    // 茎
-    paint.color = const Color(0xFF228B22);
-    paint.strokeWidth = 6.0;
-    paint.strokeCap = StrokeCap.round;
-    paint.style = PaintingStyle.stroke;
-    
-    final stemPath = Path();
-    stemPath.moveTo(center.dx, center.dy + 25);
-    stemPath.quadraticBezierTo(
-      center.dx - 5, center.dy,
-      center.dx, center.dy - 25,
-    );
-    canvas.drawPath(stemPath, paint);
-    
-    // 展開する葉っぱ
-    paint.style = PaintingStyle.fill;
-    paint.color = const Color(0xFF32CD32);
-    
-    final leafSize = 25.0 * leafExpansion;
-    
-    // 左の葉っぱ
-    final leftLeafPath = Path();
-    leftLeafPath.moveTo(center.dx - 5, center.dy - 10);
-    leftLeafPath.quadraticBezierTo(
-      center.dx - 5 - leafSize, center.dy - 10 - leafSize * 0.3,
-      center.dx - 5 - leafSize * 0.7, center.dy - 10 - leafSize,
-    );
-    leftLeafPath.quadraticBezierTo(
-      center.dx - 5 - leafSize * 0.3, center.dy - 10 - leafSize * 0.5,
-      center.dx - 5, center.dy - 10,
-    );
-    canvas.drawPath(leftLeafPath, paint);
-    
-    // 右の葉っぱ
-    final rightLeafPath = Path();
-    rightLeafPath.moveTo(center.dx + 5, center.dy - 5);
-    rightLeafPath.quadraticBezierTo(
-      center.dx + 5 + leafSize, center.dy - 5 - leafSize * 0.3,
-      center.dx + 5 + leafSize * 0.7, center.dy - 5 - leafSize,
-    );
-    rightLeafPath.quadraticBezierTo(
-      center.dx + 5 + leafSize * 0.3, center.dy - 5 - leafSize * 0.5,
-      center.dx + 5, center.dy - 5,
-    );
-    canvas.drawPath(rightLeafPath, paint);
-    
-    // 上の葉っぱ
-    final topLeafPath = Path();
-    topLeafPath.moveTo(center.dx, center.dy - 25);
-    topLeafPath.quadraticBezierTo(
-      center.dx - leafSize * 0.3, center.dy - 25 - leafSize,
-      center.dx, center.dy - 25 - leafSize * 1.2,
-    );
-    topLeafPath.quadraticBezierTo(
-      center.dx + leafSize * 0.3, center.dy - 25 - leafSize,
-      center.dx, center.dy - 25,
-    );
-    canvas.drawPath(topLeafPath, paint);
-  }
-
-  void _drawMatureIcon(Canvas canvas, Offset center, Paint paint) {
-    final iconSize = 50.0 * finalScale;
-    
-    // アイコンの背景円
-    paint.color = Color.lerp(primaryColor, Colors.transparent, 1 - iconOpacity)!;
-    canvas.drawCircle(center, iconSize, paint);
-    
-    // アイコンの影
-    paint.color = Color.lerp(Colors.black, Colors.transparent, 1 - (0.1 * iconOpacity))!;
-    canvas.drawCircle(center + const Offset(3, 3), iconSize, paint);
-    
-    // アイコン内のシンボル（簡単な葉っぱマーク）
-    paint.color = Color.lerp(Colors.white, Colors.transparent, 1 - iconOpacity)!;
-    paint.style = PaintingStyle.fill;
-    
-    final symbolPath = Path();
-    symbolPath.moveTo(center.dx, center.dy - iconSize * 0.4);
-    symbolPath.quadraticBezierTo(
-      center.dx - iconSize * 0.3, center.dy - iconSize * 0.1,
-      center.dx - iconSize * 0.2, center.dy + iconSize * 0.2,
-    );
-    symbolPath.quadraticBezierTo(
-      center.dx, center.dy + iconSize * 0.1,
-      center.dx + iconSize * 0.2, center.dy + iconSize * 0.2,
-    );
-    symbolPath.quadraticBezierTo(
-      center.dx + iconSize * 0.3, center.dy - iconSize * 0.1,
-      center.dx, center.dy - iconSize * 0.4,
-    );
-    canvas.drawPath(symbolPath, paint);
-    
-    // 茎
-    paint.strokeWidth = 3.0 * finalScale;
-    paint.strokeCap = StrokeCap.round;
-    paint.style = PaintingStyle.stroke;
-    canvas.drawLine(
-      Offset(center.dx, center.dy + iconSize * 0.1),
-      Offset(center.dx, center.dy + iconSize * 0.4),
-      paint,
+    return IgnorePointer(
+      child: Opacity(
+        opacity: opacity,
+        child: Container(
+          width: 220,
+          height: 220,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                colorScheme.primary.withOpacity(0.45 * opacity),
+                colorScheme.primary.withOpacity(0.0),
+              ],
+              stops: const [0.0, 1.0],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  Widget _buildLogo(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Transform.scale(
+      scale: _logoScale.value,
+      child: Opacity(
+        opacity: _logoOpacity.value,
+        child: Container(
+          width: 96,
+          height: 96,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [colorScheme.primary, colorScheme.secondary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.primary.withOpacity(0.45),
+                blurRadius: 32,
+                offset: const Offset(0, 12),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Icon(
+              Icons.check_circle,
+              size: 54,
+              color: colorScheme.onPrimary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWordmark(BuildContext context) {
+    final tokens = context.tokens;
+
+    return Positioned(
+      top: MediaQuery.of(context).size.height * 0.55,
+      child: FadeTransition(
+        opacity: _wordmarkOpacity,
+        child: Column(
+          children: [
+            Text(
+              'MinQ',
+              style: tokens.typography.h3.copyWith(
+                color: tokens.surfaceForeground,
+                letterSpacing: -0.4,
+              ),
+            ),
+            const SizedBox(height: 8),
+            FadeTransition(
+              opacity: _taglineOpacity,
+              child: Text(
+                '習慣をクエストに。毎日を冒険に。',
+                style: tokens.typography.bodyMedium.copyWith(
+                  color: tokens.surfaceForeground.withOpacity(0.84),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFooter(BuildContext context, MinqTheme tokens) {
+    final mediaQuery = MediaQuery.of(context);
+    final showIndicator = !_pointerPressed;
+
+    return Positioned(
+      bottom: mediaQuery.padding.bottom + 48,
+      child: FadeTransition(
+        opacity: _taglineOpacity,
+        child: Column(
+          children: [
+            if (showIndicator)
+              SizedBox(
+                height: 18,
+                width: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    tokens.primaryForeground,
+                  ),
+                  backgroundColor: Colors.white24,
+                ),
+              ),
+            if (showIndicator) const SizedBox(height: 12),
+            Text(
+              '初期設定を準備中…',
+              style: tokens.typography.bodySmall.copyWith(
+                color: tokens.surfaceForeground.withOpacity(0.75),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
