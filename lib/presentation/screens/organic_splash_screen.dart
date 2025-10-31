@@ -101,7 +101,7 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.background,
+      backgroundColor: colorScheme.surface,
       body: Semantics(
         label: 'MinQを起動しています',
         hint: '長押しでスキップできます',

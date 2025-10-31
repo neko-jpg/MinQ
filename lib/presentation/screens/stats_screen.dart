@@ -76,7 +76,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
     );
 
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final statsAsync = ref.watch(statsDataProvider);
     final StatsViewData? data = statsAsync.valueOrNull;
     final bool hasCachedContent = data?.hasCachedContent ?? false;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minq/core/onboarding/progressive_hint_service.dart';
 import 'package:minq/presentation/common/onboarding/interactive_tour.dart';
 import 'package:minq/presentation/common/onboarding/onboarding_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -85,18 +86,22 @@ class OnboardingEngine {
   }
 
   /// ユーザーの進捗に応じたヒントを表示
-  static Future<void> showProgressiveHint(UserProgress progress) async {
+  static Future<void> showProgressiveHint(
+    UserProgress progress,
+    BuildContext context,
+  ) async {
     if (await hasCompletedOnboarding()) return;
+    if (!context.mounted) return;
 
     if (progress.totalQuests == 0) {
       // 初回ユーザー向けのクエスト作成ヒント
-      await _showFirstQuestHint();
-    } else if (progress.completedQuests == 0) {
+      await ProgressiveHintService.showFirstQuestHint(context);
+    } else if (progress.completedQuests == 1) {
       // 初回完了ヒント
-      await _showFirstCompletionHint();
+      await ProgressiveHintService.showFirstCompletionHint(context);
     } else if (progress.currentStreak >= 3) {
       // 連続達成ヒント
-      await _showStreakHint();
+      await ProgressiveHintService.showStreakHint(context, progress.currentStreak);
     }
   }
 
@@ -204,16 +209,16 @@ class OnboardingEngine {
     );
   }
 
-  static Future<void> _showFirstQuestHint() async {
-    // 実装は後で追加
+  static Future<void> _showFirstQuestHint(BuildContext context) async {
+    await ProgressiveHintService.showFirstQuestHint(context);
   }
 
-  static Future<void> _showFirstCompletionHint() async {
-    // 実装は後で追加
+  static Future<void> _showFirstCompletionHint(BuildContext context) async {
+    await ProgressiveHintService.showFirstCompletionHint(context);
   }
 
-  static Future<void> _showStreakHint() async {
-    // 実装は後で追加
+  static Future<void> _showStreakHint(BuildContext context, int streakDays) async {
+    await ProgressiveHintService.showStreakHint(context, streakDays);
   }
 }
 

@@ -1,10 +1,137 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/i18n/cultural_adaptation_service.dart';
+import 'package:minq/core/i18n/regional_service.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_tokens.dart';
 
 class LanguageSelectorWidget extends ConsumerWidget {
   const LanguageSelectorWidget({super.key});
+
+  Widget _buildRegionalInfo(Locale locale) {
+    final config = RegionalService.getRegionalConfig(locale);
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: MinqTokens.spacing(1),
+        vertical: MinqTokens.spacing(0.5),
+      ),
+      decoration: BoxDecoration(
+        color: MinqTokens.textSecondary.withAlpha((255 * 0.1).round()),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        config.currencySymbol,
+        style: MinqTokens.bodySmall.copyWith(
+          color: MinqTokens.textSecondary,
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  String _getLanguageChangeInfo(BuildContext context, Locale? currentLocale) {
+    final l10n = AppLocalizations.of(context);
+    
+    switch (currentLocale?.languageCode) {
+      case 'ja':
+        return '言語を変更すると、アプリ全体の表示言語、日付形式、通貨表示が即座に切り替わります。';
+      case 'zh':
+        return '更改语言将立即切换整个应用的显示语言、日期格式和货币显示。';
+      case 'ko':
+        return '언어를 변경하면 앱 전체의 표시 언어, 날짜 형식, 통화 표시가 즉시 전환됩니다.';
+      case 'ar':
+        return 'تغيير اللغة سيؤدي إلى تبديل لغة العرض وتنسيق التاريخ وعرض العملة في التطبيق بأكمله فوراً.';
+      case 'es':
+        return 'Cambiar el idioma actualizará inmediatamente el idioma de visualización, formato de fecha y moneda en toda la aplicación.';
+      default:
+        return 'Changing the language will immediately update the display language, date format, and currency throughout the app.';
+    }
+  }
+
+  Widget _buildRegionalPreview(Locale locale) {
+    final config = RegionalService.getRegionalConfig(locale);
+    final now = DateTime.now();
+    const sampleAmount = 1234.56;
+    
+    return Container(
+      padding: EdgeInsets.all(MinqTokens.spacing(3)),
+      decoration: BoxDecoration(
+        color: MinqTokens.surface,
+        borderRadius: MinqTokens.cornerSmall(),
+        border: Border.all(
+          color: MinqTokens.textSecondary.withAlpha((255 * 0.2).round()),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Preview:',
+            style: MinqTokens.bodySmall.copyWith(
+              color: MinqTokens.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: MinqTokens.spacing(1)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Date:',
+                style: MinqTokens.bodySmall.copyWith(
+                  color: MinqTokens.textSecondary,
+                ),
+              ),
+              Text(
+                RegionalService.formatDate(now, locale),
+                style: MinqTokens.bodySmall.copyWith(
+                  color: MinqTokens.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: MinqTokens.spacing(0.5)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Currency:',
+                style: MinqTokens.bodySmall.copyWith(
+                  color: MinqTokens.textSecondary,
+                ),
+              ),
+              Text(
+                RegionalService.formatCurrency(sampleAmount, locale),
+                style: MinqTokens.bodySmall.copyWith(
+                  color: MinqTokens.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: MinqTokens.spacing(0.5)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Greeting:',
+                style: MinqTokens.bodySmall.copyWith(
+                  color: MinqTokens.textSecondary,
+                ),
+              ),
+              Text(
+                CulturalAdaptationService.getTimeBasedGreeting(now, locale),
+                style: MinqTokens.bodySmall.copyWith(
+                  color: MinqTokens.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,8 +154,8 @@ class LanguageSelectorWidget extends ConsumerWidget {
                   size: 24,
                 ),
                 SizedBox(width: MinqTokens.spacing(2)),
-                const Text(
-                  'Language / 言語',
+                Text(
+                  AppLocalizations.of(context).languageSettings ?? 'Language Settings',
                   style: MinqTokens.titleMedium,
                 ),
               ],
@@ -72,16 +199,44 @@ class LanguageSelectorWidget extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                option.nativeName,
-                                style: MinqTokens.bodyMedium.copyWith(
-                                  fontWeight: isSelected
-                                      ? FontWeight.w600
-                                      : FontWeight.normal,
-                                  color: isSelected
-                                      ? MinqTokens.brandPrimary
-                                      : MinqTokens.textPrimary,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    option.nativeName,
+                                    style: MinqTokens.bodyMedium.copyWith(
+                                      fontWeight: isSelected
+                                          ? FontWeight.w600
+                                          : FontWeight.normal,
+                                      color: isSelected
+                                          ? MinqTokens.brandPrimary
+                                          : MinqTokens.textPrimary,
+                                    ),
+                                  ),
+                                  if (option.isRTL) ...[
+                                    SizedBox(width: MinqTokens.spacing(1)),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: MinqTokens.spacing(1),
+                                        vertical: MinqTokens.spacing(0.5),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: MinqTokens.brandPrimary.withAlpha((255 * 0.2).round()),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        'RTL',
+                                        style: MinqTokens.bodySmall.copyWith(
+                                          color: MinqTokens.brandPrimary,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  // Show regional info
+                                  SizedBox(width: MinqTokens.spacing(1)),
+                                  _buildRegionalInfo(option.locale),
+                                ],
                               ),
                               if (option.displayName != option.nativeName)
                                 Text(
@@ -106,24 +261,30 @@ class LanguageSelectorWidget extends ConsumerWidget {
                 color: MinqTokens.background, // Substituted surfaceVariant
                 borderRadius: MinqTokens.cornerMedium(),
               ),
-              child: Row(
+              child: Column(
                 children: [
-                  const Icon(
-                    Icons.info_outline,
-                    color: MinqTokens.brandPrimary,
-                    size: 16,
-                  ),
-                  SizedBox(width: MinqTokens.spacing(2)),
-                  Expanded(
-                    child: Text(
-                      currentLocale?.languageCode == 'ja'
-                          ? '言語を変更すると、アプリ全体の表示言語が即座に切り替わります。'
-                          : 'Changing the language will immediately switch the display language throughout the app.',
-                      style: MinqTokens.bodySmall.copyWith(
-                        color: MinqTokens.textSecondary,
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.info_outline,
+                        color: MinqTokens.brandPrimary,
+                        size: 16,
                       ),
-                    ),
+                      SizedBox(width: MinqTokens.spacing(2)),
+                      Expanded(
+                        child: Text(
+                          _getLanguageChangeInfo(context, currentLocale),
+                          style: MinqTokens.bodySmall.copyWith(
+                            color: MinqTokens.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  if (currentLocale != null) ...[
+                    SizedBox(height: MinqTokens.spacing(2)),
+                    _buildRegionalPreview(currentLocale),
+                  ],
                 ],
               ),
             ),

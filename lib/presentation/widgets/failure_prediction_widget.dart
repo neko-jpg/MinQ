@@ -144,7 +144,7 @@ class FailurePredictionWidget extends ConsumerWidget {
                     side: BorderSide(color: Colors.red.shade600),
                     foregroundColor: Colors.red.shade600,
                   ),
-                  child: Text(AppLocalizations.of(context)!.detailedAnalysis),
+                  child: Text(AppLocalizations.of(context).detailedAnalysis),
                 ),
               ),
 
@@ -160,7 +160,7 @@ class FailurePredictionWidget extends ConsumerWidget {
                     backgroundColor: Colors.red.shade600,
                     foregroundColor: Colors.white,
                   ),
-                  child: Text(AppLocalizations.of(context)!.improvementSuggestion),
+                  child: Text(AppLocalizations.of(context).improvementSuggestion),
                 ),
               ),
             ],
@@ -244,7 +244,7 @@ class FailurePredictionWidget extends ConsumerWidget {
                   size: 24,
                 ),
                 const SizedBox(width: 8),
-                Text(AppLocalizations.of(context)!.aiImprovementSuggestion),
+                Text(AppLocalizations.of(context).aiImprovementSuggestion),
               ],
             ),
             content: Column(
@@ -280,14 +280,14 @@ class FailurePredictionWidget extends ConsumerWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text(AppLocalizations.of(context)!.close),
+                child: Text(AppLocalizations.of(context).close),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   // 詳細分析画面に遷移
                 },
-                child: Text(AppLocalizations.of(context)!.viewDetails),
+                child: Text(AppLocalizations.of(context).viewDetails),
               ),
             ],
           ),

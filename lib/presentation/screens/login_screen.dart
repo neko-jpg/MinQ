@@ -25,8 +25,8 @@ class LoginScreen extends ConsumerWidget {
             SnackBar(
               content: Text(_describeError(authState.error!)),
               action: SnackBarAction(
-                label: '閉じる',
-                textColor: Colors.white,
+                label: '閉じめE,
+                textColor: tokens.primaryForeground,
                 onPressed:
                     () =>
                         ref.read(authControllerProvider.notifier).clearError(),
@@ -67,16 +67,16 @@ class LoginScreen extends ConsumerWidget {
 
   String _describeError(String key) {
     return switch (key) {
-      'authErrorOperationNotAllowed' => 'このサインイン方法は現在ご利用いただけません。',
-      'authErrorWeakPassword' => 'より強力なパスワードを設定してください。',
-      'authErrorEmailAlreadyInUse' => 'このメールアドレスは既に登録されています。',
-      'authErrorInvalidEmail' => 'メールアドレスの形式が正しくありません。',
-      'authErrorUserDisabled' => 'このアカウントは無効化されています。',
-      'authErrorUserNotFound' => 'アカウントが見つかりませんでした。',
-      'authErrorWrongPassword' => 'パスワードが一致しません。',
-      'authErrorAccountExistsWithDifferentCredential' => '別の方法で登録されたアカウントです。',
-      'authErrorInvalidCredential' => '認証情報が無効です。',
-      _ => 'サインインに失敗しました。時間をおいて再度お試しください。',
+      'authErrorOperationNotAllowed' => 'こ�Eサインイン方法�E現在ご利用ぁE��だけません、E,
+      'authErrorWeakPassword' => 'より強力なパスワードを設定してください、E,
+      'authErrorEmailAlreadyInUse' => 'こ�Eメールアドレスは既に登録されてぁE��す、E,
+      'authErrorInvalidEmail' => 'メールアドレスの形式が正しくありません、E,
+      'authErrorUserDisabled' => 'こ�Eアカウント�E無効化されてぁE��す、E,
+      'authErrorUserNotFound' => 'アカウントが見つかりませんでした、E,
+      'authErrorWrongPassword' => 'パスワードが一致しません、E,
+      'authErrorAccountExistsWithDifferentCredential' => '別の方法で登録されたアカウントです、E,
+      'authErrorInvalidCredential' => '認証惁E��が無効です、E,
+      _ => 'サインインに失敗しました。時間をおいて再度お試しください、E,
     };
   }
 }
@@ -104,7 +104,7 @@ class _LoginBackground extends StatelessWidget {
           height: 160,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white.withOpacity(0.08),
+            color: tokens.primaryForeground.withOpacity(0.08),
           ),
         ),
       ),
@@ -125,7 +125,7 @@ class _LoginCard extends ConsumerWidget {
     return Card(
       elevation: 12,
       color: tokens.surface.withOpacity(0.94),
-      shadowColor: Colors.black.withOpacity(0.14),
+      shadowColor: tokens.textPrimary.withOpacity(0.14),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(tokens.radius.xl),
       ),
@@ -140,7 +140,7 @@ class _LoginCard extends ConsumerWidget {
             const _BrandHeader(),
             SizedBox(height: tokens.spacing.lg),
             Text(
-              '習慣をクエスト化して、毎日を冒険に変えよう。',
+              '習�Eをクエスト化して、毎日を�E険に変えよう、E,
               textAlign: TextAlign.center,
               style: tokens.typography.bodyLarge.copyWith(
                 color: tokens.textSecondary,
@@ -149,21 +149,21 @@ class _LoginCard extends ConsumerWidget {
             SizedBox(height: tokens.spacing.lg),
             _AuthButton(
               icon: Icons.g_mobiledata,
-              label: 'Google で続ける',
+              label: 'Google で続けめE,
               onPressed: () => _signIn(ref, AuthMethod.google),
               isLoading: isLoading,
             ),
             SizedBox(height: tokens.spacing.sm),
             _AuthButton(
               icon: Icons.apple,
-              label: 'Apple で続ける',
+              label: 'Apple で続けめE,
               onPressed: () => _signIn(ref, AuthMethod.apple),
               isLoading: isLoading,
             ),
             SizedBox(height: tokens.spacing.sm),
             _AuthButton(
               icon: Icons.explore_outlined,
-              label: 'ゲストモードで試す',
+              label: 'ゲストモードで試ぁE,
               onPressed: () => _signIn(ref, AuthMethod.anonymous),
               isLoading: isLoading,
               style: _AuthButtonStyle.secondary,
@@ -183,9 +183,9 @@ class _LoginCard extends ConsumerWidget {
                   color: tokens.textMuted,
                 ),
                 children: [
-                  const TextSpan(text: '続けることで、'),
+                  const TextSpan(text: '続けることで、E),
                   TextSpan(
-                    text: '利用規約',
+                    text: '利用規紁E,
                     style: TextStyle(color: tokens.brandPrimary),
                     recognizer:
                         TapGestureRecognizer()
@@ -204,7 +204,7 @@ class _LoginCard extends ConsumerWidget {
                                 PolicyDocumentId.privacy,
                               ),
                   ),
-                  const TextSpan(text: 'に同意したものとみなされます。'),
+                  const TextSpan(text: 'に同意したも�Eとみなされます、E),
                 ],
               ),
             ),

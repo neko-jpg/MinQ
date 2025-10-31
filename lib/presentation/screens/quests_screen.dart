@@ -205,7 +205,7 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final categories = <_Category>[
       _Category(key: _categoryRecommended, label: l10n.questsCategoryFeatured),
       _Category(key: _categoryMine, label: l10n.questsCategoryMyQuests),

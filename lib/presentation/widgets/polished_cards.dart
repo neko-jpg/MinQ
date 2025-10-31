@@ -736,7 +736,7 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.progress,
+                        AppLocalizations.of(context).progress,
                         style: MinqTokens.bodySmall.copyWith(
                           color: MinqTokens.textSecondary,
                         ),

@@ -117,7 +117,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
   @override
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: tokens.background,
       body: Center(

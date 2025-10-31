@@ -28,7 +28,6 @@ import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/core/gamification/reward_system.dart';
 import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/core/mood/mood_tracking_service.dart';
-import 'package:minq/core/network/network_status_service.dart';
 import 'package:minq/core/notifications/notification_personalization_engine.dart';
 import 'package:minq/core/notifications/re_engagement_service.dart';
 import 'package:minq/core/notifications/smart_notification_service.dart';
@@ -79,6 +78,11 @@ import 'package:speech_to_text/speech_to_text.dart';
 
 // Export navigation provider
 export 'package:minq/core/navigation/navigation_use_case.dart' show navigationUseCaseProvider;
+export 'package:minq/core/network/network_status_provider.dart'
+    show networkStatusProvider,
+        networkStatusServiceProvider,
+        NetworkStatusState,
+        NetworkStatusNotifier;
 
 final httpClientProvider = Provider<http.Client>((ref) {
   final client = http.Client();
@@ -772,10 +776,6 @@ final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>(
 // UID provider removed - already exists above
 
 // Network status provider
-final networkStatusProvider = Provider<NetworkStatusService>((ref) {
-  return NetworkStatusService();
-});
-
 final dailyFocusServiceProvider = Provider<DailyFocusService>(
   (ref) => DailyFocusService(),
 );

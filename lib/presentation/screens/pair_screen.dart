@@ -2,12 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/core/social/pair_system.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/pair/pair.dart';
+import 'package:minq/domain/pair/pair_connection.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/widgets/polished_buttons.dart';
 
 final userPairProvider = StreamProvider<Pair?>((ref) {
   final uid = ref.watch(uidProvider);
@@ -16,186 +19,442 @@ final userPairProvider = StreamProvider<Pair?>((ref) {
   return ref.watch(pairRepositoryProvider)!.getPairStreamForUser(uid);
 });
 
+final userPairConnectionProvider = FutureProvider<PairConnection?>((ref) async {
+  final uid = ref.watch(uidProvider);
+  if (uid == null) return null;
+  
+  final pairSystem = ref.watch(pairSystemProvider);
+  return await pairSystem.getActiveConnectionForUser(uid);
+});
+
 class PairScreen extends ConsumerWidget {
   const PairScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
-    final pairAsync = ref.watch(userPairProvider);
+    final pairConnectionAsync = ref.watch(userPairConnectionProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
-          l10n.pairTitle,
+          'ペア機能',
           style: tokens.typography.h4.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        leading: MinqIconButton(icon: Icons.close, onTap: () => context.pop()),
-        backgroundColor: tokens.background.withAlpha((255 * 0.8).round()),
+        leading: IconButton(
+          icon: Icon(Icons.close, color: tokens.textPrimary),
+          onPressed: () => context.pop(),
+        ),
+        backgroundColor: tokens.surface,
         elevation: 0,
-        surfaceTintColor: Colors.transparent,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.help_outline, color: tokens.textSecondary),
+            onPressed: () => _showHelpDialog(context),
+          ),
+        ],
       ),
-      body: pairAsync.when(
-        data: (pair) => AnimatedSwitcher(
+      body: pairConnectionAsync.when(
+        data: (connection) => AnimatedSwitcher(
           duration: const Duration(milliseconds: 500),
           transitionBuilder: (child, animation) =>
               FadeTransition(opacity: animation, child: child),
-          child: pair != null
-              ? _PairedView(key: ValueKey(pair.id), pairId: pair.id)
+          child: connection != null && connection.isActive
+              ? _PairedView(key: ValueKey(connection.id), connection: connection)
               : const _UnpairedView(key: ValueKey('unpaired')),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text(l10n.errorGeneric)),
+        error: (err, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error_outline, size: 64, color: tokens.error),
+              SizedBox(height: tokens.spacing.md),
+              Text(
+                'エラーが発生しました',
+                style: tokens.typography.body.copyWith(
+                  color: tokens.error,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showHelpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ペア機能について'),
+        content: const Text(
+          'ペア機能では、友人と一緒に習慣化に取り組むことができます。\n\n'
+          '• 招待リンクやQRコードで友人を招待\n'
+          '• リアルタイムチャットで励まし合い\n'
+          '• 進捗を共有して競い合い\n'
+          '• 統計で成果を比較',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('閉じる'),
+          ),
+        ],
       ),
     );
   }
 }
 
 class _PairedView extends ConsumerWidget {
-  const _PairedView({super.key, required this.pairId});
+  const _PairedView({super.key, required this.connection});
 
-  final String pairId;
+  final PairConnection connection;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
-    // TODO: Handle null repository gracefully
-    final pairStream = ref.watch(pairRepositoryProvider)!.getPairStream(pairId);
+    final statistics = connection.statistics;
 
-    return StreamBuilder<DocumentSnapshot>(
-      stream: pairStream,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final pair = Pair.fromSnapshot(snapshot.data!);
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(tokens.spacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // ペア情報カード
+          Container(
+            padding: EdgeInsets.all(tokens.spacing.lg),
+            decoration: BoxDecoration(
+              color: tokens.surface,
+              borderRadius: BorderRadius.circular(tokens.radius.lg),
+              border: Border.all(color: tokens.border),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 32,
+                      backgroundColor: tokens.primary.withOpacity(0.2),
+                      child: Icon(
+                        Icons.person,
+                        size: 32,
+                        color: tokens.primary,
+                      ),
+                    ),
+                    SizedBox(width: tokens.spacing.md),
+                    Icon(
+                      Icons.favorite,
+                      color: tokens.error,
+                      size: 24,
+                    ),
+                    SizedBox(width: tokens.spacing.md),
+                    CircleAvatar(
+                      radius: 32,
+                      backgroundColor: tokens.secondary.withOpacity(0.2),
+                      child: Icon(
+                        Icons.person,
+                        size: 32,
+                        color: tokens.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: tokens.spacing.lg),
+                Text(
+                  'ペアパートナー',
+                  style: tokens.typography.h3.copyWith(
+                    color: tokens.textPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: tokens.spacing.sm),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: tokens.spacing.md,
+                    vertical: tokens.spacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: tokens.success.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(tokens.radius.sm),
+                  ),
+                  child: Text(
+                    '${_getCategoryName(connection.category)} • ${_getDurationText(connection.createdAt)}',
+                    style: tokens.typography.bodySmall.copyWith(
+                      color: tokens.success,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
-        final canHighFive = pair.lastHighfiveAt == null ||
-            DateTime.now().difference(pair.lastHighfiveAt!).inHours >= 24;
-        final quickMessages = <String>[
-          l10n.pairQuickMessageGreat,
-          l10n.pairQuickMessageKeepGoing,
-          l10n.pairQuickMessageFinishStrong,
-          l10n.pairQuickMessageCompletedGoal,
-        ];
+          SizedBox(height: tokens.spacing.lg),
 
-        return SingleChildScrollView(
-          padding: EdgeInsets.all(tokens.spacing.lg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(height: tokens.spacing.lg),
-              CircleAvatar(
-                radius: 64,
-                backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.12).round()),
-                child: Icon(
-                  Icons.person_off_outlined,
-                  size: 64,
-                  color: tokens.brandPrimary,
+          // 統計カード
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatCard(
+                  tokens,
+                  'メッセージ',
+                  '${statistics.totalMessages}',
+                  Icons.chat,
+                  tokens.primary,
                 ),
               ),
-              SizedBox(height: tokens.spacing.lg),
-              Text(
-                l10n.pairAnonymousPartner,
-                style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
-              ),
-              SizedBox(height: tokens.spacing.xs),
-              Text(
-                l10n.pairPairedQuest(pair.category),
-                style:
-                    tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
-              ),
-              const SizedBox(height: 32),
-              MinqPrimaryButton(
-                label: canHighFive
-                    ? l10n.pairHighFiveAction
-                    : l10n.pairHighFiveSent,
-                onPressed: canHighFive
-                    ? () async {
-                        final uid = ref.read(uidProvider);
-                        if (uid == null) return;
-                        // TODO: Handle null repository gracefully
-                        await ref
-                            .read(pairRepositoryProvider)!
-                            .sendHighFive(pairId, uid);
-                      }
-                    : null,
-              ),
-              const SizedBox(height: 40),
-              Text(
-                l10n.pairQuickMessagePrompt,
-                style:
-                    tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
-              ),
-              SizedBox(height: tokens.spacing.lg),
-              Wrap(
-                spacing: tokens.spacing.md,
-                runSpacing: tokens.spacing.md,
-                alignment: WrapAlignment.center,
-                children: quickMessages
-                    .map(
-                      (message) => _QuickMessageChip(
-                        text: message,
-                        onTap: () => _sendQuickMessage(ref, pairId, message),
-                      ),
-                    )
-                    .toList(),
+              SizedBox(width: tokens.spacing.md),
+              Expanded(
+                child: _buildStatCard(
+                  tokens,
+                  '進捗共有',
+                  '${statistics.totalProgressShares}',
+                  Icons.trending_up,
+                  tokens.success,
+                ),
               ),
             ],
           ),
-        );
-      },
+
+          SizedBox(height: tokens.spacing.lg),
+
+          // アクションボタン
+          Row(
+            children: [
+              Expanded(
+                child: PolishedPrimaryButton(
+                  onPressed: () => context.push('/pair/${connection.id}/chat'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.chat, color: tokens.onPrimary, size: 20),
+                      SizedBox(width: tokens.spacing.xs),
+                      const Text('チャット'),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: tokens.spacing.md),
+              Expanded(
+                child: PolishedSecondaryButton(
+                  onPressed: () => context.push('/pair/${connection.id}/dashboard'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.dashboard, size: 20),
+                      SizedBox(width: tokens.spacing.xs),
+                      const Text('ダッシュボード'),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: tokens.spacing.md),
+
+          // 進捗共有ボタン
+          PolishedSecondaryButton(
+            onPressed: () => _shareProgress(context, ref),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.share, size: 20),
+                SizedBox(width: tokens.spacing.xs),
+                const Text('進捗を共有'),
+              ],
+            ),
+          ),
+
+          SizedBox(height: tokens.spacing.lg),
+
+          // 設定・管理
+          Container(
+            padding: EdgeInsets.all(tokens.spacing.md),
+            decoration: BoxDecoration(
+              color: tokens.surface,
+              borderRadius: BorderRadius.circular(tokens.radius.md),
+              border: Border.all(color: tokens.border),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '設定・管理',
+                  style: tokens.typography.bodyMedium.copyWith(
+                    color: tokens.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: tokens.spacing.sm),
+                ListTile(
+                  leading: Icon(Icons.settings, color: tokens.textSecondary),
+                  title: const Text('ペア設定'),
+                  trailing: Icon(Icons.chevron_right, color: tokens.textSecondary),
+                  onTap: () => _showPairSettings(context, ref),
+                  contentPadding: EdgeInsets.zero,
+                ),
+                Divider(color: tokens.border),
+                ListTile(
+                  leading: Icon(Icons.exit_to_app, color: tokens.error),
+                  title: Text(
+                    'ペアを終了',
+                    style: TextStyle(color: tokens.error),
+                  ),
+                  trailing: Icon(Icons.chevron_right, color: tokens.error),
+                  onTap: () => _showEndPairDialog(context, ref),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  void _sendQuickMessage(WidgetRef ref, String pairId, String message) async {
-    final uid = ref.read(uidProvider);
-    if (uid == null) return;
-    // TODO: Handle null repository gracefully
-    await ref
-        .read(pairRepositoryProvider)!
-        .sendQuickMessage(pairId, uid, message);
-  }
-}
-
-class _QuickMessageChip extends StatelessWidget {
-  const _QuickMessageChip({required this.text, required this.onTap});
-
-  final String text;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    return ActionChip(
-      label: Text(
-        text,
-        style: tokens.typography.bodySmall.copyWith(
-          color: tokens.brandPrimary,
-          fontWeight: FontWeight.w600,
-        ),
+  Widget _buildStatCard(
+    MinqTheme tokens,
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing.md),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        border: Border.all(color: tokens.border),
       ),
-      onPressed: onTap,
-      backgroundColor: tokens.surface,
-      side: BorderSide(color: tokens.brandPrimary.withAlpha((255 * 0.4).round())),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.md,
-        vertical: tokens.spacing.sm,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color, size: 20),
+              SizedBox(width: tokens.spacing.xs),
+              Expanded(
+                child: Text(
+                  title,
+                  style: tokens.typography.bodySmall.copyWith(
+                    color: tokens.textSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: tokens.spacing.xs),
+          Text(
+            value,
+            style: tokens.typography.h3.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
+
+  void _shareProgress(BuildContext context, WidgetRef ref) {
+    // TODO: 進捗共有画面を表示
+    FeedbackMessenger.showErrorSnackBar(context, '進捗共有機能は準備中です');
+  }
+
+  void _showPairSettings(BuildContext context, WidgetRef ref) {
+    // TODO: ペア設定画面を表示
+    FeedbackMessenger.showErrorSnackBar(context, 'ペア設定画面は準備中です');
+  }
+
+  void _showEndPairDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ペアを終了しますか？'),
+        content: const Text('この操作は取り消せません。本当にペアを終了しますか？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              final userId = ref.read(uidProvider);
+              if (userId == null) return;
+
+              try {
+                // TODO: Implement pair system provider
+                // final pairSystem = ref.read(pairSystemProvider);
+                // await pairSystem.endConnection(
+                //   pairId: connection.id,
+                //   userId: userId,
+                //   reason: 'ユーザーによる終了',
+                // );
+                
+                if (context.mounted) {
+                  FeedbackMessenger.showErrorSnackBar(
+                    context,
+                    'ペアを終了しました',
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  FeedbackMessenger.showErrorSnackBar(
+                    context,
+                    'ペアの終了に失敗しました: $e',
+                  );
+                }
+              }
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: tokens.error,
+            ),
+            child: const Text('終了'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getCategoryName(String category) {
+    switch (category) {
+      case 'fitness':
+        return 'フィットネス';
+      case 'learning':
+        return '学習';
+      case 'wellbeing':
+        return 'ウェルビーイング';
+      case 'productivity':
+        return '生産性';
+      case 'creativity':
+        return '創造性';
+      default:
+        return 'その他';
+    }
+  }
+
+  String _getDurationText(DateTime createdAt) {
+    final duration = DateTime.now().difference(createdAt);
+    if (duration.inDays > 0) {
+      return '${duration.inDays}日間';
+    } else if (duration.inHours > 0) {
+      return '${duration.inHours}時間';
+    } else {
+      return '開始したばかり';
+    }
+  }
 }
+
+
 
 class _UnpairedView extends ConsumerStatefulWidget {
   const _UnpairedView({super.key});
@@ -230,7 +489,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return SafeArea(
       top: false,
       bottom: true,
@@ -251,10 +510,36 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
           SizedBox(height: tokens.spacing.xl),
           _buildRandomMatchForm(tokens, l10n),
           const SizedBox(height: 32),
-          MinqPrimaryButton(
-            label: 'マッチングを開始する',
-            onPressed: () async =>
-                ref.read(navigationUseCaseProvider).goToPairMatching(),
+          Row(
+            children: [
+              Expanded(
+                child: PolishedPrimaryButton(
+                  onPressed: () => context.push('/pair/invitation'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.person_add, color: tokens.onPrimary, size: 20),
+                      SizedBox(width: tokens.spacing.xs),
+                      const Text('招待を作成'),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: tokens.spacing.md),
+              Expanded(
+                child: PolishedSecondaryButton(
+                  onPressed: () => _showJoinDialog(context, ref),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.qr_code_scanner, size: 20),
+                      SizedBox(width: tokens.spacing.xs),
+                      const Text('参加'),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -478,6 +763,80 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         ),
       ],
     );
+  }
+}
+
+  void _showJoinDialog(BuildContext context, WidgetRef ref) {
+    final codeController = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (context) {
+        final tokens = context.tokens;
+        return AlertDialog(
+          title: const Text('ペアに参加'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('招待コードを入力してください'),
+              SizedBox(height: tokens.spacing.md),
+              TextField(
+                controller: codeController,
+                decoration: const InputDecoration(
+                  hintText: '招待コード',
+                  border: OutlineInputBorder(),
+                ),
+                textCapitalization: TextCapitalization.characters,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('キャンセル'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final code = codeController.text.trim();
+                if (code.isEmpty) return;
+
+                Navigator.pop(context);
+                await _joinWithCode(context, ref, code);
+              },
+              child: const Text('参加'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _joinWithCode(BuildContext context, WidgetRef ref, String code) async {
+    final userId = ref.read(uidProvider);
+    if (userId == null) return;
+
+    try {
+      // TODO: Implement pair system provider
+      // final pairSystem = ref.read(pairSystemProvider);
+      // final connection = await pairSystem.acceptInvitation(
+      //   inviteCode: code,
+      //   userId: userId,
+      // );
+
+      if (context.mounted) {
+        FeedbackMessenger.showErrorSnackBar(
+          context,
+          'ペア機能は準備中です',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        FeedbackMessenger.showErrorSnackBar(
+          context,
+          'ペアへの参加に失敗しました: $e',
+        );
+      }
+    }
   }
 }
 

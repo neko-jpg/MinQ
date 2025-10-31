@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/core/logging/app_logger.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 
 /// 通知ナビゲーションハンドラー
+/// F002対応: 通知からの遷移で適切にcontext.pushを使用してタブ履歴を保持
 class NotificationNavigationHandler {
   /// 通知タップ時の処理
   static Future<void> handleNotificationTap({
@@ -18,39 +20,56 @@ class NotificationNavigationHandler {
 
       switch (notificationType) {
         case 'quest_reminder':
-          // 今日のクエスト一覧へ
-          context.go('/today-quests');
+          // ホーム画面（今日のクエスト一覧）へ - タブ画面なのでcontext.go
+          context.go(AppRoutes.home);
           break;
 
         case 'quest_deadline':
-          // 特定のクエストへ
+          // 特定のクエスト詳細へ - 詳細画面なのでcontext.push
           final questId = payload?['questId'] as String?;
           if (questId != null) {
-            context.go('/quest/$questId');
+            final questIdInt = int.tryParse(questId);
+            if (questIdInt != null) {
+              context.push(
+                AppRoutes.questDetail.replaceFirst(':questId', questId),
+              );
+            }
           }
           break;
 
         case 'pair_message':
-          // ペア画面へ
+          // ペアチャット画面へ - 詳細画面なのでcontext.push
           final pairId = payload?['pairId'] as String?;
           if (pairId != null) {
-            context.go('/pair/$pairId');
+            context.push(
+              AppRoutes.pairChat.replaceFirst(':pairId', pairId),
+            );
           }
           break;
 
         case 'achievement_unlocked':
-          // 実績画面へ
-          context.go('/achievements');
+          // プロフィール画面（実績表示）へ - タブ画面なのでcontext.go
+          context.go(AppRoutes.profile);
           break;
 
         case 'weekly_summary':
-          // 統計画面へ
-          context.go('/stats');
+          // 統計画面へ - タブ画面なのでcontext.go
+          context.go(AppRoutes.stats);
+          break;
+
+        case 'pair_progress':
+          // ペア画面へ - タブ画面なのでcontext.go
+          context.go(AppRoutes.pair);
+          break;
+
+        case 'challenge_update':
+          // チャレンジ画面へ - タブ画面なのでcontext.go
+          context.go(AppRoutes.challenges);
           break;
 
         default:
-          // ホーム画面へ
-          context.go('/');
+          // ホーム画面へ - タブ画面なのでcontext.go
+          context.go(AppRoutes.home);
       }
     } catch (e, stack) {
       logger.error(

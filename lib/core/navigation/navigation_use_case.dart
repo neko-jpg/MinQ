@@ -25,6 +25,7 @@ class NavigationUseCase {
   void goToEditQuest(int questId) => _router.push(
     AppRoutes.editQuest.replaceFirst(':questId', questId.toString()),
   );
+  // 詳細画面への遷移 - context.pushを使用してタブ履歴を保持
   void goToQuestDetail(int questId) => _router.push(
     AppRoutes.questDetail.replaceFirst(':questId', questId.toString()),
   );
@@ -51,7 +52,6 @@ class NavigationUseCase {
   void goToWeeklyReport() => _router.push(AppRoutes.weeklyReport);
   void goToGuild() => _router.push(AppRoutes.guild);
   void goToCreateMiniQuest() => _router.push(AppRoutes.createMiniQuest);
-  void goToChallenges() => _router.go(AppRoutes.challenges);
   void goToQuestTimer(int questId) => _router.push(
     AppRoutes.questTimer.replaceFirst(':questId', questId.toString()),
   );
@@ -67,6 +67,9 @@ class NavigationUseCase {
   void goToAICoachSettings() => _router.push(AppRoutes.aiCoachSettings);
   void goToLiveActivitySettings() =>
       _router.push(AppRoutes.liveActivitySettings);
+  
+  // タブ画面への遷移 - context.goを使用
+  void goToChallenges() => _router.go(AppRoutes.challenges);
   void goHome() => _router.go(AppRoutes.home);
   void goToStats() => _router.go(AppRoutes.stats);
   void goToPair() => _router.go(AppRoutes.pair);

@@ -192,7 +192,7 @@ class _BottomNavigation extends StatelessWidget {
             child: FilledButton.icon(
               onPressed: onGetStarted,
               icon: const Icon(Icons.arrow_forward),
-              label: Text(AppLocalizations.of(context)!.getStarted),
+              label: Text(AppLocalizations.of(context).getStarted),
               style: FilledButton.styleFrom(
                 backgroundColor: tokens.brandPrimary,
                 foregroundColor: tokens.ensureAccessibleOnBackground(
@@ -213,7 +213,7 @@ class _BottomNavigation extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(AppLocalizations.of(context)!.alreadyHaveAccount, style: tokens.typography.caption),
+              Text(AppLocalizations.of(context).alreadyHaveAccount, style: tokens.typography.caption),
               TextButton(
                 onPressed: onLogin,
                 child: Text(

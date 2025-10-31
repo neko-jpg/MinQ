@@ -48,7 +48,7 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                 child: TextField(
                   controller: _controller,
                   decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)!.searchQuests,
+                    hintText: AppLocalizations.of(context).searchQuests,
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon:
                         _controller.text.isNotEmpty
@@ -100,7 +100,7 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.filterByTags,
+                  AppLocalizations.of(context).filterByTags,
                   style: tokens.typography.caption.copyWith(
                     color: tokens.textSecondary,
                     fontWeight: FontWeight.bold,
@@ -143,7 +143,7 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                       widget.onTagsChanged?.call([]);
                     },
                     icon: const Icon(Icons.clear_all),
-                    label: Text(AppLocalizations.of(context)!.clearFilters),
+                    label: Text(AppLocalizations.of(context).clearFilters),
                   ),
                 ],
               ],

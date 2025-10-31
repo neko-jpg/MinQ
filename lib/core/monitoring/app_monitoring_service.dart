@@ -1,411 +1,393 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_performance/firebase_performance.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/logging/app_logger.dart';
+import 'dart:async';
+import 'dart:io';
 
-/// アプリ監視サービス
-///
-/// 稼働状況、パフォーマンス、エラーを監視し、
-/// 重大なイベントを検出・通知する
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:minq/core/analytics/analytics_service.dart';
+import 'package:minq/core/storage/local_storage_service.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
+/// Comprehensive app monitoring service for tracking app health and performance
 class AppMonitoringService {
-  final FirebaseAnalytics _analytics;
-  final FirebaseCrashlytics _crashlytics;
-  final FirebasePerformance _performance;
+  static final AppMonitoringService _instance = AppMonitoringService._internal();
+  factory AppMonitoringService() => _instance;
+  AppMonitoringService._internal();
 
-  AppMonitoringService({
-    FirebaseAnalytics? analytics,
-    FirebaseCrashlytics? crashlytics,
-    FirebasePerformance? performance,
-  }) : _analytics = analytics ?? FirebaseAnalytics.instance,
-       _crashlytics = crashlytics ?? FirebaseCrashlytics.instance,
-       _performance = performance ?? FirebasePerformance.instance;
-
-  /// 重大イベントの閾値
-  static const double _criticalCrashRate = 0.05; // 5%
-  static const double _criticalErrorRate = 0.10; // 10%
-  static const int _criticalResponseTime = 5000; // 5秒
-
-  /// アプリ起動を記録
-  Future<void> trackAppLaunch() async {
-    try {
-      await _analytics.logAppOpen();
-      logger.info('App launched');
-    } catch (e, stack) {
-      logger.error(
-        'Failed to track app launch',
-        error: e,
-        stackTrace: stack,
-      );
-    }
+  final AnalyticsService _analytics = AnalyticsService();
+  final LocalStorageService _storage = LocalStorageService();
+  
+  Timer? _healthCheckTimer;
+  Timer? _memoryMonitorTimer;
+  DateTime? _appStartTime;
+  int _frameDropCount = 0;
+  int _totalFrames = 0;
+  
+  // App health metrics
+  final Map<String, dynamic> _healthMetrics = {};
+  final List<AppHealthEvent> _healthEvents = [];
+  
+  /// Initialize monitoring system
+  Future<void> initialize() async {
+    _appStartTime = DateTime.now();
+    
+    // Start periodic health checks
+    _startHealthMonitoring();
+    
+    // Monitor memory usage
+    _startMemoryMonitoring();
+    
+    // Track app lifecycle
+    _trackAppLifecycle();
+    
+    // Monitor frame performance
+    _monitorFramePerformance();
+    
+    debugPrint('AppMonitoringService initialized');
   }
 
-  /// 画面遷移を記録
-  Future<void> trackScreenView(String screenName) async {
-    try {
-      await _analytics.logScreenView(screenName: screenName);
-      logger.debug('Screen view: $screenName');
-    } catch (e, stack) {
-      logger.error(
-        'Failed to track screen view',
-        error: e,
-        stackTrace: stack,
-      );
-    }
+  /// Start periodic health monitoring
+  void _startHealthMonitoring() {
+    _healthCheckTimer = Timer.periodic(
+      const Duration(minutes: 5),
+      (_) => _performHealthCheck(),
+    );
   }
 
-  /// ユーザーアクションを記録
-  Future<void> trackUserAction(
-    String action, {
-    Map<String, dynamic>? parameters,
-  }) async {
-    try {
-      await _analytics.logEvent(name: action, parameters: parameters?.cast<String, Object>());
-      logger.debug('User action: $action', data: parameters);
-    } catch (e, stack) {
-      logger.error(
-        'Failed to track user action',
-        error: e,
-        stackTrace: stack,
-      );
-    }
+  /// Start memory usage monitoring
+  void _startMemoryMonitoring() {
+    _memoryMonitorTimer = Timer.periodic(
+      const Duration(minutes: 1),
+      (_) => _checkMemoryUsage(),
+    );
   }
 
-  /// エラーを記録
-  Future<void> recordError(
-    dynamic error,
-    StackTrace? stackTrace, {
-    String? reason,
-    bool fatal = false,
-  }) async {
+  /// Perform comprehensive health check
+  Future<void> _performHealthCheck() async {
     try {
-      await _crashlytics.recordError(
-        error,
-        stackTrace,
-        reason: reason,
-        fatal: fatal,
-      );
-
-      if (fatal) {
-        logger.fatal(
-          'Fatal error recorded',
-          error: error,
-          stackTrace: stackTrace,
-        );
-        await _notifyCriticalEvent('Fatal Error', error.toString());
-      } else {
-        logger.error(
-          'Error recorded',
-          error: error,
-          stackTrace: stackTrace,
-        );
+      final healthData = await _collectHealthData();
+      _healthMetrics.addAll(healthData);
+      
+      // Check for critical issues
+      await _checkCriticalIssues(healthData);
+      
+      // Store health snapshot
+      await _storeHealthSnapshot(healthData);
+      
+      // Send to analytics if needed
+      if (_shouldReportHealth(healthData)) {
+        await _analytics.trackEvent('app_health_check', healthData);
       }
-    } catch (e, stack) {
-      logger.error(
-        'Failed to record error',
-        error: e,
-        stackTrace: stack,
-      );
+    } catch (e) {
+      debugPrint('Health check failed: $e');
+      await recordError('health_check_failed', e);
     }
   }
 
-  /// パフォーマンストレースを開始
-  Trace startTrace(String name) {
-    return _performance.newTrace(name);
+  /// Collect comprehensive health data
+  Future<Map<String, dynamic>> _collectHealthData() async {
+    final deviceInfo = DeviceInfoPlugin();
+    final packageInfo = await PackageInfo.fromPlatform();
+    
+    final data = <String, dynamic>{
+      'timestamp': DateTime.now().toIso8601String(),
+      'app_version': packageInfo.version,
+      'build_number': packageInfo.buildNumber,
+      'uptime_minutes': _getUptimeMinutes(),
+      'memory_usage_mb': await _getCurrentMemoryUsage(),
+      'frame_drop_rate': _getFrameDropRate(),
+      'storage_usage_mb': await _getStorageUsage(),
+      'network_status': await _getNetworkStatus(),
+      'battery_level': await _getBatteryLevel(),
+      'device_temperature': await _getDeviceTemperature(),
+    };
+
+    // Add platform-specific data
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      data.addAll({
+        'android_version': androidInfo.version.release,
+        'device_model': androidInfo.model,
+        'manufacturer': androidInfo.manufacturer,
+        'available_memory_mb': androidInfo.systemFeatures.length,
+      });
+    } else if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      data.addAll({
+        'ios_version': iosInfo.systemVersion,
+        'device_model': iosInfo.model,
+        'device_name': iosInfo.name,
+      });
+    }
+
+    return data;
   }
 
-  /// HTTPリクエストのメトリクスを記録
-  Future<void> recordHttpMetric({
-    required String url,
-    required String method,
-    required int statusCode,
-    required int requestPayloadSize,
-    required int responsePayloadSize,
-    required Duration duration,
-  }) async {
-    try {
-      final metric = _performance.newHttpMetric(
-        url,
-        HttpMethod.values.firstWhere(
-          (m) => m.name.toUpperCase() == method.toUpperCase(),
-          orElse: () => HttpMethod.Get,
-        ),
+  /// Check for critical performance or health issues
+  Future<void> _checkCriticalIssues(Map<String, dynamic> healthData) async {
+    final issues = <String>[];
+
+    // Memory usage check
+    final memoryUsage = healthData['memory_usage_mb'] as double? ?? 0;
+    if (memoryUsage > 500) {
+      issues.add('high_memory_usage');
+    }
+
+    // Frame drop rate check
+    final frameDropRate = healthData['frame_drop_rate'] as double? ?? 0;
+    if (frameDropRate > 0.1) {
+      issues.add('high_frame_drops');
+    }
+
+    // Storage usage check
+    final storageUsage = healthData['storage_usage_mb'] as double? ?? 0;
+    if (storageUsage > 1000) {
+      issues.add('high_storage_usage');
+    }
+
+    // Battery drain check
+    final batteryLevel = healthData['battery_level'] as double? ?? 100;
+    if (batteryLevel < 20) {
+      issues.add('low_battery');
+    }
+
+    if (issues.isNotEmpty) {
+      final event = AppHealthEvent(
+        timestamp: DateTime.now(),
+        type: AppHealthEventType.warning,
+        issues: issues,
+        metrics: Map<String, dynamic>.from(healthData),
       );
+      
+      _healthEvents.add(event);
+      await _analytics.trackEvent('app_health_warning', {
+        'issues': issues,
+        'metrics': healthData,
+      });
+    }
+  }
 
-      metric.httpResponseCode = statusCode;
-      metric.requestPayloadSize = requestPayloadSize;
-      metric.responsePayloadSize = responsePayloadSize;
-
-      await metric.start();
-      await Future.delayed(duration);
-      await metric.stop();
-
-      // レスポンスタイムが閾値を超えた場合
-      if (duration.inMilliseconds > _criticalResponseTime) {
-        logger.warning(
-          'Slow API response detected',
-          data: {
-            'url': url,
-            'duration': duration.inMilliseconds,
-          },
-        );
-        await _notifyCriticalEvent(
-          'Slow API Response',
-          'URL: $url, Duration: ${duration.inMilliseconds}ms',
-        );
+  /// Monitor frame rendering performance
+  void _monitorFramePerformance() {
+    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
+      _totalFrames++;
+      
+      // Check if frame took too long (>16.67ms for 60fps)
+      final frameDuration = timeStamp.inMicroseconds / 1000;
+      if (frameDuration > 16.67) {
+        _frameDropCount++;
       }
-    } catch (e, stack) {
-      logger.error(
-        'Failed to record HTTP metric',
-        error: e,
-        stackTrace: stack,
-      );
-    }
+    });
   }
 
-  /// カスタムメトリクスを記録
-  Future<void> recordCustomMetric(
-    String name,
-    double value, {
-    Map<String, String>? attributes,
+  /// Track app lifecycle events
+  void _trackAppLifecycle() {
+    WidgetsBinding.instance.didChangeAppLifecycleState(AppLifecycleState.resumed);
+  }
+
+  /// Record application error with context
+  Future<void> recordError(String errorType, dynamic error, {
+    StackTrace? stackTrace,
+    Map<String, dynamic>? context,
   }) async {
-    try {
-      await _analytics.logEvent(
-        name: 'custom_metric',
-        parameters: {
-          'metric_name': name,
-          'metric_value': value,
-          ...?attributes,
-        },
-      );
-      logger.debug(
-        'Custom metric: $name = $value',
-        data: attributes,
-      );
-    } catch (e, stack) {
-      logger.error(
-        'Failed to record custom metric',
-        error: e,
-        stackTrace: stack,
-      );
+    final errorData = {
+      'error_type': errorType,
+      'error_message': error.toString(),
+      'timestamp': DateTime.now().toIso8601String(),
+      'app_version': await _getAppVersion(),
+      'uptime_minutes': _getUptimeMinutes(),
+      'context': context ?? {},
+    };
+
+    if (stackTrace != null) {
+      errorData['stack_trace'] = stackTrace.toString();
     }
+
+    // Store locally for offline analysis
+    await _storage.storeErrorLog(errorData);
+
+    // Send to analytics
+    await _analytics.trackEvent('app_error', errorData);
+
+    debugPrint('Error recorded: $errorType - $error');
   }
 
-  /// クラッシュ率を監視
-  Future<void> monitorCrashRate(double crashRate) async {
-    if (crashRate > _criticalCrashRate) {
-      logger.fatal(
-        'Critical crash rate detected',
-        data: {
-          'crash_rate': crashRate,
-        },
-      );
-      await _notifyCriticalEvent(
-        'High Crash Rate',
-        'Current crash rate: ${(crashRate * 100).toStringAsFixed(2)}%',
-      );
-    }
-  }
-
-  /// エラー率を監視
-  Future<void> monitorErrorRate(double errorRate) async {
-    if (errorRate > _criticalErrorRate) {
-      logger.warning(
-        'High error rate detected',
-        data: {'error_rate': errorRate},
-      );
-      await _notifyCriticalEvent(
-        'High Error Rate',
-        'Current error rate: ${(errorRate * 100).toStringAsFixed(2)}%',
-      );
-    }
-  }
-
-  /// ユーザーセッションを記録
-  Future<void> recordSession({
-    required Duration duration,
-    required int screenViews,
-    required int userActions,
+  /// Record performance metric
+  Future<void> recordPerformanceMetric(String metricName, double value, {
+    Map<String, dynamic>? context,
   }) async {
-    try {
-      await _analytics.logEvent(
-        name: 'session_end',
-        parameters: {
-          'duration_seconds': duration.inSeconds,
-          'screen_views': screenViews,
-          'user_actions': userActions,
-        },
-      );
-      logger.info(
-        'Session recorded',
-        data: {
-          'duration': duration.inSeconds,
-          'screens': screenViews,
-          'actions': userActions,
-        },
-      );
-    } catch (e, stack) {
-      logger.error(
-        'Failed to record session',
-        error: e,
-        stackTrace: stack,
-      );
+    final metricData = {
+      'metric_name': metricName,
+      'value': value,
+      'timestamp': DateTime.now().toIso8601String(),
+      'context': context ?? {},
+    };
+
+    await _analytics.trackEvent('performance_metric', metricData);
+  }
+
+  /// Record user action for behavior analysis
+  Future<void> recordUserAction(String action, {
+    Map<String, dynamic>? properties,
+  }) async {
+    final actionData = {
+      'action': action,
+      'timestamp': DateTime.now().toIso8601String(),
+      'properties': properties ?? {},
+    };
+
+    await _analytics.trackEvent('user_action', actionData);
+  }
+
+  /// Get current app health status
+  AppHealthStatus getHealthStatus() {
+    final memoryUsage = _healthMetrics['memory_usage_mb'] as double? ?? 0;
+    final frameDropRate = _getFrameDropRate();
+    final uptime = _getUptimeMinutes();
+
+    if (memoryUsage > 500 || frameDropRate > 0.15) {
+      return AppHealthStatus.critical;
+    } else if (memoryUsage > 300 || frameDropRate > 0.1 || uptime > 480) {
+      return AppHealthStatus.warning;
+    } else {
+      return AppHealthStatus.healthy;
     }
   }
 
-  /// アプリの健全性チェック
-  Future<HealthStatus> checkHealth() async {
-    try {
-      // 各サービスの状態を確認
-      final analyticsHealthy = await _checkAnalyticsHealth();
-      final crashlyticsHealthy = await _checkCrashlyticsHealth();
-      final performanceHealthy = await _checkPerformanceHealth();
-
-      final isHealthy =
-          analyticsHealthy && crashlyticsHealthy && performanceHealthy;
-
-      return HealthStatus(
-        isHealthy: isHealthy,
-        analyticsHealthy: analyticsHealthy,
-        crashlyticsHealthy: crashlyticsHealthy,
-        performanceHealthy: performanceHealthy,
-        timestamp: DateTime.now(),
-      );
-    } catch (e, stack) {
-      logger.error(
-        'Health check failed',
-        error: e,
-        stackTrace: stack,
-      );
-      return HealthStatus(
-        isHealthy: false,
-        analyticsHealthy: false,
-        crashlyticsHealthy: false,
-        performanceHealthy: false,
-        timestamp: DateTime.now(),
-      );
-    }
+  /// Get health metrics summary
+  Map<String, dynamic> getHealthMetrics() {
+    return Map<String, dynamic>.from(_healthMetrics);
   }
 
-  Future<bool> _checkAnalyticsHealth() async {
+  /// Get recent health events
+  List<AppHealthEvent> getRecentHealthEvents({int limit = 50}) {
+    return _healthEvents.take(limit).toList();
+  }
+
+  // Helper methods
+  double _getUptimeMinutes() {
+    if (_appStartTime == null) return 0;
+    return DateTime.now().difference(_appStartTime!).inMinutes.toDouble();
+  }
+
+  double _getFrameDropRate() {
+    if (_totalFrames == 0) return 0;
+    return _frameDropCount / _totalFrames;
+  }
+
+  Future<double> _getCurrentMemoryUsage() async {
+    // Platform-specific memory usage implementation
     try {
-      // Analyticsが正常に動作しているか確認
-      await _analytics.logEvent(name: 'health_check');
-      return true;
+      if (Platform.isAndroid) {
+        // Use platform channel to get Android memory info
+        const platform = MethodChannel('minq/system_info');
+        final result = await platform.invokeMethod('getMemoryUsage');
+        return (result as num).toDouble();
+      }
+      return 0; // Fallback
     } catch (e) {
-      return false;
+      return 0;
     }
   }
 
-  Future<bool> _checkCrashlyticsHealth() async {
+  Future<double> _getStorageUsage() async {
     try {
-      // Crashlyticsが正常に動作しているか確認
-      await _crashlytics.log('Health check');
-      return true;
+      final directory = Directory.systemTemp;
+      int totalSize = 0;
+      
+      await for (final entity in directory.list(recursive: true)) {
+        if (entity is File) {
+          totalSize += await entity.length();
+        }
+      }
+      
+      return totalSize / (1024 * 1024); // Convert to MB
     } catch (e) {
-      return false;
+      return 0;
     }
   }
 
-  Future<bool> _checkPerformanceHealth() async {
+  Future<String> _getNetworkStatus() async {
+    // Implementation would use connectivity_plus
+    return 'connected';
+  }
+
+  Future<double> _getBatteryLevel() async {
     try {
-      // Performance Monitoringが正常に動作しているか確認
-      final trace = _performance.newTrace('health_check');
-      await trace.start();
-      await trace.stop();
-      return true;
+      const platform = MethodChannel('minq/battery');
+      final result = await platform.invokeMethod('getBatteryLevel');
+      return (result as num).toDouble();
     } catch (e) {
-      return false;
+      return 100;
     }
   }
 
-  /// 重大イベントを通知
-  ///
-  /// 実際の実装では、Slack/メール/PagerDutyなどに通知
-  Future<void> _notifyCriticalEvent(String title, String message) async {
-    try {
-      // Crashlyticsにログを記録
-      await _crashlytics.log('CRITICAL: $title - $message');
+  Future<double> _getDeviceTemperature() async {
+    // Platform-specific temperature monitoring
+    return 25.0; // Placeholder
+  }
 
-      // カスタムキーを設定
-      await _crashlytics.setCustomKey('critical_event', title);
-      await _crashlytics.setCustomKey('critical_message', message);
+  Future<String> _getAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.version;
+  }
 
-      logger.fatal(
-        'Critical event notification',
-        data: {
-          'title': title,
-          'message': message,
-        },
-      );
+  Future<void> _storeHealthSnapshot(Map<String, dynamic> healthData) async {
+    await _storage.storeHealthSnapshot(healthData);
+  }
 
-      // TODO: 実際の通知実装（Slack, Email, PagerDutyなど）
-      // await _sendSlackNotification(title, message);
-      // await _sendEmailNotification(title, message);
-    } catch (e, stack) {
-      logger.error(
-        'Failed to notify critical event',
-        error: e,
-        stackTrace: stack,
-      );
+  bool _shouldReportHealth(Map<String, dynamic> healthData) {
+    // Report health data every 30 minutes or if critical issues detected
+    final lastReport = _healthMetrics['last_report_time'] as DateTime?;
+    if (lastReport == null || 
+        DateTime.now().difference(lastReport).inMinutes > 30) {
+      _healthMetrics['last_report_time'] = DateTime.now();
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> _checkMemoryUsage() async {
+    final memoryUsage = await _getCurrentMemoryUsage();
+    _healthMetrics['memory_usage_mb'] = memoryUsage;
+    
+    if (memoryUsage > 400) {
+      await recordError('high_memory_usage', 'Memory usage: ${memoryUsage}MB');
     }
   }
 
-  /// ユーザープロパティを設定
-  Future<void> setUserProperty(String name, String value) async {
-    try {
-      await _analytics.setUserProperty(name: name, value: value);
-      await _crashlytics.setCustomKey(name, value);
-    } catch (e, stack) {
-      logger.error(
-        'Failed to set user property',
-        error: e,
-        stackTrace: stack,
-      );
-    }
-  }
-
-  /// ユーザーIDを設定
-  Future<void> setUserId(String userId) async {
-    try {
-      await _analytics.setUserId(id: userId);
-      await _crashlytics.setUserIdentifier(userId);
-    } catch (e, stack) {
-      logger.error(
-        'Failed to set user ID',
-        error: e,
-        stackTrace: stack,
-      );
-    }
+  /// Cleanup resources
+  void dispose() {
+    _healthCheckTimer?.cancel();
+    _memoryMonitorTimer?.cancel();
   }
 }
 
-/// アプリの健全性ステータス
-class HealthStatus {
-  final bool isHealthy;
-  final bool analyticsHealthy;
-  final bool crashlyticsHealthy;
-  final bool performanceHealthy;
+/// App health status levels
+enum AppHealthStatus {
+  healthy,
+  warning,
+  critical,
+}
+
+/// App health event for tracking issues
+class AppHealthEvent {
   final DateTime timestamp;
+  final AppHealthEventType type;
+  final List<String> issues;
+  final Map<String, dynamic> metrics;
 
-  HealthStatus({
-    required this.isHealthy,
-    required this.analyticsHealthy,
-    required this.crashlyticsHealthy,
-    required this.performanceHealthy,
+  AppHealthEvent({
     required this.timestamp,
+    required this.type,
+    required this.issues,
+    required this.metrics,
   });
-
-  Map<String, dynamic> toJson() => {
-    'is_healthy': isHealthy,
-    'analytics_healthy': analyticsHealthy,
-    'crashlytics_healthy': crashlyticsHealthy,
-    'performance_healthy': performanceHealthy,
-    'timestamp': timestamp.toIso8601String(),
-  };
 }
 
-/// 監視サービスのProvider
-final appMonitoringServiceProvider = Provider<AppMonitoringService>((ref) {
-  return AppMonitoringService();
-});
+enum AppHealthEventType {
+  info,
+  warning,
+  error,
+  critical,
+}

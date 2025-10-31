@@ -22,7 +22,7 @@ class UserBehaviorHeatmap extends StatelessWidget {
     final tokens = MinqTheme.of(context);
     final focusColor = tokens.accentSecondary;
     return Semantics(
-      label: AppLocalizations.of(context)!.weeklyAchievementHeatmap,
+      label: AppLocalizations.of(context).weeklyAchievementHeatmap,
       child: HeatMap(
         datasets: dataset,
         startDate:

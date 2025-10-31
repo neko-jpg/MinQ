@@ -1,7 +1,10 @@
 import 'package:isar/isar.dart';
 import 'package:minq/core/database/database_lifecycle_manager.dart';
 import 'package:minq/core/database/database_performance_monitor.dart';
+import 'package:minq/core/sync/sync_queue_manager.dart';
+import 'package:minq/data/local/models/local_quest.dart';
 import 'package:minq/domain/badge/badge.dart';
+import 'package:minq/domain/gamification/xp_transaction.dart';
 import 'package:minq/domain/log/quest_log.dart';
 // import 'package:minq/domain/pair/pair.dart'; // Pair is Firestore-only for now
 import 'package:minq/domain/quest/quest.dart';
@@ -28,11 +31,19 @@ class IsarService with DatabasePerformanceTracking {
       
       isar = await _enhancedService.init(
         schemas: [
+          // Original schemas (for backward compatibility)
           QuestSchema,
           UserSchema,
-          // PairSchema, // Pair is Firestore-only for now
           QuestLogSchema,
           BadgeSchema,
+          // Gamification schemas
+          XPTransactionSchema,
+          // New offline-first schemas
+          LocalQuestSchema,
+          LocalUserSchema,
+          LocalChallengeSchema,
+          LocalQuestLogSchema,
+          SyncJobSchema,
         ],
         onProgress: onProgress,
       );

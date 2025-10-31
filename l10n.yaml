@@ -1,3 +1,9 @@
 arb-dir: lib/l10n
 template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false
+header-insertion-file: lib/l10n/header.txt
+use-deferred-loading: false
+gen-inputs-and-outputs-list: lib/l10n/gen_inputs_outputs.json
+untranslated-messages-file: lib/l10n/untranslated_messages.json

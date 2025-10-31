@@ -1,59 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
-/// MinQ デザイントークン
-/// アプリ全体で使用される基本的なデザイン要素を定義
+/// Legacy MinqTokens class for backward compatibility
+/// This provides access to theme tokens in the old format
 class MinqTokens {
-  const MinqTokens._();
-
-  // カラートークン
-  static const Color brandPrimary = Color(0xFF4F46E5);
-  static const Color brandSecondary = Color(0xFF8B5CF6);
-  static const Color textPrimary = Color(0xFF0F172A);
-  static const Color textSecondary = Color(0xFF475569);
-  static const Color surface = Color(0xFFFFFFFF);
-  static const Color background = Color(0xFFF4F6FB);
-
-  // スペーシングトークン
-  static double spacing(int multiplier) => multiplier * 4.0;
-
-  // コーナートークン
-  static BorderRadius cornerSmall() => BorderRadius.circular(4);
-  static BorderRadius cornerMedium() => BorderRadius.circular(8);
-  static BorderRadius cornerLarge() => BorderRadius.circular(16);
-
-  // タイポグラフィトークン
-  static const TextStyle titleLarge = TextStyle(
-    fontSize: 24,
-    fontWeight: FontWeight.bold,
-    color: textPrimary,
-  );
-
-  static const TextStyle titleMedium = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-    color: textPrimary,
-  );
-
-  static const TextStyle bodyLarge = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.normal,
-    color: textPrimary,
-  );
-
-  static const TextStyle bodyMedium = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.normal,
-    color: textPrimary,
-  );
-
-  static const TextStyle bodySmall = TextStyle(
-    fontSize: 12,
-    fontWeight: FontWeight.normal,
-    color: textSecondary,
-  );
-}
-
-/// BuildContextの拡張でMinqTokensにアクセス
-extension MinqTokensExtension on BuildContext {
-  MinqTokens get tokens => const MinqTokens._();
+  static MinqTheme _theme = MinqTheme.light();
+  
+  /// Update the current theme
+  static void updateTheme(MinqTheme theme) {
+    _theme = theme;
+  }
+  
+  /// Colors
+  static Color get primary => _theme.brandPrimary;
+  static Color get secondary => _theme.accentSecondary;
+  static Color get success => _theme.accentSuccess;
+  static Color get error => _theme.accentError;
+  static Color get warning => _theme.accentWarning;
+  static Color get info => _theme.accentSecondary;
+  
+  static Color get background => _theme.background;
+  static Color get surface => _theme.surface;
+  static Color get surfaceAlt => _theme.surfaceAlt;
+  
+  static Color get textPrimary => _theme.textPrimary;
+  static Color get textSecondary => _theme.textSecondary;
+  static Color get textMuted => _theme.textMuted;
+  
+  static Color get border => _theme.border;
+  static Color get divider => _theme.divider;
+  
+  /// Spacing
+  static double get spacingXs => _theme.spacing.xs;
+  static double get spacingSm => _theme.spacing.sm;
+  static double get spacingMd => _theme.spacing.md;
+  static double get spacingLg => _theme.spacing.lg;
+  static double get spacingXl => _theme.spacing.xl;
+  
+  /// Spacing methods
+  static double spacing(double multiplier) => _theme.spacing.sm * multiplier;
+  
+  /// Radius
+  static double get radiusSm => _theme.radius.sm;
+  static double get radiusMd => _theme.radius.md;
+  static double get radiusLg => _theme.radius.lg;
+  static double get radiusXl => _theme.radius.xl;
+  
+  /// Corner methods
+  static BorderRadius cornerSmall() => _theme.cornerSmall();
+  static BorderRadius cornerMedium() => _theme.cornerMedium();
+  static BorderRadius cornerLarge() => _theme.cornerLarge();
+  
+  /// Brand colors
+  static Color get brandPrimary => _theme.brandPrimary;
+  static Color get brandSecondary => _theme.accentSecondary;
+  
+  /// Typography
+  static TextStyle get h1 => _theme.typography.h1;
+  static TextStyle get h2 => _theme.typography.h2;
+  static TextStyle get h3 => _theme.typography.h3;
+  static TextStyle get h4 => _theme.typography.h4;
+  static TextStyle get h5 => _theme.typography.h5;
+  static TextStyle get body => _theme.typography.body;
+  static TextStyle get bodyLarge => _theme.typography.bodyLarge;
+  static TextStyle get bodyMedium => _theme.typography.bodyMedium;
+  static TextStyle get bodySmall => _theme.typography.bodySmall;
+  static TextStyle get button => _theme.typography.button;
+  static TextStyle get caption => _theme.typography.caption;
+  
+  /// Additional typography styles
+  static TextStyle get titleLarge => _theme.typography.h2;
+  static TextStyle get titleMedium => _theme.typography.h4;
+  
+  /// Additional color properties for backward compatibility
+  static Color get accentWarning => _theme.accentWarning;
+  static Color get primaryForeground => _theme.textPrimary;
 }

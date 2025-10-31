@@ -32,7 +32,7 @@ class QuestAttributesSelector extends StatelessWidget {
         // 難易度選択
         if (onDifficultyChanged != null) ...[
           Text(
-            AppLocalizations.of(context)!.difficulty,
+            AppLocalizations.of(context).difficulty,
             style: tokens.typography.body.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
@@ -50,7 +50,7 @@ class QuestAttributesSelector extends StatelessWidget {
         // 推定時間選択
         if (onEstimatedMinutesChanged != null) ...[
           Text(
-            AppLocalizations.of(context)!.estimatedTime,
+            AppLocalizations.of(context).estimatedTime,
             style: tokens.typography.body.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
@@ -68,7 +68,7 @@ class QuestAttributesSelector extends StatelessWidget {
         // 場所選択
         if (onLocationChanged != null) ...[
           Text(
-            AppLocalizations.of(context)!.location,
+            AppLocalizations.of(context).location,
             style: tokens.typography.body.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
@@ -99,7 +99,7 @@ class _DifficultySelector extends StatelessWidget {
   });
 
   static List<Map<String, String>> getDifficulties(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return [
       {'value': 'easy', 'label': l10n.difficultyEasy, 'icon': '⭐'},
       {'value': 'medium', 'label': l10n.difficultyMedium, 'icon': '⭐⭐'},
@@ -149,7 +149,7 @@ class _DurationSelector extends StatelessWidget {
   });
 
   static List<Map<String, dynamic>> getDurations(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return [
       {'value': 5, 'label': l10n.duration5min},
       {'value': 10, 'label': l10n.duration10min},
@@ -195,7 +195,7 @@ class _LocationSelector extends StatelessWidget {
   });
 
   static List<Map<String, String>> getLocations(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return [
       {'value': 'home', 'label': l10n.locationHome, 'icon': '🏠'},
       {'value': 'gym', 'label': l10n.locationGym, 'icon': '🏋️'},

@@ -1,96 +1,136 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/network/network_status_service.dart';
+import 'package:minq/core/sync/sync_queue_manager.dart';
+import 'package:minq/data/providers.dart';
 import 'package:minq/l10n/app_localizations.dart';
-import 'package:minq/presentation/theme/minq_tokens.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// オフラインバナー
-/// ネットワーク接続がない場合に表示
+/// ネットワーク接続がなぁE��合に表示
 class OfflineBanner extends ConsumerWidget {
   const OfflineBanner({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: NetworkStatusService のプロバイダーを作成して使用
-    // const isOffline = ref.watch(networkStatusProvider).isOffline;
+    final status = ref.watch(networkStatusProvider);
+    if (!status.isOffline) {
+      return const SizedBox.shrink();
+    }
 
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: MinqTokens.spacing(4),
-        vertical: MinqTokens.spacing(2),
-      ),
-      color: Colors.orange,
-      child: Row(
-        children: [
-          const Icon(Icons.cloud_off, color: Colors.white, size: 20),
-          SizedBox(width: MinqTokens.spacing(2)),
-          Expanded(
-            child: Text(
-              'オフラインモード - 一部機能が制限されています',
-              style: MinqTokens.bodyMedium.copyWith(color: Colors.white),
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      label: l10n.offlineModeBanner,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: tokens.spacing.lg,
+          vertical: tokens.spacing.sm,
+        ),
+        color: tokens.accentWarning,
+        child: Row(
+          children: [
+            Icon(
+              Icons.cloud_off,
+              color: tokens.primaryForeground,
+              size: 20,
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.info_outline, color: Colors.white),
-            onPressed: () => _showOfflineInfo(context),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-          ),
-        ],
+            SizedBox(width: tokens.spacing.sm),
+            Expanded(
+              child: Text(
+                l10n.offlineModeBanner,
+                style: tokens.typography.bodyMedium.copyWith(
+                  color: tokens.primaryForeground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.info_outline,
+                color: tokens.primaryForeground,
+              ),
+              onPressed: () => _showOfflineInfo(context),
+              tooltip: l10n.offlineMode,
+              splashRadius: 20,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   void _showOfflineInfo(BuildContext context) {
-    showDialog(
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+
+    showDialog<void>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.offlineMode),
-            content: Text(AppLocalizations.of(context)!.noInternetConnection),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.cloud_off, color: tokens.accentWarning),
+            SizedBox(width: tokens.spacing.sm),
+            Text(l10n.offlineMode),
+          ],
+        ),
+        content: Text(l10n.noInternetConnection),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.ok),
           ),
+        ],
+      ),
     );
   }
 }
 
-/// オフライン時の空状態ウィジェット
+/// オフライン時�E空状態ウィジェチE��
 class OfflineEmptyState extends StatelessWidget {
-  final String message;
-  final VoidCallback? onRetry;
-
   const OfflineEmptyState({
-    this.message = 'オフラインのため表示できません',
+    this.message,
     this.onRetry,
     super.key,
   });
 
+  final String? message;
+  final VoidCallback? onRetry;
+
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(MinqTokens.spacing(6)),
+        padding: EdgeInsets.all(tokens.spacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.cloud_off, size: 80, color: MinqTokens.textSecondary),
-            SizedBox(height: MinqTokens.spacing(4)),
+            Icon(
+              Icons.cloud_off,
+              size: 80,
+              color: tokens.textSecondary,
+            ),
+            SizedBox(height: tokens.spacing.lg),
             Text(
-              message,
+              message ?? l10n.offlineOperationNotAvailable,
               textAlign: TextAlign.center,
-              style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
+              style: tokens.typography.bodyMedium.copyWith(
+                color: tokens.textSecondary,
+              ),
             ),
             if (onRetry != null) ...[
-              SizedBox(height: MinqTokens.spacing(4)),
+              SizedBox(height: tokens.spacing.lg),
               ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
+                label: Text(l10n.retry),
               ),
             ],
           ],
@@ -106,25 +146,28 @@ class ReadOnlyModeIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: MinqTokens.spacing(2),
-        vertical: MinqTokens.spacing(1),
+        horizontal: tokens.spacing.sm,
+        vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: Colors.orange.withAlpha(51),
-        borderRadius: MinqTokens.cornerLarge(),
-        border: Border.all(color: Colors.orange.withAlpha(128)),
+        color: tokens.accentWarning.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        border: Border.all(color: tokens.accentWarning.withOpacity(0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.visibility, size: 16, color: Colors.orange),
-          SizedBox(width: MinqTokens.spacing(1)),
+          Icon(Icons.visibility, size: 16, color: tokens.accentWarning),
+          SizedBox(width: tokens.spacing.xs),
           Text(
-            '読み取り専用',
-            style: MinqTokens.bodySmall.copyWith(
-              color: Colors.orange,
+            l10n.readOnlyLabel,
+            style: tokens.typography.bodySmall.copyWith(
+              color: tokens.accentWarning,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -134,12 +177,8 @@ class ReadOnlyModeIndicator extends StatelessWidget {
   }
 }
 
-/// ネットワーク依存機能の無効化ラッパー
+/// ネットワーク依存機�Eの無効化ラチE��ー
 class NetworkDependentWidget extends ConsumerWidget {
-  final Widget child;
-  final Widget? offlineWidget;
-  final String? offlineMessage;
-
   const NetworkDependentWidget({
     required this.child,
     this.offlineWidget,
@@ -147,62 +186,265 @@ class NetworkDependentWidget extends ConsumerWidget {
     super.key,
   });
 
+  final Widget child;
+  final Widget? offlineWidget;
+  final String? offlineMessage;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: NetworkStatusService のプロバイダーを作成して使用
-    // const isOffline = ref.watch(networkStatusProvider).isOffline;
+    final status = ref.watch(networkStatusProvider);
+    if (!status.isOffline) {
+      return child;
+    }
 
-    return child;
+    if (offlineWidget != null) {
+      return offlineWidget!;
+    }
+
+    return OfflineEmptyState(message: offlineMessage);
   }
 }
 
-/// オフライン時の機能制限ダイアログ
+/// オフライン時�E機�E制限ダイアログ
 void showOfflineDialog(BuildContext context) {
-  showDialog(
+  final tokens = context.tokens;
+  final l10n = AppLocalizations.of(context);
+
+  showDialog<void>(
     context: context,
-    builder:
-        (context) => AlertDialog(
-          title: Row(
-            children: [
-              const Icon(Icons.cloud_off, color: Colors.orange),
-              const SizedBox(width: 12),
-              Text(AppLocalizations.of(context)!.offline),
-            ],
-          ),
-          content: const Text(
-            'この機能を使用するにはインターネット接続が必要です。\n\n'
-            'WiFiまたはモバイルデータに接続してから再度お試しください。',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            ),
-          ],
+    builder: (context) => AlertDialog(
+      title: Row(
+        children: [
+          Icon(Icons.cloud_off, color: tokens.accentWarning),
+          SizedBox(width: tokens.spacing.sm),
+          Text(l10n.offline),
+        ],
+      ),
+      content: Text(l10n.noInternetConnection),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.ok),
         ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            // TODO: Provide navigation to network settings when available.
+          },
+          child: Text(l10n.openSettings),
+        ),
+      ],
+    ),
   );
 }
 
-/// オフライン時のスナックバー
+/// オフライン時�Eスナックバ�E
 void showOfflineSnackBar(BuildContext context) {
+  final tokens = context.tokens;
+  final l10n = AppLocalizations.of(context);
+
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Row(
         children: [
-          const Icon(Icons.cloud_off, color: Colors.white),
-          const SizedBox(width: 12),
-          Expanded(child: Text(AppLocalizations.of(context)!.offlineOperationNotAvailable)),
+          Icon(Icons.cloud_off, color: tokens.primaryForeground),
+          SizedBox(width: tokens.spacing.sm),
+          Expanded(child: Text(l10n.offlineOperationNotAvailable)),
         ],
       ),
-      backgroundColor: Colors.orange[700],
+      backgroundColor: tokens.accentWarning,
       duration: const Duration(seconds: 3),
       action: SnackBarAction(
-        label: '設定',
-        textColor: Colors.white,
+        label: l10n.openSettings,
+        textColor: tokens.primaryForeground,
         onPressed: () {
           // TODO: ネットワーク設定画面へ遷移
         },
       ),
     ),
   );
+}
+/// Sync status indicator widget
+class SyncStatusWidget extends ConsumerWidget {
+  const SyncStatusWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final networkStatus = ref.watch(networkStatusServiceProvider);
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+
+    return StreamBuilder<SyncStatus>(
+      stream: ref.read(syncQueueManagerProvider).statusStream,
+      builder: (context, snapshot) {
+        final syncStatus = snapshot.data ?? SyncStatus.synced;
+        
+        if (networkStatus == NetworkStatus.offline) {
+          return _buildOfflineIndicator(context, tokens, l10n);
+        }
+        
+        switch (syncStatus) {
+          case SyncStatus.syncing:
+            return _buildSyncingIndicator(context, tokens, l10n);
+          case SyncStatus.pending:
+            return _buildPendingIndicator(context, tokens, l10n);
+          case SyncStatus.failed:
+            return _buildFailedIndicator(context, tokens, l10n);
+          case SyncStatus.conflict:
+            return _buildConflictIndicator(context, tokens, l10n);
+          case SyncStatus.synced:
+          default:
+            return const SizedBox.shrink();
+        }
+      },
+    );
+  }
+
+  Widget _buildOfflineIndicator(BuildContext context, MinqTokens tokens, AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: tokens.accentWarning,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.cloud_off,
+            color: tokens.primaryForeground,
+            size: 14,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            l10n.offlineMode,
+            style: TextStyle(
+              color: tokens.primaryForeground,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSyncingIndicator(BuildContext context, MinqTokens tokens, AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: tokens.info,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 14,
+            height: 14,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(tokens.primaryForeground),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Syncing...', // TODO: Add to l10n
+            style: TextStyle(
+              color: tokens.primaryForeground,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPendingIndicator(BuildContext context, MinqTokens tokens, AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: tokens.accentWarning,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.sync_problem,
+            color: tokens.primaryForeground,
+            size: 14,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Sync Pending', // TODO: Add to l10n
+            style: TextStyle(
+              color: tokens.primaryForeground,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFailedIndicator(BuildContext context, MinqTokens tokens, AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: tokens.error,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.sync_disabled,
+            color: tokens.primaryForeground,
+            size: 14,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Sync Failed', // TODO: Add to l10n
+            style: TextStyle(
+              color: tokens.primaryForeground,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConflictIndicator(BuildContext context, MinqTokens tokens, AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: tokens.error,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.warning,
+            color: tokens.primaryForeground,
+            size: 14,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Sync Conflict', // TODO: Add to l10n
+            style: TextStyle(
+              color: tokens.primaryForeground,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

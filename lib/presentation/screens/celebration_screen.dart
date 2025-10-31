@@ -38,7 +38,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   Future<void> _maybeRequestNotificationPermission() async {
     // Capture context-dependent variables before the first await.
     if (!mounted) return;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
 
     final notificationService = ref.read(notificationServiceProvider);
@@ -127,7 +127,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final streak = ref.watch(streakProvider).asData?.value ?? 0;
     final longestStreak = ref.watch(longestStreakProvider).asData?.value ?? 0;
     final isLongestStreak = streak > 0 && streak >= longestStreak;

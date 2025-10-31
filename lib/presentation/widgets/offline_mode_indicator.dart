@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/theme/minq_tokens.dart';
+import 'package:minq/l10n/app_localizations.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/widgets/offline_banner.dart';
 
 /// オフラインモードインジケーター
 class OfflineModeIndicator extends ConsumerWidget {
-  final Widget child;
-
   const OfflineModeIndicator({super.key, required this.child});
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final status = ref.watch(networkStatusProvider);
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
 
     return Stack(
       children: [
-        // メインコンテンツ（オフライン時は半透明）
         Opacity(
-            opacity: ref.watch(networkStatusProvider).isOnline ? 1.0 : 0.7,
-            child: child),
-        // オフラインバナー
-        if (!ref.watch(networkStatusProvider).isOnline)
+          opacity: status.isOnline ? 1 : 0.7,
+          child: child,
+        ),
+        if (status.isOffline)
           Positioned(
             top: 0,
             left: 0,
@@ -27,32 +31,36 @@ class OfflineModeIndicator extends ConsumerWidget {
             child: Semantics(
               container: true,
               liveRegion: true,
-              label: 'オフラインモード: 読み取り専用',
+              label: l10n.offlineModeBanner,
               child: Material(
-                color: Colors.orange,
+                color: tokens.accentWarning,
                 child: Padding(
-                  padding: EdgeInsets.all(MinqTokens.spacing(2)),
+                  padding: EdgeInsets.all(tokens.spacing.sm),
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.cloud_off,
-                        color: Colors.white,
+                        color: tokens.primaryForeground,
                         size: 20,
                       ),
-                      SizedBox(width: MinqTokens.spacing(2)),
-                      const Expanded(
+                      SizedBox(width: tokens.spacing.sm),
+                      Expanded(
                         child: Text(
-                          'オフラインモード（読み取り専用）',
-                          style: TextStyle(color: Colors.white),
+                          l10n.offlineModeBanner,
+                          style: tokens.typography.bodyMedium.copyWith(
+                            color: tokens.primaryForeground,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                       TextButton(
-                        onPressed: () {
-                          // 再接続を試みる
-                        },
-                        child: const Text(
-                          '再接続',
-                          style: TextStyle(color: Colors.white),
+                        onPressed: () => showOfflineDialog(context),
+                        child: Text(
+                          l10n.retry,
+                          style: tokens.typography.bodySmall.copyWith(
+                            color: tokens.primaryForeground,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
@@ -66,21 +74,29 @@ class OfflineModeIndicator extends ConsumerWidget {
   }
 }
 
-/// 読み取り専用モードラッパー
+/// 読み取り専用モードラチE��ー
 class ReadOnlyModeWrapper extends ConsumerWidget {
+  const ReadOnlyModeWrapper({super.key, required this.child, this.onTap});
+
   final Widget child;
   final VoidCallback? onTap;
 
-  const ReadOnlyModeWrapper({super.key, required this.child, this.onTap});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOnline = ref.watch(networkStatusProvider).isOnline;
+    final status = ref.watch(networkStatusProvider);
 
-    if (!isOnline) {
+    if (!status.isOnline) {
       return AbsorbPointer(child: Opacity(opacity: 0.5, child: child));
     }
 
-    return child;
+    if (onTap == null) {
+      return child;
+    }
+
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: onTap,
+      child: child,
+    );
   }
 }

@@ -352,7 +352,7 @@ class _ComfortDialogState extends State<_ComfortDialog>
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text(AppLocalizations.of(context)!.thankYou),
+                    child: Text(AppLocalizations.of(context).thankYou),
                   ),
                 ],
               ),

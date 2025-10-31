@@ -13,6 +13,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_tts
   geolocator_windows
   isar_flutter_libs
+  local_auth_windows
   printing
   sentry_flutter
   share_plus

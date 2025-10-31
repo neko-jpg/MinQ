@@ -104,7 +104,7 @@ class StandardBottomSheet extends StatelessWidget {
       ),
       actions: [
         BottomSheetAction(
-          label: cancelText ?? AppLocalizations.of(context)!.cancel,
+          label: cancelText ?? AppLocalizations.of(context).cancel,
           onPressed: (context) => Navigator.of(context).pop(false),
           isCancel: true,
         ),

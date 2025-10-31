@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/config/flavor.dart';
+import 'package:minq/core/i18n/timezone_service.dart';
 import 'package:minq/core/initialization/optimal_initialization_service.dart';
+import 'package:minq/core/navigation/root_back_button_dispatcher.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/crash_recovery_store.dart';
@@ -52,6 +54,9 @@ Future<void> _bootstrapApplication() async {
   final crashRecoveryStore = CrashRecoveryStore(sharedPrefs);
   final operationsMetricsService = OperationsMetricsService(sharedPrefs);
   await operationsMetricsService.recordSessionStart(DateTime.now());
+  
+  // Initialize timezone service for regional support
+  await TimezoneService.initialize();
 
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
@@ -299,6 +304,8 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         darkTheme: buildDarkTheme(),
         themeMode: ThemeMode.system,
         locale: locale,
+        // RootBackButtonDispatcherを統合
+        backButtonDispatcher: MinqBackButtonDispatcher.instance,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -306,7 +313,20 @@ class _MinQAppState extends ConsumerState<MinQApp> {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
+        // RTL support for Arabic and other RTL languages
+        localeResolutionCallback: (deviceLocale, supportedLocales) {
+          // Check if device locale is supported
+          for (final supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == deviceLocale?.languageCode) {
+              return supportedLocale;
+            }
+          }
+          // Default to Japanese if no match found
+          return const Locale('ja');
+        },
         builder: (BuildContext context, Widget? child) {
+          // RootBackButtonDispatcherにコンテキストを設定
+          MinqBackButtonDispatcher.instance.setContext(context);
           final mediaQuery = MediaQuery.of(context);
           const double minScaleFactor = 1.0;
           const double maxScaleFactor = 2.0;

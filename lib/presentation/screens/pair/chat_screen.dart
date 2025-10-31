@@ -125,7 +125,7 @@ class _ChatMenu extends ConsumerWidget {
   final String buddyId;
 
   Future<void> _showBlockDialog(BuildContext context, WidgetRef ref) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
@@ -154,7 +154,7 @@ class _ChatMenu extends ConsumerWidget {
   }
 
   Future<void> _showReportDialog(BuildContext context, WidgetRef ref) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final reasonController = TextEditingController();
     final confirmed = await showDialog<bool>(
       context: context,
@@ -197,7 +197,7 @@ class _ChatMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return PopupMenuButton<String>(
       onSelected: (value) {
         if (value == 'block') {
@@ -429,7 +429,7 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
     final text = _textController.text.trim();
     final currentUserId = ref.read(uidProvider);
     final pairRepository = ref.read(pairRepositoryProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     if (text.isEmpty ||
         currentUserId == null ||
@@ -501,7 +501,7 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
     final trimmed = text.trim();
     final currentUserId = ref.read(uidProvider);
     final pairRepository = ref.read(pairRepositoryProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     if (trimmed.isEmpty ||
         currentUserId == null ||
@@ -537,7 +537,7 @@ class _MessageInputBarState extends ConsumerState<_MessageInputBar> {
   @override
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Material(
       color: tokens.surface,

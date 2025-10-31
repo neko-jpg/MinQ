@@ -129,7 +129,7 @@ class ReferralCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.friendInvitationTitle,
+                    AppLocalizations.of(context).friendInvitationTitle,
                     style: textTheme.headlineSmall?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -138,7 +138,7 @@ class ReferralCard extends ConsumerWidget {
                   const SizedBox(height: 4),
                   if (stats.totalReferrals > 0)
                     Text(
-                      AppLocalizations.of(context)!.invitedFriends
+                      AppLocalizations.of(context).invitedFriends
                         .toString()
                         .replaceAll('{count}', stats.totalReferrals.toString())
                         .replaceAll('{rate}', (stats.conversionRate * 100).toStringAsFixed(0)),
@@ -148,7 +148,7 @@ class ReferralCard extends ConsumerWidget {
                     )
                   else
                     Text(
-                      AppLocalizations.of(context)!.inviteFriendsBonus,
+                      AppLocalizations.of(context).inviteFriendsBonus,
                       style: textTheme.bodySmall?.copyWith(
                         color: Colors.white.withAlpha((255 * 0.9).round()),
                       ),
@@ -216,7 +216,7 @@ class CompactReferralCard extends ConsumerWidget {
             const Icon(Icons.people, color: Colors.white, size: 24),
             const SizedBox(width: 8),
             Text(
-              AppLocalizations.of(context)!.friendInvitationTitle,
+              AppLocalizations.of(context).friendInvitationTitle,
               style: textTheme.bodySmall?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -268,7 +268,7 @@ class ReferralPromotionBanner extends ConsumerWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                AppLocalizations.of(context)!.specialCampaignTitle,
+                AppLocalizations.of(context).specialCampaignTitle,
                 style: textTheme.headlineSmall?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -278,7 +278,7 @@ class ReferralPromotionBanner extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            AppLocalizations.of(context)!.inviteFriendsPoints,
+            AppLocalizations.of(context).inviteFriendsPoints,
             style: textTheme.bodyMedium?.copyWith(
               color: Colors.white.withAlpha((255 * 0.9).round()),
             ),
@@ -296,7 +296,7 @@ class ReferralPromotionBanner extends ConsumerWidget {
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.purple.shade600,
                   ),
-                  child: Text(AppLocalizations.of(context)!.inviteNow),
+                  child: Text(AppLocalizations.of(context).inviteNow),
                 ),
               ),
             ],

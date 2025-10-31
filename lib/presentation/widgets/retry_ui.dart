@@ -23,7 +23,7 @@ class RetryUI extends StatelessWidget {
           const Icon(Icons.error_outline, size: 64, color: Colors.grey),
           const SizedBox(height: 16),
           Text(
-            message ?? AppLocalizations.of(context)!.serverConnectionFailed,
+            message ?? AppLocalizations.of(context).serverConnectionFailed,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
@@ -34,7 +34,7 @@ class RetryUI extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: Text(AppLocalizations.of(context)!.retry),
+              label: Text(AppLocalizations.of(context).retry),
             ),
         ],
       ),

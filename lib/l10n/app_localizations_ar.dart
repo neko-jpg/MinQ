@@ -15,7 +15,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get todaysQuests => 'مهام اليوم';
 
   @override
-  String get todays3Recommendations => '3 توصيات لليوم';
+  String get todays3Recommendations => '3 توصيات اليوم';
 
   @override
   String get swapOrSnooze => 'يمكن تغيير التبديل أو الغفوة بنقرة واحدة.';
@@ -36,7 +36,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get findAQuest => 'البحث عن مهمة';
 
   @override
-  String get swapRecommendation => 'استبدال بتوصية أخرى';
+  String get swapRecommendation => 'التبديل إلى توصية أخرى';
 
   @override
   String get snoozeUntilTomorrow => 'تأجيل حتى الغد';
@@ -81,7 +81,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsSectionPrivacy => 'الخصوصية والبيانات';
 
   @override
-  String get settingsDataSync => 'إعداد مزامنة البيانات';
+  String get settingsDataSync => 'تكوين مزامنة البيانات';
 
   @override
   String get settingsDataSyncSubtitle => 'مزامنة البيانات عبر الأجهزة';
@@ -118,17 +118,17 @@ class AppLocalizationsAr extends AppLocalizations {
       'استخدام بيانات وهمية بدلاً من قاعدة البيانات.';
 
   @override
-  String get settingsSocialSharingDemo => 'تجربة المشاركة الاجتماعية';
+  String get settingsSocialSharingDemo => 'تجربة عرض المشاركة الاجتماعية';
 
   @override
   String get settingsSocialSharingDemoSubtitle =>
-      'اختبار المشاركة الاجتماعية وميزات الاحتفال';
+      'اختبار ميزات المشاركة الاجتماعية والاحتفال';
 
   @override
-  String get questsTitle => 'المهام الصغيرة';
+  String get questsTitle => 'المهام المصغرة';
 
   @override
-  String get questsSearchHint => 'البحث عن القوالب...';
+  String get questsSearchHint => 'البحث في القوالب...';
 
   @override
   String get questsFabLabel => 'إنشاء مخصص';
@@ -143,16 +143,462 @@ class AppLocalizationsAr extends AppLocalizations {
   String get questsCategoryAll => 'الكل';
 
   @override
-  String get questsCategoryLearning => 'التعلم';
+  String get notificationSettings => 'إعدادات الإشعارات';
 
   @override
-  String get questsCategoryExercise => 'التمرين';
+  String get notificationAnalytics => 'تحليلات الإشعارات';
 
   @override
-  String get questsCategoryTidying => 'الترتيب';
+  String get errorLoadingSettings => 'فشل في تحميل الإعدادات';
 
   @override
-  String get questsCategoryRecent => 'الأخيرة';
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get globalSettings => 'الإعدادات العامة';
+
+  @override
+  String get enableNotifications => 'تفعيل الإشعارات';
+
+  @override
+  String get enableNotificationsDescription =>
+      'تفعيل أو إلغاء تفعيل جميع الإشعارات دفعة واحدة';
+
+  @override
+  String get categorySettings => 'إعدادات الفئة';
+
+  @override
+  String get categorySettingsDescription =>
+      'تكوين إعدادات مفصلة لكل نوع من أنواع الإشعارات';
+
+  @override
+  String get timeSettings => 'إعدادات الوقت';
+
+  @override
+  String get timeSettingsDescription => 'التحكم في أوقات إرسال الإشعارات';
+
+  @override
+  String get smartSettings => 'إعدادات الإشعارات الذكية';
+
+  @override
+  String get smartSettingsDescription =>
+      'توصيل الإشعارات المحسن بالذكاء الاصطناعي';
+
+  @override
+  String get analyticsSettings => 'إعدادات التحليلات';
+
+  @override
+  String get analyticsSettingsDescription => 'قياس وتحليل فعالية الإشعارات';
+
+  @override
+  String get resetToDefaults => 'إعادة تعيين إلى الافتراضي';
+
+  @override
+  String get testNotification => 'إشعار تجريبي';
+
+  @override
+  String get resetSettings => 'إعادة تعيين الإعدادات';
+
+  @override
+  String get resetSettingsConfirmation =>
+      'إعادة تعيين جميع إعدادات الإشعارات إلى الافتراضي؟';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get reset => 'إعادة تعيين';
+
+  @override
+  String get settingsReset => 'تم إعادة تعيين الإعدادات';
+
+  @override
+  String get testNotificationTitle => 'إشعار تجريبي';
+
+  @override
+  String get testNotificationBody => 'هذا إشعار تجريبي';
+
+  @override
+  String get testNotificationSent => 'تم إرسال الإشعار التجريبي';
+
+  @override
+  String get questNotifications => 'إشعارات المهام';
+
+  @override
+  String get challengeNotifications => 'إشعارات التحديات';
+
+  @override
+  String get pairNotifications => 'إشعارات الزوج';
+
+  @override
+  String get leagueNotifications => 'إشعارات الدوري';
+
+  @override
+  String get aiNotifications => 'إشعارات المدرب الذكي';
+
+  @override
+  String get systemNotifications => 'إشعارات النظام';
+
+  @override
+  String get achievementNotifications => 'إشعارات الإنجازات';
+
+  @override
+  String get reminderNotifications => 'إشعارات التذكير';
+
+  @override
+  String get enabled => 'مفعل';
+
+  @override
+  String get disabled => 'معطل';
+
+  @override
+  String get notificationFrequency => 'تكرار الإشعارات';
+
+  @override
+  String get notificationOptions => 'خيارات الإشعارات';
+
+  @override
+  String get sound => 'الصوت';
+
+  @override
+  String get soundDescription => 'تشغيل صوت الإشعار';
+
+  @override
+  String get vibration => 'الاهتزاز';
+
+  @override
+  String get vibrationDescription => 'الاهتزاز عند الإشعار';
+
+  @override
+  String get badge => 'الشارة';
+
+  @override
+  String get badgeDescription => 'إظهار شارة على أيقونة التطبيق';
+
+  @override
+  String get lockScreen => 'شاشة القفل';
+
+  @override
+  String get lockScreenDescription => 'إظهار الإشعارات على شاشة القفل';
+
+  @override
+  String get immediate => 'فوري';
+
+  @override
+  String get hourly => 'بعد ساعة واحدة';
+
+  @override
+  String get threeHours => 'بعد 3 ساعات';
+
+  @override
+  String get daily => 'اليوم التالي';
+
+  @override
+  String get enableTimeBasedControl => 'Enable Time-Based Control';
+
+  @override
+  String get enableTimeBasedControlDescription =>
+      'Control notifications during specified time periods';
+
+  @override
+  String get sleepTime => 'Sleep Time';
+
+  @override
+  String get sleepTimeRange => 'Sleep Time Range';
+
+  @override
+  String get workTime => 'Work Time';
+
+  @override
+  String get workTimeRange => 'Work Time Range';
+
+  @override
+  String get respectSystemDnd => 'Respect System DND Mode';
+
+  @override
+  String get respectSystemDndDescription =>
+      'Follow device\'s Do Not Disturb settings';
+
+  @override
+  String get weekendMode => 'Weekend Mode';
+
+  @override
+  String get weekendModeDescription =>
+      'Use different time settings for weekends';
+
+  @override
+  String get weekendSleepTime => 'Weekend Sleep Time';
+
+  @override
+  String get weekendSleepTimeRange => 'Weekend Sleep Time Range';
+
+  @override
+  String get weekendWorkTime => 'Weekend Work Time';
+
+  @override
+  String get weekendWorkTimeRange => 'Weekend Work Time Range';
+
+  @override
+  String get startTime => 'Start Time';
+
+  @override
+  String get endTime => 'End Time';
+
+  @override
+  String get enableSmartNotifications => 'Enable Smart Notifications';
+
+  @override
+  String get enableSmartNotificationsDescription =>
+      'AI learns your behavior patterns to optimize notifications';
+
+  @override
+  String get behaviorLearning => 'Behavior Pattern Learning';
+
+  @override
+  String get behaviorLearningDescription =>
+      'Learn from your notification responses';
+
+  @override
+  String get adaptiveFrequency => 'Adaptive Frequency Adjustment';
+
+  @override
+  String get adaptiveFrequencyDescription =>
+      'Adjust notification frequency based on engagement';
+
+  @override
+  String get contextAware => 'Context Awareness';
+
+  @override
+  String get contextAwareDescription =>
+      'Consider current situation for notification timing';
+
+  @override
+  String get engagementOptimization => 'Engagement Optimization';
+
+  @override
+  String get engagementOptimizationDescription =>
+      'Find the most effective notification methods';
+
+  @override
+  String get confidenceThreshold => 'Confidence Threshold';
+
+  @override
+  String get confidenceThresholdDescription =>
+      'Apply optimization only when AI prediction confidence is above this value';
+
+  @override
+  String get learningPeriod => 'Learning Period';
+
+  @override
+  String get learningPeriodDescription =>
+      'Use data from this period to learn patterns';
+
+  @override
+  String daysCount(int count) {
+    return '$count days';
+  }
+
+  @override
+  String get viewLearningData => 'View Learning Data';
+
+  @override
+  String get resetLearning => 'Reset Learning';
+
+  @override
+  String get learningDataTitle => 'Learning Data';
+
+  @override
+  String get learningDataDescription =>
+      'Your notification patterns learned by AI';
+
+  @override
+  String get totalNotificationsSent => 'Total Notifications Sent';
+
+  @override
+  String get totalNotificationsOpened => 'Total Notifications Opened';
+
+  @override
+  String get averageOpenRate => 'Average Open Rate';
+
+  @override
+  String get optimalTimeSlots => 'Optimal Time Slots';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get resetLearningData => 'Reset Learning Data';
+
+  @override
+  String get resetLearningDataConfirmation =>
+      'Resetting learning data will make AI start learning again. Are you sure?';
+
+  @override
+  String get learningDataReset => 'Learning data has been reset';
+
+  @override
+  String get enableAnalytics => 'Enable Analytics';
+
+  @override
+  String get enableAnalyticsDescription =>
+      'Measure notification effectiveness for improvement';
+
+  @override
+  String get trackingOptions => 'Tracking Options';
+
+  @override
+  String get trackOpenRate => 'Track Open Rate';
+
+  @override
+  String get trackOpenRateDescription =>
+      'Measure how often notifications are opened';
+
+  @override
+  String get trackEngagementRate => 'Track Engagement Rate';
+
+  @override
+  String get trackEngagementRateDescription =>
+      'Measure action execution rate from notifications';
+
+  @override
+  String get trackConversionRate => 'Track Conversion Rate';
+
+  @override
+  String get trackConversionRateDescription =>
+      'Measure conversion rate from notifications to goal achievement';
+
+  @override
+  String get trackOptimalTiming => 'Analyze Optimal Timing';
+
+  @override
+  String get trackOptimalTimingDescription =>
+      'Analyze the most effective notification timing';
+
+  @override
+  String get dataRetentionPeriod => 'Data Retention Period';
+
+  @override
+  String get dataRetentionDescription =>
+      'Analytics data older than this period will be automatically deleted';
+
+  @override
+  String get analyticsPrivacyNote =>
+      'Analytics data is stored only on your device and never sent externally';
+
+  @override
+  String get exportData => 'تصدير البيانات';
+
+  @override
+  String get deleteData => 'Delete Data';
+
+  @override
+  String get exportAnalyticsData => 'Export Analytics Data';
+
+  @override
+  String get exportAnalyticsDataDescription =>
+      'Export notification analytics data as a file';
+
+  @override
+  String get exportFormat => 'Export Format';
+
+  @override
+  String get csvFormat => 'CSV Format';
+
+  @override
+  String get csvFormatDescription => 'Can be opened with spreadsheet software';
+
+  @override
+  String get jsonFormat => 'JSON Format';
+
+  @override
+  String get jsonFormatDescription => 'Easy to process programmatically';
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get dataExported => 'Data has been exported';
+
+  @override
+  String get deleteAnalyticsData => 'Delete Analytics Data';
+
+  @override
+  String get deleteAnalyticsDataConfirmation =>
+      'Delete all analytics data? This action cannot be undone.';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get analyticsDataDeleted => 'Analytics data has been deleted';
+
+  @override
+  String get hintFirstQuest => 'لننشئ مهمتك الأولى!';
+
+  @override
+  String get hintFirstQuestMessage =>
+      'Create a quest and take the first step towards building habits.\nStarting with small goals is the key to success.';
+
+  @override
+  String get hintFirstCompletion => 'الإنجاز الأول! الاستمرار سيزيد من سلسلتك.';
+
+  @override
+  String get hintFirstCompletionMessage =>
+      'Continuing will increase your streak.\nIt\'s important to keep going even a little bit every day.';
+
+  @override
+  String get hintStreak => 'Amazing streak!';
+
+  @override
+  String hintStreakMessage(Object streakDays) {
+    return '$streakDays days in a row!\nKeep up your habits and aim for even greater growth.';
+  }
+
+  @override
+  String get hintWeeklyGoal => 'Weekly goal achieved!';
+
+  @override
+  String get hintWeeklyGoalMessage =>
+      'You\'ve achieved this week\'s goal!\nYou can check detailed progress on the stats screen.';
+
+  @override
+  String get hintPairFeatureUnlock => 'Pair feature unlocked!';
+
+  @override
+  String get hintPairFeatureUnlockMessage =>
+      'You can now work on habits together with friends.\nEncourage each other to keep going.';
+
+  @override
+  String get hintAdvancedStatsUnlock => 'Advanced statistics unlocked!';
+
+  @override
+  String get hintAdvancedStatsUnlockMessage =>
+      'Detailed analysis and insights are now available.\nGain a deeper understanding of your habit patterns.';
+
+  @override
+  String get hintAchievementsUnlock => 'Achievements feature unlocked!';
+
+  @override
+  String get hintAchievementsUnlockMessage =>
+      'Earn various achievements and feel your growth.\nTry challenging yourself with new goals.';
+
+  @override
+  String get hintUnderstood => 'Got it';
+
+  @override
+  String get hintClose => 'Close';
+
+  @override
+  String get questsCategoryLearning => 'Learning';
+
+  @override
+  String get questsCategoryExercise => 'Exercise';
+
+  @override
+  String get questsCategoryTidying => 'Tidying';
+
+  @override
+  String get questsCategoryRecent => 'Recent';
 
   @override
   String get authErrorOperationNotAllowed =>
@@ -192,311 +638,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get back => 'رجوع';
 
   @override
-  String get pairMatchingTimeoutTitle => 'Matching Timed Out';
-
-  @override
-  String get pairMatchingTimeoutMessage =>
-      'We couldn\'t find a buddy for you in time. Please try again or check back later.';
-
-  @override
-  String get retry => 'إعادة المحاولة';
-
-  @override
-  String get cancel => 'إلغاء';
-
-  @override
-  String get messageSentFailed => 'Failed to send message';
-
-  @override
-  String get chatInputHint => 'Type a message...';
-
-  @override
-  String get notificationPermissionDialogTitle => 'Enable Notifications?';
-
-  @override
-  String get notificationPermissionDialogMessage =>
-      'Get reminders for your quests and updates from your buddy. You can change this anytime in settings.';
-
-  @override
-  String get notificationPermissionDialogBenefitsHeading =>
-      'What you get by enabling notifications';
-
-  @override
-  String get notificationPermissionDialogBenefitReminders =>
-      'Receive quest reminders at the times you choose.';
-
-  @override
-  String get notificationPermissionDialogBenefitPair =>
-      'Never miss encouragement or updates from your pair.';
-
-  @override
-  String get notificationPermissionDialogBenefitGoal =>
-      'Stay on track by logging goals right away.';
-
-  @override
-  String get notificationPermissionDialogFooter =>
-      'You can adjust notification settings anytime.';
-
-  @override
-  String get enable => 'تفعيل';
-
-  @override
-  String get later => 'لاحقاً';
-
-  @override
-  String get shareFailed => 'Failed to share progress. Please try again.';
-
-  @override
-  String get accountDeletionTitle => 'Account Deletion';
-
-  @override
-  String get accountDeletionWarning =>
-      'This is a permanent action. After a 7-day grace period, all your data, including quests, progress, and pairs, will be permanently erased. You can cancel this process by logging in again within 7 days.';
-
-  @override
-  String get accountDeletionConfirmationCheckbox =>
-      'I understand the consequences and wish to permanently delete my account.';
-
-  @override
-  String get accountDeletionConfirmDialogTitle => 'Final confirmation';
-
-  @override
-  String get accountDeletionConfirmDialogDescription =>
-      'Deleting your account will:\n• Permanently remove quests and progress logs\n• Erase pair chat history\n• Require sign-in within 7 days to restore\n\nAre you absolutely sure you want to continue?';
-
-  @override
-  String get accountDeletionConfirmDialogPrompt =>
-      'Type the following to confirm';
-
-  @override
-  String get accountDeletionConfirmPhrase => 'DELETE';
-
-  @override
-  String get accountDeletionConfirmButton => 'Permanently delete';
-
-  @override
-  String get deleteMyAccountButton => 'Delete My Account';
-
-  @override
-  String get blockUser => 'ユーザーをブロックする';
-
-  @override
-  String get reportUser => 'ユーザーを報告する';
-
-  @override
-  String get userBlocked => 'User has been blocked.';
-
-  @override
-  String get reportSubmitted => 'Report has been submitted.';
-
-  @override
-  String get block => 'ブロックする';
-
-  @override
-  String get report => 'Report';
-
-  @override
-  String get areYouSure => 'Are you sure?';
-
-  @override
-  String get blockConfirmation =>
-      'Blocking this user will prevent them from contacting you. This can be undone in settings.';
-
-  @override
-  String get reportConfirmation =>
-      'Please provide a brief reason for the report. This helps us take appropriate action.';
-
-  @override
-  String get reason => 'Reason';
-
-  @override
-  String get notSignedIn => 'You are not signed in.';
-
-  @override
-  String get errorGeneric => 'Something went wrong. Please try again later.';
-
-  @override
-  String get pairTitle => 'الشريك';
-
-  @override
-  String get pairAnonymousPartner => 'شريك مجهول';
-
-  @override
-  String pairPairedQuest(Object questName) {
-    return 'مقترن في مهمة $questName';
-  }
-
-  @override
-  String get pairHighFiveAction => 'إرسال تحية';
-
-  @override
-  String get pairHighFiveSent => 'تم إرسال التحية';
-
-  @override
-  String get pairQuickMessagePrompt => 'إرسال رسالة سريعة';
-
-  @override
-  String get pairQuickMessageGreat => 'رائع!';
-
-  @override
-  String get pairQuickMessageKeepGoing => 'استمر هكذا!';
-
-  @override
-  String get pairQuickMessageFinishStrong => 'أكمل بقوة!';
-
-  @override
-  String get pairQuickMessageCompletedGoal => 'حققت الهدف!';
-
-  @override
-  String streakDayCount(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count يوم متتالي',
-      zero: '0 أيام متتالية',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get celebrationNewLongestStreak => 'تم تحديث الرقم القياسي المتتالي!';
-
-  @override
-  String celebrationStreakMessage(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'تحقيق $count يوم متتالي!',
-      zero: 'لا يوجد رقم قياسي بعد. لنبدأ اليوم!',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get celebrationLongestSubtitle => 'تم تحديث أفضل رقم شخصي!';
-
-  @override
-  String get celebrationKeepGoingSubtitle =>
-      'تسير الأمور بشكل جيد جداً. استمر هكذا.';
-
-  @override
-  String get celebrationRewardTitle => 'مكافأة';
-
-  @override
-  String get celebrationRewardName => 'تمرين تنفس لمدة دقيقة واحدة';
-
-  @override
-  String get celebrationRewardDescription => 'هدئ عقلك بالتنفس العميق';
-
-  @override
-  String get celebrationDone => 'إكمال';
-
-  @override
-  String get pairPartnerHeroTitle => 'انمُ مع شريك!';
-
-  @override
-  String get pairPartnerHeroDescription =>
-      'وجود شريك مساءلة يحسن معدل الإنجاز بنسبة 95%. استمر بأمان مع الهوية المجهولة.';
-
-  @override
-  String get pairInviteTitle => 'هل لديك رمز دعوة؟';
-
-  @override
-  String get pairInviteHint => 'أدخل الرمز';
-
-  @override
-  String get pairInviteApply => 'تطبيق';
-
-  @override
-  String get pairDividerOr => 'أو';
-
-  @override
-  String get pairRandomMatchTitle => 'مطابقة عشوائية';
-
-  @override
-  String get pairAgeRangeLabel => 'الفئة العمرية';
-
-  @override
-  String get pairGoalCategoryLabel => 'فئة الهدف';
-
-  @override
-  String get pairRandomMatchNote =>
-      'يتم الحفاظ على إخفاء الهوية. يتم مشاركة الفئة العمرية وفئة الهدف فقط، وجميع التفاعلات تتم داخل التطبيق.';
-
-  @override
-  String get pairAgeOption1824 => '18-24 سنة';
-
-  @override
-  String get pairAgeOption2534 => '25-34 سنة';
-
-  @override
-  String get pairAgeOption3544 => '35-44 سنة';
-
-  @override
-  String get pairAgeOption45Plus => '45 سنة فأكثر';
-
-  @override
-  String get pairGoalFitness => 'اللياقة البدنية';
-
-  @override
-  String get pairGoalLearning => 'التعلم';
-
-  @override
-  String get pairGoalWellbeing => 'الرفاهية';
-
-  @override
-  String get pairGoalProductivity => 'الإنتاجية';
-
-  @override
-  String get newVersionAvailable => 'إصدار جديد متاح';
-
-  @override
-  String newVersionMessage(Object version) {
-    return 'إصدار جديد ($version) متاح.\nننصح بالتحديث للحصول على تجربة أفضل.';
-  }
-
-  @override
-  String get viewDetails => 'عرض التفاصيل';
-
-  @override
-  String get skip => 'تخطي';
-
-  @override
-  String get complete => 'إكمال';
-
-  @override
-  String get next => 'التالي';
-
-  @override
-  String get delivered => 'تم التسليم';
-
-  @override
-  String get pending => 'في الانتظار';
-
-  @override
-  String get canOpen => 'يمكن الفتح';
-
-  @override
-  String deliveryDate(int year, int month, int day) {
-    return 'تاريخ التسليم: $day/$month/$year';
-  }
-
-  @override
-  String get tapToOpen => 'اضغط للفتح';
-
-  @override
-  String question(int current, int total) {
-    return 'السؤال $current / $total';
-  }
-
-  @override
-  String get submit => 'إرسال';
-
-  @override
-  String get send => 'إرسال';
-
-  @override
-  String get pleaseEnterAnswer => 'يرجى إدخال إجابتك';
+  String get ok => 'موافق';
 
   @override
   String get yes => 'نعم';
@@ -505,222 +647,688 @@ class AppLocalizationsAr extends AppLocalizations {
   String get no => 'لا';
 
   @override
-  String get userSatisfactionSurvey => 'استطلاع رضا المستخدمين';
+  String get save => 'حفظ';
 
   @override
-  String get userSatisfactionDescription =>
-      'ساعدنا في تحسين MinQ من خلال مشاركة ملاحظاتك';
+  String get edit => 'تحرير';
 
   @override
-  String get mostLikedFeature => 'ما هي الميزة التي تعجبك أكثر؟';
+  String get create => 'إنشاء';
 
   @override
-  String get questManagement => 'إدارة المهام';
+  String get update => 'تحديث';
 
   @override
-  String get pairFeature => 'ميزة الشريك';
+  String get next => 'التالي';
 
   @override
-  String get statisticsGraphs => 'الإحصائيات والرسوم البيانية';
+  String get previous => 'السابق';
 
   @override
-  String get notificationFeature => 'ميزة الإشعارات';
+  String get skip => 'تخطي';
 
   @override
-  String get other => 'أخرى';
-
-  @override
-  String get wouldRecommendMinq => 'هل تنصح الأصدقاء بـ MinQ؟';
-
-  @override
-  String get improvementSuggestions => 'أي اقتراحات للتحسين؟';
-
-  @override
-  String get serverConnectionFailed => 'فشل في الاتصال بالخادم';
-
-  @override
-  String get friendInvitation => 'دعوة صديق';
-
-  @override
-  String get inviteFriendsForBonus => 'ادع الأصدقاء واحصل على نقاط إضافية!';
-
-  @override
-  String get specialCampaign => 'حملة خاصة';
-
-  @override
-  String get inviteFriendsMessage =>
-      'ادع الأصدقاء وستحصل أنت وأصدقاؤك على\nما يصل إلى 3500 نقطة!';
-
-  @override
-  String get inviteNow => 'ادع الآن';
+  String get complete => 'مكتمل';
 
   @override
   String get start => 'بدء';
 
   @override
-  String get resume => 'استئناف';
+  String get settingsEnhancedTitle => 'Settings';
 
   @override
-  String get reset => 'إعادة تعيين';
+  String get settingsSearchHint => 'Search settings...';
 
   @override
-  String get pause => 'إيقاف مؤقت';
+  String get settingsSearchHistoryTitle => 'Recent searches';
 
   @override
-  String get completed => 'مكتمل!';
+  String get settingsSearchPopularTitle => 'Popular searches';
 
   @override
-  String get paused => 'متوقف مؤقتاً';
+  String get settingsSearchClear => 'Clear';
 
   @override
-  String get timerCompleted => 'انتهى المؤقت!';
+  String get settingsSearchNoResults => 'No search results found';
 
   @override
-  String get clearFilters => 'مسح المرشحات';
+  String get settingsSearchNoResultsSubtitle =>
+      'Try searching with different keywords';
 
   @override
-  String get offlineMode => 'وضع عدم الاتصال';
+  String get settingsShowAdvanced => 'Show advanced settings';
 
   @override
-  String get noInternetConnection =>
-      'لا يوجد اتصال بالإنترنت.\n\nقد لا تعمل بعض الميزات بشكل صحيح.\nيرجى التحقق من الاتصال والمحاولة مرة أخرى.';
+  String get settingsHideAdvanced => 'Hide advanced settings';
 
   @override
-  String get offline => 'غير متصل';
+  String get settingsCategoryAppearance => 'Appearance & Theme';
+
+  @override
+  String get settingsCategoryAppearanceSubtitle => 'Customize app appearance';
+
+  @override
+  String get settingsCategoryNotifications => 'Notifications';
+
+  @override
+  String get settingsCategoryNotificationsSubtitle =>
+      'Notification settings and management';
+
+  @override
+  String get settingsCategoryPrivacy => 'Privacy & Security';
+
+  @override
+  String get settingsCategoryPrivacySubtitle =>
+      'Data protection and security settings';
+
+  @override
+  String get settingsCategoryAccessibility => 'Accessibility';
+
+  @override
+  String get settingsCategoryAccessibilitySubtitle => 'Accessibility settings';
+
+  @override
+  String get settingsCategoryData => 'Data Management';
+
+  @override
+  String get settingsCategoryDataSubtitle => 'Data backup and management';
+
+  @override
+  String get settingsCategoryAbout => 'About';
+
+  @override
+  String get settingsCategoryAboutSubtitle => 'Support and information';
+
+  @override
+  String get settingsCategoryAdvanced => 'Advanced Settings';
+
+  @override
+  String get settingsCategoryAdvancedSubtitle =>
+      'Developer and advanced user settings';
+
+  @override
+  String get settingsCategoryAdvancedBadge => 'Advanced';
+
+  @override
+  String get settingsThemeMode => 'Theme Mode';
+
+  @override
+  String get settingsThemeModeSubtitle => 'Light, Dark, or System setting';
+
+  @override
+  String get settingsThemeModeSystem => 'Follow System Setting';
+
+  @override
+  String get settingsThemeModeSystemSubtitle =>
+      'Automatically switch based on device settings';
+
+  @override
+  String get settingsThemeModeLight => 'Light Mode';
+
+  @override
+  String get settingsThemeModeLightSubtitle => 'Use light theme';
+
+  @override
+  String get settingsThemeModeDark => 'Dark Mode';
+
+  @override
+  String get settingsThemeModeDarkSubtitle => 'Use dark theme';
+
+  @override
+  String get settingsAccentColor => 'Accent Color';
+
+  @override
+  String get settingsAccentColorSubtitle => 'Select app main color';
+
+  @override
+  String get settingsThemeCustomization => 'Theme Customization';
+
+  @override
+  String get settingsThemeCustomizationSubtitle => 'Detailed theme settings';
+
+  @override
+  String get settingsNotificationsEnabled => 'Enable Notifications';
+
+  @override
+  String get settingsNotificationsEnabledSubtitle =>
+      'Receive push notifications';
+
+  @override
+  String get settingsNotificationTimeSubtitle => 'Daily reminder time';
+
+  @override
+  String get settingsNotificationCategories => 'Notification Categories';
+
+  @override
+  String get settingsNotificationCategoriesSubtitle =>
+      'Category-specific notification settings';
+
+  @override
+  String get settingsSmartNotifications => 'Smart Notifications';
+
+  @override
+  String get settingsSmartNotificationsSubtitle =>
+      'AI-optimized notification timing';
+
+  @override
+  String get settingsBiometricAuth => 'Biometric Authentication';
+
+  @override
+  String get settingsBiometricAuthSubtitle =>
+      'Protect app with fingerprint/face recognition';
+
+  @override
+  String get settingsPrivacySettings => 'Privacy Settings';
+
+  @override
+  String get settingsPrivacySettingsSubtitle =>
+      'Data usage and privacy management';
+
+  @override
+  String get settingsHighContrast => 'High Contrast';
+
+  @override
+  String get settingsHighContrastSubtitle => 'Enhance color contrast';
+
+  @override
+  String get settingsLargeText => 'Large Text';
+
+  @override
+  String get settingsLargeTextSubtitle => 'Increase text size';
+
+  @override
+  String get settingsAnimationsEnabled => 'Animations';
+
+  @override
+  String get settingsAnimationsEnabledSubtitle =>
+      'Enable/disable animation effects';
+
+  @override
+  String get settingsDataExport => 'Data Export';
+
+  @override
+  String get settingsDataExportSubtitle => 'Export data to file';
+
+  @override
+  String get settingsDataImport => 'Data Import';
+
+  @override
+  String get settingsDataImportSubtitle => 'Restore from backup file';
+
+  @override
+  String get settingsStorageUsage => 'Storage Usage';
+
+  @override
+  String get settingsStorageUsageSubtitle => 'Check app data usage';
+
+  @override
+  String get settingsHelpCenter => 'Help Center';
+
+  @override
+  String get settingsHelpCenterSubtitle => 'FAQ and usage guide';
+
+  @override
+  String get settingsContactSupport => 'Contact Support';
+
+  @override
+  String get settingsContactSupportSubtitle =>
+      'Bug reports and feature requests';
+
+  @override
+  String get settingsAppVersionSubtitle => 'Version 1.0.0';
+
+  @override
+  String get settingsDeveloperMode => 'Developer Mode';
+
+  @override
+  String get settingsDeveloperModeSubtitle => 'Enable developer features';
+
+  @override
+  String get settingsDebugMode => 'Debug Mode';
+
+  @override
+  String get settingsDebugModeSubtitle => 'Show debug information';
+
+  @override
+  String get settingsResetSettings => 'Reset Settings';
+
+  @override
+  String get settingsResetSettingsSubtitle => 'Reset all settings to default';
+
+  @override
+  String get settingsDeleteAccountSubtitle =>
+      'Permanently delete account and data';
+
+  @override
+  String get themeCustomizationTitle => 'Theme Customization';
+
+  @override
+  String get themeCustomizationPreviewShow => 'Show Preview';
+
+  @override
+  String get themeCustomizationPreviewHide => 'Hide Preview';
+
+  @override
+  String get themeCustomizationThemeModeSection => 'Theme Mode';
+
+  @override
+  String get themeCustomizationThemeModeSubtitle => 'Select app brightness';
+
+  @override
+  String get themeCustomizationAccentColorSection => 'Accent Color';
+
+  @override
+  String get themeCustomizationAccentColorSubtitle => 'Select app main color';
+
+  @override
+  String get themeCustomizationApply => 'Apply Changes';
+
+  @override
+  String get themeCustomizationReset => 'Reset to Default';
+
+  @override
+  String get themeCustomizationApplied => 'Theme settings applied';
+
+  @override
+  String get themeCustomizationResetDone => 'Theme settings reset';
+
+  @override
+  String get colorPickerTitle => 'Color Selection';
+
+  @override
+  String get colorPickerPreview => 'Preview';
+
+  @override
+  String get colorPickerApply => 'Apply';
+
+  @override
+  String get timePickerTitle => 'Time Selection';
+
+  @override
+  String get timePickerChange => 'Change Time';
+
+  @override
+  String get timePickerQuickTimes => 'Quick Times';
+
+  @override
+  String get timePickerApply => 'Apply';
+
+  @override
+  String get selectionDialogApply => 'Apply';
+
+  @override
+  String get realTimePreviewTitle => 'MinQ Preview';
+
+  @override
+  String get realTimePreviewButton => 'Primary Button';
+
+  @override
+  String get realTimePreviewQuest => 'Sample Quest';
+
+  @override
+  String get realTimePreviewQuestSubtitle => 'Continue daily habits';
+
+  @override
+  String get realTimePreviewCompleted => 'Completed';
+
+  @override
+  String get realTimePreviewProgress => 'This week\'s progress';
+
+  @override
+  String get realTimePreviewLightMode => 'Light Mode Preview';
+
+  @override
+  String get realTimePreviewDarkMode => 'Dark Mode Preview';
+
+  @override
+  String get settingsConfirmTitle => 'Confirm';
+
+  @override
+  String settingsConfirmDangerousAction(Object action) {
+    return 'Execute $action?\nThis action cannot be undone.';
+  }
+
+  @override
+  String get settingsConfirmExecute => 'Execute';
+
+  @override
+  String get stop => 'Stop';
+
+  @override
+  String get pause => 'Pause';
+
+  @override
+  String get resume => 'Resume';
+
+  @override
+  String get reload => 'Reload';
+
+  @override
+  String get send => 'Send';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get discard => 'Discard';
+
+  @override
+  String get enable => 'Enable';
+
+  @override
+  String get disable => 'Disable';
+
+  @override
+  String get later => 'Later';
+
+  @override
+  String get offlineMode => 'الوضع غير المتصل';
+
+  @override
+  String get offlineModeBanner => 'الوضع غير المتصل - بعض الميزات محدودة';
 
   @override
   String get offlineOperationNotAvailable =>
       'هذه العملية غير متاحة في وضع عدم الاتصال';
 
   @override
-  String get showActivity => 'إظهار النشاط';
+  String get noInternetConnection =>
+      'مطلوب اتصال بالإنترنت. يرجى الاتصال بشبكة Wi-Fi أو بيانات الجوال والمحاولة مرة أخرى.';
 
   @override
-  String get showActivitySubtitle => 'عرض نشاطك للمستخدمين الآخرين';
+  String get offline => 'غير متصل';
 
   @override
-  String get allowInteraction => 'السماح بالتفاعل';
+  String get readOnlyLabel => 'للقراءة فقط';
 
   @override
-  String get allowInteractionSubtitle => 'تلقي التشجيع من المستخدمين الآخرين';
+  String get syncStatusSyncing => 'جاري المزامنة...';
 
   @override
-  String get hapticFeedback => 'ردود الفعل اللمسية';
+  String get syncStatusSynced => 'تمت المزامنة';
 
   @override
-  String get hapticFeedbackSubtitle => 'الاهتزاز أثناء الأنشطة';
+  String get syncStatusFailed => 'فشلت المزامنة';
 
   @override
-  String get celebrationEffects => 'تأثيرات الاحتفال';
+  String get syncStatusPending => 'المزامنة معلقة';
 
   @override
-  String get celebrationEffectsSubtitle => 'إظهار تأثيرات الاحتفال عند الإكمال';
+  String get updateProfileSuccess => 'تم تحديث الملف الشخصي بنجاح';
 
   @override
-  String get levelDetails => 'تفاصيل المستوى';
+  String get updateProfileFailed => 'فشل في تحديث الملف الشخصي';
 
   @override
-  String levelDetailsMessage(int level, int progress) {
-    return 'المستوى الحالي: $level\nالتقدم: $progress%';
-  }
+  String get hintStreakAchievement => 'سلسلة مذهلة! حافظ على العادة الجيدة.';
 
   @override
-  String get close => 'إغلاق';
+  String get discardChanges => 'تجاهل التغييرات؟';
 
   @override
-  String get editHabitScreen => 'الانتقال إلى شاشة تحرير العادة';
+  String get unsavedChangesWillBeLost => 'ستفقد التغييرات غير المحفوظة.';
 
   @override
-  String get addNewHabit => 'إضافة عادة جديدة';
+  String get confirmDeleteTitle => 'تأكيد الحذف';
 
   @override
-  String get executeHabitToday => 'تنفيذ عادة اليوم';
-
-  @override
-  String get createMiniHabit => 'إنشاء عادة صغيرة';
-
-  @override
-  String get navigateToChallenges => 'الانتقال إلى شاشة التحديات';
-
-  @override
-  String get executePrevention => 'تنفيذ الوقاية';
-
-  @override
-  String get executeNow => 'تنفيذ الآن';
-
-  @override
-  String get showPreventionPlan => 'إظهار خطة الوقاية';
-
-  @override
-  String get navigateToHabitExecution => 'الانتقال إلى شاشة تنفيذ العادة';
+  String get confirmDeleteMessage =>
+      'لا يمكن التراجع عن هذا الإجراء. هل أنت متأكد من أنك تريد الحذف؟';
 
   @override
   String get errorOccurred => 'حدث خطأ';
 
   @override
-  String get detailedAnalysis => 'تحليل مفصل';
+  String get errorGeneric => 'حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقاً.';
 
   @override
-  String get improvementSuggestion => 'اقتراح التحسين';
+  String get serverConnectionFailed => 'فشل في الاتصال بالخادم';
 
   @override
-  String get createQuest => 'إنشاء مهمة';
+  String get notSignedIn => 'لم تقم بتسجيل الدخول.';
 
   @override
-  String get viewTodaysQuests => 'عرض مهام اليوم';
+  String get languageSettings => 'إعدادات اللغة';
 
   @override
-  String get findPair => 'البحث عن شريك';
+  String get selectLanguage => 'اختيار اللغة';
 
   @override
-  String get allowPermission => 'السماح بالإذن';
+  String get japanese => '日本語';
 
   @override
-  String get thankYou => 'شكراً لك';
+  String get english => 'English';
 
   @override
-  String get voiceTest => 'اختبار الصوت';
+  String get arabic => 'العربية';
 
   @override
-  String get voiceTestSubtitle => 'اختبار التدريب الصوتي';
+  String get chinese => '中文';
 
   @override
-  String get weeklyAchievementHeatmap => 'خريطة الإنجازات الأسبوعية';
+  String get korean => '한국어';
+
+  @override
+  String get spanish => 'Español';
+
+  @override
+  String get rtlSupport => 'دعم اللغات من اليمين إلى اليسار';
+
+  @override
+  String get textDirection => 'اتجاه النص';
+
+  @override
+  String get layoutDirection => 'اتجاه التخطيط';
+
+  @override
+  String get accessibilitySettings => 'إعدادات إمكانية الوصول';
+
+  @override
+  String get highContrast => 'تباين عالي';
+
+  @override
+  String get largeText => 'نص كبير';
+
+  @override
+  String get screenReader => 'قارئ الشاشة';
+
+  @override
+  String get voiceOver => 'VoiceOver';
+
+  @override
+  String get talkBack => 'TalkBack';
+
+  @override
+  String get themeSettings => 'إعدادات المظهر';
+
+  @override
+  String get lightMode => 'الوضع الفاتح';
+
+  @override
+  String get darkMode => 'الوضع الداكن';
+
+  @override
+  String get systemDefault => 'اتباع النظام';
+
+  @override
+  String get autoSwitchTheme => 'تبديل المظهر التلقائي';
+
+  @override
+  String get questReminders => 'Quest Reminders';
+
+  @override
+  String get pairUpdates => 'Pair Updates';
+
+  @override
+  String get weeklyReports => 'Weekly Reports';
+
+  @override
+  String get dataManagement => 'إدارة البيانات';
+
+  @override
+  String get importData => 'استيراد البيانات';
+
+  @override
+  String get backupData => 'نسخ احتياطي للبيانات';
+
+  @override
+  String get restoreData => 'استعادة البيانات';
+
+  @override
+  String get clearCache => 'مسح التخزين المؤقت';
+
+  @override
+  String get deleteAllData => 'حذف جميع البيانات';
 
   @override
   String get privacySettings => 'إعدادات الخصوصية';
 
   @override
-  String get notificationSettings => 'إعدادات الإشعارات';
+  String get dataSharing => 'مشاركة البيانات';
 
   @override
-  String get test => 'اختبار';
+  String get analytics => 'بيانات التحليلات';
 
   @override
-  String get priorityHigh => 'High';
+  String get crashReports => 'تقارير الأعطال';
 
   @override
-  String get priorityMedium => 'Medium';
+  String get personalizedAds => 'الإعلانات المخصصة';
 
   @override
-  String get priorityLow => 'Low';
+  String get aboutApp => 'حول التطبيق';
 
   @override
-  String createdOn(int year, int month, int day) {
-    return 'Created on $year/$month/$day';
+  String get version => 'الإصدار';
+
+  @override
+  String get buildNumber => 'رقم البناء';
+
+  @override
+  String get licenses => 'التراخيص';
+
+  @override
+  String get openSourceLicenses => 'تراخيص المصدر المفتوح';
+
+  @override
+  String get contactSupport => 'الاتصال بالدعم';
+
+  @override
+  String get reportBug => 'الإبلاغ عن خطأ';
+
+  @override
+  String get featureRequest => 'طلب ميزة';
+
+  @override
+  String get developerOptions => 'خيارات المطور';
+
+  @override
+  String get debugMode => 'وضع التصحيح';
+
+  @override
+  String get showPerformanceOverlay => 'إظهار تراكب الأداء';
+
+  @override
+  String get enableLogging => 'تفعيل التسجيل';
+
+  @override
+  String get clearLogs => 'مسح السجلات';
+
+  @override
+  String get exportLogs => 'تصدير السجلات';
+
+  @override
+  String streakDayCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'سلسلة $count أيام',
+      zero: 'سلسلة 0 أيام',
+    );
+    return '$_temp0';
   }
 
   @override
-  String daysUntil(int days) {
-    return '$days days';
+  String get shareFailed => 'Failed to share progress. Please try again.';
+
+  @override
+  String get executePrevention => 'Execute Prevention';
+
+  @override
+  String get executeNow => 'Execute Now';
+
+  @override
+  String get showPreventionPlan => 'Show prevention plan';
+
+  @override
+  String get navigateToHabitExecution => 'Navigate to habit execution screen';
+
+  @override
+  String get editHabitScreen => 'Navigate to habit edit screen';
+
+  @override
+  String get addNewHabit => 'Add new habit';
+
+  @override
+  String get executeHabitToday => 'Execute today\'s habit';
+
+  @override
+  String get createMiniHabit => 'Create mini habit';
+
+  @override
+  String get navigateToChallenges => 'Navigate to challenges screen';
+
+  @override
+  String get detailedAnalysis => 'Detailed Analysis';
+
+  @override
+  String get improvementSuggestion => 'Improvement Suggestion';
+
+  @override
+  String get aiImprovementSuggestion => 'AI Improvement Suggestion';
+
+  @override
+  String get viewDetails => 'View Details';
+
+  @override
+  String get levelDetails => 'Level Details';
+
+  @override
+  String levelDetailsMessage(int level, int progress) {
+    return 'Current Level: $level\nProgress: $progress%';
   }
 
   @override
-  String get required => ' *Required';
+  String get showActivity => 'Show Activity';
 
   @override
-  String get usabilityRating =>
-      'Please rate MinQ\'s usability on a scale of 1-5';
+  String get showActivitySubtitle => 'Display your activity to other users';
+
+  @override
+  String get allowInteraction => 'Allow Interaction';
+
+  @override
+  String get allowInteractionSubtitle =>
+      'Receive encouragement from other users';
+
+  @override
+  String get hapticFeedback => 'Haptic Feedback';
+
+  @override
+  String get hapticFeedbackSubtitle => 'Vibrate during activities';
+
+  @override
+  String get celebrationEffects => 'Celebration Effects';
+
+  @override
+  String get celebrationEffectsSubtitle =>
+      'Show celebration effects when completing';
 
   @override
   String get friendInvitationTitle => 'Friend Invitation';
@@ -741,19 +1349,408 @@ class AppLocalizationsAr extends AppLocalizations {
       'Invite friends and both of you can get\nup to 3500 points!';
 
   @override
-  String get searchQuests => 'Search quests...';
+  String get inviteNow => 'Invite Now';
+
+  @override
+  String get pairTitle => 'Pair';
+
+  @override
+  String get pairQuickMessageGreat => 'Great!';
+
+  @override
+  String get pairQuickMessageKeepGoing => 'Keep going!';
+
+  @override
+  String get pairQuickMessageFinishStrong => 'Finish strong!';
+
+  @override
+  String get pairQuickMessageCompletedGoal => 'Completed the goal!';
+
+  @override
+  String get pairAnonymousPartner => 'Anonymous Partner';
+
+  @override
+  String pairPairedQuest(Object questName) {
+    return 'Paired in $questName quest';
+  }
+
+  @override
+  String get pairHighFiveAction => 'Send High Five';
+
+  @override
+  String get pairHighFiveSent => 'High Five Sent';
+
+  @override
+  String get pairQuickMessagePrompt => 'Send a quick message';
+
+  @override
+  String get pairPartnerHeroTitle => 'Grow together with a partner';
+
+  @override
+  String get pairPartnerHeroDescription =>
+      'Having an accountability partner improves achievement rate by 95%. Continue safely and anonymously.';
+
+  @override
+  String get pairInviteTitle => 'Do you have an invitation code?';
+
+  @override
+  String get pairInviteHint => 'Enter code';
+
+  @override
+  String get pairInviteApply => 'Apply';
+
+  @override
+  String get pairDividerOr => 'Or';
+
+  @override
+  String get pairRandomMatchTitle => 'Random matching';
+
+  @override
+  String get pairAgeRangeLabel => 'Age range';
+
+  @override
+  String get pairGoalCategoryLabel => 'Goal category';
+
+  @override
+  String get pairRandomMatchNote =>
+      'Anonymity is protected. Only age range and goal category are shared, and all interactions take place within the app.';
+
+  @override
+  String get pairAgeOption1824 => '18-24 years';
+
+  @override
+  String get pairAgeOption2534 => '25-34 years';
+
+  @override
+  String get pairAgeOption3544 => '35-44 years';
+
+  @override
+  String get pairAgeOption45Plus => '45+ years';
+
+  @override
+  String get pairGoalFitness => 'Fitness';
+
+  @override
+  String get pairGoalLearning => 'Learning';
+
+  @override
+  String get pairGoalWellbeing => 'Well-being';
+
+  @override
+  String get pairGoalProductivity => 'Productivity';
+
+  @override
+  String get voiceTest => 'Voice Test';
+
+  @override
+  String get voiceTestSubtitle => 'Test voice coaching';
+
+  @override
+  String get messageTest => 'Message Test';
+
+  @override
+  String get messageTestSubtitle => 'Test coaching messages';
+
+  @override
+  String intervalMinutes(int minutes) {
+    return '$minutes min interval';
+  }
+
+  @override
+  String minutesShort(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get progress => 'التقدم';
+
+  @override
+  String get searchHint => 'Search...';
+
+  @override
+  String get searchQuests => 'Search quests';
 
   @override
   String get filterByTags => 'Filter by tags';
 
   @override
+  String get clearFilters => 'Clear filters';
+
+  @override
+  String get filters => 'Filters';
+
+  @override
+  String get category => 'Category';
+
+  @override
   String get difficulty => 'Difficulty';
 
   @override
-  String get estimatedTime => 'Estimated Time';
+  String get location => 'Location';
 
   @override
-  String get location => 'Location';
+  String get status => 'Status';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get sortByRelevance => 'Relevance';
+
+  @override
+  String get sortByDateCreated => 'Date created';
+
+  @override
+  String get sortByDateUpdated => 'Date updated';
+
+  @override
+  String get sortByAlphabetical => 'Alphabetical';
+
+  @override
+  String get searchResults => 'Search results';
+
+  @override
+  String get searchHistory => 'Search history';
+
+  @override
+  String get savedSearches => 'Saved searches';
+
+  @override
+  String get advancedSearch => 'Advanced search';
+
+  @override
+  String get history => 'History';
+
+  @override
+  String searchResultsCount(int count) {
+    return '$count results';
+  }
+
+  @override
+  String matchedKeywords(String keywords) {
+    return 'Matched keywords: $keywords';
+  }
+
+  @override
+  String get searchError => 'Search error occurred';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String daysAgo(int days) {
+    return '$days days ago';
+  }
+
+  @override
+  String get exportNotImplemented => 'Export feature not implemented';
+
+  @override
+  String get voiceSearchNotImplemented => 'Voice search not implemented';
+
+  @override
+  String get filterOnly => 'Filter only';
+
+  @override
+  String resultsCount(int count) {
+    return '$count results';
+  }
+
+  @override
+  String get justNow => 'Just now';
+
+  @override
+  String minutesAgo(int minutes) {
+    return '$minutes minutes ago';
+  }
+
+  @override
+  String hoursAgo(int hours) {
+    return '$hours hours ago';
+  }
+
+  @override
+  String get noSearchHistory => 'No search history';
+
+  @override
+  String get noSearchHistoryDescription =>
+      'Search history will appear here when you perform searches';
+
+  @override
+  String get noSavedSearches => 'No saved searches';
+
+  @override
+  String get noSavedSearchesDescription =>
+      'Save frequently used search conditions for quick access';
+
+  @override
+  String get saveSearch => 'Save search';
+
+  @override
+  String usedCount(int count) {
+    return 'Used $count times';
+  }
+
+  @override
+  String get clearSearchHistory => 'Clear search history';
+
+  @override
+  String get clearSearchHistoryConfirmation =>
+      'Delete all search history? This action cannot be undone.';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
+  String get historyEntryRemoved => 'History entry removed';
+
+  @override
+  String get saveSearchNotImplemented => 'Save search feature not implemented';
+
+  @override
+  String get editNotImplemented => 'Edit feature not implemented';
+
+  @override
+  String get deleteSavedSearch => 'Delete saved search';
+
+  @override
+  String deleteSavedSearchConfirmation(String name) {
+    return 'Delete \"$name\"?';
+  }
+
+  @override
+  String get searchSaved => 'Search saved';
+
+  @override
+  String get popularKeywords => 'Popular keywords';
+
+  @override
+  String get recentSearches => 'Recent searches';
+
+  @override
+  String get viewAll => 'View all';
+
+  @override
+  String get searchTips => 'Search tips';
+
+  @override
+  String get searchTipKeywords => 'Keyword search';
+
+  @override
+  String get searchTipKeywordsDescription =>
+      'Search by title, description, and tags';
+
+  @override
+  String get searchTipFilters => 'Filter features';
+
+  @override
+  String get searchTipFiltersDescription =>
+      'Filter by category, difficulty, location, etc.';
+
+  @override
+  String get searchTipSave => 'Save searches';
+
+  @override
+  String get searchTipSaveDescription =>
+      'Save frequently used search conditions for quick access';
+
+  @override
+  String get searchSettingsNotImplemented => 'Search settings not implemented';
+
+  @override
+  String get searchHelp => 'Search help';
+
+  @override
+  String get searchHelpContent => 'Learn how to use the search features.';
+
+  @override
+  String get searchName => 'Search name';
+
+  @override
+  String get searchNameHint => 'e.g., Exercise quests';
+
+  @override
+  String get clearAll => 'Clear all';
+
+  @override
+  String get loadError => 'Load error';
+
+  @override
+  String get animationSettings => 'Animation Settings';
+
+  @override
+  String get animationSettingsTitle => 'Animation Settings';
+
+  @override
+  String get animationSettingsDescription =>
+      'Customize animation behavior and accessibility options';
+
+  @override
+  String get enableAnimations => 'Enable Animations';
+
+  @override
+  String get enableAnimationsDescription =>
+      'Turn on/off all animations in the app';
+
+  @override
+  String get reducedMotion => 'Reduced Motion';
+
+  @override
+  String get reducedMotionDescription => 'Minimize motion for accessibility';
+
+  @override
+  String get feedbackSettings => 'Feedback Settings';
+
+  @override
+  String get feedbackSettingsDescription =>
+      'Configure haptic and sound feedback';
+
+  @override
+  String get hapticFeedbackDescription =>
+      'Enable vibration feedback for interactions';
+
+  @override
+  String get soundEffects => 'Sound Effects';
+
+  @override
+  String get soundEffectsDescription => 'Enable sound effects for actions';
+
+  @override
+  String get animationPreview => 'Animation Preview';
+
+  @override
+  String get animationPreviewDescription => 'Test different animation types';
+
+  @override
+  String get testAnimations => 'Test Animations';
+
+  @override
+  String get testFadeIn => 'Fade In';
+
+  @override
+  String get testSlideIn => 'Slide In';
+
+  @override
+  String get testScale => 'Scale';
+
+  @override
+  String get testHaptic => 'Haptic';
+
+  @override
+  String get accessibilityNote => 'Accessibility Note';
+
+  @override
+  String get accessibilityNoteDescription =>
+      'These settings help users with motion sensitivity or other accessibility needs. Reduced motion will disable most animations while keeping essential feedback.';
+
+  @override
+  String get estimatedTime => 'Estimated Time';
 
   @override
   String get difficultyEasy => 'Easy';
@@ -765,16 +1762,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get difficultyHard => 'Hard';
 
   @override
-  String get duration5min => '5 min';
+  String get duration5min => '5 minutes';
 
   @override
-  String get duration10min => '10 min';
+  String get duration10min => '10 minutes';
 
   @override
-  String get duration15min => '15 min';
+  String get duration15min => '15 minutes';
 
   @override
-  String get duration30min => '30 min';
+  String get duration30min => '30 minutes';
 
   @override
   String get duration1hour => '1 hour';
@@ -795,176 +1792,238 @@ class AppLocalizationsAr extends AppLocalizations {
   String get locationLibrary => 'Library';
 
   @override
-  String get progress => 'Progress';
+  String get completed => 'Completed';
 
   @override
-  String get ready => 'Ready';
+  String get paused => 'Paused';
 
   @override
   String get running => 'Running';
 
   @override
+  String get ready => 'Ready';
+
+  @override
+  String get timerCompleted => 'Timer Completed';
+
+  @override
   String get workSession => 'Work Session';
 
   @override
-  String get breakTime => 'Break';
+  String get breakTime => 'Break Time';
 
   @override
-  String get messageTest => 'Message Test';
+  String get required => 'Required';
 
   @override
-  String get messageTestSubtitle => 'Test coaching messages';
+  String get pleaseEnterAnswer => 'Please enter an answer';
 
   @override
-  String intervalMinutes(int minutes) {
-    return '$minutes min interval';
+  String get userSatisfactionSurvey => 'User Satisfaction Survey';
+
+  @override
+  String get userSatisfactionDescription => 'Help us improve MinQ';
+
+  @override
+  String get usabilityRating => 'Usability Rating';
+
+  @override
+  String get mostLikedFeature => 'Most Liked Feature';
+
+  @override
+  String get questManagement => 'Quest Management';
+
+  @override
+  String get pairFeature => 'Pair Feature';
+
+  @override
+  String get statisticsGraphs => 'Statistics Graphs';
+
+  @override
+  String get notificationFeature => 'Notification Feature';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get wouldRecommendMinq => 'Would you recommend MinQ to friends?';
+
+  @override
+  String get improvementSuggestions => 'Improvement Suggestions';
+
+  @override
+  String get weeklyAchievementHeatmap => 'Weekly Achievement Heatmap';
+
+  @override
+  String get newVersionAvailable => 'New version available';
+
+  @override
+  String get priorityHigh => 'High';
+
+  @override
+  String get priorityMedium => 'Medium';
+
+  @override
+  String get priorityLow => 'Low';
+
+  @override
+  String newVersionMessage(String version) {
+    return 'Version $version is available. Please update for the best experience.';
   }
 
   @override
-  String minutesShort(int minutes) {
-    return '$minutes min';
-  }
+  String get streakTracking => 'Streak Tracking';
 
   @override
-  String get getStarted => 'Get Started';
+  String get weeklyStats => 'Weekly Stats';
 
   @override
-  String get aiImprovementSuggestion => 'AI Improvement Suggestion';
+  String get advancedStats => 'Advanced Stats';
 
   @override
-  String get alreadyHaveAccount => 'Already have an account?';
+  String get dataExport => 'Data Export';
 
   @override
-  String get newsAndChangelog => 'News & Changelog';
+  String get tags => 'Tags';
 
   @override
-  String get communityBoard => 'Community Board';
+  String get achievements => 'Achievements';
 
   @override
-  String get post => 'Post';
+  String get events => 'Events';
 
   @override
-  String failedToLoadPosts(String error) {
-    return 'Failed to load posts: $error';
-  }
+  String get templates => 'Templates';
 
   @override
-  String get deleteHabit => 'Delete Habit';
+  String get timer => 'Timer';
 
   @override
-  String deleteHabitConfirm(String title) {
-    return 'Delete \"$title\"? This action cannot be undone.';
-  }
-
-  @override
-  String get delete => 'Delete';
-
-  @override
-  String get previous => 'Previous';
-
-  @override
-  String get update => 'Update';
-
-  @override
-  String get discardChanges => 'Discard changes?';
-
-  @override
-  String get unsavedChangesWillBeLost => 'Unsaved changes will be lost.';
-
-  @override
-  String get discard => 'Discard';
-
-  @override
-  String get habitName => 'Habit Name';
-
-  @override
-  String get targetValue => 'Target Value';
-
-  @override
-  String get reload => 'Reload';
-
-  @override
-  String get loadingReminders => 'Loading reminders...';
-
-  @override
-  String get addTime => 'Add Time';
-
-  @override
-  String get notSignedInCannotRecord =>
-      'Cannot record because you are not signed in.';
-
-  @override
-  String get photoCancelled => 'Photo capture was cancelled.';
-
-  @override
-  String get bgmPlaybackFailed => 'Failed to play BGM.';
-
-  @override
-  String get bgmIdentificationUnavailable =>
-      'BGM identification is currently unavailable';
-
-  @override
-  String get couldNotIdentifySong => 'Could not identify the song';
-
-  @override
-  String get bgmIdentificationFailed => 'BGM identification failed';
-
-  @override
-  String get stop => 'Stop';
-
-  @override
-  String get play => 'Play';
-
-  @override
-  String get confirmPhoto => 'Please confirm the photo';
-
-  @override
-  String get retakePhoto => 'Retake Photo';
-
-  @override
-  String get useThisPhoto => 'Use This Photo';
-
-  @override
-  String get showOfflineQueue => 'Show Offline Queue';
+  String get advancedCustomization => 'Advanced Customization';
 
   @override
   String get openSettings => 'Open Settings';
 
   @override
-  String get selfReportInstead => 'Self-report instead';
+  String get xpHistory => 'XP History';
 
   @override
-  String get save => 'Save';
+  String get pleaseLogin => 'Please login to view this feature';
 
   @override
-  String get viewQuests => 'View Quests';
+  String get errorLoadingData => 'Error loading data';
 
   @override
-  String get startNow => 'Start Now';
+  String get noXPHistory => 'No XP history available';
 
   @override
-  String get csvFormat => 'CSV Format';
+  String get statistics => 'Statistics';
 
   @override
-  String get imageFormat => 'Image Format';
+  String get overallStatistics => 'Overall Statistics';
 
   @override
-  String get exportFeatureUnavailable =>
-      'Export feature is currently unavailable';
+  String get totalXP => 'Total XP';
 
   @override
-  String get statsDataExported => 'Statistics data exported';
+  String get weeklyXP => 'Weekly XP';
 
   @override
-  String get exportFailed => 'Export failed';
+  String get monthlyXP => 'Monthly XP';
 
   @override
-  String get imageExportInPreparation =>
-      'Image export feature is in preparation';
+  String get averageDaily => 'Average Daily';
 
   @override
-  String get backToQuestList => 'Back to Quest List';
+  String get xpTrend => 'XP Trend';
 
   @override
-  String get questNotFound => 'Quest not found';
+  String get xpSources => 'XP Sources';
+
+  @override
+  String get questComplete => 'Quest Complete';
+
+  @override
+  String get miniQuestComplete => 'Mini Quest Complete';
+
+  @override
+  String get streakMilestone => 'Streak Milestone';
+
+  @override
+  String get challengeComplete => 'Challenge Complete';
+
+  @override
+  String get weeklyGoal => 'Weekly Goal';
+
+  @override
+  String get monthlyGoal => 'Monthly Goal';
+
+  @override
+  String get earlyCompletion => 'Early Completion';
+
+  @override
+  String get perfectCompletion => 'Perfect Completion';
+
+  @override
+  String get comebackBonus => 'Comeback Bonus';
+
+  @override
+  String get weekendActivity => 'Weekend Activity';
+
+  @override
+  String get specialEvent => 'Special Event';
+
+  @override
+  String get getStarted => 'Get Started';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get maxLevelReached => 'Max level reached!';
+
+  @override
+  String get yourLevel => 'Your Level';
+
+  @override
+  String get nextLevel => 'Next Level';
+
+  @override
+  String get remaining => 'remaining';
+
+  @override
+  String get unlockRewards => 'Unlock Rewards';
+
+  @override
+  String get allFeaturesUnlocked => 'All features unlocked';
+
+  @override
+  String get errorLoadingLevel => 'Error loading level';
+
+  @override
+  String get level => 'Level';
+
+  @override
+  String get currentXP => 'Current XP';
+
+  @override
+  String get xpToNext => 'XP to next level';
+
+  @override
+  String get viewHistory => 'View History';
+
+  @override
+  String get questCreation => 'Quest Creation';
+
+  @override
+  String get questCompletion => 'Quest Completion';
+
+  @override
+  String get basicStats => 'Basic Stats';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get thankYou => 'Thank you!';
 }

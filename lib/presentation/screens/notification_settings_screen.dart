@@ -1,302 +1,278 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/providers.dart';
-import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
-import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
-import 'package:minq/presentation/common/minq_buttons.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:go_router/go_router.dart';
+import 'package:minq/domain/notification/notification_settings.dart';
+import 'package:minq/l10n/l10n.dart';
+import 'package:minq/presentation/providers/notification_providers.dart';
+import 'package:minq/presentation/widgets/notification/analytics_card.dart';
+import 'package:minq/presentation/widgets/notification/category_settings_card.dart';
+import 'package:minq/presentation/widgets/notification/smart_settings_card.dart';
+import 'package:minq/presentation/widgets/notification/time_settings_card.dart';
 
-class NotificationSettingsScreen extends ConsumerStatefulWidget {
+/// 通知設定画面
+class NotificationSettingsScreen extends ConsumerWidget {
   const NotificationSettingsScreen({super.key});
 
   @override
-  ConsumerState<NotificationSettingsScreen> createState() =>
-      _NotificationSettingsScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final notificationSettings = ref.watch(notificationSettingsProvider);
 
-class _NotificationSettingsScreenState
-    extends ConsumerState<NotificationSettingsScreen> {
-  TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 30);
-  TimeOfDay _eveningTime = const TimeOfDay(hour: 21, minute: 30);
-  final Set<int> _enabledWeekdays = {1, 2, 3, 4, 5}; // 平日デフォルト
-  bool _notifyOnHolidays = false;
-  late TimeOfDay _initialMorningTime;
-  late TimeOfDay _initialEveningTime;
-  late Set<int> _initialEnabledWeekdays;
-  late bool _initialNotifyOnHolidays;
-  bool _hasUnsavedChanges = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _initialMorningTime = _morningTime;
-    _initialEveningTime = _eveningTime;
-    _initialEnabledWeekdays = Set<int>.from(_enabledWeekdays);
-    _initialNotifyOnHolidays = _notifyOnHolidays;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.notificationSettings),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.analytics_outlined),
+            onPressed: () => context.push('/notification-analytics'),
+            tooltip: l10n.notificationAnalytics,
+          ),
+        ],
+      ),
+      body: notificationSettings.when(
+        data: (settings) => _buildSettingsContent(context, ref, settings, l10n),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.errorLoadingSettings,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                error.toString(),
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => ref.refresh(notificationSettingsProvider),
+                child: Text(l10n.retry),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  Future<void> _selectTime(
+  Widget _buildSettingsContent(
     BuildContext context,
-    TimeOfDay initialTime,
-    ValueChanged<TimeOfDay> onTimeChanged,
-  ) async {
-    final newTime = await showTimePicker(
-      context: context,
-      initialTime: initialTime,
-    );
-    if (newTime != null) {
-      setState(() => onTimeChanged(newTime));
-      _updateUnsavedState();
-    }
-  }
-
-  void _toggleWeekday(int weekday) {
-    setState(() {
-      if (_enabledWeekdays.contains(weekday)) {
-        _enabledWeekdays.remove(weekday);
-      } else {
-        _enabledWeekdays.add(weekday);
-      }
-    });
-    _updateUnsavedState();
-  }
-
-  Future<void> _saveSettings() async {
-    final times = [
-      '${_morningTime.hour.toString().padLeft(2, '0')}:${_morningTime.minute.toString().padLeft(2, '0')}',
-      '${_eveningTime.hour.toString().padLeft(2, '0')}:${_eveningTime.minute.toString().padLeft(2, '0')}',
-    ];
-    await ref
-        .read(notificationServiceProvider)
-        .scheduleRecurringReminders(times);
-    if (mounted) {
-      setState(() {
-        _initialMorningTime = _morningTime;
-        _initialEveningTime = _eveningTime;
-        _initialEnabledWeekdays = Set<int>.from(_enabledWeekdays);
-        _initialNotifyOnHolidays = _notifyOnHolidays;
-        _hasUnsavedChanges = false;
-      });
-      FeedbackMessenger.showSuccessToast(context, '通知時間を保存しました！');
-      Navigator.of(context).pop();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    return PopScope(
-      canPop: !_hasUnsavedChanges,
-      onPopInvokedWithResult: (bool didPop, dynamic result) async {
-        if (didPop) {
-          return;
-        }
-        await _handleBackRequest(context);
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            '通知時間',
-            style: tokens.typography.h4.copyWith(
-              color: tokens.textPrimary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => _handleBackRequest(context),
-          ),
-        ),
-        body: ListView(
-          padding: EdgeInsets.all(tokens.spacing.md),
-          children: [
-            _TimePickerTile(
-              tokens: tokens,
-              label: '朝のリマインダー',
-              time: _morningTime,
-              onTap:
-                  () => _selectTime(
-                    context,
-                    _morningTime,
-                    (time) => _morningTime = time,
+    WidgetRef ref,
+    NotificationSettings settings,
+    AppLocalizations l10n,
+  ) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // グローバル設定
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.globalSettings,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-            ),
-            SizedBox(height: tokens.spacing.md),
-            _TimePickerTile(
-              tokens: tokens,
-              label: '夜のリマインダー',
-              time: _eveningTime,
-              onTap:
-                  () => _selectTime(
-                    context,
-                    _eveningTime,
-                    (time) => _eveningTime = time,
+                  const SizedBox(height: 16),
+                  SwitchListTile(
+                    title: Text(l10n.enableNotifications),
+                    subtitle: Text(l10n.enableNotificationsDescription),
+                    value: settings.globalEnabled,
+                    onChanged: (value) {
+                      ref.read(notificationSettingsProvider.notifier).updateGlobalEnabled(value);
+                    },
                   ),
-            ),
-            SizedBox(height: tokens.spacing.lg),
-            Text(
-              '通知する曜日',
-              style: tokens.typography.h5.copyWith(
-                color: tokens.textPrimary,
-                fontWeight: FontWeight.bold,
+                ],
               ),
             ),
-            SizedBox(height: tokens.spacing.sm),
-            _WeekdaySelector(
-              tokens: tokens,
-              enabledWeekdays: _enabledWeekdays,
-              onToggle: _toggleWeekday,
-            ),
-            SizedBox(height: tokens.spacing.md),
-            SwitchListTile(
-              title: Text('祝日も通知する', style: tokens.typography.bodyLarge),
-              value: _notifyOnHolidays,
-              onChanged: (value) {
-                setState(() => _notifyOnHolidays = value);
-                _updateUnsavedState();
-              },
-            ),
-            SizedBox(height: tokens.spacing.xl),
-            MinqPrimaryButton(label: '保存', onPressed: _saveSettings),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _updateUnsavedState() {
-    final hasChanges = _computeHasUnsavedChanges();
-    if (hasChanges != _hasUnsavedChanges) {
-      setState(() => _hasUnsavedChanges = hasChanges);
-    }
-  }
-
-  bool _computeHasUnsavedChanges() {
-    final timeChanged =
-        _morningTime != _initialMorningTime ||
-        _eveningTime != _initialEveningTime;
-    final weekdaysChanged =
-        !_setEquals(_enabledWeekdays, _initialEnabledWeekdays);
-    final holidayChanged = _notifyOnHolidays != _initialNotifyOnHolidays;
-    return timeChanged || weekdaysChanged || holidayChanged;
-  }
-
-  Future<void> _handleBackRequest(BuildContext context) async {
-    if (!_hasUnsavedChanges) {
-      Navigator.of(context).pop();
-      return;
-    }
-
-    final shouldLeave = await showDiscardChangesDialog(
-      context,
-      message: '保存していない通知設定があります。破棄して戻りますか？',
-      discardLabel: '変更を破棄',
-    );
-    if (shouldLeave && context.mounted) {
-      Navigator.of(context).pop();
-    }
-  }
-
-  bool _setEquals(Set<int> a, Set<int> b) {
-    if (a.length != b.length) {
-      return false;
-    }
-    for (final value in a) {
-      if (!b.contains(value)) {
-        return false;
-      }
-    }
-    return true;
-  }
-}
-
-class _TimePickerTile extends StatelessWidget {
-  const _TimePickerTile({
-    required this.tokens,
-    required this.label,
-    required this.time,
-    required this.onTap,
-  });
-
-  final MinqTheme tokens;
-  final String label;
-  final TimeOfDay time;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shadowColor: tokens.background.withAlpha((255 * 0.1).round()),
-      color: tokens.surface,
-      shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
-      clipBehavior: Clip.antiAlias,
-      child: ListTile(
-        onTap: onTap,
-        title: Text(
-          label,
-          style: tokens.typography.bodyLarge.copyWith(fontWeight: FontWeight.w600),
-        ),
-        trailing: Text(
-          time.format(context),
-          style: tokens.typography.h4.copyWith(
-            color: tokens.brandPrimary,
-            fontWeight: FontWeight.bold,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// 曜日選択ウィジェット
-class _WeekdaySelector extends StatelessWidget {
-  final MinqTheme tokens;
-  final Set<int> enabledWeekdays;
-  final ValueChanged<int> onToggle;
-
-  const _WeekdaySelector({
-    required this.tokens,
-    required this.enabledWeekdays,
-    required this.onToggle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const weekdayLabels = ['日', '月', '火', '水', '木', '金', '土'];
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(7, (index) {
-        final weekday = index; // 0=日曜, 6=土曜
-        final isEnabled = enabledWeekdays.contains(weekday);
-
-        return GestureDetector(
-          onTap: () => onToggle(weekday),
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: isEnabled ? tokens.brandPrimary : tokens.surface,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isEnabled ? tokens.brandPrimary : tokens.border,
-                width: 2,
-              ),
+          
+          const SizedBox(height: 16),
+          
+          // カテゴリ別設定
+          Text(
+            l10n.categorySettings,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.categorySettingsDescription,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
-            child: Center(
-              child: Text(
-                weekdayLabels[index],
-                style: tokens.typography.body.copyWith(
-                  color: isEnabled ? Colors.white : tokens.textMuted,
-                  fontWeight: FontWeight.bold,
+          ),
+          const SizedBox(height: 16),
+          
+          ...NotificationCategory.values.map((category) {
+            final categorySettings = settings.categorySettings[category] ??
+                CategoryNotificationSettings(category: category);
+            
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: CategorySettingsCard(
+                category: category,
+                settings: categorySettings,
+                onSettingsChanged: (newSettings) {
+                  ref.read(notificationSettingsProvider.notifier)
+                      .updateCategorySettings(category, newSettings);
+                },
+              ),
+            );
+          }),
+          
+          const SizedBox(height: 24),
+          
+          // 時間帯設定
+          Text(
+            l10n.timeSettings,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.timeSettingsDescription,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 16),
+          
+          TimeSettingsCard(
+            settings: settings.timeSettings,
+            onSettingsChanged: (newSettings) {
+              ref.read(notificationSettingsProvider.notifier)
+                  .updateTimeSettings(newSettings);
+            },
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // スマート通知設定
+          Text(
+            l10n.smartSettings,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.smartSettingsDescription,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 16),
+          
+          SmartSettingsCard(
+            settings: settings.smartSettings,
+            onSettingsChanged: (newSettings) {
+              ref.read(notificationSettingsProvider.notifier)
+                  .updateSmartSettings(newSettings);
+            },
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // 分析設定
+          Text(
+            l10n.analyticsSettings,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.analyticsSettingsDescription,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 16),
+          
+          AnalyticsCard(
+            settings: settings.analyticsSettings,
+            onSettingsChanged: (newSettings) {
+              ref.read(notificationSettingsProvider.notifier)
+                  .updateAnalyticsSettings(newSettings);
+            },
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // アクションボタン
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => _showResetDialog(context, ref, l10n),
+                  child: Text(l10n.resetToDefaults),
                 ),
               ),
-            ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => _testNotification(context, ref, l10n),
+                  child: Text(l10n.testNotification),
+                ),
+              ),
+            ],
           ),
-        );
-      }),
+          
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
+  void _showResetDialog(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.resetSettings),
+        content: Text(l10n.resetSettingsConfirmation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              ref.read(notificationSettingsProvider.notifier).resetToDefaults();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.settingsReset)),
+              );
+            },
+            child: Text(l10n.reset),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _testNotification(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+    ref.read(notificationServiceProvider).scheduleNotification(
+      id: 'test_notification',
+      title: l10n.testNotificationTitle,
+      body: l10n.testNotificationBody,
+      category: NotificationCategory.system,
+      userId: 'current_user', // 実際のユーザーIDを使用
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.testNotificationSent)),
     );
   }
 }

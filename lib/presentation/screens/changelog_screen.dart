@@ -11,7 +11,7 @@ class ChangelogScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.newsAndChangelog)),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).newsAndChangelog)),
       body: ListView(
         padding: EdgeInsets.all(tokens.spacing.md),
         children: [

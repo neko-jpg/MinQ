@@ -86,7 +86,7 @@ class _BuddyCard extends ConsumerWidget {
   ) {
     final repo = ref.read(pairRepositoryProvider);
     final currentUserId = ref.read(uidProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final navigator = Navigator.of(context);
 
     showModalBottomSheet(
@@ -357,7 +357,7 @@ Future<void> _showReportDialog(
   WidgetRef ref,
   String buddyId,
 ) async {
-  final l10n = AppLocalizations.of(context)!;
+  final l10n = AppLocalizations.of(context);
   final reasonController = TextEditingController();
   final currentUserId = ref.read(uidProvider);
 

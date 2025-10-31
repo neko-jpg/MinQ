@@ -67,7 +67,7 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
               goalValue: _goalController.text,
             ),
             SizedBox(height: tokens.spacing.xl),
-            _SectionHeader(
+            const _SectionHeader(
               title: 'クエストの概要',
               subtitle: '習慣にしたいアクションを短い言葉で表現しましょう。',
             ),
@@ -89,7 +89,7 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
               },
             ),
             SizedBox(height: tokens.spacing.xl),
-            _SectionHeader(title: '目標タイプ', subtitle: '計測したい単位を選び、目標値を設定します。'),
+            const _SectionHeader(title: '目標タイプ', subtitle: '計測したい単位を選び、目標値を設定します。'),
             SizedBox(height: tokens.spacing.md),
             SegmentedButton<bool>(
               segments: const [
@@ -118,7 +118,7 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
               },
             ),
             SizedBox(height: tokens.spacing.xl),
-            _SectionHeader(title: 'アイコンとカラー', subtitle: '視覚的なモチベーションにつながります。'),
+            const _SectionHeader(title: 'アイコンとカラー', subtitle: '視覚的なモチベーションにつながります。'),
             SizedBox(height: tokens.spacing.md),
             _IconSelector(
               selectedKey: _iconKey,

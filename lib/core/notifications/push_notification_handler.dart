@@ -393,3 +393,44 @@ class PushNotificationStats {
     };
   }
 }
+  // ==================== ペア関連通知 ====================
+
+  /// ペア受諾通知を送信
+  Future<void> sendPairAcceptedNotification(String userId, String accepterId) async {
+    try {
+      // TODO: サーバーAPIを呼び出してプッシュ通知を送信
+      logger.info('Sending pair accepted notification to user: $userId');
+    } catch (e) {
+      logger.error('Failed to send pair accepted notification: $e');
+    }
+  }
+
+  /// 進捗共有通知を送信
+  Future<void> sendProgressNotification(String userId, dynamic progressShare) async {
+    try {
+      // TODO: サーバーAPIを呼び出してプッシュ通知を送信
+      logger.info('Sending progress notification to user: $userId');
+    } catch (e) {
+      logger.error('Failed to send progress notification: $e');
+    }
+  }
+
+  /// チャット通知を送信
+  Future<void> sendChatNotification(String userId, dynamic message) async {
+    try {
+      // TODO: サーバーAPIを呼び出してプッシュ通知を送信
+      logger.info('Sending chat notification to user: $userId');
+    } catch (e) {
+      logger.error('Failed to send chat notification: $e');
+    }
+  }
+
+  /// ペア終了通知を送信
+  Future<void> sendPairEndedNotification(String userId, String reason) async {
+    try {
+      // TODO: サーバーAPIを呼び出してプッシュ通知を送信
+      logger.info('Sending pair ended notification to user: $userId');
+    } catch (e) {
+      logger.error('Failed to send pair ended notification: $e');
+    }
+  }

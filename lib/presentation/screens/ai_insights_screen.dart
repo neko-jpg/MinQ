@@ -337,7 +337,7 @@ class _AiInsightsScreenState extends ConsumerState<AiInsightsScreen> {
             SizedBox(height: tokens.spacing.lg),
             FilledButton(
               onPressed: _refreshInsights,
-              child: Text(AppLocalizations.of(context)!.retry),
+              child: Text(AppLocalizations.of(context).retry),
             ),
           ],
         ),

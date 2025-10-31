@@ -36,7 +36,7 @@ class StandardDialog extends StatelessWidget {
     String? cancelText,
     bool destructive = false,
   }) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return showDialog<bool>(
       context: context,
       builder:

@@ -580,9 +580,9 @@ class LevelProgressWidget extends ConsumerWidget {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.levelDetails),
+            title: Text(AppLocalizations.of(context).levelDetails),
             content: Text(
-              AppLocalizations.of(context)!.levelDetailsMessage
+              AppLocalizations.of(context).levelDetailsMessage
                 .toString()
                 .replaceAll('{level}', progress.currentLevel.toString())
                 .replaceAll('{progress}', (progress.progress * 100).toInt().toString()),
@@ -590,7 +590,7 @@ class LevelProgressWidget extends ConsumerWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text(AppLocalizations.of(context)!.close),
+                child: Text(AppLocalizations.of(context).close),
               ),
             ],
           ),

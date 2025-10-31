@@ -68,20 +68,68 @@ class AppLocaleController extends StateNotifier<Locale?> {
     return [
       const LocaleOption(
         locale: Locale('ja'),
-        displayName: '日本語',
+        displayName: 'Japanese',
         nativeName: '日本語',
+        isRTL: false,
+        region: 'Japan',
+        currency: 'JPY',
       ),
       const LocaleOption(
         locale: Locale('en'),
         displayName: 'English',
         nativeName: 'English',
+        isRTL: false,
+        region: 'United States',
+        currency: 'USD',
+      ),
+      const LocaleOption(
+        locale: Locale('zh'),
+        displayName: 'Chinese (Simplified)',
+        nativeName: '中文 (简体)',
+        isRTL: false,
+        region: 'China',
+        currency: 'CNY',
+      ),
+      const LocaleOption(
+        locale: Locale('ko'),
+        displayName: 'Korean',
+        nativeName: '한국어',
+        isRTL: false,
+        region: 'South Korea',
+        currency: 'KRW',
+      ),
+      const LocaleOption(
+        locale: Locale('es'),
+        displayName: 'Spanish',
+        nativeName: 'Español',
+        isRTL: false,
+        region: 'Spain',
+        currency: 'EUR',
       ),
       const LocaleOption(
         locale: Locale('ar'),
-        displayName: 'العربية',
+        displayName: 'Arabic',
         nativeName: 'العربية',
+        isRTL: true,
+        region: 'Saudi Arabia',
+        currency: 'SAR',
       ),
     ];
+  }
+
+  /// Check if the current locale is RTL
+  bool get isCurrentLocaleRTL {
+    if (state == null) return false;
+    final option = getAvailableLocales().firstWhere(
+      (option) => option.locale == state,
+      orElse: () => getAvailableLocales().first,
+    );
+    return option.isRTL;
+  }
+
+  /// Get text direction for current locale
+  TextDirection get textDirection {
+    return isCurrentLocaleRTL ? TextDirection.rtl : TextDirection.ltr;
   }
 
   /// Switch to the next available locale
@@ -101,9 +149,15 @@ class LocaleOption {
     required this.locale,
     required this.displayName,
     required this.nativeName,
+    required this.isRTL,
+    required this.region,
+    required this.currency,
   });
 
   final Locale locale;
   final String displayName;
   final String nativeName;
+  final bool isRTL;
+  final String region;
+  final String currency;
 }

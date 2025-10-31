@@ -270,7 +270,7 @@ class RecommendationCard extends StatelessWidget {
         // Navigate to habit creation/editing
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.editHabitScreen),
+            content: Text(AppLocalizations.of(context).editHabitScreen),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -279,7 +279,7 @@ class RecommendationCard extends StatelessWidget {
         // Navigate to habit templates or creation
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.addNewHabit),
+            content: Text(AppLocalizations.of(context).addNewHabit),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -288,7 +288,7 @@ class RecommendationCard extends StatelessWidget {
         // Navigate to today's habits
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.executeHabitToday),
+            content: Text(AppLocalizations.of(context).executeHabitToday),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -297,7 +297,7 @@ class RecommendationCard extends StatelessWidget {
         // Navigate to mini habit creation
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.createMiniHabit),
+            content: Text(AppLocalizations.of(context).createMiniHabit),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -306,7 +306,7 @@ class RecommendationCard extends StatelessWidget {
         // Navigate to challenges
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.navigateToChallenges),
+            content: Text(AppLocalizations.of(context).navigateToChallenges),
             duration: const Duration(seconds: 2),
           ),
         );

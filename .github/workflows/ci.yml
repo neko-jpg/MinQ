@@ -27,6 +27,12 @@ jobs:
       - name: Analyze project source
         run: flutter analyze
       
+      - name: Check ARB files for mojibake
+        run: bash scripts/check_arb_mojibake.sh
+      
+      - name: Generate localizations
+        run: flutter gen-l10n
+      
       - name: Check for unused files
         run: dart run dart_code_metrics:metrics check-unused-files lib
         continue-on-error: true

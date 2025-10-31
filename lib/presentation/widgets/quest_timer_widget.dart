@@ -152,7 +152,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                 // 開始ボタン
                 _TimerButton(
                   icon: Icons.play_arrow,
-                  label: AppLocalizations.of(context)!.start,
+                  label: AppLocalizations.of(context).start,
                   onPressed: _startTimer,
                   isPrimary: true,
                 ),
@@ -160,7 +160,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                 // 再開ボタン
                 _TimerButton(
                   icon: Icons.play_arrow,
-                  label: AppLocalizations.of(context)!.resume,
+                  label: AppLocalizations.of(context).resume,
                   onPressed: _resumeTimer,
                   isPrimary: true,
                 ),
@@ -168,21 +168,21 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                 // リセットボタン
                 _TimerButton(
                   icon: Icons.refresh,
-                  label: AppLocalizations.of(context)!.reset,
+                  label: AppLocalizations.of(context).reset,
                   onPressed: _resetTimer,
                 ),
               ] else ...[
                 // 一時停止ボタン
                 _TimerButton(
                   icon: Icons.pause,
-                  label: AppLocalizations.of(context)!.pause,
+                  label: AppLocalizations.of(context).pause,
                   onPressed: _pauseTimer,
                 ),
                 SizedBox(width: tokens.spacing.md),
                 // 完了ボタン
                 _TimerButton(
                   icon: Icons.check,
-                  label: AppLocalizations.of(context)!.complete,
+                  label: AppLocalizations.of(context).complete,
                   onPressed: _completeTimer,
                   isPrimary: true,
                 ),
@@ -191,7 +191,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
           ),
           if (widget.onCancel != null) ...[
             SizedBox(height: tokens.spacing.md),
-            TextButton(onPressed: _cancelTimer, child: Text(AppLocalizations.of(context)!.cancel)),
+            TextButton(onPressed: _cancelTimer, child: Text(AppLocalizations.of(context).cancel)),
           ],
         ],
       ),
@@ -205,7 +205,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
   }
 
   String _getStatusText(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (_remainingSeconds == 0) {
       return l10n.completed;
     } else if (_isPaused) {
@@ -292,7 +292,7 @@ class QuestTimerScreen extends StatelessWidget {
             onComplete: () {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.timerCompleted)));
+              ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).timerCompleted)));
               Navigator.of(context).pop(true);
             },
             onCancel: () {
@@ -357,7 +357,7 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
               ),
               SizedBox(width: tokens.spacing.sm),
               Text(
-                _isWorkSession ? AppLocalizations.of(context)!.workSession : AppLocalizations.of(context)!.breakTime,
+                _isWorkSession ? AppLocalizations.of(context).workSession : AppLocalizations.of(context).breakTime,
                 style: tokens.typography.body.copyWith(
                   color: tokens.textPrimary,
                   fontWeight: FontWeight.bold,

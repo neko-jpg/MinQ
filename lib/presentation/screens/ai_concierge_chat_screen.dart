@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/controllers/ai_concierge_chat_controller.dart';
 import 'package:minq/presentation/theme/minq_tokens.dart';
+import 'package:minq/presentation/widgets/enhanced_ai_coach_overlay.dart';
 
 enum _ConciergeMenuOption { insights, clearHistory, diagnostics, toggleAI }
 
@@ -258,65 +259,14 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
   }
 
   Widget _buildMessageBubble(AiConciergeMessage message) {
-    final bool isUser = message.isUser;
-    final alignment =
-        isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    final bubbleColor =
-        isUser ? MinqTokens.brandPrimary : MinqTokens.surface;
-    final textColor = isUser ? Colors.white : MinqTokens.textPrimary;
-    final borderRadius = isUser
-        ? BorderRadius.only(
-            topLeft: Radius.circular(MinqTokens.spacing(4)),
-            topRight: Radius.circular(MinqTokens.spacing(4)),
-            bottomLeft: Radius.circular(MinqTokens.spacing(4)),
-            bottomRight: Radius.circular(MinqTokens.spacing(1)),
-          )
-        : BorderRadius.only(
-            topLeft: Radius.circular(MinqTokens.spacing(4)),
-            topRight: Radius.circular(MinqTokens.spacing(4)),
-            bottomLeft: Radius.circular(MinqTokens.spacing(1)),
-            bottomRight: Radius.circular(MinqTokens.spacing(4)),
-          );
-    final icon = isUser ? null : Icons.psychology;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment:
-          isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: <Widget>[
-        if (!isUser)
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: MinqTokens.brandPrimary.withAlpha(30),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: MinqTokens.brandPrimary),
-          )
-        else
-          const SizedBox(width: 40),
-        SizedBox(width: MinqTokens.spacing(1)),
-        Flexible(
-          child: Column(
-            crossAxisAlignment: alignment,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: MinqTokens.spacing(3),
-                  vertical: MinqTokens.spacing(2),
-                ),
-                decoration: BoxDecoration(
-                  color: bubbleColor,
-                  borderRadius: borderRadius,
-                ),
-                child: Text(
-                  message.text,
-                  style: MinqTokens.bodyMedium.copyWith(
-                    color: textColor,
-                    height: 1.5,
-                  ),
-                ),
+    return AICoachMessageBubble(
+      message: message.text,
+      isUser: message.isUser,
+      quickActions: message.quickActions,
+      suggestions: message.suggestions,
+      isOffline: message.isOffline,
+      timestamp: message.timestamp,
+    );
               ),
               SizedBox(height: MinqTokens.spacing(1)),
               Text(
@@ -328,7 +278,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
           ),
         ),
       ],
-    );
+    )
   }
 
   Widget _buildTypingIndicator() {

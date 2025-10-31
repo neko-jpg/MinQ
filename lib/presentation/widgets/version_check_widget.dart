@@ -52,14 +52,14 @@ class _VersionCheckWidgetState extends ConsumerState<VersionCheckWidget> {
           barrierDismissible: true,
           builder:
               (context) => AlertDialog(
-                title: Text(AppLocalizations.of(context)!.newVersionAvailable),
+                title: Text(AppLocalizations.of(context).newVersionAvailable),
                 content: Text(
-                  AppLocalizations.of(context)!.newVersionMessage(result.recommendedVersion),
+                  AppLocalizations.of(context).newVersionMessage(result.recommendedVersion),
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(AppLocalizations.of(context)!.later),
+                    child: Text(AppLocalizations.of(context).later),
                   ),
                   FilledButton(
                     onPressed: () {
@@ -74,7 +74,7 @@ class _VersionCheckWidgetState extends ConsumerState<VersionCheckWidget> {
                         ),
                       );
                     },
-                    child: Text(AppLocalizations.of(context)!.viewDetails),
+                    child: Text(AppLocalizations.of(context).viewDetails),
                   ),
                 ],
               ),

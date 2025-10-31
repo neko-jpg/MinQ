@@ -705,8 +705,8 @@ class _LiveActivitySettingsScreenState
             // プライバシー設定
             _buildSettingsSection('プライバシー設定', [
               SwitchListTile(
-                title: Text(AppLocalizations.of(context)!.showActivity),
-                subtitle: Text(AppLocalizations.of(context)!.showActivitySubtitle),
+                title: Text(AppLocalizations.of(context).showActivity),
+                subtitle: Text(AppLocalizations.of(context).showActivitySubtitle),
                 value: _settings.showActivity,
                 onChanged: (value) {
                   setState(() {
@@ -715,8 +715,8 @@ class _LiveActivitySettingsScreenState
                 },
               ),
               SwitchListTile(
-                title: Text(AppLocalizations.of(context)!.allowInteraction),
-                subtitle: Text(AppLocalizations.of(context)!.allowInteractionSubtitle),
+                title: Text(AppLocalizations.of(context).allowInteraction),
+                subtitle: Text(AppLocalizations.of(context).allowInteractionSubtitle),
                 value: _settings.allowInteraction,
                 onChanged: (value) {
                   setState(() {
@@ -731,8 +731,8 @@ class _LiveActivitySettingsScreenState
             // 通知設定
             _buildSettingsSection('通知設定', [
               SwitchListTile(
-                title: Text(AppLocalizations.of(context)!.hapticFeedback),
-                subtitle: Text(AppLocalizations.of(context)!.hapticFeedbackSubtitle),
+                title: Text(AppLocalizations.of(context).hapticFeedback),
+                subtitle: Text(AppLocalizations.of(context).hapticFeedbackSubtitle),
                 value: _settings.enableHaptics,
                 onChanged: (value) {
                   setState(() {
@@ -741,8 +741,8 @@ class _LiveActivitySettingsScreenState
                 },
               ),
               SwitchListTile(
-                title: Text(AppLocalizations.of(context)!.celebrationEffects),
-                subtitle: Text(AppLocalizations.of(context)!.celebrationEffectsSubtitle),
+                title: Text(AppLocalizations.of(context).celebrationEffects),
+                subtitle: Text(AppLocalizations.of(context).celebrationEffectsSubtitle),
                 value: _settings.enableCelebration,
                 onChanged: (value) {
                   setState(() {

@@ -128,7 +128,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: _previousQuestion,
-                    child: Text(AppLocalizations.of(context)!.back),
+                    child: Text(AppLocalizations.of(context).back),
                   ),
                 ),
               if (_currentQuestionIndex > 0)
@@ -137,8 +137,8 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                 child: ElevatedButton(
                   onPressed: _canProceed ? _nextQuestion : null,
                   child: Text(_isLastQuestion
-                      ? AppLocalizations.of(context)!.submit
-                      : AppLocalizations.of(context)!.next),
+                      ? AppLocalizations.of(context).submit
+                      : AppLocalizations.of(context).next),
                 ),
               ),
             ],
@@ -161,7 +161,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         ),
         if (question.isRequired)
           Text(
-            AppLocalizations.of(context)!.required,
+            AppLocalizations.of(context).required,
             style: MinqTokens.bodySmall.copyWith(color: const Color(0xFFEF4444)),
           ),
         SizedBox(height: MinqTokens.spacing(4)),
@@ -283,7 +283,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
   Widget _buildTextInput(SurveyQuestion question) {
     return TextField(
       decoration: InputDecoration(
-        hintText: AppLocalizations.of(context)!.pleaseEnterAnswer,
+        hintText: AppLocalizations.of(context).pleaseEnterAnswer,
         border: OutlineInputBorder(
           borderRadius: MinqTokens.cornerMedium(),
         ),
@@ -302,11 +302,11 @@ class _SurveyWidgetState extends State<SurveyWidget> {
       children: [
         Expanded(
             child:
-                _buildYesNoButton(AppLocalizations.of(context)!.yes, true)),
+                _buildYesNoButton(AppLocalizations.of(context).yes, true)),
         SizedBox(width: MinqTokens.spacing(4)),
         Expanded(
             child:
-                _buildYesNoButton(AppLocalizations.of(context)!.no, false)),
+                _buildYesNoButton(AppLocalizations.of(context).no, false)),
       ],
     );
   }
@@ -399,35 +399,35 @@ class SurveyResponse {
 class SampleSurveys {
   static Survey userSatisfaction(BuildContext context) => Survey(
         id: 'user_satisfaction_2025',
-        title: AppLocalizations.of(context)!.userSatisfactionSurvey,
-        description: AppLocalizations.of(context)!.userSatisfactionDescription,
+        title: AppLocalizations.of(context).userSatisfactionSurvey,
+        description: AppLocalizations.of(context).userSatisfactionDescription,
         questions: [
           SurveyQuestion(
             id: 'q1',
-            text: AppLocalizations.of(context)!.usabilityRating,
+            text: AppLocalizations.of(context).usabilityRating,
             type: SurveyQuestionType.rating,
             maxRating: 5,
           ),
           SurveyQuestion(
             id: 'q2',
-            text: AppLocalizations.of(context)!.mostLikedFeature,
+            text: AppLocalizations.of(context).mostLikedFeature,
             type: SurveyQuestionType.multipleChoice,
             options: [
-              AppLocalizations.of(context)!.questManagement,
-              AppLocalizations.of(context)!.pairFeature,
-              AppLocalizations.of(context)!.statisticsGraphs,
-              AppLocalizations.of(context)!.notificationFeature,
-              AppLocalizations.of(context)!.other
+              AppLocalizations.of(context).questManagement,
+              AppLocalizations.of(context).pairFeature,
+              AppLocalizations.of(context).statisticsGraphs,
+              AppLocalizations.of(context).notificationFeature,
+              AppLocalizations.of(context).other
             ],
           ),
           SurveyQuestion(
             id: 'q3',
-            text: AppLocalizations.of(context)!.wouldRecommendMinq,
+            text: AppLocalizations.of(context).wouldRecommendMinq,
             type: SurveyQuestionType.yesNo,
           ),
           SurveyQuestion(
             id: 'q4',
-            text: AppLocalizations.of(context)!.improvementSuggestions,
+            text: AppLocalizations.of(context).improvementSuggestions,
             type: SurveyQuestionType.text,
             isRequired: false,
           ),

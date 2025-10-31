@@ -148,7 +148,7 @@ class FailurePredictionCard extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () => _handlePreventAction(context),
                   icon: const Icon(Icons.shield, size: 16),
-                  label: Text(AppLocalizations.of(context)!.executePrevention),
+                  label: Text(AppLocalizations.of(context).executePrevention),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.blue,
                     side: const BorderSide(color: Colors.blue),
@@ -160,7 +160,7 @@ class FailurePredictionCard extends StatelessWidget {
                 child: FilledButton.icon(
                   onPressed: () => _handleStartHabit(context),
                   icon: const Icon(Icons.play_arrow, size: 16),
-                  label: Text(AppLocalizations.of(context)!.executeNow),
+                  label: Text(AppLocalizations.of(context).executeNow),
                   style: FilledButton.styleFrom(
                     backgroundColor: Colors.green,
                   ),
@@ -322,7 +322,7 @@ class FailurePredictionCard extends StatelessWidget {
   void _handlePreventAction(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(AppLocalizations.of(context)!.showPreventionPlan),
+        content: Text(AppLocalizations.of(context).showPreventionPlan),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -331,7 +331,7 @@ class FailurePredictionCard extends StatelessWidget {
   void _handleStartHabit(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(AppLocalizations.of(context)!.navigateToHabitExecution),
+        content: Text(AppLocalizations.of(context).navigateToHabitExecution),
         duration: const Duration(seconds: 2),
       ),
     );

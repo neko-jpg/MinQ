@@ -1,5 +1,5 @@
 name: minq
-description: "MinQ - 3繧ｿ繝・・縺ｧ邯壹￥蛹ｿ蜷阪・繧｢鄙呈・蛹悶い繝励Μ"
+description: "MinQ - 3分で続く習慣化アプリ"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -80,6 +80,7 @@ dependencies:
   sentry_flutter: any
   quick_actions: any
   fl_chart: any
+  flutter_staggered_grid_view: any
   workmanager: any
   package_info_plus: any
   url_launcher: any
@@ -92,6 +93,8 @@ dependencies:
   speech_to_text: any
   # flutter_gemma: ^0.11.6 # 問題があるため無効化
   tflite_flutter: ^0.11.0
+  web_socket_channel: any
+  socket_io_client: any
   flutter_tts: ^4.2.0
   health: any
   # TODO: Fix integrations package
@@ -116,6 +119,8 @@ dependencies:
   lottie: any
   geolocator: any
   meta: any
+  local_auth: any
+  qr_flutter: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -130,6 +135,7 @@ dev_dependencies:
 
   flutter_lints: any
   mocktail: ^1.0.4
+  mockito: any
   very_good_analysis: ^6.0.0
   import_lint: ^1.0.1
 

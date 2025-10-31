@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:minq/presentation/theme/color_tokens.dart';
 import 'package:minq/presentation/theme/design_tokens.dart';
 
@@ -229,6 +228,13 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   TextStyle get labelMedium =>
       typography.body.copyWith(fontSize: 12, fontWeight: FontWeight.w500);
 
+  // Additional color getters for backward compatibility
+  Color get success => accentSuccess;
+  Color get error => accentError;
+  Color get warning => accentWarning;
+  Color get info => accentSecondary;
+  Color get brandSecondary => accentSecondary;
+
   BorderRadius cornerSmall() => BorderRadius.circular(radius.sm);
   BorderRadius cornerMedium() => BorderRadius.circular(radius.md);
   BorderRadius cornerLarge() => BorderRadius.circular(radius.lg);
@@ -342,7 +348,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   static MinqTheme light() {
     const base = 4.0;
     const palette = ColorTokens.light;
-    final muted = Color.lerp(palette.textSecondary, palette.divider, 0.35)!;
+    final muted = palette.textMuted;
     final pending = Color.lerp(palette.textSecondary, palette.divider, 0.45)!;
     final joyAccent = Color.lerp(palette.primary, palette.secondary, 0.35)!;
     final serenity = Color.lerp(palette.secondary, palette.primary, 0.15)!;
@@ -382,8 +388,8 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       accentError: palette.error,
       accentWarning: palette.warning,
       // Accessibility colors (WCAG AA compliant)
-      highContrastText: palette.highContrastOnPrimary,
-      highContrastBackground: palette.highContrastPrimary,
+      highContrastText: palette.highContrastText,
+      highContrastBackground: palette.highContrastBackground,
       highContrastPrimary: palette.highContrastPrimary,
       radius: const MinqRadius(
         sm: 8,
@@ -483,7 +489,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   static MinqTheme dark() {
     const base = 4.0;
     const palette = ColorTokens.dark;
-    final muted = Color.lerp(palette.textSecondary, palette.divider, 0.3)!;
+    final muted = palette.textMuted;
     final pending = Color.lerp(palette.textSecondary, palette.divider, 0.45)!;
     final joyAccent = Color.lerp(palette.primary, palette.secondary, 0.25)!;
     final serenity = Color.lerp(palette.secondary, palette.surface, 0.2)!;
@@ -525,8 +531,8 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       accentError: palette.error,
       accentWarning: palette.warning,
       // Accessibility colors (WCAG AA compliant for dark theme)
-      highContrastText: palette.highContrastOnPrimary,
-      highContrastBackground: palette.highContrastPrimary,
+      highContrastText: palette.highContrastText,
+      highContrastBackground: palette.highContrastBackground,
       highContrastPrimary: palette.highContrastPrimary,
       radius: const MinqRadius(
         sm: 8,

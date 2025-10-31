@@ -85,8 +85,9 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     if (location.startsWith(AppRoutes.stats)) return 1;
     if (location.startsWith(AppRoutes.challenges)) return 2;
     if (location.startsWith(AppRoutes.profile) ||
-        location.startsWith(AppRoutes.settings))
+        location.startsWith(AppRoutes.settings)) {
       return 3;
+    }
     return 0;
   }
 
@@ -184,32 +185,8 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
       ),
     );
 
-    final guardedScaffold = WillPopScope(
-      onWillPop: () async {
-        final router = GoRouter.of(context);
-        if (router.canPop()) {
-          router.pop();
-          return false;
-        }
-
-        if (currentIndex != 0) {
-          ref.read(navigationUseCaseProvider).goHome();
-          return false;
-        }
-
-        final now = DateTime.now();
-        if (_lastBackPress == null ||
-            now.difference(_lastBackPress!) > const Duration(seconds: 2)) {
-          _lastBackPress = now;
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(const SnackBar(content: Text('もう一度押すとアプリを終了します')));
-          return false;
-        }
-        return true;
-      },
-      child: scaffold,
-    );
+    // RootBackButtonDispatcherが処理するため、WillPopScopeは不要
+    final guardedScaffold = scaffold;
 
     if (!usageLimitState.isBlocked) {
       return guardedScaffold;

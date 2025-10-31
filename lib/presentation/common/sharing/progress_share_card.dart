@@ -352,7 +352,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       // );
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.shareFailed),

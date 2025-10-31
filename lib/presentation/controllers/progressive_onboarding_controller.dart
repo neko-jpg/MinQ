@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:minq/core/onboarding/progressive_hint_service.dart';
 import 'package:minq/core/onboarding/progressive_onboarding.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/repositories/quest_log_repository.dart';
@@ -152,6 +154,100 @@ class ProgressiveOnboardingController extends StateNotifier<AsyncValue<Progressi
   /// 手動でレベルアップチェックを実行
   Future<void> checkLevelUp() async {
     await _checkForLevelUp();
+  }
+
+  /// 進捗に応じたヒントを表示
+  Future<void> showProgressHints(BuildContext context) async {
+    if (!context.mounted) return;
+
+    final uid = _ref.read(uidProvider);
+    if (uid == null) return;
+
+    try {
+      final stats = await _getUserStats(uid);
+      
+      // 初回クエスト作成ヒント
+      if (stats.questsCompleted == 0) {
+        await ProgressiveHintService.showFirstQuestHint(context);
+        return;
+      }
+
+      // 初回完了ヒント
+      if (stats.questsCompleted == 1) {
+        await ProgressiveHintService.showFirstCompletionHint(context);
+        return;
+      }
+
+      // ストリークヒント
+      if (stats.currentStreak >= 3) {
+        await ProgressiveHintService.showStreakHint(context, stats.currentStreak);
+        return;
+      }
+
+      // 週次目標達成ヒント（7日以上使用）
+      if (stats.daysUsed >= 7) {
+        await ProgressiveHintService.showWeeklyGoalHint(context);
+        return;
+      }
+
+      // 機能解放ヒント
+      final currentState = state;
+      if (currentState.hasValue) {
+        final service = currentState.value!;
+        await _checkFeatureUnlockHints(context, service, stats);
+      }
+    } catch (e) {
+      // エラーは無視（バックグラウンド処理のため）
+    }
+  }
+
+  /// 機能解放ヒントをチェック
+  Future<void> _checkFeatureUnlockHints(
+    BuildContext context,
+    ProgressiveOnboarding service,
+    UserStats stats,
+  ) async {
+    // ペア機能解放ヒント
+    if (service.isFeatureUnlocked(FeatureIds.pairFeature)) {
+      await ProgressiveHintService.showPairFeatureUnlockHint(context);
+      return;
+    }
+
+    // 高度な統計解放ヒント
+    if (service.isFeatureUnlocked(FeatureIds.advancedStats)) {
+      await ProgressiveHintService.showAdvancedStatsUnlockHint(context);
+      return;
+    }
+
+    // 実績機能解放ヒント
+    if (service.isFeatureUnlocked(FeatureIds.achievements)) {
+      await ProgressiveHintService.showAchievementsUnlockHint(context);
+      return;
+    }
+  }
+
+  /// クエスト作成時のヒント表示
+  Future<void> onQuestCreated(BuildContext context) async {
+    if (!context.mounted) return;
+    await ProgressiveHintService.showFirstQuestHint(context);
+  }
+
+  /// クエスト完了時のヒント表示
+  Future<void> onQuestCompleted(BuildContext context, int totalCompleted) async {
+    if (!context.mounted) return;
+    
+    if (totalCompleted == 1) {
+      await ProgressiveHintService.showFirstCompletionHint(context);
+    }
+  }
+
+  /// ストリーク達成時のヒント表示
+  Future<void> onStreakAchieved(BuildContext context, int streakDays) async {
+    if (!context.mounted) return;
+    
+    if (streakDays >= 3) {
+      await ProgressiveHintService.showStreakHint(context, streakDays);
+    }
   }
 
   /// 機能がアンロックされているかチェック

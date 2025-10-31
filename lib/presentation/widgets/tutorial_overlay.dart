@@ -273,15 +273,15 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // スキップボタン
-                  TextButton(onPressed: _onSkip, child: Text(AppLocalizations.of(context)!.skip)),
+                  TextButton(onPressed: _onSkip, child: Text(AppLocalizations.of(context).skip)),
 
                   // 次へボタン
                   ElevatedButton(
                     onPressed: _onNext,
                     child: Text(
                       _currentStep == widget.steps.length - 1 
-                        ? AppLocalizations.of(context)!.complete 
-                        : AppLocalizations.of(context)!.next,
+                        ? AppLocalizations.of(context).complete 
+                        : AppLocalizations.of(context).next,
                     ),
                   ),
                 ],
