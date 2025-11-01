@@ -6,7 +6,7 @@ import 'core/accessibility/accessibility_system_test.dart'
 import 'core/analytics/analytics_system_test.dart' as analytics_tests;
 import 'core/animations/animation_system_test.dart' as animation_tests;
 import 'core/challenges/offline_challenge_service_test.dart' as challenge_tests;
-import 'core/gamification/league_system_test.dart' as gamification_tests;
+import 'core/gamification/services/league_system_test.dart' as gamification_tests;
 import 'core/notifications/advanced_notification_system_test.dart'
     as notification_tests;
 import 'core/performance/performance_monitoring_service_test.dart'
@@ -86,14 +86,14 @@ void main() {
     group('🎨 Presentation Layer Tests', () {
       group('🎨 Theme System', theme_tests.main);
       group('🧩 Widget Components', widget_tests.main);
-      group('⚙️ Settings UI', settings_tests.main);
+      group('⚙︁ESettings UI', settings_tests.main);
     });
 
     group('🔗 Integration Tests', () {
       group('📱 Offline Sync Integration', offline_integration_tests.main);
       group('👤 User Journey Integration', user_journey_tests.main);
       group('🎮 Gamification Integration', gamification_integration_tests.main);
-      group('🤖 AI Coach Integration', ai_integration_tests.main);
+      group('🤁EAI Coach Integration', ai_integration_tests.main);
     });
 
     group('🌐 End-to-End Tests', () {

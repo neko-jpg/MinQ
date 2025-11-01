@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import 'xp_transaction.dart';
+import 'package:minq/domain/gamification/xp_transaction.dart';
 
 part 'xp_transaction_isar.g.dart';
 
@@ -7,7 +7,7 @@ part 'xp_transaction_isar.g.dart';
 @Collection()
 class XPTransactionIsar {
   Id id = Isar.autoIncrement;
-  
+
   late String userId;
   late int xpAmount;
   late String reason;
@@ -17,7 +17,7 @@ class XPTransactionIsar {
   double? multiplier;
   int? streakBonus;
   int? difficultyBonus;
-  
+
   // Convert from domain model
   static XPTransactionIsar fromDomain(XPTransaction transaction) {
     return XPTransactionIsar()
@@ -31,7 +31,7 @@ class XPTransactionIsar {
       ..streakBonus = transaction.streakBonus
       ..difficultyBonus = transaction.difficultyBonus;
   }
-  
+
   // Convert to domain model
   XPTransaction toDomain() {
     return XPTransaction(

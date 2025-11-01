@@ -2,8 +2,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:minq/domain/notification/notification_analytics.dart';
 import 'package:minq/domain/notification/notification_settings.dart';
-import 'package:minq/l10n/l10n.dart';
 import 'package:minq/l10n/app_localizations.dart';
+import 'package:minq/l10n/l10n.dart';
 
 /// カテゴリパフォーマンスチャート
 class CategoryPerformanceChart extends StatefulWidget {

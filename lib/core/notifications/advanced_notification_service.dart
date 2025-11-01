@@ -434,7 +434,6 @@ class AdvancedNotificationService {
           details,
           payload: payloadJson,
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-
         );
       } else {
         await _localNotifications.show(

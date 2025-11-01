@@ -1,8 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/providers.dart';
-
 /// Core providers that are commonly used across the presentation layer
 /// This file re-exports commonly used providers for convenience
+library;
 
 // Re-export commonly used providers
 export 'package:minq/data/providers.dart';

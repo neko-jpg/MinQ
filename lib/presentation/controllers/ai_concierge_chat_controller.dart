@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/ai/dynamic_prompt_engine.dart';
 
 // Placeholder controller to avoid UTF-8 issues
 class AiConciergeChatController
@@ -6,11 +7,11 @@ class AiConciergeChatController
   AiConciergeChatController() : super(const AsyncValue.data([]));
 
   String getCurrentAIMode() => 'Standard Mode';
-  
+
   Future<void> resetConversation() async {
     state = const AsyncValue.data([]);
   }
-  
+
   Future<void> sendUserMessage(String text) async {
     final currentMessages = state.value ?? [];
     final newMessage = AiConciergeMessage(
@@ -20,7 +21,7 @@ class AiConciergeChatController
     );
     state = AsyncValue.data([...currentMessages, newMessage]);
   }
-  
+
   void toggleAIMode() {
     // Toggle AI mode implementation
   }
@@ -41,20 +42,6 @@ class AiConciergeMessage {
     this.suggestions = const [],
     this.isOffline = false,
     required this.timestamp,
-  });
-}
-
-class QuickAction {
-  final String id;
-  final String title;
-  final String? description;
-  final String? icon;
-
-  const QuickAction({
-    required this.id,
-    required this.title,
-    this.description,
-    this.icon,
   });
 }
 

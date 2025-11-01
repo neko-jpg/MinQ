@@ -478,12 +478,15 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
     // For now, we'll use a default icon based on the title/description
     final title = widget.challenge.title.toLowerCase();
     if (title.contains('daily') || title.contains('毎日')) return Icons.today;
-    if (title.contains('weekly') || title.contains('週間'))
+    if (title.contains('weekly') || title.contains('週間')) {
       return Icons.date_range;
-    if (title.contains('streak') || title.contains('連続'))
+    }
+    if (title.contains('streak') || title.contains('連続')) {
       return Icons.local_fire_department;
-    if (title.contains('social') || title.contains('ソーシャル'))
+    }
+    if (title.contains('social') || title.contains('ソーシャル')) {
       return Icons.people;
+    }
     return Icons.emoji_events;
   }
 

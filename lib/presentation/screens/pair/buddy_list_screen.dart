@@ -34,18 +34,12 @@ class BuddyListScreen extends ConsumerWidget {
       ),
       body: pairAsync.when(
         data: (pair) {
-          if (pair == null) {
+          if (pair == null || pair.members.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.people_outline, size: 64, color: tokens.textMuted),
-                  const SizedBox(height: 16),
-                  const Text('まだバディがいません'),
-                ],
-              ),
+              child: Text('現在バディは設定されていません。', style: tokens.typography.body),
             );
           }
+
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: _BuddyCard(pair: pair),

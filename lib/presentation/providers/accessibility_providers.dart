@@ -127,10 +127,12 @@ final accessibilitySummaryProvider = Provider<String>((ref) {
   if (settings.largeText) features.add('Large Text');
   if (settings.boldText) features.add('Bold Text');
   if (settings.reduceMotion) features.add('Reduced Motion');
-  if (settings.textScale != 1.0)
+  if (settings.textScale != 1.0) {
     features.add('Text Scale: ${(settings.textScale * 100).round()}%');
-  if (settings.buttonScale != 1.0)
+  }
+  if (settings.buttonScale != 1.0) {
     features.add('Button Scale: ${(settings.buttonScale * 100).round()}%');
+  }
   if (settings.screenReaderOptimized) features.add('Screen Reader Optimized');
   if (settings.colorBlindnessMode != ColorBlindnessMode.none) {
     features.add('Color Blindness: ${settings.colorBlindnessMode.name}');

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minq/core/network/network_status_provider.dart';
 import 'package:minq/core/profile/avatar_service.dart';
 import 'package:minq/core/profile/profile_service.dart';
+import 'package:minq/core/sync/sync_providers.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/user/user_profile.dart';
-import 'package:minq/core/network/network_status_provider.dart';
-import 'package:minq/core/sync/sync_providers.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/common/offline_indicator.dart';
 
@@ -359,7 +359,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   Widget _buildFocusTagsSection(MinqTheme tokens) {
     final isar = ref.read(isarProvider).value;
     if (isar == null) return const SizedBox.shrink();
-    
+
     final profileService = ProfileService(
       isar: isar,
       syncQueueManager: ref.read(syncQueueManagerProvider),
@@ -551,7 +551,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
         _showErrorSnackBar('データベースが初期化されていません');
         return;
       }
-      
+
       final profileService = ProfileService(
         isar: isar,
         syncQueueManager: ref.read(syncQueueManagerProvider),

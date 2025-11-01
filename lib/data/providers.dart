@@ -74,8 +74,8 @@ import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/recommendation/daily_focus_service.dart';
 import 'package:minq/domain/recommendation/habit_ai_suggestion_service.dart';
 import 'package:minq/domain/user/user.dart' as minq_user;
-import 'package:speech_to_text/speech_to_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 // Export navigation provider
 export 'package:minq/core/navigation/navigation_use_case.dart'
@@ -239,7 +239,9 @@ final localPreferencesServiceProvider = Provider<LocalPreferencesService>(
   (_) => LocalPreferencesService(),
 );
 
-final sharedPreferencesProvider = FutureProvider<SharedPreferences>((ref) async {
+final sharedPreferencesProvider = FutureProvider<SharedPreferences>((
+  ref,
+) async {
   return SharedPreferences.getInstance();
 });
 

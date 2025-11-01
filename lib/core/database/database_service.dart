@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:minq/data/local/models/local_quest.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/domain/analytics/dashboard_config.dart';
 
 /// Core database service for managing Isar database operations
 class DatabaseService {
@@ -28,7 +29,10 @@ class DatabaseService {
   }
 
   /// Get quests in date range
-  Future<List<dynamic>> getQuestsInDateRange(DateTime start, DateTime end) async {
+  Future<List<LocalQuest>> getQuestsInDateRange(
+    DateTime start,
+    DateTime end,
+  ) async {
     return await _isar.localQuests
         .filter()
         .createdAtBetween(start, end)
@@ -36,15 +40,17 @@ class DatabaseService {
   }
 
   /// Get all completed quests
-  Future<List<dynamic>> getAllCompletedQuests() async {
+  Future<List<LocalQuest>> getAllCompletedQuests() async {
     return await _isar.localQuests
         .filter()
-        .statusEqualTo(QuestStatus.active) // Assuming completed quests are marked differently
+        .statusEqualTo(
+          QuestStatus.active,
+        ) // Assuming completed quests are marked differently
         .findAll();
   }
 
   /// Get failed quests (placeholder implementation)
-  Future<List<Quest>> getFailedQuests() async {
+  Future<List<LocalQuest>> getFailedQuests() async {
     // TODO: Implement proper failed quest logic based on your domain model.
     return [];
   }

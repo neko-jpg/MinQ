@@ -345,8 +345,9 @@ class BatteryOptimizationService {
   BatteryOptimizationLevel _getOptimizationLevel() {
     if (!_isOptimizationEnabled) return BatteryOptimizationLevel.none;
     if (_isLowPowerMode) return BatteryOptimizationLevel.aggressive;
-    if (_batteryLevel <= _lowBatteryThreshold)
+    if (_batteryLevel <= _lowBatteryThreshold) {
       return BatteryOptimizationLevel.moderate;
+    }
     return BatteryOptimizationLevel.minimal;
   }
 

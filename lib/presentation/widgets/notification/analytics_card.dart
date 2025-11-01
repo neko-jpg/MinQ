@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:minq/domain/notification/notification_settings.dart';
-import 'package:minq/l10n/l10n.dart';
 import 'package:minq/l10n/app_localizations.dart';
+import 'package:minq/l10n/l10n.dart';
 
 /// 通知分析設定カード
 class AnalyticsCard extends StatelessWidget {

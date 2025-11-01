@@ -444,10 +444,7 @@ class _MoodAnalysisTab extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.insights,
-                        color: MinqTokens.brandPrimary,
-                      ),
+                      Icon(Icons.insights, color: MinqTokens.brandPrimary),
                       SizedBox(width: MinqTokens.spacing(2)),
                       Text(
                         '習慣との相関分析',
@@ -480,10 +477,7 @@ class _MoodAnalysisTab extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.psychology,
-                        color: MinqTokens.brandPrimary,
-                      ),
+                      Icon(Icons.psychology, color: MinqTokens.brandPrimary),
                       SizedBox(width: MinqTokens.spacing(2)),
                       Text(
                         'AIインサイト',

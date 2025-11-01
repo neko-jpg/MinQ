@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:isar/isar.dart';
 import 'package:minq/core/gamification/xp_system.dart';
-import 'package:minq/core/gamification/league_system.dart';
+import 'package:minq/core/gamification/services/league_system.dart';
 import 'package:minq/data/local/models/local_quest.dart';
 import 'package:minq/main.dart' as app;
 import 'package:mocktail/mocktail.dart';

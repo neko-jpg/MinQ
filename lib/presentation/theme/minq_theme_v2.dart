@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:minq/presentation/theme/color_tokens.dart';
 import 'package:minq/presentation/theme/component_themes.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// MinQ Theme System v2.0
 ///
@@ -26,6 +27,10 @@ class MinqThemeV2 {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      extensions: <ThemeExtension<dynamic>>[
+        MinqDesignTokens.light(),
+        MinqTheme.light(),
+      ],
 
       // Color Scheme
       colorScheme: ColorScheme.light(
@@ -120,6 +125,10 @@ class MinqThemeV2 {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      extensions: <ThemeExtension<dynamic>>[
+        MinqDesignTokens.dark(),
+        MinqTheme.dark(),
+      ],
 
       // Color Scheme
       colorScheme: ColorScheme.dark(

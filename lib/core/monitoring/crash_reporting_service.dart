@@ -19,6 +19,8 @@ class CrashReportingService {
   final LocalStorageService _storage = LocalStorageService();
   final NetworkService _network = NetworkService();
 
+  static const String _crashReportsKey = '__crash_reports__';
+
   bool _isInitialized = false;
   final List<CrashReport> _pendingReports = [];
   Timer? _uploadTimer;
@@ -120,7 +122,7 @@ class CrashReportingService {
       final enrichedReport = await _enrichCrashReport(report);
 
       // Store locally
-      await _storage.storeCrashReport(enrichedReport);
+      await _saveCrashReport(enrichedReport);
 
       // Add to pending uploads
       _pendingReports.add(enrichedReport);
@@ -134,6 +136,41 @@ class CrashReportingService {
     } catch (e) {
       debugPrint('Failed to process crash report: $e');
     }
+  }
+
+  Future<void> _saveCrashReport(CrashReport report) async {
+    final reports = await _loadCrashReports();
+    reports.removeWhere((existing) => existing.id == report.id);
+    reports.add(report);
+    await _writeCrashReports(reports);
+  }
+
+  Future<void> _markCrashReportUploaded(String reportId) async {
+    final reports = await _loadCrashReports();
+    reports.removeWhere((report) => report.id == reportId);
+    _pendingReports.removeWhere((report) => report.id == reportId);
+    await _writeCrashReports(reports);
+  }
+
+  Future<List<CrashReport>> _loadCrashReports({int? limit}) async {
+    final stored = await _storage.getString(_crashReportsKey);
+    if (stored == null || stored.isEmpty) {
+      return <CrashReport>[];
+    }
+    final decoded = jsonDecode(stored) as List<dynamic>;
+    final reports = decoded
+        .whereType<Map<String, dynamic>>()
+        .map(CrashReport.fromJson)
+        .toList();
+    if (limit != null && reports.length > limit) {
+      return reports.take(limit).toList();
+    }
+    return reports;
+  }
+
+  Future<void> _writeCrashReports(List<CrashReport> reports) async {
+    final encoded = reports.map((report) => report.toJson()).toList();
+    await _storage.setString(_crashReportsKey, jsonEncode(encoded));
   }
 
   /// Enrich crash report with device and app information
@@ -257,7 +294,7 @@ class CrashReportingService {
     for (final report in reportsToUpload) {
       try {
         await _uploadCrashReport(report);
-        await _storage.markCrashReportUploaded(report.id);
+        await _markCrashReportUploaded(report.id);
       } catch (e) {
         // Re-add to pending if upload failed
         _pendingReports.add(report);
@@ -284,7 +321,7 @@ class CrashReportingService {
 
   /// Get crash statistics
   Future<CrashStatistics> getCrashStatistics() async {
-    final reports = await _storage.getCrashReports();
+    final reports = await _loadCrashReports();
 
     final now = DateTime.now();
     final last24Hours =
@@ -313,7 +350,7 @@ class CrashReportingService {
 
   /// Get recent crash reports
   Future<List<CrashReport>> getRecentCrashReports({int limit = 50}) async {
-    return await _storage.getCrashReports(limit: limit);
+    return await _loadCrashReports(limit: limit);
   }
 
   // Helper methods
@@ -438,6 +475,33 @@ class CrashReport {
       context: context ?? this.context,
       severity: severity ?? this.severity,
       userId: userId ?? this.userId,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'timestamp': timestamp.toIso8601String(),
+      'type': type.index,
+      'error': error,
+      'stackTrace': stackTrace,
+      'context': context,
+      'severity': severity.index,
+      'userId': userId,
+    };
+  }
+
+  static CrashReport fromJson(Map<String, dynamic> json) {
+    return CrashReport(
+      id: json['id'] as String,
+      timestamp: DateTime.tryParse(json['timestamp'] as String? ?? '') ??
+          DateTime.now(),
+      type: CrashType.values[json['type'] as int? ?? 0],
+      error: json['error'] as String? ?? 'unknown_error',
+      stackTrace: json['stackTrace'] as String?,
+      context: Map<String, dynamic>.from(json['context'] as Map? ?? const {}),
+      severity: CrashSeverity.values[json['severity'] as int? ?? 0],
+      userId: json['userId'] as String?,
     );
   }
 }

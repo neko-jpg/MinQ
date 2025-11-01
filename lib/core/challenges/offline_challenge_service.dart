@@ -1,15 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:minq/core/network/network_status_service.dart';
 import 'package:minq/core/sync/offline_operations_service.dart';
-import 'package:minq/core/sync/sync_queue_manager.dart' hide SyncStatus;
 import 'package:minq/data/local/models/local_quest.dart';
 import 'package:minq/data/logging/minq_logger.dart';
-import 'package:minq/domain/challenges/challenge.dart';
-import 'package:minq/domain/challenges/challenge_progress.dart';
 import 'package:uuid/uuid.dart';
 
 /// Enhanced challenge service with offline-first capabilities

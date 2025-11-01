@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:minq/core/analytics/analytics_service.dart';
 import 'package:minq/core/storage/local_storage_service.dart';
@@ -28,6 +29,9 @@ class AppMonitoringService {
   final Map<String, dynamic> _healthMetrics = {};
   final List<AppHealthEvent> _healthEvents = [];
 
+  static const String _errorLogKey = '__app_error_logs__';
+  static const String _healthSnapshotKey = '__app_health_snapshots__';
+
   /// Initialize monitoring system
   Future<void> initialize() async {
     _appStartTime = DateTime.now();
@@ -45,6 +49,29 @@ class AppMonitoringService {
     _monitorFramePerformance();
 
     debugPrint('AppMonitoringService initialized');
+  }
+
+  Future<void> _storeErrorLog(Map<String, dynamic> log) async {
+    final logs = await _loadStoredJsonList(_errorLogKey);
+    logs.add(log);
+    await _storage.setString(_errorLogKey, jsonEncode(logs));
+  }
+
+  Future<void> _storeHealthSnapshot(Map<String, dynamic> snapshot) async {
+    final snapshots = await _loadStoredJsonList(_healthSnapshotKey);
+    snapshots.add(snapshot);
+    await _storage.setString(_healthSnapshotKey, jsonEncode(snapshots));
+  }
+
+  Future<List<Map<String, dynamic>>> _loadStoredJsonList(String key) async {
+    final stored = await _storage.getString(key);
+    if (stored == null || stored.isEmpty) {
+      return <Map<String, dynamic>>[];
+    }
+    final decoded = jsonDecode(stored) as List<dynamic>;
+    return decoded
+        .whereType<Map<String, dynamic>>()
+        .toList(growable: true);
   }
 
   /// Start periodic health monitoring
@@ -183,9 +210,7 @@ class AppMonitoringService {
 
   /// Track app lifecycle events
   void _trackAppLifecycle() {
-    WidgetsBinding.instance.didChangeAppLifecycleState(
-      AppLifecycleState.resumed,
-    );
+    // Lifecycle tracking would attach a WidgetsBindingObserver in production.
   }
 
   /// Record application error with context
@@ -209,7 +234,7 @@ class AppMonitoringService {
     }
 
     // Store locally for offline analysis
-    await _storage.storeErrorLog(errorData);
+    await _storeErrorLog(errorData);
 
     // Send to analytics
     await _analytics.trackEvent('app_error', errorData);
@@ -340,9 +365,6 @@ class AppMonitoringService {
     return packageInfo.version;
   }
 
-  Future<void> _storeHealthSnapshot(Map<String, dynamic> healthData) async {
-    await _storage.storeHealthSnapshot(healthData);
-  }
 
   bool _shouldReportHealth(Map<String, dynamic> healthData) {
     // Report health data every 30 minutes or if critical issues detected

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:minq/core/gamification/league_system.dart';
+import 'package:minq/core/gamification/services/league_system.dart';
+import 'package:minq/data/local/models/local_quest.dart';
 import 'package:minq/domain/gamification/league.dart';
-import 'package:minq/presentation/theme/minq_theme_v2.dart';
+import 'package:minq/presentation/providers/league_providers.dart';
+import 'package:minq/presentation/theme/theme_extensions.dart';
 import 'package:minq/presentation/widgets/league/league_ranking_widget.dart';
-import 'package:minq/presentation/widgets/polished_ui_components.dart';
 
-/// League screen showing rankings and league information
+/// Displays the league overview, statistics, and rankings.
 class LeagueScreen extends ConsumerStatefulWidget {
   const LeagueScreen({super.key});
 
@@ -17,45 +17,33 @@ class LeagueScreen extends ConsumerStatefulWidget {
 
 class _LeagueScreenState extends ConsumerState<LeagueScreen>
     with TickerProviderStateMixin {
-  late TabController _tabController;
-  String _selectedLeague = 'bronze';
+  late final TabController _tabController;
+  late final List<MapEntry<String, LeagueConfig>> _leagues;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(
-      length: LeagueSystem.leagues.length,
-      vsync: this,
-    );
-    _tabController.addListener(_onTabChanged);
+    _leagues = LeagueSystem.leagues.entries.toList(growable: false);
+    _tabController = TabController(length: _leagues.length, vsync: this);
   }
 
   @override
   void dispose() {
-    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
   }
 
-  void _onTabChanged() {
-    if (_tabController.indexIsChanging) {
-      final leagues = LeagueSystem.leagues.keys.toList();
-      setState(() {
-        _selectedLeague = leagues[_tabController.index];
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final currentUser = ref.watch(currentUserProvider);
-    final leagueStats = ref.watch(leagueStatisticsProvider);
+    final stats = ref.watch(leagueStatisticsProvider);
+    final currentUser = ref.watch(currentLeagueUserProvider);
+    final currentUserValue = currentUser.asData?.value;
 
     return Scaffold(
       backgroundColor: context.colorTokens.background,
       appBar: AppBar(
         title: Text(
-          'リーグランキング',
+          'League Overview',
           style: context.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -69,319 +57,471 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(48),
-          child: _buildLeagueTabs(context),
+          preferredSize: const Size.fromHeight(56),
+          child: Container(
+            color: context.colorTokens.surface,
+            alignment: Alignment.centerLeft,
+            child: TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              indicatorColor: context.colorTokens.primary,
+              labelColor: context.colorTokens.primary,
+              unselectedLabelColor: context.colorTokens.textSecondary,
+              tabs: _leagues
+                  .map(
+                    (entry) => Tab(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            entry.value.icon,
+                            size: 18,
+                            color: entry.value.color,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(entry.value.name),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(growable: false),
+            ),
+          ),
         ),
       ),
       body: Column(
         children: [
-          // League statistics
-          if (leagueStats.hasValue)
-            _buildLeagueStatistics(context, leagueStats.value!),
-
-          // Current user ranking card
-          if (currentUser.hasValue)
-            _buildCurrentUserRanking(context, currentUser.value!),
-
-          // League rankings
+          stats.when(
+            data: (value) => _LeagueStatisticsCard(
+              statistics: value,
+            ),
+            loading: () => const Padding(
+              padding: EdgeInsets.all(24),
+              child: CircularProgressIndicator(),
+            ),
+            error: (error, _) => Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                'Failed to load league statistics: $error',
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colorTokens.error,
+                ),
+              ),
+            ),
+          ),
+          if (currentUserValue != null) ...[
+            const SizedBox(height: 16),
+            _CurrentUserCard(user: currentUserValue),
+          ],
+          const SizedBox(height: 16),
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children:
-                  LeagueSystem.leagues.keys.map((league) {
-                    return LeagueRankingWidget(
-                      league: league,
-                      currentUserId: currentUser.value?.userId,
-                    );
-                  }).toList(),
+              children: _leagues
+                  .map(
+                    (entry) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: LeagueRankingWidget(
+                        league: entry.key,
+                        currentUserId: currentUserValue?.uid,
+                      ),
+                    ),
+                  )
+                  .toList(growable: false),
             ),
           ),
         ],
       ),
-      floatingActionButton: _buildFloatingActionButton(context),
-    );
-  }
-
-  Widget _buildLeagueTabs(BuildContext context) {
-    return Container(
-      color: context.colorTokens.surface,
-      child: TabBar(
-        controller: _tabController,
-        isScrollable: true,
-        indicatorColor: context.colorTokens.primary,
-        labelColor: context.colorTokens.primary,
-        unselectedLabelColor: context.colorTokens.textSecondary,
-        tabs:
-            LeagueSystem.leagues.entries.map((entry) {
-              final config = entry.value;
-              return Tab(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(config.icon, size: 20, color: config.color),
-                    const SizedBox(width: 8),
-                    Text(config.name),
-                  ],
-                ),
-              );
-            }).toList(),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: const Icon(Icons.insights),
+        label: const Text('Requirements'),
+        onPressed: () => _showPromotionInfo(context),
       ),
-    );
-  }
-
-  Widget _buildLeagueStatistics(BuildContext context, LeagueStatistics stats) {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.colorTokens.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.colorTokens.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.analytics,
-                color: context.colorTokens.primary,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'リーグ統計',
-                style: context.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildStatItem(
-                context,
-                '総参加者',
-                '${stats.totalUsers}人',
-                Icons.people,
-              ),
-              _buildStatItem(
-                context,
-                '最多リーグ',
-                LeagueSystem.leagues[stats.mostPopulatedLeague]?.name ?? '-',
-                Icons.trending_up,
-              ),
-              _buildStatItem(
-                context,
-                '最終更新',
-                _formatLastUpdated(stats.lastUpdated),
-                Icons.update,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCurrentUserRanking(BuildContext context, LocalUser user) {
-    final userRanking = ref.watch(userRankingProvider(user.userId));
-
-    return userRanking.when(
-      data: (ranking) {
-        if (ranking == null) return const SizedBox.shrink();
-
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                context.colorTokens.primary.withOpacity(0.1),
-                context.colorTokens.secondary.withOpacity(0.1),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: context.colorTokens.primary),
-          ),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundImage: NetworkImage(ranking.avatarUrl),
-                backgroundColor: context.colorTokens.surfaceVariant,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'あなたの順位',
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: context.colorTokens.textSecondary,
-                      ),
-                    ),
-                    Text(
-                      '${ranking.rank}位 / ${ranking.league.toUpperCase()}',
-                      style: context.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.colorTokens.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${ranking.weeklyXP} XP',
-                    style: context.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: context.colorTokens.primary,
-                    ),
-                  ),
-                  Text(
-                    '今週',
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: context.colorTokens.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-      loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
-    );
-  }
-
-  Widget _buildStatItem(
-    BuildContext context,
-    String label,
-    String value,
-    IconData icon,
-  ) {
-    return Column(
-      children: [
-        Icon(icon, color: context.colorTokens.textSecondary, size: 20),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: context.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          label,
-          style: context.textTheme.bodySmall?.copyWith(
-            color: context.colorTokens.textSecondary,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget? _buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton.extended(
-      onPressed: () => _showPromotionInfo(context),
-      backgroundColor: context.colorTokens.primary,
-      foregroundColor: context.colorTokens.onPrimary,
-      icon: const Icon(Icons.trending_up),
-      label: const Text('昇格条件'),
     );
   }
 
   void _showLeagueInfo(BuildContext context) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildLeagueInfoSheet(context),
+      builder: (context) {
+        return _LeagueInfoSheet(leagues: _leagues);
+      },
     );
   }
 
   void _showPromotionInfo(BuildContext context) {
-    final currentLeague = LeagueSystem.leagues[_selectedLeague];
-    if (currentLeague == null) return;
-
-    showDialog(
+    final selectedLeague = _leagues[_tabController.index].value;
+    showDialog<void>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Row(
-              children: [
-                Icon(currentLeague.icon, color: currentLeague.color),
-                const SizedBox(width: 8),
-                Text('${currentLeague.name} 昇格条件'),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildPromotionRequirement(
-                  context,
-                  '週間XP',
-                  '${currentLeague.promotionThreshold} XP以上',
-                  Icons.stars,
-                ),
-                const SizedBox(height: 12),
-                _buildPromotionRequirement(
-                  context,
-                  '総XP',
-                  '${currentLeague.maxXP} XP以上',
-                  Icons.emoji_events,
-                ),
-                const SizedBox(height: 12),
-                _buildPromotionRequirement(
-                  context,
-                  '継続性',
-                  '週次目標達成',
-                  Icons.trending_up,
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('閉じる'),
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(selectedLeague.icon, color: selectedLeague.color),
+              const SizedBox(width: 8),
+              Text(selectedLeague.name),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _RequirementRow(
+                icon: Icons.stars,
+                title: 'Promotion threshold',
+                value: '${selectedLeague.promotionThreshold} XP this week',
+              ),
+              const SizedBox(height: 12),
+              _RequirementRow(
+                icon: Icons.emoji_events,
+                title: 'Season XP cap',
+                value: '${selectedLeague.maxXP} lifetime XP',
+              ),
+              const SizedBox(height: 12),
+              _RequirementRow(
+                icon: Icons.people_alt,
+                title: 'Max participants',
+                value: '${selectedLeague.maxParticipants} players',
               ),
             ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _LeagueStatisticsCard extends StatelessWidget {
+  const _LeagueStatisticsCard({required this.statistics});
+
+  final LeagueStatistics statistics;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.colorTokens;
+    final distribution = statistics.percentageDistribution;
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: tokens.border),
+        boxShadow: [
+          BoxShadow(
+            color: tokens.textPrimary.withOpacity(0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'League statistics',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Updated ${_formatRelativeTime(statistics.lastUpdated)}',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: tokens.textSecondary,
+                ),
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: LeagueSystem.leagues.entries.map((entry) {
+              final percentage = distribution[entry.key] ?? 0;
+              return _DistributionChip(
+                label: entry.value.nameEn,
+                value: '${percentage.toStringAsFixed(1)}%',
+                color: entry.value.color,
+              );
+            }).toList(growable: false),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildPromotionRequirement(
-    BuildContext context,
-    String title,
-    String requirement,
-    IconData icon,
-  ) {
+  String _formatRelativeTime(DateTime timestamp) {
+    final now = DateTime.now();
+    final difference = now.difference(timestamp);
+
+    if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} minute(s) ago';
+    }
+    if (difference.inHours < 24) {
+      return '${difference.inHours} hour(s) ago';
+    }
+    return '${difference.inDays} day(s) ago';
+  }
+}
+
+class _DistributionChip extends StatelessWidget {
+  const _DistributionChip({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.colorTokens;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: tokens.surfaceAlt,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: tokens.border),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CurrentUserCard extends ConsumerWidget {
+  const _CurrentUserCard({required this.user});
+
+  final LocalUser user;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.colorTokens;
+    final league = LeagueSystem.leagues[user.currentLeague];
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: tokens.border),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: league?.color ?? tokens.primary,
+            child: Icon(
+              league?.icon ?? Icons.workspace_premium,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  user.displayName,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Weekly XP: ${user.weeklyXP}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  'Total XP: ${user.totalXP}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: tokens.textSecondary,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          const Icon(Icons.chevron_right),
+        ],
+      ),
+    );
+  }
+}
+
+class _LeagueInfoSheet extends StatelessWidget {
+  const _LeagueInfoSheet({required this.leagues});
+
+  final List<MapEntry<String, LeagueConfig>> leagues;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: context.colorTokens.textMuted,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'League tiers',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 16),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: leagues.length,
+                itemBuilder: (context, index) {
+                  final entry = leagues[index];
+                  final config = entry.value;
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: config.gradientColors,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(config.icon, color: Colors.white),
+                            const SizedBox(width: 8),
+                            Text(
+                              config.nameEn,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'XP range: ${config.minXP} - ${config.maxXP}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Colors.white70),
+                        ),
+                        Text(
+                          'Weekly requirement: ${config.weeklyXPRequirement} XP',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Colors.white70),
+                        ),
+                        Text(
+                          'Capacity: ${config.maxParticipants} players',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Colors.white70),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RequirementRow extends StatelessWidget {
+  const _RequirementRow({
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.colorTokens;
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: context.colorTokens.primary, size: 20),
-        const SizedBox(width: 8),
+        Icon(icon, size: 20, color: tokens.primary),
+        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: context.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
               Text(
-                requirement,
-                style: context.textTheme.bodySmall?.copyWith(
-                  color: context.colorTokens.textSecondary,
-                ),
+                value,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: tokens.textSecondary,
+                    ),
               ),
             ],
           ),
@@ -389,129 +529,4 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
       ],
     );
   }
-
-  Widget _buildLeagueInfoSheet(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
-      decoration: BoxDecoration(
-        color: context.colorTokens.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Column(
-        children: [
-          // Handle
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            decoration: BoxDecoration(
-              color: context.colorTokens.textMuted,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-
-          // Title
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Icon(Icons.info_outline, color: context.colorTokens.primary),
-                const SizedBox(width: 8),
-                Text(
-                  'リーグシステムについて',
-                  style: context.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // League info list
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: LeagueSystem.leagues.length,
-              itemBuilder: (context, index) {
-                final entry = LeagueSystem.leagues.entries.elementAt(index);
-                final config = entry.value;
-
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: config.gradientColors,
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(config.icon, color: Colors.white, size: 24),
-                          const SizedBox(width: 8),
-                          Text(
-                            config.name,
-                            style: context.textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'XP範囲: ${config.minXP} - ${config.maxXP}',
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withOpacity(0.9),
-                        ),
-                      ),
-                      Text(
-                        '週間目標: ${config.weeklyXPRequirement} XP',
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withOpacity(0.9),
-                        ),
-                      ),
-                      Text(
-                        '最大参加者: ${config.maxParticipants}人',
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withOpacity(0.9),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatLastUpdated(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
-
-    if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}分前';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours}時間前';
-    } else {
-      return '${difference.inDays}日前';
-    }
-  }
 }
-
-// Provider for current user
-final currentUserProvider = FutureProvider<LocalUser?>((ref) async {
-  // This should be implemented to get the current user
-  // For now, return null as placeholder
-  return null;
-});

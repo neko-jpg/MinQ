@@ -230,7 +230,8 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   }
 
   /// Wrap widget with semantic information
-  Widget wrapWithSemantics(Widget child, {
+  Widget wrapWithSemantics(
+    Widget child, {
     String? label,
     String? hint,
     bool? button,

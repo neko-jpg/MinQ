@@ -1,3 +1,4 @@
+import 'package:isar/isar.dart';
 import 'package:minq/core/database/database_performance_monitor.dart';
 import 'package:minq/data/repositories/quest_repository.dart';
 import 'package:minq/domain/quest/quest.dart';

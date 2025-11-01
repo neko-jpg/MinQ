@@ -23,6 +23,7 @@ import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
 import 'package:minq/presentation/screens/organic_splash_screen.dart';
 import 'package:minq/presentation/theme/theme.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 import 'package:minq/presentation/widgets/version_check_widget.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,7 +48,7 @@ Future<void> main() async {
 
 Future<void> _bootstrapApplication() async {
   final binding = WidgetsFlutterBinding.ensureInitialized();
-  // TensorFlow Lite AIサービスは必要に応じて初期化される
+  // TensorFlow Lite AI驛｢・ｧ繝ｻ・ｵ驛｢譎｢・ｽ・ｼ驛｢譎∽ｾｭ邵ｺ蟶ｷ・ｸ・ｺ繝ｻ・ｯ髯滂ｽ｢郢晢ｽｻ繝ｻ・ｦ遶丞｣ｺ繝ｻ髯滂ｽ｢隲帷腸・ｧ驍ｵ・ｺ繝ｻ・ｦ髯具ｽｻ隴弱・・・刹・ｹ隰費ｽｶ繝ｻ繝ｻ・ｹ・ｧ陟暮ｯ会ｽｽ繝ｻ
   GestureBinding.instance.resamplingEnabled = true;
 
   final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
@@ -161,7 +162,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
   @override
   void initState() {
     super.initState();
-    // レベルアップイベントリスナー
+    // 驛｢譎｢・ｽ・ｬ驛｢譎冗函・取刮・ｹ・ｧ繝ｻ・｢驛｢譏ｴ繝ｻ郢晢ｽｻ驛｢・ｧ繝ｻ・､驛｢譎冗函・趣ｽｦ驛｢譎冗樟・取㏍・ｹ・ｧ繝ｻ・ｹ驛｢譎会ｽｿ・ｫ郢晢ｽｻ
     Future.microtask(() {
       _handleLevelUpEvent(ref.read(levelUpEventProvider));
       _handleNotificationNavigation(ref.read(notificationTapStreamProvider));
@@ -211,7 +212,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
   }
 
   void _showLevelUpScreen(LevelUpEvent event) {
-    // レベルアップ画面を表示
+    // 驛｢譎｢・ｽ・ｬ驛｢譎冗函・取刮・ｹ・ｧ繝ｻ・｢驛｢譏ｴ繝ｻ郢晢ｽｻ鬨ｾ蛹・ｽｽ・ｻ鬯ｮ・ｱ繝ｻ・｢驛｢・ｧ陞ｳ螟ｲ・ｽ・｡繝ｻ・ｨ鬩穂ｼ夲ｽｽ・ｺ
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final context =
           ref.read(routerProvider).routerDelegate.navigatorKey.currentContext;
@@ -224,7 +225,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
                 newLevel: event.newLevel,
                 levelInfo: event.levelInfo,
                 onContinue: () {
-                  // レベルアップイベントをクリア
+                  // 驛｢譎｢・ｽ・ｬ驛｢譎冗函・取刮・ｹ・ｧ繝ｻ・｢驛｢譏ｴ繝ｻ郢晢ｽｻ驛｢・ｧ繝ｻ・､驛｢譎冗函・趣ｽｦ驛｢譎冗樟繝ｻ蝣､・ｹ・ｧ繝ｻ・ｯ驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・｢
                   ref.read(levelUpEventProvider.notifier).state = null;
                 },
               ),
@@ -235,7 +236,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
 
   @override
   Widget build(BuildContext context) {
-    // ref.listenをbuildメソッド内で使用
+    // ref.listen驛｢・ｧ鬪ｰ蟄嬖ld驛｢譎｢・ｽ・｡驛｢・ｧ繝ｻ・ｽ驛｢譏ｴ繝ｻ郢晢ｽｩ髯ｷﾂ郢晢ｽｻ邵ｲ螳壽割繝ｻ・ｿ鬨ｾ蛹・ｽｽ・ｨ
     ref.listen<LevelUpEvent?>(
       levelUpEventProvider,
       (previous, next) => _handleLevelUpEvent(next),
@@ -255,15 +256,19 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     final router = ref.watch(routerProvider);
     final locale = ref.watch(appLocaleControllerProvider);
 
-    // クラッシュリカバリダイアログを削除し、サイレントリカバリを実装
-    // エラーが発生した場合でも有機的スプラッシュ画面を表示
+    // 驛｢・ｧ繝ｻ・ｯ驛｢譎｢・ｽ・ｩ驛｢譏ｴ繝ｻ邵ｺ蜥擾ｽｹ譎｢・ｽ・･驛｢譎｢・ｽ・ｪ驛｢・ｧ繝ｻ・ｫ驛｢譎√・・取㏍・ｹ謨鳴驛｢・ｧ繝ｻ・､驛｢・ｧ繝ｻ・｢驛｢譎｢・ｽ・ｭ驛｢・ｧ繝ｻ・ｰ驛｢・ｧ髮区ｨ抵ｽ朱ｬｮ・ｯ繝ｻ・､驍ｵ・ｺ陷会ｽｱ・つ遶丞｣ｹ・驛｢・ｧ繝ｻ・､驛｢譎｢・ｽ・ｬ驛｢譎｢・ｽ・ｳ驛｢譎冗樟・取㏍・ｹ・ｧ繝ｻ・ｫ驛｢譎√・・取㏍・ｹ・ｧ髮区ｩｸ・ｽ・ｮ雋・ｽｯ繝ｻ・｣郢晢ｽｻ
+    // 驛｢・ｧ繝ｻ・ｨ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｼ驍ｵ・ｺ隶吩ｸｻ鬨馴ｨｾ蠅難ｽｺ蛛・ｽｼ・ｰ驍ｵ・ｺ雋・ｽｷ繝ｻ・ｰ繝ｻ・ｴ髯ｷ・ｷ陋ｹ・ｻ邵ｲ蝣､・ｹ・ｧ郢ｧ蝓淞蜑ｰ・ｮ蛹・ｽｺ・ｽ陜趣ｽｪ驛｢・ｧ繝ｻ・ｹ驛｢譎丞ｹｲ・主ｸｷ・ｹ譏ｴ繝ｻ邵ｺ蜥擾ｽｹ譎｢・ｽ・･鬨ｾ蛹・ｽｽ・ｻ鬯ｮ・ｱ繝ｻ・｢驛｢・ｧ陞ｳ螟ｲ・ｽ・｡繝ｻ・ｨ鬩穂ｼ夲ｽｽ・ｺ
 
-    return switch (appStartupAsyncValue) {
+        return switch (appStartupAsyncValue) {
       AsyncLoading() => MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: buildLightTheme(),
         darkTheme: buildDarkTheme(),
         themeMode: ThemeMode.system,
+        builder: (context, child) {
+          MinqTokens.updateFromTheme(Theme.of(context));
+          return child ?? const SizedBox.shrink();
+        },
         home: const OrganicSplashScreen(),
       ),
       AsyncError(:final error) => MaterialApp(
@@ -271,6 +276,10 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         theme: buildLightTheme(),
         darkTheme: buildDarkTheme(),
         themeMode: ThemeMode.system,
+        builder: (context, child) {
+          MinqTokens.updateFromTheme(Theme.of(context));
+          return child ?? const SizedBox.shrink();
+        },
         home: Scaffold(
           body: Center(
             child: Column(
@@ -278,15 +287,14 @@ class _MinQAppState extends ConsumerState<MinQApp> {
               children: [
                 const Icon(Icons.error_outline, size: 64, color: Colors.red),
                 const SizedBox(height: 16),
-                const Text('初期化エラーが発生しました'),
+                const Text('Failed to initialise the app'),
                 const SizedBox(height: 8),
                 Text('$error', style: const TextStyle(fontSize: 12)),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {
-                    ref.invalidate(optimizedAppStartupProvider);
-                  },
-                  child: const Text('再試行'),
+                  onPressed: () =>
+                      ref.invalidate(optimizedAppStartupProvider),
+                  child: const Text('Retry'),
                 ),
               ],
             ),
@@ -301,7 +309,6 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         darkTheme: buildDarkTheme(),
         themeMode: ThemeMode.system,
         locale: locale,
-        // RootBackButtonDispatcherを統合
         backButtonDispatcher: MinqBackButtonDispatcher.instance,
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -310,19 +317,16 @@ class _MinQAppState extends ConsumerState<MinQApp> {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
-        // RTL support for Arabic and other RTL languages
         localeResolutionCallback: (deviceLocale, supportedLocales) {
-          // Check if device locale is supported
           for (final supportedLocale in supportedLocales) {
             if (supportedLocale.languageCode == deviceLocale?.languageCode) {
               return supportedLocale;
             }
           }
-          // Default to Japanese if no match found
           return const Locale('ja');
         },
-        builder: (BuildContext context, Widget? child) {
-          // RootBackButtonDispatcherにコンテキストを設定
+        builder: (context, child) {
+          MinqTokens.updateFromTheme(Theme.of(context));
           MinqBackButtonDispatcher.instance.setContext(context);
           final mediaQuery = MediaQuery.of(context);
           const double minScaleFactor = 1.0;
@@ -330,30 +334,12 @@ class _MinQAppState extends ConsumerState<MinQApp> {
 
           TextScaler effectiveTextScaler = mediaQuery.textScaler;
           if (maxScaleFactor > minScaleFactor) {
-            final double approxScale = mediaQuery.textScaler.scale(1);
+            final double approxScale = effectiveTextScaler.scale(1);
             if (!approxScale.isFinite || approxScale <= 0) {
-              assert(() {
-                debugPrint(
-                  'Falling back to minimum text scale because approxScale was $approxScale',
-                );
-                return true;
-              }());
               effectiveTextScaler = const TextScaler.linear(minScaleFactor);
             } else if (approxScale > maxScaleFactor) {
-              assert(() {
-                debugPrint(
-                  'Clamping text scale down to $maxScaleFactor (was $approxScale)',
-                );
-                return true;
-              }());
               effectiveTextScaler = const TextScaler.linear(maxScaleFactor);
             } else if (approxScale < minScaleFactor) {
-              assert(() {
-                debugPrint(
-                  'Clamping text scale up to $minScaleFactor (was $approxScale)',
-                );
-                return true;
-              }());
               effectiveTextScaler = const TextScaler.linear(minScaleFactor);
             }
           }
@@ -369,6 +355,10 @@ class _MinQAppState extends ConsumerState<MinQApp> {
         theme: buildLightTheme(),
         darkTheme: buildDarkTheme(),
         themeMode: ThemeMode.system,
+        builder: (context, child) {
+          MinqTokens.updateFromTheme(Theme.of(context));
+          return child ?? const SizedBox.shrink();
+        },
         home: const OrganicSplashScreen(),
       ),
     };

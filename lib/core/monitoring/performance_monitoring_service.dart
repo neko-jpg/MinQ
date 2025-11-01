@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:io';
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +22,10 @@ class PerformanceMonitoringService {
   final Map<String, PerformanceTrace> _activeTraces = {};
   final Queue<PerformanceMetric> _metrics = Queue<PerformanceMetric>();
   final Map<String, List<double>> _metricHistory = {};
+
+  static const String _metricsKey = '__performance_metrics__';
+  static const String _tracesKey = '__performance_traces__';
+  static const String _networkTracesKey = '__network_traces__';
 
   // Frame monitoring
   int _totalFrames = 0;
@@ -108,7 +113,7 @@ class PerformanceMonitoringService {
     }
 
     // Store metric
-    await _storage.storePerformanceMetric(metric);
+    await _storePerformanceMetric(metric);
 
     // Send to analytics if significant
     if (_isSignificantMetric(name, value)) {
@@ -118,6 +123,35 @@ class PerformanceMonitoringService {
         'attributes': attributes,
       });
     }
+  }
+
+  Future<void> _storePerformanceMetric(PerformanceMetric metric) async {
+    final metrics = await _loadJsonList(_metricsKey);
+    metrics.add(metric.toJson());
+    await _storage.setString(_metricsKey, jsonEncode(metrics));
+  }
+
+  Future<void> _storePerformanceTrace(PerformanceTrace trace) async {
+    final traces = await _loadJsonList(_tracesKey);
+    traces.add(trace.toJson());
+    await _storage.setString(_tracesKey, jsonEncode(traces));
+  }
+
+  Future<void> _storeNetworkTrace(NetworkTrace trace) async {
+    final traces = await _loadJsonList(_networkTracesKey);
+    traces.add(trace.toJson());
+    await _storage.setString(_networkTracesKey, jsonEncode(traces));
+  }
+
+  Future<List<Map<String, dynamic>>> _loadJsonList(String key) async {
+    final stored = await _storage.getString(key);
+    if (stored == null || stored.isEmpty) {
+      return <Map<String, dynamic>>[];
+    }
+    final decoded = jsonDecode(stored) as List<dynamic>;
+    return decoded
+        .whereType<Map<String, dynamic>>()
+        .toList(growable: true);
   }
 
   /// Start network request monitoring
@@ -156,7 +190,7 @@ class PerformanceMonitoringService {
 
   /// Monitor screen rendering performance
   Future<void> monitorScreenPerformance(String screenName) async {
-    final trace = startTrace('screen_render_$screenName');
+    startTrace('screen_render_$screenName');
 
     // Monitor first frame
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -198,7 +232,7 @@ class PerformanceMonitoringService {
     String operationName,
     Future<T> Function() operation,
   ) async {
-    final trace = startTrace('async_$operationName');
+    startTrace('async_$operationName');
 
     try {
       final result = await operation();
@@ -348,7 +382,7 @@ class PerformanceMonitoringService {
 
   /// Record performance trace
   Future<void> _recordTrace(PerformanceTrace trace) async {
-    await _storage.storePerformanceTrace(trace);
+    await _storePerformanceTrace(trace);
 
     // Send to analytics if trace is slow
     if (trace.duration.inMilliseconds > 1000) {
@@ -362,7 +396,7 @@ class PerformanceMonitoringService {
 
   /// Record network trace
   Future<void> _recordNetworkTrace(NetworkTrace trace) async {
-    await _storage.storeNetworkTrace(trace);
+    await _storeNetworkTrace(trace);
 
     // Track network performance
     await recordMetric(
@@ -472,6 +506,34 @@ class PerformanceTrace {
     required this.startTime,
     required this.attributes,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'start_time': startTime.toIso8601String(),
+      'end_time': endTime?.toIso8601String(),
+      'duration_ms': duration.inMilliseconds,
+      'attributes': attributes,
+    };
+  }
+
+  static PerformanceTrace fromJson(Map<String, dynamic> json) {
+    final trace = PerformanceTrace(
+      name: json['name'] as String,
+      startTime: DateTime.tryParse(json['start_time'] as String? ?? '') ??
+          DateTime.now(),
+      attributes: Map<String, dynamic>.from(
+        json['attributes'] as Map? ?? const {},
+      ),
+    );
+    final end = json['end_time'] as String?;
+    if (end != null) {
+      trace.endTime = DateTime.tryParse(end);
+    }
+    final durationMs = json['duration_ms'] as int? ?? 0;
+    trace.duration = Duration(milliseconds: durationMs);
+    return trace;
+  }
 }
 
 /// Performance metric data point
@@ -487,6 +549,27 @@ class PerformanceMetric {
     required this.timestamp,
     required this.attributes,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'value': value,
+      'timestamp': timestamp.toIso8601String(),
+      'attributes': attributes,
+    };
+  }
+
+  static PerformanceMetric fromJson(Map<String, dynamic> json) {
+    return PerformanceMetric(
+      name: json['name'] as String,
+      value: (json['value'] as num).toDouble(),
+      timestamp: DateTime.tryParse(json['timestamp'] as String? ?? '') ??
+          DateTime.now(),
+      attributes: Map<String, dynamic>.from(
+        json['attributes'] as Map? ?? const {},
+      ),
+    );
+  }
 }
 
 /// Network request trace
@@ -506,6 +589,39 @@ class NetworkTrace {
     required this.method,
     required this.startTime,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'url': url,
+      'method': method,
+      'start_time': startTime.toIso8601String(),
+      'end_time': endTime?.toIso8601String(),
+      'duration_ms': duration.inMilliseconds,
+      'status_code': statusCode,
+      'response_size': responseSize,
+      'error_message': errorMessage,
+    };
+  }
+
+  static NetworkTrace fromJson(Map<String, dynamic> json) {
+    final trace = NetworkTrace(
+      url: json['url'] as String,
+      method: json['method'] as String,
+      startTime: DateTime.tryParse(json['start_time'] as String? ?? '') ??
+          DateTime.now(),
+    );
+    final end = json['end_time'] as String?;
+    if (end != null) {
+      trace.endTime = DateTime.tryParse(end);
+    }
+    trace.duration = Duration(
+      milliseconds: json['duration_ms'] as int? ?? 0,
+    );
+    trace.statusCode = json['status_code'] as int?;
+    trace.responseSize = json['response_size'] as int?;
+    trace.errorMessage = json['error_message'] as String?;
+    return trace;
+  }
 }
 
 /// Memory usage snapshot

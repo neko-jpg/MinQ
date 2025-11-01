@@ -2,28 +2,28 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:minq/core/gamification/league_system.dart';
-import 'package:minq/core/notifications/notification_channels.dart';
+import 'package:minq/core/gamification/services/league_system.dart';
+import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/data/local/models/local_quest.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/domain/gamification/league.dart';
 
 /// Service that handles weekly league updates, promotions, and relegations
 class WeeklyLeagueUpdater {
-  final Isar _isar;
-  final LeagueSystem _leagueSystem;
-  final NotificationChannels _notificationService;
-  final Ref _ref;
+  WeeklyLeagueUpdater(
+    this._isar,
+    this._leagueSystem,
+    this._notificationService,
+  );
 
   Timer? _weeklyTimer;
   bool _isProcessing = false;
   final List<WeeklyUpdateRecord> _historyRecords = <WeeklyUpdateRecord>[];
 
-  WeeklyLeagueUpdater(
-    this._isar,
-    this._leagueSystem,
-    this._notificationService,
-    this._ref,
-  );
+  final Isar _isar;
+  final LeagueSystem _leagueSystem;
+  final NotificationService _notificationService;
 
   /// Initialize the weekly update scheduler
   void initialize() {
@@ -105,16 +105,23 @@ class WeeklyLeagueUpdater {
         final toLeague = LeagueSystem.leagues[promotion.toLeague];
 
         if (fromLeague != null && toLeague != null) {
-          await _notificationService.sendLeaguePromotionNotification(
+          await _notificationService.sendNotificationToUser(
             userId: promotion.userId,
-            fromLeague: fromLeague.name,
-            toLeague: toLeague.name,
-            xpEarned: promotion.xpEarned,
+            title: 'リーグ昇格おめでとうございます！',
+            body:
+                '${fromLeague.nameEn}から${toLeague.nameEn}へ昇格しました。XP ${promotion.xpEarned} を獲得！',
+            data: const {
+              'type': 'system',
+              'route': '/league',
+            },
           );
         }
       } catch (e) {
-        // Log error but continue with other notifications
-        print('Failed to send promotion notification: $e');
+        logger.warning(
+          'Failed to send promotion notification',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
       }
     }
   }
@@ -129,17 +136,23 @@ class WeeklyLeagueUpdater {
         final toLeague = LeagueSystem.leagues[relegation.toLeague];
 
         if (fromLeague != null && toLeague != null) {
-          await _notificationService.sendLeagueRelegationNotification(
+          await _notificationService.sendNotificationToUser(
             userId: relegation.userId,
-            fromLeague: fromLeague.name,
-            toLeague: toLeague.name,
-            weeklyXP: relegation.weeklyXP,
-            threshold: relegation.threshold,
+            title: 'リーグ順位に変動があります',
+            body:
+                '${fromLeague.nameEn}から${toLeague.nameEn}へ降格しました。今週の獲得XPは${relegation.weeklyXP}でした。',
+            data: const {
+              'type': 'system',
+              'route': '/league',
+            },
           );
         }
       } catch (e) {
-        // Log error but continue with other notifications
-        print('Failed to send relegation notification: $e');
+        logger.warning(
+          'Failed to send relegation notification',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
       }
     }
   }
@@ -166,26 +179,28 @@ class WeeklyLeagueUpdater {
       totalPromotions: update.totalPromotions,
       totalRelegations: update.totalRelegations,
       totalUsersProcessed: update.totalUsersProcessed,
-      promotionDetails: update.promotions
-          .map(
-            (p) => {
-              'userId': p.userId,
-              'fromLeague': p.fromLeague,
-              'toLeague': p.toLeague,
-              'xpEarned': p.xpEarned,
-            },
-          )
-          .toList(),
-      relegationDetails: update.relegations
-          .map(
-            (r) => {
-              'userId': r.userId,
-              'fromLeague': r.fromLeague,
-              'toLeague': r.toLeague,
-              'weeklyXP': r.weeklyXP,
-            },
-          )
-          .toList(),
+      promotionDetails:
+          update.promotions
+              .map(
+                (p) => {
+                  'userId': p.userId,
+                  'fromLeague': p.fromLeague,
+                  'toLeague': p.toLeague,
+                  'xpEarned': p.xpEarned,
+                },
+              )
+              .toList(),
+      relegationDetails:
+          update.relegations
+              .map(
+                (r) => {
+                  'userId': r.userId,
+                  'fromLeague': r.fromLeague,
+                  'toLeague': r.toLeague,
+                  'weeklyXP': r.weeklyXP,
+                },
+              )
+              .toList(),
     );
 
     _historyRecords.insert(0, record);
@@ -236,40 +251,18 @@ class WeeklyUpdateRecord {
   final List<Map<String, dynamic>> relegationDetails;
 }
 
-/// Extension for notification service to handle league notifications
-extension LeagueNotifications on NotificationChannels {
-  Future<void> sendLeaguePromotionNotification({
-    required String userId,
-    required String fromLeague,
-    required String toLeague,
-    required int xpEarned,
-  }) async {
-    // Implementation would depend on your notification system
-    // This is a placeholder for the actual notification sending logic
-    print(
-      'Sending promotion notification: $userId promoted from $fromLeague to $toLeague',
-    );
-  }
-
-  Future<void> sendLeagueRelegationNotification({
-    required String userId,
-    required String fromLeague,
-    required String toLeague,
-    required int weeklyXP,
-    required int threshold,
-  }) async {
-    // Implementation would depend on your notification system
-    // This is a placeholder for the actual notification sending logic
-    print(
-      'Sending relegation notification: $userId relegated from $fromLeague to $toLeague',
-    );
-  }
-}
-
 // Providers
 final weeklyLeagueUpdaterProvider = Provider<WeeklyLeagueUpdater>((ref) {
-  // This would need to be implemented with proper dependencies
-  throw UnimplementedError('WeeklyLeagueUpdater provider needs proper setup');
+  final notificationService = ref.watch(notificationServiceProvider);
+  final isarAsync = ref.watch(isarProvider);
+  return isarAsync.when(
+    data: (isar) {
+      final leagueSystem = ref.read(leagueSystemProvider);
+      return WeeklyLeagueUpdater(isar, leagueSystem, notificationService);
+    },
+    loading: () => throw StateError('Isar instance is not yet initialised'),
+    error: (error, _) => throw error,
+  );
 });
 
 final weeklyUpdateHistoryProvider = FutureProvider<List<WeeklyUpdateRecord>>((

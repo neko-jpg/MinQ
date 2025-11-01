@@ -197,4 +197,52 @@ class MockLocalStorageService extends _i1.Mock
         ),
         returnValue: <String>{},
       ) as Set<String>);
+
+  @override
+  _i3.Future<void> storeSessionData(
+    String? sessionId,
+    Map<String, dynamic>? data,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #storeSessionData,
+          [
+            sessionId,
+            data,
+          ],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+
+  @override
+  _i3.Future<List<Map<String, dynamic>>> getSessionData() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getSessionData,
+          [],
+        ),
+        returnValue: _i3.Future<List<Map<String, dynamic>>>.value(
+            <Map<String, dynamic>>[]),
+      ) as _i3.Future<List<Map<String, dynamic>>>);
+
+  @override
+  _i3.Future<void> storeAnalyticsData(Map<String, dynamic>? data) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #storeAnalyticsData,
+          [data],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+
+  @override
+  _i3.Future<Map<String, dynamic>?> getAnalyticsData() => (super.noSuchMethod(
+        Invocation.method(
+          #getAnalyticsData,
+          [],
+        ),
+        returnValue: _i3.Future<Map<String, dynamic>?>.value(),
+      ) as _i3.Future<Map<String, dynamic>?>);
 }

@@ -65,7 +65,7 @@ class MinqTypography {
   final TextStyle bodySmall;
   final TextStyle button;
   final TextStyle caption;
-  
+
   // Additional computed properties
   TextStyle get titleMedium => h4;
 }

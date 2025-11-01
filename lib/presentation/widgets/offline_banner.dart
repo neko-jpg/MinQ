@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/network/network_status_service.dart';
+import 'package:minq/core/network/network_status_provider.dart';
+import 'package:minq/core/sync/sync_providers.dart';
 import 'package:minq/core/sync/sync_queue_manager.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/theme/minq_tokens.dart';
 
 /// オフラインバナー
 /// ネットワーク接続がなぁE��合に表示
@@ -259,7 +259,7 @@ class SyncStatusWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final networkStatus = ref.watch(networkStatusServiceProvider);
+    final networkStatus = ref.watch(networkStatusProvider);
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
 
@@ -291,7 +291,7 @@ class SyncStatusWidget extends ConsumerWidget {
 
   Widget _buildOfflineIndicator(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     AppLocalizations l10n,
   ) {
     return Container(
@@ -320,13 +320,13 @@ class SyncStatusWidget extends ConsumerWidget {
 
   Widget _buildSyncingIndicator(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     AppLocalizations l10n,
   ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: tokens.info,
+        color: tokens.accentSecondary,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -358,7 +358,7 @@ class SyncStatusWidget extends ConsumerWidget {
 
   Widget _buildPendingIndicator(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     AppLocalizations l10n,
   ) {
     return Container(
@@ -387,13 +387,13 @@ class SyncStatusWidget extends ConsumerWidget {
 
   Widget _buildFailedIndicator(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     AppLocalizations l10n,
   ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: tokens.error,
+        color: tokens.accentError,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -416,13 +416,13 @@ class SyncStatusWidget extends ConsumerWidget {
 
   Widget _buildConflictIndicator(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     AppLocalizations l10n,
   ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: tokens.error,
+        color: tokens.accentError,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(

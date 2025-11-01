@@ -242,9 +242,7 @@ class SyncQueueManager {
       switch (job.operation) {
         case 'create':
         case 'update':
-          final data = job.data is String 
-              ? jsonDecode(job.data as String) as Map<String, dynamic>
-              : job.data as Map<String, dynamic>;
+          final data = jsonDecode(job.data) as Map<String, dynamic>;
           final result = await _cloudService.upsertQuest(data);
           return result.isSuccess
               ? SyncResult.success()
@@ -268,9 +266,7 @@ class SyncQueueManager {
       switch (job.operation) {
         case 'create':
         case 'update':
-          final data = job.data is String 
-              ? jsonDecode(job.data as String) as Map<String, dynamic>
-              : job.data as Map<String, dynamic>;
+          final data = jsonDecode(job.data) as Map<String, dynamic>;
           final result = await _cloudService.upsertUser(data);
           return result.isSuccess
               ? SyncResult.success()
@@ -289,9 +285,7 @@ class SyncQueueManager {
       switch (job.operation) {
         case 'create':
         case 'update':
-          final data = job.data is String 
-              ? jsonDecode(job.data as String) as Map<String, dynamic>
-              : job.data as Map<String, dynamic>;
+          final data = jsonDecode(job.data) as Map<String, dynamic>;
           final result = await _cloudService.upsertChallenge(data);
           return result.isSuccess
               ? SyncResult.success()
@@ -315,9 +309,7 @@ class SyncQueueManager {
       switch (job.operation) {
         case 'create':
         case 'update':
-          final data = job.data is String 
-              ? jsonDecode(job.data as String) as Map<String, dynamic>
-              : job.data as Map<String, dynamic>;
+          final data = jsonDecode(job.data) as Map<String, dynamic>;
           final result = await _cloudService.upsertQuestLog(data);
           return result.isSuccess
               ? SyncResult.success()

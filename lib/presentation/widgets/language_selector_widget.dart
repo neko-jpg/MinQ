@@ -148,11 +148,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.language,
-                  color: MinqTokens.brandPrimary,
-                  size: 24,
-                ),
+                Icon(Icons.language, color: MinqTokens.brandPrimary, size: 24),
                 SizedBox(width: MinqTokens.spacing(2)),
                 Text(
                   AppLocalizations.of(context).languageSettings ??
@@ -350,7 +346,7 @@ class LanguageSelectorBottomSheet extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         color: MinqTokens.surface,
-        borderRadius: BorderRadius.vertical(
+        borderRadius: const BorderRadius.vertical(
           top: Radius.circular(16), // Hardcoded value for lg radius
         ),
       ),

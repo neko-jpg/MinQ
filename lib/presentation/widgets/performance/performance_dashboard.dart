@@ -168,7 +168,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
                       child: _buildMetricItem(
                         'CPU Usage',
                         '${metrics.cpuUsage.toStringAsFixed(1)}%',
-                        Icons.processor,
+                        Icons.memory,
                         _getCPUColor(metrics.cpuUsage),
                       ),
                     ),

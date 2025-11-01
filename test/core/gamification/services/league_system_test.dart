@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../lib/core/gamification/league_system.dart';
+import '../../../lib/core/gamification/services/league_system.dart';
 import '../../../lib/domain/gamification/league.dart';
 import '../../../lib/data/local/models/local_quest.dart';
 

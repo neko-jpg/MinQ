@@ -46,7 +46,7 @@ class AccessibleElevatedButton extends StatelessWidget {
 
     // Wrap with proper semantics
     return accessibilityService.wrapWithSemantics(
-      child: button,
+      button,
       label: semanticLabel,
       button: true,
       focusable: true,

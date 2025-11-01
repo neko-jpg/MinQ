@@ -5,11 +5,12 @@ import 'package:minq/core/notifications/advanced_notification_service.dart';
 import 'package:minq/core/notifications/behavior_learning_service.dart';
 import 'package:minq/core/notifications/notification_analytics_service.dart';
 import 'package:minq/domain/notification/notification_analytics.dart';
-export 'package:minq/domain/notification/notification_analytics.dart';
 import 'package:minq/domain/notification/notification_settings.dart' as domain;
-export 'package:minq/domain/notification/notification_settings.dart' show NotificationCategory;
 import 'package:minq/presentation/providers/core_providers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+export 'package:minq/domain/notification/notification_analytics.dart';
+export 'package:minq/domain/notification/notification_settings.dart'
+    show NotificationCategory;
 
 /// 通知設定プロバイダー
 final notificationSettingsProvider = StateNotifierProvider<
@@ -61,10 +62,10 @@ class NotificationSettingsNotifier
 
     try {
       await _notificationService.updateCategorySettings(category, settings);
-      final updatedCategorySettings =
-          Map<domain.NotificationCategory, domain.CategoryNotificationSettings>.from(
-            currentSettings.categorySettings,
-          );
+      final updatedCategorySettings = Map<
+        domain.NotificationCategory,
+        domain.CategoryNotificationSettings
+      >.from(currentSettings.categorySettings);
       updatedCategorySettings[category] = settings;
 
       final updatedSettings = currentSettings.copyWith(
@@ -91,7 +92,9 @@ class NotificationSettingsNotifier
     }
   }
 
-  Future<void> updateSmartSettings(domain.SmartNotificationSettings settings) async {
+  Future<void> updateSmartSettings(
+    domain.SmartNotificationSettings settings,
+  ) async {
     final currentSettings = state.valueOrNull;
     if (currentSettings == null) return;
 
@@ -105,7 +108,7 @@ class NotificationSettingsNotifier
   }
 
   Future<void> updateAnalyticsSettings(
-    NotificationAnalyticsSettings settings,
+    domain.NotificationAnalyticsSettings settings,
   ) async {
     final currentSettings = state.valueOrNull;
     if (currentSettings == null) return;
@@ -143,13 +146,14 @@ final notificationServiceProvider = Provider<AdvancedNotificationService>((
   final behaviorService = ref.watch(behaviorLearningServiceProvider);
 
   return sharedPreferencesAsync.when(
-    data: (sharedPreferences) => AdvancedNotificationService(
-      localNotifications: localNotifications,
-      firebaseMessaging: firebaseMessaging,
-      prefs: sharedPreferences,
-      analyticsService: analyticsService,
-      behaviorService: behaviorService,
-    ),
+    data:
+        (sharedPreferences) => AdvancedNotificationService(
+          localNotifications: localNotifications,
+          firebaseMessaging: firebaseMessaging,
+          prefs: sharedPreferences,
+          analyticsService: analyticsService,
+          behaviorService: behaviorService,
+        ),
     loading: () => throw StateError('SharedPreferences not ready'),
     error: (error, stack) => throw error,
   );
@@ -174,11 +178,16 @@ final notificationAnalyticsServiceProvider =
       final isarAsync = ref.watch(isarProvider);
 
       return sharedPreferencesAsync.when(
-        data: (sharedPreferences) => isarAsync.when(
-          data: (isar) => NotificationAnalyticsService(prefs: sharedPreferences, isar: isar),
-          loading: () => throw StateError('Isar not ready'),
-          error: (error, stack) => throw error,
-        ),
+        data:
+            (sharedPreferences) => isarAsync.when(
+              data:
+                  (isar) => NotificationAnalyticsService(
+                    prefs: sharedPreferences,
+                    isar: isar,
+                  ),
+              loading: () => throw StateError('Isar not ready'),
+              error: (error, stack) => throw error,
+            ),
         loading: () => throw StateError('SharedPreferences not ready'),
         error: (error, stack) => throw error,
       );
@@ -191,7 +200,9 @@ final behaviorLearningServiceProvider = Provider<BehaviorLearningService>((
   final sharedPreferencesAsync = ref.watch(sharedPreferencesProvider);
 
   return sharedPreferencesAsync.when(
-    data: (sharedPreferences) => BehaviorLearningService(prefs: sharedPreferences),
+    data:
+        (sharedPreferences) =>
+            BehaviorLearningService(prefs: sharedPreferences),
     loading: () => throw StateError('SharedPreferences not ready'),
     error: (error, stack) => throw error,
   );
@@ -223,7 +234,10 @@ class NotificationMetricsParams {
 
   @override
   int get hashCode =>
-      userId.hashCode ^ category.hashCode ^ startDate.hashCode ^ endDate.hashCode;
+      userId.hashCode ^
+      category.hashCode ^
+      startDate.hashCode ^
+      endDate.hashCode;
 }
 
 /// 通知メトリクスプロバイダー
@@ -247,10 +261,7 @@ class OptimalTimingParams {
   final String userId;
   final domain.NotificationCategory category;
 
-  const OptimalTimingParams({
-    required this.userId,
-    required this.category,
-  });
+  const OptimalTimingParams({required this.userId, required this.category});
 }
 
 /// 最適タイミング分析プロバイダー
@@ -279,7 +290,7 @@ final behaviorPatternAnalysisProvider = FutureProvider.family<
 
 /// 全カテゴリメトリクスプロバイダー
 final allCategoryMetricsProvider = FutureProvider.family<
-  Map<NotificationCategory, NotificationMetrics>,
+  Map<domain.NotificationCategory, NotificationMetrics>,
   AllMetricsParams
 >((ref, params) async {
   final analyticsService = ref.watch(notificationAnalyticsServiceProvider);

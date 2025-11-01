@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/core/premium/premium_service.dart';
 import 'package:minq/core/premium/premium_themes_service.dart';
 import 'package:minq/domain/premium/premium_plan.dart';
+import 'package:minq/presentation/theme/theme_extensions.dart';
 
 class PremiumThemesScreen extends ConsumerStatefulWidget {
   const PremiumThemesScreen({super.key});

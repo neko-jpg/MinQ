@@ -106,9 +106,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
           LinearProgressIndicator(
             value: (_currentQuestionIndex + 1) / widget.survey.questions.length,
             backgroundColor: MinqTokens.background,
-            valueColor: AlwaysStoppedAnimation<Color>(
-              MinqTokens.brandPrimary,
-            ),
+            valueColor: AlwaysStoppedAnimation<Color>(MinqTokens.brandPrimary),
           ),
           SizedBox(height: MinqTokens.spacing(1)),
           Text(

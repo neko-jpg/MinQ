@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/core/premium/premium_service.dart';
 import 'package:minq/domain/premium/premium_plan.dart';
+import 'package:minq/presentation/theme/theme_extensions.dart';
 import 'package:minq/presentation/widgets/common/loading_overlay.dart';
 
 class PremiumFeaturesOverviewScreen extends ConsumerStatefulWidget {
@@ -219,7 +220,7 @@ class _PremiumFeaturesOverviewScreenState
   Widget _buildFeaturesTab(BuildContext context) {
     final features = [
       _FeatureInfo(
-        icon: Icons.infinity,
+        icon: Icons.all_inclusive,
         title: 'Unlimited Quests',
         description: 'Create as many quests as you need without limits',
         isPremium: true,
@@ -825,7 +826,7 @@ class _PremiumFeaturesOverviewScreenState
   IconData _getBenefitIcon(String iconName) {
     switch (iconName) {
       case 'infinity':
-        return Icons.infinity;
+        return Icons.all_inclusive;
       case 'robot':
         return Icons.smart_toy;
       case 'chart':

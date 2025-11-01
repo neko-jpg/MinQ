@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/network/network_status_provider.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 
 /// ネットワークステータスサービス
@@ -114,22 +115,14 @@ enum NetworkStatus {
   mobile,
 }
 
-/// Riverpod provider for network status service
-final networkStatusServiceProvider =
-    StateNotifierProvider<NetworkStatusService, NetworkStatus>((ref) {
-      final service = NetworkStatusService();
-      service.initialize();
-      return service;
-    });
-
 /// Convenience provider for checking if online
 final isOnlineProvider = Provider<bool>((ref) {
-  final status = ref.watch(networkStatusServiceProvider);
-  return status != NetworkStatus.offline;
+  final status = ref.watch(networkStatusProvider);
+  return status.status != NetworkStatus.offline;
 });
 
 /// Convenience provider for checking if offline
 final isOfflineProvider = Provider<bool>((ref) {
-  final status = ref.watch(networkStatusServiceProvider);
-  return status == NetworkStatus.offline;
+  final status = ref.watch(networkStatusProvider);
+  return status.status == NetworkStatus.offline;
 });

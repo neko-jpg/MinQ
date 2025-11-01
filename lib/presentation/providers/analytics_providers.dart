@@ -1,19 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/analytics/behavior_analysis_service.dart';
+import 'package:minq/core/analytics/services/behavior_analysis_service.dart';
 import 'package:minq/core/analytics/dashboard_service.dart';
 import 'package:minq/core/analytics/database_service.dart';
 import 'package:minq/core/analytics/insights_engine.dart';
 import 'package:minq/domain/analytics/analytics_insight.dart';
 import 'package:minq/domain/analytics/behavior_pattern.dart';
 import 'package:minq/domain/analytics/dashboard_config.dart';
-
-// Analytics Services Providers
-final behaviorAnalysisServiceProvider = Provider<BehaviorAnalysisService>((
-  ref,
-) {
-  final databaseService = ref.watch(databaseServiceProvider);
-  return BehaviorAnalysisService(databaseService);
-});
 
 final insightsEngineProvider = Provider<InsightsEngine>((ref) {
   final behaviorAnalysisService = ref.watch(behaviorAnalysisServiceProvider);
