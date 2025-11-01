@@ -77,16 +77,16 @@ class BehaviorPattern {
 
   @override
   int get hashCode => Object.hash(
-        type,
-        name,
-        description,
-        confidence,
-        frequency,
-        impact,
-        Object.hashAllUnordered(suggestions),
-        Object.hashAllUnordered(metadata.entries),
-        detectedAt,
-      );
+    type,
+    name,
+    description,
+    confidence,
+    frequency,
+    impact,
+    Object.hashAllUnordered(suggestions),
+    Object.hashAllUnordered(metadata.entries),
+    detectedAt,
+  );
 }
 
 /// 時間帯別パターン
@@ -129,12 +129,8 @@ class TimePattern {
   }
 
   @override
-  int get hashCode => Object.hash(
-        hour,
-        successRate,
-        completionCount,
-        averageDuration,
-      );
+  int get hashCode =>
+      Object.hash(hour, successRate, completionCount, averageDuration);
 }
 
 /// 曜日別パターン
@@ -182,12 +178,8 @@ class DayOfWeekPattern {
   }
 
   @override
-  int get hashCode => Object.hash(
-        dayOfWeek,
-        successRate,
-        completionCount,
-        averageQuestsPerDay,
-      );
+  int get hashCode =>
+      Object.hash(dayOfWeek, successRate, completionCount, averageQuestsPerDay);
 }
 
 /// 季節別パターン
@@ -231,20 +223,15 @@ class SeasonalPattern {
 
   @override
   int get hashCode => Object.hash(
-        season,
-        successRate,
-        completionCount,
-        Object.hashAllUnordered(popularCategories),
-      );
+    season,
+    successRate,
+    completionCount,
+    Object.hashAllUnordered(popularCategories),
+  );
 }
 
 /// 季節
-enum Season {
-  spring,
-  summer,
-  autumn,
-  winter,
-}
+enum Season { spring, summer, autumn, winter }
 
 extension SeasonExtension on Season {
   String get displayName {
@@ -259,7 +246,6 @@ extension SeasonExtension on Season {
         return '冬';
     }
   }
-
 }
 
 extension SeasonFromMonth on Season {

@@ -32,7 +32,7 @@ class ConnectionStatusWidget extends ConsumerWidget {
 
   Widget _buildStatusCard(BuildContext context, RealtimeConnectionState state) {
     final theme = Theme.of(context);
-    
+
     Color backgroundColor;
     Color textColor;
     IconData icon;
@@ -45,28 +45,28 @@ class ConnectionStatusWidget extends ConsumerWidget {
         icon = Icons.wifi;
         message = 'リアルタイム通信中';
         break;
-      
+
       case WebSocketStatus.connecting:
         backgroundColor = Colors.orange.shade100;
         textColor = Colors.orange.shade800;
         icon = Icons.wifi_find;
         message = '接続中...';
         break;
-      
+
       case WebSocketStatus.reconnecting:
         backgroundColor = Colors.orange.shade100;
         textColor = Colors.orange.shade800;
         icon = Icons.refresh;
         message = '再接続中...';
         break;
-      
+
       case WebSocketStatus.error:
         backgroundColor = Colors.red.shade100;
         textColor = Colors.red.shade800;
         icon = Icons.wifi_off;
         message = '接続エラー';
         break;
-      
+
       case WebSocketStatus.disconnected:
       default:
         backgroundColor = Colors.grey.shade100;
@@ -84,11 +84,7 @@ class ConnectionStatusWidget extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              color: textColor,
-              size: 16,
-            ),
+            Icon(icon, color: textColor, size: 16),
             const SizedBox(width: 8),
             Text(
               message,
@@ -137,12 +133,12 @@ class ConnectionStatusIndicator extends ConsumerWidget {
         color = Colors.orange;
         icon = Icons.refresh;
         break;
-      
+
       case WebSocketStatus.error:
         color = Colors.red;
         icon = Icons.error_outline;
         break;
-      
+
       case WebSocketStatus.disconnected:
       default:
         color = Colors.grey;
@@ -152,11 +148,7 @@ class ConnectionStatusIndicator extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.only(right: 8),
-      child: Icon(
-        icon,
-        color: color,
-        size: 20,
-      ),
+      child: Icon(icon, color: color, size: 20),
     );
   }
 }
@@ -165,10 +157,7 @@ class ConnectionStatusIndicator extends ConsumerWidget {
 class ConnectionControlButton extends ConsumerWidget {
   final String? userId;
 
-  const ConnectionControlButton({
-    super.key,
-    this.userId,
-  });
+  const ConnectionControlButton({super.key, this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -176,17 +165,14 @@ class ConnectionControlButton extends ConsumerWidget {
     final connectionNotifier = ref.read(realtimeConnectionProvider.notifier);
 
     return ElevatedButton.icon(
-      onPressed: connectionState.isConnected
-          ? () => connectionNotifier.disconnect()
-          : userId != null
+      onPressed:
+          connectionState.isConnected
+              ? () => connectionNotifier.disconnect()
+              : userId != null
               ? () => connectionNotifier.connect(userId!)
               : null,
-      icon: Icon(
-        connectionState.isConnected ? Icons.wifi_off : Icons.wifi,
-      ),
-      label: Text(
-        connectionState.isConnected ? '切断' : '接続',
-      ),
+      icon: Icon(connectionState.isConnected ? Icons.wifi_off : Icons.wifi),
+      label: Text(connectionState.isConnected ? '切断' : '接続'),
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:minq/core/animations/animation_system.dart';
 /// マイクロインタラクションシステム（要件46、47、48）
 class MicroInteractions {
   static final AnimationSystem _animationSystem = AnimationSystem.instance;
-  
+
   /// ボタンプレスエフェクト
   static Widget buttonPress({
     required Widget child,
@@ -23,7 +23,7 @@ class MicroInteractions {
       child: child,
     );
   }
-  
+
   /// ハートアニメーション（いいね機能）
   static Widget heartLike({
     required bool isLiked,
@@ -42,7 +42,7 @@ class MicroInteractions {
       duration: duration ?? const Duration(milliseconds: 300),
     );
   }
-  
+
   /// フローティングアクションボタンの拡張アニメーション
   static Widget expandingFAB({
     required List<FABAction> actions,
@@ -59,7 +59,7 @@ class MicroInteractions {
       duration: duration ?? const Duration(milliseconds: 300),
     );
   }
-  
+
   /// プルトゥリフレッシュインジケーター
   static Widget pullToRefresh({
     required Widget child,
@@ -78,7 +78,7 @@ class MicroInteractions {
       child: child,
     );
   }
-  
+
   /// スワイプアクション
   static Widget swipeAction({
     required Widget child,
@@ -93,7 +93,7 @@ class MicroInteractions {
       child: child,
     );
   }
-  
+
   /// ローディングドット
   static Widget loadingDots({
     int dotCount = 3,
@@ -108,7 +108,7 @@ class MicroInteractions {
       duration: duration ?? const Duration(milliseconds: 1200),
     );
   }
-  
+
   /// 波紋エフェクト
   static Widget ripple({
     required Widget child,
@@ -130,7 +130,7 @@ class MicroInteractions {
       ),
     );
   }
-  
+
   /// 長押しエフェクト
   static Widget longPress({
     required Widget child,
@@ -145,7 +145,7 @@ class MicroInteractions {
       child: child,
     );
   }
-  
+
   /// ドラッグアンドドロップ
   static Widget draggable({
     required Widget child,
@@ -180,7 +180,7 @@ class _PressableWidget extends StatefulWidget {
   final Duration duration;
   final Color? splashColor;
   final Color? highlightColor;
-  
+
   const _PressableWidget({
     required this.child,
     required this.onPressed,
@@ -189,7 +189,7 @@ class _PressableWidget extends StatefulWidget {
     this.splashColor,
     this.highlightColor,
   });
-  
+
   @override
   State<_PressableWidget> createState() => _PressableWidgetState();
 }
@@ -198,31 +198,25 @@ class _PressableWidgetState extends State<_PressableWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    
+
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.scaleDown,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -264,7 +258,7 @@ class _HeartLikeWidget extends StatefulWidget {
   final Color unlikedColor;
   final double size;
   final Duration duration;
-  
+
   const _HeartLikeWidget({
     required this.isLiked,
     required this.onChanged,
@@ -273,7 +267,7 @@ class _HeartLikeWidget extends StatefulWidget {
     required this.size,
     required this.duration,
   });
-  
+
   @override
   State<_HeartLikeWidget> createState() => _HeartLikeWidgetState();
 }
@@ -283,41 +277,36 @@ class _HeartLikeWidgetState extends State<_HeartLikeWidget>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotationAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
+
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.3).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+      ),
     );
-    
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.3,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
-    ));
-    
-    _rotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 0.1,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.0, 0.3, curve: Curves.easeInOut),
-    ));
-    
+
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 0.1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.3, curve: Curves.easeInOut),
+      ),
+    );
+
     if (widget.isLiked) {
       _controller.value = 1.0;
     }
   }
-  
+
   @override
   void didUpdateWidget(_HeartLikeWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     if (widget.isLiked != oldWidget.isLiked) {
       if (widget.isLiked) {
         _controller.forward();
@@ -328,13 +317,13 @@ class _HeartLikeWidgetState extends State<_HeartLikeWidget>
       }
     }
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -368,7 +357,7 @@ class FABAction {
   final VoidCallback onPressed;
   final Color? backgroundColor;
   final Color? foregroundColor;
-  
+
   const FABAction({
     required this.icon,
     required this.label,
@@ -385,7 +374,7 @@ class _ExpandingFABWidget extends StatefulWidget {
   final Color? backgroundColor;
   final Color? foregroundColor;
   final Duration duration;
-  
+
   const _ExpandingFABWidget({
     required this.actions,
     required this.mainIcon,
@@ -393,7 +382,7 @@ class _ExpandingFABWidget extends StatefulWidget {
     this.foregroundColor,
     required this.duration,
   });
-  
+
   @override
   State<_ExpandingFABWidget> createState() => _ExpandingFABWidgetState();
 }
@@ -404,50 +393,44 @@ class _ExpandingFABWidgetState extends State<_ExpandingFABWidget>
   late Animation<double> _expandAnimation;
   late Animation<double> _rotationAnimation;
   bool _isExpanded = false;
-  
+
   @override
   void initState() {
     super.initState();
-    
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    
+
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
     _expandAnimation = CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
     );
-    
+
     _rotationAnimation = Tween<double>(
       begin: 0.0,
       end: 0.75, // 3/4 rotation
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   void _toggle() {
     setState(() {
       _isExpanded = !_isExpanded;
     });
-    
+
     if (_isExpanded) {
       _controller.forward();
     } else {
       _controller.reverse();
     }
-    
+
     AnimationSystem.instance.playMicroInteractionHaptic();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -458,13 +441,16 @@ class _ExpandingFABWidgetState extends State<_ExpandingFABWidget>
         ...widget.actions.asMap().entries.map((entry) {
           final index = entry.key;
           final action = entry.value;
-          
+
           return AnimatedBuilder(
             animation: _expandAnimation,
             builder: (context, child) {
               final delay = index * 0.1;
-              final animationValue = (_expandAnimation.value - delay).clamp(0.0, 1.0);
-              
+              final animationValue = (_expandAnimation.value - delay).clamp(
+                0.0,
+                1.0,
+              );
+
               return Transform.scale(
                 scale: animationValue,
                 child: Opacity(
@@ -512,7 +498,7 @@ class _ExpandingFABWidgetState extends State<_ExpandingFABWidget>
             },
           );
         }),
-        
+
         // メインFAB
         FloatingActionButton(
           backgroundColor: widget.backgroundColor,
@@ -523,9 +509,7 @@ class _ExpandingFABWidgetState extends State<_ExpandingFABWidget>
             builder: (context, child) {
               return Transform.rotate(
                 angle: _rotationAnimation.value * 2 * 3.14159,
-                child: _isExpanded
-                    ? const Icon(Icons.close)
-                    : widget.mainIcon,
+                child: _isExpanded ? const Icon(Icons.close) : widget.mainIcon,
               );
             },
           ),
@@ -542,7 +526,7 @@ class SwipeAction {
   final Color backgroundColor;
   final Color foregroundColor;
   final VoidCallback onPressed;
-  
+
   const SwipeAction({
     required this.icon,
     required this.label,
@@ -558,14 +542,14 @@ class _SwipeActionWidget extends StatefulWidget {
   final List<SwipeAction> leftActions;
   final List<SwipeAction> rightActions;
   final double threshold;
-  
+
   const _SwipeActionWidget({
     required this.child,
     required this.leftActions,
     required this.rightActions,
     required this.threshold,
   });
-  
+
   @override
   State<_SwipeActionWidget> createState() => _SwipeActionWidgetState();
 }
@@ -575,28 +559,28 @@ class _SwipeActionWidgetState extends State<_SwipeActionWidget>
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
   double _dragExtent = 0.0;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    
+
     _slideAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: Offset.zero,
     ).animate(_controller);
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -608,7 +592,7 @@ class _SwipeActionWidgetState extends State<_SwipeActionWidget>
       onHorizontalDragEnd: (details) {
         final screenWidth = MediaQuery.of(context).size.width;
         final threshold = screenWidth * widget.threshold;
-        
+
         if (_dragExtent.abs() > threshold) {
           // アクションを実行
           if (_dragExtent > 0 && widget.leftActions.isNotEmpty) {
@@ -616,12 +600,12 @@ class _SwipeActionWidgetState extends State<_SwipeActionWidget>
           } else if (_dragExtent < 0 && widget.rightActions.isNotEmpty) {
             widget.rightActions.first.onPressed();
           }
-          
+
           AnimationSystem.instance.playSuccessHaptic();
         } else {
           AnimationSystem.instance.playMicroInteractionHaptic();
         }
-        
+
         // 元の位置に戻す
         setState(() {
           _dragExtent = 0.0;
@@ -641,14 +625,14 @@ class _LoadingDotsWidget extends StatefulWidget {
   final Color color;
   final double size;
   final Duration duration;
-  
+
   const _LoadingDotsWidget({
     required this.dotCount,
     required this.color,
     required this.size,
     required this.duration,
   });
-  
+
   @override
   State<_LoadingDotsWidget> createState() => _LoadingDotsWidgetState();
 }
@@ -656,27 +640,24 @@ class _LoadingDotsWidget extends StatefulWidget {
 class _LoadingDotsWidgetState extends State<_LoadingDotsWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  
+
   @override
   void initState() {
     super.initState();
-    
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    
+
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
     if (AnimationSystem.instance.animationsEnabled) {
       _controller.repeat();
     }
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -687,8 +668,10 @@ class _LoadingDotsWidgetState extends State<_LoadingDotsWidget>
           builder: (context, child) {
             final delay = index * 0.2;
             final animationValue = (_controller.value - delay) % 1.0;
-            final scale = 0.5 + 0.5 * (1 - (animationValue - 0.5).abs() * 2).clamp(0.0, 1.0);
-            
+            final scale =
+                0.5 +
+                0.5 * (1 - (animationValue - 0.5).abs() * 2).clamp(0.0, 1.0);
+
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 2),
               child: Transform.scale(
@@ -716,14 +699,14 @@ class _LongPressWidget extends StatefulWidget {
   final VoidCallback onLongPress;
   final Duration duration;
   final double scaleDown;
-  
+
   const _LongPressWidget({
     required this.child,
     required this.onLongPress,
     required this.duration,
     required this.scaleDown,
   });
-  
+
   @override
   State<_LongPressWidget> createState() => _LongPressWidgetState();
 }
@@ -732,31 +715,25 @@ class _LongPressWidgetState extends State<_LongPressWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    
+
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.scaleDown,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

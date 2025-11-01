@@ -52,7 +52,9 @@ class FailurePredictionWidget extends ConsumerWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-            color: Colors.red.withAlpha((255 * 0.3).round()), width: 2),
+          color: Colors.red.withAlpha((255 * 0.3).round()),
+          width: 2,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,11 +69,7 @@ class FailurePredictionWidget extends ConsumerWidget {
                   color: Colors.red.withAlpha((255 * 0.2).round()),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.warning,
-                  color: Colors.red,
-                  size: 16,
-                ),
+                child: const Icon(Icons.warning, color: Colors.red, size: 16),
               ),
 
               const SizedBox(width: 12),
@@ -160,7 +158,9 @@ class FailurePredictionWidget extends ConsumerWidget {
                     backgroundColor: Colors.red.shade600,
                     foregroundColor: Colors.white,
                   ),
-                  child: Text(AppLocalizations.of(context).improvementSuggestion),
+                  child: Text(
+                    AppLocalizations.of(context).improvementSuggestion,
+                  ),
                 ),
               ),
             ],
@@ -188,31 +188,25 @@ class FailurePredictionWidget extends ConsumerWidget {
         decoration: BoxDecoration(
           color: Colors.white.withAlpha((255 * 0.7).round()),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-              color: Colors.red.withAlpha((255 * 0.2).round())),
+          border: Border.all(color: Colors.red.withAlpha((255 * 0.2).round())),
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.trending_down,
-              color: Colors.red.shade600,
-              size: 24,
-            ),
+            Icon(Icons.trending_down, color: Colors.red.shade600, size: 24),
 
             const SizedBox(width: 8),
 
             Expanded(
               child: Text(
                 habitName,
-                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
 
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.red.shade600,
                 borderRadius: BorderRadius.circular(8),
@@ -316,12 +310,16 @@ class FailurePredictionWidget extends ConsumerWidget {
             children: [
               Text(
                 title,
-                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 4),
               Text(
                 description,
-                style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
@@ -371,10 +369,7 @@ class CompactFailurePredictionWidget extends ConsumerWidget {
             }
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [Colors.red.shade400, Colors.orange.shade500],
@@ -384,11 +379,7 @@ class CompactFailurePredictionWidget extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.warning,
-                  color: Colors.white,
-                  size: 16,
-                ),
+                const Icon(Icons.warning, color: Colors.white, size: 16),
                 const SizedBox(width: 8),
                 Text(
                   'リスク$riskCount件',

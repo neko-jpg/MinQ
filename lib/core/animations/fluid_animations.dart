@@ -5,7 +5,7 @@ import 'package:minq/core/animations/animation_system.dart';
 /// フルイドアニメーションライブラリ（要件46）
 class FluidAnimations {
   static final AnimationSystem _animationSystem = AnimationSystem.instance;
-  
+
   /// スムーズなフェードイン
   static Widget fadeIn({
     required Widget child,
@@ -16,18 +16,20 @@ class FluidAnimations {
     if (!_animationSystem.animationsEnabled) {
       return child;
     }
-    
+
     return AnimationConfiguration.staggeredList(
       position: 0,
       delay: Duration(milliseconds: (delay ?? 0) * 1000 ~/ 1),
       child: FadeInAnimation(
-        duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 600)),
+        duration: _animationSystem.getDuration(
+          duration ?? const Duration(milliseconds: 600),
+        ),
         curve: _animationSystem.getCurve(curve ?? Curves.easeOutCubic),
         child: child,
       ),
     );
   }
-  
+
   /// スムーズなスライドイン
   static Widget slideIn({
     required Widget child,
@@ -40,22 +42,32 @@ class FluidAnimations {
     if (!_animationSystem.animationsEnabled) {
       return child;
     }
-    
+
     return AnimationConfiguration.staggeredList(
       position: 0,
       delay: Duration(milliseconds: (delay ?? 0) * 1000 ~/ 1),
       child: SlideAnimation(
-        duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 600)),
+        duration: _animationSystem.getDuration(
+          duration ?? const Duration(milliseconds: 600),
+        ),
         curve: _animationSystem.getCurve(curve ?? Curves.easeOutCubic),
-        verticalOffset: direction == SlideDirection.bottom ? distance : 
-                       direction == SlideDirection.top ? -distance : 0,
-        horizontalOffset: direction == SlideDirection.right ? distance :
-                         direction == SlideDirection.left ? -distance : 0,
+        verticalOffset:
+            direction == SlideDirection.bottom
+                ? distance
+                : direction == SlideDirection.top
+                ? -distance
+                : 0,
+        horizontalOffset:
+            direction == SlideDirection.right
+                ? distance
+                : direction == SlideDirection.left
+                ? -distance
+                : 0,
         child: child,
       ),
     );
   }
-  
+
   /// エラスティックスケール
   static Widget elasticScale({
     required Widget child,
@@ -66,19 +78,21 @@ class FluidAnimations {
     if (!_animationSystem.animationsEnabled) {
       return child;
     }
-    
+
     return AnimationConfiguration.staggeredList(
       position: 0,
       delay: Duration(milliseconds: (delay ?? 0) * 1000 ~/ 1),
       child: ScaleAnimation(
-        duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 800)),
+        duration: _animationSystem.getDuration(
+          duration ?? const Duration(milliseconds: 800),
+        ),
         curve: _animationSystem.getCurve(Curves.elasticOut),
         scale: scale,
         child: child,
       ),
     );
   }
-  
+
   /// リストアイテムのスタガードアニメーション
   static Widget staggeredList({
     required Widget child,
@@ -89,23 +103,27 @@ class FluidAnimations {
     if (!_animationSystem.animationsEnabled) {
       return child;
     }
-    
+
     return AnimationConfiguration.staggeredList(
       position: index,
       delay: Duration(milliseconds: (delay ?? 100) * 1000 ~/ 1),
       child: SlideAnimation(
-        duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 600)),
+        duration: _animationSystem.getDuration(
+          duration ?? const Duration(milliseconds: 600),
+        ),
         curve: _animationSystem.getCurve(Curves.easeOutCubic),
         verticalOffset: 30.0,
         child: FadeInAnimation(
-          duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 600)),
+          duration: _animationSystem.getDuration(
+            duration ?? const Duration(milliseconds: 600),
+          ),
           curve: _animationSystem.getCurve(Curves.easeOut),
           child: child,
         ),
       ),
     );
   }
-  
+
   /// グリッドアイテムのスタガードアニメーション
   static Widget staggeredGrid({
     required Widget child,
@@ -117,23 +135,27 @@ class FluidAnimations {
     if (!_animationSystem.animationsEnabled) {
       return child;
     }
-    
+
     return AnimationConfiguration.staggeredGrid(
       position: index,
       columnCount: columnCount,
       delay: Duration(milliseconds: (delay ?? 100) * 1000 ~/ 1),
       child: ScaleAnimation(
-        duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 600)),
+        duration: _animationSystem.getDuration(
+          duration ?? const Duration(milliseconds: 600),
+        ),
         curve: _animationSystem.getCurve(Curves.easeOutBack),
         child: FadeInAnimation(
-          duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 600)),
+          duration: _animationSystem.getDuration(
+            duration ?? const Duration(milliseconds: 600),
+          ),
           curve: _animationSystem.getCurve(Curves.easeOut),
           child: child,
         ),
       ),
     );
   }
-  
+
   /// 波紋エフェクト
   static Widget rippleEffect({
     required Widget child,
@@ -155,7 +177,7 @@ class FluidAnimations {
       ),
     );
   }
-  
+
   /// フローティングアクションボタンのアニメーション
   static Widget animatedFAB({
     required Widget child,
@@ -165,11 +187,15 @@ class FluidAnimations {
   }) {
     return AnimatedScale(
       scale: isVisible ? 1.0 : 0.0,
-      duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 300)),
+      duration: _animationSystem.getDuration(
+        duration ?? const Duration(milliseconds: 300),
+      ),
       curve: _animationSystem.getCurve(Curves.easeOutBack),
       child: AnimatedOpacity(
         opacity: isVisible ? 1.0 : 0.0,
-        duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 300)),
+        duration: _animationSystem.getDuration(
+          duration ?? const Duration(milliseconds: 300),
+        ),
         child: FloatingActionButton(
           onPressed: () {
             _animationSystem.playMicroInteractionHaptic();
@@ -180,7 +206,7 @@ class FluidAnimations {
       ),
     );
   }
-  
+
   /// カードのホバーエフェクト
   static Widget hoverCard({
     required Widget child,
@@ -192,17 +218,22 @@ class FluidAnimations {
     return StatefulBuilder(
       builder: (context, setState) {
         bool isHovered = false;
-        
+
         return MouseRegion(
           onEnter: (_) => setState(() => isHovered = true),
           onExit: (_) => setState(() => isHovered = false),
           child: GestureDetector(
-            onTap: onTap != null ? () {
-              _animationSystem.playMicroInteractionHaptic();
-              onTap();
-            } : null,
+            onTap:
+                onTap != null
+                    ? () {
+                      _animationSystem.playMicroInteractionHaptic();
+                      onTap();
+                    }
+                    : null,
             child: AnimatedContainer(
-              duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 200)),
+              duration: _animationSystem.getDuration(
+                duration ?? const Duration(milliseconds: 200),
+              ),
               curve: _animationSystem.getCurve(Curves.easeOut),
               decoration: BoxDecoration(
                 boxShadow: [
@@ -221,7 +252,7 @@ class FluidAnimations {
       },
     );
   }
-  
+
   /// プログレスバーのアニメーション
   static Widget animatedProgress({
     required double progress,
@@ -238,7 +269,9 @@ class FluidAnimations {
         borderRadius: borderRadius ?? BorderRadius.circular(height / 2),
       ),
       child: AnimatedContainer(
-        duration: _animationSystem.getDuration(duration ?? const Duration(milliseconds: 500)),
+        duration: _animationSystem.getDuration(
+          duration ?? const Duration(milliseconds: 500),
+        ),
         curve: _animationSystem.getCurve(Curves.easeOutCubic),
         width: double.infinity,
         decoration: BoxDecoration(
@@ -260,36 +293,31 @@ class FluidAnimations {
 }
 
 /// スライド方向
-enum SlideDirection {
-  top,
-  bottom,
-  left,
-  right,
-}
+enum SlideDirection { top, bottom, left, right }
 
 /// カスタムページトランジション
 class FluidPageTransition extends PageRouteBuilder {
   final Widget child;
   final TransitionType transitionType;
   final Duration duration;
-  
+
   FluidPageTransition({
     required this.child,
     this.transitionType = TransitionType.slideUp,
     this.duration = const Duration(milliseconds: 300),
   }) : super(
-    pageBuilder: (context, animation, secondaryAnimation) => child,
-    transitionDuration: AnimationSystem.instance.getDuration(duration),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      return _buildTransition(
-        animation,
-        secondaryAnimation,
-        child,
-        transitionType,
-      );
-    },
-  );
-  
+         pageBuilder: (context, animation, secondaryAnimation) => child,
+         transitionDuration: AnimationSystem.instance.getDuration(duration),
+         transitionsBuilder: (context, animation, secondaryAnimation, child) {
+           return _buildTransition(
+             animation,
+             secondaryAnimation,
+             child,
+             transitionType,
+           );
+         },
+       );
+
   static Widget _buildTransition(
     Animation<double> animation,
     Animation<double> secondaryAnimation,
@@ -297,7 +325,7 @@ class FluidPageTransition extends PageRouteBuilder {
     TransitionType type,
   ) {
     final curve = AnimationSystem.instance.getCurve(Curves.easeOutCubic);
-    
+
     switch (type) {
       case TransitionType.slideUp:
         return SlideTransition(
@@ -307,7 +335,7 @@ class FluidPageTransition extends PageRouteBuilder {
           ).animate(CurvedAnimation(parent: animation, curve: curve)),
           child: child,
         );
-      
+
       case TransitionType.slideRight:
         return SlideTransition(
           position: Tween<Offset>(
@@ -316,32 +344,21 @@ class FluidPageTransition extends PageRouteBuilder {
           ).animate(CurvedAnimation(parent: animation, curve: curve)),
           child: child,
         );
-      
+
       case TransitionType.fade:
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      
+        return FadeTransition(opacity: animation, child: child);
+
       case TransitionType.scale:
         return ScaleTransition(
           scale: Tween<double>(
             begin: 0.8,
             end: 1.0,
           ).animate(CurvedAnimation(parent: animation, curve: curve)),
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+          child: FadeTransition(opacity: animation, child: child),
         );
     }
   }
 }
 
 /// トランジションタイプ
-enum TransitionType {
-  slideUp,
-  slideRight,
-  fade,
-  scale,
-}
+enum TransitionType { slideUp, slideRight, fade, scale }

@@ -36,34 +36,35 @@ class NotificationSettingsScreen extends ConsumerWidget {
       body: notificationSettings.when(
         data: (settings) => _buildSettingsContent(context, ref, settings, l10n),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Theme.of(context).colorScheme.error,
+        error:
+            (error, stack) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.errorLoadingSettings,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    error.toString(),
+                    style: Theme.of(context).textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => ref.refresh(notificationSettingsProvider),
+                    child: Text(l10n.retry),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              Text(
-                l10n.errorLoadingSettings,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                error.toString(),
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => ref.refresh(notificationSettingsProvider),
-                child: Text(l10n.retry),
-              ),
-            ],
-          ),
-        ),
+            ),
       ),
     );
   }
@@ -96,16 +97,18 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     subtitle: Text(l10n.enableNotificationsDescription),
                     value: settings.globalEnabled,
                     onChanged: (value) {
-                      ref.read(notificationSettingsProvider.notifier).updateGlobalEnabled(value);
+                      ref
+                          .read(notificationSettingsProvider.notifier)
+                          .updateGlobalEnabled(value);
                     },
                   ),
                 ],
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // カテゴリ別設定
           Text(
             l10n.categorySettings,
@@ -119,26 +122,28 @@ class NotificationSettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           ...NotificationCategory.values.map((category) {
-            final categorySettings = settings.categorySettings[category] ??
+            final categorySettings =
+                settings.categorySettings[category] ??
                 CategoryNotificationSettings(category: category);
-            
+
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: CategorySettingsCard(
                 category: category,
                 settings: categorySettings,
                 onSettingsChanged: (newSettings) {
-                  ref.read(notificationSettingsProvider.notifier)
+                  ref
+                      .read(notificationSettingsProvider.notifier)
                       .updateCategorySettings(category, newSettings);
                 },
               ),
             );
           }),
-          
+
           const SizedBox(height: 24),
-          
+
           // 時間帯設定
           Text(
             l10n.timeSettings,
@@ -152,17 +157,18 @@ class NotificationSettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           TimeSettingsCard(
             settings: settings.timeSettings,
             onSettingsChanged: (newSettings) {
-              ref.read(notificationSettingsProvider.notifier)
+              ref
+                  .read(notificationSettingsProvider.notifier)
                   .updateTimeSettings(newSettings);
             },
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // スマート通知設定
           Text(
             l10n.smartSettings,
@@ -176,17 +182,18 @@ class NotificationSettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           SmartSettingsCard(
             settings: settings.smartSettings,
             onSettingsChanged: (newSettings) {
-              ref.read(notificationSettingsProvider.notifier)
+              ref
+                  .read(notificationSettingsProvider.notifier)
                   .updateSmartSettings(newSettings);
             },
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // 分析設定
           Text(
             l10n.analyticsSettings,
@@ -200,17 +207,18 @@ class NotificationSettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           AnalyticsCard(
             settings: settings.analyticsSettings,
             onSettingsChanged: (newSettings) {
-              ref.read(notificationSettingsProvider.notifier)
+              ref
+                  .read(notificationSettingsProvider.notifier)
                   .updateAnalyticsSettings(newSettings);
             },
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // アクションボタン
           Row(
             children: [
@@ -229,50 +237,63 @@ class NotificationSettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
-          
+
           const SizedBox(height: 32),
         ],
       ),
     );
   }
 
-  void _showResetDialog(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+  void _showResetDialog(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.resetSettings),
-        content: Text(l10n.resetSettingsConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.cancel),
+      builder:
+          (context) => AlertDialog(
+            title: Text(l10n.resetSettings),
+            content: Text(l10n.resetSettingsConfirmation),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ref
+                      .read(notificationSettingsProvider.notifier)
+                      .resetToDefaults();
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(l10n.settingsReset)));
+                },
+                child: Text(l10n.reset),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              ref.read(notificationSettingsProvider.notifier).resetToDefaults();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.settingsReset)),
-              );
-            },
-            child: Text(l10n.reset),
-          ),
-        ],
-      ),
     );
   }
 
-  void _testNotification(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
-    ref.read(notificationServiceProvider).scheduleNotification(
-      id: 'test_notification',
-      title: l10n.testNotificationTitle,
-      body: l10n.testNotificationBody,
-      category: NotificationCategory.system,
-      userId: 'current_user', // 実際のユーザーIDを使用
-    );
+  void _testNotification(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) {
+    ref
+        .read(notificationServiceProvider)
+        .scheduleNotification(
+          id: 'test_notification',
+          title: l10n.testNotificationTitle,
+          body: l10n.testNotificationBody,
+          category: NotificationCategory.system,
+          userId: 'current_user', // 実際のユーザーIDを使用
+        );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.testNotificationSent)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.testNotificationSent)));
   }
 }

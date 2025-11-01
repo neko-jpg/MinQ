@@ -10,7 +10,9 @@ import 'package:minq/core/network/network_status_service.dart';
 import 'package:minq/core/notifications/advanced_notification_service.dart';
 
 class MockNetworkStatusService extends Mock implements NetworkStatusService {}
-class MockAdvancedNotificationService extends Mock implements AdvancedNotificationService {}
+
+class MockAdvancedNotificationService extends Mock
+    implements AdvancedNotificationService {}
 
 void main() {
   group('Realtime Communication System', () {
@@ -22,14 +24,18 @@ void main() {
     setUp(() {
       mockNetworkService = MockNetworkStatusService();
       mockNotificationService = MockAdvancedNotificationService();
-      
+
       // Mock network service streams
-      when(() => mockNetworkService.statusStream)
-          .thenAnswer((_) => Stream.value(NetworkStatus.online));
+      when(
+        () => mockNetworkService.statusStream,
+      ).thenAnswer((_) => Stream.value(NetworkStatus.online));
       when(() => mockNetworkService.isOnline).thenReturn(true);
 
       webSocketManager = WebSocketManager(mockNetworkService);
-      realtimeService = RealtimeService(webSocketManager, mockNotificationService);
+      realtimeService = RealtimeService(
+        webSocketManager,
+        mockNotificationService,
+      );
     });
 
     tearDown(() {
@@ -45,7 +51,7 @@ void main() {
 
       test('should create heartbeat message correctly', () {
         final heartbeat = RealtimeMessage.heartbeat();
-        
+
         expect(heartbeat.type, equals(MessageType.heartbeat));
         expect(heartbeat.senderId, equals('client'));
         expect(heartbeat.payload, isEmpty);
@@ -58,7 +64,7 @@ void main() {
           recipientId: 'user2',
           text: 'Hello!',
         );
-        
+
         expect(message.type, equals(MessageType.pairMessage));
         expect(message.senderId, equals('user1'));
         expect(message.recipientId, equals('user2'));
@@ -76,7 +82,7 @@ void main() {
           score: 85,
           tags: ['fitness', 'morning'],
         );
-        
+
         expect(message.type, equals(MessageType.pairProgressShare));
         expect(message.payload['shareId'], equals('share123'));
         expect(message.payload['title'], equals('Quest Completed'));
@@ -91,7 +97,7 @@ void main() {
           message: 'Keep going!',
           questId: 'quest123',
         );
-        
+
         expect(message.type, equals(MessageType.pairEncouragement));
         expect(message.payload['message'], equals('Keep going!'));
         expect(message.payload['questId'], equals('quest123'));
@@ -104,7 +110,7 @@ void main() {
           reason: 'Quest completed',
           questId: 'quest123',
         );
-        
+
         expect(message.type, equals(MessageType.xpGained));
         expect(message.recipientId, equals('user1'));
         expect(message.payload['xpAmount'], equals(50));
@@ -118,7 +124,7 @@ void main() {
           totalXP: 1000,
           rewards: ['badge', 'title'],
         );
-        
+
         expect(message.type, equals(MessageType.levelUp));
         expect(message.payload['newLevel'], equals(5));
         expect(message.payload['totalXP'], equals(1000));
@@ -133,7 +139,7 @@ void main() {
           newRank: 10,
           weeklyXP: 500,
         );
-        
+
         expect(message.type, equals(MessageType.rankingChange));
         expect(message.payload['league'], equals('gold'));
         expect(message.payload['oldRank'], equals(15));
@@ -148,25 +154,43 @@ void main() {
           body: 'You have a new message from your pair',
           data: {'type': 'pair_message', 'senderId': 'user2'},
         );
-        
+
         expect(message.type, equals(MessageType.pushNotification));
         expect(message.payload['title'], equals('New Message'));
-        expect(message.payload['body'], equals('You have a new message from your pair'));
+        expect(
+          message.payload['body'],
+          equals('You have a new message from your pair'),
+        );
         expect(message.payload['data']['type'], equals('pair_message'));
       });
     });
 
     group('RealtimeService', () {
       test('should initialize with correct streams', () {
-        expect(realtimeService.pairMessageStream, isA<Stream<RealtimeMessage>>());
-        expect(realtimeService.progressShareStream, isA<Stream<RealtimeMessage>>());
-        expect(realtimeService.gamificationStream, isA<Stream<RealtimeMessage>>());
-        expect(realtimeService.notificationStream, isA<Stream<RealtimeMessage>>());
+        expect(
+          realtimeService.pairMessageStream,
+          isA<Stream<RealtimeMessage>>(),
+        );
+        expect(
+          realtimeService.progressShareStream,
+          isA<Stream<RealtimeMessage>>(),
+        );
+        expect(
+          realtimeService.gamificationStream,
+          isA<Stream<RealtimeMessage>>(),
+        );
+        expect(
+          realtimeService.notificationStream,
+          isA<Stream<RealtimeMessage>>(),
+        );
       });
 
       test('should handle connection status correctly', () {
         expect(realtimeService.isConnected, isFalse);
-        expect(realtimeService.connectionStatusStream, isA<Stream<WebSocketStatus>>());
+        expect(
+          realtimeService.connectionStatusStream,
+          isA<Stream<WebSocketStatus>>(),
+        );
       });
     });
 

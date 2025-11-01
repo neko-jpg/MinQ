@@ -41,7 +41,7 @@ class SafeScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget? safeBody = body;
-    
+
     if (safeBody != null) {
       // Wrap body in SafeArea to avoid system UI conflicts
       if (avoidSystemUI) {
@@ -51,7 +51,7 @@ class SafeScaffold extends StatelessWidget {
           child: safeBody,
         );
       }
-      
+
       // Apply responsive layout if enabled
       if (enableResponsiveLayout) {
         safeBody = ResponsiveLayout.constrainedContainer(
@@ -60,10 +60,7 @@ class SafeScaffold extends StatelessWidget {
           child: safeBody,
         );
       } else if (padding != null) {
-        safeBody = Padding(
-          padding: padding!,
-          child: safeBody,
-        );
+        safeBody = Padding(padding: padding!, child: safeBody);
       }
     }
 
@@ -177,15 +174,16 @@ class SafeFlex extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> safeChildren = children;
-    
+
     if (preventOverflow) {
       // Wrap children in Flexible to prevent overflow
-      safeChildren = children.map((child) {
-        if (child is Flexible || child is Expanded) {
-          return child;
-        }
-        return Flexible(child: child);
-      }).toList();
+      safeChildren =
+          children.map((child) {
+            if (child is Flexible || child is Expanded) {
+              return child;
+            }
+            return Flexible(child: child);
+          }).toList();
     }
 
     return LayoutBuilder(
@@ -286,7 +284,10 @@ class SafeText extends StatelessWidget {
         locale: locale,
         softWrap: softWrap,
         overflow: overflow,
-        textScaler: textScaleFactor != null ? TextScaler.linear(textScaleFactor!) : null,
+        textScaler:
+            textScaleFactor != null
+                ? TextScaler.linear(textScaleFactor!)
+                : null,
         maxLines: maxLines,
         semanticsLabel: semanticsLabel,
         textWidthBasis: textWidthBasis,
@@ -370,11 +371,7 @@ class SafeContainer extends StatelessWidget {
 
 /// A widget that handles keyboard insets properly
 class KeyboardAwareWidget extends StatelessWidget {
-  const KeyboardAwareWidget({
-    super.key,
-    required this.child,
-    this.padding,
-  });
+  const KeyboardAwareWidget({super.key, required this.child, this.padding});
 
   final Widget child;
   final EdgeInsets? padding;
@@ -383,7 +380,7 @@ class KeyboardAwareWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final keyboardHeight = mediaQuery.viewInsets.bottom;
-    
+
     return Padding(
       padding: (padding ?? EdgeInsets.zero).copyWith(
         bottom: (padding?.bottom ?? 0) + keyboardHeight,
@@ -421,8 +418,10 @@ class OverflowHandler extends StatelessWidget {
           padding: padding,
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minWidth: scrollDirection == Axis.horizontal ? 0 : constraints.maxWidth,
-              minHeight: scrollDirection == Axis.vertical ? 0 : constraints.maxHeight,
+              minWidth:
+                  scrollDirection == Axis.horizontal ? 0 : constraints.maxWidth,
+              minHeight:
+                  scrollDirection == Axis.vertical ? 0 : constraints.maxHeight,
             ),
             child: child,
           ),
@@ -543,7 +542,12 @@ class ResponsiveLayoutBuilder extends StatelessWidget {
     this.desktopBreakpoint = 1200,
   });
 
-  final Widget Function(BuildContext context, ScreenType screenType, BoxConstraints constraints) builder;
+  final Widget Function(
+    BuildContext context,
+    ScreenType screenType,
+    BoxConstraints constraints,
+  )
+  builder;
   final double mobileBreakpoint;
   final double tabletBreakpoint;
   final double desktopBreakpoint;
@@ -594,7 +598,7 @@ class OrientationHandler extends StatelessWidget {
         if (adaptPadding || adaptSpacing) {
           final mediaQuery = MediaQuery.of(context);
           final isLandscape = orientation == Orientation.landscape;
-          
+
           // Adjust padding for landscape mode
           if (adaptPadding && isLandscape) {
             result = Padding(

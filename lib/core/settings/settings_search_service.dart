@@ -5,7 +5,7 @@ import 'package:minq/domain/settings/settings_category.dart';
 /// Service for searching settings and managing search history
 class SettingsSearchService {
   final LocalStorageService _storage;
-  
+
   static const String _searchHistoryKey = 'settings_search_history';
   static const int _maxHistoryItems = 10;
 
@@ -19,22 +19,24 @@ class SettingsSearchService {
     if (query.isEmpty) return [];
 
     final results = <SettingsSearchResult>[];
-    
+
     for (final category in categories) {
       for (final item in category.items) {
         if (item.matchesSearch(query)) {
-          results.add(SettingsSearchResult(
-            category: category,
-            item: item,
-            relevanceScore: _calculateRelevanceScore(item, query),
-          ));
+          results.add(
+            SettingsSearchResult(
+              category: category,
+              item: item,
+              relevanceScore: _calculateRelevanceScore(item, query),
+            ),
+          );
         }
       }
     }
 
     // Sort by relevance score (higher is better)
     results.sort((a, b) => b.relevanceScore.compareTo(a.relevanceScore));
-    
+
     return results;
   }
 
@@ -82,18 +84,18 @@ class SettingsSearchService {
     if (query.trim().isEmpty) return;
 
     final history = await getSearchHistory();
-    
+
     // Remove if already exists
     history.remove(query);
-    
+
     // Add to beginning
     history.insert(0, query);
-    
+
     // Limit history size
     if (history.length > _maxHistoryItems) {
       history.removeRange(_maxHistoryItems, history.length);
     }
-    
+
     await _storage.setStringList(_searchHistoryKey, history);
   }
 

@@ -42,7 +42,9 @@ class TodayLogsScreen extends ConsumerWidget {
             (error, _) => Center(
               child: Text(
                 'エラーが発生しました: $error',
-                style: tokens.typography.body.copyWith(color: tokens.accentError),
+                style: tokens.typography.body.copyWith(
+                  color: tokens.accentError,
+                ),
               ),
             ),
         data: (logs) {

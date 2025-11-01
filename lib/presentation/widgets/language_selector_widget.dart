@@ -33,7 +33,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
 
   String _getLanguageChangeInfo(BuildContext context, Locale? currentLocale) {
     final l10n = AppLocalizations.of(context);
-    
+
     switch (currentLocale?.languageCode) {
       case 'ja':
         return '言語を変更すると、アプリ全体の表示言語、日付形式、通貨表示が即座に切り替わります。';
@@ -54,7 +54,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
     final config = RegionalService.getRegionalConfig(locale);
     final now = DateTime.now();
     const sampleAmount = 1234.56;
-    
+
     return Container(
       padding: EdgeInsets.all(MinqTokens.spacing(3)),
       decoration: BoxDecoration(
@@ -148,14 +148,15 @@ class LanguageSelectorWidget extends ConsumerWidget {
           children: [
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.language,
                   color: MinqTokens.brandPrimary,
                   size: 24,
                 ),
                 SizedBox(width: MinqTokens.spacing(2)),
                 Text(
-                  AppLocalizations.of(context).languageSettings ?? 'Language Settings',
+                  AppLocalizations.of(context).languageSettings ??
+                      'Language Settings',
                   style: MinqTokens.titleMedium,
                 ),
               ],
@@ -173,23 +174,30 @@ class LanguageSelectorWidget extends ConsumerWidget {
                     decoration: BoxDecoration(
                       borderRadius: MinqTokens.cornerMedium(),
                       border: Border.all(
-                        color: isSelected ? MinqTokens.brandPrimary : MinqTokens.textSecondary, // Substituted outline
+                        color:
+                            isSelected
+                                ? MinqTokens.brandPrimary
+                                : MinqTokens
+                                    .textSecondary, // Substituted outline
                         width: isSelected ? 2 : 1,
                       ),
-                      color: isSelected
-                          ? MinqTokens.brandPrimary.withAlpha((255 * 0.1).round())
-                          : null,
+                      color:
+                          isSelected
+                              ? MinqTokens.brandPrimary.withAlpha(
+                                (255 * 0.1).round(),
+                              )
+                              : null,
                     ),
                     child: Row(
                       children: [
                         if (isSelected)
-                          const Icon(
+                          Icon(
                             Icons.check_circle,
                             color: MinqTokens.brandPrimary,
                             size: 20,
                           )
                         else
-                          const Icon(
+                          Icon(
                             Icons.radio_button_unchecked,
                             color: MinqTokens.textSecondary,
                             size: 20,
@@ -204,12 +212,14 @@ class LanguageSelectorWidget extends ConsumerWidget {
                                   Text(
                                     option.nativeName,
                                     style: MinqTokens.bodyMedium.copyWith(
-                                      fontWeight: isSelected
-                                          ? FontWeight.w600
-                                          : FontWeight.normal,
-                                      color: isSelected
-                                          ? MinqTokens.brandPrimary
-                                          : MinqTokens.textPrimary,
+                                      fontWeight:
+                                          isSelected
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
+                                      color:
+                                          isSelected
+                                              ? MinqTokens.brandPrimary
+                                              : MinqTokens.textPrimary,
                                     ),
                                   ),
                                   if (option.isRTL) ...[
@@ -220,7 +230,8 @@ class LanguageSelectorWidget extends ConsumerWidget {
                                         vertical: MinqTokens.spacing(0.5),
                                       ),
                                       decoration: BoxDecoration(
-                                        color: MinqTokens.brandPrimary.withAlpha((255 * 0.2).round()),
+                                        color: MinqTokens.brandPrimary
+                                            .withAlpha((255 * 0.2).round()),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: Text(
@@ -265,7 +276,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.info_outline,
                         color: MinqTokens.brandPrimary,
                         size: 16,
@@ -307,9 +318,8 @@ class LanguageToggleButton extends ConsumerWidget {
     return IconButton(
       onPressed: () => controller.switchToNextLocale(),
       icon: const Icon(Icons.language),
-      tooltip: currentLocale?.languageCode == 'ja'
-          ? '言語を切り替え'
-          : 'Switch Language',
+      tooltip:
+          currentLocale?.languageCode == 'ja' ? '言語を切り替え' : 'Switch Language',
       style: IconButton.styleFrom(
         backgroundColor: MinqTokens.background, // Substituted surfaceVariant
         foregroundColor: MinqTokens.brandPrimary,
@@ -338,7 +348,7 @@ class LanguageSelectorBottomSheet extends ConsumerWidget {
     final availableLocales = controller.getAvailableLocales();
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: MinqTokens.surface,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(16), // Hardcoded value for lg radius
@@ -364,10 +374,7 @@ class LanguageSelectorBottomSheet extends ConsumerWidget {
             SizedBox(height: MinqTokens.spacing(6)),
 
             // Title
-            const Text(
-              'Language / 言語',
-              style: MinqTokens.titleLarge,
-            ),
+            Text('Language / 言語', style: MinqTokens.titleLarge),
             SizedBox(height: MinqTokens.spacing(4)),
 
             // Language options
@@ -381,30 +388,43 @@ class LanguageSelectorBottomSheet extends ConsumerWidget {
                     Navigator.of(context).pop();
                   },
                   leading: Icon(
-                    isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-                    color: isSelected ? MinqTokens.brandPrimary : MinqTokens.textSecondary,
+                    isSelected
+                        ? Icons.check_circle
+                        : Icons.radio_button_unchecked,
+                    color:
+                        isSelected
+                            ? MinqTokens.brandPrimary
+                            : MinqTokens.textSecondary,
                   ),
                   title: Text(
                     option.nativeName,
                     style: MinqTokens.bodyMedium.copyWith(
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                      color: isSelected ? MinqTokens.brandPrimary : MinqTokens.textPrimary,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.normal,
+                      color:
+                          isSelected
+                              ? MinqTokens.brandPrimary
+                              : MinqTokens.textPrimary,
                     ),
                   ),
-                  subtitle: option.displayName != option.nativeName
-                      ? Text(
-                          option.displayName,
-                          style: MinqTokens.bodySmall.copyWith(
-                            color: MinqTokens.textSecondary,
-                          ),
-                        )
-                      : null,
+                  subtitle:
+                      option.displayName != option.nativeName
+                          ? Text(
+                            option.displayName,
+                            style: MinqTokens.bodySmall.copyWith(
+                              color: MinqTokens.textSecondary,
+                            ),
+                          )
+                          : null,
                   shape: RoundedRectangleBorder(
                     borderRadius: MinqTokens.cornerMedium(),
                   ),
-                  tileColor: isSelected
-                      ? MinqTokens.brandPrimary.withAlpha((255 * 0.1).round())
-                      : null,
+                  tileColor:
+                      isSelected
+                          ? MinqTokens.brandPrimary.withAlpha(
+                            (255 * 0.1).round(),
+                          )
+                          : null,
                 ),
               );
             }),

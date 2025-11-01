@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/presentation/theme/theme_extensions.dart';
 
 class PremiumFeatureList extends ConsumerWidget {
   const PremiumFeatureList({super.key});
@@ -48,13 +49,15 @@ class PremiumFeatureList extends ConsumerWidget {
       _FeatureItem(
         icon: Icons.psychology,
         title: 'Priority AI Coach',
-        description: 'Get faster responses and more detailed insights from your AI coach',
+        description:
+            'Get faster responses and more detailed insights from your AI coach',
         color: context.colorTokens.secondary,
       ),
       _FeatureItem(
         icon: Icons.analytics,
         title: 'Advanced Analytics',
-        description: 'Deep insights, predictions, and personalized recommendations',
+        description:
+            'Deep insights, predictions, and personalized recommendations',
         color: context.colorTokens.tertiary,
       ),
       _FeatureItem(
@@ -66,19 +69,22 @@ class PremiumFeatureList extends ConsumerWidget {
       _FeatureItem(
         icon: Icons.cloud_download,
         title: 'Data Export & Backup',
-        description: 'Export your data and automatic cloud backup for peace of mind',
+        description:
+            'Export your data and automatic cloud backup for peace of mind',
         color: context.colorTokens.info,
       ),
       _FeatureItem(
         icon: Icons.support_agent,
         title: 'Priority Support',
-        description: 'Get priority customer support and early access to new features',
+        description:
+            'Get priority customer support and early access to new features',
         color: context.colorTokens.success,
       ),
       _FeatureItem(
         icon: Icons.tune,
         title: 'Advanced Customization',
-        description: 'Customize every aspect of the app to match your preferences',
+        description:
+            'Customize every aspect of the app to match your preferences',
         color: context.colorTokens.error,
       ),
       _FeatureItem(
@@ -89,10 +95,14 @@ class PremiumFeatureList extends ConsumerWidget {
       ),
     ];
 
-    return features.map((feature) => Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: _buildFeatureItem(context, feature),
-    )).toList();
+    return features
+        .map(
+          (feature) => Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: _buildFeatureItem(context, feature),
+          ),
+        )
+        .toList();
   }
 
   Widget _buildFeatureItem(BuildContext context, _FeatureItem feature) {
@@ -105,11 +115,7 @@ class PremiumFeatureList extends ConsumerWidget {
             color: feature.color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(
-            feature.icon,
-            color: feature.color,
-            size: 24,
-          ),
+          child: Icon(feature.icon, color: feature.color, size: 24),
         ),
         const SizedBox(width: 16),
         Expanded(

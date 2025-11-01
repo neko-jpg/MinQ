@@ -7,24 +7,26 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('App Flow Integration Test', () {
-    testWidgets('Complete user flow: Auth -> Create Quest -> Complete -> Share',
-        (tester) async {
-      // アプリ起動
-      app.main();
-      await tester.pumpAndSettle();
+    testWidgets(
+      'Complete user flow: Auth -> Create Quest -> Complete -> Share',
+      (tester) async {
+        // アプリ起動
+        app.main();
+        await tester.pumpAndSettle();
 
-      // 1. 認証フロー
-      await _testAuthFlow(tester);
+        // 1. 認証フロー
+        await _testAuthFlow(tester);
 
-      // 2. クエスト作成フロー
-      await _testQuestCreation(tester);
+        // 2. クエスト作成フロー
+        await _testQuestCreation(tester);
 
-      // 3. クエスト達成フロー
-      await _testQuestCompletion(tester);
+        // 3. クエスト達成フロー
+        await _testQuestCompletion(tester);
 
-      // 4. 共有フロー
-      await _testShareFlow(tester);
-    });
+        // 4. 共有フロー
+        await _testShareFlow(tester);
+      },
+    );
 
     testWidgets('Onboarding flow', (tester) async {
       app.main();
@@ -75,10 +77,7 @@ void main() {
       await tester.tap(find.byIcon(Icons.edit));
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-        find.byType(TextField).first,
-        'Updated Quest',
-      );
+      await tester.enterText(find.byType(TextField).first, 'Updated Quest');
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
 

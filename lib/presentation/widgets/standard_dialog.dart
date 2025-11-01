@@ -233,8 +233,7 @@ class StandardDialog extends StatelessWidget {
       return ElevatedButton(
         onPressed: action.onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              action.isDestructive ? colors.error : colors.primary,
+          backgroundColor: action.isDestructive ? colors.error : colors.primary,
           foregroundColor:
               action.isDestructive ? colors.onError : colors.onPrimary,
         ),

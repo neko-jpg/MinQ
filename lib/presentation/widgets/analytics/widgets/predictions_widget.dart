@@ -7,10 +7,7 @@ import 'package:minq/presentation/providers/analytics_providers.dart';
 class PredictionsWidget extends ConsumerWidget {
   final DashboardWidgetConfig config;
 
-  const PredictionsWidget({
-    super.key,
-    required this.config,
-  });
+  const PredictionsWidget({super.key, required this.config});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,7 +18,9 @@ class PredictionsWidget extends ConsumerWidget {
       children: [
         Expanded(
           child: predictions.when(
-            data: (predictionList) => _buildPredictionsList(context, predictionList),
+            data:
+                (predictionList) =>
+                    _buildPredictionsList(context, predictionList),
             loading: () => _buildLoadingState(),
             error: (error, stack) => _buildErrorState(context),
           ),
@@ -38,7 +37,10 @@ class PredictionsWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildPredictionsList(BuildContext context, List<GoalPrediction> predictions) {
+  Widget _buildPredictionsList(
+    BuildContext context,
+    List<GoalPrediction> predictions,
+  ) {
     if (predictions.isEmpty) {
       return _buildEmptyPredictionsState(context);
     }
@@ -57,14 +59,16 @@ class PredictionsWidget extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: prediction.isOnTrack 
-            ? Colors.green.withOpacity(0.1)
-            : Colors.orange.withOpacity(0.1),
+        color:
+            prediction.isOnTrack
+                ? Colors.green.withOpacity(0.1)
+                : Colors.orange.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: prediction.isOnTrack 
-              ? Colors.green.withOpacity(0.3)
-              : Colors.orange.withOpacity(0.3),
+          color:
+              prediction.isOnTrack
+                  ? Colors.green.withOpacity(0.3)
+                  : Colors.orange.withOpacity(0.3),
         ),
       ),
       child: Column(
@@ -81,16 +85,16 @@ class PredictionsWidget extends ConsumerWidget {
               Expanded(
                 child: Text(
                   prediction.goalType,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
               Text(
                 '${(prediction.confidence * 100).toStringAsFixed(0)}%',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Colors.grey),
               ),
             ],
           ),
@@ -112,9 +116,13 @@ class PredictionsWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildRiskWarnings(BuildContext context, List<AnalyticsInsight> warnings) {
-    final riskWarnings = warnings.where((w) => w.type == InsightType.riskWarning).toList();
-    
+  Widget _buildRiskWarnings(
+    BuildContext context,
+    List<AnalyticsInsight> warnings,
+  ) {
+    final riskWarnings =
+        warnings.where((w) => w.type == InsightType.riskWarning).toList();
+
     if (riskWarnings.isEmpty) {
       return _buildNoRisksState(context);
     }
@@ -178,17 +186,13 @@ class PredictionsWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.track_changes,
-            size: 24,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.track_changes, size: 24, color: Colors.grey),
           const SizedBox(height: 4),
           Text(
             '予測なし',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
           ),
         ],
       ),
@@ -200,17 +204,13 @@ class PredictionsWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.check_circle,
-            size: 24,
-            color: Colors.green,
-          ),
+          const Icon(Icons.check_circle, size: 24, color: Colors.green),
           const SizedBox(height: 4),
           Text(
             'リスクなし',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.green,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.green),
           ),
         ],
       ),
@@ -229,11 +229,7 @@ class PredictionsWidget extends ConsumerWidget {
 
   Widget _buildErrorState(BuildContext context) {
     return const Center(
-      child: Icon(
-        Icons.error_outline,
-        size: 24,
-        color: Colors.red,
-      ),
+      child: Icon(Icons.error_outline, size: 24, color: Colors.red),
     );
   }
 
@@ -253,7 +249,7 @@ class PredictionsWidget extends ConsumerWidget {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = date.difference(now).inDays;
-    
+
     if (difference == 0) {
       return '今日';
     } else if (difference == 1) {

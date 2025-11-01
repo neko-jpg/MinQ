@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  
+
   group('AccessibilityService', () {
     late AccessibilityService accessibilityService;
     late SharedPreferences prefs;
@@ -16,15 +16,15 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       prefs = await SharedPreferences.getInstance();
       accessibilityService = AccessibilityService(prefs);
-      
+
       // Mock haptic feedback to avoid platform channel issues
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
-        const MethodChannel('flutter/hapticfeedback'),
-        (MethodCall methodCall) async {
-          return null;
-        },
-      );
+            const MethodChannel('flutter/hapticfeedback'),
+            (MethodCall methodCall) async {
+              return null;
+            },
+          );
     });
 
     test('should initialize with default settings', () {
@@ -37,7 +37,10 @@ void main() {
       expect(accessibilityService.state.screenReaderOptimized, false);
       expect(accessibilityService.state.hapticFeedback, true);
       expect(accessibilityService.state.soundFeedback, true);
-      expect(accessibilityService.state.colorBlindnessMode, ColorBlindnessMode.none);
+      expect(
+        accessibilityService.state.colorBlindnessMode,
+        ColorBlindnessMode.none,
+      );
       expect(accessibilityService.state.keyboardNavigation, false);
       expect(accessibilityService.state.focusIndicator, true);
     });
@@ -55,22 +58,34 @@ void main() {
     });
 
     test('should update color blindness mode', () async {
-      await accessibilityService.setColorBlindnessMode(ColorBlindnessMode.protanopia);
-      expect(accessibilityService.state.colorBlindnessMode, ColorBlindnessMode.protanopia);
-      expect(prefs.getInt('accessibility_color_blindness_mode'), ColorBlindnessMode.protanopia.index);
+      await accessibilityService.setColorBlindnessMode(
+        ColorBlindnessMode.protanopia,
+      );
+      expect(
+        accessibilityService.state.colorBlindnessMode,
+        ColorBlindnessMode.protanopia,
+      );
+      expect(
+        prefs.getInt('accessibility_color_blindness_mode'),
+        ColorBlindnessMode.protanopia.index,
+      );
     });
 
     test('should get effective animation duration', () async {
       // Normal motion
       expect(
-        accessibilityService.getEffectiveAnimationDuration(const Duration(milliseconds: 300)),
+        accessibilityService.getEffectiveAnimationDuration(
+          const Duration(milliseconds: 300),
+        ),
         const Duration(milliseconds: 300),
       );
 
       // Reduced motion
       await accessibilityService.setReduceMotion(true);
       expect(
-        accessibilityService.getEffectiveAnimationDuration(const Duration(milliseconds: 300)),
+        accessibilityService.getEffectiveAnimationDuration(
+          const Duration(milliseconds: 300),
+        ),
         Duration.zero,
       );
     });
@@ -79,34 +94,49 @@ void main() {
   group('ColorBlindnessHelper', () {
     test('should not transform colors when mode is none', () {
       const color = Color(0xFF4F46E5);
-      final transformed = ColorBlindnessHelper.transformColor(color, ColorBlindnessMode.none);
+      final transformed = ColorBlindnessHelper.transformColor(
+        color,
+        ColorBlindnessMode.none,
+      );
       expect(transformed, color);
     });
 
     test('should transform colors for protanopia', () {
       const color = Color(0xFFFF0000); // Red
-      final transformed = ColorBlindnessHelper.transformColor(color, ColorBlindnessMode.protanopia);
+      final transformed = ColorBlindnessHelper.transformColor(
+        color,
+        ColorBlindnessMode.protanopia,
+      );
       expect(transformed, isNot(color));
       expect(transformed.red, lessThan(color.red));
     });
 
     test('should transform colors for deuteranopia', () {
       const color = Color(0xFF00FF00); // Green
-      final transformed = ColorBlindnessHelper.transformColor(color, ColorBlindnessMode.deuteranopia);
+      final transformed = ColorBlindnessHelper.transformColor(
+        color,
+        ColorBlindnessMode.deuteranopia,
+      );
       expect(transformed, isNot(color));
       expect(transformed.green, lessThan(color.green));
     });
 
     test('should transform colors for tritanopia', () {
       const color = Color(0xFF0000FF); // Blue
-      final transformed = ColorBlindnessHelper.transformColor(color, ColorBlindnessMode.tritanopia);
+      final transformed = ColorBlindnessHelper.transformColor(
+        color,
+        ColorBlindnessMode.tritanopia,
+      );
       expect(transformed, isNot(color));
       expect(transformed.blue, lessThan(color.blue));
     });
 
     test('should convert to grayscale for monochromacy', () {
       const color = Color(0xFF4F46E5);
-      final transformed = ColorBlindnessHelper.transformColor(color, ColorBlindnessMode.monochromacy);
+      final transformed = ColorBlindnessHelper.transformColor(
+        color,
+        ColorBlindnessMode.monochromacy,
+      );
       expect(transformed.red, transformed.green);
       expect(transformed.green, transformed.blue);
     });
@@ -114,17 +144,21 @@ void main() {
     test('should check color distinguishability', () {
       const color1 = Color(0xFF4F46E5);
       const color2 = Color(0xFF8B5CF6);
-      
+
       // Colors should be distinguishable for normal vision
       expect(
-        ColorBlindnessHelper.areColorsDistinguishable(color1, color2, ColorBlindnessMode.none),
+        ColorBlindnessHelper.areColorsDistinguishable(
+          color1,
+          color2,
+          ColorBlindnessMode.none,
+        ),
         true,
       );
-      
+
       // May not be distinguishable for certain color blindness types
       final distinguishable = ColorBlindnessHelper.areColorsDistinguishable(
-        color1, 
-        color2, 
+        color1,
+        color2,
         ColorBlindnessMode.protanopia,
       );
       expect(distinguishable, isA<bool>());
@@ -141,13 +175,19 @@ void main() {
 
     test('should get high contrast colors', () {
       const color = Color(0xFF4F46E5);
-      
+
       // Light mode
-      final lightContrast = ColorBlindnessHelper.getHighContrastColor(color, false);
+      final lightContrast = ColorBlindnessHelper.getHighContrastColor(
+        color,
+        false,
+      );
       expect(lightContrast, anyOf(Colors.black, Colors.white));
-      
+
       // Dark mode
-      final darkContrast = ColorBlindnessHelper.getHighContrastColor(color, true);
+      final darkContrast = ColorBlindnessHelper.getHighContrastColor(
+        color,
+        true,
+      );
       expect(darkContrast, anyOf(Colors.black, Colors.white));
     });
   });
@@ -162,11 +202,8 @@ void main() {
 
     test('should copy with new values', () {
       final original = AccessibilitySettings.defaultSettings();
-      final updated = original.copyWith(
-        highContrast: true,
-        textScale: 1.5,
-      );
-      
+      final updated = original.copyWith(highContrast: true, textScale: 1.5);
+
       expect(updated.highContrast, true);
       expect(updated.textScale, 1.5);
       expect(updated.hapticFeedback, original.hapticFeedback); // Unchanged

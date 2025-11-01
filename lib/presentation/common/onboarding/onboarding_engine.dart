@@ -101,7 +101,10 @@ class OnboardingEngine {
       await ProgressiveHintService.showFirstCompletionHint(context);
     } else if (progress.currentStreak >= 3) {
       // 連続達成ヒント
-      await ProgressiveHintService.showStreakHint(context, progress.currentStreak);
+      await ProgressiveHintService.showStreakHint(
+        context,
+        progress.currentStreak,
+      );
     }
   }
 
@@ -217,7 +220,10 @@ class OnboardingEngine {
     await ProgressiveHintService.showFirstCompletionHint(context);
   }
 
-  static Future<void> _showStreakHint(BuildContext context, int streakDays) async {
+  static Future<void> _showStreakHint(
+    BuildContext context,
+    int streakDays,
+  ) async {
     await ProgressiveHintService.showStreakHint(context, streakDays);
   }
 }

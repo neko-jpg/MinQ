@@ -42,14 +42,14 @@ class AppLocaleController extends StateNotifier<Locale?> {
         return supportedLocale;
       }
     }
-    
+
     // Check if language code is supported
     for (final supportedLocale in AppLocalizations.supportedLocales) {
       if (supportedLocale.languageCode == locale.languageCode) {
         return supportedLocale;
       }
     }
-    
+
     // Default to Japanese
     return const Locale('ja');
   }
@@ -138,7 +138,7 @@ class AppLocaleController extends StateNotifier<Locale?> {
     final currentIndex = availableLocales.indexWhere(
       (option) => option.locale == state,
     );
-    
+
     final nextIndex = (currentIndex + 1) % availableLocales.length;
     await setLocale(availableLocales[nextIndex].locale);
   }

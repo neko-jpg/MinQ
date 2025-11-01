@@ -29,7 +29,7 @@ class AccessibleElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
     final accessibilityService = AccessibilityService.instance;
-    
+
     Widget button = ElevatedButton(
       onPressed: onPressed,
       style: _getAccessibleStyle(context, tokens),
@@ -41,10 +41,7 @@ class AccessibleElevatedButton extends StatelessWidget {
 
     // Add tooltip if provided
     if (tooltip != null) {
-      button = Tooltip(
-        message: tooltip!,
-        child: button,
-      );
+      button = Tooltip(message: tooltip!, child: button);
     }
 
     // Wrap with proper semantics
@@ -59,12 +56,10 @@ class AccessibleElevatedButton extends StatelessWidget {
 
   ButtonStyle _getAccessibleStyle(BuildContext context, MinqTheme tokens) {
     final baseStyle = style ?? ElevatedButton.styleFrom();
-    
+
     return baseStyle.copyWith(
       // Ensure minimum touch target size
-      minimumSize: WidgetStateProperty.all(
-        const Size(44.0, 44.0),
-      ),
+      minimumSize: WidgetStateProperty.all(const Size(44.0, 44.0)),
       // Ensure adequate padding
       padding: WidgetStateProperty.all(
         EdgeInsets.symmetric(
@@ -74,16 +69,16 @@ class AccessibleElevatedButton extends StatelessWidget {
       ),
       // Ensure accessible colors
       backgroundColor: WidgetStateProperty.resolveWith((states) {
-        final originalColor = baseStyle.backgroundColor?.resolve(states) ?? 
-                            tokens.brandPrimary;
+        final originalColor =
+            baseStyle.backgroundColor?.resolve(states) ?? tokens.brandPrimary;
         return tokens.ensureAccessibleOnBackground(
           originalColor,
           tokens.background,
         );
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
-        final backgroundColor = baseStyle.backgroundColor?.resolve(states) ?? 
-                              tokens.brandPrimary;
+        final backgroundColor =
+            baseStyle.backgroundColor?.resolve(states) ?? tokens.brandPrimary;
         return tokens.ensureAccessibleOnBackground(
           tokens.primaryForeground,
           backgroundColor,
@@ -120,7 +115,7 @@ class AccessibleTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
     final accessibilityService = AccessibilityService.instance;
-    
+
     Widget button = TextButton(
       onPressed: onPressed,
       style: _getAccessibleStyle(context, tokens),
@@ -131,10 +126,7 @@ class AccessibleTextButton extends StatelessWidget {
     );
 
     if (tooltip != null) {
-      button = Tooltip(
-        message: tooltip!,
-        child: button,
-      );
+      button = Tooltip(message: tooltip!, child: button);
     }
 
     return accessibilityService.wrapWithSemantics(
@@ -148,11 +140,9 @@ class AccessibleTextButton extends StatelessWidget {
 
   ButtonStyle _getAccessibleStyle(BuildContext context, MinqTheme tokens) {
     final baseStyle = style ?? TextButton.styleFrom();
-    
+
     return baseStyle.copyWith(
-      minimumSize: WidgetStateProperty.all(
-        const Size(44.0, 44.0),
-      ),
+      minimumSize: WidgetStateProperty.all(const Size(44.0, 44.0)),
       padding: WidgetStateProperty.all(
         EdgeInsets.symmetric(
           horizontal: tokens.spacing.lg,
@@ -160,8 +150,8 @@ class AccessibleTextButton extends StatelessWidget {
         ),
       ),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
-        final originalColor = baseStyle.foregroundColor?.resolve(states) ?? 
-                            tokens.brandPrimary;
+        final originalColor =
+            baseStyle.foregroundColor?.resolve(states) ?? tokens.brandPrimary;
         return tokens.ensureAccessibleOnBackground(
           originalColor,
           tokens.background,
@@ -198,12 +188,13 @@ class AccessibleIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
     final accessibilityService = AccessibilityService.instance;
-    
+
     // Ensure accessible color
-    final accessibleColor = color != null 
-        ? tokens.ensureAccessibleOnBackground(color!, tokens.background)
-        : tokens.textPrimary;
-    
+    final accessibleColor =
+        color != null
+            ? tokens.ensureAccessibleOnBackground(color!, tokens.background)
+            : tokens.textPrimary;
+
     Widget button = IconButton(
       onPressed: onPressed,
       icon: icon,
@@ -211,18 +202,12 @@ class AccessibleIconButton extends StatelessWidget {
       color: accessibleColor,
       autofocus: autofocus,
       focusNode: focusNode,
-      constraints: const BoxConstraints(
-        minWidth: 44.0,
-        minHeight: 44.0,
-      ),
+      constraints: const BoxConstraints(minWidth: 44.0, minHeight: 44.0),
       padding: EdgeInsets.all(tokens.spacing.sm),
     );
 
     if (tooltip != null) {
-      button = Tooltip(
-        message: tooltip!,
-        child: button,
-      );
+      button = Tooltip(message: tooltip!, child: button);
     }
 
     return accessibilityService.wrapWithSemantics(
@@ -264,16 +249,24 @@ class AccessibleFloatingActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
     final accessibilityService = AccessibilityService.instance;
-    
+
     // Ensure accessible colors
-    final accessibleBgColor = backgroundColor != null
-        ? tokens.ensureAccessibleOnBackground(backgroundColor!, tokens.background)
-        : tokens.brandPrimary;
-    
-    final accessibleFgColor = foregroundColor != null
-        ? tokens.ensureAccessibleOnBackground(foregroundColor!, accessibleBgColor)
-        : tokens.primaryForeground;
-    
+    final accessibleBgColor =
+        backgroundColor != null
+            ? tokens.ensureAccessibleOnBackground(
+              backgroundColor!,
+              tokens.background,
+            )
+            : tokens.brandPrimary;
+
+    final accessibleFgColor =
+        foregroundColor != null
+            ? tokens.ensureAccessibleOnBackground(
+              foregroundColor!,
+              accessibleBgColor,
+            )
+            : tokens.primaryForeground;
+
     Widget button = FloatingActionButton(
       onPressed: onPressed,
       backgroundColor: accessibleBgColor,
@@ -322,7 +315,7 @@ class AccessibleSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
     final accessibilityService = AccessibilityService.instance;
-    
+
     Widget switchWidget = Switch(
       value: value,
       onChanged: onChanged,
@@ -335,18 +328,16 @@ class AccessibleSwitch extends StatelessWidget {
 
     // Ensure minimum touch target
     switchWidget = Container(
-      constraints: const BoxConstraints(
-        minWidth: 44.0,
-        minHeight: 44.0,
-      ),
+      constraints: const BoxConstraints(minWidth: 44.0, minHeight: 44.0),
       alignment: Alignment.center,
       child: switchWidget,
     );
 
     final statusText = value ? '有効' : '無効';
-    final fullLabel = semanticLabel != null 
-        ? '$semanticLabel、スイッチ、$statusText'
-        : 'スイッチ、$statusText';
+    final fullLabel =
+        semanticLabel != null
+            ? '$semanticLabel、スイッチ、$statusText'
+            : 'スイッチ、$statusText';
 
     return accessibilityService.wrapWithSemantics(
       child: switchWidget,
@@ -384,7 +375,7 @@ class AccessibleCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
     final accessibilityService = AccessibilityService.instance;
-    
+
     Widget checkbox = Checkbox(
       value: value,
       onChanged: onChanged,
@@ -397,10 +388,7 @@ class AccessibleCheckbox extends StatelessWidget {
 
     // Ensure minimum touch target
     checkbox = Container(
-      constraints: const BoxConstraints(
-        minWidth: 44.0,
-        minHeight: 44.0,
-      ),
+      constraints: const BoxConstraints(minWidth: 44.0, minHeight: 44.0),
       alignment: Alignment.center,
       child: checkbox,
     );
@@ -414,9 +402,10 @@ class AccessibleCheckbox extends StatelessWidget {
       statusText = '未選択';
     }
 
-    final fullLabel = semanticLabel != null 
-        ? '$semanticLabel、チェックボックス、$statusText'
-        : 'チェックボックス、$statusText';
+    final fullLabel =
+        semanticLabel != null
+            ? '$semanticLabel、チェックボックス、$statusText'
+            : 'チェックボックス、$statusText';
 
     return accessibilityService.wrapWithSemantics(
       child: checkbox,

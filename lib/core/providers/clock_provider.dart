@@ -231,10 +231,7 @@ class DateRange {
   final DateTime start;
   final DateTime end;
 
-  const DateRange({
-    required this.start,
-    required this.end,
-  });
+  const DateRange({required this.start, required this.end});
 
   /// 今日
   factory DateRange.today(Clock clock) {
@@ -251,48 +248,33 @@ class DateRange {
   /// 今週
   factory DateRange.thisWeek(Clock clock) {
     final today = clock.today();
-    return DateRange(
-      start: today.startOfWeek,
-      end: today.endOfWeek,
-    );
+    return DateRange(start: today.startOfWeek, end: today.endOfWeek);
   }
 
   /// 先週
   factory DateRange.lastWeek(Clock clock) {
     final today = clock.today();
     final lastWeek = today.subtract(const Duration(days: 7));
-    return DateRange(
-      start: lastWeek.startOfWeek,
-      end: lastWeek.endOfWeek,
-    );
+    return DateRange(start: lastWeek.startOfWeek, end: lastWeek.endOfWeek);
   }
 
   /// 今月
   factory DateRange.thisMonth(Clock clock) {
     final today = clock.today();
-    return DateRange(
-      start: today.startOfMonth,
-      end: today.endOfMonth,
-    );
+    return DateRange(start: today.startOfMonth, end: today.endOfMonth);
   }
 
   /// 先月
   factory DateRange.lastMonth(Clock clock) {
     final today = clock.today();
     final lastMonth = DateTime(today.year, today.month - 1, today.day);
-    return DateRange(
-      start: lastMonth.startOfMonth,
-      end: lastMonth.endOfMonth,
-    );
+    return DateRange(start: lastMonth.startOfMonth, end: lastMonth.endOfMonth);
   }
 
   /// 今年
   factory DateRange.thisYear(Clock clock) {
     final today = clock.today();
-    return DateRange(
-      start: today.startOfYear,
-      end: today.endOfYear,
-    );
+    return DateRange(start: today.startOfYear, end: today.endOfYear);
   }
 
   /// 過去N日間

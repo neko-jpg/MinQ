@@ -338,7 +338,6 @@ class HabitTemplate {
       HabitDifficulty.hard => DifficultyLevel.hard,
     };
   }
-
 }
 
 /// 習慣カテゴリー

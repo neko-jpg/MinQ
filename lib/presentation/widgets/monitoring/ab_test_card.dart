@@ -45,14 +45,14 @@ class ABTestCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                test.name,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              Text(test.name, style: Theme.of(context).textTheme.titleMedium),
               if (userVariant != null)
                 Container(
                   margin: const EdgeInsets.only(top: 4),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.blue.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
@@ -77,7 +77,7 @@ class ABTestCard extends StatelessWidget {
   Widget _buildStatusIcon() {
     IconData icon;
     Color color;
-    
+
     if (test.isActive) {
       icon = Icons.play_circle;
       color = Colors.green;
@@ -85,7 +85,7 @@ class ABTestCard extends StatelessWidget {
       icon = Icons.pause_circle;
       color = Colors.grey;
     }
-    
+
     return Icon(icon, color: color, size: 24);
   }
 
@@ -100,10 +100,7 @@ class ABTestCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Variants',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
+        Text('Variants', style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 8),
         ...test.variants.map((variant) => _buildVariantTile(variant)),
       ],
@@ -112,18 +109,17 @@ class ABTestCard extends StatelessWidget {
 
   Widget _buildVariantTile(ABVariant variant) {
     final isUserVariant = userVariant == variant.name;
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: isUserVariant 
-            ? Colors.blue.withOpacity(0.1)
-            : Colors.grey.withOpacity(0.05),
+        color:
+            isUserVariant
+                ? Colors.blue.withOpacity(0.1)
+                : Colors.grey.withOpacity(0.05),
         borderRadius: BorderRadius.circular(8),
-        border: isUserVariant 
-            ? Border.all(color: Colors.blue, width: 2)
-            : null,
+        border: isUserVariant ? Border.all(color: Colors.blue, width: 2) : null,
       ),
       child: Row(
         children: [
@@ -138,10 +134,7 @@ class ABTestCard extends StatelessWidget {
                     color: isUserVariant ? Colors.blue : null,
                   ),
                 ),
-                Text(
-                  variant.description,
-                  style: const TextStyle(fontSize: 12),
-                ),
+                Text(variant.description, style: const TextStyle(fontSize: 12)),
               ],
             ),
           ),
@@ -167,21 +160,19 @@ class ABTestCard extends StatelessWidget {
 
   Widget _buildResults(BuildContext context) {
     if (result == null) return const SizedBox();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Results',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
+        Text('Results', style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: result!.isSignificant 
-                ? Colors.green.withOpacity(0.1)
-                : Colors.orange.withOpacity(0.1),
+            color:
+                result!.isSignificant
+                    ? Colors.green.withOpacity(0.1)
+                    : Colors.orange.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: result!.isSignificant ? Colors.green : Colors.orange,
@@ -209,7 +200,10 @@ class ABTestCard extends StatelessWidget {
                   children: [
                     const Text('Winner:'),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.green,
                         borderRadius: BorderRadius.circular(12),
@@ -236,7 +230,7 @@ class ABTestCard extends StatelessWidget {
 
   Widget _buildResultsGrid() {
     if (result == null) return const SizedBox();
-    
+
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -283,18 +277,9 @@ class ABTestCard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             value,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
           ),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 10,
-              color: Colors.grey[600],
-            ),
-          ),
+          Text(label, style: TextStyle(fontSize: 10, color: Colors.grey[600])),
         ],
       ),
     );

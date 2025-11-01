@@ -53,8 +53,9 @@ class GamificationStatusCard extends ConsumerWidget {
                   const SizedBox(width: 12),
                   Text(
                     '読み込み中...',
-                    style:
-                        textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -98,18 +99,15 @@ class GamificationStatusCard extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: colorScheme.primary
-                                .withAlpha((255 * 0.3).round()),
+                            color: colorScheme.primary.withAlpha(
+                              (255 * 0.3).round(),
+                            ),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
                         ],
                       ),
-                      child: Icon(
-                        rankIcon,
-                        color: Colors.white,
-                        size: 24,
-                      ),
+                      child: Icon(rankIcon, color: Colors.white, size: 24),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -169,8 +167,9 @@ class GamificationStatusCard extends ConsumerWidget {
                       child: LinearProgressIndicator(
                         value: progress,
                         minHeight: 8,
-                        backgroundColor:
-                            colorScheme.primary.withAlpha((255 * 0.1).round()),
+                        backgroundColor: colorScheme.primary.withAlpha(
+                          (255 * 0.1).round(),
+                        ),
                         valueColor: AlwaysStoppedAnimation(colorScheme.primary),
                       ),
                     ),

@@ -40,11 +40,7 @@ class SubscriptionScreen extends ConsumerWidget {
         padding: EdgeInsets.all(tokens.spacing.md),
         child: Column(
           children: [
-            Icon(
-              Icons.check_circle,
-              size: 48,
-              color: tokens.brandPrimary,
-            ),
+            Icon(Icons.check_circle, size: 48, color: tokens.brandPrimary),
             SizedBox(height: tokens.spacing.sm),
             Text('プレミアム会員', style: tokens.typography.h2),
             SizedBox(height: tokens.spacing.xs),
@@ -59,11 +55,7 @@ class SubscriptionScreen extends ConsumerWidget {
     final tokens = context.tokens;
     return Column(
       children: [
-        Icon(
-          Icons.workspace_premium,
-          size: 64,
-          color: tokens.brandPrimary,
-        ),
+        Icon(Icons.workspace_premium, size: 64, color: tokens.brandPrimary),
         SizedBox(height: tokens.spacing.md),
         Text(
           'プレミアムで\nもっと便利に',
@@ -133,10 +125,7 @@ class SubscriptionScreen extends ConsumerWidget {
               color: tokens.brandPrimary.withAlpha(26),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              feature.icon,
-              color: tokens.brandPrimary,
-            ),
+            child: Icon(feature.icon, color: tokens.brandPrimary),
           ),
           SizedBox(width: tokens.spacing.md),
           Expanded(
@@ -147,8 +136,9 @@ class SubscriptionScreen extends ConsumerWidget {
                 SizedBox(height: tokens.spacing.xs),
                 Text(
                   feature.description,
-                  style: tokens.typography.caption
-                      .copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
               ],
             ),
@@ -241,8 +231,9 @@ class SubscriptionScreen extends ConsumerWidget {
                   padding: EdgeInsets.only(bottom: tokens.spacing.xs),
                   child: Text(
                     '/ $period',
-                    style: tokens.typography.body
-                        .copyWith(color: tokens.textMuted),
+                    style: tokens.typography.body.copyWith(
+                      color: tokens.textMuted,
+                    ),
                   ),
                 ),
               ],

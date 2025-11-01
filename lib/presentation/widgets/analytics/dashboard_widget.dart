@@ -33,9 +33,7 @@ class DashboardWidget extends ConsumerWidget {
           children: [
             _buildHeader(context),
             const SizedBox(height: 8),
-            Expanded(
-              child: _buildContent(context, ref),
-            ),
+            Expanded(child: _buildContent(context, ref)),
           ],
         ),
       ),
@@ -54,9 +52,9 @@ class DashboardWidget extends ConsumerWidget {
         Expanded(
           child: Text(
             config.title,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -99,21 +97,14 @@ class DashboardWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.people,
-            size: 32,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.people, size: 32, color: Colors.grey),
           const SizedBox(height: 8),
-          Text(
-            '比較機能',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          Text('比較機能', style: Theme.of(context).textTheme.bodyMedium),
           Text(
             '準備中',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
           ),
         ],
       ),
@@ -125,21 +116,14 @@ class DashboardWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.bar_chart,
-            size: 32,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.bar_chart, size: 32, color: Colors.grey),
           const SizedBox(height: 8),
-          Text(
-            'カスタムチャート',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          Text('カスタムチャート', style: Theme.of(context).textTheme.bodyMedium),
           Text(
             '準備中',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
           ),
         ],
       ),

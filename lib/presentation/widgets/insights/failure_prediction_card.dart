@@ -5,10 +5,7 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// Card widget for displaying failure prediction alerts
 class FailurePredictionCard extends StatelessWidget {
-  const FailurePredictionCard({
-    super.key,
-    required this.prediction,
-  });
+  const FailurePredictionCard({super.key, required this.prediction});
 
   final FailurePrediction prediction;
 
@@ -37,11 +34,7 @@ class FailurePredictionCard extends StatelessWidget {
                   color: riskColor.withAlpha((255 * 0.2).round()),
                   borderRadius: BorderRadius.circular(tokens.radius.md),
                 ),
-                child: Icon(
-                  riskIcon,
-                  color: riskColor,
-                  size: 24,
-                ),
+                child: Icon(riskIcon, color: riskColor, size: 24),
               ),
               SizedBox(width: tokens.spacing.md),
               Expanded(
@@ -79,9 +72,9 @@ class FailurePredictionCard extends StatelessWidget {
               _buildRiskScoreCircle(prediction.riskScore, riskColor, tokens),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing.lg),
-          
+
           // Risk factors section
           if (prediction.riskFactors.isNotEmpty) ...[
             Text(
@@ -92,12 +85,12 @@ class FailurePredictionCard extends StatelessWidget {
               ),
             ),
             SizedBox(height: tokens.spacing.sm),
-            ...prediction.riskFactors.map((factor) =>
-              _buildRiskFactorItem(factor, tokens),
+            ...prediction.riskFactors.map(
+              (factor) => _buildRiskFactorItem(factor, tokens),
             ),
             SizedBox(height: tokens.spacing.md),
           ],
-          
+
           // Prevention strategies section
           if (prediction.preventionStrategies.isNotEmpty) ...[
             Text(
@@ -108,12 +101,12 @@ class FailurePredictionCard extends StatelessWidget {
               ),
             ),
             SizedBox(height: tokens.spacing.sm),
-            ...prediction.preventionStrategies.map((strategy) =>
-              _buildPreventionStrategyItem(strategy, tokens),
+            ...prediction.preventionStrategies.map(
+              (strategy) => _buildPreventionStrategyItem(strategy, tokens),
             ),
             SizedBox(height: tokens.spacing.md),
           ],
-          
+
           // Predicted date
           Container(
             padding: EdgeInsets.all(tokens.spacing.md),
@@ -123,11 +116,7 @@ class FailurePredictionCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.schedule,
-                  color: tokens.textMuted,
-                  size: 16,
-                ),
+                Icon(Icons.schedule, color: tokens.textMuted, size: 16),
                 SizedBox(width: tokens.spacing.sm),
                 Text(
                   '予測日: ${_formatDate(prediction.predictedDate)}',
@@ -138,9 +127,9 @@ class FailurePredictionCard extends StatelessWidget {
               ],
             ),
           ),
-          
+
           SizedBox(height: tokens.spacing.lg),
-          
+
           // Action buttons
           Row(
             children: [
@@ -161,9 +150,7 @@ class FailurePredictionCard extends StatelessWidget {
                   onPressed: () => _handleStartHabit(context),
                   icon: const Icon(Icons.play_arrow, size: 16),
                   label: Text(AppLocalizations.of(context).executeNow),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Colors.green,
-                  ),
+                  style: FilledButton.styleFrom(backgroundColor: Colors.green),
                 ),
               ),
             ],
@@ -173,7 +160,11 @@ class FailurePredictionCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRiskScoreCircle(double riskScore, Color color, MinqTheme tokens) {
+  Widget _buildRiskScoreCircle(
+    double riskScore,
+    Color color,
+    MinqTheme tokens,
+  ) {
     return SizedBox(
       width: 50,
       height: 50,

@@ -136,10 +136,9 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withAlpha((255 * 0.3).round()),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withAlpha((255 * 0.3).round()),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -257,10 +256,12 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                     margin: const EdgeInsets.only(right: SpacingSystem.xxs),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: index == _currentStep
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.onSurface
-                              .withAlpha((255 * 0.3).round()),
+                      color:
+                          index == _currentStep
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.onSurface.withAlpha(
+                                (255 * 0.3).round(),
+                              ),
                     ),
                   ),
                 ),
@@ -273,15 +274,18 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // スキップボタン
-                  TextButton(onPressed: _onSkip, child: Text(AppLocalizations.of(context).skip)),
+                  TextButton(
+                    onPressed: _onSkip,
+                    child: Text(AppLocalizations.of(context).skip),
+                  ),
 
                   // 次へボタン
                   ElevatedButton(
                     onPressed: _onNext,
                     child: Text(
-                      _currentStep == widget.steps.length - 1 
-                        ? AppLocalizations.of(context).complete 
-                        : AppLocalizations.of(context).next,
+                      _currentStep == widget.steps.length - 1
+                          ? AppLocalizations.of(context).complete
+                          : AppLocalizations.of(context).next,
                     ),
                   ),
                 ],

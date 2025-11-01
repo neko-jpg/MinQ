@@ -30,7 +30,10 @@ void main() {
 
   test('treats missing server time as consistent', () async {
     final now = DateTime.utc(2024, 1, 1, 12, 0, 0);
-    final service = TimeConsistencyService(now: () => now, serverTimeProvider: () async => null);
+    final service = TimeConsistencyService(
+      now: () => now,
+      serverTimeProvider: () async => null,
+    );
 
     expect(await service.isDeviceTimeConsistent(), isTrue);
     service.close();
@@ -41,7 +44,10 @@ void main() {
       serverTimeProvider: () async => throw const SocketException('no network'),
     );
 
-    await expectLater(service.isDeviceTimeConsistent(), throwsA(isA<SocketException>()));
+    await expectLater(
+      service.isDeviceTimeConsistent(),
+      throwsA(isA<SocketException>()),
+    );
     service.close();
   });
 }

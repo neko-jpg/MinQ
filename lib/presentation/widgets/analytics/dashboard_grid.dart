@@ -43,7 +43,7 @@ class _DashboardGridState extends State<DashboardGrid> {
   @override
   Widget build(BuildContext context) {
     final visibleWidgets = _widgets.where((w) => w.isVisible).toList();
-    
+
     if (visibleWidgets.isEmpty) {
       return _buildEmptyState();
     }
@@ -82,10 +82,7 @@ class _DashboardGridState extends State<DashboardGrid> {
     return Positioned.fill(
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).primaryColor,
-            width: 2,
-          ),
+          border: Border.all(color: Theme.of(context).primaryColor, width: 2),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Stack(
@@ -119,11 +116,7 @@ class _DashboardGridState extends State<DashboardGrid> {
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                    size: 16,
-                  ),
+                  child: const Icon(Icons.close, color: Colors.white, size: 16),
                 ),
               ),
             ),
@@ -158,16 +151,9 @@ class _DashboardGridState extends State<DashboardGrid> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.dashboard,
-            size: 64,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.dashboard, size: 64, color: Colors.grey),
           const SizedBox(height: 16),
-          Text(
-            'ウィジェットがありません',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text('ウィジェットがありません', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           Text(
             'メニューからウィジェットを追加してください',
@@ -182,23 +168,24 @@ class _DashboardGridState extends State<DashboardGrid> {
   void _showDeleteConfirmation(DashboardWidgetConfig widgetConfig) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('ウィジェットを削除'),
-        content: Text('「${widgetConfig.title}」を削除しますか？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('ウィジェットを削除'),
+            content: Text('「${widgetConfig.title}」を削除しますか？'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () {
+                  widget.onWidgetRemoved(widgetConfig.id);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('削除'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              widget.onWidgetRemoved(widgetConfig.id);
-              Navigator.of(context).pop();
-            },
-            child: const Text('削除'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -206,93 +193,108 @@ class _DashboardGridState extends State<DashboardGrid> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'ウィジェット設定',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'タイトル',
-                border: OutlineInputBorder(),
-              ),
-              controller: TextEditingController(text: widgetConfig.title),
-              onChanged: (value) {
-                final updatedConfig = widgetConfig.copyWith(title: value);
-                widget.onWidgetConfigChanged(updatedConfig);
-              },
-            ),
-            const SizedBox(height: 16),
-            Row(
+      builder:
+          (context) => Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('表示'),
-                Switch(
-                  value: widgetConfig.isVisible,
+                Text('ウィジェット設定', style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 16),
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'タイトル',
+                    border: OutlineInputBorder(),
+                  ),
+                  controller: TextEditingController(text: widgetConfig.title),
                   onChanged: (value) {
-                    final updatedConfig = widgetConfig.copyWith(isVisible: value);
+                    final updatedConfig = widgetConfig.copyWith(title: value);
                     widget.onWidgetConfigChanged(updatedConfig);
                   },
                 ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    const Text('表示'),
+                    Switch(
+                      value: widgetConfig.isVisible,
+                      onChanged: (value) {
+                        final updatedConfig = widgetConfig.copyWith(
+                          isVisible: value,
+                        );
+                        widget.onWidgetConfigChanged(updatedConfig);
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text('サイズ', style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Text('幅: '),
+                    DropdownButton<int>(
+                      value: widgetConfig.size.width,
+                      items:
+                          [1, 2, 3, 4]
+                              .map(
+                                (width) => DropdownMenuItem(
+                                  value: width,
+                                  child: Text('$width'),
+                                ),
+                              )
+                              .toList(),
+                      onChanged: (width) {
+                        if (width != null) {
+                          final updatedSize = widgetConfig.size.copyWith(
+                            width: width,
+                          );
+                          final updatedConfig = widgetConfig.copyWith(
+                            size: updatedSize,
+                          );
+                          widget.onWidgetConfigChanged(updatedConfig);
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 16),
+                    const Text('高さ: '),
+                    DropdownButton<int>(
+                      value: widgetConfig.size.height,
+                      items:
+                          [1, 2, 3, 4]
+                              .map(
+                                (height) => DropdownMenuItem(
+                                  value: height,
+                                  child: Text('$height'),
+                                ),
+                              )
+                              .toList(),
+                      onChanged: (height) {
+                        if (height != null) {
+                          final updatedSize = widgetConfig.size.copyWith(
+                            height: height,
+                          );
+                          final updatedConfig = widgetConfig.copyWith(
+                            size: updatedSize,
+                          );
+                          widget.onWidgetConfigChanged(updatedConfig);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('完了'),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              'サイズ',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Text('幅: '),
-                DropdownButton<int>(
-                  value: widgetConfig.size.width,
-                  items: [1, 2, 3, 4].map((width) => DropdownMenuItem(
-                    value: width,
-                    child: Text('$width'),
-                  )).toList(),
-                  onChanged: (width) {
-                    if (width != null) {
-                      final updatedSize = widgetConfig.size.copyWith(width: width);
-                      final updatedConfig = widgetConfig.copyWith(size: updatedSize);
-                      widget.onWidgetConfigChanged(updatedConfig);
-                    }
-                  },
-                ),
-                const SizedBox(width: 16),
-                const Text('高さ: '),
-                DropdownButton<int>(
-                  value: widgetConfig.size.height,
-                  items: [1, 2, 3, 4].map((height) => DropdownMenuItem(
-                    value: height,
-                    child: Text('$height'),
-                  )).toList(),
-                  onChanged: (height) {
-                    if (height != null) {
-                      final updatedSize = widgetConfig.size.copyWith(height: height);
-                      final updatedConfig = widgetConfig.copyWith(size: updatedSize);
-                      widget.onWidgetConfigChanged(updatedConfig);
-                    }
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('完了'),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 }

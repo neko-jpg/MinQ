@@ -82,7 +82,9 @@ class BadgeWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final bgColor = backgroundColor ?? MinqTokens.brandSecondary; // Using a distinct color for badges
+    final bgColor =
+        backgroundColor ??
+        MinqTokens.brandSecondary; // Using a distinct color for badges
     final fgColor = textColor ?? Colors.white;
 
     switch (type) {
@@ -102,10 +104,7 @@ class BadgeWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: MinqTokens.surface,
-          width: 1.5,
-        ),
+        border: Border.all(color: MinqTokens.surface, width: 1.5),
       ),
     );
   }
@@ -130,10 +129,7 @@ class BadgeWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(100), // fullRadius
-        border: Border.all(
-          color: MinqTokens.surface,
-          width: 1.5,
-        ),
+        border: Border.all(color: MinqTokens.surface, width: 1.5),
       ),
       child: Center(
         child: Text(
@@ -161,10 +157,7 @@ class BadgeWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: MinqTokens.cornerSmall(),
-        border: Border.all(
-          color: MinqTokens.surface,
-          width: 1.5,
-        ),
+        border: Border.all(color: MinqTokens.surface, width: 1.5),
       ),
       child: Text(
         text!,

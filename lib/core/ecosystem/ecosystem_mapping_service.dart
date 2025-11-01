@@ -32,7 +32,10 @@ class EcosystemMappingService {
     if (questLogsSnapshot.docs.length < 20) {
       MinqLogger.info(
         'Not enough data to analyze ecosystem',
-        metadata: {'userId': userId, 'questCount': questLogsSnapshot.docs.length},
+        metadata: {
+          'userId': userId,
+          'questCount': questLogsSnapshot.docs.length,
+        },
       );
       return {};
     }
@@ -114,9 +117,9 @@ class EcosystemMappingService {
 
     coOccurrenceMatrix.forEach((habit, connections) {
       double currentScore = (connections as Map<String, dynamic>).values.fold(
-            0,
-            (currentSum, val) => currentSum + (val as int),
-          );
+        0,
+        (currentSum, val) => currentSum + (val as int),
+      );
       if (currentScore > maxInfluenceScore) {
         maxInfluenceScore = currentScore;
         keystoneHabit = habit;
@@ -143,8 +146,7 @@ class EcosystemMappingService {
     final suggestions = <String>[];
 
     coOccurrenceMatrix.forEach((habitA, connections) {
-      (connections as Map<String, dynamic>)
-          .forEach((habitB, connectionCount) {
+      (connections as Map<String, dynamic>).forEach((habitB, connectionCount) {
         final totalA = occurrenceCount[habitA] ?? 1;
         final probability = (connectionCount as int) / totalA;
         if (probability > 0.6) {

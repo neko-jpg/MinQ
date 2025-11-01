@@ -101,9 +101,7 @@ class _ActiveEventsTab extends ConsumerWidget {
           ...activeEvents.map(
             (event) => Padding(
               padding: EdgeInsets.only(bottom: tokens.spacing.md),
-              child: _FeaturedEventCard(
-                event: event,
-              ),
+              child: _FeaturedEventCard(event: event),
             ),
           ),
         ],
@@ -393,7 +391,9 @@ class _UpcomingEventCard extends StatelessWidget {
                 SizedBox(width: tokens.spacing.xs),
                 Text(
                   '${event.startDate.month}月${event.startDate.day}日開始',
-                  style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
                 const Spacer(),
                 TextButton(
@@ -493,7 +493,9 @@ class _PastEventCard extends StatelessWidget {
             if (event.rewards.isNotEmpty) ...[
               Text(
                 '獲得した報酬',
-                style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: tokens.typography.caption.copyWith(
+                  color: tokens.textMuted,
+                ),
               ),
               SizedBox(height: tokens.spacing.xs),
               Wrap(

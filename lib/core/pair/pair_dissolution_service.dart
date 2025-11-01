@@ -38,18 +38,15 @@ class PairDissolutionService {
       await _updateUserPairStatus(user1Id, pairId, dissolved: true);
       await _updateUserPairStatus(user2Id, pairId, dissolved: true);
 
-      logger.logJson(
-        'Pair dissolved',
-        {'pairId': pairId, 'dissolvedBy': userId, 'reason': reason},
-      );
+      logger.logJson('Pair dissolved', {
+        'pairId': pairId,
+        'dissolvedBy': userId,
+        'reason': reason,
+      });
 
       return true;
     } catch (e, stack) {
-      logger.error(
-        'Failed to dissolve pair',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.error('Failed to dissolve pair', error: e, stackTrace: stack);
       return false;
     }
   }

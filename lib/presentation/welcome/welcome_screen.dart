@@ -171,10 +171,7 @@ class _FeatureCard extends StatelessWidget {
 }
 
 class _BottomNavigation extends StatelessWidget {
-  const _BottomNavigation({
-    required this.onGetStarted,
-    required this.onLogin,
-  });
+  const _BottomNavigation({required this.onGetStarted, required this.onLogin});
 
   final VoidCallback onGetStarted;
   final VoidCallback onLogin;
@@ -183,8 +180,9 @@ class _BottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Padding(
-      padding: EdgeInsets.all(tokens.spacing.md)
-          .copyWith(top: tokens.spacing.sm),
+      padding: EdgeInsets.all(
+        tokens.spacing.md,
+      ).copyWith(top: tokens.spacing.sm),
       child: Column(
         children: [
           SizedBox(
@@ -213,7 +211,10 @@ class _BottomNavigation extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(AppLocalizations.of(context).alreadyHaveAccount, style: tokens.typography.caption),
+              Text(
+                AppLocalizations.of(context).alreadyHaveAccount,
+                style: tokens.typography.caption,
+              ),
               TextButton(
                 onPressed: onLogin,
                 child: Text(

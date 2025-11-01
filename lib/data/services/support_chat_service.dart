@@ -10,8 +10,8 @@ class SupportChatService {
   SupportChatService({
     GenerativeSupportClient? client,
     TFLiteUnifiedAIService? tfliteService,
-  })  : _client = client,
-        _tfliteService = tfliteService;
+  }) : _client = client,
+       _tfliteService = tfliteService;
 
   final GenerativeSupportClient? _client;
   final TFLiteUnifiedAIService? _tfliteService;
@@ -24,10 +24,13 @@ class SupportChatService {
     final tflite = _tfliteService;
     if (tflite != null) {
       try {
-        final historyMessages = history
-            .map((message) =>
-                '${message.role == 'user' ? 'User' : 'Assistant'}: ${message.content}')
-            .toList();
+        final historyMessages =
+            history
+                .map(
+                  (message) =>
+                      '${message.role == 'user' ? 'User' : 'Assistant'}: ${message.content}',
+                )
+                .toList();
 
         await tflite.initialize(); // Ensure service is ready
 
@@ -47,8 +50,11 @@ class SupportChatService {
           content: _supportFallback,
         );
       } catch (error, stackTrace) {
-        log('TFLite support reply failed',
-            error: error, stackTrace: stackTrace);
+        log(
+          'TFLite support reply failed',
+          error: error,
+          stackTrace: stackTrace,
+        );
         if (_client != null) {
           return _fallbackToClient(conversationId, content, history);
         }

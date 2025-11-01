@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Comprehensive Test Runner for MinQ App
-/// 
+///
 /// This script orchestrates the execution of all test suites and provides
 /// detailed reporting on test coverage, performance, and quality metrics.
-/// 
+///
 /// Usage:
 /// ```bash
 /// flutter test test/test_runner.dart
@@ -28,27 +28,45 @@ void main() {
     group('📊 Test Coverage Analysis', () {
       test('should achieve minimum test coverage targets', () async {
         final coverage = await _analyzeCoverage();
-        
+
         // Core business logic should have 80%+ coverage
-        expect(coverage.coreLogicCoverage, greaterThanOrEqualTo(80.0),
-          reason: 'Core business logic coverage should be at least 80%');
-        
+        expect(
+          coverage.coreLogicCoverage,
+          greaterThanOrEqualTo(80.0),
+          reason: 'Core business logic coverage should be at least 80%',
+        );
+
         // UI components should have 70%+ coverage
-        expect(coverage.uiComponentsCoverage, greaterThanOrEqualTo(70.0),
-          reason: 'UI components coverage should be at least 70%');
-        
+        expect(
+          coverage.uiComponentsCoverage,
+          greaterThanOrEqualTo(70.0),
+          reason: 'UI components coverage should be at least 70%',
+        );
+
         // Integration flows should have 60%+ coverage
-        expect(coverage.integrationCoverage, greaterThanOrEqualTo(60.0),
-          reason: 'Integration flows coverage should be at least 60%');
-        
+        expect(
+          coverage.integrationCoverage,
+          greaterThanOrEqualTo(60.0),
+          reason: 'Integration flows coverage should be at least 60%',
+        );
+
         // Overall coverage should be 75%+
-        expect(coverage.overallCoverage, greaterThanOrEqualTo(75.0),
-          reason: 'Overall test coverage should be at least 75%');
-        
+        expect(
+          coverage.overallCoverage,
+          greaterThanOrEqualTo(75.0),
+          reason: 'Overall test coverage should be at least 75%',
+        );
+
         print('✅ Test coverage targets met:');
-        print('   Core Logic: ${coverage.coreLogicCoverage.toStringAsFixed(1)}%');
-        print('   UI Components: ${coverage.uiComponentsCoverage.toStringAsFixed(1)}%');
-        print('   Integration: ${coverage.integrationCoverage.toStringAsFixed(1)}%');
+        print(
+          '   Core Logic: ${coverage.coreLogicCoverage.toStringAsFixed(1)}%',
+        );
+        print(
+          '   UI Components: ${coverage.uiComponentsCoverage.toStringAsFixed(1)}%',
+        );
+        print(
+          '   Integration: ${coverage.integrationCoverage.toStringAsFixed(1)}%',
+        );
         print('   Overall: ${coverage.overallCoverage.toStringAsFixed(1)}%');
       });
     });
@@ -56,19 +74,28 @@ void main() {
     group('⚡ Performance Test Analysis', () {
       test('should meet performance benchmarks', () async {
         final performance = await _analyzePerformance();
-        
+
         // App startup should be under 3 seconds
-        expect(performance.startupTime, lessThan(3000),
-          reason: 'App startup should be under 3 seconds');
-        
+        expect(
+          performance.startupTime,
+          lessThan(3000),
+          reason: 'App startup should be under 3 seconds',
+        );
+
         // Memory usage should be under 150MB
-        expect(performance.memoryUsage, lessThan(150),
-          reason: 'Memory usage should be under 150MB');
-        
+        expect(
+          performance.memoryUsage,
+          lessThan(150),
+          reason: 'Memory usage should be under 150MB',
+        );
+
         // Navigation should be under 300ms
-        expect(performance.navigationTime, lessThan(300),
-          reason: 'Navigation should be under 300ms');
-        
+        expect(
+          performance.navigationTime,
+          lessThan(300),
+          reason: 'Navigation should be under 300ms',
+        );
+
         print('✅ Performance benchmarks met:');
         print('   Startup Time: ${performance.startupTime}ms');
         print('   Memory Usage: ${performance.memoryUsage}MB');
@@ -79,19 +106,28 @@ void main() {
     group('🔍 Code Quality Analysis', () {
       test('should pass static analysis checks', () async {
         final quality = await _analyzeCodeQuality();
-        
+
         // No critical issues
-        expect(quality.criticalIssues, equals(0),
-          reason: 'Should have no critical issues');
-        
+        expect(
+          quality.criticalIssues,
+          equals(0),
+          reason: 'Should have no critical issues',
+        );
+
         // Minimal warnings
-        expect(quality.warnings, lessThan(10),
-          reason: 'Should have fewer than 10 warnings');
-        
+        expect(
+          quality.warnings,
+          lessThan(10),
+          reason: 'Should have fewer than 10 warnings',
+        );
+
         // Good maintainability score
-        expect(quality.maintainabilityScore, greaterThanOrEqualTo(8.0),
-          reason: 'Maintainability score should be at least 8.0/10');
-        
+        expect(
+          quality.maintainabilityScore,
+          greaterThanOrEqualTo(8.0),
+          reason: 'Maintainability score should be at least 8.0/10',
+        );
+
         print('✅ Code quality checks passed:');
         print('   Critical Issues: ${quality.criticalIssues}');
         print('   Warnings: ${quality.warnings}');
@@ -102,15 +138,21 @@ void main() {
     group('🛡️ Security Test Analysis', () {
       test('should pass security vulnerability checks', () async {
         final security = await _analyzeSecurityVulnerabilities();
-        
+
         // No high-severity vulnerabilities
-        expect(security.highSeverityVulns, equals(0),
-          reason: 'Should have no high-severity vulnerabilities');
-        
+        expect(
+          security.highSeverityVulns,
+          equals(0),
+          reason: 'Should have no high-severity vulnerabilities',
+        );
+
         // Minimal medium-severity vulnerabilities
-        expect(security.mediumSeverityVulns, lessThan(3),
-          reason: 'Should have fewer than 3 medium-severity vulnerabilities');
-        
+        expect(
+          security.mediumSeverityVulns,
+          lessThan(3),
+          reason: 'Should have fewer than 3 medium-severity vulnerabilities',
+        );
+
         print('✅ Security checks passed:');
         print('   High Severity: ${security.highSeverityVulns}');
         print('   Medium Severity: ${security.mediumSeverityVulns}');
@@ -121,19 +163,28 @@ void main() {
     group('📱 Platform Compatibility', () {
       test('should support all target platforms', () async {
         final compatibility = await _analyzePlatformCompatibility();
-        
+
         // Android compatibility
-        expect(compatibility.androidSupport, isTrue,
-          reason: 'Should support Android platform');
-        
+        expect(
+          compatibility.androidSupport,
+          isTrue,
+          reason: 'Should support Android platform',
+        );
+
         // iOS compatibility
-        expect(compatibility.iosSupport, isTrue,
-          reason: 'Should support iOS platform');
-        
+        expect(
+          compatibility.iosSupport,
+          isTrue,
+          reason: 'Should support iOS platform',
+        );
+
         // Web compatibility (if applicable)
-        expect(compatibility.webSupport, isTrue,
-          reason: 'Should support Web platform');
-        
+        expect(
+          compatibility.webSupport,
+          isTrue,
+          reason: 'Should support Web platform',
+        );
+
         print('✅ Platform compatibility verified:');
         print('   Android: ${compatibility.androidSupport ? '✓' : '✗'}');
         print('   iOS: ${compatibility.iosSupport ? '✓' : '✗'}');
@@ -144,42 +195,66 @@ void main() {
     group('🌐 Accessibility Compliance', () {
       test('should meet accessibility standards', () async {
         final accessibility = await _analyzeAccessibility();
-        
+
         // WCAG AA compliance
-        expect(accessibility.wcagAACompliance, greaterThanOrEqualTo(95.0),
-          reason: 'Should meet WCAG AA standards (95%+ compliance)');
-        
+        expect(
+          accessibility.wcagAACompliance,
+          greaterThanOrEqualTo(95.0),
+          reason: 'Should meet WCAG AA standards (95%+ compliance)',
+        );
+
         // Screen reader support
-        expect(accessibility.screenReaderSupport, isTrue,
-          reason: 'Should support screen readers');
-        
+        expect(
+          accessibility.screenReaderSupport,
+          isTrue,
+          reason: 'Should support screen readers',
+        );
+
         // Keyboard navigation
-        expect(accessibility.keyboardNavigation, isTrue,
-          reason: 'Should support keyboard navigation');
-        
+        expect(
+          accessibility.keyboardNavigation,
+          isTrue,
+          reason: 'Should support keyboard navigation',
+        );
+
         print('✅ Accessibility standards met:');
-        print('   WCAG AA Compliance: ${accessibility.wcagAACompliance.toStringAsFixed(1)}%');
-        print('   Screen Reader: ${accessibility.screenReaderSupport ? '✓' : '✗'}');
-        print('   Keyboard Nav: ${accessibility.keyboardNavigation ? '✓' : '✗'}');
+        print(
+          '   WCAG AA Compliance: ${accessibility.wcagAACompliance.toStringAsFixed(1)}%',
+        );
+        print(
+          '   Screen Reader: ${accessibility.screenReaderSupport ? '✓' : '✗'}',
+        );
+        print(
+          '   Keyboard Nav: ${accessibility.keyboardNavigation ? '✓' : '✗'}',
+        );
       });
     });
 
     group('🔄 Regression Test Analysis', () {
       test('should detect no regressions', () async {
         final regression = await _analyzeRegressions();
-        
+
         // No functional regressions
-        expect(regression.functionalRegressions, equals(0),
-          reason: 'Should have no functional regressions');
-        
+        expect(
+          regression.functionalRegressions,
+          equals(0),
+          reason: 'Should have no functional regressions',
+        );
+
         // No performance regressions
-        expect(regression.performanceRegressions, equals(0),
-          reason: 'Should have no performance regressions');
-        
+        expect(
+          regression.performanceRegressions,
+          equals(0),
+          reason: 'Should have no performance regressions',
+        );
+
         // No UI regressions
-        expect(regression.uiRegressions, equals(0),
-          reason: 'Should have no UI regressions');
-        
+        expect(
+          regression.uiRegressions,
+          equals(0),
+          reason: 'Should have no UI regressions',
+        );
+
         print('✅ No regressions detected:');
         print('   Functional: ${regression.functionalRegressions}');
         print('   Performance: ${regression.performanceRegressions}');
@@ -209,7 +284,7 @@ Future<void> _cleanupTestEnvironment() async {
 Future<TestCoverage> _analyzeCoverage() async {
   // This would integrate with coverage tools like lcov
   await Future.delayed(const Duration(milliseconds: 100));
-  
+
   return TestCoverage(
     coreLogicCoverage: 85.2,
     uiComponentsCoverage: 78.9,
@@ -222,7 +297,7 @@ Future<TestCoverage> _analyzeCoverage() async {
 Future<PerformanceMetrics> _analyzePerformance() async {
   // This would integrate with performance monitoring tools
   await Future.delayed(const Duration(milliseconds: 100));
-  
+
   return PerformanceMetrics(
     startupTime: 2450,
     memoryUsage: 89.5,
@@ -234,19 +309,15 @@ Future<PerformanceMetrics> _analyzePerformance() async {
 Future<CodeQuality> _analyzeCodeQuality() async {
   // This would integrate with static analysis tools
   await Future.delayed(const Duration(milliseconds: 100));
-  
-  return CodeQuality(
-    criticalIssues: 0,
-    warnings: 3,
-    maintainabilityScore: 8.7,
-  );
+
+  return CodeQuality(criticalIssues: 0, warnings: 3, maintainabilityScore: 8.7);
 }
 
 /// Analyze security vulnerabilities
 Future<SecurityAnalysis> _analyzeSecurityVulnerabilities() async {
   // This would integrate with security scanning tools
   await Future.delayed(const Duration(milliseconds: 100));
-  
+
   return SecurityAnalysis(
     highSeverityVulns: 0,
     mediumSeverityVulns: 1,
@@ -258,7 +329,7 @@ Future<SecurityAnalysis> _analyzeSecurityVulnerabilities() async {
 Future<PlatformCompatibility> _analyzePlatformCompatibility() async {
   // This would check platform-specific compatibility
   await Future.delayed(const Duration(milliseconds: 100));
-  
+
   return PlatformCompatibility(
     androidSupport: true,
     iosSupport: true,
@@ -270,7 +341,7 @@ Future<PlatformCompatibility> _analyzePlatformCompatibility() async {
 Future<AccessibilityAnalysis> _analyzeAccessibility() async {
   // This would integrate with accessibility testing tools
   await Future.delayed(const Duration(milliseconds: 100));
-  
+
   return AccessibilityAnalysis(
     wcagAACompliance: 96.8,
     screenReaderSupport: true,
@@ -282,7 +353,7 @@ Future<AccessibilityAnalysis> _analyzeAccessibility() async {
 Future<RegressionAnalysis> _analyzeRegressions() async {
   // This would compare against baseline metrics
   await Future.delayed(const Duration(milliseconds: 100));
-  
+
   return RegressionAnalysis(
     functionalRegressions: 0,
     performanceRegressions: 0,
@@ -294,7 +365,7 @@ Future<RegressionAnalysis> _analyzeRegressions() async {
 Future<void> _generateTestReport() async {
   final reportFile = File('test_reports/comprehensive_test_report.md');
   await reportFile.parent.create(recursive: true);
-  
+
   final report = '''
 # MinQ Comprehensive Test Report
 

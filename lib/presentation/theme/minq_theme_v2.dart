@@ -5,12 +5,12 @@ import 'package:minq/presentation/theme/color_tokens.dart';
 import 'package:minq/presentation/theme/component_themes.dart';
 
 /// MinQ Theme System v2.0
-/// 
+///
 /// Complete theme implementation with new brand colors:
 /// - Midnight Indigo (#4F46E5) as primary
-/// - Aurora Violet (#8B5CF6) as secondary  
+/// - Aurora Violet (#8B5CF6) as secondary
 /// - Horizon Teal (#14B8A6) as tertiary
-/// 
+///
 /// Features:
 /// - WCAG AA compliant colors
 /// - Comprehensive component theming
@@ -22,52 +22,52 @@ class MinqThemeV2 {
   /// Light theme with new brand colors
   static ThemeData light() {
     const colors = ColorTokens.light;
-    
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      
+
       // Color Scheme
       colorScheme: ColorScheme.light(
         primary: colors.primary,
         onPrimary: colors.onPrimary,
         primaryContainer: colors.primary.withOpacity(0.12),
         onPrimaryContainer: colors.primary,
-        
+
         secondary: colors.secondary,
         onSecondary: colors.onSecondary,
         secondaryContainer: colors.secondary.withOpacity(0.12),
         onSecondaryContainer: colors.secondary,
-        
+
         tertiary: colors.tertiary,
         onTertiary: colors.onTertiary,
         tertiaryContainer: colors.tertiary.withOpacity(0.12),
         onTertiaryContainer: colors.tertiary,
-        
+
         error: colors.error,
         onError: colors.onError,
         errorContainer: colors.error.withOpacity(0.12),
         onErrorContainer: colors.error,
-        
+
         surface: colors.surface,
         onSurface: colors.onSurface,
         surfaceContainerHighest: colors.surfaceVariant,
         onSurfaceVariant: colors.textSecondary,
-        
+
         outline: colors.border,
         outlineVariant: colors.divider,
-        
+
         shadow: Colors.black,
         scrim: Colors.black,
-        
+
         inverseSurface: colors.textPrimary,
         onInverseSurface: colors.surface,
         inversePrimary: colors.primary.withOpacity(0.8),
       ),
-      
+
       // Typography
       textTheme: _buildTextTheme(colors),
-      
+
       // Component Themes
       appBarTheme: MinqComponentThemes.appBarTheme(colors),
       bottomNavigationBarTheme: MinqComponentThemes.bottomNavTheme(colors),
@@ -81,7 +81,9 @@ class MinqThemeV2 {
       checkboxTheme: MinqComponentThemes.checkboxTheme(colors),
       radioTheme: MinqComponentThemes.radioTheme(colors),
       sliderTheme: MinqComponentThemes.sliderTheme(colors),
-      progressIndicatorTheme: MinqComponentThemes.progressIndicatorTheme(colors),
+      progressIndicatorTheme: MinqComponentThemes.progressIndicatorTheme(
+        colors,
+      ),
       snackBarTheme: MinqComponentThemes.snackBarTheme(colors),
       dialogTheme: MinqComponentThemes.dialogTheme(colors),
       bottomSheetTheme: MinqComponentThemes.bottomSheetTheme(colors),
@@ -91,13 +93,13 @@ class MinqThemeV2 {
       dividerTheme: MinqComponentThemes.dividerTheme(colors),
       iconTheme: MinqComponentThemes.iconTheme(colors),
       primaryIconTheme: MinqComponentThemes.primaryIconTheme(colors),
-      
+
       // Visual Density
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      
+
       // Material Tap Target Size
       materialTapTargetSize: MaterialTapTargetSize.padded,
-      
+
       // Page Transitions
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -105,7 +107,7 @@ class MinqThemeV2 {
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),
-      
+
       // Splash Factory
       splashFactory: InkRipple.splashFactory,
     );
@@ -114,52 +116,52 @@ class MinqThemeV2 {
   /// Dark theme with adjusted brand colors
   static ThemeData dark() {
     const colors = ColorTokens.dark;
-    
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      
+
       // Color Scheme
       colorScheme: ColorScheme.dark(
         primary: colors.primary,
         onPrimary: colors.onPrimary,
         primaryContainer: colors.primary.withOpacity(0.12),
         onPrimaryContainer: colors.primary,
-        
+
         secondary: colors.secondary,
         onSecondary: colors.onSecondary,
         secondaryContainer: colors.secondary.withOpacity(0.12),
         onSecondaryContainer: colors.secondary,
-        
+
         tertiary: colors.tertiary,
         onTertiary: colors.onTertiary,
         tertiaryContainer: colors.tertiary.withOpacity(0.12),
         onTertiaryContainer: colors.tertiary,
-        
+
         error: colors.error,
         onError: colors.onError,
         errorContainer: colors.error.withOpacity(0.12),
         onErrorContainer: colors.error,
-        
+
         surface: colors.surface,
         onSurface: colors.onSurface,
         surfaceContainerHighest: colors.surfaceVariant,
         onSurfaceVariant: colors.textSecondary,
-        
+
         outline: colors.border,
         outlineVariant: colors.divider,
-        
+
         shadow: Colors.black,
         scrim: Colors.black,
-        
+
         inverseSurface: colors.textPrimary,
         onInverseSurface: colors.surface,
         inversePrimary: colors.primary.withOpacity(0.8),
       ),
-      
+
       // Typography
       textTheme: _buildTextTheme(colors),
-      
+
       // Component Themes
       appBarTheme: MinqComponentThemes.appBarTheme(colors),
       bottomNavigationBarTheme: MinqComponentThemes.bottomNavTheme(colors),
@@ -173,7 +175,9 @@ class MinqThemeV2 {
       checkboxTheme: MinqComponentThemes.checkboxTheme(colors),
       radioTheme: MinqComponentThemes.radioTheme(colors),
       sliderTheme: MinqComponentThemes.sliderTheme(colors),
-      progressIndicatorTheme: MinqComponentThemes.progressIndicatorTheme(colors),
+      progressIndicatorTheme: MinqComponentThemes.progressIndicatorTheme(
+        colors,
+      ),
       snackBarTheme: MinqComponentThemes.snackBarTheme(colors),
       dialogTheme: MinqComponentThemes.dialogTheme(colors),
       bottomSheetTheme: MinqComponentThemes.bottomSheetTheme(colors),
@@ -183,13 +187,13 @@ class MinqThemeV2 {
       dividerTheme: MinqComponentThemes.dividerTheme(colors),
       iconTheme: MinqComponentThemes.iconTheme(colors),
       primaryIconTheme: MinqComponentThemes.primaryIconTheme(colors),
-      
+
       // Visual Density
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      
+
       // Material Tap Target Size
       materialTapTargetSize: MaterialTapTargetSize.padded,
-      
+
       // Page Transitions
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -197,7 +201,7 @@ class MinqThemeV2 {
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),
-      
+
       // Splash Factory
       splashFactory: InkRipple.splashFactory,
     );
@@ -228,7 +232,7 @@ class MinqThemeV2 {
         height: 1.22,
         color: colors.textPrimary,
       ),
-      
+
       // Headline styles
       headlineLarge: GoogleFonts.plusJakartaSans(
         fontSize: 32,
@@ -251,7 +255,7 @@ class MinqThemeV2 {
         height: 1.33,
         color: colors.textPrimary,
       ),
-      
+
       // Title styles
       titleLarge: GoogleFonts.plusJakartaSans(
         fontSize: 22,
@@ -274,7 +278,7 @@ class MinqThemeV2 {
         height: 1.43,
         color: colors.textPrimary,
       ),
-      
+
       // Body styles
       bodyLarge: GoogleFonts.plusJakartaSans(
         fontSize: 16,
@@ -297,7 +301,7 @@ class MinqThemeV2 {
         height: 1.33,
         color: colors.textSecondary,
       ),
-      
+
       // Label styles
       labelLarge: GoogleFonts.plusJakartaSans(
         fontSize: 14,
@@ -328,43 +332,50 @@ class MinqThemeV2 {
 extension MinqThemeV2Extensions on ThemeData {
   /// Get quest screen colors
   Map<String, Color> get questColors {
-    final colors = brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
+    final colors =
+        brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
     return MinqScreenThemes.questColors(colors);
   }
-  
+
   /// Get statistics screen colors
   Map<String, Color> get statsColors {
-    final colors = brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
+    final colors =
+        brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
     return MinqScreenThemes.statsColors(colors);
   }
-  
+
   /// Get achievement screen colors
   Map<String, Color> get achievementColors {
-    final colors = brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
+    final colors =
+        brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
     return MinqScreenThemes.achievementColors(colors);
   }
-  
+
   /// Get AI chat screen colors
   Map<String, Color> get aiChatColors {
-    final colors = brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
+    final colors =
+        brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
     return MinqScreenThemes.aiChatColors(colors);
   }
-  
+
   /// Get settings screen colors
   Map<String, Color> get settingsColors {
-    final colors = brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
+    final colors =
+        brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
     return MinqScreenThemes.settingsColors(colors);
   }
-  
+
   /// Get premium screen colors
   Map<String, Color> get premiumColors {
-    final colors = brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
+    final colors =
+        brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
     return MinqScreenThemes.premiumColors(colors);
   }
-  
+
   /// Get offline mode colors
   Map<String, Color> get offlineColors {
-    final colors = brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
+    final colors =
+        brightness == Brightness.light ? ColorTokens.light : ColorTokens.dark;
     return MinqScreenThemes.offlineColors(colors);
   }
 }

@@ -28,30 +28,30 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final uid = ref.watch(uidProvider);
-    
+
     if (uid == null) {
       return _buildLoginPrompt(tokens, l10n);
     }
 
     final xpSystem = ref.watch(xpSystemProvider);
-    
+
     return FutureBuilder<UserLevelProgress>(
       future: xpSystem.getUserLevelProgress(uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildLoadingWidget(tokens);
         }
-        
+
         if (snapshot.hasError) {
           return _buildErrorWidget(tokens, l10n);
         }
-        
+
         final progress = snapshot.data!;
-        
+
         if (isCompact) {
           return _buildCompactWidget(context, progress, tokens, l10n);
         }
-        
+
         return _buildFullWidget(context, progress, tokens, l10n);
       },
     );
@@ -75,17 +75,15 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
             ],
           ),
           borderRadius: BorderRadius.circular(tokens.radius.lg),
-          border: Border.all(
-            color: tokens.brandPrimary.withOpacity(0.3),
-          ),
+          border: Border.all(color: tokens.brandPrimary.withOpacity(0.3)),
         ),
         child: Row(
           children: [
             // レベルアイコン
             _buildLevelIcon(progress, tokens),
-            
+
             SizedBox(width: tokens.spacing.md),
-            
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,9 +94,9 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  
+
                   SizedBox(height: tokens.spacing.xs),
-                  
+
                   if (!progress.isMaxLevel) ...[
                     _buildProgressBar(progress, tokens),
                     SizedBox(height: tokens.spacing.xs),
@@ -119,7 +117,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
                 ],
               ),
             ),
-            
+
             if (showXPDetails) ...[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -140,12 +138,8 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
                 ],
               ),
             ],
-            
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: tokens.textMuted,
-            ),
+
+            Icon(Icons.arrow_forward_ios, size: 16, color: tokens.textMuted),
           ],
         ),
       ),
@@ -170,9 +164,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(tokens.radius.xl),
-        border: Border.all(
-          color: tokens.brandPrimary.withOpacity(0.3),
-        ),
+        border: Border.all(color: tokens.brandPrimary.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,11 +172,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
           // ヘッダー
           Row(
             children: [
-              Icon(
-                Icons.auto_awesome,
-                color: tokens.brandPrimary,
-                size: 24,
-              ),
+              Icon(Icons.auto_awesome, color: tokens.brandPrimary, size: 24),
               SizedBox(width: tokens.spacing.sm),
               Text(
                 l10n.yourLevel,
@@ -195,11 +183,12 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
               const Spacer(),
               if (onTap != null)
                 GestureDetector(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const XPHistoryScreen(),
-                    ),
-                  ),
+                  onTap:
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const XPHistoryScreen(),
+                        ),
+                      ),
                   child: Icon(
                     Icons.history,
                     size: 20,
@@ -215,9 +204,9 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
           Row(
             children: [
               _buildLevelIcon(progress, tokens, size: 80),
-              
+
               SizedBox(width: tokens.spacing.lg),
-              
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,8 +225,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
                       ),
                     ),
                     SizedBox(height: tokens.spacing.sm),
-                    if (showXPDetails)
-                      _buildXPDisplay(progress, tokens, l10n),
+                    if (showXPDetails) _buildXPDisplay(progress, tokens, l10n),
                   ],
                 ),
               ),
@@ -258,16 +246,17 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildLevelIcon(UserLevelProgress progress, MinqTheme tokens, {double size = 64}) {
+  Widget _buildLevelIcon(
+    UserLevelProgress progress,
+    MinqTheme tokens, {
+    double size = 64,
+  }) {
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.brandPrimary,
-            tokens.brandSecondary,
-          ],
+          colors: [tokens.brandPrimary, tokens.brandSecondary],
         ),
         shape: BoxShape.circle,
         boxShadow: [
@@ -304,10 +293,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                tokens.brandPrimary,
-                tokens.brandSecondary,
-              ],
+              colors: [tokens.brandPrimary, tokens.brandSecondary],
             ),
             borderRadius: BorderRadius.circular(tokens.radius.sm),
           ),
@@ -316,7 +302,11 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildXPDisplay(UserLevelProgress progress, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildXPDisplay(
+    UserLevelProgress progress,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: tokens.spacing.sm,
@@ -329,11 +319,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.stars,
-            color: tokens.brandPrimary,
-            size: 16,
-          ),
+          Icon(Icons.stars, color: tokens.brandPrimary, size: 16),
           SizedBox(width: tokens.spacing.xs),
           Text(
             '${progress.currentXP} XP',
@@ -354,7 +340,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
     AppLocalizations l10n,
   ) {
     final nextLevel = progress.nextLevelInfo!;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -362,9 +348,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
           children: [
             Text(
               '${l10n.nextLevel}: ${nextLevel.name}',
-              style: tokens.typography.h4.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
             ),
             const Spacer(),
             Text(
@@ -408,26 +392,20 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
     if (nextLevel.unlockedFeatures.isEmpty && nextLevel.rewards.isEmpty) {
       return const SizedBox.shrink();
     }
-    
+
     return Container(
       padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
         color: tokens.success.withOpacity(0.1),
         borderRadius: BorderRadius.circular(tokens.radius.md),
-        border: Border.all(
-          color: tokens.success.withOpacity(0.3),
-        ),
+        border: Border.all(color: tokens.success.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                Icons.lock_open,
-                color: tokens.success,
-                size: 20,
-              ),
+              Icon(Icons.lock_open, color: tokens.success, size: 20),
               SizedBox(width: tokens.spacing.sm),
               Text(
                 l10n.unlockRewards,
@@ -445,9 +423,12 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
             spacing: tokens.spacing.xs,
             runSpacing: tokens.spacing.xs,
             children: [
-              ...nextLevel.rewards.map((reward) => _buildRewardChip(reward, tokens)),
-              ...nextLevel.unlockedFeatures.map((feature) => 
-                _buildFeatureChip(feature, tokens, l10n)),
+              ...nextLevel.rewards.map(
+                (reward) => _buildRewardChip(reward, tokens),
+              ),
+              ...nextLevel.unlockedFeatures.map(
+                (feature) => _buildFeatureChip(feature, tokens, l10n),
+              ),
             ],
           ),
         ],
@@ -475,9 +456,13 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeatureChip(String feature, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildFeatureChip(
+    String feature,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     final featureName = _getFeatureDisplayName(feature, l10n);
-    
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: tokens.spacing.sm,
@@ -497,7 +482,11 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildMaxLevelSection(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildMaxLevelSection(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
@@ -511,11 +500,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.emoji_events,
-            color: Colors.amber,
-            size: 32,
-          ),
+          const Icon(Icons.emoji_events, color: Colors.amber, size: 32),
           SizedBox(width: tokens.spacing.md),
           Expanded(
             child: Column(
@@ -563,17 +548,11 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.error_outline,
-            color: tokens.error,
-            size: 24,
-          ),
+          Icon(Icons.error_outline, color: tokens.error, size: 24),
           SizedBox(width: tokens.spacing.md),
           Text(
             l10n.errorLoadingLevel,
-            style: tokens.typography.body.copyWith(
-              color: tokens.error,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.error),
           ),
         ],
       ),
@@ -589,17 +568,11 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.person_outline,
-            color: tokens.textMuted,
-            size: 24,
-          ),
+          Icon(Icons.person_outline, color: tokens.textMuted, size: 24),
           SizedBox(width: tokens.spacing.md),
           Text(
             l10n.pleaseLogin,
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
         ],
       ),
@@ -609,39 +582,46 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
   void _showLevelDetails(BuildContext context, UserLevelProgress progress) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('${AppLocalizations.of(context).level} ${progress.currentLevel}'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(progress.currentLevelInfo.name),
-            const SizedBox(height: 8),
-            Text(progress.currentLevelInfo.description),
-            const SizedBox(height: 16),
-            Text('${AppLocalizations.of(context).currentXP}: ${progress.currentXP}'),
-            if (!progress.isMaxLevel)
-              Text('${AppLocalizations.of(context).xpToNext}: ${progress.xpToNextLevel}'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context).close),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const XPHistoryScreen(),
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              '${AppLocalizations.of(context).level} ${progress.currentLevel}',
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(progress.currentLevelInfo.name),
+                const SizedBox(height: 8),
+                Text(progress.currentLevelInfo.description),
+                const SizedBox(height: 16),
+                Text(
+                  '${AppLocalizations.of(context).currentXP}: ${progress.currentXP}',
                 ),
-              );
-            },
-            child: Text(AppLocalizations.of(context).viewHistory),
+                if (!progress.isMaxLevel)
+                  Text(
+                    '${AppLocalizations.of(context).xpToNext}: ${progress.xpToNextLevel}',
+                  ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(AppLocalizations.of(context).close),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const XPHistoryScreen(),
+                    ),
+                  );
+                },
+                child: Text(AppLocalizations.of(context).viewHistory),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

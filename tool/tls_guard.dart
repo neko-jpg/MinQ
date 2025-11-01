@@ -7,8 +7,11 @@ void main() {
 
   for (final entity in root.listSync(recursive: true)) {
     if (entity is! File) continue;
-    if (!entity.path.endsWith('.dart') && !entity.path.endsWith('.yaml')) continue;
-    if (entity.path.contains('${Platform.pathSeparator}.dart_tool${Platform.pathSeparator}')) {
+    if (!entity.path.endsWith('.dart') && !entity.path.endsWith('.yaml'))
+      continue;
+    if (entity.path.contains(
+      '${Platform.pathSeparator}.dart_tool${Platform.pathSeparator}',
+    )) {
       continue;
     }
 

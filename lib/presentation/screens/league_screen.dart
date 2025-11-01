@@ -87,12 +87,13 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: LeagueSystem.leagues.keys.map((league) {
-                return LeagueRankingWidget(
-                  league: league,
-                  currentUserId: currentUser.value?.userId,
-                );
-              }).toList(),
+              children:
+                  LeagueSystem.leagues.keys.map((league) {
+                    return LeagueRankingWidget(
+                      league: league,
+                      currentUserId: currentUser.value?.userId,
+                    );
+                  }).toList(),
             ),
           ),
         ],
@@ -110,23 +111,20 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
         indicatorColor: context.colorTokens.primary,
         labelColor: context.colorTokens.primary,
         unselectedLabelColor: context.colorTokens.textSecondary,
-        tabs: LeagueSystem.leagues.entries.map((entry) {
-          final config = entry.value;
-          return Tab(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  config.icon,
-                  size: 20,
-                  color: config.color,
+        tabs:
+            LeagueSystem.leagues.entries.map((entry) {
+              final config = entry.value;
+              return Tab(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(config.icon, size: 20, color: config.color),
+                    const SizedBox(width: 8),
+                    Text(config.name),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Text(config.name),
-              ],
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -190,11 +188,11 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
 
   Widget _buildCurrentUserRanking(BuildContext context, LocalUser user) {
     final userRanking = ref.watch(userRankingProvider(user.userId));
-    
+
     return userRanking.when(
       data: (ranking) {
         if (ranking == null) return const SizedBox.shrink();
-        
+
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           padding: const EdgeInsets.all(16),
@@ -271,11 +269,7 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
   ) {
     return Column(
       children: [
-        Icon(
-          icon,
-          color: context.colorTokens.textSecondary,
-          size: 20,
-        ),
+        Icon(icon, color: context.colorTokens.textSecondary, size: 20),
         const SizedBox(height: 4),
         Text(
           value,
@@ -318,47 +312,48 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(currentLeague.icon, color: currentLeague.color),
-            const SizedBox(width: 8),
-            Text('${currentLeague.name} 昇格条件'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildPromotionRequirement(
-              context,
-              '週間XP',
-              '${currentLeague.promotionThreshold} XP以上',
-              Icons.stars,
+      builder:
+          (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(currentLeague.icon, color: currentLeague.color),
+                const SizedBox(width: 8),
+                Text('${currentLeague.name} 昇格条件'),
+              ],
             ),
-            const SizedBox(height: 12),
-            _buildPromotionRequirement(
-              context,
-              '総XP',
-              '${currentLeague.maxXP} XP以上',
-              Icons.emoji_events,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildPromotionRequirement(
+                  context,
+                  '週間XP',
+                  '${currentLeague.promotionThreshold} XP以上',
+                  Icons.stars,
+                ),
+                const SizedBox(height: 12),
+                _buildPromotionRequirement(
+                  context,
+                  '総XP',
+                  '${currentLeague.maxXP} XP以上',
+                  Icons.emoji_events,
+                ),
+                const SizedBox(height: 12),
+                _buildPromotionRequirement(
+                  context,
+                  '継続性',
+                  '週次目標達成',
+                  Icons.trending_up,
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            _buildPromotionRequirement(
-              context,
-              '継続性',
-              '週次目標達成',
-              Icons.trending_up,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('閉じる'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('閉じる'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -370,11 +365,7 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
   ) {
     return Row(
       children: [
-        Icon(
-          icon,
-          color: context.colorTokens.primary,
-          size: 20,
-        ),
+        Icon(icon, color: context.colorTokens.primary, size: 20),
         const SizedBox(width: 8),
         Expanded(
           child: Column(
@@ -418,16 +409,13 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           // Title
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                Icon(
-                  Icons.info_outline,
-                  color: context.colorTokens.primary,
-                ),
+                Icon(Icons.info_outline, color: context.colorTokens.primary),
                 const SizedBox(width: 8),
                 Text(
                   'リーグシステムについて',
@@ -438,9 +426,9 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
               ],
             ),
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // League info list
           Expanded(
             child: ListView.builder(
@@ -449,7 +437,7 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
               itemBuilder: (context, index) {
                 final entry = LeagueSystem.leagues.entries.elementAt(index);
                 final config = entry.value;
-                
+
                 return Container(
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(16),
@@ -466,11 +454,7 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            config.icon,
-                            color: Colors.white,
-                            size: 24,
-                          ),
+                          Icon(config.icon, color: Colors.white, size: 24),
                           const SizedBox(width: 8),
                           Text(
                             config.name,
@@ -514,7 +498,7 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen>
   String _formatLastUpdated(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
-    
+
     if (difference.inMinutes < 60) {
       return '${difference.inMinutes}分前';
     } else if (difference.inHours < 24) {

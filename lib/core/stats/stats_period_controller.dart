@@ -1,11 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 統計期間
-enum StatsPeriod {
-  week,
-  month,
-  year,
-}
+enum StatsPeriod { week, month, year }
 
 extension StatsPeriodExtension on StatsPeriod {
   String get displayName {
@@ -47,5 +43,5 @@ class StatsPeriodController extends StateNotifier<StatsPeriod> {
 /// 統計期間プロバイダー
 final statsPeriodProvider =
     StateNotifierProvider<StatsPeriodController, StatsPeriod>((ref) {
-  return StatsPeriodController();
-});
+      return StatsPeriodController();
+    });

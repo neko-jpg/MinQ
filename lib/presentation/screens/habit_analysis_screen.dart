@@ -203,9 +203,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildRiskLevelCard(
-    FailurePredictionResult result,
-  ) {
+  Widget _buildRiskLevelCard(FailurePredictionResult result) {
     final tokens = context.tokens;
     final riskLevel = result.riskLevel;
     Color riskColor;
@@ -264,8 +262,9 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
 
           Text(
             riskDescription,
-            style: tokens.typography.bodyLarge
-                .copyWith(color: riskColor.withAlpha(204)),
+            style: tokens.typography.bodyLarge.copyWith(
+              color: riskColor.withAlpha(204),
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -273,9 +272,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildPredictionScoreCard(
-    FailurePredictionResult result,
-  ) {
+  Widget _buildPredictionScoreCard(FailurePredictionResult result) {
     final tokens = context.tokens;
     final score = result.prediction.predictionScore;
     final percentage = (score * 100).toInt();
@@ -398,9 +395,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildNextPredictionCard(
-    FailurePredictionResult result,
-  ) {
+  Widget _buildNextPredictionCard(FailurePredictionResult result) {
     final tokens = context.tokens;
     final tomorrow = DateTime.now().add(const Duration(days: 1));
     final dayName = _getDayDisplayName(tomorrow.weekday);
@@ -424,7 +419,9 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
               SizedBox(width: tokens.spacing.sm),
               Text(
                 '明日の予測',
-                style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.typography.h4.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -663,8 +660,10 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
               ),
               if (suffix.isNotEmpty) ...[
                 SizedBox(width: tokens.spacing.xs),
-                Text(suffix,
-                    style: tokens.typography.caption.copyWith(color: color)),
+                Text(
+                  suffix,
+                  style: tokens.typography.caption.copyWith(color: color),
+                ),
               ],
             ],
           ),

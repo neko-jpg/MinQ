@@ -62,10 +62,7 @@ class FirestoreConfig {
       await FirebaseFirestore.instance.clearPersistence();
       MinqLogger.info('Firestore cache cleared');
     } catch (e) {
-      MinqLogger.error(
-        'Failed to clear Firestore cache',
-        exception: e,
-      );
+      MinqLogger.error('Failed to clear Firestore cache', exception: e);
     }
   }
 
@@ -75,10 +72,7 @@ class FirestoreConfig {
       await FirebaseFirestore.instance.waitForPendingWrites();
       MinqLogger.info('All pending writes completed');
     } catch (e) {
-      MinqLogger.error(
-        'Failed to wait for pending writes',
-        exception: e,
-      );
+      MinqLogger.error('Failed to wait for pending writes', exception: e);
     }
   }
 
@@ -88,10 +82,7 @@ class FirestoreConfig {
       await FirebaseFirestore.instance.disableNetwork();
       MinqLogger.info('Firestore network disabled');
     } catch (e) {
-      MinqLogger.error(
-        'Failed to disable network',
-        exception: e,
-      );
+      MinqLogger.error('Failed to disable network', exception: e);
     }
   }
 
@@ -101,10 +92,7 @@ class FirestoreConfig {
       await FirebaseFirestore.instance.enableNetwork();
       MinqLogger.info('Firestore network enabled');
     } catch (e) {
-      MinqLogger.error(
-        'Failed to enable network',
-        exception: e,
-      );
+      MinqLogger.error('Failed to enable network', exception: e);
     }
   }
 }

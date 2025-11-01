@@ -6,16 +6,12 @@ import '../../../lib/data/local/models/local_quest.dart';
 
 void main() {
   group('LeagueSystem', () {
-
     group('League Configuration', () {
       test('should have all required leagues', () {
-        expect(LeagueSystem.leagues.keys, containsAll([
-          'bronze',
-          'silver', 
-          'gold',
-          'platinum',
-          'diamond',
-        ]));
+        expect(
+          LeagueSystem.leagues.keys,
+          containsAll(['bronze', 'silver', 'gold', 'platinum', 'diamond']),
+        );
       });
 
       test('should have proper league hierarchy', () {
@@ -40,11 +36,14 @@ void main() {
 
       test('should have proper relegation thresholds', () {
         final leagues = LeagueSystem.leagues.values;
-        
+
         for (final league in leagues) {
           if (league.id != 'bronze') {
             expect(league.relegationThreshold, greaterThan(0));
-            expect(league.relegationThreshold, lessThan(league.promotionThreshold));
+            expect(
+              league.relegationThreshold,
+              lessThan(league.promotionThreshold),
+            );
           }
         }
       });
@@ -53,42 +52,51 @@ void main() {
     group('League Promotion Logic', () {
       test('should identify promotion eligibility correctly', () {
         // Test case: User eligible for promotion from bronze to silver
-        final user = LocalUser()
-          ..uid = 'test-user'
-          ..displayName = 'Test User'
-          ..currentLeague = 'bronze'
-          ..weeklyXP = 850  // Above bronze promotion threshold (800)
-          ..totalXP = 1000  // Above bronze max XP (999)
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now();
+        final user =
+            LocalUser()
+              ..uid = 'test-user'
+              ..displayName = 'Test User'
+              ..currentLeague = 'bronze'
+              ..weeklyXP =
+                  850 // Above bronze promotion threshold (800)
+              ..totalXP =
+                  1000 // Above bronze max XP (999)
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now();
 
         // Test the logic structure
         expect(user.weeklyXP, greaterThan(800)); // Bronze promotion threshold
-        expect(user.totalXP, greaterThan(999));  // Bronze max XP
+        expect(user.totalXP, greaterThan(999)); // Bronze max XP
       });
 
       test('should not promote if weekly XP is insufficient', () {
-        final user = LocalUser()
-          ..uid = 'test-user'
-          ..displayName = 'Test User'
-          ..currentLeague = 'bronze'
-          ..weeklyXP = 700  // Below bronze promotion threshold (800)
-          ..totalXP = 1000  // Above bronze max XP
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now();
+        final user =
+            LocalUser()
+              ..uid = 'test-user'
+              ..displayName = 'Test User'
+              ..currentLeague = 'bronze'
+              ..weeklyXP =
+                  700 // Below bronze promotion threshold (800)
+              ..totalXP =
+                  1000 // Above bronze max XP
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now();
 
         expect(user.weeklyXP, lessThan(800));
       });
 
       test('should not promote if total XP is insufficient', () {
-        final user = LocalUser()
-          ..uid = 'test-user'
-          ..displayName = 'Test User'
-          ..currentLeague = 'bronze'
-          ..weeklyXP = 850  // Above bronze promotion threshold
-          ..totalXP = 900   // Below bronze max XP (999)
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now();
+        final user =
+            LocalUser()
+              ..uid = 'test-user'
+              ..displayName = 'Test User'
+              ..currentLeague = 'bronze'
+              ..weeklyXP =
+                  850 // Above bronze promotion threshold
+              ..totalXP =
+                  900 // Below bronze max XP (999)
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now();
 
         expect(user.totalXP, lessThan(999));
       });
@@ -96,28 +104,32 @@ void main() {
 
     group('League Relegation Logic', () {
       test('should identify relegation eligibility correctly', () {
-        final user = LocalUser()
-          ..uid = 'test-user'
-          ..displayName = 'Test User'
-          ..currentLeague = 'silver'
-          ..weeklyXP = 1000  // Below silver relegation threshold (1200)
-          ..totalXP = 2000
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now();
+        final user =
+            LocalUser()
+              ..uid = 'test-user'
+              ..displayName = 'Test User'
+              ..currentLeague = 'silver'
+              ..weeklyXP =
+                  1000 // Below silver relegation threshold (1200)
+              ..totalXP = 2000
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now();
 
         final silverLeague = LeagueSystem.leagues['silver']!;
         expect(user.weeklyXP, lessThan(silverLeague.relegationThreshold));
       });
 
       test('should not relegate bronze league users', () {
-        final user = LocalUser()
-          ..uid = 'test-user'
-          ..displayName = 'Test User'
-          ..currentLeague = 'bronze'
-          ..weeklyXP = 0  // Very low XP
-          ..totalXP = 100
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now();
+        final user =
+            LocalUser()
+              ..uid = 'test-user'
+              ..displayName = 'Test User'
+              ..currentLeague = 'bronze'
+              ..weeklyXP =
+                  0 // Very low XP
+              ..totalXP = 100
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now();
 
         // Bronze league should have relegation threshold of 0
         final bronzeLeague = LeagueSystem.leagues['bronze']!;
@@ -140,7 +152,7 @@ void main() {
         );
 
         final percentages = stats.percentageDistribution;
-        
+
         expect(percentages['bronze'], equals(50.0));
         expect(percentages['silver'], equals(30.0));
         expect(percentages['gold'], equals(15.0));

@@ -5,10 +5,7 @@ import 'package:minq/core/network/network_status_service.dart';
 
 /// ネットワークスチE��タスの現在値
 class NetworkStatusState {
-  const NetworkStatusState({
-    required this.status,
-    this.lastChangedAt,
-  });
+  const NetworkStatusState({required this.status, this.lastChangedAt});
 
   final NetworkStatus status;
   final DateTime? lastChangedAt;
@@ -31,12 +28,12 @@ class NetworkStatusState {
 
 class NetworkStatusNotifier extends StateNotifier<NetworkStatusState> {
   NetworkStatusNotifier(this._service)
-      : super(
-          NetworkStatusState(
-            status: _service.currentStatus,
-            lastChangedAt: DateTime.now(),
-          ),
-        ) {
+    : super(
+        NetworkStatusState(
+          status: _service.currentStatus,
+          lastChangedAt: DateTime.now(),
+        ),
+      ) {
     _init();
   }
 
@@ -71,6 +68,6 @@ final networkStatusServiceProvider = Provider<NetworkStatusService>((ref) {
 
 final networkStatusProvider =
     StateNotifierProvider<NetworkStatusNotifier, NetworkStatusState>((ref) {
-  final service = ref.watch(networkStatusServiceProvider);
-  return NetworkStatusNotifier(service);
-});
+      final service = ref.watch(networkStatusServiceProvider);
+      return NetworkStatusNotifier(service);
+    });

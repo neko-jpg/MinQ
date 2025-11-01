@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:minq/domain/notification/notification_settings.dart';
 import 'package:minq/l10n/l10n.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// カテゴリ別通知設定カード
 class CategorySettingsCard extends StatelessWidget {
@@ -31,9 +32,10 @@ class CategorySettingsCard extends StatelessWidget {
         subtitle: Text(
           settings.enabled ? l10n.enabled : l10n.disabled,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: settings.enabled 
-                ? theme.colorScheme.primary 
-                : theme.colorScheme.onSurfaceVariant,
+            color:
+                settings.enabled
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurfaceVariant,
           ),
         ),
         trailing: Switch(
@@ -42,104 +44,120 @@ class CategorySettingsCard extends StatelessWidget {
             onSettingsChanged(settings.copyWith(enabled: value));
           },
         ),
-        children: settings.enabled ? [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 通知頻度
-                Text(
-                  l10n.notificationFrequency,
-                  style: theme.textTheme.titleSmall,
-                ),
-                const SizedBox(height: 8),
-                DropdownButtonFormField<NotificationFrequency>(
-                  initialValue: settings.frequency,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+        children:
+            settings.enabled
+                ? [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 通知頻度
+                        Text(
+                          l10n.notificationFrequency,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: 8),
+                        DropdownButtonFormField<NotificationFrequency>(
+                          initialValue: settings.frequency,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                          ),
+                          items:
+                              NotificationFrequency.values.map((frequency) {
+                                return DropdownMenuItem(
+                                  value: frequency,
+                                  child: Text(
+                                    _getFrequencyDisplayName(frequency, l10n),
+                                  ),
+                                );
+                              }).toList(),
+                          onChanged: (value) {
+                            if (value != null) {
+                              onSettingsChanged(
+                                settings.copyWith(frequency: value),
+                              );
+                            }
+                          },
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // 音・振動・バッジ設定
+                        Text(
+                          l10n.notificationOptions,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: 8),
+
+                        CheckboxListTile(
+                          title: Text(l10n.sound),
+                          subtitle: Text(l10n.soundDescription),
+                          value: settings.sound,
+                          onChanged: (value) {
+                            if (value != null) {
+                              onSettingsChanged(
+                                settings.copyWith(sound: value),
+                              );
+                            }
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+
+                        CheckboxListTile(
+                          title: Text(l10n.vibration),
+                          subtitle: Text(l10n.vibrationDescription),
+                          value: settings.vibration,
+                          onChanged: (value) {
+                            if (value != null) {
+                              onSettingsChanged(
+                                settings.copyWith(vibration: value),
+                              );
+                            }
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+
+                        CheckboxListTile(
+                          title: Text(l10n.badge),
+                          subtitle: Text(l10n.badgeDescription),
+                          value: settings.badge,
+                          onChanged: (value) {
+                            if (value != null) {
+                              onSettingsChanged(
+                                settings.copyWith(badge: value),
+                              );
+                            }
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+
+                        CheckboxListTile(
+                          title: Text(l10n.lockScreen),
+                          subtitle: Text(l10n.lockScreenDescription),
+                          value: settings.lockScreen,
+                          onChanged: (value) {
+                            if (value != null) {
+                              onSettingsChanged(
+                                settings.copyWith(lockScreen: value),
+                              );
+                            }
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ],
                     ),
                   ),
-                  items: NotificationFrequency.values.map((frequency) {
-                    return DropdownMenuItem(
-                      value: frequency,
-                      child: Text(_getFrequencyDisplayName(frequency, l10n)),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      onSettingsChanged(settings.copyWith(frequency: value));
-                    }
-                  },
-                ),
-                
-                const SizedBox(height: 16),
-                
-                // 音・振動・バッジ設定
-                Text(
-                  l10n.notificationOptions,
-                  style: theme.textTheme.titleSmall,
-                ),
-                const SizedBox(height: 8),
-                
-                CheckboxListTile(
-                  title: Text(l10n.sound),
-                  subtitle: Text(l10n.soundDescription),
-                  value: settings.sound,
-                  onChanged: (value) {
-                    if (value != null) {
-                      onSettingsChanged(settings.copyWith(sound: value));
-                    }
-                  },
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                
-                CheckboxListTile(
-                  title: Text(l10n.vibration),
-                  subtitle: Text(l10n.vibrationDescription),
-                  value: settings.vibration,
-                  onChanged: (value) {
-                    if (value != null) {
-                      onSettingsChanged(settings.copyWith(vibration: value));
-                    }
-                  },
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                
-                CheckboxListTile(
-                  title: Text(l10n.badge),
-                  subtitle: Text(l10n.badgeDescription),
-                  value: settings.badge,
-                  onChanged: (value) {
-                    if (value != null) {
-                      onSettingsChanged(settings.copyWith(badge: value));
-                    }
-                  },
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                
-                CheckboxListTile(
-                  title: Text(l10n.lockScreen),
-                  subtitle: Text(l10n.lockScreenDescription),
-                  value: settings.lockScreen,
-                  onChanged: (value) {
-                    if (value != null) {
-                      onSettingsChanged(settings.copyWith(lockScreen: value));
-                    }
-                  },
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ],
-            ),
-          ),
-        ] : [],
+                ]
+                : [],
       ),
     );
   }
@@ -165,7 +183,10 @@ class CategorySettingsCard extends StatelessWidget {
     }
   }
 
-  String _getCategoryDisplayName(NotificationCategory category, AppLocalizations l10n) {
+  String _getCategoryDisplayName(
+    NotificationCategory category,
+    AppLocalizations l10n,
+  ) {
     switch (category) {
       case NotificationCategory.quest:
         return l10n.questNotifications;
@@ -186,7 +207,10 @@ class CategorySettingsCard extends StatelessWidget {
     }
   }
 
-  String _getFrequencyDisplayName(NotificationFrequency frequency, AppLocalizations l10n) {
+  String _getFrequencyDisplayName(
+    NotificationFrequency frequency,
+    AppLocalizations l10n,
+  ) {
     switch (frequency) {
       case NotificationFrequency.immediate:
         return l10n.immediate;

@@ -113,7 +113,8 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               elevation: 0,
               color: tokens.surface,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(tokens.radius.lg)),
+                borderRadius: BorderRadius.circular(tokens.radius.lg),
+              ),
               child: Padding(
                 padding: EdgeInsets.all(tokens.spacing.md),
                 child: Column(
@@ -121,8 +122,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   children: <Widget>[
                     Text(
                       'Contact Us',
-                      style: tokens.typography.h4
-                          .copyWith(color: tokens.textPrimary),
+                      style: tokens.typography.h4.copyWith(
+                        color: tokens.textPrimary,
+                      ),
                     ),
                     SizedBox(height: tokens.spacing.sm),
                     _SupportActionTile(
@@ -152,7 +154,8 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               elevation: 0,
               color: tokens.surface,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(tokens.radius.lg)),
+                borderRadius: BorderRadius.circular(tokens.radius.lg),
+              ),
               child: Padding(
                 padding: EdgeInsets.all(tokens.spacing.md),
                 child: Column(
@@ -160,8 +163,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   children: <Widget>[
                     Text(
                       'Quick Answers',
-                      style: tokens.typography.h4
-                          .copyWith(color: tokens.textPrimary),
+                      style: tokens.typography.h4.copyWith(
+                        color: tokens.textPrimary,
+                      ),
                     ),
                     SizedBox(height: tokens.spacing.sm),
                     const _FaqItem(
@@ -325,7 +329,8 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.lg)),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+      ),
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
         child: Column(
@@ -347,8 +352,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 ),
                 child: Text(
                   '現在はサポートボットへの接続を準備中です。しばらくお待ちください。',
-                  style:
-                      tokens.typography.caption.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
               ),
             Container(
@@ -384,8 +390,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                       ),
                       child: Text(
                         message.content,
-                        style:
-                            tokens.typography.caption.copyWith(color: textColor),
+                        style: tokens.typography.caption.copyWith(
+                          color: textColor,
+                        ),
                       ),
                     ),
                   );
@@ -439,7 +446,8 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.lg)),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+      ),
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
         child: Column(
@@ -452,7 +460,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
             SizedBox(height: tokens.spacing.xs),
             Text(
               '0 = おすすめしたくない / 10 = とてもおすすめしたい',
-              style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+              style: tokens.typography.caption.copyWith(
+                color: tokens.textMuted,
+              ),
             ),
             SizedBox(height: tokens.spacing.md),
             Slider(
@@ -468,7 +478,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               alignment: Alignment.centerRight,
               child: Text(
                 'スコア: $_npsScore',
-                style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: tokens.typography.caption.copyWith(
+                  color: tokens.textMuted,
+                ),
               ),
             ),
             SizedBox(height: tokens.spacing.md),
@@ -480,7 +492,8 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 labelText: 'コメント (任意)',
                 hintText: 'ペア機能や通知タイミングで改善して欲しい点を教えてください',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.md)),
+                  borderRadius: BorderRadius.circular(tokens.radius.md),
+                ),
               ),
             ),
             SizedBox(height: tokens.spacing.md),
@@ -489,8 +502,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 padding: EdgeInsets.only(bottom: tokens.spacing.xs),
                 child: Text(
                   'ありがとうございます！ ${_recordedAt!.year}/${_recordedAt!.month}/${_recordedAt!.day} に保存しました。',
-                  style: tokens.typography.caption
-                      .copyWith(color: tokens.accentSuccess),
+                  style: tokens.typography.caption.copyWith(
+                    color: tokens.accentSuccess,
+                  ),
                 ),
               ),
             Align(
@@ -524,9 +538,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
 
     // TODO(agent): Re-implement with FeedbackMessenger if a non-static version is available
     // to preserve original toast appearance.
-    messenger.showSnackBar(
-      const SnackBar(content: Text('ご協力ありがとうございます！')),
-    );
+    messenger.showSnackBar(const SnackBar(content: Text('ご協力ありがとうございます！')));
   }
 }
 
@@ -546,7 +558,8 @@ class _BatteryOptimizationCard extends StatelessWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.lg)),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+      ),
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
         child: Column(
@@ -565,14 +578,16 @@ class _BatteryOptimizationCard extends StatelessWidget {
                   children: [
                     Text(
                       '• ',
-                      style: tokens.typography.body
-                          .copyWith(color: tokens.brandPrimary),
+                      style: tokens.typography.body.copyWith(
+                        color: tokens.brandPrimary,
+                      ),
                     ),
                     Expanded(
                       child: Text(
                         instruction,
-                        style: tokens.typography.body
-                            .copyWith(color: tokens.textPrimary),
+                        style: tokens.typography.body.copyWith(
+                          color: tokens.textPrimary,
+                        ),
                       ),
                     ),
                   ],
@@ -613,14 +628,16 @@ class _SupportActionTile extends StatelessWidget {
             children: <Widget>[
               Text(
                 title,
-                style:
-                    tokens.typography.body.copyWith(color: tokens.textPrimary),
+                style: tokens.typography.body.copyWith(
+                  color: tokens.textPrimary,
+                ),
               ),
               SizedBox(height: tokens.spacing.xs),
               SelectableText(
                 subtitle,
-                style:
-                    tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: tokens.typography.caption.copyWith(
+                  color: tokens.textMuted,
+                ),
               ),
             ],
           ),
@@ -665,14 +682,17 @@ class _FaqItem extends StatelessWidget {
           style: tokens.typography.caption.copyWith(color: tokens.textMuted),
         ),
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.radius.md)),
+          borderRadius: BorderRadius.circular(tokens.radius.md),
+        ),
         collapsedShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(tokens.radius.md),
         ),
         children: <Widget>[
           Text(
             answerJa,
-            style: tokens.typography.caption.copyWith(color: tokens.textPrimary),
+            style: tokens.typography.caption.copyWith(
+              color: tokens.textPrimary,
+            ),
           ),
           SizedBox(height: tokens.spacing.xs),
           Text(

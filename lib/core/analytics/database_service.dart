@@ -11,7 +11,10 @@ class DatabaseService {
   DatabaseService(this._isar);
 
   /// Get quests in date range
-  Future<List<Quest>> getQuestsInDateRange(DateTime startDate, DateTime endDate) async {
+  Future<List<Quest>> getQuestsInDateRange(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
     return await _isar.quests
         .filter()
         .createdAtBetween(startDate, endDate)
@@ -43,7 +46,10 @@ class DatabaseService {
   }
 
   /// Save dashboard config
-  Future<void> saveDashboardConfig(String userId, CustomDashboardConfig config) async {
+  Future<void> saveDashboardConfig(
+    String userId,
+    CustomDashboardConfig config,
+  ) async {
     // TODO: Implement dashboard storage in Isar
     // This is a placeholder implementation
   }

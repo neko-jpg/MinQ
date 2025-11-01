@@ -12,10 +12,12 @@ class PremiumSubscriptionScreen extends ConsumerStatefulWidget {
   const PremiumSubscriptionScreen({super.key});
 
   @override
-  ConsumerState<PremiumSubscriptionScreen> createState() => _PremiumSubscriptionScreenState();
+  ConsumerState<PremiumSubscriptionScreen> createState() =>
+      _PremiumSubscriptionScreenState();
 }
 
-class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionScreen>
+class _PremiumSubscriptionScreenState
+    extends ConsumerState<PremiumSubscriptionScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   BillingCycle _selectedBillingCycle = BillingCycle.yearly;
@@ -54,21 +56,30 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
               ),
             ),
             availablePlansAsync.when(
-              data: (plans) => currentTierAsync.when(
-                data: (currentTier) => _buildPlansList(context, plans, currentTier),
-                loading: () => const SliverToBoxAdapter(
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-                error: (error, stack) => const SliverToBoxAdapter(
-                  child: Center(child: Text('Error loading current tier')),
-                ),
-              ),
-              loading: () => const SliverToBoxAdapter(
-                child: Center(child: CircularProgressIndicator()),
-              ),
-              error: (error, stack) => const SliverToBoxAdapter(
-                child: Center(child: Text('Error loading plans')),
-              ),
+              data:
+                  (plans) => currentTierAsync.when(
+                    data:
+                        (currentTier) =>
+                            _buildPlansList(context, plans, currentTier),
+                    loading:
+                        () => const SliverToBoxAdapter(
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                    error:
+                        (error, stack) => const SliverToBoxAdapter(
+                          child: Center(
+                            child: Text('Error loading current tier'),
+                          ),
+                        ),
+                  ),
+              loading:
+                  () => const SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+              error:
+                  (error, stack) => const SliverToBoxAdapter(
+                    child: Center(child: Text('Error loading plans')),
+                  ),
             ),
             SliverToBoxAdapter(
               child: Column(
@@ -130,11 +141,7 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
               ),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.star,
-              size: 40,
-              color: Colors.white,
-            ),
+            child: const Icon(Icons.star, size: 40, color: Colors.white),
           ),
           const SizedBox(height: 16),
           Text(
@@ -175,16 +182,15 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
         dividerColor: Colors.transparent,
         onTap: (index) {
           setState(() {
-            _selectedBillingCycle = index == 0 ? BillingCycle.monthly : BillingCycle.yearly;
+            _selectedBillingCycle =
+                index == 0 ? BillingCycle.monthly : BillingCycle.yearly;
           });
         },
         tabs: [
           const Tab(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Monthly'),
-              ],
+              children: [Text('Monthly')],
             ),
           ),
           Tab(
@@ -194,7 +200,10 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
                 const Text('Yearly'),
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: context.colorTokens.success,
                     borderRadius: BorderRadius.circular(8),
@@ -216,30 +225,34 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
     );
   }
 
-  Widget _buildPlansList(BuildContext context, List<PremiumPlan> plans, PremiumTier currentTier) {
-    final filteredPlans = plans.where((plan) => 
-      plan.tier != PremiumTier.free && 
-      plan.tier != currentTier
-    ).toList();
+  Widget _buildPlansList(
+    BuildContext context,
+    List<PremiumPlan> plans,
+    PremiumTier currentTier,
+  ) {
+    final filteredPlans =
+        plans
+            .where(
+              (plan) =>
+                  plan.tier != PremiumTier.free && plan.tier != currentTier,
+            )
+            .toList();
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final plan = filteredPlans[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: PremiumPlanCard(
-                plan: plan,
-                billingCycle: _selectedBillingCycle,
-                isCurrentPlan: plan.tier == currentTier,
-                onSubscribe: () => _handleSubscribe(plan),
-              ),
-            );
-          },
-          childCount: filteredPlans.length,
-        ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final plan = filteredPlans[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: PremiumPlanCard(
+              plan: plan,
+              billingCycle: _selectedBillingCycle,
+              isCurrentPlan: plan.tier == currentTier,
+              onSubscribe: () => _handleSubscribe(plan),
+            ),
+          );
+        }, childCount: filteredPlans.length),
       ),
     );
   }
@@ -292,7 +305,7 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
       if (result == true) {
         // Simulate subscription process
         await Future.delayed(const Duration(seconds: 2));
-        
+
         final subscription = PremiumSubscription(
           id: 'sub_${DateTime.now().millisecondsSinceEpoch}',
           userId: 'current_user',
@@ -309,7 +322,9 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
           autoRenew: true,
         );
 
-        await ref.read(premiumServiceProvider).activateSubscription(subscription);
+        await ref
+            .read(premiumServiceProvider)
+            .activateSubscription(subscription);
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -340,10 +355,11 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
   }
 
   Widget _buildSubscriptionBottomSheet(PremiumPlan plan) {
-    final price = _selectedBillingCycle == BillingCycle.monthly 
-        ? plan.monthlyPrice 
-        : plan.yearlyPrice;
-    
+    final price =
+        _selectedBillingCycle == BillingCycle.monthly
+            ? plan.monthlyPrice
+            : plan.yearlyPrice;
+
     return Container(
       decoration: BoxDecoration(
         color: context.colorTokens.surface,
@@ -400,7 +416,10 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
                 ),
                 if (_selectedBillingCycle == BillingCycle.yearly)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: context.colorTokens.success,
                       borderRadius: BorderRadius.circular(8),
@@ -432,10 +451,7 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
               ),
               child: const Text(
                 'Start Subscription',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -453,42 +469,44 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
   void _showTermsOfService() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Terms of Service'),
-        content: const SingleChildScrollView(
-          child: Text(
-            'Terms of Service content would go here...\n\n'
-            'This is a placeholder for the actual terms of service.',
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Terms of Service'),
+            content: const SingleChildScrollView(
+              child: Text(
+                'Terms of Service content would go here...\n\n'
+                'This is a placeholder for the actual terms of service.',
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
     );
   }
 
   void _showPrivacyPolicy() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Privacy Policy'),
-        content: const SingleChildScrollView(
-          child: Text(
-            'Privacy Policy content would go here...\n\n'
-            'This is a placeholder for the actual privacy policy.',
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Privacy Policy'),
+            content: const SingleChildScrollView(
+              child: Text(
+                'Privacy Policy content would go here...\n\n'
+                'This is a placeholder for the actual privacy policy.',
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
     );
   }
 }

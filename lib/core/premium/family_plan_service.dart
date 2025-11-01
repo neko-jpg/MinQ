@@ -17,20 +17,20 @@ class FamilyPlanService {
 
   Future<bool> isAdmin() async {
     if (!await canManageFamily()) return false;
-    
+
     final familyData = await _getFamilyData();
     final currentUserId = await _getCurrentUserId();
-    
+
     return familyData?['adminId'] == currentUserId;
   }
 
   Future<List<FamilyMember>> getFamilyMembers() async {
     if (!await canManageFamily()) return [];
-    
+
     try {
       final membersData = await _localStorage.getString('family_members');
       if (membersData == null) return [];
-      
+
       final List<dynamic> membersList = jsonDecode(membersData);
       return membersList.map((json) => FamilyMember.fromJson(json)).toList();
     } catch (e) {
@@ -49,7 +49,7 @@ class FamilyPlanService {
 
     final currentMembers = await getFamilyMembers();
     final limit = await _premiumService.getFamilyMemberLimit();
-    
+
     if (currentMembers.length >= limit) {
       throw const FamilyException('Family member limit reached');
     }
@@ -75,15 +75,15 @@ class FamilyPlanService {
 
   Future<bool> acceptInvitation(String inviteCode) async {
     final invitation = await _getInvitationByCode(inviteCode);
-    
+
     if (invitation == null) {
       throw const FamilyException('Invalid invitation code');
     }
-    
+
     if (invitation.isExpired) {
       throw const FamilyException('Invitation has expired');
     }
-    
+
     if (invitation.status != InvitationStatus.pending) {
       throw const FamilyException('Invitation is no longer valid');
     }
@@ -100,7 +100,7 @@ class FamilyPlanService {
     );
 
     await _addFamilyMember(newMember);
-    
+
     // Update invitation status
     final updatedInvitation = invitation.copyWith(
       status: InvitationStatus.accepted,
@@ -124,7 +124,7 @@ class FamilyPlanService {
 
     final members = await getFamilyMembers();
     final memberToRemove = members.where((m) => m.id == memberId).firstOrNull;
-    
+
     if (memberToRemove == null) {
       throw const FamilyException('Member not found');
     }
@@ -153,14 +153,14 @@ class FamilyPlanService {
 
     final members = await getFamilyMembers();
     final memberIndex = members.indexWhere((m) => m.id == memberId);
-    
+
     if (memberIndex == -1) {
       throw const FamilyException('Member not found');
     }
 
     final updatedMember = members[memberIndex].copyWith(role: newRole);
     members[memberIndex] = updatedMember;
-    
+
     await _saveFamilyMembers(members);
 
     // Notify member of role change
@@ -175,17 +175,23 @@ class FamilyPlanService {
 
   Future<List<FamilyInvitation>> getPendingInvitations() async {
     if (!await isAdmin()) return [];
-    
+
     try {
-      final invitationsData = await _localStorage.getString('family_invitations');
+      final invitationsData = await _localStorage.getString(
+        'family_invitations',
+      );
       if (invitationsData == null) return [];
-      
+
       final List<dynamic> invitationsList = jsonDecode(invitationsData);
-      final invitations = invitationsList
-          .map((json) => FamilyInvitation.fromJson(json))
-          .where((inv) => inv.status == InvitationStatus.pending && !inv.isExpired)
-          .toList();
-      
+      final invitations =
+          invitationsList
+              .map((json) => FamilyInvitation.fromJson(json))
+              .where(
+                (inv) =>
+                    inv.status == InvitationStatus.pending && !inv.isExpired,
+              )
+              .toList();
+
       return invitations;
     } catch (e) {
       return [];
@@ -198,8 +204,10 @@ class FamilyPlanService {
     }
 
     final invitations = await _getAllInvitations();
-    final invitationIndex = invitations.indexWhere((inv) => inv.id == invitationId);
-    
+    final invitationIndex = invitations.indexWhere(
+      (inv) => inv.id == invitationId,
+    );
+
     if (invitationIndex == -1) {
       throw const FamilyException('Invitation not found');
     }
@@ -208,7 +216,7 @@ class FamilyPlanService {
       status: InvitationStatus.cancelled,
     );
     invitations[invitationIndex] = updatedInvitation;
-    
+
     await _saveInvitations(invitations);
     return true;
   }
@@ -223,7 +231,7 @@ class FamilyPlanService {
     final totalQuests = await _getTotalFamilyQuests();
     final totalXP = await _getTotalFamilyXP();
     final averageStreak = await _getAverageFamilyStreak();
-    
+
     return FamilyUsageStats(
       totalMembers: members.length,
       activeMembers: activeMembers,
@@ -238,13 +246,15 @@ class FamilyPlanService {
 
   Future<List<FamilyChallenge>> getFamilyChallenges() async {
     if (!await canManageFamily()) return [];
-    
+
     try {
       final challengesData = await _localStorage.getString('family_challenges');
       if (challengesData == null) return [];
-      
+
       final List<dynamic> challengesList = jsonDecode(challengesData);
-      return challengesList.map((json) => FamilyChallenge.fromJson(json)).toList();
+      return challengesList
+          .map((json) => FamilyChallenge.fromJson(json))
+          .toList();
     } catch (e) {
       return [];
     }
@@ -272,7 +282,9 @@ class FamilyPlanService {
       endDate: endDate,
       targetValue: targetValue,
       metric: metric,
-      participantIds: participantIds ?? (await getFamilyMembers()).map((m) => m.id).toList(),
+      participantIds:
+          participantIds ??
+          (await getFamilyMembers()).map((m) => m.id).toList(),
       createdBy: await _getCurrentUserId(),
       createdAt: DateTime.now(),
       status: ChallengeStatus.active,
@@ -280,7 +292,7 @@ class FamilyPlanService {
     );
 
     await _saveFamilyChallenge(challenge);
-    
+
     // Notify family members
     await _notifyFamilyMembers(
       'New Family Challenge',
@@ -295,34 +307,38 @@ class FamilyPlanService {
 
     final challenges = await getFamilyChallenges();
     final challengeIndex = challenges.indexWhere((c) => c.id == challengeId);
-    
+
     if (challengeIndex == -1) return false;
 
     final challenge = challenges[challengeIndex];
     final userId = await _getCurrentUserId();
-    
+
     if (challenge.participantIds.contains(userId)) return true;
 
     final updatedChallenge = challenge.copyWith(
       participantIds: [...challenge.participantIds, userId],
     );
     challenges[challengeIndex] = updatedChallenge;
-    
+
     await _saveFamilyChallenges(challenges);
     return true;
   }
 
   Future<ParentalControls> getParentalControls(String childId) async {
     if (!await isAdmin()) {
-      throw const FamilyException('Only family admin can access parental controls');
+      throw const FamilyException(
+        'Only family admin can access parental controls',
+      );
     }
 
     try {
-      final controlsData = await _localStorage.getString('parental_controls_$childId');
+      final controlsData = await _localStorage.getString(
+        'parental_controls_$childId',
+      );
       if (controlsData == null) {
         return ParentalControls.defaultControls();
       }
-      
+
       final json = jsonDecode(controlsData);
       return ParentalControls.fromJson(json);
     } catch (e) {
@@ -330,9 +346,14 @@ class FamilyPlanService {
     }
   }
 
-  Future<bool> updateParentalControls(String childId, ParentalControls controls) async {
+  Future<bool> updateParentalControls(
+    String childId,
+    ParentalControls controls,
+  ) async {
     if (!await isAdmin()) {
-      throw const FamilyException('Only family admin can update parental controls');
+      throw const FamilyException(
+        'Only family admin can update parental controls',
+      );
     }
 
     try {
@@ -357,7 +378,8 @@ class FamilyPlanService {
 
   Future<String> _getFamilyId() async {
     final familyData = await _getFamilyData();
-    return familyData?['id'] ?? 'family_${DateTime.now().millisecondsSinceEpoch}';
+    return familyData?['id'] ??
+        'family_${DateTime.now().millisecondsSinceEpoch}';
   }
 
   Future<String> _getCurrentUserId() async {
@@ -382,7 +404,11 @@ class FamilyPlanService {
   String _generateInviteCode() {
     // Generate a 6-character alphanumeric code
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    return List.generate(6, (index) => chars[(DateTime.now().millisecondsSinceEpoch + index) % chars.length]).join();
+    return List.generate(
+      6,
+      (index) =>
+          chars[(DateTime.now().millisecondsSinceEpoch + index) % chars.length],
+    ).join();
   }
 
   String _generateChallengeId() {
@@ -406,18 +432,24 @@ class FamilyPlanService {
 
   Future<List<FamilyInvitation>> _getAllInvitations() async {
     try {
-      final invitationsData = await _localStorage.getString('family_invitations');
+      final invitationsData = await _localStorage.getString(
+        'family_invitations',
+      );
       if (invitationsData == null) return [];
-      
+
       final List<dynamic> invitationsList = jsonDecode(invitationsData);
-      return invitationsList.map((json) => FamilyInvitation.fromJson(json)).toList();
+      return invitationsList
+          .map((json) => FamilyInvitation.fromJson(json))
+          .toList();
     } catch (e) {
       return [];
     }
   }
 
   Future<void> _saveInvitations(List<FamilyInvitation> invitations) async {
-    final invitationsJson = jsonEncode(invitations.map((inv) => inv.toJson()).toList());
+    final invitationsJson = jsonEncode(
+      invitations.map((inv) => inv.toJson()).toList(),
+    );
     await _localStorage.setString('family_invitations', invitationsJson);
   }
 
@@ -483,11 +515,7 @@ class FamilyPlanService {
 
   Future<Map<String, int>> _getMonthlyActivity() async {
     // Mock implementation - would get actual monthly activity data
-    return {
-      'January': 45,
-      'February': 52,
-      'March': 38,
-    };
+    return {'January': 45, 'February': 52, 'March': 38};
   }
 
   Future<void> _saveFamilyChallenge(FamilyChallenge challenge) async {
@@ -497,7 +525,9 @@ class FamilyPlanService {
   }
 
   Future<void> _saveFamilyChallenges(List<FamilyChallenge> challenges) async {
-    final challengesJson = jsonEncode(challenges.map((c) => c.toJson()).toList());
+    final challengesJson = jsonEncode(
+      challenges.map((c) => c.toJson()).toList(),
+    );
     await _localStorage.setString('family_challenges', challengesJson);
   }
 }
@@ -532,10 +562,7 @@ class FamilyInvitation {
 
   bool get isExpired => DateTime.now().isAfter(expiresAt);
 
-  FamilyInvitation copyWith({
-    InvitationStatus? status,
-    DateTime? acceptedAt,
-  }) {
+  FamilyInvitation copyWith({InvitationStatus? status, DateTime? acceptedAt}) {
     return FamilyInvitation(
       id: id,
       familyId: familyId,
@@ -565,7 +592,9 @@ class FamilyInvitation {
     'acceptedAt': acceptedAt?.toIso8601String(),
   };
 
-  factory FamilyInvitation.fromJson(Map<String, dynamic> json) => FamilyInvitation(
+  factory FamilyInvitation.fromJson(
+    Map<String, dynamic> json,
+  ) => FamilyInvitation(
     id: json['id'],
     familyId: json['familyId'],
     inviterName: json['inviterName'],
@@ -576,7 +605,8 @@ class FamilyInvitation {
     expiresAt: DateTime.parse(json['expiresAt']),
     createdAt: DateTime.parse(json['createdAt']),
     status: InvitationStatus.values.firstWhere((s) => s.name == json['status']),
-    acceptedAt: json['acceptedAt'] != null ? DateTime.parse(json['acceptedAt']) : null,
+    acceptedAt:
+        json['acceptedAt'] != null ? DateTime.parse(json['acceptedAt']) : null,
   );
 }
 
@@ -671,21 +701,24 @@ class FamilyChallenge {
     'progress': progress,
   };
 
-  factory FamilyChallenge.fromJson(Map<String, dynamic> json) => FamilyChallenge(
-    id: json['id'],
-    familyId: json['familyId'],
-    title: json['title'],
-    description: json['description'],
-    startDate: DateTime.parse(json['startDate']),
-    endDate: DateTime.parse(json['endDate']),
-    targetValue: json['targetValue'],
-    metric: json['metric'],
-    participantIds: List<String>.from(json['participantIds']),
-    createdBy: json['createdBy'],
-    createdAt: DateTime.parse(json['createdAt']),
-    status: ChallengeStatus.values.firstWhere((s) => s.name == json['status']),
-    progress: Map<String, int>.from(json['progress']),
-  );
+  factory FamilyChallenge.fromJson(Map<String, dynamic> json) =>
+      FamilyChallenge(
+        id: json['id'],
+        familyId: json['familyId'],
+        title: json['title'],
+        description: json['description'],
+        startDate: DateTime.parse(json['startDate']),
+        endDate: DateTime.parse(json['endDate']),
+        targetValue: json['targetValue'],
+        metric: json['metric'],
+        participantIds: List<String>.from(json['participantIds']),
+        createdBy: json['createdBy'],
+        createdAt: DateTime.parse(json['createdAt']),
+        status: ChallengeStatus.values.firstWhere(
+          (s) => s.name == json['status'],
+        ),
+        progress: Map<String, int>.from(json['progress']),
+      );
 }
 
 class ParentalControls {
@@ -710,24 +743,28 @@ class ParentalControls {
     'allowDataSharing': allowDataSharing,
     'blockedCategories': blockedCategories,
     'maxDailyQuests': maxDailyQuests,
-    'bedtime': bedtime != null ? {
-      'hour': bedtime!.hour,
-      'minute': bedtime!.minute,
-    } : null,
+    'bedtime':
+        bedtime != null
+            ? {'hour': bedtime!.hour, 'minute': bedtime!.minute}
+            : null,
     'requireApprovalForNewQuests': requireApprovalForNewQuests,
   };
 
-  factory ParentalControls.fromJson(Map<String, dynamic> json) => ParentalControls(
-    allowSocialFeatures: json['allowSocialFeatures'],
-    allowDataSharing: json['allowDataSharing'],
-    blockedCategories: List<String>.from(json['blockedCategories']),
-    maxDailyQuests: json['maxDailyQuests'],
-    bedtime: json['bedtime'] != null ? TimeOfDay(
-      hour: json['bedtime']['hour'],
-      minute: json['bedtime']['minute'],
-    ) : null,
-    requireApprovalForNewQuests: json['requireApprovalForNewQuests'],
-  );
+  factory ParentalControls.fromJson(Map<String, dynamic> json) =>
+      ParentalControls(
+        allowSocialFeatures: json['allowSocialFeatures'],
+        allowDataSharing: json['allowDataSharing'],
+        blockedCategories: List<String>.from(json['blockedCategories']),
+        maxDailyQuests: json['maxDailyQuests'],
+        bedtime:
+            json['bedtime'] != null
+                ? TimeOfDay(
+                  hour: json['bedtime']['hour'],
+                  minute: json['bedtime']['minute'],
+                )
+                : null,
+        requireApprovalForNewQuests: json['requireApprovalForNewQuests'],
+      );
 
   static ParentalControls defaultControls() => const ParentalControls(
     allowSocialFeatures: false,
@@ -738,24 +775,14 @@ class ParentalControls {
   );
 }
 
-enum InvitationStatus {
-  pending,
-  accepted,
-  declined,
-  cancelled,
-  expired,
-}
+enum InvitationStatus { pending, accepted, declined, cancelled, expired }
 
-enum ChallengeStatus {
-  active,
-  completed,
-  cancelled,
-}
+enum ChallengeStatus { active, completed, cancelled }
 
 class FamilyException implements Exception {
   final String message;
   const FamilyException(this.message);
-  
+
   @override
   String toString() => 'FamilyException: $message';
 }
@@ -763,7 +790,7 @@ class FamilyException implements Exception {
 class TimeOfDay {
   final int hour;
   final int minute;
-  
+
   const TimeOfDay({required this.hour, required this.minute});
 }
 
@@ -821,7 +848,9 @@ final familyChallengesProvider = FutureProvider<List<FamilyChallenge>>((ref) {
   return familyService.getFamilyChallenges();
 });
 
-final pendingInvitationsProvider = FutureProvider<List<FamilyInvitation>>((ref) {
+final pendingInvitationsProvider = FutureProvider<List<FamilyInvitation>>((
+  ref,
+) {
   final familyService = ref.watch(familyPlanServiceProvider);
   return familyService.getPendingInvitations();
 });

@@ -35,13 +35,16 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
       body: LoadingOverlay(
         isLoading: _isLoading,
         child: currentTierAsync.when(
-          data: (tier) => tier.hasFeature(FeatureType.export)
-              ? _buildExportForm(context)
-              : _buildPremiumRequired(context),
+          data:
+              (tier) =>
+                  tier.hasFeature(FeatureType.export)
+                      ? _buildExportForm(context)
+                      : _buildPremiumRequired(context),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => const Center(
-            child: Text('Error loading subscription status'),
-          ),
+          error:
+              (error, stack) => const Center(
+                child: Text('Error loading subscription status'),
+              ),
         ),
       ),
     );
@@ -101,22 +104,24 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        ...ExportType.values.map((type) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: RadioListTile<ExportType>(
-            value: type,
-            groupValue: _selectedType,
-            onChanged: (value) {
-              setState(() {
-                _selectedType = value!;
-              });
-            },
-            title: Text(type.displayName),
-            subtitle: Text(_getTypeDescription(type)),
-            contentPadding: EdgeInsets.zero,
-            activeColor: context.colorTokens.primary,
+        ...ExportType.values.map(
+          (type) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: RadioListTile<ExportType>(
+              value: type,
+              groupValue: _selectedType,
+              onChanged: (value) {
+                setState(() {
+                  _selectedType = value!;
+                });
+              },
+              title: Text(type.displayName),
+              subtitle: Text(_getTypeDescription(type)),
+              contentPadding: EdgeInsets.zero,
+              activeColor: context.colorTokens.primary,
+            ),
           ),
-        )),
+        ),
       ],
     );
   }
@@ -133,12 +138,19 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
         ),
         const SizedBox(height: 16),
         Row(
-          children: ExportFormat.values.map((format) => Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: format != ExportFormat.values.last ? 8 : 0),
-              child: _buildFormatCard(context, format),
-            ),
-          )).toList(),
+          children:
+              ExportFormat.values
+                  .map(
+                    (format) => Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          right: format != ExportFormat.values.last ? 8 : 0,
+                        ),
+                        child: _buildFormatCard(context, format),
+                      ),
+                    ),
+                  )
+                  .toList(),
         ),
       ],
     );
@@ -146,7 +158,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
 
   Widget _buildFormatCard(BuildContext context, ExportFormat format) {
     final isSelected = _selectedFormat == format;
-    
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -156,14 +168,16 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? context.colorTokens.primary.withOpacity(0.1)
-              : context.colorTokens.surface,
+          color:
+              isSelected
+                  ? context.colorTokens.primary.withOpacity(0.1)
+                  : context.colorTokens.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected 
-                ? context.colorTokens.primary 
-                : context.colorTokens.border,
+            color:
+                isSelected
+                    ? context.colorTokens.primary
+                    : context.colorTokens.border,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -172,18 +186,20 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
             Icon(
               _getFormatIcon(format),
               size: 32,
-              color: isSelected 
-                  ? context.colorTokens.primary 
-                  : context.colorTokens.textSecondary,
+              color:
+                  isSelected
+                      ? context.colorTokens.primary
+                      : context.colorTokens.textSecondary,
             ),
             const SizedBox(height: 8),
             Text(
               format.name.toUpperCase(),
               style: context.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: isSelected 
-                    ? context.colorTokens.primary 
-                    : context.colorTokens.textPrimary,
+                color:
+                    isSelected
+                        ? context.colorTokens.primary
+                        : context.colorTokens.textPrimary,
               ),
             ),
             const SizedBox(height: 4),
@@ -263,13 +279,14 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
             ),
             const SizedBox(height: 4),
             Text(
-              date != null 
+              date != null
                   ? '${date.day}/${date.month}/${date.year}'
                   : 'Select date',
               style: context.textTheme.bodyLarge?.copyWith(
-                color: date != null 
-                    ? context.colorTokens.textPrimary 
-                    : context.colorTokens.textMuted,
+                color:
+                    date != null
+                        ? context.colorTokens.textPrimary
+                        : context.colorTokens.textMuted,
               ),
             ),
           ],
@@ -297,7 +314,9 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
             });
           },
           title: const Text('Anonymize Data'),
-          subtitle: const Text('Replace personal identifiers with generic placeholders'),
+          subtitle: const Text(
+            'Replace personal identifiers with generic placeholders',
+          ),
           contentPadding: EdgeInsets.zero,
           activeThumbColor: context.colorTokens.primary,
         ),
@@ -325,10 +344,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
             SizedBox(width: 8),
             Text(
               'Export Data',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -343,11 +359,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.lock,
-              size: 64,
-              color: context.colorTokens.textMuted,
-            ),
+            Icon(Icons.lock, size: 64, color: context.colorTokens.textMuted),
             const SizedBox(height: 24),
             Text(
               'Premium Feature',
@@ -369,17 +381,17 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.colorTokens.primary,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: const Text(
                 'Upgrade to Premium',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -391,11 +403,12 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
   Future<void> _selectStartDate(BuildContext context) async {
     final date = await showDatePicker(
       context: context,
-      initialDate: _startDate ?? DateTime.now().subtract(const Duration(days: 30)),
+      initialDate:
+          _startDate ?? DateTime.now().subtract(const Duration(days: 30)),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
-    
+
     if (date != null) {
       setState(() {
         _startDate = date;
@@ -410,7 +423,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
       firstDate: _startDate ?? DateTime(2020),
       lastDate: DateTime.now(),
     );
-    
+
     if (date != null) {
       setState(() {
         _endDate = date;
@@ -425,7 +438,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
 
     try {
       final exportService = ref.read(dataExportServiceProvider);
-      
+
       ExportResult result;
       switch (_selectedFormat) {
         case ExportFormat.csv:

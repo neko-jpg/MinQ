@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Comprehensive MinQ Design Token System
-/// 
+///
 /// This class provides a centralized design system with tokens for:
 /// - Colors (with WCAG AA compliance)
 /// - Typography (semantic text styles)
@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 /// - Border Radius (consistent corner rounding)
 /// - Elevation (shadow system)
 /// - Animation (timing and curves)
-/// 
+///
 /// All UI components should use these tokens instead of hardcoded values
 /// to ensure consistency and easy theme switching.
 class MinqDesignTokens extends ThemeExtension<MinqDesignTokens> {
@@ -204,7 +204,6 @@ class MinqColorTokens {
   final Color inverseSurface;
   final Color onInverseSurface;
   final Color inversePrimary;
-
   /// Light theme colors (WCAG AA compliant)
   static MinqColorTokens light() {
     return const MinqColorTokens(
@@ -362,45 +361,82 @@ class MinqColorTokens {
   MinqColorTokens lerp(MinqColorTokens other, double t) {
     return MinqColorTokens(
       primary: Color.lerp(primary, other.primary, t) ?? primary,
-      primaryHover: Color.lerp(primaryHover, other.primaryHover, t) ?? primaryHover,
-      primaryContainer: Color.lerp(primaryContainer, other.primaryContainer, t) ?? primaryContainer,
+      primaryHover:
+          Color.lerp(primaryHover, other.primaryHover, t) ?? primaryHover,
+      primaryContainer:
+          Color.lerp(primaryContainer, other.primaryContainer, t) ??
+          primaryContainer,
       onPrimary: Color.lerp(onPrimary, other.onPrimary, t) ?? onPrimary,
-      onPrimaryContainer: Color.lerp(onPrimaryContainer, other.onPrimaryContainer, t) ?? onPrimaryContainer,
+      onPrimaryContainer:
+          Color.lerp(onPrimaryContainer, other.onPrimaryContainer, t) ??
+          onPrimaryContainer,
       secondary: Color.lerp(secondary, other.secondary, t) ?? secondary,
-      secondaryContainer: Color.lerp(secondaryContainer, other.secondaryContainer, t) ?? secondaryContainer,
+      secondaryContainer:
+          Color.lerp(secondaryContainer, other.secondaryContainer, t) ??
+          secondaryContainer,
       onSecondary: Color.lerp(onSecondary, other.onSecondary, t) ?? onSecondary,
-      onSecondaryContainer: Color.lerp(onSecondaryContainer, other.onSecondaryContainer, t) ?? onSecondaryContainer,
+      onSecondaryContainer:
+          Color.lerp(onSecondaryContainer, other.onSecondaryContainer, t) ??
+          onSecondaryContainer,
       tertiary: Color.lerp(tertiary, other.tertiary, t) ?? tertiary,
-      tertiaryContainer: Color.lerp(tertiaryContainer, other.tertiaryContainer, t) ?? tertiaryContainer,
+      tertiaryContainer:
+          Color.lerp(tertiaryContainer, other.tertiaryContainer, t) ??
+          tertiaryContainer,
       onTertiary: Color.lerp(onTertiary, other.onTertiary, t) ?? onTertiary,
-      onTertiaryContainer: Color.lerp(onTertiaryContainer, other.onTertiaryContainer, t) ?? onTertiaryContainer,
+      onTertiaryContainer:
+          Color.lerp(onTertiaryContainer, other.onTertiaryContainer, t) ??
+          onTertiaryContainer,
       error: Color.lerp(error, other.error, t) ?? error,
-      errorContainer: Color.lerp(errorContainer, other.errorContainer, t) ?? errorContainer,
+      errorContainer:
+          Color.lerp(errorContainer, other.errorContainer, t) ?? errorContainer,
       onError: Color.lerp(onError, other.onError, t) ?? onError,
-      onErrorContainer: Color.lerp(onErrorContainer, other.onErrorContainer, t) ?? onErrorContainer,
+      onErrorContainer:
+          Color.lerp(onErrorContainer, other.onErrorContainer, t) ??
+          onErrorContainer,
       warning: Color.lerp(warning, other.warning, t) ?? warning,
-      warningContainer: Color.lerp(warningContainer, other.warningContainer, t) ?? warningContainer,
+      warningContainer:
+          Color.lerp(warningContainer, other.warningContainer, t) ??
+          warningContainer,
       onWarning: Color.lerp(onWarning, other.onWarning, t) ?? onWarning,
-      onWarningContainer: Color.lerp(onWarningContainer, other.onWarningContainer, t) ?? onWarningContainer,
+      onWarningContainer:
+          Color.lerp(onWarningContainer, other.onWarningContainer, t) ??
+          onWarningContainer,
       success: Color.lerp(success, other.success, t) ?? success,
-      successContainer: Color.lerp(successContainer, other.successContainer, t) ?? successContainer,
+      successContainer:
+          Color.lerp(successContainer, other.successContainer, t) ??
+          successContainer,
       onSuccess: Color.lerp(onSuccess, other.onSuccess, t) ?? onSuccess,
-      onSuccessContainer: Color.lerp(onSuccessContainer, other.onSuccessContainer, t) ?? onSuccessContainer,
+      onSuccessContainer:
+          Color.lerp(onSuccessContainer, other.onSuccessContainer, t) ??
+          onSuccessContainer,
       surface: Color.lerp(surface, other.surface, t) ?? surface,
-      surfaceVariant: Color.lerp(surfaceVariant, other.surfaceVariant, t) ?? surfaceVariant,
-      surfaceContainer: Color.lerp(surfaceContainer, other.surfaceContainer, t) ?? surfaceContainer,
-      surfaceContainerHigh: Color.lerp(surfaceContainerHigh, other.surfaceContainerHigh, t) ?? surfaceContainerHigh,
+      surfaceVariant:
+          Color.lerp(surfaceVariant, other.surfaceVariant, t) ?? surfaceVariant,
+      surfaceContainer:
+          Color.lerp(surfaceContainer, other.surfaceContainer, t) ??
+          surfaceContainer,
+      surfaceContainerHigh:
+          Color.lerp(surfaceContainerHigh, other.surfaceContainerHigh, t) ??
+          surfaceContainerHigh,
       onSurface: Color.lerp(onSurface, other.onSurface, t) ?? onSurface,
-      onSurfaceVariant: Color.lerp(onSurfaceVariant, other.onSurfaceVariant, t) ?? onSurfaceVariant,
+      onSurfaceVariant:
+          Color.lerp(onSurfaceVariant, other.onSurfaceVariant, t) ??
+          onSurfaceVariant,
       background: Color.lerp(background, other.background, t) ?? background,
-      onBackground: Color.lerp(onBackground, other.onBackground, t) ?? onBackground,
+      onBackground:
+          Color.lerp(onBackground, other.onBackground, t) ?? onBackground,
       outline: Color.lerp(outline, other.outline, t) ?? outline,
-      outlineVariant: Color.lerp(outlineVariant, other.outlineVariant, t) ?? outlineVariant,
+      outlineVariant:
+          Color.lerp(outlineVariant, other.outlineVariant, t) ?? outlineVariant,
       shadow: Color.lerp(shadow, other.shadow, t) ?? shadow,
       scrim: Color.lerp(scrim, other.scrim, t) ?? scrim,
-      inverseSurface: Color.lerp(inverseSurface, other.inverseSurface, t) ?? inverseSurface,
-      onInverseSurface: Color.lerp(onInverseSurface, other.onInverseSurface, t) ?? onInverseSurface,
-      inversePrimary: Color.lerp(inversePrimary, other.inversePrimary, t) ?? inversePrimary,
+      inverseSurface:
+          Color.lerp(inverseSurface, other.inverseSurface, t) ?? inverseSurface,
+      onInverseSurface:
+          Color.lerp(onInverseSurface, other.onInverseSurface, t) ??
+          onInverseSurface,
+      inversePrimary:
+          Color.lerp(inversePrimary, other.inversePrimary, t) ?? inversePrimary,
     );
   }
 }
@@ -547,20 +583,32 @@ class MinqTypographyTokens {
 
   MinqTypographyTokens lerp(MinqTypographyTokens other, double t) {
     return MinqTypographyTokens(
-      displayLarge: TextStyle.lerp(displayLarge, other.displayLarge, t) ?? displayLarge,
-      displayMedium: TextStyle.lerp(displayMedium, other.displayMedium, t) ?? displayMedium,
-      displaySmall: TextStyle.lerp(displaySmall, other.displaySmall, t) ?? displaySmall,
-      headlineLarge: TextStyle.lerp(headlineLarge, other.headlineLarge, t) ?? headlineLarge,
-      headlineMedium: TextStyle.lerp(headlineMedium, other.headlineMedium, t) ?? headlineMedium,
-      headlineSmall: TextStyle.lerp(headlineSmall, other.headlineSmall, t) ?? headlineSmall,
+      displayLarge:
+          TextStyle.lerp(displayLarge, other.displayLarge, t) ?? displayLarge,
+      displayMedium:
+          TextStyle.lerp(displayMedium, other.displayMedium, t) ??
+          displayMedium,
+      displaySmall:
+          TextStyle.lerp(displaySmall, other.displaySmall, t) ?? displaySmall,
+      headlineLarge:
+          TextStyle.lerp(headlineLarge, other.headlineLarge, t) ??
+          headlineLarge,
+      headlineMedium:
+          TextStyle.lerp(headlineMedium, other.headlineMedium, t) ??
+          headlineMedium,
+      headlineSmall:
+          TextStyle.lerp(headlineSmall, other.headlineSmall, t) ??
+          headlineSmall,
       titleLarge: TextStyle.lerp(titleLarge, other.titleLarge, t) ?? titleLarge,
-      titleMedium: TextStyle.lerp(titleMedium, other.titleMedium, t) ?? titleMedium,
+      titleMedium:
+          TextStyle.lerp(titleMedium, other.titleMedium, t) ?? titleMedium,
       titleSmall: TextStyle.lerp(titleSmall, other.titleSmall, t) ?? titleSmall,
       bodyLarge: TextStyle.lerp(bodyLarge, other.bodyLarge, t) ?? bodyLarge,
       bodyMedium: TextStyle.lerp(bodyMedium, other.bodyMedium, t) ?? bodyMedium,
       bodySmall: TextStyle.lerp(bodySmall, other.bodySmall, t) ?? bodySmall,
       labelLarge: TextStyle.lerp(labelLarge, other.labelLarge, t) ?? labelLarge,
-      labelMedium: TextStyle.lerp(labelMedium, other.labelMedium, t) ?? labelMedium,
+      labelMedium:
+          TextStyle.lerp(labelMedium, other.labelMedium, t) ?? labelMedium,
       labelSmall: TextStyle.lerp(labelSmall, other.labelSmall, t) ?? labelSmall,
     );
   }
@@ -598,7 +646,8 @@ class MinqSpacingTokens {
   EdgeInsets get cardPaddingAll => const EdgeInsets.all(cardPadding);
   EdgeInsets get buttonPaddingAll => const EdgeInsets.all(buttonPadding);
 
-  EdgeInsets horizontal(double value) => EdgeInsets.symmetric(horizontal: value);
+  EdgeInsets horizontal(double value) =>
+      EdgeInsets.symmetric(horizontal: value);
   EdgeInsets vertical(double value) => EdgeInsets.symmetric(vertical: value);
   EdgeInsets all(double value) => EdgeInsets.all(value);
 
@@ -733,6 +782,20 @@ class MinqElevationTokens {
       xl: t < 0.5 ? xl : other.xl,
     );
   }
+}
+
+extension MinqDesignColorLegacyGetters on MinqColorTokens {
+  Color get border => outline;
+  Color get divider => outlineVariant;
+  Color get surfaceAlt => surfaceVariant;
+  Color get primaryForeground => onPrimary;
+  Color get secondaryForeground => onSecondary;
+  Color get surfaceForeground => onSurface;
+  Color get textPrimary => onSurface;
+  Color get textSecondary => onSurfaceVariant;
+  Color get textMuted =>
+      Color.lerp(onSurfaceVariant, onBackground, 0.5) ?? onSurfaceVariant;
+  Color get info => secondary;
 }
 
 /// Animation tokens

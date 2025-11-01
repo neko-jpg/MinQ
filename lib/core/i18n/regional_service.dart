@@ -141,10 +141,7 @@ class RegionalService {
         celebration: Color(0xFFFFD700), // Gold
         prosperity: Color(0xFF00FF00), // Green
       ),
-      culturalNumbers: CulturalNumbers(
-        lucky: [7],
-        unlucky: [13],
-      ),
+      culturalNumbers: CulturalNumbers(lucky: [7], unlucky: [13]),
       holidays: [
         Holiday('New Year\'s Day', 'January 1'),
         Holiday('Epiphany', 'January 6'),
@@ -165,7 +162,8 @@ class RegionalService {
       currencySymbol: 'ر.س',
       dateFormat: 'dd/MM/yyyy',
       timeFormat: 'HH:mm',
-      firstDayOfWeek: DateTime.saturday, // Week starts on Saturday in many Arab countries
+      firstDayOfWeek:
+          DateTime.saturday, // Week starts on Saturday in many Arab countries
       culturalColors: CulturalColors(
         lucky: Color(0xFF00FF00), // Green is sacred in Islam
         unlucky: Color(0xFF000000), // Black
@@ -181,7 +179,10 @@ class RegionalService {
         Holiday('Eid al-Fitr', 'April 10'), // Varies by lunar calendar
         Holiday('Eid al-Adha', 'June 16'), // Varies by lunar calendar
         Holiday('Islamic New Year', 'July 7'), // Varies by lunar calendar
-        Holiday('Prophet\'s Birthday', 'September 15'), // Varies by lunar calendar
+        Holiday(
+          'Prophet\'s Birthday',
+          'September 15',
+        ), // Varies by lunar calendar
         Holiday('National Day', 'September 23'), // Saudi National Day
       ],
     ),
@@ -189,8 +190,7 @@ class RegionalService {
 
   /// Get regional configuration for a locale
   static RegionalConfig getRegionalConfig(Locale locale) {
-    return _regionalConfigs[locale.languageCode] ?? 
-           _regionalConfigs['en']!;
+    return _regionalConfigs[locale.languageCode] ?? _regionalConfigs['en']!;
   }
 
   /// Format currency according to regional settings
@@ -224,8 +224,8 @@ class RegionalService {
     return config.holidays.any((holiday) {
       final holidayDate = holiday.getDateForYear(date.year);
       return holidayDate.year == date.year &&
-             holidayDate.month == date.month &&
-             holidayDate.day == date.day;
+          holidayDate.month == date.month &&
+          holidayDate.day == date.day;
     });
   }
 
@@ -291,7 +291,7 @@ class RegionalService {
   /// Get appropriate greeting based on time and culture
   static String getCulturalGreeting(DateTime time, Locale locale) {
     final hour = time.hour;
-    
+
     switch (locale.languageCode) {
       case 'ja':
         if (hour < 10) return 'おはようございます';
@@ -361,10 +361,7 @@ class CulturalColors {
 }
 
 class CulturalNumbers {
-  const CulturalNumbers({
-    required this.lucky,
-    required this.unlucky,
-  });
+  const CulturalNumbers({required this.lucky, required this.unlucky});
 
   final List<int> lucky;
   final List<int> unlucky;
@@ -375,7 +372,7 @@ class Holiday {
 
   final String name;
   final String dateDescription;
-  
+
   DateTime getDateForYear(int year) {
     // Simplified implementation for common date patterns
     switch (dateDescription) {

@@ -19,13 +19,15 @@ class AdvancedCustomizationService {
   // Custom Color Schemes
   Future<List<CustomColorScheme>> getCustomColorSchemes() async {
     if (!await canUseAdvancedCustomization()) return [];
-    
+
     try {
       final schemesData = await _localStorage.getString('custom_color_schemes');
       if (schemesData == null) return [];
-      
+
       final List<dynamic> schemesList = jsonDecode(schemesData);
-      return schemesList.map((json) => CustomColorScheme.fromJson(json)).toList();
+      return schemesList
+          .map((json) => CustomColorScheme.fromJson(json))
+          .toList();
     } catch (e) {
       return [];
     }
@@ -33,12 +35,12 @@ class AdvancedCustomizationService {
 
   Future<bool> saveCustomColorScheme(CustomColorScheme scheme) async {
     if (!await canUseAdvancedCustomization()) return false;
-    
+
     try {
       final schemes = await getCustomColorSchemes();
       schemes.removeWhere((s) => s.id == scheme.id);
       schemes.add(scheme);
-      
+
       final schemesJson = jsonEncode(schemes.map((s) => s.toJson()).toList());
       await _localStorage.setString('custom_color_schemes', schemesJson);
       return true;
@@ -49,11 +51,11 @@ class AdvancedCustomizationService {
 
   Future<bool> deleteCustomColorScheme(String schemeId) async {
     if (!await canUseAdvancedCustomization()) return false;
-    
+
     try {
       final schemes = await getCustomColorSchemes();
       schemes.removeWhere((s) => s.id == schemeId);
-      
+
       final schemesJson = jsonEncode(schemes.map((s) => s.toJson()).toList());
       await _localStorage.setString('custom_color_schemes', schemesJson);
       return true;
@@ -65,11 +67,11 @@ class AdvancedCustomizationService {
   // Custom Layouts
   Future<List<CustomLayout>> getCustomLayouts() async {
     if (!await canUseAdvancedCustomization()) return [];
-    
+
     try {
       final layoutsData = await _localStorage.getString('custom_layouts');
       if (layoutsData == null) return _getDefaultLayouts();
-      
+
       final List<dynamic> layoutsList = jsonDecode(layoutsData);
       return layoutsList.map((json) => CustomLayout.fromJson(json)).toList();
     } catch (e) {
@@ -79,12 +81,12 @@ class AdvancedCustomizationService {
 
   Future<bool> saveCustomLayout(CustomLayout layout) async {
     if (!await canUseAdvancedCustomization()) return false;
-    
+
     try {
       final layouts = await getCustomLayouts();
       layouts.removeWhere((l) => l.id == layout.id);
       layouts.add(layout);
-      
+
       final layoutsJson = jsonEncode(layouts.map((l) => l.toJson()).toList());
       await _localStorage.setString('custom_layouts', layoutsJson);
       return true;
@@ -96,30 +98,41 @@ class AdvancedCustomizationService {
   // Widget Customization
   Future<Map<String, WidgetCustomization>> getWidgetCustomizations() async {
     if (!await canUseAdvancedCustomization()) return {};
-    
+
     try {
-      final customizationsData = await _localStorage.getString('widget_customizations');
+      final customizationsData = await _localStorage.getString(
+        'widget_customizations',
+      );
       if (customizationsData == null) return {};
-      
-      final Map<String, dynamic> customizationsMap = jsonDecode(customizationsData);
-      return customizationsMap.map((key, value) => 
-        MapEntry(key, WidgetCustomization.fromJson(value)));
+
+      final Map<String, dynamic> customizationsMap = jsonDecode(
+        customizationsData,
+      );
+      return customizationsMap.map(
+        (key, value) => MapEntry(key, WidgetCustomization.fromJson(value)),
+      );
     } catch (e) {
       return {};
     }
   }
 
-  Future<bool> saveWidgetCustomization(String widgetId, WidgetCustomization customization) async {
+  Future<bool> saveWidgetCustomization(
+    String widgetId,
+    WidgetCustomization customization,
+  ) async {
     if (!await canUseAdvancedCustomization()) return false;
-    
+
     try {
       final customizations = await getWidgetCustomizations();
       customizations[widgetId] = customization;
-      
+
       final customizationsJson = jsonEncode(
-        customizations.map((key, value) => MapEntry(key, value.toJson()))
+        customizations.map((key, value) => MapEntry(key, value.toJson())),
       );
-      await _localStorage.setString('widget_customizations', customizationsJson);
+      await _localStorage.setString(
+        'widget_customizations',
+        customizationsJson,
+      );
       return true;
     } catch (e) {
       return false;
@@ -131,13 +144,15 @@ class AdvancedCustomizationService {
     if (!await canUseAdvancedCustomization()) {
       return DashboardCustomization.defaultCustomization();
     }
-    
+
     try {
-      final customizationData = await _localStorage.getString('dashboard_customization');
+      final customizationData = await _localStorage.getString(
+        'dashboard_customization',
+      );
       if (customizationData == null) {
         return DashboardCustomization.defaultCustomization();
       }
-      
+
       final json = jsonDecode(customizationData);
       return DashboardCustomization.fromJson(json);
     } catch (e) {
@@ -145,12 +160,17 @@ class AdvancedCustomizationService {
     }
   }
 
-  Future<bool> saveDashboardCustomization(DashboardCustomization customization) async {
+  Future<bool> saveDashboardCustomization(
+    DashboardCustomization customization,
+  ) async {
     if (!await canUseAdvancedCustomization()) return false;
-    
+
     try {
       final customizationJson = jsonEncode(customization.toJson());
-      await _localStorage.setString('dashboard_customization', customizationJson);
+      await _localStorage.setString(
+        'dashboard_customization',
+        customizationJson,
+      );
       return true;
     } catch (e) {
       return false;
@@ -162,13 +182,13 @@ class AdvancedCustomizationService {
     if (!await canUseAdvancedCustomization()) {
       return FontCustomization.defaultCustomization();
     }
-    
+
     try {
       final fontData = await _localStorage.getString('font_customization');
       if (fontData == null) {
         return FontCustomization.defaultCustomization();
       }
-      
+
       final json = jsonDecode(fontData);
       return FontCustomization.fromJson(json);
     } catch (e) {
@@ -178,7 +198,7 @@ class AdvancedCustomizationService {
 
   Future<bool> saveFontCustomization(FontCustomization customization) async {
     if (!await canUseAdvancedCustomization()) return false;
-    
+
     try {
       final customizationJson = jsonEncode(customization.toJson());
       await _localStorage.setString('font_customization', customizationJson);
@@ -193,13 +213,15 @@ class AdvancedCustomizationService {
     if (!await canUseAdvancedCustomization()) {
       return AnimationPreferences.defaultPreferences();
     }
-    
+
     try {
-      final preferencesData = await _localStorage.getString('animation_preferences');
+      final preferencesData = await _localStorage.getString(
+        'animation_preferences',
+      );
       if (preferencesData == null) {
         return AnimationPreferences.defaultPreferences();
       }
-      
+
       final json = jsonDecode(preferencesData);
       return AnimationPreferences.fromJson(json);
     } catch (e) {
@@ -207,9 +229,11 @@ class AdvancedCustomizationService {
     }
   }
 
-  Future<bool> saveAnimationPreferences(AnimationPreferences preferences) async {
+  Future<bool> saveAnimationPreferences(
+    AnimationPreferences preferences,
+  ) async {
     if (!await canUseAdvancedCustomization()) return false;
-    
+
     try {
       final preferencesJson = jsonEncode(preferences.toJson());
       await _localStorage.setString('animation_preferences', preferencesJson);
@@ -296,19 +320,20 @@ class CustomColorScheme {
     'createdAt': createdAt.toIso8601String(),
   };
 
-  factory CustomColorScheme.fromJson(Map<String, dynamic> json) => CustomColorScheme(
-    id: json['id'],
-    name: json['name'],
-    primary: Color(json['primary']),
-    secondary: Color(json['secondary']),
-    tertiary: Color(json['tertiary']),
-    background: Color(json['background']),
-    surface: Color(json['surface']),
-    success: Color(json['success']),
-    warning: Color(json['warning']),
-    error: Color(json['error']),
-    createdAt: DateTime.parse(json['createdAt']),
-  );
+  factory CustomColorScheme.fromJson(Map<String, dynamic> json) =>
+      CustomColorScheme(
+        id: json['id'],
+        name: json['name'],
+        primary: Color(json['primary']),
+        secondary: Color(json['secondary']),
+        tertiary: Color(json['tertiary']),
+        background: Color(json['background']),
+        surface: Color(json['surface']),
+        success: Color(json['success']),
+        warning: Color(json['warning']),
+        error: Color(json['error']),
+        createdAt: DateTime.parse(json['createdAt']),
+      );
 
   ColorTokens toColorTokens() {
     return ColorTokens(
@@ -418,24 +443,28 @@ class WidgetCustomization {
     'elevation': elevation,
   };
 
-  factory WidgetCustomization.fromJson(Map<String, dynamic> json) => WidgetCustomization(
-    isVisible: json['isVisible'],
-    opacity: json['opacity'],
-    padding: EdgeInsets.only(
-      left: json['padding']['left'],
-      top: json['padding']['top'],
-      right: json['padding']['right'],
-      bottom: json['padding']['bottom'],
-    ),
-    borderRadius: BorderRadius.only(
-      topLeft: Radius.circular(json['borderRadius']['topLeft']),
-      topRight: Radius.circular(json['borderRadius']['topRight']),
-      bottomLeft: Radius.circular(json['borderRadius']['bottomLeft']),
-      bottomRight: Radius.circular(json['borderRadius']['bottomRight']),
-    ),
-    backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor']) : null,
-    elevation: json['elevation'],
-  );
+  factory WidgetCustomization.fromJson(Map<String, dynamic> json) =>
+      WidgetCustomization(
+        isVisible: json['isVisible'],
+        opacity: json['opacity'],
+        padding: EdgeInsets.only(
+          left: json['padding']['left'],
+          top: json['padding']['top'],
+          right: json['padding']['right'],
+          bottom: json['padding']['bottom'],
+        ),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(json['borderRadius']['topLeft']),
+          topRight: Radius.circular(json['borderRadius']['topRight']),
+          bottomLeft: Radius.circular(json['borderRadius']['bottomLeft']),
+          bottomRight: Radius.circular(json['borderRadius']['bottomRight']),
+        ),
+        backgroundColor:
+            json['backgroundColor'] != null
+                ? Color(json['backgroundColor'])
+                : null,
+        elevation: json['elevation'],
+      );
 
   static WidgetCustomization defaultCustomization() => WidgetCustomization(
     isVisible: true,
@@ -469,35 +498,37 @@ class DashboardCustomization {
     'widgetSpacing': widgetSpacing,
   };
 
-  factory DashboardCustomization.fromJson(Map<String, dynamic> json) => DashboardCustomization(
-    widgetOrder: List<String>.from(json['widgetOrder']),
-    widgetVisibility: Map<String, bool>.from(json['widgetVisibility']),
-    columnsPortrait: json['columnsPortrait'],
-    columnsLandscape: json['columnsLandscape'],
-    widgetSpacing: json['widgetSpacing'],
-  );
+  factory DashboardCustomization.fromJson(Map<String, dynamic> json) =>
+      DashboardCustomization(
+        widgetOrder: List<String>.from(json['widgetOrder']),
+        widgetVisibility: Map<String, bool>.from(json['widgetVisibility']),
+        columnsPortrait: json['columnsPortrait'],
+        columnsLandscape: json['columnsLandscape'],
+        widgetSpacing: json['widgetSpacing'],
+      );
 
-  static DashboardCustomization defaultCustomization() => const DashboardCustomization(
-    widgetOrder: [
-      'streak_counter',
-      'today_progress',
-      'weekly_trend',
-      'achievements',
-      'ai_insights',
-    ],
-    widgetVisibility: {
-      'streak_counter': true,
-      'today_progress': true,
-      'weekly_trend': true,
-      'achievements': true,
-      'ai_insights': true,
-      'category_breakdown': false,
-      'time_patterns': false,
-    },
-    columnsPortrait: 1,
-    columnsLandscape: 2,
-    widgetSpacing: 16.0,
-  );
+  static DashboardCustomization defaultCustomization() =>
+      const DashboardCustomization(
+        widgetOrder: [
+          'streak_counter',
+          'today_progress',
+          'weekly_trend',
+          'achievements',
+          'ai_insights',
+        ],
+        widgetVisibility: {
+          'streak_counter': true,
+          'today_progress': true,
+          'weekly_trend': true,
+          'achievements': true,
+          'ai_insights': true,
+          'category_breakdown': false,
+          'time_patterns': false,
+        },
+        columnsPortrait: 1,
+        columnsLandscape: 2,
+        widgetSpacing: 16.0,
+      );
 }
 
 class FontCustomization {
@@ -526,14 +557,15 @@ class FontCustomization {
     'letterSpacing': letterSpacing,
   };
 
-  factory FontCustomization.fromJson(Map<String, dynamic> json) => FontCustomization(
-    fontFamily: json['fontFamily'],
-    scaleFactor: json['scaleFactor'],
-    headingWeight: FontWeight.values[json['headingWeight']],
-    bodyWeight: FontWeight.values[json['bodyWeight']],
-    lineHeight: json['lineHeight'],
-    letterSpacing: json['letterSpacing'],
-  );
+  factory FontCustomization.fromJson(Map<String, dynamic> json) =>
+      FontCustomization(
+        fontFamily: json['fontFamily'],
+        scaleFactor: json['scaleFactor'],
+        headingWeight: FontWeight.values[json['headingWeight']],
+        bodyWeight: FontWeight.values[json['bodyWeight']],
+        lineHeight: json['lineHeight'],
+        letterSpacing: json['letterSpacing'],
+      );
 
   static FontCustomization defaultCustomization() => const FontCustomization(
     fontFamily: 'System',
@@ -568,30 +600,35 @@ class AnimationPreferences {
     'reduceMotion': reduceMotion,
   };
 
-  factory AnimationPreferences.fromJson(Map<String, dynamic> json) => AnimationPreferences(
-    enableTransitions: json['enableTransitions'],
-    enableParticles: json['enableParticles'],
-    enableMicroInteractions: json['enableMicroInteractions'],
-    animationSpeed: json['animationSpeed'],
-    reduceMotion: json['reduceMotion'],
-  );
+  factory AnimationPreferences.fromJson(Map<String, dynamic> json) =>
+      AnimationPreferences(
+        enableTransitions: json['enableTransitions'],
+        enableParticles: json['enableParticles'],
+        enableMicroInteractions: json['enableMicroInteractions'],
+        animationSpeed: json['animationSpeed'],
+        reduceMotion: json['reduceMotion'],
+      );
 
-  static AnimationPreferences defaultPreferences() => const AnimationPreferences(
-    enableTransitions: true,
-    enableParticles: true,
-    enableMicroInteractions: true,
-    animationSpeed: 1.0,
-    reduceMotion: false,
-  );
+  static AnimationPreferences defaultPreferences() =>
+      const AnimationPreferences(
+        enableTransitions: true,
+        enableParticles: true,
+        enableMicroInteractions: true,
+        animationSpeed: 1.0,
+        reduceMotion: false,
+      );
 }
 
-final advancedCustomizationServiceProvider = Provider<AdvancedCustomizationService>((ref) {
-  final premiumService = ref.watch(premiumServiceProvider);
-  final localStorage = ref.watch(localStorageServiceProvider);
-  return AdvancedCustomizationService(premiumService, localStorage);
-});
+final advancedCustomizationServiceProvider =
+    Provider<AdvancedCustomizationService>((ref) {
+      final premiumService = ref.watch(premiumServiceProvider);
+      final localStorage = ref.watch(localStorageServiceProvider);
+      return AdvancedCustomizationService(premiumService, localStorage);
+    });
 
-final customColorSchemesProvider = FutureProvider<List<CustomColorScheme>>((ref) {
+final customColorSchemesProvider = FutureProvider<List<CustomColorScheme>>((
+  ref,
+) {
   final customizationService = ref.watch(advancedCustomizationServiceProvider);
   return customizationService.getCustomColorSchemes();
 });
@@ -601,7 +638,9 @@ final customLayoutsProvider = FutureProvider<List<CustomLayout>>((ref) {
   return customizationService.getCustomLayouts();
 });
 
-final dashboardCustomizationProvider = FutureProvider<DashboardCustomization>((ref) {
+final dashboardCustomizationProvider = FutureProvider<DashboardCustomization>((
+  ref,
+) {
   final customizationService = ref.watch(advancedCustomizationServiceProvider);
   return customizationService.getDashboardCustomization();
 });
@@ -611,7 +650,9 @@ final fontCustomizationProvider = FutureProvider<FontCustomization>((ref) {
   return customizationService.getFontCustomization();
 });
 
-final animationPreferencesProvider = FutureProvider<AnimationPreferences>((ref) {
+final animationPreferencesProvider = FutureProvider<AnimationPreferences>((
+  ref,
+) {
   final customizationService = ref.watch(advancedCustomizationServiceProvider);
   return customizationService.getAnimationPreferences();
 });

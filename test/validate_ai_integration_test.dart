@@ -48,8 +48,9 @@ import 'package:minq/features/ai/domain/models/social_settings.dart';
 import 'package:minq/data/providers.dart';
 
 void main() {
-  testWidgets('AI Integration Compile-Time Validation',
-      (WidgetTester tester) async {
+  testWidgets('AI Integration Compile-Time Validation', (
+    WidgetTester tester,
+  ) async {
     // This test simply checks that all the imported AI-related classes can be
     // referenced without causing compile-time errors. It doesn't instantiate
     // them, but it does confirm their existence.

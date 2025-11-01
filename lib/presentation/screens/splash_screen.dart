@@ -222,11 +222,13 @@ class _SplashScreenState extends State<SplashScreen>
                                     gradient: RadialGradient(
                                       colors: [
                                         primaryColor.withAlpha(
-                                            (255 * _pulseOpacity.value * 0.3)
-                                                .toInt()),
+                                          (255 * _pulseOpacity.value * 0.3)
+                                              .toInt(),
+                                        ),
                                         primaryColor.withAlpha(
-                                            (255 * _pulseOpacity.value * 0.1)
-                                                .toInt()),
+                                          (255 * _pulseOpacity.value * 0.1)
+                                              .toInt(),
+                                        ),
                                         Colors.transparent,
                                       ],
                                     ),
@@ -515,9 +517,10 @@ class ParticlePainter extends CustomPainter {
       final y = size.height * progress;
 
       final opacity = (1.0 - progress) * 0.3;
-      paint.color = isDark
-          ? Colors.white.withAlpha((255 * opacity).toInt())
-          : Colors.grey.withAlpha((255 * opacity).toInt());
+      paint.color =
+          isDark
+              ? Colors.white.withAlpha((255 * opacity).toInt())
+              : Colors.grey.withAlpha((255 * opacity).toInt());
 
       canvas.drawCircle(Offset(x, y), 2.0 * (1.0 - progress), paint);
     }
@@ -530,9 +533,10 @@ class ParticlePainter extends CustomPainter {
 
       if (sparkleProgress > 0.8) {
         final sparkleOpacity = (1.0 - sparkleProgress) * 5.0;
-        paint.color = isDark
-            ? Colors.blue.withAlpha((255 * sparkleOpacity * 0.5).toInt())
-            : Colors.blue.withAlpha((255 * sparkleOpacity * 0.3).toInt());
+        paint.color =
+            isDark
+                ? Colors.blue.withAlpha((255 * sparkleOpacity * 0.5).toInt())
+                : Colors.blue.withAlpha((255 * sparkleOpacity * 0.3).toInt());
 
         _drawSparkle(canvas, Offset(sparkleX, sparkleY), paint);
       }

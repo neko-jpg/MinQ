@@ -47,7 +47,9 @@ class PushNotificationService {
       logger.info('Message data: ${message.data}');
 
       if (message.notification != null) {
-        logger.info('Message also contained a notification: ${message.notification}');
+        logger.info(
+          'Message also contained a notification: ${message.notification}',
+        );
         // Here you could use flutter_local_notifications to show a heads-up notification
       }
     });

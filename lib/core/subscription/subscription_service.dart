@@ -26,12 +26,16 @@ class SubscriptionService {
   Future<void> initialize() async {
     try {
       await _loadSubscriptionStatus();
-      _logger.info('Subscription service initialized', data: {
-        'plan': _currentPlan.name,
-      });
+      _logger.info(
+        'Subscription service initialized',
+        data: {'plan': _currentPlan.name},
+      );
     } catch (e, stack) {
-      _logger.error('Failed to initialize subscription service',
-          error: e, stackTrace: stack);
+      _logger.error(
+        'Failed to initialize subscription service',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -57,8 +61,11 @@ class SubscriptionService {
         _currentPlan = SubscriptionPlan.free;
       }
     } catch (e, stack) {
-      _logger.error('Failed to load subscription status',
-          error: e, stackTrace: stack);
+      _logger.error(
+        'Failed to load subscription status',
+        error: e,
+        stackTrace: stack,
+      );
       _currentPlan = SubscriptionPlan.free;
     }
   }
@@ -67,9 +74,10 @@ class SubscriptionService {
   Future<bool> purchase(SubscriptionPlan plan) async {
     if (plan == SubscriptionPlan.free) return false;
     try {
-      _logger.info('Attempting to purchase subscription', data: {
-        'plan': plan.name,
-      });
+      _logger.info(
+        'Attempting to purchase subscription',
+        data: {'plan': plan.name},
+      );
 
       final now = DateTime.now();
       final expiryDate =
@@ -86,13 +94,17 @@ class SubscriptionService {
       });
 
       _currentPlan = plan;
-      _logger.info('Subscription purchased successfully', data: {
-        'plan': plan.name,
-      });
+      _logger.info(
+        'Subscription purchased successfully',
+        data: {'plan': plan.name},
+      );
       return true;
     } catch (e, stack) {
-      _logger.error('Failed to purchase subscription',
-          error: e, stackTrace: stack);
+      _logger.error(
+        'Failed to purchase subscription',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -102,13 +114,17 @@ class SubscriptionService {
     try {
       _logger.info('Attempting to restore subscription');
       await _loadSubscriptionStatus();
-      _logger.info('Subscription restored successfully', data: {
-        'plan': _currentPlan.name,
-      });
+      _logger.info(
+        'Subscription restored successfully',
+        data: {'plan': _currentPlan.name},
+      );
       return true;
     } catch (e, stack) {
-      _logger.error('Failed to restore subscription',
-          error: e, stackTrace: stack);
+      _logger.error(
+        'Failed to restore subscription',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -125,8 +141,11 @@ class SubscriptionService {
       _logger.info('Subscription cancellation initiated');
       return true;
     } catch (e, stack) {
-      _logger.error('Failed to cancel subscription',
-          error: e, stackTrace: stack);
+      _logger.error(
+        'Failed to cancel subscription',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }

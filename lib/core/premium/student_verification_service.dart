@@ -23,9 +23,11 @@ class StudentVerificationService {
 
   Future<StudentVerification?> getCurrentVerification() async {
     try {
-      final verificationData = await _localStorage.getString('student_verification');
+      final verificationData = await _localStorage.getString(
+        'student_verification',
+      );
       if (verificationData == null) return null;
-      
+
       final json = Map<String, dynamic>.from(verificationData as Map);
       return StudentVerification.fromJson(json);
     } catch (e) {
@@ -77,7 +79,7 @@ class StudentVerificationService {
   }) async {
     if (!await isEligibleForStudentPlan()) {
       return StudentVerificationResult.failure(
-        'Not eligible for student plan verification'
+        'Not eligible for student plan verification',
       );
     }
 
@@ -93,7 +95,9 @@ class StudentVerificationService {
       );
 
       if (!validationResult.isValid) {
-        return StudentVerificationResult.failure(validationResult.errorMessage!);
+        return StudentVerificationResult.failure(
+          validationResult.errorMessage!,
+        );
       }
 
       // Upload document (mock implementation)
@@ -125,11 +129,12 @@ class StudentVerificationService {
 
       return StudentVerificationResult.success(
         verification: verification,
-        message: 'Verification submitted successfully. You will receive an email within 2-3 business days.',
+        message:
+            'Verification submitted successfully. You will receive an email within 2-3 business days.',
       );
     } catch (e) {
       return StudentVerificationResult.failure(
-        'Failed to submit verification: $e'
+        'Failed to submit verification: $e',
       );
     }
   }
@@ -141,13 +146,16 @@ class StudentVerificationService {
     String? additionalNotes,
   }) async {
     final currentVerification = await getCurrentVerification();
-    
-    if (currentVerification == null || currentVerification.id != verificationId) {
+
+    if (currentVerification == null ||
+        currentVerification.id != verificationId) {
       return StudentVerificationResult.failure('Verification not found');
     }
 
     if (currentVerification.status != StudentVerificationStatus.rejected) {
-      return StudentVerificationResult.failure('Can only resubmit rejected verifications');
+      return StudentVerificationResult.failure(
+        'Can only resubmit rejected verifications',
+      );
     }
 
     try {
@@ -184,7 +192,7 @@ class StudentVerificationService {
       );
     } catch (e) {
       return StudentVerificationResult.failure(
-        'Failed to resubmit verification: $e'
+        'Failed to resubmit verification: $e',
       );
     }
   }
@@ -209,7 +217,7 @@ class StudentVerificationService {
 
   Future<StudentDiscountInfo> getDiscountInfo() async {
     final tier = await _premiumService.getCurrentTier();
-    
+
     if (tier != PremiumTier.student) {
       return StudentDiscountInfo(
         isEligible: await isEligibleForStudentPlan(),
@@ -254,35 +262,40 @@ class StudentVerificationService {
       const StudentTip(
         id: 'study_habits',
         title: 'Build Study Habits',
-        description: 'Use MinQ to build consistent study routines that will improve your academic performance.',
+        description:
+            'Use MinQ to build consistent study routines that will improve your academic performance.',
         category: 'Academic',
         icon: 'school',
       ),
       const StudentTip(
         id: 'time_management',
         title: 'Master Time Management',
-        description: 'Create quests for assignment deadlines and exam preparation to stay organized.',
+        description:
+            'Create quests for assignment deadlines and exam preparation to stay organized.',
         category: 'Productivity',
         icon: 'schedule',
       ),
       const StudentTip(
         id: 'health_balance',
         title: 'Maintain Health Balance',
-        description: 'Don\'t forget to include exercise, sleep, and nutrition habits alongside your studies.',
+        description:
+            'Don\'t forget to include exercise, sleep, and nutrition habits alongside your studies.',
         category: 'Wellness',
         icon: 'favorite',
       ),
       const StudentTip(
         id: 'social_connections',
         title: 'Stay Connected',
-        description: 'Use family features to stay connected with family and study groups.',
+        description:
+            'Use family features to stay connected with family and study groups.',
         category: 'Social',
         icon: 'people',
       ),
       const StudentTip(
         id: 'financial_habits',
         title: 'Build Financial Habits',
-        description: 'Start building good financial habits early with budgeting and saving quests.',
+        description:
+            'Start building good financial habits early with budgeting and saving quests.',
         category: 'Finance',
         icon: 'savings',
       ),
@@ -298,7 +311,8 @@ class StudentVerificationService {
     }
 
     // Check if renewal is needed (within 30 days of expiration)
-    final daysUntilExpiration = verification.expiresAt.difference(DateTime.now()).inDays;
+    final daysUntilExpiration =
+        verification.expiresAt.difference(DateTime.now()).inDays;
     if (daysUntilExpiration > 30) {
       return false; // Too early to renew
     }
@@ -311,7 +325,9 @@ class StudentVerificationService {
       reviewNotes: null,
       reviewedAt: null,
       reviewedBy: null,
-      expiresAt: DateTime.now().add(const Duration(days: 365)), // Extend for another year
+      expiresAt: DateTime.now().add(
+        const Duration(days: 365),
+      ), // Extend for another year
     );
 
     await _saveVerification(renewalVerification);
@@ -334,7 +350,8 @@ class StudentVerificationService {
     if (!supportedSchools.contains(schoolName)) {
       return const ValidationResult(
         isValid: false,
-        errorMessage: 'School not in our supported list. Please contact support.',
+        errorMessage:
+            'School not in our supported list. Please contact support.',
       );
     }
 
@@ -364,7 +381,8 @@ class StudentVerificationService {
     }
 
     final fileSize = await documentFile.length();
-    if (fileSize > 10 * 1024 * 1024) { // 10MB limit
+    if (fileSize > 10 * 1024 * 1024) {
+      // 10MB limit
       return const ValidationResult(
         isValid: false,
         errorMessage: 'Document file too large. Maximum size is 10MB.',
@@ -385,15 +403,25 @@ class StudentVerificationService {
   bool _isValidStudentEmail(String email, String schoolName) {
     // Mock validation - would implement actual domain checking
     final domain = email.split('@').last.toLowerCase();
-    
+
     // Common academic domains
     final academicDomains = [
-      'edu', 'ac.jp', 'u-tokyo.ac.jp', 'kyoto-u.ac.jp',
-      'osaka-u.ac.jp', 'tohoku.ac.jp', 'nagoya-u.ac.jp',
-      'hokudai.ac.jp', 'kyushu-u.ac.jp', 'titech.ac.jp',
-      'waseda.jp', 'keio.jp', 'sophia.ac.jp', 'icu.ac.jp',
+      'edu',
+      'ac.jp',
+      'u-tokyo.ac.jp',
+      'kyoto-u.ac.jp',
+      'osaka-u.ac.jp',
+      'tohoku.ac.jp',
+      'nagoya-u.ac.jp',
+      'hokudai.ac.jp',
+      'kyushu-u.ac.jp',
+      'titech.ac.jp',
+      'waseda.jp',
+      'keio.jp',
+      'sophia.ac.jp',
+      'icu.ac.jp',
     ];
-    
+
     return academicDomains.any((d) => domain.contains(d));
   }
 
@@ -403,7 +431,9 @@ class StudentVerificationService {
     return 'https://storage.minq.app/documents/${DateTime.now().millisecondsSinceEpoch}.pdf';
   }
 
-  Future<void> _submitToVerificationService(StudentVerification verification) async {
+  Future<void> _submitToVerificationService(
+    StudentVerification verification,
+  ) async {
     // Mock implementation - would submit to actual verification service
     await Future.delayed(const Duration(milliseconds: 500));
   }
@@ -517,24 +547,28 @@ class StudentVerification {
     'expiresAt': expiresAt.toIso8601String(),
   };
 
-  factory StudentVerification.fromJson(Map<String, dynamic> json) => StudentVerification(
-    id: json['id'],
-    schoolName: json['schoolName'],
-    studentId: json['studentId'],
-    studentEmail: json['studentEmail'],
-    documentType: json['documentType'],
-    documentUrl: json['documentUrl'],
-    expectedGraduation: DateTime.parse(json['expectedGraduation']),
-    additionalNotes: json['additionalNotes'],
-    submittedAt: DateTime.parse(json['submittedAt']),
-    status: StudentVerificationStatus.values.firstWhere(
-      (s) => s.name == json['status'],
-    ),
-    reviewNotes: json['reviewNotes'],
-    reviewedAt: json['reviewedAt'] != null ? DateTime.parse(json['reviewedAt']) : null,
-    reviewedBy: json['reviewedBy'],
-    expiresAt: DateTime.parse(json['expiresAt']),
-  );
+  factory StudentVerification.fromJson(Map<String, dynamic> json) =>
+      StudentVerification(
+        id: json['id'],
+        schoolName: json['schoolName'],
+        studentId: json['studentId'],
+        studentEmail: json['studentEmail'],
+        documentType: json['documentType'],
+        documentUrl: json['documentUrl'],
+        expectedGraduation: DateTime.parse(json['expectedGraduation']),
+        additionalNotes: json['additionalNotes'],
+        submittedAt: DateTime.parse(json['submittedAt']),
+        status: StudentVerificationStatus.values.firstWhere(
+          (s) => s.name == json['status'],
+        ),
+        reviewNotes: json['reviewNotes'],
+        reviewedAt:
+            json['reviewedAt'] != null
+                ? DateTime.parse(json['reviewedAt'])
+                : null,
+        reviewedBy: json['reviewedBy'],
+        expiresAt: DateTime.parse(json['expiresAt']),
+      );
 }
 
 class StudentVerificationResult {
@@ -573,10 +607,7 @@ class ValidationResult {
   final bool isValid;
   final String? errorMessage;
 
-  const ValidationResult({
-    required this.isValid,
-    this.errorMessage,
-  });
+  const ValidationResult({required this.isValid, this.errorMessage});
 }
 
 class StudentDiscountInfo {
@@ -635,21 +666,26 @@ class StudentTip {
   });
 }
 
-final studentVerificationServiceProvider = Provider<StudentVerificationService>((ref) {
-  final premiumService = ref.watch(premiumServiceProvider);
-  final localStorage = ref.watch(localStorageServiceProvider);
-  return StudentVerificationService(premiumService, localStorage);
-});
+final studentVerificationServiceProvider = Provider<StudentVerificationService>(
+  (ref) {
+    final premiumService = ref.watch(premiumServiceProvider);
+    final localStorage = ref.watch(localStorageServiceProvider);
+    return StudentVerificationService(premiumService, localStorage);
+  },
+);
 
-final studentVerificationStatusProvider = FutureProvider<StudentVerificationStatus>((ref) {
-  final studentService = ref.watch(studentVerificationServiceProvider);
-  return studentService.getVerificationStatus();
-});
+final studentVerificationStatusProvider =
+    FutureProvider<StudentVerificationStatus>((ref) {
+      final studentService = ref.watch(studentVerificationServiceProvider);
+      return studentService.getVerificationStatus();
+    });
 
-final currentStudentVerificationProvider = FutureProvider<StudentVerification?>((ref) {
-  final studentService = ref.watch(studentVerificationServiceProvider);
-  return studentService.getCurrentVerification();
-});
+final currentStudentVerificationProvider = FutureProvider<StudentVerification?>(
+  (ref) {
+    final studentService = ref.watch(studentVerificationServiceProvider);
+    return studentService.getCurrentVerification();
+  },
+);
 
 final studentDiscountInfoProvider = FutureProvider<StudentDiscountInfo>((ref) {
   final studentService = ref.watch(studentVerificationServiceProvider);

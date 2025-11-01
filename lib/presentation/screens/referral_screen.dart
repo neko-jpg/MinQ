@@ -78,12 +78,13 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
           tabs: const [Tab(text: '招待する'), Tab(text: '招待履歴')],
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-              controller: _tabController,
-              children: [_buildInviteTab(), _buildHistoryTab()],
-            ),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : TabBarView(
+                controller: _tabController,
+                children: [_buildInviteTab(), _buildHistoryTab()],
+              ),
     );
   }
 
@@ -138,8 +139,9 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
                 SizedBox(height: tokens.spacing.md),
                 Text(
                   'データの読み込みに失敗しました',
-                  style: tokens.typography.bodyMedium
-                      .copyWith(color: tokens.textMuted),
+                  style: tokens.typography.bodyMedium.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
                 SizedBox(height: tokens.spacing.md),
                 ElevatedButton(
@@ -164,10 +166,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
       padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.brandPrimary,
-            tokens.brandPrimary.withAlpha(204)
-          ],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withAlpha(204)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -218,8 +217,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
         children: [
           Text(
             'あなたの招待リンク',
-            style:
-                tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: tokens.spacing.sm),
 
@@ -357,8 +355,9 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
                   SizedBox(height: tokens.spacing.xs),
                   Text(
                     description,
-                    style: tokens.typography.caption
-                        .copyWith(color: tokens.textMuted),
+                    style: tokens.typography.caption.copyWith(
+                      color: tokens.textMuted,
+                    ),
                   ),
                 ],
               ),
@@ -419,11 +418,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildRewardItem(
-    String condition,
-    String reward,
-    String description,
-  ) {
+  Widget _buildRewardItem(String condition, String reward, String description) {
     final tokens = context.tokens;
     return Row(
       children: [
@@ -460,8 +455,9 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
               ),
               Text(
                 description,
-                style: tokens.typography.caption
-                    .copyWith(color: tokens.textMuted),
+                style: tokens.typography.caption.copyWith(
+                  color: tokens.textMuted,
+                ),
               ),
             ],
           ),
@@ -565,8 +561,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
           SizedBox(height: tokens.spacing.xs),
           Text(
             title,
-            style: tokens.typography.caption
-                .copyWith(color: tokens.textMuted),
+            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -629,14 +624,12 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
           SizedBox(height: tokens.spacing.md),
           Text(
             'まだ招待履歴がありません',
-            style:
-                tokens.typography.h4.copyWith(color: tokens.textMuted),
+            style: tokens.typography.h4.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing.xs),
           Text(
             '友達を招待して、一緒にMinQを楽しみましょう！',
-            style: tokens.typography.body
-                .copyWith(color: tokens.textMuted),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -724,8 +717,9 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
                 SizedBox(height: tokens.spacing.xs),
                 Text(
                   '${date.month}/${date.day} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-                  style: tokens.typography.caption
-                      .copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
               ],
             ),

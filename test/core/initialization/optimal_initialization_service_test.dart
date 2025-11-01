@@ -26,15 +26,15 @@ void main() {
 
     test('completes initialization within target time', () async {
       final stopwatch = Stopwatch()..start();
-      
+
       try {
         await OptimalInitializationService.initializeApp(container);
       } catch (e) {
         // エラーが発生してもテストを続行
       }
-      
+
       stopwatch.stop();
-      
+
       // 1.5秒以上2.5秒以内で完了することを確認
       expect(stopwatch.elapsedMilliseconds, greaterThanOrEqualTo(1500));
       expect(stopwatch.elapsedMilliseconds, lessThan(2500));
@@ -61,21 +61,21 @@ void main() {
 
     test('optimized startup provider works correctly', () async {
       final result = container.read(optimizedAppStartupProvider);
-      
+
       expect(result, isA<AsyncValue<void>>());
-      
+
       // 初期状態はローディング
       expect(result.isLoading, isTrue);
     });
 
     test('deferred initialization does not block startup', () async {
       final stopwatch = Stopwatch()..start();
-      
+
       // 重要な初期化のみをテスト
       await OptimalInitializationService.initializeApp(container);
-      
+
       stopwatch.stop();
-      
+
       // 遅延初期化により、メイン初期化は高速に完了
       expect(stopwatch.elapsedMilliseconds, lessThan(3000));
     });

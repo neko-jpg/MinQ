@@ -63,36 +63,27 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
                   'ランダム祝福',
                   () => CelebrationSystem.showCelebration(context),
                 ),
-                _buildCelebrationButton(
-                  '7日達成',
-                  () {
-                    final theme = Theme.of(context).extension<MinqTheme>()!;
-                    CelebrationSystem.showCelebration(
-                      context,
-                      config: CelebrationSystem.getStreakCelebration(7, theme),
-                    );
-                  },
-                ),
-                _buildCelebrationButton(
-                  '30日達成',
-                  () {
-                    final theme = Theme.of(context).extension<MinqTheme>()!;
-                    CelebrationSystem.showCelebration(
-                      context,
-                      config: CelebrationSystem.getStreakCelebration(30, theme),
-                    );
-                  },
-                ),
-                _buildCelebrationButton(
-                  '100日達成',
-                  () {
-                    final theme = Theme.of(context).extension<MinqTheme>()!;
-                    CelebrationSystem.showCelebration(
-                      context,
-                      config: CelebrationSystem.getStreakCelebration(100, theme),
-                    );
-                  },
-                ),
+                _buildCelebrationButton('7日達成', () {
+                  final theme = Theme.of(context).extension<MinqTheme>()!;
+                  CelebrationSystem.showCelebration(
+                    context,
+                    config: CelebrationSystem.getStreakCelebration(7, theme),
+                  );
+                }),
+                _buildCelebrationButton('30日達成', () {
+                  final theme = Theme.of(context).extension<MinqTheme>()!;
+                  CelebrationSystem.showCelebration(
+                    context,
+                    config: CelebrationSystem.getStreakCelebration(30, theme),
+                  );
+                }),
+                _buildCelebrationButton('100日達成', () {
+                  final theme = Theme.of(context).extension<MinqTheme>()!;
+                  CelebrationSystem.showCelebration(
+                    context,
+                    config: CelebrationSystem.getStreakCelebration(100, theme),
+                  );
+                }),
               ],
             ),
             const SizedBox(height: 32),

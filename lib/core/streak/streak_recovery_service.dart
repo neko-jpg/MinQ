@@ -7,7 +7,7 @@ class StreakRecoveryService {
   final AppLogger _logger = AppLogger();
 
   StreakRecoveryService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// リカバリーチケットを使用してストリークを復元
   Future<bool> recoverStreak({
@@ -112,11 +112,7 @@ class StreakRecoveryService {
 
       return true;
     } catch (e, stack) {
-      _logger.error(
-        'Failed to earn ticket by ad',
-        error: e,
-        stackTrace: stack,
-      );
+      _logger.error('Failed to earn ticket by ad', error: e, stackTrace: stack);
       return false;
     }
   }

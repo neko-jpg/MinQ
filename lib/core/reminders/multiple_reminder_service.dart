@@ -64,11 +64,7 @@ class MultipleReminderService {
 
       logger.info('Reminder added');
     } catch (e, stack) {
-      logger.error(
-        'Failed to add reminder',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.error('Failed to add reminder', error: e, stackTrace: stack);
       rethrow;
     }
   }
@@ -87,11 +83,7 @@ class MultipleReminderService {
 
       logger.info('Reminder removed');
     } catch (e, stack) {
-      logger.error(
-        'Failed to remove reminder',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.error('Failed to remove reminder', error: e, stackTrace: stack);
       rethrow;
     }
   }
@@ -146,11 +138,7 @@ class MultipleReminderService {
         await _cancelNotification(reminderId);
       }
     } catch (e, stack) {
-      logger.error(
-        'Failed to toggle reminder',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.error('Failed to toggle reminder', error: e, stackTrace: stack);
       rethrow;
     }
   }
@@ -257,11 +245,7 @@ class MultipleReminderService {
 
       logger.info('Reminders saved');
     } catch (e, stack) {
-      logger.error(
-        'Failed to save reminders',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.error('Failed to save reminders', error: e, stackTrace: stack);
       rethrow;
     }
   }

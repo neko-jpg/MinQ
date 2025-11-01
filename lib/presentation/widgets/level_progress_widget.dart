@@ -44,12 +44,7 @@ class LevelProgressWidget extends ConsumerWidget {
       return _buildCompactWidget(context, progress, currentLevelInfo);
     }
 
-    return _buildFullWidget(
-      context,
-      progress,
-      currentLevelInfo,
-      nextLevelInfo,
-    );
+    return _buildFullWidget(context, progress, currentLevelInfo, nextLevelInfo);
   }
 
   Widget _buildCompactWidget(
@@ -72,8 +67,9 @@ class LevelProgressWidget extends ConsumerWidget {
             ],
           ),
           borderRadius: BorderRadius.circular(12),
-          border:
-              Border.all(color: colorScheme.primary.withAlpha((255 * 0.3).round())),
+          border: Border.all(
+            color: colorScheme.primary.withAlpha((255 * 0.3).round()),
+          ),
         ),
         child: Row(
           children: [
@@ -124,8 +120,9 @@ class LevelProgressWidget extends ConsumerWidget {
                     const SizedBox(height: 4),
                     Text(
                       '次のレベルまで ${((1 - progress.progress) * 100).toInt()}%',
-                      style:
-                          textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ] else
                     Text(
@@ -171,8 +168,9 @@ class LevelProgressWidget extends ConsumerWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border:
-            Border.all(color: colorScheme.primary.withAlpha((255 * 0.3).round())),
+        border: Border.all(
+          color: colorScheme.primary.withAlpha((255 * 0.3).round()),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,15 +178,13 @@ class LevelProgressWidget extends ConsumerWidget {
           // ヘッダー
           Row(
             children: [
-              Icon(
-                Icons.star,
-                color: colorScheme.primary,
-                size: 24,
-              ),
+              Icon(Icons.star, color: colorScheme.primary, size: 24),
               const SizedBox(width: 8),
               Text(
                 'あなたのレベル',
-                style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const Spacer(),
               if (onTap != null)
@@ -218,8 +214,7 @@ class LevelProgressWidget extends ConsumerWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color:
-                          colorScheme.primary.withAlpha((255 * 0.3).round()),
+                      color: colorScheme.primary.withAlpha((255 * 0.3).round()),
                       blurRadius: 8,
                       spreadRadius: 2,
                     ),
@@ -290,7 +285,9 @@ class LevelProgressWidget extends ConsumerWidget {
           children: [
             Text(
               '次のレベル: ${nextLevelInfo.title}',
-              style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const Spacer(),
             Text(
@@ -405,7 +402,8 @@ class LevelProgressWidget extends ConsumerWidget {
           Icon(
             icon,
             size: 24,
-            color: progress >= 1.0 ? Colors.green : colorScheme.onSurfaceVariant,
+            color:
+                progress >= 1.0 ? Colors.green : colorScheme.onSurfaceVariant,
           ),
           const SizedBox(height: 4),
           Text(
@@ -415,7 +413,8 @@ class LevelProgressWidget extends ConsumerWidget {
           Text(
             '${(progress * 100).toInt()}%',
             style: textTheme.bodySmall?.copyWith(
-              color: progress >= 1.0 ? Colors.green : colorScheme.onSurfaceVariant,
+              color:
+                  progress >= 1.0 ? Colors.green : colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -423,7 +422,10 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildUnlockPreview(BuildContext context, OnboardingLevel nextLevelInfo) {
+  Widget _buildUnlockPreview(
+    BuildContext context,
+    OnboardingLevel nextLevelInfo,
+  ) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     return Container(
@@ -438,11 +440,7 @@ class LevelProgressWidget extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.lock_open,
-                color: Colors.green,
-                size: 24,
-              ),
+              const Icon(Icons.lock_open, color: Colors.green, size: 24),
               const SizedBox(width: 8),
               Text(
                 '解放される機能',
@@ -502,11 +500,7 @@ class LevelProgressWidget extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.emoji_events,
-            color: Colors.amber,
-            size: 32,
-          ),
+          const Icon(Icons.emoji_events, color: Colors.amber, size: 32),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -567,7 +561,9 @@ class LevelProgressWidget extends ConsumerWidget {
           const SizedBox(width: 12),
           Text(
             'レベル情報を読み込めませんでした',
-            style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),
@@ -583,9 +579,12 @@ class LevelProgressWidget extends ConsumerWidget {
             title: Text(AppLocalizations.of(context).levelDetails),
             content: Text(
               AppLocalizations.of(context).levelDetailsMessage
-                .toString()
-                .replaceAll('{level}', progress.currentLevel.toString())
-                .replaceAll('{progress}', (progress.progress * 100).toInt().toString()),
+                  .toString()
+                  .replaceAll('{level}', progress.currentLevel.toString())
+                  .replaceAll(
+                    '{progress}',
+                    (progress.progress * 100).toInt().toString(),
+                  ),
             ),
             actions: [
               TextButton(

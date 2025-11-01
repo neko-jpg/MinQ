@@ -65,7 +65,10 @@ class SentryService {
   }
 
   /// コンテキストを設定
-  static Future<void> setContext(String key, Map<String, dynamic> context) async {
+  static Future<void> setContext(
+    String key,
+    Map<String, dynamic> context,
+  ) async {
     if (!_initialized) return;
 
     // TODO: Sentry.configureScope()を実装
@@ -85,13 +88,7 @@ class SentryService {
 }
 
 /// Sentryレベル
-enum SentryLevel {
-  debug,
-  info,
-  warning,
-  error,
-  fatal,
-}
+enum SentryLevel { debug, info, warning, error, fatal }
 
 /// Sentryラッパー
 class SentryWrapper {
@@ -106,9 +103,7 @@ class SentryWrapper {
   }
 
   /// ウィジェットエラーをキャッチ
-  static Future<void> captureWidgetError(
-    FlutterErrorDetails details,
-  ) async {
+  static Future<void> captureWidgetError(FlutterErrorDetails details) async {
     await SentryService.captureException(
       details.exception,
       stackTrace: details.stack,
@@ -122,11 +117,7 @@ class FlutterErrorDetails {
   final StackTrace? stack;
   final DiagnosticsNode? context;
 
-  FlutterErrorDetails({
-    required this.exception,
-    this.stack,
-    this.context,
-  });
+  FlutterErrorDetails({required this.exception, this.stack, this.context});
 }
 
 class DiagnosticsNode {

@@ -55,7 +55,10 @@ class LicensesScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('このアプリは以下のオープンソースソフトウェアを使用しています', style: tokens.typography.body),
+            Text(
+              'このアプリは以下のオープンソースソフトウェアを使用しています',
+              style: tokens.typography.body,
+            ),
             SizedBox(height: tokens.spacing.sm),
             Text(
               '合計 ${data.packages.length} パッケージ',
@@ -85,12 +88,13 @@ class LicensesScreen extends ConsumerWidget {
       margin: EdgeInsets.only(bottom: tokens.spacing.sm),
       child: ListTile(
         title: Text(entry.packages.join(', '), style: tokens.typography.h4),
-        subtitle: entry.paragraphs.isNotEmpty
-            ? Text(
-                _getLicenseType(entry.paragraphs.first.text),
-                style: tokens.typography.caption,
-              )
-            : null,
+        subtitle:
+            entry.paragraphs.isNotEmpty
+                ? Text(
+                  _getLicenseType(entry.paragraphs.first.text),
+                  style: tokens.typography.caption,
+                )
+                : null,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
           _showLicenseDetail(context, entry);
@@ -103,29 +107,31 @@ class LicensesScreen extends ConsumerWidget {
     final tokens = context.tokens;
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(entry.packages.join(', ')),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: entry.paragraphs.map((paragraph) {
-              return Padding(
-                padding: EdgeInsets.only(bottom: tokens.spacing.sm),
-                child: Text(
-                  paragraph.text,
-                  style: tokens.typography.caption,
-                ),
-              );
-            }).toList(),
+      builder:
+          (context) => AlertDialog(
+            title: Text(entry.packages.join(', ')),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:
+                    entry.paragraphs.map((paragraph) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: tokens.spacing.sm),
+                        child: Text(
+                          paragraph.text,
+                          style: tokens.typography.caption,
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('閉じる'),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('閉じる'),
-          ),
-        ],
-      ),
     );
   }
 

@@ -34,12 +34,12 @@ Quest _questFromJson(Map<String, dynamic> json) {
     ..difficulty = json['difficulty'] as String?
     ..location = json['location'] as String?
     ..iconKey = json['iconKey'] as String?
-    ..status =
-        QuestStatus.values.firstWhere((e) => e.name == json['status'])
+    ..status = QuestStatus.values.firstWhere((e) => e.name == json['status'])
     ..createdAt = DateTime.parse(json['createdAt'] as String)
-    ..deletedAt = json['deletedAt'] == null
-        ? null
-        : DateTime.parse(json['deletedAt'] as String);
+    ..deletedAt =
+        json['deletedAt'] == null
+            ? null
+            : DateTime.parse(json['deletedAt'] as String);
 }
 
 Map<String, dynamic> _questLogToJson(QuestLog log) {
@@ -60,8 +60,9 @@ QuestLog _questLogFromJson(Map<String, dynamic> json) {
     ..uid = json['uid'] as String
     ..questId = json['questId'] as int
     ..ts = DateTime.parse(json['ts'] as String)
-    ..proofType =
-        ProofType.values.firstWhere((e) => e.name == json['proofType'])
+    ..proofType = ProofType.values.firstWhere(
+      (e) => e.name == json['proofType'],
+    )
     ..proofValue = json['proofValue'] as String?
     ..synced = json['synced'] as bool;
 }
@@ -78,13 +79,7 @@ class ExportService {
     final rows = <List<String>>[];
 
     // ヘッダー行
-    rows.add([
-      'Timestamp',
-      'Quest ID',
-      'User ID',
-      'Proof Type',
-      'Proof Value',
-    ]);
+    rows.add(['Timestamp', 'Quest ID', 'User ID', 'Proof Type', 'Proof Value']);
 
     // データ行
     for (final log in logs) {
@@ -192,12 +187,14 @@ class ExportService {
     try {
       final data = jsonDecode(jsonString) as Map<String, dynamic>;
 
-      final quests = (data['quests'] as List<dynamic>?)
+      final quests =
+          (data['quests'] as List<dynamic>?)
               ?.map((q) => _questFromJson(q as Map<String, dynamic>))
               .toList() ??
           [];
 
-      final logs = (data['logs'] as List<dynamic>?)
+      final logs =
+          (data['logs'] as List<dynamic>?)
               ?.map((l) => _questLogFromJson(l as Map<String, dynamic>))
               .toList() ??
           [];
@@ -221,10 +218,7 @@ class ExportService {
   /// ファイルをシェア
   Future<void> shareFile(File file) async {
     await SharePlus.instance.share(
-      ShareParams(
-        files: [XFile(file.path)],
-        subject: 'MinQuest Export',
-      ),
+      ShareParams(files: [XFile(file.path)], subject: 'MinQuest Export'),
     );
   }
 
@@ -236,17 +230,21 @@ class ExportService {
     required DateTime period2End,
     required List<QuestLog> allLogs,
   }) async {
-    final period1Logs = allLogs.where((log) {
-      return log.ts
-              .isAfter(period1Start.subtract(const Duration(days: 1))) &&
-          log.ts.isBefore(period1End.add(const Duration(days: 1)));
-    }).toList();
+    final period1Logs =
+        allLogs.where((log) {
+          return log.ts.isAfter(
+                period1Start.subtract(const Duration(days: 1)),
+              ) &&
+              log.ts.isBefore(period1End.add(const Duration(days: 1)));
+        }).toList();
 
-    final period2Logs = allLogs.where((log) {
-      return log.ts
-              .isAfter(period2Start.subtract(const Duration(days: 1))) &&
-          log.ts.isBefore(period2End.add(const Duration(days: 1)));
-    }).toList();
+    final period2Logs =
+        allLogs.where((log) {
+          return log.ts.isAfter(
+                period2Start.subtract(const Duration(days: 1)),
+              ) &&
+              log.ts.isBefore(period2End.add(const Duration(days: 1)));
+        }).toList();
 
     final rows = <List<String>>[];
 

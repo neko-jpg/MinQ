@@ -12,12 +12,7 @@ enum InsightType {
 }
 
 /// インサイトの重要度
-enum InsightPriority {
-  low,
-  medium,
-  high,
-  critical,
-}
+enum InsightPriority { low, medium, high, critical }
 
 /// 分析インサイト
 @immutable
@@ -97,18 +92,18 @@ class AnalyticsInsight {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        type,
-        priority,
-        title,
-        description,
-        Object.hashAllUnordered(actionItems),
-        confidence,
-        Object.hashAllUnordered(relatedPatterns),
-        Object.hashAllUnordered(metadata.entries),
-        generatedAt,
-        expiresAt,
-      );
+    id,
+    type,
+    priority,
+    title,
+    description,
+    Object.hashAllUnordered(actionItems),
+    confidence,
+    Object.hashAllUnordered(relatedPatterns),
+    Object.hashAllUnordered(metadata.entries),
+    generatedAt,
+    expiresAt,
+  );
 }
 
 /// アクションアイテム
@@ -157,12 +152,12 @@ class ActionItem {
 
   @override
   int get hashCode => Object.hash(
-        title,
-        description,
-        actionType,
-        route,
-        Object.hashAllUnordered(parameters?.entries ?? []),
-      );
+    title,
+    description,
+    actionType,
+    route,
+    Object.hashAllUnordered(parameters?.entries ?? []),
+  );
 }
 
 /// アクションの種類
@@ -200,7 +195,7 @@ class GoalPrediction {
   final List<String> recommendations;
 
   double get progressPercentage => currentValue / targetValue;
-  
+
   bool get isOnTrack => DateTime.now().isBefore(predictedCompletionDate);
 
   GoalPrediction copyWith({
@@ -217,9 +212,11 @@ class GoalPrediction {
       goalType: goalType ?? this.goalType,
       targetValue: targetValue ?? this.targetValue,
       currentValue: currentValue ?? this.currentValue,
-      predictedCompletionDate: predictedCompletionDate ?? this.predictedCompletionDate,
+      predictedCompletionDate:
+          predictedCompletionDate ?? this.predictedCompletionDate,
       confidence: confidence ?? this.confidence,
-      requiredDailyProgress: requiredDailyProgress ?? this.requiredDailyProgress,
+      requiredDailyProgress:
+          requiredDailyProgress ?? this.requiredDailyProgress,
       riskFactors: riskFactors ?? this.riskFactors,
       recommendations: recommendations ?? this.recommendations,
     );
@@ -241,15 +238,15 @@ class GoalPrediction {
 
   @override
   int get hashCode => Object.hash(
-        goalType,
-        targetValue,
-        currentValue,
-        predictedCompletionDate,
-        confidence,
-        requiredDailyProgress,
-        Object.hashAllUnordered(riskFactors),
-        Object.hashAllUnordered(recommendations),
-      );
+    goalType,
+    targetValue,
+    currentValue,
+    predictedCompletionDate,
+    confidence,
+    requiredDailyProgress,
+    Object.hashAllUnordered(riskFactors),
+    Object.hashAllUnordered(recommendations),
+  );
 }
 
 /// リスク要因
@@ -298,21 +295,16 @@ class RiskFactor {
 
   @override
   int get hashCode => Object.hash(
-        name,
-        description,
-        severity,
-        probability,
-        Object.hashAllUnordered(mitigationStrategies),
-      );
+    name,
+    description,
+    severity,
+    probability,
+    Object.hashAllUnordered(mitigationStrategies),
+  );
 }
 
 /// リスクの深刻度
-enum RiskSeverity {
-  low,
-  medium,
-  high,
-  critical,
-}
+enum RiskSeverity { low, medium, high, critical }
 
 extension RiskSeverityExtension on RiskSeverity {
   String get displayName {

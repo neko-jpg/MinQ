@@ -186,23 +186,23 @@ class _SubscriptionPremiumScreenState
                         backgroundColor: tokens.brandPrimary,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(tokens.radius.lg),
+                          borderRadius: BorderRadius.circular(tokens.radius.lg),
                         ),
                       ),
                       child:
                           _isProcessing
                               ? const CircularProgressIndicator(
-                                  valueColor:
-                                      AlwaysStoppedAnimation(Colors.white),
-                                )
-                              : Text(
-                                  'プレミアムを開始',
-                                  style: tokens.typography.h4.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                valueColor: AlwaysStoppedAnimation(
+                                  Colors.white,
                                 ),
+                              )
+                              : Text(
+                                'プレミアムを開始',
+                                style: tokens.typography.h4.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                     ),
                   ),
                   SizedBox(height: tokens.spacing.sm),
@@ -313,8 +313,9 @@ class _SubscriptionPremiumScreenState
                           ),
                           decoration: BoxDecoration(
                             color: tokens.accentSuccess,
-                            borderRadius:
-                                BorderRadius.circular(tokens.radius.sm),
+                            borderRadius: BorderRadius.circular(
+                              tokens.radius.sm,
+                            ),
                           ),
                           child: Text(
                             '30%お得',

@@ -53,8 +53,7 @@ class BugReportService {
       logger.info('Bug report submitted', data: {'reportId': docRef.id});
       return docRef.id;
     } catch (e, s) {
-      logger.error('Failed to submit bug report',
-          error: e, stackTrace: s);
+      logger.error('Failed to submit bug report', error: e, stackTrace: s);
       rethrow;
     }
   }
@@ -176,8 +175,10 @@ class BugReportService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    logger.info('Bug report status updated',
-        data: {'reportId': reportId, 'newStatus': status.name});
+    logger.info(
+      'Bug report status updated',
+      data: {'reportId': reportId, 'newStatus': status.name},
+    );
   }
 
   /// フィードバックを送信（バグではない一般的なフィードバック）

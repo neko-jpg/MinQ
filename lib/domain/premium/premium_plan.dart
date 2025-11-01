@@ -65,26 +65,11 @@ class PremiumFeature with _$PremiumFeature {
       _$PremiumFeatureFromJson(json);
 }
 
-enum PremiumTier {
-  free,
-  basic,
-  premium,
-  family,
-  student,
-}
+enum PremiumTier { free, basic, premium, family, student }
 
-enum SubscriptionStatus {
-  active,
-  expired,
-  cancelled,
-  suspended,
-  trial,
-}
+enum SubscriptionStatus { active, expired, cancelled, suspended, trial }
 
-enum BillingCycle {
-  monthly,
-  yearly,
-}
+enum BillingCycle { monthly, yearly }
 
 enum FeatureType {
   questLimit,
@@ -148,10 +133,7 @@ class PremiumBenefit with _$PremiumBenefit {
       _$PremiumBenefitFromJson(json);
 }
 
-enum FamilyRole {
-  admin,
-  member,
-}
+enum FamilyRole { admin, member }
 
 enum StudentVerificationStatus {
   notApplicable,

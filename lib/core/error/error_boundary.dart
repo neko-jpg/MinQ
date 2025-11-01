@@ -111,7 +111,9 @@ class ErrorScreen extends StatelessWidget {
                 SizedBox(height: tokens.spacing.xl),
                 Text(
                   'エラーが発生しました',
-                  style: tokens.typography.h2.copyWith(color: tokens.textPrimary),
+                  style: tokens.typography.h2.copyWith(
+                    color: tokens.textPrimary,
+                  ),
                 ),
                 SizedBox(height: tokens.spacing.lg),
                 Text(

@@ -10,25 +10,25 @@ enum MessageType {
   heartbeatResponse,
   userOnline,
   userOffline,
-  
+
   // ペアメッセージ
   pairMessage,
   pairProgressShare,
   pairEncouragement,
   pairInvitation,
   pairAccepted,
-  
+
   // 通知
   pushNotification,
   questReminder,
   streakAlert,
-  
+
   // リーグ・ランキング
   leagueUpdate,
   rankingChange,
   xpGained,
   levelUp,
-  
+
   // チャレンジ
   challengeInvite,
   challengeUpdate,
@@ -73,11 +73,7 @@ class RealtimeMessage with _$RealtimeMessage {
       senderId: senderId,
       recipientId: recipientId,
       timestamp: DateTime.now(),
-      payload: {
-        'messageId': messageId,
-        'text': text,
-        'imageUrl': imageUrl,
-      },
+      payload: {'messageId': messageId, 'text': text, 'imageUrl': imageUrl},
     );
   }
 
@@ -120,10 +116,7 @@ class RealtimeMessage with _$RealtimeMessage {
       senderId: senderId,
       recipientId: recipientId,
       timestamp: DateTime.now(),
-      payload: {
-        'message': message,
-        'questId': questId,
-      },
+      payload: {'message': message, 'questId': questId},
     );
   }
 
@@ -140,11 +133,7 @@ class RealtimeMessage with _$RealtimeMessage {
       senderId: 'system',
       recipientId: userId,
       timestamp: DateTime.now(),
-      payload: {
-        'xpAmount': xpAmount,
-        'reason': reason,
-        'questId': questId,
-      },
+      payload: {'xpAmount': xpAmount, 'reason': reason, 'questId': questId},
     );
   }
 
@@ -205,11 +194,7 @@ class RealtimeMessage with _$RealtimeMessage {
       senderId: 'system',
       recipientId: recipientId,
       timestamp: DateTime.now(),
-      payload: {
-        'title': title,
-        'body': body,
-        'data': data ?? {},
-      },
+      payload: {'title': title, 'body': body, 'data': data ?? {}},
     );
   }
 

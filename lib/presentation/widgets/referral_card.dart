@@ -45,7 +45,9 @@ class ReferralCard extends ConsumerWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.3).round()),
+              color: colorScheme.onSurfaceVariant.withAlpha(
+                (255 * 0.3).round(),
+              ),
               shape: BoxShape.circle,
             ),
           ),
@@ -58,7 +60,9 @@ class ReferralCard extends ConsumerWidget {
                   width: 100,
                   height: 20,
                   decoration: BoxDecoration(
-                    color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.3).round()),
+                    color: colorScheme.onSurfaceVariant.withAlpha(
+                      (255 * 0.3).round(),
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
@@ -67,7 +71,9 @@ class ReferralCard extends ConsumerWidget {
                   width: 150,
                   height: 15,
                   decoration: BoxDecoration(
-                    color: colorScheme.onSurfaceVariant.withAlpha((255 * 0.3).round()),
+                    color: colorScheme.onSurfaceVariant.withAlpha(
+                      (255 * 0.3).round(),
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
@@ -117,11 +123,7 @@ class ReferralCard extends ConsumerWidget {
                 color: Colors.white.withAlpha((255 * 0.2).round()),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.people,
-                color: Colors.white,
-                size: 24,
-              ),
+              child: const Icon(Icons.people, color: Colors.white, size: 24),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -139,9 +141,15 @@ class ReferralCard extends ConsumerWidget {
                   if (stats.totalReferrals > 0)
                     Text(
                       AppLocalizations.of(context).invitedFriends
-                        .toString()
-                        .replaceAll('{count}', stats.totalReferrals.toString())
-                        .replaceAll('{rate}', (stats.conversionRate * 100).toStringAsFixed(0)),
+                          .toString()
+                          .replaceAll(
+                            '{count}',
+                            stats.totalReferrals.toString(),
+                          )
+                          .replaceAll(
+                            '{rate}',
+                            (stats.conversionRate * 100).toStringAsFixed(0),
+                          ),
                       style: textTheme.bodySmall?.copyWith(
                         color: Colors.white.withAlpha((255 * 0.9).round()),
                       ),
@@ -198,10 +206,7 @@ class CompactReferralCard extends ConsumerWidget {
         navigation.goToReferral();
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.purple.shade400, Colors.purple.shade600],
@@ -261,11 +266,7 @@ class ReferralPromotionBanner extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.card_giftcard,
-                color: Colors.white,
-                size: 24,
-              ),
+              const Icon(Icons.card_giftcard, color: Colors.white, size: 24),
               const SizedBox(width: 8),
               Text(
                 AppLocalizations.of(context).specialCampaignTitle,

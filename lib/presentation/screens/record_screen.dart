@@ -134,27 +134,28 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             ),
           ),
         ),
-        body: _isLoading
-            ? const _RecordSkeleton()
-            : switch (_error) {
-                RecordErrorType.none => _RecordForm(
+        body:
+            _isLoading
+                ? const _RecordSkeleton()
+                : switch (_error) {
+                  RecordErrorType.none => _RecordForm(
                     questId: widget.questId,
                     onError: _handleError,
                     onCompleted: _markCompleted,
                   ),
-                RecordErrorType.offline => _OfflineRecovery(
+                  RecordErrorType.offline => _OfflineRecovery(
                     onRetry: _retryUpload,
                     onOpenQueue: _openOfflineQueue,
                   ),
-                RecordErrorType.permissionDenied => _PermissionRecovery(
+                  RecordErrorType.permissionDenied => _PermissionRecovery(
                     onRequest: _requestPermissions,
                     onOpenSettings: _openSettings,
                   ),
-                RecordErrorType.cameraFailure => _CameraRecovery(
+                  RecordErrorType.cameraFailure => _CameraRecovery(
                     onRetry: _retryUpload,
                     onSwitchMode: () => _handleError(RecordErrorType.none),
                   ),
-              },
+                },
       ),
     );
   }
@@ -170,10 +171,7 @@ class _RecordSkeleton extends StatelessWidget {
       children: <Widget>[
         const MinqSkeletonLine(width: 140, height: 28),
         SizedBox(height: MinqTokens.spacing(2)),
-        MinqSkeleton(
-          height: 176,
-          borderRadius: MinqTokens.cornerLarge(),
-        ),
+        MinqSkeleton(height: 176, borderRadius: MinqTokens.cornerLarge()),
         SizedBox(height: MinqTokens.spacing(6)),
         const MinqSkeletonLine(width: 110, height: 28),
         SizedBox(height: MinqTokens.spacing(3)),
@@ -215,23 +213,29 @@ class _RecordForm extends ConsumerWidget {
     final questAsync = ref.watch(questByIdProvider(questId));
 
     return questAsync.when(
-      loading: () => const Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation(MinqTokens.brandPrimary),
-        ),
-      ),
-      error: (error, _) => Center(
-        child: Text(
-          'クエスト情報の読み込みに失敗しました',
-          style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
-        ),
-      ),
+      loading:
+          () => Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(MinqTokens.brandPrimary),
+            ),
+          ),
+      error:
+          (error, _) => Center(
+            child: Text(
+              'クエスト情報の読み込みに失敗しました',
+              style: MinqTokens.bodyMedium.copyWith(
+                color: MinqTokens.textSecondary,
+              ),
+            ),
+          ),
       data: (quest) {
         if (quest == null) {
           return Center(
             child: Text(
               'クエストが見つかりません',
-              style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
+              style: MinqTokens.bodyMedium.copyWith(
+                color: MinqTokens.textSecondary,
+              ),
             ),
           );
         }
@@ -316,11 +320,7 @@ class _RecordForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildProofButtons(
-    BuildContext context,
-    WidgetRef ref,
-    quest,
-  ) {
+  Widget _buildProofButtons(BuildContext context, WidgetRef ref, quest) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isWide = constraints.maxWidth > 400;
@@ -460,7 +460,9 @@ class _FocusMusicPanel extends ConsumerWidget {
         SizedBox(height: MinqTokens.spacing(1)),
         Text(
           '習慣を実行しながら流す音楽を選べます。ヘッドホン推奨です。',
-          style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
+          style: MinqTokens.bodyMedium.copyWith(
+            color: MinqTokens.textSecondary,
+          ),
         ),
         SizedBox(height: MinqTokens.spacing(2)),
         ...FocusMusicService.tracks.map(
@@ -520,9 +522,7 @@ class _FocusMusicTile extends ConsumerWidget {
         await service.play(track);
       }
     } catch (error) {
-      messenger.showSnackBar(
-        const SnackBar(content: Text('BGMの再生に失敗しました。')),
-      );
+      messenger.showSnackBar(const SnackBar(content: Text('BGMの再生に失敗しました。')));
     }
   }
 
@@ -540,9 +540,9 @@ class _FocusMusicTile extends ConsumerWidget {
       if (!context.mounted) return;
       if (result == null) {
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('楽曲を特定できませんでした')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('楽曲を特定できませんでした')));
         return;
       }
       if (!context.mounted) return;
@@ -553,9 +553,9 @@ class _FocusMusicTile extends ConsumerWidget {
       );
     } catch (error) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('BGMの識別に失敗しました')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('BGMの識別に失敗しました')));
     }
   }
 
@@ -565,7 +565,9 @@ class _FocusMusicTile extends ConsumerWidget {
     final Color tileColor =
         isActive ? MinqTokens.brandPrimary.withAlpha(30) : MinqTokens.surface;
     final borderColor =
-        isActive ? MinqTokens.brandPrimary : Colors.grey.shade300.withAlpha(102);
+        isActive
+            ? MinqTokens.brandPrimary
+            : Colors.grey.shade300.withAlpha(102);
 
     return Material(
       color: Colors.transparent,
@@ -617,8 +619,9 @@ class _FocusMusicTile extends ConsumerWidget {
                     SizedBox(height: MinqTokens.spacing(1)),
                     Text(
                       track.description,
-                      style: MinqTokens.bodySmall
-                          .copyWith(color: MinqTokens.textSecondary),
+                      style: MinqTokens.bodySmall.copyWith(
+                        color: MinqTokens.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -646,7 +649,8 @@ Future<bool> _handleModerationWarning(
   BuildContext context,
   PhotoCaptureResult result,
 ) async {
-  if (result.moderationVerdict == PhotoModerationVerdict.ok || !context.mounted) {
+  if (result.moderationVerdict == PhotoModerationVerdict.ok ||
+      !context.mounted) {
     return true;
   }
 
@@ -730,41 +734,41 @@ class _ProofButtonState extends State<_ProofButton>
         style: ElevatedButton.styleFrom(
           backgroundColor: background,
           foregroundColor: foreground,
-          shape: RoundedRectangleBorder(
-            borderRadius: MinqTokens.cornerLarge(),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: MinqTokens.cornerLarge()),
           elevation: 0,
         ),
         onPressed: isProcessing ? null : () => runGuarded(widget.onTap),
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          transitionBuilder: (Widget child, Animation<double> animation) =>
-              FadeTransition(opacity: animation, child: child),
-          child: isProcessing
-              ? SizedBox(
-                  key: const ValueKey<String>('progress'),
-                  height: 28,
-                  width: 28,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    valueColor: AlwaysStoppedAnimation<Color>(foreground),
-                  ),
-                )
-              : Column(
-                  key: const ValueKey<String>('content'),
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(widget.icon, size: 40),
-                    SizedBox(height: MinqTokens.spacing(1)),
-                    Text(
-                      widget.text,
-                      style: MinqTokens.titleMedium.copyWith(
-                        color: foreground,
-                        fontWeight: FontWeight.bold,
-                      ),
+          transitionBuilder:
+              (Widget child, Animation<double> animation) =>
+                  FadeTransition(opacity: animation, child: child),
+          child:
+              isProcessing
+                  ? SizedBox(
+                    key: const ValueKey<String>('progress'),
+                    height: 28,
+                    width: 28,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      valueColor: AlwaysStoppedAnimation<Color>(foreground),
                     ),
-                  ],
-                ),
+                  )
+                  : Column(
+                    key: const ValueKey<String>('content'),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(widget.icon, size: 40),
+                      SizedBox(height: MinqTokens.spacing(1)),
+                      Text(
+                        widget.text,
+                        style: MinqTokens.titleMedium.copyWith(
+                          color: foreground,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
         ),
       ),
     );

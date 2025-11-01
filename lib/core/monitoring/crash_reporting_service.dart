@@ -11,13 +11,14 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 /// Comprehensive crash reporting and error monitoring service
 class CrashReportingService {
-  static final CrashReportingService _instance = CrashReportingService._internal();
+  static final CrashReportingService _instance =
+      CrashReportingService._internal();
   factory CrashReportingService() => _instance;
   CrashReportingService._internal();
 
   final LocalStorageService _storage = LocalStorageService();
   final NetworkService _network = NetworkService();
-  
+
   bool _isInitialized = false;
   final List<CrashReport> _pendingReports = [];
   Timer? _uploadTimer;
@@ -38,11 +39,14 @@ class CrashReportingService {
     };
 
     // Set up zone error handling for async errors
-    runZonedGuarded(() {
-      // App initialization continues here
-    }, (error, stack) {
-      _handleAsyncError(error, stack);
-    });
+    runZonedGuarded(
+      () {
+        // App initialization continues here
+      },
+      (error, stack) {
+        _handleAsyncError(error, stack);
+      },
+    );
 
     // Start periodic upload of pending reports
     _startPeriodicUpload();
@@ -102,9 +106,7 @@ class CrashReportingService {
       type: CrashType.async,
       error: error.toString(),
       stackTrace: stack.toString(),
-      context: {
-        'zone': Zone.current.toString(),
-      },
+      context: {'zone': Zone.current.toString()},
       severity: _determineSeverityFromError(error),
     );
 
@@ -116,13 +118,13 @@ class CrashReportingService {
     try {
       // Enrich report with device and app info
       final enrichedReport = await _enrichCrashReport(report);
-      
+
       // Store locally
       await _storage.storeCrashReport(enrichedReport);
-      
+
       // Add to pending uploads
       _pendingReports.add(enrichedReport);
-      
+
       // Try immediate upload if network available
       if (await _network.isConnected()) {
         await _uploadPendingReports();
@@ -138,9 +140,9 @@ class CrashReportingService {
   Future<CrashReport> _enrichCrashReport(CrashReport report) async {
     final deviceInfo = DeviceInfoPlugin();
     final packageInfo = await PackageInfo.fromPlatform();
-    
+
     final enrichedContext = Map<String, dynamic>.from(report.context);
-    
+
     // Add app information
     enrichedContext.addAll({
       'app_version': packageInfo.version,
@@ -230,11 +232,7 @@ class CrashReportingService {
     await recordError(
       'Performance Issue: $issue (value: $value)',
       null,
-      context: {
-        'performance_metric': issue,
-        'value': value,
-        ...?context,
-      },
+      context: {'performance_metric': issue, 'value': value, ...?context},
       severity: CrashSeverity.low,
     );
   }
@@ -287,19 +285,17 @@ class CrashReportingService {
   /// Get crash statistics
   Future<CrashStatistics> getCrashStatistics() async {
     final reports = await _storage.getCrashReports();
-    
+
     final now = DateTime.now();
-    final last24Hours = reports.where(
-      (r) => now.difference(r.timestamp).inHours <= 24,
-    ).length;
-    
-    final last7Days = reports.where(
-      (r) => now.difference(r.timestamp).inDays <= 7,
-    ).length;
+    final last24Hours =
+        reports.where((r) => now.difference(r.timestamp).inHours <= 24).length;
+
+    final last7Days =
+        reports.where((r) => now.difference(r.timestamp).inDays <= 7).length;
 
     final byType = <CrashType, int>{};
     final bySeverity = <CrashSeverity, int>{};
-    
+
     for (final report in reports) {
       byType[report.type] = (byType[report.type] ?? 0) + 1;
       bySeverity[report.severity] = (bySeverity[report.severity] ?? 0) + 1;
@@ -327,7 +323,10 @@ class CrashReportingService {
 
   String _generateRandomString(int length) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    return List.generate(length, (index) => chars[DateTime.now().millisecond % chars.length]).join();
+    return List.generate(
+      length,
+      (index) => chars[DateTime.now().millisecond % chars.length],
+    ).join();
   }
 
   CrashSeverity _determineSeverity(Object exception) {
@@ -344,7 +343,7 @@ class CrashReportingService {
 
   CrashSeverity _determineSeverityFromError(Object error) {
     final errorString = error.toString().toLowerCase();
-    
+
     if (errorString.contains('memory') || errorString.contains('overflow')) {
       return CrashSeverity.critical;
     } else if (errorString.contains('null') || errorString.contains('state')) {
@@ -443,19 +442,9 @@ class CrashReport {
   }
 }
 
-enum CrashType {
-  flutter,
-  platform,
-  async,
-  custom,
-}
+enum CrashType { flutter, platform, async, custom }
 
-enum CrashSeverity {
-  low,
-  medium,
-  high,
-  critical,
-}
+enum CrashSeverity { low, medium, high, critical }
 
 /// Crash statistics summary
 class CrashStatistics {

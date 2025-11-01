@@ -5,7 +5,7 @@ part 'local_quest.g.dart';
 @Collection()
 class LocalQuest {
   Id id = Isar.autoIncrement;
-  
+
   // Original quest data
   late String questId;
   late String owner;
@@ -20,7 +20,7 @@ class LocalQuest {
   late QuestStatus status;
   late DateTime createdAt;
   DateTime? deletedAt;
-  
+
   // Sync metadata
   late DateTime updatedAt;
   bool needsSync = false;
@@ -29,13 +29,13 @@ class LocalQuest {
   int syncRetryCount = 0;
   DateTime? lastSyncAttempt;
   String? syncError;
-  
+
   // Offline-specific fields
   int xpReward = 10;
   List<String> tags = [];
   int priority = 0;
   DateTime? dueDate;
-  
+
   // Conflict resolution
   String? conflictData; // JSON string of conflicting server data
   DateTime? serverUpdatedAt;
@@ -44,7 +44,7 @@ class LocalQuest {
 @Collection()
 class LocalUser {
   Id id = Isar.autoIncrement;
-  
+
   // Original user data
   @Index(unique: true, replace: true)
   late String uid;
@@ -66,7 +66,7 @@ class LocalUser {
   int? onboardingLevel;
   int currentLevel = 1;
   int totalPoints = 0;
-  
+
   // Sync metadata
   late DateTime updatedAt;
   bool needsSync = false;
@@ -75,14 +75,14 @@ class LocalUser {
   int syncRetryCount = 0;
   DateTime? lastSyncAttempt;
   String? syncError;
-  
+
   // Offline-specific fields
   int currentXP = 0;
   int weeklyXP = 0;
   int totalXP = 0;
   String currentLeague = 'bronze';
   DateTime? lastActiveDate;
-  
+
   // Conflict resolution
   String? conflictData;
   DateTime? serverUpdatedAt;
@@ -91,7 +91,7 @@ class LocalUser {
 @Collection()
 class LocalChallenge {
   Id id = Isar.autoIncrement;
-  
+
   // Challenge data
   late String challengeId;
   late String title;
@@ -103,7 +103,7 @@ class LocalChallenge {
   int targetValue = 100;
   int xpReward = 50;
   List<String> participants = [];
-  
+
   // Sync metadata
   late DateTime updatedAt;
   bool needsSync = false;
@@ -112,7 +112,7 @@ class LocalChallenge {
   int syncRetryCount = 0;
   DateTime? lastSyncAttempt;
   String? syncError;
-  
+
   // Conflict resolution
   String? conflictData;
   DateTime? serverUpdatedAt;
@@ -121,7 +121,7 @@ class LocalChallenge {
 @Collection()
 class LocalQuestLog {
   Id id = Isar.autoIncrement;
-  
+
   // Log data
   late String logId;
   late String uid;
@@ -131,7 +131,7 @@ class LocalQuestLog {
   late ProofType proofType;
   String? proofValue;
   int xpEarned = 0;
-  
+
   // Sync metadata
   late DateTime updatedAt;
   bool needsSync = false;
@@ -140,18 +140,20 @@ class LocalQuestLog {
   int syncRetryCount = 0;
   DateTime? lastSyncAttempt;
   String? syncError;
-  
+
   // Conflict resolution
   String? conflictData;
   DateTime? serverUpdatedAt;
 }
 
 enum QuestStatus { active, paused }
+
 enum ProofType { photo, check }
-enum SyncStatus { 
-  synced,      // Successfully synced with server
-  pending,     // Waiting to be synced
-  syncing,     // Currently being synced
-  failed,      // Sync failed
-  conflict     // Conflict detected, needs resolution
+
+enum SyncStatus {
+  synced, // Successfully synced with server
+  pending, // Waiting to be synced
+  syncing, // Currently being synced
+  failed, // Sync failed
+  conflict, // Conflict detected, needs resolution
 }

@@ -37,7 +37,7 @@ class GamificationEngine {
   }) async {
     final totalPoints =
         (basePoints * difficultyMultiplier * consistencyMultiplier).round();
-    
+
     // Update local cache immediately for responsive UI
     _localPoints[userId] = (_localPoints[userId] ?? 0) + totalPoints;
 
@@ -45,7 +45,7 @@ class GamificationEngine {
     if (hapticFeedback) {
       await HapticsSystem.success();
     }
-    
+
     if (playSound) {
       await SoundEffectsService.instance.play(SoundType.coin);
     }
@@ -77,8 +77,10 @@ class GamificationEngine {
           .collection('points_transactions')
           .add(pointsTransaction.toJson());
 
-      MinqLogger.info('Awarded $totalPoints points to user $userId for $reason.');
-      
+      MinqLogger.info(
+        'Awarded $totalPoints points to user $userId for $reason.',
+      );
+
       // Check for level progression after awarding points
       if (context != null && context.mounted) {
         await _checkLevelProgression(userId, context);
@@ -88,7 +90,8 @@ class GamificationEngine {
     } catch (e) {
       MinqLogger.error('Failed to award points (offline)', exception: e);
       // Revert local cache on failure
-      _localPoints[userId] = (_localPoints[userId] ?? totalPoints) - totalPoints;
+      _localPoints[userId] =
+          (_localPoints[userId] ?? totalPoints) - totalPoints;
     }
   }
 
@@ -136,15 +139,15 @@ class GamificationEngine {
           final newBadge = badgeDef.toBadge();
           await userBadgesRef.doc(newBadge.id).set(newBadge.toJson());
           awardedBadges.add(newBadge);
-          
+
           // Update local cache
           _localBadges[userId] = [...(_localBadges[userId] ?? []), newBadge];
-          
+
           // Provide immediate feedback for each badge
           if (hapticFeedback) {
             await HapticsSystem.levelUp();
           }
-          
+
           if (playSound) {
             await SoundEffectsService.instance.play(SoundType.achievement);
           }
@@ -162,7 +165,9 @@ class GamificationEngine {
       }
 
       if (awardedBadges.isNotEmpty) {
-        MinqLogger.info('Awarded ${awardedBadges.length} new badges to user $userId.');
+        MinqLogger.info(
+          'Awarded ${awardedBadges.length} new badges to user $userId.',
+        );
       }
 
       return awardedBadges;
@@ -173,7 +178,10 @@ class GamificationEngine {
   }
 
   // Enhanced badge definitions focused on habit formation goals
-  List<_BadgeDefinition> _getBadgeDefinitions(int completedQuests, int currentStreak) {
+  List<_BadgeDefinition> _getBadgeDefinitions(
+    int completedQuests,
+    int currentStreak,
+  ) {
     return [
       // Quest completion badges
       _BadgeDefinition(
@@ -224,7 +232,7 @@ class GamificationEngine {
         isEarned: completedQuests >= 100,
         category: BadgeCategory.mastery,
       ),
-      
+
       // Streak badges focused on consistency
       _BadgeDefinition(
         id: 'streak_master_3',
@@ -266,7 +274,7 @@ class GamificationEngine {
         isEarned: currentStreak >= 100,
         category: BadgeCategory.legendary,
       ),
-      
+
       // Time-based badges
       _BadgeDefinition(
         id: 'early_bird',
@@ -284,7 +292,7 @@ class GamificationEngine {
         isEarned: _hasLateNightQuests(completedQuests),
         category: BadgeCategory.special,
       ),
-      
+
       // Motivational badges
       _BadgeDefinition(
         id: 'comeback_hero',
@@ -424,7 +432,11 @@ class GamificationEngine {
       for (final doc in snapshot.docs) {
         final data = doc.data();
         final completedAt = (data['completedAt'] as Timestamp).toDate();
-        final completedDate = DateTime(completedAt.year, completedAt.month, completedAt.day);
+        final completedDate = DateTime(
+          completedAt.year,
+          completedAt.month,
+          completedAt.day,
+        );
 
         if (lastDate == null) {
           lastDate = completedDate;
@@ -449,17 +461,22 @@ class GamificationEngine {
   }
 
   /// Check for level progression and show celebration
-  Future<void> _checkLevelProgression(String userId, BuildContext? context) async {
+  Future<void> _checkLevelProgression(
+    String userId,
+    BuildContext? context,
+  ) async {
     final currentPoints = await getUserPoints(userId);
-    
+
     // Check if user has leveled up (this would need to be stored and compared)
     // For now, we'll trigger celebration on certain point milestones
     final milestones = [500, 1500, 3500, 7000, 12000, 20000, 35000, 60000];
-    
-      if (milestones.contains(currentPoints) && context != null && context.mounted) {
+
+    if (milestones.contains(currentPoints) &&
+        context != null &&
+        context.mounted) {
       await HapticsSystem.levelUp();
       await SoundEffectsService.instance.play(SoundType.levelUp);
-      
+
       // Show level up celebration (would need to implement LevelUpOverlay)
       // LevelUpOverlay.show(context, currentRank);
     }
@@ -491,13 +508,13 @@ class GamificationEngine {
   Future<LevelInfo> getUserLevelInfo(String userId) async {
     final points = await getUserPoints(userId);
     final currentRank = getRankForPoints(points);
-    
+
     // Calculate progress to next level
     final nextLevelPoints = _getNextLevelPoints(currentRank.level);
     final progressPoints = points - currentRank.minPoints;
     final pointsNeeded = nextLevelPoints - currentRank.minPoints;
     final progress = pointsNeeded > 0 ? progressPoints / pointsNeeded : 1.0;
-    
+
     return LevelInfo(
       currentLevel: currentRank.level,
       currentLevelName: currentRank.name,
@@ -509,8 +526,21 @@ class GamificationEngine {
   }
 
   int _getNextLevelPoints(int currentLevel) {
-    final levels = [0, 500, 1500, 3500, 7000, 12000, 20000, 35000, 60000, 100000];
-    return currentLevel < levels.length - 1 ? levels[currentLevel + 1] : levels.last;
+    final levels = [
+      0,
+      500,
+      1500,
+      3500,
+      7000,
+      12000,
+      20000,
+      35000,
+      60000,
+      100000,
+    ];
+    return currentLevel < levels.length - 1
+        ? levels[currentLevel + 1]
+        : levels.last;
   }
 
   /// Award points for specific habit formation actions
@@ -597,13 +627,13 @@ class _BadgeDefinition {
 
 /// Badge categories for better organization
 enum BadgeCategory {
-  milestone,    // Achievement milestones
-  consistency,  // Streak and consistency badges
-  mastery,      // Mastery and expertise badges
-  special,      // Special time-based badges
-  resilience,   // Comeback and recovery badges
-  dedication,   // Extra effort badges
-  legendary,    // Rare legendary badges
+  milestone, // Achievement milestones
+  consistency, // Streak and consistency badges
+  mastery, // Mastery and expertise badges
+  special, // Special time-based badges
+  resilience, // Comeback and recovery badges
+  dedication, // Extra effort badges
+  legendary, // Rare legendary badges
 }
 
 /// Habit formation actions that can earn points

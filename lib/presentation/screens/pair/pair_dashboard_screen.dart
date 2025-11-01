@@ -14,13 +14,11 @@ import 'package:minq/presentation/widgets/polished_buttons.dart';
 class PairDashboardScreen extends ConsumerStatefulWidget {
   final String pairId;
 
-  const PairDashboardScreen({
-    super.key,
-    required this.pairId,
-  });
+  const PairDashboardScreen({super.key, required this.pairId});
 
   @override
-  ConsumerState<PairDashboardScreen> createState() => _PairDashboardScreenState();
+  ConsumerState<PairDashboardScreen> createState() =>
+      _PairDashboardScreenState();
 }
 
 class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
@@ -45,14 +43,14 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
   Future<void> _loadPairData() async {
     final pairSystem = ref.read(pairSystemProvider);
     final userId = ref.read(uidProvider);
-    
+
     if (userId == null) return;
 
     try {
       final connection = await pairSystem.getConnection(widget.pairId);
       final endDate = DateTime.now();
       final startDate = endDate.subtract(const Duration(days: 30));
-      
+
       final comparison = await pairSystem.getUserComparison(
         pairId: widget.pairId,
         userId: userId,
@@ -105,11 +103,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
           labelColor: tokens.primary,
           unselectedLabelColor: tokens.textSecondary,
           indicatorColor: tokens.primary,
-          tabs: const [
-            Tab(text: '概要'),
-            Tab(text: '比較'),
-            Tab(text: '進捗'),
-          ],
+          tabs: const [Tab(text: '概要'), Tab(text: '比較'), Tab(text: '進捗')],
         ),
       ),
       body: TabBarView(
@@ -156,11 +150,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                         color: tokens.primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(tokens.radius.md),
                       ),
-                      child: Icon(
-                        Icons.group,
-                        color: tokens.primary,
-                        size: 24,
-                      ),
+                      child: Icon(Icons.group, color: tokens.primary, size: 24),
                     ),
                     SizedBox(width: tokens.spacing.md),
                     Expanded(
@@ -401,9 +391,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                 SizedBox(height: tokens.spacing.md),
                 SizedBox(
                   height: 200,
-                  child: CompletionTrendChart(
-                    data: _generateChartData(),
-                  ),
+                  child: CompletionTrendChart(data: _generateChartData()),
                 ),
               ],
             ),
@@ -427,9 +415,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
           return Center(
             child: Text(
               '進捗の読み込みに失敗しました',
-              style: tokens.typography.body.copyWith(
-                color: tokens.error,
-              ),
+              style: tokens.typography.body.copyWith(color: tokens.error),
             ),
           );
         }
@@ -441,11 +427,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.trending_up,
-                  size: 64,
-                  color: tokens.textMuted,
-                ),
+                Icon(Icons.trending_up, size: 64, color: tokens.textMuted),
                 SizedBox(height: tokens.spacing.md),
                 Text(
                   'まだ進捗共有がありません',
@@ -619,7 +601,10 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                         color: tokens.primary,
                         borderRadius: BorderRadius.horizontal(
                           left: const Radius.circular(4),
-                          right: partnerPercentage == 0 ? const Radius.circular(4) : Radius.zero,
+                          right:
+                              partnerPercentage == 0
+                                  ? const Radius.circular(4)
+                                  : Radius.zero,
                         ),
                       ),
                     ),
@@ -631,7 +616,10 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                       decoration: BoxDecoration(
                         color: tokens.secondary,
                         borderRadius: BorderRadius.horizontal(
-                          left: userPercentage == 0 ? const Radius.circular(4) : Radius.zero,
+                          left:
+                              userPercentage == 0
+                                  ? const Radius.circular(4)
+                                  : Radius.zero,
                           right: const Radius.circular(4),
                         ),
                       ),
@@ -717,7 +705,11 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
       case ProgressShareType.questCompleted:
         return Icon(Icons.task_alt, color: tokens.success, size: 20);
       case ProgressShareType.streakAchieved:
-        return Icon(Icons.local_fire_department, color: tokens.warning, size: 20);
+        return Icon(
+          Icons.local_fire_department,
+          color: tokens.warning,
+          size: 20,
+        );
       case ProgressShareType.challengeCompleted:
         return Icon(Icons.emoji_events, color: tokens.primary, size: 20);
       case ProgressShareType.milestoneReached:

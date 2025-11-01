@@ -204,7 +204,10 @@ class EmptyStateWidget extends StatelessWidget {
               ),
 
             // アクション
-            if (action != null) ...[SizedBox(height: tokens.spacing.xl), action!],
+            if (action != null) ...[
+              SizedBox(height: tokens.spacing.xl),
+              action!,
+            ],
           ],
         ),
       ),

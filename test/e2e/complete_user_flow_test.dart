@@ -7,12 +7,14 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Complete User Flow E2E Tests', () {
-    testWidgets('New user complete journey: onboarding to first achievement', (tester) async {
+    testWidgets('New user complete journey: onboarding to first achievement', (
+      tester,
+    ) async {
       await tester.pumpWidget(app.MinQApp());
       await tester.pumpAndSettle();
 
       // === ONBOARDING FLOW ===
-      
+
       // Verify onboarding screen
       expect(find.byKey(const Key('onboarding_screen')), findsOneWidget);
       expect(find.text('Welcome to MinQ'), findsOneWidget);
@@ -25,12 +27,12 @@ void main() {
 
       // Profile setup
       expect(find.byKey(const Key('profile_setup_screen')), findsOneWidget);
-      
+
       await tester.enterText(
-        find.byKey(const Key('display_name_field')), 
-        'E2E Test User'
+        find.byKey(const Key('display_name_field')),
+        'E2E Test User',
       );
-      
+
       // Select focus tags
       await tester.tap(find.byKey(const Key('tag_health')));
       await tester.tap(find.byKey(const Key('tag_productivity')));
@@ -41,17 +43,20 @@ void main() {
       await tester.pumpAndSettle();
 
       // === MAIN APP FLOW ===
-      
+
       // Verify main app screen
       expect(find.byKey(const Key('main_app_screen')), findsOneWidget);
       expect(find.byKey(const Key('bottom_navigation')), findsOneWidget);
 
       // Verify progressive hint for first quest
       expect(find.byKey(const Key('progressive_hint')), findsOneWidget);
-      expect(find.text('Create your first quest to get started!'), findsOneWidget);
+      expect(
+        find.text('Create your first quest to get started!'),
+        findsOneWidget,
+      );
 
       // === QUEST CREATION FLOW ===
-      
+
       // Create first quest
       await tester.tap(find.byKey(const Key('create_quest_fab')));
       await tester.pumpAndSettle();
@@ -60,12 +65,12 @@ void main() {
 
       // Fill quest form
       await tester.enterText(
-        find.byKey(const Key('quest_title_field')), 
-        'Daily Morning Walk'
+        find.byKey(const Key('quest_title_field')),
+        'Daily Morning Walk',
       );
       await tester.enterText(
-        find.byKey(const Key('quest_description_field')), 
-        'Take a 20-minute walk every morning to start the day right'
+        find.byKey(const Key('quest_description_field')),
+        'Take a 20-minute walk every morning to start the day right',
       );
 
       // Select category
@@ -81,10 +86,10 @@ void main() {
       // Set reminder
       await tester.tap(find.byKey(const Key('reminder_switch')));
       await tester.pumpAndSettle();
-      
+
       await tester.tap(find.byKey(const Key('reminder_time_picker')));
       await tester.pumpAndSettle();
-      
+
       // Select 7:00 AM
       await tester.tap(find.text('7'));
       await tester.tap(find.text('00'));
@@ -97,7 +102,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // === QUEST COMPLETION FLOW ===
-      
+
       // Verify quest appears in list
       expect(find.byKey(const Key('quest_list_screen')), findsOneWidget);
       expect(find.text('Daily Morning Walk'), findsOneWidget);
@@ -127,8 +132,8 @@ void main() {
 
       // Add completion note
       await tester.enterText(
-        find.byKey(const Key('completion_note_field')), 
-        'Great morning walk in the park!'
+        find.byKey(const Key('completion_note_field')),
+        'Great morning walk in the park!',
       );
 
       // Confirm completion
@@ -136,7 +141,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // === XP AND GAMIFICATION FLOW ===
-      
+
       // Verify XP gain animation
       expect(find.byKey(const Key('xp_gain_animation')), findsOneWidget);
       expect(find.text('+25 XP'), findsOneWidget);
@@ -145,7 +150,10 @@ void main() {
       await tester.pump(const Duration(seconds: 3));
 
       // Verify first completion achievement
-      expect(find.byKey(const Key('achievement_unlock_animation')), findsOneWidget);
+      expect(
+        find.byKey(const Key('achievement_unlock_animation')),
+        findsOneWidget,
+      );
       expect(find.text('First Quest Complete!'), findsOneWidget);
       expect(find.text('Achievement Unlocked'), findsOneWidget);
 
@@ -153,7 +161,7 @@ void main() {
       await tester.pump(const Duration(seconds: 3));
 
       // === AI COACH INTERACTION ===
-      
+
       // Navigate to AI Coach
       await tester.tap(find.byKey(const Key('ai_coach_tab')));
       await tester.pumpAndSettle();
@@ -161,12 +169,15 @@ void main() {
       expect(find.byKey(const Key('ai_coach_screen')), findsOneWidget);
 
       // Verify congratulatory message for first completion
-      expect(find.text('Congratulations on completing your first quest!'), findsOneWidget);
+      expect(
+        find.text('Congratulations on completing your first quest!'),
+        findsOneWidget,
+      );
 
       // Send message to AI Coach
       await tester.enterText(
-        find.byKey(const Key('ai_chat_input')), 
-        'I completed my first quest!'
+        find.byKey(const Key('ai_chat_input')),
+        'I completed my first quest!',
       );
       await tester.tap(find.byKey(const Key('send_message_button')));
       await tester.pumpAndSettle();
@@ -175,14 +186,17 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
 
       // Verify AI response
-      expect(find.text('Excellent work on your first quest completion!'), findsOneWidget);
+      expect(
+        find.text('Excellent work on your first quest completion!'),
+        findsOneWidget,
+      );
 
       // Verify quick actions
       expect(find.byKey(const Key('quick_actions_section')), findsOneWidget);
       expect(find.text('Create Another Quest'), findsOneWidget);
 
       // === STATISTICS AND PROGRESS ===
-      
+
       // Navigate to statistics
       await tester.tap(find.byKey(const Key('stats_tab')));
       await tester.pumpAndSettle();
@@ -200,7 +214,7 @@ void main() {
       expect(find.text('100%'), findsOneWidget); // 1/1 completed
 
       // === LEAGUE AND RANKING ===
-      
+
       // Navigate to league
       await tester.tap(find.byKey(const Key('league_tab')));
       await tester.pumpAndSettle();
@@ -216,7 +230,7 @@ void main() {
       expect(find.text('25 / 800 XP'), findsOneWidget); // Progress to silver
 
       // === SETTINGS AND CUSTOMIZATION ===
-      
+
       // Navigate to settings
       await tester.tap(find.byKey(const Key('settings_tab')));
       await tester.pumpAndSettle();
@@ -249,18 +263,18 @@ void main() {
       await tester.pumpAndSettle();
 
       // === SECOND QUEST CREATION (BUILDING HABITS) ===
-      
+
       // Create second quest to build streak
       await tester.tap(find.byKey(const Key('create_quest_fab')));
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('quest_title_field')), 
-        'Evening Reading'
+        find.byKey(const Key('quest_title_field')),
+        'Evening Reading',
       );
       await tester.enterText(
-        find.byKey(const Key('quest_description_field')), 
-        'Read for 30 minutes before bed'
+        find.byKey(const Key('quest_description_field')),
+        'Read for 30 minutes before bed',
       );
 
       // Select productivity category
@@ -287,11 +301,11 @@ void main() {
 
       // Verify XP gain and streak continuation
       expect(find.text('+25 XP'), findsOneWidget);
-      
+
       await tester.pump(const Duration(seconds: 3));
 
       // === CHALLENGE PARTICIPATION ===
-      
+
       // Navigate to challenges
       await tester.tap(find.byKey(const Key('challenges_tab')));
       await tester.pumpAndSettle();
@@ -311,10 +325,13 @@ void main() {
 
       // Verify challenge joined
       expect(find.text('Challenge Joined!'), findsOneWidget);
-      expect(find.byKey(const Key('challenge_progress_indicator')), findsOneWidget);
+      expect(
+        find.byKey(const Key('challenge_progress_indicator')),
+        findsOneWidget,
+      );
 
       // === FINAL VERIFICATION ===
-      
+
       // Navigate back to main screen
       await tester.tap(find.byKey(const Key('back_button')));
       await tester.pumpAndSettle();
@@ -325,7 +342,10 @@ void main() {
       // Verify both quests are completed
       expect(find.text('Daily Morning Walk'), findsOneWidget);
       expect(find.text('Evening Reading'), findsOneWidget);
-      expect(find.byKey(const Key('completed_quest_indicator')), findsNWidgets(2));
+      expect(
+        find.byKey(const Key('completed_quest_indicator')),
+        findsNWidgets(2),
+      );
 
       // Verify streak display
       expect(find.text('2 Day Streak'), findsOneWidget);
@@ -341,29 +361,37 @@ void main() {
 
       // Verify user has successfully completed the full onboarding journey
       // and is ready to continue building habits
-      expect(find.byKey(const Key('user_journey_complete_indicator')), findsOneWidget);
+      expect(
+        find.byKey(const Key('user_journey_complete_indicator')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('Returning user daily routine flow', (tester) async {
       // This test simulates a returning user's daily routine
-      await tester.pumpWidget(app.MinQApp(
-        skipOnboarding: true,
-        mockUserData: MockUserData.returningUser(),
-      ));
+      await tester.pumpWidget(
+        app.MinQApp(
+          skipOnboarding: true,
+          mockUserData: MockUserData.returningUser(),
+        ),
+      );
       await tester.pumpAndSettle();
 
       // === DAILY CHECK-IN ===
-      
+
       // Verify daily check-in prompt
       expect(find.byKey(const Key('daily_checkin_prompt')), findsOneWidget);
-      expect(find.text('Good morning! Ready for another great day?'), findsOneWidget);
+      expect(
+        find.text('Good morning! Ready for another great day?'),
+        findsOneWidget,
+      );
 
       // View today's quests
       expect(find.byKey(const Key('todays_quests_section')), findsOneWidget);
       expect(find.text('3 quests for today'), findsOneWidget);
 
       // === MORNING ROUTINE ===
-      
+
       // Complete morning exercise quest
       await tester.tap(find.text('Morning Exercise'));
       await tester.pumpAndSettle();
@@ -373,7 +401,7 @@ void main() {
 
       // Verify quick completion (no proof required for trusted user)
       expect(find.text('Quest completed!'), findsOneWidget);
-      
+
       await tester.pump(const Duration(seconds: 1));
 
       // Complete morning meditation
@@ -384,16 +412,19 @@ void main() {
       await tester.pumpAndSettle();
 
       // === STREAK MILESTONE ===
-      
+
       // Verify streak milestone achievement (30 days)
-      expect(find.byKey(const Key('streak_milestone_animation')), findsOneWidget);
+      expect(
+        find.byKey(const Key('streak_milestone_animation')),
+        findsOneWidget,
+      );
       expect(find.text('30-Day Streak Achieved!'), findsOneWidget);
       expect(find.text('Consistency Master Badge Unlocked'), findsOneWidget);
 
       await tester.pump(const Duration(seconds: 4));
 
       // === AI COACH DAILY INSIGHT ===
-      
+
       // Navigate to AI Coach for daily insight
       await tester.tap(find.byKey(const Key('ai_coach_tab')));
       await tester.pumpAndSettle();
@@ -403,7 +434,7 @@ void main() {
       expect(find.text('Your 30-day streak is incredible!'), findsOneWidget);
 
       // === CHALLENGE PROGRESS ===
-      
+
       // Check challenge progress
       await tester.tap(find.byKey(const Key('challenges_tab')));
       await tester.pumpAndSettle();
@@ -413,7 +444,7 @@ void main() {
       expect(find.text('15/31 days complete'), findsOneWidget);
 
       // === EVENING ROUTINE ===
-      
+
       // Navigate back to quests for evening routine
       await tester.tap(find.byKey(const Key('quests_tab')));
       await tester.pumpAndSettle();
@@ -426,14 +457,14 @@ void main() {
       await tester.pumpAndSettle();
 
       // === DAILY SUMMARY ===
-      
+
       // Verify daily completion summary
       expect(find.byKey(const Key('daily_summary_card')), findsOneWidget);
       expect(find.text('Perfect day! All 3 quests completed'), findsOneWidget);
       expect(find.text('+75 XP earned today'), findsOneWidget);
 
       // === LEAGUE PROGRESSION ===
-      
+
       // Check league status
       await tester.tap(find.byKey(const Key('league_tab')));
       await tester.pumpAndSettle();
@@ -444,7 +475,7 @@ void main() {
       expect(find.text('1,250 weekly XP'), findsOneWidget);
 
       // === STATISTICS REVIEW ===
-      
+
       // Review progress statistics
       await tester.tap(find.byKey(const Key('stats_tab')));
       await tester.pumpAndSettle();
@@ -468,14 +499,16 @@ void main() {
 
     testWidgets('Power user advanced features flow', (tester) async {
       // This test covers advanced features for experienced users
-      await tester.pumpWidget(app.MinQApp(
-        skipOnboarding: true,
-        mockUserData: MockUserData.powerUser(),
-      ));
+      await tester.pumpWidget(
+        app.MinQApp(
+          skipOnboarding: true,
+          mockUserData: MockUserData.powerUser(),
+        ),
+      );
       await tester.pumpAndSettle();
 
       // === ADVANCED QUEST MANAGEMENT ===
-      
+
       // Navigate to quest management
       await tester.tap(find.byKey(const Key('quest_management_button')));
       await tester.pumpAndSettle();
@@ -496,7 +529,7 @@ void main() {
       expect(find.text('5 quests completed'), findsOneWidget);
 
       // === CUSTOM CHALLENGE CREATION ===
-      
+
       // Navigate to challenges
       await tester.tap(find.byKey(const Key('challenges_tab')));
       await tester.pumpAndSettle();
@@ -505,15 +538,18 @@ void main() {
       await tester.tap(find.byKey(const Key('create_challenge_fab')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('challenge_creation_screen')), findsOneWidget);
+      expect(
+        find.byKey(const Key('challenge_creation_screen')),
+        findsOneWidget,
+      );
 
       await tester.enterText(
-        find.byKey(const Key('challenge_title_field')), 
-        'Ultimate Productivity Challenge'
+        find.byKey(const Key('challenge_title_field')),
+        'Ultimate Productivity Challenge',
       );
       await tester.enterText(
-        find.byKey(const Key('challenge_description_field')), 
-        'Complete 50 productivity tasks in 30 days'
+        find.byKey(const Key('challenge_description_field')),
+        'Complete 50 productivity tasks in 30 days',
       );
 
       // Set challenge parameters
@@ -522,18 +558,15 @@ void main() {
       await tester.tap(find.text('30 days'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-        find.byKey(const Key('target_value_field')), 
-        '50'
-      );
+      await tester.enterText(find.byKey(const Key('target_value_field')), '50');
 
       // Set rewards
       await tester.tap(find.byKey(const Key('add_reward_button')));
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('reward_name_field')), 
-        'Productivity Master Badge'
+        find.byKey(const Key('reward_name_field')),
+        'Productivity Master Badge',
       );
 
       await tester.tap(find.byKey(const Key('save_challenge_button')));
@@ -543,7 +576,7 @@ void main() {
       expect(find.text('Challenge created successfully!'), findsOneWidget);
 
       // === ADVANCED ANALYTICS ===
-      
+
       // Navigate to advanced analytics
       await tester.tap(find.byKey(const Key('stats_tab')));
       await tester.pumpAndSettle();
@@ -551,7 +584,10 @@ void main() {
       await tester.tap(find.byKey(const Key('advanced_analytics_button')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('advanced_analytics_screen')), findsOneWidget);
+      expect(
+        find.byKey(const Key('advanced_analytics_screen')),
+        findsOneWidget,
+      );
 
       // Test custom date range
       await tester.tap(find.byKey(const Key('date_range_picker')));
@@ -562,7 +598,10 @@ void main() {
 
       // Verify advanced charts
       expect(find.byKey(const Key('trend_analysis_chart')), findsOneWidget);
-      expect(find.byKey(const Key('category_performance_chart')), findsOneWidget);
+      expect(
+        find.byKey(const Key('category_performance_chart')),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('time_pattern_heatmap')), findsOneWidget);
 
       // Test data export
@@ -575,7 +614,7 @@ void main() {
       expect(find.text('Data exported successfully'), findsOneWidget);
 
       // === AUTOMATION RULES ===
-      
+
       // Navigate to automation settings
       await tester.tap(find.byKey(const Key('settings_tab')));
       await tester.pumpAndSettle();
@@ -590,8 +629,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('rule_name_field')), 
-        'Auto-complete morning routine'
+        find.byKey(const Key('rule_name_field')),
+        'Auto-complete morning routine',
       );
 
       // Set trigger
@@ -610,7 +649,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // === API INTEGRATION ===
-      
+
       // Test third-party integrations
       await tester.tap(find.byKey(const Key('integrations_tile')));
       await tester.pumpAndSettle();
@@ -624,7 +663,10 @@ void main() {
       expect(find.text('Fitness tracker connected'), findsOneWidget);
 
       // Verify power user features are fully functional
-      expect(find.byKey(const Key('power_user_features_active')), findsOneWidget);
+      expect(
+        find.byKey(const Key('power_user_features_active')),
+        findsOneWidget,
+      );
     });
   });
 }

@@ -66,7 +66,9 @@ class DataSeeder {
       'uid': uid ?? 'user_${_random.nextInt(100000)}',
       'displayName': '$lastName$firstName',
       'email': '${firstName.toLowerCase()}@example.com',
-      'createdAt': DateTime.now().subtract(Duration(days: _random.nextInt(365))),
+      'createdAt': DateTime.now().subtract(
+        Duration(days: _random.nextInt(365)),
+      ),
       'currentStreak': _random.nextInt(30),
       'longestStreak': _random.nextInt(100),
       'notificationTimes': ['07:30', '21:00'],
@@ -87,9 +89,10 @@ class DataSeeder {
       'achievementId': achievementId,
       'current': current,
       'unlocked': current >= maxProgress,
-      'unlockedAt': current >= maxProgress 
-          ? DateTime.now().subtract(Duration(days: _random.nextInt(30)))
-          : null,
+      'unlockedAt':
+          current >= maxProgress
+              ? DateTime.now().subtract(Duration(days: _random.nextInt(30)))
+              : null,
     };
   }
 
@@ -127,11 +130,13 @@ class DataSeeder {
 
     for (final quest in quests) {
       for (final user in users) {
-        logs.addAll(generateQuestLogs(
-          questId: quest['id'] as int,
-          userId: user['uid'] as String,
-          count: logsPerQuest,
-        ));
+        logs.addAll(
+          generateQuestLogs(
+            questId: quest['id'] as int,
+            userId: user['uid'] as String,
+            count: logsPerQuest,
+          ),
+        );
       }
     }
 
@@ -185,8 +190,18 @@ class Faker {
   /// ランダムな文字列
   static String text({int wordCount = 10}) {
     final words = [
-      'これは', 'テスト', 'データ', 'です', 'ランダム', '生成',
-      'サンプル', '開発', '用途', 'ダミー', '文字列', '日本語',
+      'これは',
+      'テスト',
+      'データ',
+      'です',
+      'ランダム',
+      '生成',
+      'サンプル',
+      '開発',
+      '用途',
+      'ダミー',
+      '文字列',
+      '日本語',
     ];
     final selectedWords = List.generate(
       wordCount,
@@ -198,29 +213,31 @@ class Faker {
 
 void main() {
   final seeder = DataSeeder();
-  
+
   // サンプルデータ生成
   print('=== データシード開始 ===');
-  
+
   final dataset = seeder.generateFullDataset(
     questCount: 5,
     userCount: 3,
     logsPerQuest: 10,
   );
-  
+
   print('ユーザー数: ${dataset['users'].length}');
   print('クエスト数: ${dataset['quests'].length}');
   print('ログ数: ${dataset['logs'].length}');
-  
+
   print('\n=== サンプルユーザー ===');
   for (final user in (dataset['users'] as List).take(2)) {
     print('${user['displayName']} (${user['email']})');
   }
-  
+
   print('\n=== サンプルクエスト ===');
   for (final quest in (dataset['quests'] as List).take(3)) {
-    print('${quest['title']} - ${quest['category']} (${quest['estimatedMinutes']}分)');
+    print(
+      '${quest['title']} - ${quest['category']} (${quest['estimatedMinutes']}分)',
+    );
   }
-  
+
   print('\n=== データシード完了 ===');
 }

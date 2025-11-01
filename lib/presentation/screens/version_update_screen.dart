@@ -77,9 +77,7 @@ class VersionUpdateScreen extends ConsumerWidget {
       VersionForceUpdate(:final minVersion) =>
         'このバージョンはサポートが終了しました。\n'
             '最新バージョン（$minVersion以上）にアップデートしてください。',
-      VersionUpdateAvailable(
-        :final recommendedVersion,
-      ) =>
+      VersionUpdateAvailable(:final recommendedVersion) =>
         '新しいバージョン（$recommendedVersion）が利用可能です。\n'
             'より快適にご利用いただくため、アップデートをおすすめします。',
       _ => '最新バージョンにアップデートしてください。',

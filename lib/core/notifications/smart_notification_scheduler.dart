@@ -20,9 +20,9 @@ class SmartNotificationScheduler {
     required AdvancedNotificationService notificationService,
     required BehaviorLearningService behaviorService,
     required NotificationAnalyticsService analyticsService,
-  })  : _notificationService = notificationService,
-        _behaviorService = behaviorService,
-        _analyticsService = analyticsService;
+  }) : _notificationService = notificationService,
+       _behaviorService = behaviorService,
+       _analyticsService = analyticsService;
 
   /// スマート通知をスケジュール
   Future<bool> scheduleSmartNotification({
@@ -75,8 +75,9 @@ class SmartNotificationScheduler {
 
     // 最適タイミングを計算
     final optimalTime = await _calculateOptimalTiming(context, maxDelay);
-    
-    if (optimalTime == null || optimalTime.isBefore(DateTime.now().add(const Duration(minutes: 1)))) {
+
+    if (optimalTime == null ||
+        optimalTime.isBefore(DateTime.now().add(const Duration(minutes: 1)))) {
       // 即座に送信
       return await _notificationService.scheduleNotification(
         id: id,
@@ -107,19 +108,23 @@ class SmartNotificationScheduler {
     Duration? maxDelay,
   ) async {
     final settings = _notificationService.currentSettings.smartSettings;
-    
+
     // 行動パターン分析を取得
     final analysis = await _behaviorService.getOptimalTiming(
       context.userId,
       context.category,
     );
 
-    if (analysis == null || analysis.confidence < settings.confidenceThreshold) {
+    if (analysis == null ||
+        analysis.confidence < settings.confidenceThreshold) {
       return null; // 学習データが不十分
     }
 
     final now = DateTime.now();
-    final maxDelayTime = maxDelay != null ? now.add(maxDelay) : now.add(const Duration(hours: 24));
+    final maxDelayTime =
+        maxDelay != null
+            ? now.add(maxDelay)
+            : now.add(const Duration(hours: 24));
 
     // 最適な時間帯を検索
     DateTime? bestTime;
@@ -128,7 +133,7 @@ class SmartNotificationScheduler {
     for (final hour in analysis.optimalHours) {
       // 今日の該当時間
       var candidateTime = DateTime(now.year, now.month, now.day, hour);
-      
+
       // 過去の時間の場合は明日にする
       if (candidateTime.isBefore(now)) {
         candidateTime = candidateTime.add(const Duration(days: 1));
@@ -145,10 +150,11 @@ class SmartNotificationScheduler {
       }
 
       // スコアを計算（エンゲージメント率 × 優先度調整）
-      final engagementRate = analysis.hourlyEngagementRates?[hour.toString()] ?? 0.0;
+      final engagementRate =
+          analysis.hourlyEngagementRates?[hour.toString()] ?? 0.0;
       final timeDistance = candidateTime.difference(now).inHours.abs();
       final distancePenalty = math.exp(-timeDistance / 12.0); // 12時間で半減
-      
+
       final score = engagementRate * distancePenalty * context.priority;
 
       if (score > bestScore) {
@@ -163,17 +169,19 @@ class SmartNotificationScheduler {
   /// 時間帯制御をチェック
   Future<bool> _isTimeAllowed(DateTime time) async {
     final settings = _notificationService.currentSettings.timeSettings;
-    
+
     if (!settings.enabled) return true;
 
     final hour = time.hour;
     final minute = time.minute;
-    final isWeekend = time.weekday == DateTime.saturday || time.weekday == DateTime.sunday;
+    final isWeekend =
+        time.weekday == DateTime.saturday || time.weekday == DateTime.sunday;
 
     // 就寝時間チェック
-    final sleepTime = isWeekend && settings.weekendSleepTime != null
-        ? settings.weekendSleepTime!
-        : settings.sleepTime;
+    final sleepTime =
+        isWeekend && settings.weekendSleepTime != null
+            ? settings.weekendSleepTime!
+            : settings.sleepTime;
 
     if (sleepTime != null) {
       if (_isTimeInRange(hour, minute, sleepTime)) {
@@ -182,9 +190,10 @@ class SmartNotificationScheduler {
     }
 
     // 勤務時間チェック
-    final workTime = isWeekend && settings.weekendWorkTime != null
-        ? settings.weekendWorkTime!
-        : settings.workTime;
+    final workTime =
+        isWeekend && settings.weekendWorkTime != null
+            ? settings.weekendWorkTime!
+            : settings.workTime;
 
     if (workTime != null) {
       if (_isTimeInRange(hour, minute, workTime)) {
@@ -218,11 +227,11 @@ class SmartNotificationScheduler {
   }) {
     // 既存のタイマーをキャンセル
     _scheduledNotifications[id]?.cancel();
-    
+
     final delay = scheduledTime.difference(DateTime.now());
-    
+
     _pendingNotifications[id] = context;
-    
+
     _scheduledNotifications[id] = Timer(delay, () async {
       try {
         await _notificationService.scheduleNotification(
@@ -234,7 +243,7 @@ class SmartNotificationScheduler {
           payload: context.metadata,
           priority: context.priority,
         );
-        
+
         debugPrint('Smart notification sent: $id at ${DateTime.now()}');
       } catch (e) {
         debugPrint('Failed to send smart notification $id: $e');
@@ -243,7 +252,7 @@ class SmartNotificationScheduler {
         _pendingNotifications.remove(id);
       }
     });
-    
+
     debugPrint('Smart notification scheduled: $id for $scheduledTime');
   }
 
@@ -264,7 +273,7 @@ class SmartNotificationScheduler {
   }
 
   /// 保留中の通知一覧を取得
-  Map<String, NotificationContext> get pendingNotifications => 
+  Map<String, NotificationContext> get pendingNotifications =>
       Map.unmodifiable(_pendingNotifications);
 
   /// リソースを解放

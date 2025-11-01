@@ -179,7 +179,8 @@ class _RippleEffectState extends State<RippleEffect>
           radiusAnimation: _radiusAnimation,
           opacityAnimation: _opacityAnimation,
           tapPosition: _tapPosition,
-          color: widget.rippleColor ??
+          color:
+              widget.rippleColor ??
               Theme.of(context).extension<MinqTheme>()!.brandPrimary,
         ),
         child: widget.child,
@@ -207,9 +208,10 @@ class _RipplePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (tapPosition == null || animation.value == 0.0) return;
 
-    final paint = Paint()
-      ..color = color.withAlpha((255 * opacityAnimation.value).round())
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = color.withAlpha((255 * opacityAnimation.value).round())
+          ..style = PaintingStyle.fill;
 
     final maxRadius = math.sqrt(
       size.width * size.width + size.height * size.height,
@@ -530,7 +532,7 @@ class _HoverEffectState extends State<HoverEffect>
   @override
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
-    
+
     _colorAnimation = ColorTween(
       begin: Colors.transparent,
       end: widget.hoverColor ?? tokens.hoverState,
@@ -548,15 +550,16 @@ class _HoverEffectState extends State<HoverEffect>
               decoration: BoxDecoration(
                 color: _colorAnimation.value,
                 borderRadius: BorderRadius.circular(8),
-                boxShadow: _elevationAnimation.value > 0
-                    ? [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(25),
-                          blurRadius: _elevationAnimation.value * 2,
-                          offset: Offset(0, _elevationAnimation.value),
-                        ),
-                      ]
-                    : null,
+                boxShadow:
+                    _elevationAnimation.value > 0
+                        ? [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(25),
+                            blurRadius: _elevationAnimation.value * 2,
+                            offset: Offset(0, _elevationAnimation.value),
+                          ),
+                        ]
+                        : null,
               ),
               child: widget.child,
             );
@@ -610,14 +613,14 @@ class _MagneticEffectState extends State<MagneticEffect>
     final center = Offset(size.width / 2, size.height / 2);
     final localPosition = details.localPosition;
     final distance = localPosition - center;
-    
+
     _targetOffset = distance * widget.magneticStrength;
-    
+
     _offsetAnimation = Tween<Offset>(
       begin: _offsetAnimation.value,
       end: _targetOffset,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    
+
     _controller.forward(from: 0.0);
   }
 
@@ -626,7 +629,7 @@ class _MagneticEffectState extends State<MagneticEffect>
       begin: _offsetAnimation.value,
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    
+
     _controller.forward(from: 0.0);
   }
 
@@ -635,7 +638,7 @@ class _MagneticEffectState extends State<MagneticEffect>
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = Size(constraints.maxWidth, constraints.maxHeight);
-        
+
         return MouseRegion(
           onHover: (event) => _onHover(event, size),
           onExit: _onExit,

@@ -60,12 +60,12 @@ class AiConciergeCard extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              
+
               // Insights preview
               const _InsightsPreview(),
-              
+
               const SizedBox(height: 16),
-              
+
               // Action button
               Container(
                 width: double.infinity,
@@ -83,11 +83,7 @@ class AiConciergeCard extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.insights,
-                      color: colorScheme.primary,
-                      size: 16,
-                    ),
+                    Icon(Icons.insights, color: colorScheme.primary, size: 16),
                     const SizedBox(width: 8),
                     Text(
                       'データ分析を見る',
@@ -126,100 +122,113 @@ class _InsightsPreview extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 12),
-        
+
         // Real insights preview
         Consumer(
           builder: (context, ref, child) {
             final streakAsync = ref.watch(streakProvider);
             final statsAsync = ref.watch(statsDataProvider);
             final aiInsightsAsync = ref.watch(aiInsightsProvider);
-            
+
             return Row(
               children: [
                 Expanded(
                   child: statsAsync.when(
-                    data: (stats) => _buildInsightItem(
-                      context,
-                      '完了率',
-                      '${(stats.weeklyCompletionRate * 100).round()}%',
-                      Icons.trending_up,
-                      stats.weeklyCompletionRate > 0.7 ? Colors.green : Colors.orange,
-                    ),
-                    loading: () => _buildInsightItem(
-                      context,
-                      '完了率',
-                      '-',
-                      Icons.trending_up,
-                      Colors.grey,
-                    ),
-                    error: (_, __) => _buildInsightItem(
-                      context,
-                      '完了率',
-                      '-',
-                      Icons.trending_up,
-                      Colors.grey,
-                    ),
+                    data:
+                        (stats) => _buildInsightItem(
+                          context,
+                          '完了率',
+                          '${(stats.weeklyCompletionRate * 100).round()}%',
+                          Icons.trending_up,
+                          stats.weeklyCompletionRate > 0.7
+                              ? Colors.green
+                              : Colors.orange,
+                        ),
+                    loading:
+                        () => _buildInsightItem(
+                          context,
+                          '完了率',
+                          '-',
+                          Icons.trending_up,
+                          Colors.grey,
+                        ),
+                    error:
+                        (_, __) => _buildInsightItem(
+                          context,
+                          '完了率',
+                          '-',
+                          Icons.trending_up,
+                          Colors.grey,
+                        ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: streakAsync.when(
-                    data: (streak) => _buildInsightItem(
-                      context,
-                      'ストリーク',
-                      '$streak日',
-                      Icons.local_fire_department,
-                      streak > 0 ? Colors.orange : Colors.grey,
-                    ),
-                    loading: () => _buildInsightItem(
-                      context,
-                      'ストリーク',
-                      '-',
-                      Icons.local_fire_department,
-                      Colors.grey,
-                    ),
-                    error: (_, __) => _buildInsightItem(
-                      context,
-                      'ストリーク',
-                      '-',
-                      Icons.local_fire_department,
-                      Colors.grey,
-                    ),
+                    data:
+                        (streak) => _buildInsightItem(
+                          context,
+                          'ストリーク',
+                          '$streak日',
+                          Icons.local_fire_department,
+                          streak > 0 ? Colors.orange : Colors.grey,
+                        ),
+                    loading:
+                        () => _buildInsightItem(
+                          context,
+                          'ストリーク',
+                          '-',
+                          Icons.local_fire_department,
+                          Colors.grey,
+                        ),
+                    error:
+                        (_, __) => _buildInsightItem(
+                          context,
+                          'ストリーク',
+                          '-',
+                          Icons.local_fire_department,
+                          Colors.grey,
+                        ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: aiInsightsAsync.when(
-                    data: (insights) => _buildInsightItem(
-                      context,
-                      '提案',
-                      '${insights.recommendations.length}件',
-                      Icons.lightbulb_outline,
-                      insights.recommendations.isNotEmpty ? Colors.blue : Colors.grey,
-                    ),
-                    loading: () => _buildInsightItem(
-                      context,
-                      '提案',
-                      '-',
-                      Icons.lightbulb_outline,
-                      Colors.grey,
-                    ),
-                    error: (_, __) => _buildInsightItem(
-                      context,
-                      '提案',
-                      '-',
-                      Icons.lightbulb_outline,
-                      Colors.grey,
-                    ),
+                    data:
+                        (insights) => _buildInsightItem(
+                          context,
+                          '提案',
+                          '${insights.recommendations.length}件',
+                          Icons.lightbulb_outline,
+                          insights.recommendations.isNotEmpty
+                              ? Colors.blue
+                              : Colors.grey,
+                        ),
+                    loading:
+                        () => _buildInsightItem(
+                          context,
+                          '提案',
+                          '-',
+                          Icons.lightbulb_outline,
+                          Colors.grey,
+                        ),
+                    error:
+                        (_, __) => _buildInsightItem(
+                          context,
+                          '提案',
+                          '-',
+                          Icons.lightbulb_outline,
+                          Colors.grey,
+                        ),
                   ),
                 ),
               ],
             );
           },
         ),
-        
+
         const SizedBox(height: 12),
-        
+
         Text(
           'パーソナライズされた分析とアドバイスを確認できます',
           style: textTheme.bodySmall?.copyWith(

@@ -14,8 +14,18 @@ class AppLogger {
   late final Logger _logger;
   bool _initialized = false;
   final List<String> _sensitiveKeys = [
-    'password', 'token', 'secret', 'key', 'auth', 'credential',
-    'email', 'phone', 'address', 'name', 'userId', 'id'
+    'password',
+    'token',
+    'secret',
+    'key',
+    'auth',
+    'credential',
+    'email',
+    'phone',
+    'address',
+    'name',
+    'userId',
+    'id',
   ];
 
   /// Initialize secure logger with production-ready configuration
@@ -32,7 +42,7 @@ class AppLogger {
 
     // Set appropriate log level based on build mode
     final logLevel = level ?? (kDebugMode ? Level.debug : Level.info);
-    
+
     // Create secure printer that filters sensitive data
     final printer = _SecurePrettyPrinter(
       methodCount: kDebugMode ? 2 : 0,
@@ -50,29 +60,28 @@ class AppLogger {
       logOutput = output;
     } else {
       final outputs = <LogOutput>[ConsoleOutput()];
-      
+
       // Add file logging in production or when explicitly enabled
       if (enableFileLogging || !kDebugMode) {
         outputs.add(SecureFileOutput(logFilePath));
       }
-      
+
       logOutput = outputs.length == 1 ? outputs.first : MultiOutput(outputs);
     }
 
-    _logger = Logger(
-      level: logLevel,
-      printer: printer,
-      output: logOutput,
-    );
+    _logger = Logger(level: logLevel, printer: printer, output: logOutput);
 
     _initialized = true;
-    
+
     // Log initialization
-    info('Logger initialized', data: {
-      'level': logLevel.name,
-      'debugMode': kDebugMode,
-      'fileLogging': enableFileLogging || !kDebugMode,
-    });
+    info(
+      'Logger initialized',
+      data: {
+        'level': logLevel.name,
+        'debugMode': kDebugMode,
+        'fileLogging': enableFileLogging || !kDebugMode,
+      },
+    );
   }
 
   /// デバッグログ
@@ -156,7 +165,11 @@ class AppLogger {
   }
 
   /// JSON構造ログ
-  void logJson(String message, Map<String, dynamic> data, {Level level = Level.info}) {
+  void logJson(
+    String message,
+    Map<String, dynamic> data, {
+    Level level = Level.info,
+  }) {
     _ensureInitialized();
     final jsonString = const JsonEncoder.withIndent('  ').convert(data);
     final logMessage = '$message\n$jsonString';
@@ -189,16 +202,12 @@ class AppLogger {
 
   /// APIリクエストログ
   void logApiRequest(String method, String url, {Map<String, dynamic>? body}) {
-    logJson(
-      'API Request: $method $url',
-      {
-        'method': method,
-        'url': url,
-        if (body != null) 'body': body,
-        'timestamp': DateTime.now().toIso8601String(),
-      },
-      level: Level.debug,
-    );
+    logJson('API Request: $method $url', {
+      'method': method,
+      'url': url,
+      if (body != null) 'body': body,
+      'timestamp': DateTime.now().toIso8601String(),
+    }, level: Level.debug);
   }
 
   /// APIレスポンスログ
@@ -230,19 +239,19 @@ class AppLogger {
 
   /// ユーザーアクションログ
   void logUserAction(String action, {Map<String, dynamic>? context}) {
-    logJson(
-      'User Action: $action',
-      {
-        'action': action,
-        if (context != null) ...context,
-        'timestamp': DateTime.now().toIso8601String(),
-      },
-      level: Level.info,
-    );
+    logJson('User Action: $action', {
+      'action': action,
+      if (context != null) ...context,
+      'timestamp': DateTime.now().toIso8601String(),
+    }, level: Level.info);
   }
 
   /// パフォーマンスログ
-  void logPerformance(String operation, Duration duration, {Map<String, dynamic>? metadata}) {
+  void logPerformance(
+    String operation,
+    Duration duration, {
+    Map<String, dynamic>? metadata,
+  }) {
     logJson(
       'Performance: $operation',
       {
@@ -267,7 +276,9 @@ class AppLogger {
       return message;
     }
     final sanitizedData = _sanitizeData(data);
-    final jsonString = const JsonEncoder.withIndent('  ').convert(sanitizedData);
+    final jsonString = const JsonEncoder.withIndent(
+      '  ',
+    ).convert(sanitizedData);
     return '$message\n$jsonString';
   }
 
@@ -278,12 +289,12 @@ class AppLogger {
     String? additionalContext,
   }) {
     _ensureInitialized();
-    
+
     final logData = {
       ...exception.toMap(),
       if (additionalContext != null) 'additionalContext': additionalContext,
     };
-    
+
     switch (level) {
       case Level.debug:
         debug('Exception occurred: ${exception.message}', data: logData);
@@ -313,7 +324,7 @@ class AppLogger {
     String? ipAddress,
   }) {
     _ensureInitialized();
-    
+
     final securityData = {
       'event': event,
       'details': _sanitizeData(details),
@@ -322,7 +333,7 @@ class AppLogger {
       'timestamp': DateTime.now().toIso8601String(),
       'severity': 'SECURITY',
     };
-    
+
     // Security events are always logged at warning level or higher
     _logger.w('SECURITY EVENT: $event', error: null, stackTrace: null);
     _logger.w(const JsonEncoder.withIndent('  ').convert(securityData));
@@ -331,27 +342,28 @@ class AppLogger {
   /// Sanitize data to remove sensitive information
   Map<String, dynamic> _sanitizeData(Map<String, dynamic> data) {
     final sanitized = <String, dynamic>{};
-    
+
     for (final entry in data.entries) {
       final key = entry.key.toLowerCase();
       final value = entry.value;
-      
+
       if (_sensitiveKeys.any((sensitive) => key.contains(sensitive))) {
         sanitized[entry.key] = _hashSensitiveData(value.toString());
       } else if (value is Map<String, dynamic>) {
         sanitized[entry.key] = _sanitizeData(value);
       } else if (value is List) {
-        sanitized[entry.key] = value.map((item) {
-          if (item is Map<String, dynamic>) {
-            return _sanitizeData(item);
-          }
-          return item;
-        }).toList();
+        sanitized[entry.key] =
+            value.map((item) {
+              if (item is Map<String, dynamic>) {
+                return _sanitizeData(item);
+              }
+              return item;
+            }).toList();
       } else {
         sanitized[entry.key] = value;
       }
     }
-    
+
     return sanitized;
   }
 
@@ -384,11 +396,7 @@ class PerformanceLogger {
   /// Stop measurement and log performance data
   void stop() {
     _stopwatch.stop();
-    logger.logPerformance(
-      operation,
-      _stopwatch.elapsed,
-      metadata: metadata,
-    );
+    logger.logPerformance(operation, _stopwatch.elapsed, metadata: metadata);
   }
 
   /// Get elapsed time without stopping
@@ -413,28 +421,27 @@ class _SecurePrettyPrinter extends PrettyPrinter {
   List<String> log(LogEvent event) {
     // Filter sensitive data from the message
     final filteredMessage = _filterSensitiveData(event.message);
-    final filteredEvent = LogEvent(
-      event.level,
-      filteredMessage,
-    );
-    
+    final filteredEvent = LogEvent(event.level, filteredMessage);
+
     return super.log(filteredEvent);
   }
 
   String _filterSensitiveData(dynamic message) {
     if (message == null) return '';
-    
+
     String messageStr = message.toString();
-    
+
     // Simple pattern matching for common sensitive data patterns
     for (final key in sensitiveKeys) {
-      final pattern = RegExp('($key["\']?\\s*[:=]\\s*["\']?)([^"\'\\s,}]+)', 
-        caseSensitive: false);
+      final pattern = RegExp(
+        '($key["\']?\\s*[:=]\\s*["\']?)([^"\'\\s,}]+)',
+        caseSensitive: false,
+      );
       messageStr = messageStr.replaceAllMapped(pattern, (match) {
         return '${match.group(1)}***';
       });
     }
-    
+
     return messageStr;
   }
 }
@@ -444,7 +451,7 @@ class SecureFileOutput extends LogOutput {
   final String? logFilePath;
   final int maxFileSize;
   final int maxFiles;
-  
+
   SecureFileOutput(
     this.logFilePath, {
     this.maxFileSize = 10 * 1024 * 1024, // 10MB
@@ -487,7 +494,12 @@ class MultiOutput extends LogOutput {
 
 /// Remote logging output for crash reporting services
 class RemoteLogOutput extends LogOutput {
-  final Future<void> Function(String level, String message, Map<String, dynamic>? data) _sendLog;
+  final Future<void> Function(
+    String level,
+    String message,
+    Map<String, dynamic>? data,
+  )
+  _sendLog;
 
   RemoteLogOutput(this._sendLog);
 

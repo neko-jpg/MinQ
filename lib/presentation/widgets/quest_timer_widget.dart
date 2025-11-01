@@ -118,8 +118,9 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                   value: 1 - progress,
                   strokeWidth: 12,
                   backgroundColor: tokens.background,
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    tokens.brandPrimary,
+                  ),
                 ),
               ),
               Column(
@@ -191,7 +192,10 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
           ),
           if (widget.onCancel != null) ...[
             SizedBox(height: tokens.spacing.md),
-            TextButton(onPressed: _cancelTimer, child: Text(AppLocalizations.of(context).cancel)),
+            TextButton(
+              onPressed: _cancelTimer,
+              child: Text(AppLocalizations.of(context).cancel),
+            ),
           ],
         ],
       ),
@@ -290,9 +294,11 @@ class QuestTimerScreen extends StatelessWidget {
           child: QuestTimerWidget(
             durationMinutes: durationMinutes,
             onComplete: () {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).timerCompleted)));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(AppLocalizations.of(context).timerCompleted),
+                ),
+              );
               Navigator.of(context).pop(true);
             },
             onCancel: () {
@@ -357,7 +363,9 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
               ),
               SizedBox(width: tokens.spacing.sm),
               Text(
-                _isWorkSession ? AppLocalizations.of(context).workSession : AppLocalizations.of(context).breakTime,
+                _isWorkSession
+                    ? AppLocalizations.of(context).workSession
+                    : AppLocalizations.of(context).breakTime,
                 style: tokens.typography.body.copyWith(
                   color: tokens.textPrimary,
                   fontWeight: FontWeight.bold,

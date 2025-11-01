@@ -5,16 +5,13 @@ import 'package:minq/domain/analytics/dashboard_config.dart';
 class GoalProgressWidget extends ConsumerWidget {
   final DashboardWidgetConfig config;
 
-  const GoalProgressWidget({
-    super.key,
-    required this.config,
-  });
+  const GoalProgressWidget({super.key, required this.config});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: 実際の目標データプロバイダーを実装
     final goals = _getMockGoals();
-    
+
     return _buildGoalsList(context, goals);
   }
 
@@ -39,9 +36,7 @@ class GoalProgressWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.3),
-        ),
+        border: Border.all(color: Colors.grey.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,16 +46,16 @@ class GoalProgressWidget extends ConsumerWidget {
               Expanded(
                 child: Text(
                   goal.title,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
               Text(
                 '${goal.current}/${goal.target}',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Colors.grey),
               ),
             ],
           ),
@@ -68,7 +63,9 @@ class GoalProgressWidget extends ConsumerWidget {
           LinearProgressIndicator(
             value: goal.progress,
             backgroundColor: Colors.grey.withOpacity(0.3),
-            valueColor: AlwaysStoppedAnimation<Color>(_getProgressColor(goal.progress)),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              _getProgressColor(goal.progress),
+            ),
           ),
           const SizedBox(height: 4),
           Row(
@@ -80,9 +77,9 @@ class GoalProgressWidget extends ConsumerWidget {
               ),
               Text(
                 goal.deadline,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Colors.grey),
               ),
             ],
           ),
@@ -96,23 +93,19 @@ class GoalProgressWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.track_changes,
-            size: 32,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.track_changes, size: 32, color: Colors.grey),
           const SizedBox(height: 8),
           Text(
             '目標なし',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
           ),
           Text(
             '目標を設定して\n進捗を追跡しましょう',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
             textAlign: TextAlign.center,
           ),
         ],

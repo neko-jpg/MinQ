@@ -9,7 +9,8 @@ class PremiumThemesScreen extends ConsumerStatefulWidget {
   const PremiumThemesScreen({super.key});
 
   @override
-  ConsumerState<PremiumThemesScreen> createState() => _PremiumThemesScreenState();
+  ConsumerState<PremiumThemesScreen> createState() =>
+      _PremiumThemesScreenState();
 }
 
 class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
@@ -43,24 +44,22 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
           labelColor: context.colorTokens.primary,
           unselectedLabelColor: context.colorTokens.textSecondary,
           indicatorColor: context.colorTokens.primary,
-          tabs: const [
-            Tab(text: 'Themes'),
-            Tab(text: 'Animations'),
-          ],
+          tabs: const [Tab(text: 'Themes'), Tab(text: 'Animations')],
         ),
       ),
       body: currentTierAsync.when(
-        data: (tier) => TabBarView(
-          controller: _tabController,
-          children: [
-            _buildThemesTab(context, tier),
-            _buildAnimationsTab(context, tier),
-          ],
-        ),
+        data:
+            (tier) => TabBarView(
+              controller: _tabController,
+              children: [
+                _buildThemesTab(context, tier),
+                _buildAnimationsTab(context, tier),
+              ],
+            ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => const Center(
-          child: Text('Error loading subscription status'),
-        ),
+        error:
+            (error, stack) =>
+                const Center(child: Text('Error loading subscription status')),
       ),
     );
   }
@@ -70,13 +69,23 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
     final currentThemeAsync = ref.watch(currentThemeProvider);
 
     return availableThemesAsync.when(
-      data: (themes) => currentThemeAsync.when(
-        data: (currentTheme) => _buildThemesList(context, themes, currentTheme, currentTier),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => const Center(child: Text('Error loading current theme')),
-      ),
+      data:
+          (themes) => currentThemeAsync.when(
+            data:
+                (currentTheme) => _buildThemesList(
+                  context,
+                  themes,
+                  currentTheme,
+                  currentTier,
+                ),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error:
+                (error, stack) =>
+                    const Center(child: Text('Error loading current theme')),
+          ),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => const Center(child: Text('Error loading themes')),
+      error:
+          (error, stack) => const Center(child: Text('Error loading themes')),
     );
   }
 
@@ -84,9 +93,13 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
     final availableAnimationsAsync = ref.watch(availableAnimationsProvider);
 
     return availableAnimationsAsync.when(
-      data: (animations) => _buildAnimationsList(context, animations, currentTier),
+      data:
+          (animations) =>
+              _buildAnimationsList(context, animations, currentTier),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => const Center(child: Text('Error loading animations')),
+      error:
+          (error, stack) =>
+              const Center(child: Text('Error loading animations')),
     );
   }
 
@@ -106,39 +119,46 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
       children: [
         _buildThemesHeader(context),
         const SizedBox(height: 24),
-        ...groupedThemes.entries.map((entry) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: Text(
-                _getCategoryDisplayName(entry.key),
-                style: context.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+        ...groupedThemes.entries.map(
+          (entry) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 16,
+                ),
+                child: Text(
+                  _getCategoryDisplayName(entry.key),
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.8,
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.8,
+                ),
+                itemCount: entry.value.length,
+                itemBuilder: (context, index) {
+                  final theme = entry.value[index];
+                  final isSelected = currentTheme?.id == theme.id;
+                  final canUse =
+                      !theme.isPremium ||
+                      currentTier.hasFeature(FeatureType.themes);
+
+                  return _buildThemeCard(context, theme, isSelected, canUse);
+                },
               ),
-              itemCount: entry.value.length,
-              itemBuilder: (context, index) {
-                final theme = entry.value[index];
-                final isSelected = currentTheme?.id == theme.id;
-                final canUse = !theme.isPremium || currentTier.hasFeature(FeatureType.themes);
-                
-                return _buildThemeCard(context, theme, isSelected, canUse);
-              },
-            ),
-            const SizedBox(height: 16),
-          ],
-        )),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -150,7 +170,9 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
   ) {
     final groupedAnimations = <AnimationCategory, List<PremiumAnimation>>{};
     for (final animation in animations) {
-      groupedAnimations.putIfAbsent(animation.category, () => []).add(animation);
+      groupedAnimations
+          .putIfAbsent(animation.category, () => [])
+          .add(animation);
     }
 
     return ListView(
@@ -158,31 +180,45 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
       children: [
         _buildAnimationsHeader(context),
         const SizedBox(height: 24),
-        ...groupedAnimations.entries.map((entry) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: Text(
-                _getAnimationCategoryDisplayName(entry.key),
-                style: context.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+        ...groupedAnimations.entries.map(
+          (entry) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 16,
+                ),
+                child: Text(
+                  _getAnimationCategoryDisplayName(entry.key),
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            ...entry.value.map((animation) {
-              final canUse = !animation.isPremium || currentTier.hasFeature(FeatureType.themes);
-              return FutureBuilder<bool>(
-                future: ref.read(premiumThemesServiceProvider).isAnimationEnabled(animation.id),
-                builder: (context, snapshot) {
-                  final isEnabled = snapshot.data ?? true;
-                  return _buildAnimationCard(context, animation, isEnabled, canUse);
-                },
-              );
-            }),
-            const SizedBox(height: 16),
-          ],
-        )),
+              ...entry.value.map((animation) {
+                final canUse =
+                    !animation.isPremium ||
+                    currentTier.hasFeature(FeatureType.themes);
+                return FutureBuilder<bool>(
+                  future: ref
+                      .read(premiumThemesServiceProvider)
+                      .isAnimationEnabled(animation.id),
+                  builder: (context, snapshot) {
+                    final isEnabled = snapshot.data ?? true;
+                    return _buildAnimationCard(
+                      context,
+                      animation,
+                      isEnabled,
+                      canUse,
+                    );
+                  },
+                );
+              }),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -241,9 +277,10 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected 
-                ? context.colorTokens.primary 
-                : context.colorTokens.border,
+            color:
+                isSelected
+                    ? context.colorTokens.primary
+                    : context.colorTokens.border,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
@@ -265,13 +302,17 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                      gradient: theme.gradientBackground ?? LinearGradient(
-                        colors: [
-                          theme.colorTokens.primary,
-                          theme.colorTokens.secondary,
-                        ],
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16),
                       ),
+                      gradient:
+                          theme.gradientBackground ??
+                          LinearGradient(
+                            colors: [
+                              theme.colorTokens.primary,
+                              theme.colorTokens.secondary,
+                            ],
+                          ),
                     ),
                     child: Stack(
                       children: [
@@ -328,7 +369,9 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: context.colorTokens.surface,
-                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+                      borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(16),
+                      ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -367,11 +410,7 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.lock,
-                          color: Colors.white,
-                          size: 32,
-                        ),
+                        Icon(Icons.lock, color: Colors.white, size: 32),
                         SizedBox(height: 8),
                         Text(
                           'Premium',
@@ -395,11 +434,7 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
                     color: context.colorTokens.primary,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 16,
-                  ),
+                  child: const Icon(Icons.check, color: Colors.white, size: 16),
                 ),
               ),
           ],
@@ -455,7 +490,10 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
                       ),
                       if (animation.isPremium && !canUse)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: context.colorTokens.warning.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
@@ -484,9 +522,8 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
             const SizedBox(width: 16),
             Switch(
               value: isEnabled && canUse,
-              onChanged: canUse 
-                  ? (value) => _toggleAnimation(animation, value)
-                  : null,
+              onChanged:
+                  canUse ? (value) => _toggleAnimation(animation, value) : null,
               activeThumbColor: context.colorTokens.primary,
             ),
           ],
@@ -496,8 +533,10 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
   }
 
   Future<void> _selectTheme(PremiumTheme theme) async {
-    final success = await ref.read(premiumThemesServiceProvider).setTheme(theme.id);
-    
+    final success = await ref
+        .read(premiumThemesServiceProvider)
+        .setTheme(theme.id);
+
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -517,13 +556,20 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
     }
   }
 
-  Future<void> _toggleAnimation(PremiumAnimation animation, bool enabled) async {
-    final success = await ref.read(premiumThemesServiceProvider).setAnimation(animation.id, enabled);
-    
+  Future<void> _toggleAnimation(
+    PremiumAnimation animation,
+    bool enabled,
+  ) async {
+    final success = await ref
+        .read(premiumThemesServiceProvider)
+        .setAnimation(animation.id, enabled);
+
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${animation.name} ${enabled ? 'enabled' : 'disabled'}'),
+          content: Text(
+            '${animation.name} ${enabled ? 'enabled' : 'disabled'}',
+          ),
           backgroundColor: context.colorTokens.success,
         ),
       );
@@ -541,26 +587,29 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
   void _showPremiumRequired() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Premium Required'),
-        content: const Text('This theme is available for Premium subscribers only. Upgrade to unlock all themes and animations.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              context.push('/premium');
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.colorTokens.primary,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Premium Required'),
+            content: const Text(
+              'This theme is available for Premium subscribers only. Upgrade to unlock all themes and animations.',
             ),
-            child: const Text('Upgrade'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.push('/premium');
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: context.colorTokens.primary,
+                ),
+                child: const Text('Upgrade'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

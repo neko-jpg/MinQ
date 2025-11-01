@@ -24,7 +24,7 @@ final pairSystemProvider = Provider<PairSystem>((ref) {
 });
 
 /// 包括的なペアシステム
-/// 
+///
 /// 友人との習慣化を支援する機能を提供:
 /// - フレンド招待（QRコード・ディープリンク）
 /// - リアルタイムチャット
@@ -94,7 +94,7 @@ class PairSystem {
   }) async {
     try {
       final invitation = await _getInvitationByCode(inviteCode);
-      
+
       if (invitation == null) {
         logger.warn('Invalid invitation code: $inviteCode');
         return null;
@@ -197,9 +197,12 @@ class PairSystem {
         .orderBy('timestamp', descending: true)
         .limit(50)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ProgressShare.fromFirestore(doc))
-            .toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => ProgressShare.fromFirestore(doc))
+                  .toList(),
+        );
   }
 
   // ==================== チャット機能 ====================
@@ -243,9 +246,12 @@ class PairSystem {
         .orderBy('timestamp', descending: true)
         .limit(100)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => PairMessage.fromFirestore(doc))
-            .toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => PairMessage.fromFirestore(doc))
+                  .toList(),
+        );
   }
 
   /// メッセージにリアクションを追加
@@ -269,8 +275,10 @@ class PairSystem {
         }
 
         final message = PairMessage.fromFirestore(snapshot);
-        final updatedReactions = Map<String, List<String>>.from(message.reactions);
-        
+        final updatedReactions = Map<String, List<String>>.from(
+          message.reactions,
+        );
+
         if (updatedReactions.containsKey(emoji)) {
           if (updatedReactions[emoji]!.contains(userId)) {
             updatedReactions[emoji]!.remove(userId);
@@ -299,10 +307,8 @@ class PairSystem {
   /// ペア統計を取得
   Future<PairStatistics> getPairStatistics(String pairId) async {
     try {
-      final doc = await _firestore
-          .collection('pair_connections')
-          .doc(pairId)
-          .get();
+      final doc =
+          await _firestore.collection('pair_connections').doc(pairId).get();
 
       if (!doc.exists) {
         throw const PairException('Pair connection not found');
@@ -324,23 +330,26 @@ class PairSystem {
     required DateTime endDate,
   }) async {
     try {
-      final progressShares = await _firestore
-          .collection('pair_connections')
-          .doc(pairId)
-          .collection('progress_shares')
-          .where('timestamp', isGreaterThanOrEqualTo: startDate)
-          .where('timestamp', isLessThanOrEqualTo: endDate)
-          .get();
+      final progressShares =
+          await _firestore
+              .collection('pair_connections')
+              .doc(pairId)
+              .collection('progress_shares')
+              .where('timestamp', isGreaterThanOrEqualTo: startDate)
+              .where('timestamp', isLessThanOrEqualTo: endDate)
+              .get();
 
-      final userShares = progressShares.docs
-          .map((doc) => ProgressShare.fromFirestore(doc))
-          .where((share) => share.userId == userId)
-          .toList();
+      final userShares =
+          progressShares.docs
+              .map((doc) => ProgressShare.fromFirestore(doc))
+              .where((share) => share.userId == userId)
+              .toList();
 
-      final partnerShares = progressShares.docs
-          .map((doc) => ProgressShare.fromFirestore(doc))
-          .where((share) => share.userId != userId)
-          .toList();
+      final partnerShares =
+          progressShares.docs
+              .map((doc) => ProgressShare.fromFirestore(doc))
+              .where((share) => share.userId != userId)
+              .toList();
 
       return UserComparisonData(
         userId: userId,
@@ -406,10 +415,9 @@ class PairSystem {
     required PairSettings settings,
   }) async {
     try {
-      await _firestore
-          .collection('pair_connections')
-          .doc(pairId)
-          .update({'settings': settings.toFirestore()});
+      await _firestore.collection('pair_connections').doc(pairId).update({
+        'settings': settings.toFirestore(),
+      });
 
       logger.info('Pair settings updated: $pairId');
     } catch (e) {
@@ -421,41 +429,40 @@ class PairSystem {
   // ==================== プライベートメソッド ====================
 
   Future<PairInvitation?> _getInvitationByCode(String code) async {
-    final query = await _firestore
-        .collection('pair_invitations')
-        .where('inviteCode', isEqualTo: code)
-        .where('isActive', isEqualTo: true)
-        .limit(1)
-        .get();
+    final query =
+        await _firestore
+            .collection('pair_invitations')
+            .where('inviteCode', isEqualTo: code)
+            .where('isActive', isEqualTo: true)
+            .limit(1)
+            .get();
 
     if (query.docs.isEmpty) return null;
     return PairInvitation.fromFirestore(query.docs.first);
   }
 
   Future<void> _deactivateInvitation(String invitationId) async {
-    await _firestore
-        .collection('pair_invitations')
-        .doc(invitationId)
-        .update({'isActive': false});
+    await _firestore.collection('pair_invitations').doc(invitationId).update({
+      'isActive': false,
+    });
   }
 
   Future<PairConnection?> _getConnection(String pairId) async {
-    final doc = await _firestore
-        .collection('pair_connections')
-        .doc(pairId)
-        .get();
+    final doc =
+        await _firestore.collection('pair_connections').doc(pairId).get();
 
     if (!doc.exists) return null;
     return PairConnection.fromFirestore(doc);
   }
 
   Future<PairConnection?> _getActiveConnection(String userId) async {
-    final query = await _firestore
-        .collection('pair_connections')
-        .where('status', isEqualTo: 'active')
-        .where('members', arrayContains: userId)
-        .limit(1)
-        .get();
+    final query =
+        await _firestore
+            .collection('pair_connections')
+            .where('status', isEqualTo: 'active')
+            .where('members', arrayContains: userId)
+            .limit(1)
+            .get();
 
     if (query.docs.isEmpty) return null;
     return PairConnection.fromFirestore(query.docs.first);
@@ -471,10 +478,12 @@ class PairSystem {
       return ProgressMetrics.empty();
     }
 
-    final completedQuests = shares.where((s) => s.type == ProgressShareType.questCompleted).length;
+    final completedQuests =
+        shares.where((s) => s.type == ProgressShareType.questCompleted).length;
     final totalShares = shares.length;
     final streakDays = _calculateStreakDays(shares);
-    final averageScore = shares.map((s) => s.score ?? 0).reduce((a, b) => a + b) / shares.length;
+    final averageScore =
+        shares.map((s) => s.score ?? 0).reduce((a, b) => a + b) / shares.length;
 
     return ProgressMetrics(
       completedQuests: completedQuests,
@@ -489,7 +498,7 @@ class PairSystem {
     if (shares.isEmpty) return 0;
 
     shares.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-    
+
     int streak = 0;
     DateTime? lastDate;
 
@@ -541,7 +550,10 @@ class PairSystem {
 
   String _generateInviteCode() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    return List.generate(8, (index) => chars[_random.nextInt(chars.length)]).join();
+    return List.generate(
+      8,
+      (index) => chars[_random.nextInt(chars.length)],
+    ).join();
   }
 
   String _generateId() {

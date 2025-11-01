@@ -31,10 +31,10 @@ class KeyboardNavigationHelper {
     );
 
     if (shortcuts != null && shortcuts.isNotEmpty) {
-      result = Shortcuts(
-        shortcuts: shortcuts,
-        child: result,
-      );
+      final bindings = <ShortcutActivator, VoidCallback>{
+        for (final entry in shortcuts.entries) entry.key: entry.value,
+      };
+      result = CallbackShortcuts(bindings: bindings, child: result);
     }
 
     return result;
@@ -52,19 +52,19 @@ class KeyboardNavigationHelper {
       animation: focusNode,
       builder: (context, _) {
         final theme = Theme.of(context);
-        final effectiveFocusColor = focusColor ?? 
-            theme.colorScheme.primary;
+        final effectiveFocusColor = focusColor ?? theme.colorScheme.primary;
 
         return Container(
-          decoration: focusNode.hasFocus
-              ? BoxDecoration(
-                  border: Border.all(
-                    color: effectiveFocusColor,
-                    width: borderWidth,
-                  ),
-                  borderRadius: borderRadius ?? BorderRadius.circular(4),
-                )
-              : null,
+          decoration:
+              focusNode.hasFocus
+                  ? BoxDecoration(
+                    border: Border.all(
+                      color: effectiveFocusColor,
+                      width: borderWidth,
+                    ),
+                    borderRadius: borderRadius ?? BorderRadius.circular(4),
+                  )
+                  : null,
           child: child,
         );
       },
@@ -112,13 +112,8 @@ class KeyboardNavigationHelper {
   }
 
   /// Create a traversal group for controlling tab order
-  static Widget traversalGroup({
-    required Widget child,
-  }) {
-    return FocusTraversalGroup(
-      policy: OrderedTraversalPolicy(),
-      child: child,
-    );
+  static Widget traversalGroup({required Widget child}) {
+    return FocusTraversalGroup(policy: OrderedTraversalPolicy(), child: child);
   }
 
   /// Create an ordered focus traversal for specific tab order
@@ -126,10 +121,7 @@ class KeyboardNavigationHelper {
     required Widget child,
     required List<FocusNode> order,
   }) {
-    return FocusTraversalGroup(
-      policy: OrderedTraversalPolicy(),
-      child: child,
-    );
+    return FocusTraversalGroup(policy: OrderedTraversalPolicy(), child: child);
   }
 
   /// Handle directional navigation (arrow keys)
@@ -177,7 +169,10 @@ class KeyboardNavigationHelper {
     'paste': LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyV),
     'undo': LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyZ),
     'redo': LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyY),
-    'selectAll': LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyA),
+    'selectAll': LogicalKeySet(
+      LogicalKeyboardKey.control,
+      LogicalKeyboardKey.keyA,
+    ),
     'find': LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyF),
     'refresh': LogicalKeySet(LogicalKeyboardKey.f5),
     'escape': LogicalKeySet(LogicalKeyboardKey.escape),
@@ -228,9 +223,10 @@ class KeyboardNavigationHelper {
               focusNodes[nextIndex].requestFocus();
               return KeyEventResult.handled;
             case LogicalKeyboardKey.arrowUp:
-              final prevIndex = selectedIndex == 0 
-                  ? focusNodes.length - 1 
-                  : selectedIndex - 1;
+              final prevIndex =
+                  selectedIndex == 0
+                      ? focusNodes.length - 1
+                      : selectedIndex - 1;
               onSelectionChanged(prevIndex);
               focusNodes[prevIndex].requestFocus();
               return KeyEventResult.handled;
@@ -264,15 +260,15 @@ class AccessibilityTraversalPolicy extends FocusTraversalPolicy {
     sorted.sort((a, b) {
       final aRect = a.rect;
       final bRect = b.rect;
-      
+
       // First sort by vertical position
       final verticalDiff = aRect.top.compareTo(bRect.top);
       if (verticalDiff != 0) return verticalDiff;
-      
+
       // Then by horizontal position
       return aRect.left.compareTo(bRect.left);
     });
-    
+
     return sorted;
   }
 

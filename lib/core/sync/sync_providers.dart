@@ -18,24 +18,26 @@ final syncQueueManagerProvider = Provider<SyncQueueManager>((ref) {
   final isar = ref.read(isarServiceProvider).isar;
   final networkService = ref.read(networkStatusServiceProvider.notifier);
   final cloudService = ref.read(cloudDatabaseServiceProvider);
-  
+
   final manager = SyncQueueManager(
     isar: isar,
     networkService: networkService,
     cloudService: cloudService,
   );
-  
+
   // Initialize the manager
   manager.initialize();
-  
+
   return manager;
 });
 
 /// Provider for offline operations service
-final offlineOperationsServiceProvider = Provider<OfflineOperationsService>((ref) {
+final offlineOperationsServiceProvider = Provider<OfflineOperationsService>((
+  ref,
+) {
   final isar = ref.read(isarServiceProvider).isar;
   final syncQueueManager = ref.read(syncQueueManagerProvider);
-  
+
   return OfflineOperationsService(
     isar: isar,
     syncQueueManager: syncQueueManager,
@@ -43,19 +45,21 @@ final offlineOperationsServiceProvider = Provider<OfflineOperationsService>((ref
 });
 
 /// Provider for conflict resolution service
-final conflictResolutionServiceProvider = Provider<ConflictResolutionService>((ref) {
+final conflictResolutionServiceProvider = Provider<ConflictResolutionService>((
+  ref,
+) {
   final isar = ref.read(isarServiceProvider).isar;
-  
+
   return ConflictResolutionService(isar: isar);
 });
 
 /// Provider for sync queue status
 final syncQueueStatusProvider = StreamProvider<SyncQueueStatus>((ref) async* {
   final syncManager = ref.read(syncQueueManagerProvider);
-  
+
   // Initial status
   yield await syncManager.getStatus();
-  
+
   // Listen to status changes
   await for (final _ in syncManager.statusStream) {
     yield await syncManager.getStatus();
@@ -93,7 +97,7 @@ final backgroundSyncServiceProvider = Provider<BackgroundSyncService>((ref) {
   final syncQueueManager = ref.read(syncQueueManagerProvider);
   final networkService = ref.read(networkStatusServiceProvider.notifier);
   final cloudService = ref.read(cloudDatabaseServiceProvider);
-  
+
   return BackgroundSyncService(
     syncQueueManager: syncQueueManager,
     networkService: networkService,
@@ -103,5 +107,7 @@ final backgroundSyncServiceProvider = Provider<BackgroundSyncService>((ref) {
 
 /// Provider for Isar service (assuming it exists)
 final isarServiceProvider = Provider<IsarService>((ref) {
-  throw UnimplementedError('IsarService provider should be implemented in the main providers file');
+  throw UnimplementedError(
+    'IsarService provider should be implemented in the main providers file',
+  );
 });

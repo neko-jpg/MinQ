@@ -4,10 +4,7 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// Chart widget for displaying habit completion trends
 class CompletionTrendChart extends StatelessWidget {
-  const CompletionTrendChart({
-    super.key,
-    required this.trends,
-  });
+  const CompletionTrendChart({super.key, required this.trends});
 
   final HabitCompletionTrends trends;
 
@@ -27,11 +24,7 @@ class CompletionTrendChart extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.trending_up,
-                color: tokens.brandPrimary,
-                size: 20,
-              ),
+              Icon(Icons.trending_up, color: tokens.brandPrimary, size: 20),
               SizedBox(width: tokens.spacing.sm),
               Text(
                 '週間完了率の推移',
@@ -46,7 +39,9 @@ class CompletionTrendChart extends StatelessWidget {
                   vertical: tokens.spacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: _getTrendColor(trends.overallTrend).withAlpha((255 * 0.1).round()),
+                  color: _getTrendColor(
+                    trends.overallTrend,
+                  ).withAlpha((255 * 0.1).round()),
                   borderRadius: BorderRadius.circular(tokens.radius.sm),
                 ),
                 child: Row(
@@ -71,14 +66,14 @@ class CompletionTrendChart extends StatelessWidget {
             ],
           ),
           SizedBox(height: tokens.spacing.lg),
-          
+
           // Weekly trend bars
-          ...trends.weeklyTrends.entries.map((entry) => 
-            _buildTrendBar(entry.key, entry.value, tokens),
+          ...trends.weeklyTrends.entries.map(
+            (entry) => _buildTrendBar(entry.key, entry.value, tokens),
           ),
-          
+
           SizedBox(height: tokens.spacing.md),
-          
+
           // Daily trend section
           Text(
             '曜日別パフォーマンス',
@@ -88,14 +83,17 @@ class CompletionTrendChart extends StatelessWidget {
             ),
           ),
           SizedBox(height: tokens.spacing.sm),
-          
+
           // Daily trend grid
           Row(
-            children: trends.dailyTrends.entries.map((entry) => 
-              Expanded(
-                child: _buildDayColumn(entry.key, entry.value, tokens),
-              ),
-            ).toList(),
+            children:
+                trends.dailyTrends.entries
+                    .map(
+                      (entry) => Expanded(
+                        child: _buildDayColumn(entry.key, entry.value, tokens),
+                      ),
+                    )
+                    .toList(),
           ),
         ],
       ),
@@ -139,10 +137,7 @@ class CompletionTrendChart extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      tokens.brandPrimary,
-                      tokens.accentSecondary,
-                    ],
+                    colors: [tokens.brandPrimary, tokens.accentSecondary],
                   ),
                   borderRadius: BorderRadius.circular(tokens.radius.sm),
                 ),
@@ -156,7 +151,7 @@ class CompletionTrendChart extends StatelessWidget {
 
   Widget _buildDayColumn(String day, double value, MinqTheme tokens) {
     final height = (value * 60).clamp(4.0, 60.0); // Min 4px, max 60px
-    
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: tokens.spacing.xs),
       child: Column(

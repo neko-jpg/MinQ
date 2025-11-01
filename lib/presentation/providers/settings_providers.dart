@@ -28,7 +28,9 @@ final notificationTimeProvider = FutureProvider<TimeOfDay>((ref) async {
 });
 
 /// Provider for enabled notification categories
-final enabledNotificationCategoriesProvider = FutureProvider<Set<String>>((ref) async {
+final enabledNotificationCategoriesProvider = FutureProvider<Set<String>>((
+  ref,
+) async {
   final service = ref.watch(settingsServiceProvider);
   return await service.getEnabledNotificationCategories();
 });
@@ -90,10 +92,11 @@ class ThemeModeNotifier extends StateNotifier<AsyncValue<ThemeMode>> {
   }
 }
 
-final themeModeNotifierProvider = StateNotifierProvider<ThemeModeNotifier, AsyncValue<ThemeMode>>((ref) {
-  final settingsService = ref.watch(settingsServiceProvider);
-  return ThemeModeNotifier(settingsService);
-});
+final themeModeNotifierProvider =
+    StateNotifierProvider<ThemeModeNotifier, AsyncValue<ThemeMode>>((ref) {
+      final settingsService = ref.watch(settingsServiceProvider);
+      return ThemeModeNotifier(settingsService);
+    });
 
 /// State notifier for accent color changes
 class AccentColorNotifier extends StateNotifier<AsyncValue<Color>> {
@@ -122,16 +125,18 @@ class AccentColorNotifier extends StateNotifier<AsyncValue<Color>> {
   }
 }
 
-final accentColorNotifierProvider = StateNotifierProvider<AccentColorNotifier, AsyncValue<Color>>((ref) {
-  final themeService = ref.watch(themeCustomizationServiceProvider);
-  return AccentColorNotifier(themeService);
-});
+final accentColorNotifierProvider =
+    StateNotifierProvider<AccentColorNotifier, AsyncValue<Color>>((ref) {
+      final themeService = ref.watch(themeCustomizationServiceProvider);
+      return AccentColorNotifier(themeService);
+    });
 
 /// State notifier for notifications enabled
 class NotificationsEnabledNotifier extends StateNotifier<AsyncValue<bool>> {
   final SettingsService _settingsService;
 
-  NotificationsEnabledNotifier(this._settingsService) : super(const AsyncValue.loading()) {
+  NotificationsEnabledNotifier(this._settingsService)
+    : super(const AsyncValue.loading()) {
     _loadNotificationsEnabled();
   }
 
@@ -154,16 +159,20 @@ class NotificationsEnabledNotifier extends StateNotifier<AsyncValue<bool>> {
   }
 }
 
-final notificationsEnabledNotifierProvider = StateNotifierProvider<NotificationsEnabledNotifier, AsyncValue<bool>>((ref) {
-  final settingsService = ref.watch(settingsServiceProvider);
-  return NotificationsEnabledNotifier(settingsService);
-});
+final notificationsEnabledNotifierProvider =
+    StateNotifierProvider<NotificationsEnabledNotifier, AsyncValue<bool>>((
+      ref,
+    ) {
+      final settingsService = ref.watch(settingsServiceProvider);
+      return NotificationsEnabledNotifier(settingsService);
+    });
 
 /// State notifier for notification time
 class NotificationTimeNotifier extends StateNotifier<AsyncValue<TimeOfDay>> {
   final SettingsService _settingsService;
 
-  NotificationTimeNotifier(this._settingsService) : super(const AsyncValue.loading()) {
+  NotificationTimeNotifier(this._settingsService)
+    : super(const AsyncValue.loading()) {
     _loadNotificationTime();
   }
 
@@ -186,16 +195,21 @@ class NotificationTimeNotifier extends StateNotifier<AsyncValue<TimeOfDay>> {
   }
 }
 
-final notificationTimeNotifierProvider = StateNotifierProvider<NotificationTimeNotifier, AsyncValue<TimeOfDay>>((ref) {
-  final settingsService = ref.watch(settingsServiceProvider);
-  return NotificationTimeNotifier(settingsService);
-});
+final notificationTimeNotifierProvider =
+    StateNotifierProvider<NotificationTimeNotifier, AsyncValue<TimeOfDay>>((
+      ref,
+    ) {
+      final settingsService = ref.watch(settingsServiceProvider);
+      return NotificationTimeNotifier(settingsService);
+    });
 
 /// State notifier for accessibility settings
-class AccessibilitySettingsNotifier extends StateNotifier<AsyncValue<AccessibilitySettings>> {
+class AccessibilitySettingsNotifier
+    extends StateNotifier<AsyncValue<AccessibilitySettings>> {
   final SettingsService _settingsService;
 
-  AccessibilitySettingsNotifier(this._settingsService) : super(const AsyncValue.loading()) {
+  AccessibilitySettingsNotifier(this._settingsService)
+    : super(const AsyncValue.loading()) {
     _loadAccessibilitySettings();
   }
 
@@ -204,13 +218,13 @@ class AccessibilitySettingsNotifier extends StateNotifier<AsyncValue<Accessibili
       final highContrast = await _settingsService.getHighContrast();
       final largeText = await _settingsService.getLargeText();
       final animationsEnabled = await _settingsService.getAnimationsEnabled();
-      
+
       final settings = AccessibilitySettings(
         highContrast: highContrast,
         largeText: largeText,
         animationsEnabled: animationsEnabled,
       );
-      
+
       state = AsyncValue.data(settings);
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
@@ -248,7 +262,10 @@ class AccessibilitySettingsNotifier extends StateNotifier<AsyncValue<Accessibili
   }
 }
 
-final accessibilitySettingsNotifierProvider = StateNotifierProvider<AccessibilitySettingsNotifier, AsyncValue<AccessibilitySettings>>((ref) {
+final accessibilitySettingsNotifierProvider = StateNotifierProvider<
+  AccessibilitySettingsNotifier,
+  AsyncValue<AccessibilitySettings>
+>((ref) {
   final settingsService = ref.watch(settingsServiceProvider);
   return AccessibilitySettingsNotifier(settingsService);
 });

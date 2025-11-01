@@ -38,7 +38,8 @@ class AssetManager {
   static const String achievement = 'assets/images/achievement.png';
 
   /// プレースホルダー
-  static const String avatarPlaceholder = 'assets/images/avatar_placeholder.png';
+  static const String avatarPlaceholder =
+      'assets/images/avatar_placeholder.png';
   static const String imagePlaceholder = 'assets/images/image_placeholder.png';
 
   // ========================================
@@ -52,7 +53,8 @@ class AssetManager {
   static const String successAnimation = 'assets/animations/success.json';
 
   /// 祝福
-  static const String celebrationAnimation = 'assets/animations/celebration.json';
+  static const String celebrationAnimation =
+      'assets/animations/celebration.json';
 
   // ========================================
   // フォント
@@ -67,28 +69,28 @@ class AssetManager {
 
   /// すべての必須アセットが存在するか検証
   static List<String> get requiredAssets => [
-        logo,
-        logoLight,
-        logoDark,
-        onboarding1,
-        onboarding2,
-        onboarding3,
-        emptyQuests,
-        emptyLogs,
-        emptyStats,
-        emptyPairs,
-        celebration,
-        achievement,
-        avatarPlaceholder,
-        imagePlaceholder,
-      ];
+    logo,
+    logoLight,
+    logoDark,
+    onboarding1,
+    onboarding2,
+    onboarding3,
+    emptyQuests,
+    emptyLogs,
+    emptyStats,
+    emptyPairs,
+    celebration,
+    achievement,
+    avatarPlaceholder,
+    imagePlaceholder,
+  ];
 
   /// オプショナルアセット（Lottie）
   static List<String> get optionalAssets => [
-        loadingAnimation,
-        successAnimation,
-        celebrationAnimation,
-      ];
+    loadingAnimation,
+    successAnimation,
+    celebrationAnimation,
+  ];
 }
 
 /// アセットパス検証ヘルパー

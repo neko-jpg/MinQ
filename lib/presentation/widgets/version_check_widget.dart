@@ -54,7 +54,9 @@ class _VersionCheckWidgetState extends ConsumerState<VersionCheckWidget> {
               (context) => AlertDialog(
                 title: Text(AppLocalizations.of(context).newVersionAvailable),
                 content: Text(
-                  AppLocalizations.of(context).newVersionMessage(result.recommendedVersion),
+                  AppLocalizations.of(
+                    context,
+                  ).newVersionMessage(result.recommendedVersion),
                 ),
                 actions: [
                   TextButton(

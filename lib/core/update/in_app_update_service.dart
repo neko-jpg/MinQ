@@ -24,11 +24,11 @@ class InAppUpdateService {
     try {
       // TODO: in_app_update パッケージを使用
       // final appUpdateInfo = await InAppUpdate.checkForUpdate();
-      
+
       // if (appUpdateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
       //   final isFlexible = appUpdateInfo.flexibleUpdateAllowed;
       //   final isImmediate = appUpdateInfo.immediateUpdateAllowed;
-      //   
+      //
       //   return UpdateInfo(
       //     isUpdateAvailable: true,
       //     updateType: isImmediate ? UpdateType.immediate : UpdateType.flexible,
@@ -55,15 +55,15 @@ class InAppUpdateService {
       // TODO: package_info_plus と http パッケージを使用
       // final packageInfo = await PackageInfo.fromPlatform();
       // final currentVersion = packageInfo.version;
-      // 
+      //
       // final response = await http.get(
       //   Uri.parse('https://itunes.apple.com/lookup?bundleId=com.example.minq'),
       // );
-      // 
+      //
       // if (response.statusCode == 200) {
       //   final data = json.decode(response.body);
       //   final storeVersion = data['results'][0]['version'];
-      //   
+      //
       //   if (_isNewerVersion(storeVersion, currentVersion)) {
       //     return UpdateInfo(
       //       isUpdateAvailable: true,

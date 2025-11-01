@@ -142,7 +142,8 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
       ),
       shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
         RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.radius.xl)),
+          borderRadius: BorderRadius.circular(tokens.radius.xl),
+        ),
       ),
       textStyle: WidgetStatePropertyAll<TextStyle>(tokens.typography.button),
       animationDuration: const Duration(milliseconds: 150),
@@ -281,7 +282,8 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
       ),
       shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
         RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.radius.xl)),
+          borderRadius: BorderRadius.circular(tokens.radius.xl),
+        ),
       ),
       textStyle: WidgetStatePropertyAll<TextStyle>(tokens.typography.button),
       animationDuration: const Duration(milliseconds: 150),
@@ -406,7 +408,8 @@ class _MinqTextButtonState extends State<MinqTextButton>
       ),
       shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
         RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.radius.lg)),
+          borderRadius: BorderRadius.circular(tokens.radius.lg),
+        ),
       ),
       tapTargetSize: MaterialTapTargetSize.padded,
       animationDuration: const Duration(milliseconds: 150),

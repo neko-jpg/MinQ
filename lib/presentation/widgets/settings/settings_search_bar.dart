@@ -38,7 +38,8 @@ class _SettingsSearchBarState extends ConsumerState<SettingsSearchBar> {
 
   void _onFocusChanged() {
     setState(() {
-      _showSuggestions = widget.focusNode.hasFocus && widget.controller.text.isEmpty;
+      _showSuggestions =
+          widget.focusNode.hasFocus && widget.controller.text.isEmpty;
     });
   }
 
@@ -71,7 +72,8 @@ class _SettingsSearchBarState extends ConsumerState<SettingsSearchBar> {
             color: theme.surfaceAlt,
             borderRadius: theme.cornerMedium(),
             border: Border.all(
-              color: widget.focusNode.hasFocus ? theme.brandPrimary : theme.border,
+              color:
+                  widget.focusNode.hasFocus ? theme.brandPrimary : theme.border,
               width: widget.focusNode.hasFocus ? 2 : 1,
             ),
           ),
@@ -90,19 +92,14 @@ class _SettingsSearchBarState extends ConsumerState<SettingsSearchBar> {
               hintStyle: theme.typography.bodyMedium.copyWith(
                 color: theme.textMuted,
               ),
-              prefixIcon: Icon(
-                Icons.search,
-                color: theme.textSecondary,
-              ),
-              suffixIcon: widget.controller.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(
-                        Icons.clear,
-                        color: theme.textSecondary,
-                      ),
-                      onPressed: widget.onClear,
-                    )
-                  : null,
+              prefixIcon: Icon(Icons.search, color: theme.textSecondary),
+              suffixIcon:
+                  widget.controller.text.isNotEmpty
+                      ? IconButton(
+                        icon: Icon(Icons.clear, color: theme.textSecondary),
+                        onPressed: widget.onClear,
+                      )
+                      : null,
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(
                 horizontal: theme.spacing.md,
@@ -124,7 +121,10 @@ class _SettingsSearchBarState extends ConsumerState<SettingsSearchBar> {
     );
   }
 
-  Widget _buildSuggestions(MinqTheme theme, AsyncValue<List<String>> searchHistory) {
+  Widget _buildSuggestions(
+    MinqTheme theme,
+    AsyncValue<List<String>> searchHistory,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: theme.surface,
@@ -162,7 +162,9 @@ class _SettingsSearchBarState extends ConsumerState<SettingsSearchBar> {
                           const Spacer(),
                           InkWell(
                             onTap: () {
-                              ref.read(settingsSearchServiceProvider).clearSearchHistory();
+                              ref
+                                  .read(settingsSearchServiceProvider)
+                                  .clearSearchHistory();
                             },
                             child: Text(
                               'クリア',
@@ -175,16 +177,23 @@ class _SettingsSearchBarState extends ConsumerState<SettingsSearchBar> {
                         ],
                       ),
                     ),
-                    ...history.take(3).map((query) => _buildSuggestionItem(
-                      theme,
-                      query,
-                      Icons.history,
-                      onTap: () => _onSuggestionTapped(query),
-                      onRemove: () {
-                        ref.read(settingsSearchServiceProvider).removeFromSearchHistory(query);
-                      },
-                    )),
-                    if (history.isNotEmpty) Divider(color: theme.border, height: 1),
+                    ...history
+                        .take(3)
+                        .map(
+                          (query) => _buildSuggestionItem(
+                            theme,
+                            query,
+                            Icons.history,
+                            onTap: () => _onSuggestionTapped(query),
+                            onRemove: () {
+                              ref
+                                  .read(settingsSearchServiceProvider)
+                                  .removeFromSearchHistory(query);
+                            },
+                          ),
+                        ),
+                    if (history.isNotEmpty)
+                      Divider(color: theme.border, height: 1),
                   ],
                 );
               }
@@ -199,11 +208,7 @@ class _SettingsSearchBarState extends ConsumerState<SettingsSearchBar> {
             padding: EdgeInsets.all(theme.spacing.md),
             child: Row(
               children: [
-                Icon(
-                  Icons.trending_up,
-                  size: 16,
-                  color: theme.textSecondary,
-                ),
+                Icon(Icons.trending_up, size: 16, color: theme.textSecondary),
                 SizedBox(width: theme.spacing.sm),
                 Text(
                   '人気の検索',
@@ -215,14 +220,18 @@ class _SettingsSearchBarState extends ConsumerState<SettingsSearchBar> {
               ],
             ),
           ),
-          ...ref.read(settingsSearchServiceProvider).getSearchSuggestions().take(5).map(
-            (suggestion) => _buildSuggestionItem(
-              theme,
-              suggestion,
-              Icons.search,
-              onTap: () => _onSuggestionTapped(suggestion),
-            ),
-          ),
+          ...ref
+              .read(settingsSearchServiceProvider)
+              .getSearchSuggestions()
+              .take(5)
+              .map(
+                (suggestion) => _buildSuggestionItem(
+                  theme,
+                  suggestion,
+                  Icons.search,
+                  onTap: () => _onSuggestionTapped(suggestion),
+                ),
+              ),
         ],
       ),
     );
@@ -244,11 +253,7 @@ class _SettingsSearchBarState extends ConsumerState<SettingsSearchBar> {
         ),
         child: Row(
           children: [
-            Icon(
-              icon,
-              size: 16,
-              color: theme.textMuted,
-            ),
+            Icon(icon, size: 16, color: theme.textMuted),
             SizedBox(width: theme.spacing.md),
             Expanded(
               child: Text(
@@ -263,11 +268,7 @@ class _SettingsSearchBarState extends ConsumerState<SettingsSearchBar> {
                 onTap: onRemove,
                 child: Padding(
                   padding: EdgeInsets.all(theme.spacing.xs),
-                  child: Icon(
-                    Icons.close,
-                    size: 16,
-                    color: theme.textMuted,
-                  ),
+                  child: Icon(Icons.close, size: 16, color: theme.textMuted),
                 ),
               ),
           ],

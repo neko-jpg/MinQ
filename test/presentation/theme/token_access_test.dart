@@ -14,10 +14,7 @@ class TokenAccessTestWidget extends StatelessWidget {
         backgroundColor: MinqTokens.background,
         appBar: AppBar(
           backgroundColor: MinqTokens.surface,
-          title: const Text(
-            'Token Access Test',
-            style: MinqTokens.titleMedium,
-          ),
+          title: const Text('Token Access Test', style: MinqTokens.titleMedium),
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -138,7 +135,10 @@ class TokenAccessTestWidget extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: Text('$name (${value}px)', style: const TextStyle(fontWeight: FontWeight.w600)),
+            child: Text(
+              '$name (${value}px)',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
           ),
           Container(
             width: value,
@@ -192,7 +192,10 @@ class TokenAccessTestWidget extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: Text(name, style: const TextStyle(fontWeight: FontWeight.w600)),
+            child: Text(
+              name,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
           ),
           Container(
             width: 60,
@@ -210,7 +213,9 @@ class TokenAccessTestWidget extends StatelessWidget {
 }
 
 void main() {
-  testWidgets('TokenAccessTestWidget renders correctly', (WidgetTester tester) async {
+  testWidgets('TokenAccessTestWidget renders correctly', (
+    WidgetTester tester,
+  ) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const TokenAccessTestWidget());
 

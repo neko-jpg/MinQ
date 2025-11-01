@@ -256,7 +256,9 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
             data:
                 (quest) => Text(
                   quest?.title ?? 'クエスト',
-                  style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
+                  style: tokens.typography.h4.copyWith(
+                    color: tokens.textPrimary,
+                  ),
                 ),
             loading: () => const Text('読み込み中...'),
             error: (_, __) => const Text('エラー'),
@@ -393,7 +395,9 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
                           _isRunning && !_isPaused
                               ? Color.lerp(
                                 tokens.brandPrimary,
-                                tokens.brandPrimary.withAlpha((255 * 0.6).round()),
+                                tokens.brandPrimary.withAlpha(
+                                  (255 * 0.6).round(),
+                                ),
                                 _pulseController.value,
                               )!
                               : tokens.brandPrimary,

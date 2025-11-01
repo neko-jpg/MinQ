@@ -9,23 +9,25 @@ class AnimationSettingsScreen extends ConsumerStatefulWidget {
   const AnimationSettingsScreen({super.key});
 
   @override
-  ConsumerState<AnimationSettingsScreen> createState() => _AnimationSettingsScreenState();
+  ConsumerState<AnimationSettingsScreen> createState() =>
+      _AnimationSettingsScreenState();
 }
 
-class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScreen> {
+class _AnimationSettingsScreenState
+    extends ConsumerState<AnimationSettingsScreen> {
   final AnimationSystem _animationSystem = AnimationSystem.instance;
-  
+
   bool _animationsEnabled = true;
   bool _reducedMotion = false;
   bool _hapticFeedbackEnabled = true;
   bool _soundEffectsEnabled = true;
-  
+
   @override
   void initState() {
     super.initState();
     _loadSettings();
   }
-  
+
   void _loadSettings() {
     setState(() {
       _animationsEnabled = _animationSystem.animationsEnabled;
@@ -34,7 +36,7 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
       _soundEffectsEnabled = _animationSystem.soundEffectsEnabled;
     });
   }
-  
+
   Future<void> _updateSettings() async {
     await _animationSystem.updateAnimationSettings(
       animationsEnabled: _animationsEnabled,
@@ -43,12 +45,12 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
       soundEffectsEnabled: _soundEffectsEnabled,
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = context.l10n;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.animationSettings),
@@ -64,7 +66,7 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
             l10n.animationSettingsTitle,
             l10n.animationSettingsDescription,
           ),
-          
+
           _buildSettingCard(
             context,
             title: l10n.enableAnimations,
@@ -78,7 +80,7 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
             },
             icon: Icons.animation,
           ),
-          
+
           _buildSettingCard(
             context,
             title: l10n.reducedMotion,
@@ -92,16 +94,16 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
             },
             icon: Icons.accessibility,
           ),
-          
+
           SizedBox(height: tokens.spacing.lg),
-          
+
           // フィードバック設定セクション
           _buildSectionHeader(
             context,
             l10n.feedbackSettings,
             l10n.feedbackSettingsDescription,
           ),
-          
+
           _buildSettingCard(
             context,
             title: l10n.hapticFeedback,
@@ -112,7 +114,7 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
                 _hapticFeedbackEnabled = value;
               });
               _updateSettings();
-              
+
               // テスト用ハプティック
               if (value) {
                 _animationSystem.playMicroInteractionHaptic();
@@ -120,7 +122,7 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
             },
             icon: Icons.vibration,
           ),
-          
+
           _buildSettingCard(
             context,
             title: l10n.soundEffects,
@@ -134,30 +136,34 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
             },
             icon: Icons.volume_up,
           ),
-          
+
           SizedBox(height: tokens.spacing.lg),
-          
+
           // プレビューセクション
           _buildSectionHeader(
             context,
             l10n.animationPreview,
             l10n.animationPreviewDescription,
           ),
-          
+
           _buildPreviewCard(context),
-          
+
           SizedBox(height: tokens.spacing.xl),
-          
+
           // 注意事項
           _buildInfoCard(context),
         ],
       ),
     );
   }
-  
-  Widget _buildSectionHeader(BuildContext context, String title, String description) {
+
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title,
+    String description,
+  ) {
     final tokens = context.tokens;
-    
+
     return Padding(
       padding: EdgeInsets.only(bottom: tokens.spacing.md),
       child: Column(
@@ -181,7 +187,7 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
       ),
     );
   }
-  
+
   Widget _buildSettingCard(
     BuildContext context, {
     required String title,
@@ -191,14 +197,11 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
     required IconData icon,
   }) {
     final tokens = context.tokens;
-    
+
     return Card(
       margin: EdgeInsets.only(bottom: tokens.spacing.sm),
       child: ListTile(
-        leading: Icon(
-          icon,
-          color: tokens.primary,
-        ),
+        leading: Icon(icon, color: tokens.primary),
         title: Text(
           title,
           style: tokens.typography.bodyLarge.copyWith(
@@ -221,11 +224,11 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
       ),
     );
   }
-  
+
   Widget _buildPreviewCard(BuildContext context) {
     final tokens = context.tokens;
     final l10n = context.l10n;
-    
+
     return Card(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
@@ -240,7 +243,7 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
               ),
             ),
             SizedBox(height: tokens.spacing.md),
-            
+
             // アニメーションテストボタン
             Wrap(
               spacing: tokens.spacing.sm,
@@ -277,7 +280,7 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
       ),
     );
   }
-  
+
   Widget _buildTestButton(
     BuildContext context,
     String label,
@@ -285,7 +288,7 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
     VoidCallback onPressed,
   ) {
     final tokens = context.tokens;
-    
+
     return ElevatedButton.icon(
       onPressed: onPressed,
       icon: Icon(icon, size: 16),
@@ -300,11 +303,11 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
       ),
     );
   }
-  
+
   Widget _buildInfoCard(BuildContext context) {
     final tokens = context.tokens;
     final l10n = context.l10n;
-    
+
     return Card(
       color: tokens.info.withOpacity(0.1),
       child: Padding(
@@ -312,11 +315,7 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.info_outline,
-              color: tokens.info,
-              size: 20,
-            ),
+            Icon(Icons.info_outline, color: tokens.info, size: 20),
             SizedBox(width: tokens.spacing.sm),
             Expanded(
               child: Column(
@@ -344,34 +343,37 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
       ),
     );
   }
-  
+
   void _testFadeInAnimation() {
     showDialog(
       context: context,
-      builder: (context) => _AnimationTestDialog(
-        title: context.l10n.testFadeIn,
-        child: _FadeInTestWidget(),
-      ),
+      builder:
+          (context) => _AnimationTestDialog(
+            title: context.l10n.testFadeIn,
+            child: _FadeInTestWidget(),
+          ),
     );
   }
-  
+
   void _testSlideInAnimation() {
     showDialog(
       context: context,
-      builder: (context) => _AnimationTestDialog(
-        title: context.l10n.testSlideIn,
-        child: _SlideInTestWidget(),
-      ),
+      builder:
+          (context) => _AnimationTestDialog(
+            title: context.l10n.testSlideIn,
+            child: _SlideInTestWidget(),
+          ),
     );
   }
-  
+
   void _testScaleAnimation() {
     showDialog(
       context: context,
-      builder: (context) => _AnimationTestDialog(
-        title: context.l10n.testScale,
-        child: _ScaleTestWidget(),
-      ),
+      builder:
+          (context) => _AnimationTestDialog(
+            title: context.l10n.testScale,
+            child: _ScaleTestWidget(),
+          ),
     );
   }
 }
@@ -380,23 +382,16 @@ class _AnimationSettingsScreenState extends ConsumerState<AnimationSettingsScree
 class _AnimationTestDialog extends StatelessWidget {
   final String title;
   final Widget child;
-  
-  const _AnimationTestDialog({
-    required this.title,
-    required this.child,
-  });
-  
+
+  const _AnimationTestDialog({required this.title, required this.child});
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return AlertDialog(
       title: Text(title),
-      content: SizedBox(
-        width: 200,
-        height: 200,
-        child: Center(child: child),
-      ),
+      content: SizedBox(width: 200, height: 200, child: Center(child: child)),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -417,33 +412,34 @@ class _FadeInTestWidgetState extends State<_FadeInTestWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
-      duration: AnimationSystem.instance.getDuration(const Duration(milliseconds: 1000)),
+      duration: AnimationSystem.instance.getDuration(
+        const Duration(milliseconds: 1000),
+      ),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: AnimationSystem.instance.getCurve(Curves.easeIn),
-    ));
-    
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: AnimationSystem.instance.getCurve(Curves.easeIn),
+      ),
+    );
+
     _controller.repeat(reverse: true);
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -458,11 +454,7 @@ class _FadeInTestWidgetState extends State<_FadeInTestWidget>
               color: context.tokens.primary,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.star,
-              color: Colors.white,
-              size: 50,
-            ),
+            child: const Icon(Icons.star, color: Colors.white, size: 50),
           ),
         );
       },
@@ -480,33 +472,37 @@ class _SlideInTestWidgetState extends State<_SlideInTestWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
-      duration: AnimationSystem.instance.getDuration(const Duration(milliseconds: 1000)),
+      duration: AnimationSystem.instance.getDuration(
+        const Duration(milliseconds: 1000),
+      ),
       vsync: this,
     );
-    
+
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: AnimationSystem.instance.getCurve(Curves.easeOut),
-    ));
-    
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: AnimationSystem.instance.getCurve(Curves.easeOut),
+      ),
+    );
+
     _controller.repeat(reverse: true);
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return SlideTransition(
@@ -518,11 +514,7 @@ class _SlideInTestWidgetState extends State<_SlideInTestWidget>
           color: context.tokens.secondary,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: const Icon(
-          Icons.arrow_upward,
-          color: Colors.white,
-          size: 50,
-        ),
+        child: const Icon(Icons.arrow_upward, color: Colors.white, size: 50),
       ),
     );
   }
@@ -538,33 +530,34 @@ class _ScaleTestWidgetState extends State<_ScaleTestWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
-      duration: AnimationSystem.instance.getDuration(const Duration(milliseconds: 1000)),
+      duration: AnimationSystem.instance.getDuration(
+        const Duration(milliseconds: 1000),
+      ),
       vsync: this,
     );
-    
-    _scaleAnimation = Tween<double>(
-      begin: 0.5,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: AnimationSystem.instance.getCurve(Curves.elasticOut),
-    ));
-    
+
+    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: AnimationSystem.instance.getCurve(Curves.elasticOut),
+      ),
+    );
+
     _controller.repeat(reverse: true);
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -579,11 +572,7 @@ class _ScaleTestWidgetState extends State<_ScaleTestWidget>
               color: context.tokens.tertiary,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.zoom_in,
-              color: Colors.white,
-              size: 50,
-            ),
+            child: const Icon(Icons.zoom_in, color: Colors.white, size: 50),
           ),
         );
       },

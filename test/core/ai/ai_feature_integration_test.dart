@@ -20,39 +20,48 @@ void main() {
       await manager.initialize(userId: 'test_user');
     });
 
-    test('TFLiteUnifiedAIService initializes and performs basic operations', () async {
-      final diagnostics = await unifiedAIService.getDiagnosticInfo();
-      expect(diagnostics['isInitialized'], isTrue);
+    test(
+      'TFLiteUnifiedAIService initializes and performs basic operations',
+      () async {
+        final diagnostics = await unifiedAIService.getDiagnosticInfo();
+        expect(diagnostics['isInitialized'], isTrue);
 
-      final chatResponse = await unifiedAIService.generateChatResponse('こんにちは');
-      expect(chatResponse, isNotEmpty);
+        final chatResponse = await unifiedAIService.generateChatResponse(
+          'こんにちは',
+        );
+        expect(chatResponse, isNotEmpty);
 
-      final sentiment = await unifiedAIService.analyzeSentiment('今日はとても良い気分です！');
-      expect(sentiment.positive, greaterThan(0));
+        final sentiment = await unifiedAIService.analyzeSentiment(
+          '今日はとても良い気分です！',
+        );
+        expect(sentiment.positive, greaterThan(0));
 
-      final recommendations = await unifiedAIService.recommendHabits(
-        userHabits: ['朝の瞑想'],
-        completedHabits: ['読書'],
-        preferences: {'focus': 0.8, 'wellness': 0.6},
-        limit: 3,
-      );
-      expect(recommendations, isNotEmpty);
+        final recommendations = await unifiedAIService.recommendHabits(
+          userHabits: ['朝の瞑想'],
+          completedHabits: ['読書'],
+          preferences: {'focus': 0.8, 'wellness': 0.6},
+          limit: 3,
+        );
+        expect(recommendations, isNotEmpty);
 
-      final prediction = await unifiedAIService.predictFailure(
-        habitId: 'test_habit',
-        history: [
-          CompletionRecord(
-            completedAt: DateTime.now().subtract(const Duration(days: 1)),
-            habitId: 'test_habit',
-          ),
-        ],
-        targetDate: DateTime.now().add(const Duration(days: 1)),
-      );
-      expect(prediction.riskScore, inInclusiveRange(0, 1));
-    });
+        final prediction = await unifiedAIService.predictFailure(
+          habitId: 'test_habit',
+          history: [
+            CompletionRecord(
+              completedAt: DateTime.now().subtract(const Duration(days: 1)),
+              habitId: 'test_habit',
+            ),
+          ],
+          targetDate: DateTime.now().add(const Duration(days: 1)),
+        );
+        expect(prediction.riskScore, inInclusiveRange(0, 1));
+      },
+    );
 
     test('AIIntegrationManager performs integrated operations', () async {
-      final chatResponse = await manager.generateChatResponse('モチベーションが下がっています');
+      final chatResponse = await manager.generateChatResponse(
+        'モチベーションが下がっています',
+      );
       expect(chatResponse, isNotEmpty);
 
       final recommendations = await manager.generateHabitRecommendations(
@@ -107,24 +116,37 @@ void main() {
       expect(story, isA<HabitStory>());
     });
 
-    test('AIConciergeChatController initializes and handles messages', () async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
+    test(
+      'AIConciergeChatController initializes and handles messages',
+      () async {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
 
-      // The controller initializes automatically.
-      final initialState = await container.read(aiConciergeChatControllerProvider.future);
-      expect(initialState, isNotEmpty);
-      expect(initialState.first.isUser, isFalse);
+        // The controller initializes automatically.
+        final initialState = await container.read(
+          aiConciergeChatControllerProvider.future,
+        );
+        expect(initialState, isNotEmpty);
+        expect(initialState.first.isUser, isFalse);
 
-      await container.read(aiConciergeChatControllerProvider.notifier).sendUserMessage('今日のモチベーションを上げてください');
-      final afterMessageState = await container.read(aiConciergeChatControllerProvider.future);
-      expect(afterMessageState.length, greaterThanOrEqualTo(3));
-      expect(afterMessageState.last.isUser, isFalse);
+        await container
+            .read(aiConciergeChatControllerProvider.notifier)
+            .sendUserMessage('今日のモチベーションを上げてください');
+        final afterMessageState = await container.read(
+          aiConciergeChatControllerProvider.future,
+        );
+        expect(afterMessageState.length, greaterThanOrEqualTo(3));
+        expect(afterMessageState.last.isUser, isFalse);
 
-      await container.read(aiConciergeChatControllerProvider.notifier).resetConversation();
-      final resetState = await container.read(aiConciergeChatControllerProvider.future);
-      expect(resetState.length, 1);
-    });
+        await container
+            .read(aiConciergeChatControllerProvider.notifier)
+            .resetConversation();
+        final resetState = await container.read(
+          aiConciergeChatControllerProvider.future,
+        );
+        expect(resetState.length, 1);
+      },
+    );
 
     tearDownAll(() async {
       await manager.shutdown();

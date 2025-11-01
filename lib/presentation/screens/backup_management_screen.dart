@@ -10,7 +10,8 @@ class BackupManagementScreen extends ConsumerStatefulWidget {
   const BackupManagementScreen({super.key});
 
   @override
-  ConsumerState<BackupManagementScreen> createState() => _BackupManagementScreenState();
+  ConsumerState<BackupManagementScreen> createState() =>
+      _BackupManagementScreenState();
 }
 
 class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
@@ -41,18 +42,20 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
         foregroundColor: context.colorTokens.textPrimary,
         elevation: 0,
         bottom: currentTierAsync.when(
-          data: (tier) => tier.hasFeature(FeatureType.backup)
-              ? TabBar(
-                  controller: _tabController,
-                  labelColor: context.colorTokens.primary,
-                  unselectedLabelColor: context.colorTokens.textSecondary,
-                  indicatorColor: context.colorTokens.primary,
-                  tabs: const [
-                    Tab(text: 'Local Backups'),
-                    Tab(text: 'Cloud Backups'),
-                  ],
-                )
-              : null,
+          data:
+              (tier) =>
+                  tier.hasFeature(FeatureType.backup)
+                      ? TabBar(
+                        controller: _tabController,
+                        labelColor: context.colorTokens.primary,
+                        unselectedLabelColor: context.colorTokens.textSecondary,
+                        indicatorColor: context.colorTokens.primary,
+                        tabs: const [
+                          Tab(text: 'Local Backups'),
+                          Tab(text: 'Cloud Backups'),
+                        ],
+                      )
+                      : null,
           loading: () => null,
           error: (error, stack) => null,
         ),
@@ -60,25 +63,30 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
       body: LoadingOverlay(
         isLoading: _isLoading,
         child: currentTierAsync.when(
-          data: (tier) => tier.hasFeature(FeatureType.backup)
-              ? _buildBackupTabs(context)
-              : _buildPremiumRequired(context),
+          data:
+              (tier) =>
+                  tier.hasFeature(FeatureType.backup)
+                      ? _buildBackupTabs(context)
+                      : _buildPremiumRequired(context),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => const Center(
-            child: Text('Error loading subscription status'),
-          ),
+          error:
+              (error, stack) => const Center(
+                child: Text('Error loading subscription status'),
+              ),
         ),
       ),
       floatingActionButton: currentTierAsync.when(
-        data: (tier) => tier.hasFeature(FeatureType.backup)
-            ? FloatingActionButton.extended(
-                onPressed: _createBackup,
-                backgroundColor: context.colorTokens.primary,
-                foregroundColor: Colors.white,
-                icon: const Icon(Icons.backup),
-                label: const Text('Create Backup'),
-              )
-            : null,
+        data:
+            (tier) =>
+                tier.hasFeature(FeatureType.backup)
+                    ? FloatingActionButton.extended(
+                      onPressed: _createBackup,
+                      backgroundColor: context.colorTokens.primary,
+                      foregroundColor: Colors.white,
+                      icon: const Icon(Icons.backup),
+                      label: const Text('Create Backup'),
+                    )
+                    : null,
         loading: () => null,
         error: (error, stack) => null,
       ),
@@ -233,29 +241,40 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
                   ),
                 ),
                 PopupMenuButton<String>(
-                  onSelected: (value) => _handleLocalBackupAction(value, backup),
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'restore',
-                      child: Row(
-                        children: [
-                          Icon(Icons.restore, size: 20),
-                          SizedBox(width: 8),
-                          Text('Restore'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Row(
-                        children: [
-                          Icon(Icons.delete, size: 20, color: context.colorTokens.error),
-                          const SizedBox(width: 8),
-                          Text('Delete', style: TextStyle(color: context.colorTokens.error)),
-                        ],
-                      ),
-                    ),
-                  ],
+                  onSelected:
+                      (value) => _handleLocalBackupAction(value, backup),
+                  itemBuilder:
+                      (context) => [
+                        const PopupMenuItem(
+                          value: 'restore',
+                          child: Row(
+                            children: [
+                              Icon(Icons.restore, size: 20),
+                              SizedBox(width: 8),
+                              Text('Restore'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.delete,
+                                size: 20,
+                                color: context.colorTokens.error,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Delete',
+                                style: TextStyle(
+                                  color: context.colorTokens.error,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                 ),
               ],
             ),
@@ -296,11 +315,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.cloud,
-                  color: context.colorTokens.info,
-                  size: 24,
-                ),
+                Icon(Icons.cloud, color: context.colorTokens.info, size: 24),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -325,19 +340,21 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
                 _buildSyncStatusBadge(context, backup.syncStatus),
                 const SizedBox(width: 8),
                 PopupMenuButton<String>(
-                  onSelected: (value) => _handleCloudBackupAction(value, backup),
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'restore',
-                      child: Row(
-                        children: [
-                          Icon(Icons.cloud_download, size: 20),
-                          SizedBox(width: 8),
-                          Text('Restore'),
-                        ],
-                      ),
-                    ),
-                  ],
+                  onSelected:
+                      (value) => _handleCloudBackupAction(value, backup),
+                  itemBuilder:
+                      (context) => [
+                        const PopupMenuItem(
+                          value: 'restore',
+                          child: Row(
+                            children: [
+                              Icon(Icons.cloud_download, size: 20),
+                              SizedBox(width: 8),
+                              Text('Restore'),
+                            ],
+                          ),
+                        ),
+                      ],
                 ),
               ],
             ),
@@ -363,7 +380,8 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
     );
   }
 
-  Widget _buildInfoChip(BuildContext context, {
+  Widget _buildInfoChip(
+    BuildContext context, {
     required IconData icon,
     required String label,
   }) {
@@ -392,7 +410,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
   Widget _buildSyncStatusBadge(BuildContext context, CloudSyncStatus status) {
     Color color;
     IconData icon;
-    
+
     switch (status) {
       case CloudSyncStatus.synced:
         color = context.colorTokens.success;
@@ -448,11 +466,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 64,
-              color: context.colorTokens.textMuted,
-            ),
+            Icon(icon, size: 64, color: context.colorTokens.textMuted),
             const SizedBox(height: 24),
             Text(
               title,
@@ -481,11 +495,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.lock,
-              size: 64,
-              color: context.colorTokens.textMuted,
-            ),
+            Icon(Icons.lock, size: 64, color: context.colorTokens.textMuted),
             const SizedBox(height: 24),
             Text(
               'Premium Feature',
@@ -507,17 +517,17 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.colorTokens.primary,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: const Text(
                 'Upgrade to Premium',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -588,74 +598,86 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
     bool includeAchievements = true;
 
     return StatefulBuilder(
-      builder: (context, setState) => AlertDialog(
-        title: const Text('Create Backup'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Backup Name (Optional)',
-                  hintText: 'Enter custom name',
-                ),
+      builder:
+          (context, setState) => AlertDialog(
+            title: const Text('Create Backup'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Backup Name (Optional)',
+                      hintText: 'Enter custom name',
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Include:',
+                    style: context.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  CheckboxListTile(
+                    value: includeSettings,
+                    onChanged:
+                        (value) => setState(() => includeSettings = value!),
+                    title: const Text('Settings'),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  CheckboxListTile(
+                    value: includeProgress,
+                    onChanged:
+                        (value) => setState(() => includeProgress = value!),
+                    title: const Text('Progress Data'),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  CheckboxListTile(
+                    value: includeQuests,
+                    onChanged:
+                        (value) => setState(() => includeQuests = value!),
+                    title: const Text('Quests'),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  CheckboxListTile(
+                    value: includeAchievements,
+                    onChanged:
+                        (value) => setState(() => includeAchievements = value!),
+                    title: const Text('Achievements'),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              Text(
-                'Include:',
-                style: context.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
               ),
-              CheckboxListTile(
-                value: includeSettings,
-                onChanged: (value) => setState(() => includeSettings = value!),
-                title: const Text('Settings'),
-                contentPadding: EdgeInsets.zero,
-              ),
-              CheckboxListTile(
-                value: includeProgress,
-                onChanged: (value) => setState(() => includeProgress = value!),
-                title: const Text('Progress Data'),
-                contentPadding: EdgeInsets.zero,
-              ),
-              CheckboxListTile(
-                value: includeQuests,
-                onChanged: (value) => setState(() => includeQuests = value!),
-                title: const Text('Quests'),
-                contentPadding: EdgeInsets.zero,
-              ),
-              CheckboxListTile(
-                value: includeAchievements,
-                onChanged: (value) => setState(() => includeAchievements = value!),
-                title: const Text('Achievements'),
-                contentPadding: EdgeInsets.zero,
+              ElevatedButton(
+                onPressed:
+                    () => Navigator.of(context).pop({
+                      'name':
+                          nameController.text.isNotEmpty
+                              ? nameController.text
+                              : null,
+                      'settings': includeSettings,
+                      'progress': includeProgress,
+                      'quests': includeQuests,
+                      'achievements': includeAchievements,
+                    }),
+                child: const Text('Create'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop({
-              'name': nameController.text.isNotEmpty ? nameController.text : null,
-              'settings': includeSettings,
-              'progress': includeProgress,
-              'quests': includeQuests,
-              'achievements': includeAchievements,
-            }),
-            child: const Text('Create'),
-          ),
-        ],
-      ),
     );
   }
 
-  Future<void> _handleLocalBackupAction(String action, LocalBackup backup) async {
+  Future<void> _handleLocalBackupAction(
+    String action,
+    LocalBackup backup,
+  ) async {
     switch (action) {
       case 'restore':
         await _restoreBackup(backup.id);
@@ -666,7 +688,10 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
     }
   }
 
-  Future<void> _handleCloudBackupAction(String action, CloudBackup backup) async {
+  Future<void> _handleCloudBackupAction(
+    String action,
+    CloudBackup backup,
+  ) async {
     switch (action) {
       case 'restore':
         await _restoreCloudBackup(backup.id);
@@ -677,23 +702,26 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
   Future<void> _restoreBackup(String backupId) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Restore Backup'),
-        content: const Text('This will replace your current data with the backup. This action cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.colorTokens.warning,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Restore Backup'),
+            content: const Text(
+              'This will replace your current data with the backup. This action cannot be undone.',
             ),
-            child: const Text('Restore'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: context.colorTokens.warning,
+                ),
+                child: const Text('Restore'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
 
     if (confirmed == true) {
@@ -745,37 +773,40 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
   Future<void> _deleteBackup(String backupId) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Backup'),
-        content: const Text('Are you sure you want to delete this backup? This action cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.colorTokens.error,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete Backup'),
+            content: const Text(
+              'Are you sure you want to delete this backup? This action cannot be undone.',
             ),
-            child: const Text('Delete'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: context.colorTokens.error,
+                ),
+                child: const Text('Delete'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
 
     if (confirmed == true) {
       try {
         final backupService = ref.read(backupServiceProvider);
         await backupService.deleteBackup(backupId);
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Backup deleted'),
             backgroundColor: context.colorTokens.success,
           ),
         );
-        
+
         setState(() {}); // Refresh the list
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(

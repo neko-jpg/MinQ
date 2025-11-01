@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/color_tokens.dart';
 
 /// Component theme mappings for MinQ Design System v2.0
-/// 
+///
 /// Provides consistent theming for all Flutter components using the new
 /// Midnight Indigo, Aurora Violet, and Horizon Teal color palette.
 /// All themes ensure WCAG AA compliance and proper light/dark mode support.
@@ -22,156 +22,138 @@ class MinqComponentThemes {
       fontSize: 20,
       fontWeight: FontWeight.w600,
     ),
-    iconTheme: IconThemeData(
-      color: colors.textPrimary,
-      size: 24,
-    ),
-    actionsIconTheme: IconThemeData(
-      color: colors.textPrimary,
-      size: 24,
-    ),
+    iconTheme: IconThemeData(color: colors.textPrimary, size: 24),
+    actionsIconTheme: IconThemeData(color: colors.textPrimary, size: 24),
   );
 
   /// Bottom Navigation Bar theme with proper active/inactive states
   static BottomNavigationBarThemeData bottomNavTheme(ColorTokens colors) =>
-    BottomNavigationBarThemeData(
-      backgroundColor: colors.surface,
-      selectedItemColor: colors.primary,
-      unselectedItemColor: colors.textSecondary,
-      type: BottomNavigationBarType.fixed,
-      elevation: 8,
-      selectedLabelStyle: const TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-      ),
-      unselectedLabelStyle: const TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-      ),
-    );
+      BottomNavigationBarThemeData(
+        backgroundColor: colors.surface,
+        selectedItemColor: colors.primary,
+        unselectedItemColor: colors.textSecondary,
+        type: BottomNavigationBarType.fixed,
+        elevation: 8,
+        selectedLabelStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+      );
 
   /// Elevated Button theme with primary brand colors
   static ElevatedButtonThemeData elevatedButtonTheme(ColorTokens colors) =>
-    ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: colors.primary,
-        foregroundColor: colors.onPrimary,
-        elevation: 2,
-        shadowColor: colors.primary.withOpacity(0.3),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+      ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colors.primary,
+          foregroundColor: colors.onPrimary,
+          elevation: 2,
+          shadowColor: colors.primary.withOpacity(0.3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          minimumSize: const Size(88, 44), // Accessibility minimum
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        minimumSize: const Size(88, 44), // Accessibility minimum
-        textStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
+      );
 
   /// Outlined Button theme with border and hover states
   static OutlinedButtonThemeData outlinedButtonTheme(ColorTokens colors) =>
-    OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: colors.primary,
-        side: BorderSide(color: colors.border, width: 1.5),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+      OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: colors.primary,
+          side: BorderSide(color: colors.border, width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          minimumSize: const Size(88, 44), // Accessibility minimum
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        minimumSize: const Size(88, 44), // Accessibility minimum
-        textStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
+      );
 
   /// Text Button theme for secondary actions
   static TextButtonThemeData textButtonTheme(ColorTokens colors) =>
-    TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: colors.primary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+      TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: colors.primary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          minimumSize: const Size(64, 44), // Accessibility minimum
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        minimumSize: const Size(64, 44), // Accessibility minimum
-        textStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
+      );
 
   /// Input Decoration theme for text fields
   static InputDecorationTheme inputDecorationTheme(ColorTokens colors) =>
-    InputDecorationTheme(
-      filled: true,
-      fillColor: colors.surfaceAlt,
-      border: OutlineInputBorder(
-        borderSide: BorderSide(color: colors.border),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: colors.border),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: colors.focusRing, width: 2),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: colors.error, width: 2),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: colors.error, width: 2),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      hintStyle: TextStyle(
-        color: colors.textMuted,
-        fontSize: 14,
-      ),
-      labelStyle: TextStyle(
-        color: colors.textSecondary,
-        fontSize: 14,
-      ),
-      errorStyle: TextStyle(
-        color: colors.error,
-        fontSize: 12,
-      ),
-    );
+      InputDecorationTheme(
+        filled: true,
+        fillColor: colors.surfaceAlt,
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: colors.border),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colors.border),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colors.focusRing, width: 2),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colors.error, width: 2),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colors.error, width: 2),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+        hintStyle: TextStyle(color: colors.textMuted, fontSize: 14),
+        labelStyle: TextStyle(color: colors.textSecondary, fontSize: 14),
+        errorStyle: TextStyle(color: colors.error, fontSize: 12),
+      );
 
   /// Card theme with proper elevation and colors
   static CardThemeData cardTheme(ColorTokens colors) => CardThemeData(
     color: colors.surface,
     shadowColor: colors.textPrimary.withOpacity(0.1),
     elevation: 2,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     margin: const EdgeInsets.all(8),
   );
 
   /// Floating Action Button theme
   static FloatingActionButtonThemeData fabTheme(ColorTokens colors) =>
-    FloatingActionButtonThemeData(
-      backgroundColor: colors.primary,
-      foregroundColor: colors.onPrimary,
-      elevation: 6,
-      focusElevation: 8,
-      hoverElevation: 8,
-      highlightElevation: 12,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-    );
+      FloatingActionButtonThemeData(
+        backgroundColor: colors.primary,
+        foregroundColor: colors.onPrimary,
+        elevation: 6,
+        focusElevation: 8,
+        hoverElevation: 8,
+        highlightElevation: 12,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      );
 
   /// Switch theme with brand colors
   static SwitchThemeData switchTheme(ColorTokens colors) => SwitchThemeData(
@@ -190,19 +172,18 @@ class MinqComponentThemes {
   );
 
   /// Checkbox theme with brand colors
-  static CheckboxThemeData checkboxTheme(ColorTokens colors) => CheckboxThemeData(
-    fillColor: WidgetStateProperty.resolveWith((states) {
-      if (states.contains(WidgetState.selected)) {
-        return colors.primary;
-      }
-      return Colors.transparent;
-    }),
-    checkColor: WidgetStateProperty.all(colors.onPrimary),
-    side: BorderSide(color: colors.border, width: 2),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(4),
-    ),
-  );
+  static CheckboxThemeData checkboxTheme(ColorTokens colors) =>
+      CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return colors.primary;
+          }
+          return Colors.transparent;
+        }),
+        checkColor: WidgetStateProperty.all(colors.onPrimary),
+        side: BorderSide(color: colors.border, width: 2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      );
 
   /// Radio theme with brand colors
   static RadioThemeData radioTheme(ColorTokens colors) => RadioThemeData(
@@ -229,36 +210,31 @@ class MinqComponentThemes {
   );
 
   /// Progress Indicator theme
-  static ProgressIndicatorThemeData progressIndicatorTheme(ColorTokens colors) =>
-    ProgressIndicatorThemeData(
-      color: colors.primary,
-      linearTrackColor: colors.surfaceVariant,
-      circularTrackColor: colors.surfaceVariant,
-    );
+  static ProgressIndicatorThemeData progressIndicatorTheme(
+    ColorTokens colors,
+  ) => ProgressIndicatorThemeData(
+    color: colors.primary,
+    linearTrackColor: colors.surfaceVariant,
+    circularTrackColor: colors.surfaceVariant,
+  );
 
   /// Snackbar theme with semantic colors
-  static SnackBarThemeData snackBarTheme(ColorTokens colors) => SnackBarThemeData(
-    backgroundColor: colors.surface,
-    contentTextStyle: TextStyle(
-      color: colors.textPrimary,
-      fontSize: 14,
-    ),
-    actionTextColor: colors.primary,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
-    behavior: SnackBarBehavior.floating,
-    elevation: 6,
-  );
+  static SnackBarThemeData snackBarTheme(ColorTokens colors) =>
+      SnackBarThemeData(
+        backgroundColor: colors.surface,
+        contentTextStyle: TextStyle(color: colors.textPrimary, fontSize: 14),
+        actionTextColor: colors.primary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        behavior: SnackBarBehavior.floating,
+        elevation: 6,
+      );
 
   /// Dialog theme
   static DialogThemeData dialogTheme(ColorTokens colors) => DialogThemeData(
     backgroundColor: colors.surface,
     surfaceTintColor: colors.surface,
     elevation: 24,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     titleTextStyle: TextStyle(
       color: colors.textPrimary,
       fontSize: 20,
@@ -273,17 +249,15 @@ class MinqComponentThemes {
 
   /// Bottom Sheet theme
   static BottomSheetThemeData bottomSheetTheme(ColorTokens colors) =>
-    BottomSheetThemeData(
-      backgroundColor: colors.surface,
-      surfaceTintColor: colors.surface,
-      elevation: 16,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+      BottomSheetThemeData(
+        backgroundColor: colors.surface,
+        surfaceTintColor: colors.surface,
+        elevation: 16,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
-      ),
-      clipBehavior: Clip.antiAlias,
-    );
+        clipBehavior: Clip.antiAlias,
+      );
 
   /// Tab Bar theme
   static TabBarThemeData tabBarTheme(ColorTokens colors) => TabBarThemeData(
@@ -292,10 +266,7 @@ class MinqComponentThemes {
     indicator: UnderlineTabIndicator(
       borderSide: BorderSide(color: colors.primary, width: 2),
     ),
-    labelStyle: const TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.w600,
-    ),
+    labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
     unselectedLabelStyle: const TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w500,
@@ -303,25 +274,21 @@ class MinqComponentThemes {
   );
 
   /// List Tile theme
-  static ListTileThemeData listTileTheme(ColorTokens colors) => ListTileThemeData(
-    tileColor: colors.surface,
-    selectedTileColor: colors.primary.withOpacity(0.08),
-    iconColor: colors.textSecondary,
-    selectedColor: colors.primary,
-    textColor: colors.textPrimary,
-    titleTextStyle: TextStyle(
-      color: colors.textPrimary,
-      fontSize: 16,
-      fontWeight: FontWeight.w500,
-    ),
-    subtitleTextStyle: TextStyle(
-      color: colors.textSecondary,
-      fontSize: 14,
-    ),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
-  );
+  static ListTileThemeData listTileTheme(ColorTokens colors) =>
+      ListTileThemeData(
+        tileColor: colors.surface,
+        selectedTileColor: colors.primary.withOpacity(0.08),
+        iconColor: colors.textSecondary,
+        selectedColor: colors.primary,
+        textColor: colors.textPrimary,
+        titleTextStyle: TextStyle(
+          color: colors.textPrimary,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        subtitleTextStyle: TextStyle(color: colors.textSecondary, fontSize: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      );
 
   /// Chip theme
   static ChipThemeData chipTheme(ColorTokens colors) => ChipThemeData(
@@ -333,34 +300,22 @@ class MinqComponentThemes {
       fontSize: 12,
       fontWeight: FontWeight.w500,
     ),
-    secondaryLabelStyle: TextStyle(
-      color: colors.textSecondary,
-      fontSize: 12,
-    ),
+    secondaryLabelStyle: TextStyle(color: colors.textSecondary, fontSize: 12),
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
   );
 
   /// Divider theme
-  static DividerThemeData dividerTheme(ColorTokens colors) => DividerThemeData(
-    color: colors.divider,
-    thickness: 1,
-    space: 1,
-  );
+  static DividerThemeData dividerTheme(ColorTokens colors) =>
+      DividerThemeData(color: colors.divider, thickness: 1, space: 1);
 
   /// Icon theme
-  static IconThemeData iconTheme(ColorTokens colors) => IconThemeData(
-    color: colors.textSecondary,
-    size: 24,
-  );
+  static IconThemeData iconTheme(ColorTokens colors) =>
+      IconThemeData(color: colors.textSecondary, size: 24);
 
   /// Primary Icon theme
-  static IconThemeData primaryIconTheme(ColorTokens colors) => IconThemeData(
-    color: colors.onPrimary,
-    size: 24,
-  );
+  static IconThemeData primaryIconTheme(ColorTokens colors) =>
+      IconThemeData(color: colors.onPrimary, size: 24);
 }
 
 /// Screen-specific color mappings for consistent UI patterns

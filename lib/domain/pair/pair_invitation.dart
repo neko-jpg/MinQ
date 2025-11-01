@@ -46,7 +46,9 @@ class PairInvitation {
       category: data['category'] as String? ?? 'general',
       deepLink: data['deepLink'] as String,
       webLink: data['webLink'] as String,
-      qrCodeData: Uint8List.fromList(List<int>.from(data['qrCodeData'] as List)),
+      qrCodeData: Uint8List.fromList(
+        List<int>.from(data['qrCodeData'] as List),
+      ),
       customMessage: data['customMessage'] as String?,
       expiresAt: (data['expiresAt'] as Timestamp).toDate(),
       createdAt: (data['createdAt'] as Timestamp).toDate(),

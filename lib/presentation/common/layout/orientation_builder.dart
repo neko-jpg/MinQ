@@ -49,7 +49,7 @@ class AdaptiveLayout extends StatelessWidget {
       builder: (context, constraints) {
         final orientation = MediaQuery.of(context).orientation;
         final width = constraints.maxWidth;
-        
+
         // Size-based adaptation
         if (enableSizeAdaptation) {
           if (width >= 1200 && desktopChild != null) {
@@ -59,14 +59,14 @@ class AdaptiveLayout extends StatelessWidget {
             return tabletChild!;
           }
         }
-        
+
         // Orientation-based adaptation
         if (enableOrientationAdaptation &&
             orientation == Orientation.landscape &&
             landscapeChild != null) {
           return landscapeChild!;
         }
-        
+
         return child;
       },
     );
@@ -106,7 +106,7 @@ class AdaptiveGrid extends StatelessWidget {
       builder: (context, constraints) {
         final width = constraints.maxWidth;
         int columns;
-        
+
         if (width >= 1200) {
           columns = desktopColumns;
         } else if (width >= 600) {
@@ -114,7 +114,7 @@ class AdaptiveGrid extends StatelessWidget {
         } else {
           columns = mobileColumns;
         }
-        
+
         return GridView.builder(
           shrinkWrap: shrinkWrap,
           physics: physics,
@@ -153,7 +153,7 @@ class BreakpointBuilder extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        
+
         if (width >= 1200 && largeDesktop != null) {
           return largeDesktop!;
         }
@@ -163,7 +163,7 @@ class BreakpointBuilder extends StatelessWidget {
         if (width >= 600 && tablet != null) {
           return tablet!;
         }
-        
+
         return mobile;
       },
     );

@@ -35,17 +35,17 @@ class SettingsItemWidget extends ConsumerWidget {
               Container(
                 padding: EdgeInsets.all(theme.spacing.sm),
                 decoration: BoxDecoration(
-                  color: item.isDangerous
-                      ? theme.accentError.withOpacity(0.1)
-                      : theme.brandPrimary.withOpacity(0.1),
+                  color:
+                      item.isDangerous
+                          ? theme.accentError.withOpacity(0.1)
+                          : theme.brandPrimary.withOpacity(0.1),
                   borderRadius: theme.cornerSmall(),
                 ),
                 child: Icon(
                   item.icon,
                   size: 20,
-                  color: item.isDangerous
-                      ? theme.accentError
-                      : theme.brandPrimary,
+                  color:
+                      item.isDangerous ? theme.accentError : theme.brandPrimary,
                 ),
               ),
               SizedBox(width: theme.spacing.md),
@@ -100,18 +100,14 @@ class SettingsItemWidget extends ConsumerWidget {
       return _buildHighlightedText(
         item.subtitle!,
         searchQuery!,
-        theme.typography.bodyMedium.copyWith(
-          color: theme.textSecondary,
-        ),
+        theme.typography.bodyMedium.copyWith(color: theme.textSecondary),
         theme.brandPrimary.withOpacity(0.2),
       );
     }
 
     return Text(
       item.subtitle!,
-      style: theme.typography.bodyMedium.copyWith(
-        color: theme.textSecondary,
-      ),
+      style: theme.typography.bodyMedium.copyWith(color: theme.textSecondary),
     );
   }
 
@@ -137,8 +133,7 @@ class SettingsItemWidget extends ConsumerWidget {
       text: TextSpan(
         style: style,
         children: [
-          if (index > 0)
-            TextSpan(text: text.substring(0, index)),
+          if (index > 0) TextSpan(text: text.substring(0, index)),
           TextSpan(
             text: text.substring(index, index + query.length),
             style: style.copyWith(
@@ -153,12 +148,17 @@ class SettingsItemWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildActionWidget(BuildContext context, MinqTheme theme, WidgetRef ref) {
+  Widget _buildActionWidget(
+    BuildContext context,
+    MinqTheme theme,
+    WidgetRef ref,
+  ) {
     switch (item.type) {
       case SettingsItemType.toggle:
         return Switch(
           value: item.value as bool? ?? false,
-          onChanged: item.isEnabled ? (value) => item.onChanged?.call(value) : null,
+          onChanged:
+              item.isEnabled ? (value) => item.onChanged?.call(value) : null,
           activeThumbColor: theme.brandPrimary,
         );
 
@@ -174,10 +174,7 @@ class SettingsItemWidget extends ConsumerWidget {
                 ),
               ),
             SizedBox(width: theme.spacing.sm),
-            Icon(
-              Icons.chevron_right,
-              color: theme.textSecondary,
-            ),
+            Icon(Icons.chevron_right, color: theme.textSecondary),
           ],
         );
 
@@ -195,10 +192,7 @@ class SettingsItemWidget extends ConsumerWidget {
               ),
             ),
             SizedBox(width: theme.spacing.sm),
-            Icon(
-              Icons.chevron_right,
-              color: theme.textSecondary,
-            ),
+            Icon(Icons.chevron_right, color: theme.textSecondary),
           ],
         );
 
@@ -214,10 +208,7 @@ class SettingsItemWidget extends ConsumerWidget {
                 ),
               ),
             SizedBox(width: theme.spacing.sm),
-            Icon(
-              Icons.chevron_right,
-              color: theme.textSecondary,
-            ),
+            Icon(Icons.chevron_right, color: theme.textSecondary),
           ],
         );
 
@@ -243,18 +234,18 @@ class SettingsItemWidget extends ConsumerWidget {
 
   String _getSelectionDisplayText() {
     if (item.options == null || item.value == null) return '';
-    
+
     final option = item.options!.firstWhere(
       (opt) => opt.value == item.value,
       orElse: () => item.options!.first,
     );
-    
+
     return option.title;
   }
 
   String _getTimeDisplayText() {
     if (item.value is! TimeOfDay) return '';
-    
+
     final time = item.value as TimeOfDay;
     return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
@@ -309,78 +300,85 @@ class SettingsItemWidget extends ConsumerWidget {
   Future<void> _showSelectionDialog(BuildContext context, WidgetRef ref) async {
     await showDialog(
       context: context,
-      builder: (context) => SelectionWidget(
-        title: item.title,
-        options: item.options!,
-        currentValue: item.value,
-        onChanged: item.onChanged,
-      ),
+      builder:
+          (context) => SelectionWidget(
+            title: item.title,
+            options: item.options!,
+            currentValue: item.value,
+            onChanged: item.onChanged,
+          ),
     );
   }
 
   Future<void> _showColorPicker(BuildContext context, WidgetRef ref) async {
     await showDialog(
       context: context,
-      builder: (context) => ColorPickerWidget(
-        title: item.title,
-        currentColor: item.value as Color? ?? Colors.blue,
-        onChanged: item.onChanged,
-      ),
+      builder:
+          (context) => ColorPickerWidget(
+            title: item.title,
+            currentColor: item.value as Color? ?? Colors.blue,
+            onChanged: item.onChanged,
+          ),
     );
   }
 
   Future<void> _showTimePicker(BuildContext context, WidgetRef ref) async {
     await showDialog(
       context: context,
-      builder: (context) => TimePickerWidget(
-        title: item.title,
-        currentTime: item.value as TimeOfDay? ?? TimeOfDay.now(),
-        onChanged: item.onChanged,
-      ),
+      builder:
+          (context) => TimePickerWidget(
+            title: item.title,
+            currentTime: item.value as TimeOfDay? ?? TimeOfDay.now(),
+            onChanged: item.onChanged,
+          ),
     );
   }
 
-  Future<void> _showDangerousActionDialog(BuildContext context, WidgetRef ref) async {
+  Future<void> _showDangerousActionDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final theme = MinqTheme.of(context);
-    
+
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          '確認',
-          style: theme.typography.h5.copyWith(
-            color: theme.textPrimary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          '${item.title}を実行しますか？\nこの操作は取り消せません。',
-          style: theme.typography.bodyMedium.copyWith(
-            color: theme.textPrimary,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(
-              'キャンセル',
-              style: theme.typography.button.copyWith(
-                color: theme.textSecondary,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              '実行',
-              style: theme.typography.button.copyWith(
-                color: theme.accentError,
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              '確認',
+              style: theme.typography.h5.copyWith(
+                color: theme.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
+            content: Text(
+              '${item.title}を実行しますか？\nこの操作は取り消せません。',
+              style: theme.typography.bodyMedium.copyWith(
+                color: theme.textPrimary,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                  'キャンセル',
+                  style: theme.typography.button.copyWith(
+                    color: theme.textSecondary,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                  '実行',
+                  style: theme.typography.button.copyWith(
+                    color: theme.accentError,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
 
     if (confirmed == true) {

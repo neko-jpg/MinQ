@@ -15,7 +15,8 @@ import 'package:minq/data/providers.dart';
 /// Startup performance manager for optimizing app initialization
 class StartupPerformanceManager {
   static StartupPerformanceManager? _instance;
-  static StartupPerformanceManager get instance => _instance ??= StartupPerformanceManager._();
+  static StartupPerformanceManager get instance =>
+      _instance ??= StartupPerformanceManager._();
 
   StartupPerformanceManager._();
 
@@ -36,7 +37,10 @@ class StartupPerformanceManager {
   static const int _memoryCriticalThreshold = 200 * 1024 * 1024; // 200MB
 
   /// Initialize app with performance monitoring and crash prevention
-  Future<void> initializeApp(Ref ref, {StartupProgressCallback? onProgress}) async {
+  Future<void> initializeApp(
+    Ref ref, {
+    StartupProgressCallback? onProgress,
+  }) async {
     if (_isInitializing || _initializationComplete) {
       return;
     }
@@ -52,11 +56,12 @@ class StartupPerformanceManager {
       final totalTime = _startupStopwatch.elapsed;
       _recordMetric('total_startup_time', totalTime.inMilliseconds);
 
-      developer.log('App initialization completed in ${totalTime.inMilliseconds}ms');
+      developer.log(
+        'App initialization completed in ${totalTime.inMilliseconds}ms',
+      );
 
       // Log performance summary
       _logPerformanceSummary();
-
     } catch (error, stackTrace) {
       _handleInitializationError(error, stackTrace);
       rethrow;
@@ -137,7 +142,10 @@ class StartupPerformanceManager {
   }
 
   /// Execute a startup phase with timing and error handling
-  Future<void> _executePhase(String phaseName, Future<void> Function() phase) async {
+  Future<void> _executePhase(
+    String phaseName,
+    Future<void> Function() phase,
+  ) async {
     final phaseStopwatch = Stopwatch()..start();
 
     try {
@@ -147,8 +155,9 @@ class StartupPerformanceManager {
       _phaseTimings[phaseName] = phaseStopwatch.elapsed;
       _recordMetric('${phaseName}_time', phaseStopwatch.elapsed.inMilliseconds);
 
-      developer.log('Phase $phaseName completed in ${phaseStopwatch.elapsed.inMilliseconds}ms');
-
+      developer.log(
+        'Phase $phaseName completed in ${phaseStopwatch.elapsed.inMilliseconds}ms',
+      );
     } catch (error, stackTrace) {
       phaseStopwatch.stop();
       _phaseTimings[phaseName] = phaseStopwatch.elapsed;
@@ -186,10 +195,15 @@ class StartupPerformanceManager {
       };
 
       // Set up isolate error handler
-      Isolate.current.addErrorListener(RawReceivePort((pair) async {
-        final List<dynamic> errorAndStacktrace = pair;
-        await _handleIsolateError(errorAndStacktrace.first, errorAndStacktrace.last);
-      }).sendPort);
+      Isolate.current.addErrorListener(
+        RawReceivePort((pair) async {
+          final List<dynamic> errorAndStacktrace = pair;
+          await _handleIsolateError(
+            errorAndStacktrace.first,
+            errorAndStacktrace.last,
+          );
+        }).sendPort,
+      );
 
       // Initialize crash recovery store
       ref.read(crashRecoveryStoreProvider);
@@ -212,7 +226,6 @@ class StartupPerformanceManager {
         }
         return null;
       });
-
     } catch (error) {
       logger.error('Failed to initialize memory monitoring', error: error);
     }
@@ -227,14 +240,13 @@ class StartupPerformanceManager {
       // Set up custom recovery strategies for startup
       errorRecovery.registerRecoveryStrategy(
         'STARTUP_TIMEOUT',
-            (error) => RecoveryStrategy.retry,
+        (error) => RecoveryStrategy.retry,
       );
 
       errorRecovery.registerRecoveryStrategy(
         'STARTUP_MEMORY_ERROR',
-            (error) => RecoveryStrategy.failGracefully,
+        (error) => RecoveryStrategy.failGracefully,
       );
-
     } catch (error) {
       logger.error('Failed to initialize error handling', error: error);
     }
@@ -249,7 +261,6 @@ class StartupPerformanceManager {
         _preloadImage('assets/images/splash_logo.png'),
         // Add other critical assets
       ]);
-
     } catch (error) {
       logger.warning('Failed to preload some assets', error: error);
       // Don't fail startup for asset loading issues
@@ -341,7 +352,6 @@ class StartupPerformanceManager {
       // Load critical preferences
       final isDummyMode = await prefsService.isDummyDataModeEnabled();
       ref.read(dummyDataModeProvider.notifier).state = isDummyMode;
-
     } catch (error) {
       logger.error('Failed to initialize user preferences', error: error);
       // Use default preferences if loading fails
@@ -353,8 +363,8 @@ class StartupPerformanceManager {
     try {
       final notificationService = ref.read(notificationServiceProvider);
       final permissionGranted = await notificationService.init();
-      ref.read(notificationPermissionProvider.notifier).state = permissionGranted;
-
+      ref.read(notificationPermissionProvider.notifier).state =
+          permissionGranted;
     } catch (error) {
       logger.error('Failed to initialize notifications', error: error);
       // Continue without notifications if initialization fails
@@ -378,7 +388,10 @@ class StartupPerformanceManager {
     try {
       ref.read(aiInsightsServiceProvider);
     } catch (error) {
-      logger.warning('AI services initialization failed, using fallback', error: error);
+      logger.warning(
+        'AI services initialization failed, using fallback',
+        error: error,
+      );
       // AI services are not critical for app startup
     }
   }
@@ -461,10 +474,7 @@ class StartupPerformanceManager {
 
   /// Check if a phase failure is recoverable
   bool _isRecoverablePhase(String phaseName) {
-    const recoverablePhases = {
-      'app_features',
-      'final_setup',
-    };
+    const recoverablePhases = {'app_features', 'final_setup'};
     return recoverablePhases.contains(phaseName);
   }
 
@@ -522,10 +532,14 @@ class StartupPerformanceManager {
     _recordMetric('memory_usage_mb', memoryUsage ~/ (1024 * 1024));
 
     if (memoryUsage > _memoryCriticalThreshold) {
-      logger.error('Critical memory usage detected: ${memoryUsage ~/ (1024 * 1024)}MB');
+      logger.error(
+        'Critical memory usage detected: ${memoryUsage ~/ (1024 * 1024)}MB',
+      );
       _handleMemoryPressure();
     } else if (memoryUsage > _memoryWarningThreshold) {
-      logger.warning('High memory usage detected: ${memoryUsage ~/ (1024 * 1024)}MB');
+      logger.warning(
+        'High memory usage detected: ${memoryUsage ~/ (1024 * 1024)}MB',
+      );
     }
   }
 
@@ -538,7 +552,6 @@ class StartupPerformanceManager {
       // Reduce background processing
 
       logger.info('Memory pressure handled, resources freed');
-
     } catch (error) {
       logger.error('Failed to handle memory pressure', error: error);
     }
@@ -614,11 +627,9 @@ class StartupPerformanceManager {
 
   /// Record a startup metric
   void _recordMetric(String name, num value) {
-    _metrics.add(StartupMetric(
-      name: name,
-      value: value,
-      timestamp: DateTime.now(),
-    ));
+    _metrics.add(
+      StartupMetric(name: name, value: value, timestamp: DateTime.now()),
+    );
   }
 
   /// Log performance summary
@@ -677,7 +688,8 @@ class StartupPerformanceManager {
 }
 
 /// Startup progress callback
-typedef StartupProgressCallback = void Function(String message, double progress);
+typedef StartupProgressCallback =
+    void Function(String message, double progress);
 
 /// Startup metric
 class StartupMetric {
@@ -732,7 +744,8 @@ class StartupPerformanceReport {
     }
 
     // Phase timing consistency (20%)
-    final phaseTimes = phaseTimings.values.map((d) => d.inMilliseconds).toList();
+    final phaseTimes =
+        phaseTimings.values.map((d) => d.inMilliseconds).toList();
     if (phaseTimes.isNotEmpty) {
       final maxPhaseTime = phaseTimes.reduce(max);
       if (maxPhaseTime > 800) {
@@ -758,6 +771,8 @@ class StartupPerformanceReport {
 final startupPerformanceManager = StartupPerformanceManager.instance;
 
 /// Provider for startup performance manager
-final startupPerformanceManagerProvider = Provider<StartupPerformanceManager>((ref) {
+final startupPerformanceManagerProvider = Provider<StartupPerformanceManager>((
+  ref,
+) {
   return StartupPerformanceManager.instance;
 });

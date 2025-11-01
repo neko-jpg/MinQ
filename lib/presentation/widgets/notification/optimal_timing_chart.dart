@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/domain/notification/notification_analytics.dart';
 import 'package:minq/domain/notification/notification_settings.dart';
 import 'package:minq/l10n/l10n.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// 最適タイミングチャート
 class OptimalTimingChart extends StatelessWidget {
@@ -37,9 +38,14 @@ class OptimalTimingChart extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: _getConfidenceColor(analysis.confidence).withOpacity(0.1),
+                    color: _getConfidenceColor(
+                      analysis.confidence,
+                    ).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -52,16 +58,16 @@ class OptimalTimingChart extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             if (analysis.hourlyEngagementRates != null) ...[
               Text(
                 'Hourly Engagement Rates',
                 style: theme.textTheme.titleSmall,
               ),
               const SizedBox(height: 12),
-              
+
               SizedBox(
                 height: 200,
                 child: BarChart(
@@ -70,7 +76,6 @@ class OptimalTimingChart extends StatelessWidget {
                     maxY: 1.0,
                     barTouchData: BarTouchData(
                       touchTooltipData: BarTouchTooltipData(
-                        tooltipBgColor: theme.colorScheme.surface,
                         getTooltipItem: (group, groupIndex, rod, rodIndex) {
                           final hour = group.x.toInt();
                           final rate = rod.toY;
@@ -110,49 +115,57 @@ class OptimalTimingChart extends StatelessWidget {
                           },
                         ),
                       ),
-                      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                     ),
                     borderData: FlBorderData(show: false),
-                    barGroups: _buildBarGroups(analysis.hourlyEngagementRates!, theme),
+                    barGroups: _buildBarGroups(
+                      analysis.hourlyEngagementRates!,
+                      theme,
+                    ),
                   ),
                 ),
               ),
             ],
-            
+
             const SizedBox(height: 16),
-            
+
             if (analysis.optimalHours.isNotEmpty) ...[
-              Text(
-                'Optimal Hours',
-                style: theme.textTheme.titleSmall,
-              ),
+              Text('Optimal Hours', style: theme.textTheme.titleSmall),
               const SizedBox(height: 8),
-              
+
               Wrap(
                 spacing: 8,
                 runSpacing: 4,
-                children: analysis.optimalHours.map((hour) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      '${hour.toString().padLeft(2, '0')}:00',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  );
-                }).toList(),
+                children:
+                    analysis.optimalHours.map((hour) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Text(
+                          '${hour.toString().padLeft(2, '0')}:00',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    }).toList(),
               ),
             ],
-            
+
             const SizedBox(height: 16),
-            
+
             Row(
               children: [
                 Expanded(
@@ -186,15 +199,16 @@ class OptimalTimingChart extends StatelessWidget {
     return List.generate(24, (index) {
       final rate = hourlyRates[index.toString()] ?? 0.0;
       final isOptimal = analysis.optimalHours.contains(index);
-      
+
       return BarChartGroupData(
         x: index,
         barRods: [
           BarChartRodData(
             toY: rate,
-            color: isOptimal 
-                ? theme.colorScheme.primary
-                : theme.colorScheme.primary.withOpacity(0.3),
+            color:
+                isOptimal
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.primary.withOpacity(0.3),
             width: 12,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
           ),
@@ -228,9 +242,9 @@ class OptimalTimingChart extends StatelessWidget {
             ),
             Text(
               value,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -259,7 +273,10 @@ class OptimalTimingChart extends StatelessWidget {
     }
   }
 
-  String _getCategoryDisplayName(NotificationCategory category, AppLocalizations l10n) {
+  String _getCategoryDisplayName(
+    NotificationCategory category,
+    AppLocalizations l10n,
+  ) {
     switch (category) {
       case NotificationCategory.quest:
         return l10n.questNotifications;

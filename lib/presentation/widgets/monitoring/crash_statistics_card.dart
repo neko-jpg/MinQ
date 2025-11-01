@@ -5,10 +5,7 @@ import 'package:minq/core/monitoring/crash_reporting_service.dart';
 class CrashStatisticsCard extends StatelessWidget {
   final CrashStatistics statistics;
 
-  const CrashStatisticsCard({
-    super.key,
-    required this.statistics,
-  });
+  const CrashStatisticsCard({super.key, required this.statistics});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +71,12 @@ class CrashStatisticsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
+  Widget _buildMetricCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -124,22 +126,23 @@ class CrashStatisticsCard extends StatelessWidget {
       );
     }
 
-    final sections = statistics.crashesByType.entries.map((entry) {
-      final color = _getTypeColor(entry.key);
-      final percentage = (entry.value / statistics.totalCrashes) * 100;
-      
-      return PieChartSectionData(
-        color: color,
-        value: entry.value.toDouble(),
-        title: '${percentage.toStringAsFixed(1)}%',
-        radius: 50,
-        titleStyle: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      );
-    }).toList();
+    final sections =
+        statistics.crashesByType.entries.map((entry) {
+          final color = _getTypeColor(entry.key);
+          final percentage = (entry.value / statistics.totalCrashes) * 100;
+
+          return PieChartSectionData(
+            color: color,
+            value: entry.value.toDouble(),
+            title: '${percentage.toStringAsFixed(1)}%',
+            radius: 50,
+            titleStyle: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          );
+        }).toList();
 
     return Column(
       children: [
@@ -172,22 +175,23 @@ class CrashStatisticsCard extends StatelessWidget {
       );
     }
 
-    final sections = statistics.crashesBySeverity.entries.map((entry) {
-      final color = _getSeverityColor(entry.key);
-      final percentage = (entry.value / statistics.totalCrashes) * 100;
-      
-      return PieChartSectionData(
-        color: color,
-        value: entry.value.toDouble(),
-        title: '${percentage.toStringAsFixed(1)}%',
-        radius: 50,
-        titleStyle: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      );
-    }).toList();
+    final sections =
+        statistics.crashesBySeverity.entries.map((entry) {
+          final color = _getSeverityColor(entry.key);
+          final percentage = (entry.value / statistics.totalCrashes) * 100;
+
+          return PieChartSectionData(
+            color: color,
+            value: entry.value.toDouble(),
+            title: '${percentage.toStringAsFixed(1)}%',
+            radius: 50,
+            titleStyle: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          );
+        }).toList();
 
     return Column(
       children: [
@@ -216,26 +220,27 @@ class CrashStatisticsCard extends StatelessWidget {
     return Wrap(
       spacing: 8,
       runSpacing: 4,
-      children: data.entries.map((entry) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                color: getColor(entry.key),
-                shape: BoxShape.circle,
-              ),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              '${entry.key.toString().split('.').last} (${entry.value})',
-              style: const TextStyle(fontSize: 10),
-            ),
-          ],
-        );
-      }).toList(),
+      children:
+          data.entries.map((entry) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: getColor(entry.key),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '${entry.key.toString().split('.').last} (${entry.value})',
+                  style: const TextStyle(fontSize: 10),
+                ),
+              ],
+            );
+          }).toList(),
     );
   }
 

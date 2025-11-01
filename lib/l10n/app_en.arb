@@ -948,5 +948,53 @@
   "basicStats": "Basic Stats",
   "notifications": "Notifications",
   
-  "thankYou": "Thank you!"
+  "thankYou": "Thank you!",
+  
+  "accountDeletionTitle": "Delete Account",
+  "accountDeletionWarning": "This action will permanently delete your account and all associated data. This cannot be undone.",
+  "accountDeletionConfirmPhrase": "DELETE MY ACCOUNT",
+  "accountDeletionConfirmationCheckbox": "I understand that this action cannot be undone",
+  "accountDeletionConfirmDialogTitle": "Confirm Account Deletion",
+  "accountDeletionConfirmDialogDescription": "Are you sure you want to delete your account? All your data will be permanently lost.",
+  "accountDeletionConfirmDialogPrompt": "Type 'DELETE MY ACCOUNT' to confirm:",
+  "accountDeletionConfirmButton": "Delete Account",
+  
+  "celebrationNewLongestStreak": "New Longest Streak!",
+  "celebrationStreakMessage": "{streak} day streak!",
+  "@celebrationStreakMessage": {
+    "placeholders": {
+      "streak": {
+        "type": "int"
+      }
+    }
+  },
+  "celebrationLongestSubtitle": "You've reached a new personal best!",
+  "celebrationKeepGoingSubtitle": "Keep up the great work!",
+  "celebrationRewardTitle": "Reward Unlocked",
+  "celebrationRewardName": "Streak Master",
+  "celebrationRewardDescription": "Earned for maintaining a consistent habit streak",
+  "celebrationDone": "Continue",
+  
+  "notificationPermissionDialogTitle": "Enable Notifications",
+  "notificationPermissionDialogMessage": "Stay on track with helpful reminders and updates from your habit partner.",
+  "notificationPermissionDialogBenefitsHeading": "Benefits:",
+  "notificationPermissionDialogBenefitReminders": "Daily habit reminders",
+  "notificationPermissionDialogBenefitPair": "Partner encouragement",
+  "notificationPermissionDialogBenefitGoal": "Goal achievement celebrations",
+  "notificationPermissionDialogFooter": "You can change this setting anytime in the app settings.",
+  
+  "reportUser": "Report User",
+  "reportConfirmation": "Are you sure you want to report this user?",
+  "report": "Report",
+  "reportSubmitted": "Report submitted successfully",
+  "blockUser": "Block User",
+  "blockConfirmation": "Are you sure you want to block this user?",
+  "block": "Block",
+  "userBlocked": "User has been blocked",
+  "reason": "Reason",
+  "messageSentFailed": "Failed to send message",
+  "chatInputHint": "Type a message...",
+  
+  "pairMatchingTimeoutTitle": "Matching Timeout",
+  "pairMatchingTimeoutMessage": "We couldn't find a partner right now. Please try again later."
 }

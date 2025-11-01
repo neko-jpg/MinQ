@@ -11,8 +11,8 @@ class ReferralService {
   ReferralService({
     FirebaseFirestore? firestore,
     required AnalyticsService analytics,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _analytics = analytics;
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _analytics = analytics;
 
   /// 招待リンク生成
   Future<String> generateInviteLink({
@@ -42,7 +42,9 @@ class ReferralService {
       final link = await generateInviteLink(userId: userId);
       final message = customMessage ?? 'MiniQuestで一緒に習慣を作りませんか？\n$link';
 
-      await SharePlus.instance.share(ShareParams(text: message, subject: 'MiniQuestへの招待'));
+      await SharePlus.instance.share(
+        ShareParams(text: message, subject: 'MiniQuestへの招待'),
+      );
 
       await _analytics.logEvent(
         'referral_link_shared',

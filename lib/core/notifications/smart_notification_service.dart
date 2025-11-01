@@ -4,7 +4,7 @@ class SmartNotificationService {
   // final TFLiteUnifiedAIService _aiService;
 
   SmartNotificationService({required TFLiteUnifiedAIService aiService})
-    /*: _aiService = aiService*/;
+  /*: _aiService = aiService*/;
 
   Future<void> initialize() async {
     // Initialize smart notification service

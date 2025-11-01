@@ -79,9 +79,12 @@ class ColorBlindnessHelper {
   /// Simulate monochromacy (complete color blindness)
   static Color _simulateMonochromacy(Color color) {
     // Convert to grayscale using luminance formula
-    final luminance = 0.299 * (color.r * 255.0).round() + 0.587 * (color.g * 255.0).round() + 0.114 * (color.b * 255.0).round();
+    final luminance =
+        0.299 * (color.r * 255.0).round() +
+        0.587 * (color.g * 255.0).round() +
+        0.114 * (color.b * 255.0).round();
     final gray = luminance.round().clamp(0, 255);
-    
+
     return Color.fromARGB((color.a * 255.0).round(), gray, gray, gray);
   }
 
@@ -114,10 +117,7 @@ class ColorBlindnessHelper {
         ],
         if (label != null) ...[
           const SizedBox(width: 4),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12),
-          ),
+          Text(label, style: const TextStyle(fontSize: 12)),
         ],
       ],
     );
@@ -163,11 +163,7 @@ class ColorBlindnessHelper {
       pattern: 'diagonal',
       label: '✗',
     ),
-    'info': StatusIndicator(
-      icon: Icons.info,
-      pattern: 'dots',
-      label: 'ℹ',
-    ),
+    'info': StatusIndicator(icon: Icons.info, pattern: 'dots', label: 'ℹ'),
   };
 
   /// Create accessible status indicator
@@ -187,18 +183,11 @@ class ColorBlindnessHelper {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            indicator.icon,
-            color: color,
-            size: size,
-          ),
+          Icon(indicator.icon, color: color, size: size),
           const SizedBox(width: 2),
           Text(
             indicator.label,
-            style: TextStyle(
-              fontSize: size * 0.8,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: size * 0.8, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -291,14 +280,20 @@ class ColorBlindnessHelper {
   ) {
     final transformed1 = transformColor(color1, mode);
     final transformed2 = transformColor(color2, mode);
-    
+
     // Calculate color difference using Delta E formula (simplified)
-    final deltaR = ((transformed1.r * 255.0).round() - (transformed2.r * 255.0).round()).abs();
-    final deltaG = ((transformed1.g * 255.0).round() - (transformed2.g * 255.0).round()).abs();
-    final deltaB = ((transformed1.b * 255.0).round() - (transformed2.b * 255.0).round()).abs();
-    
+    final deltaR =
+        ((transformed1.r * 255.0).round() - (transformed2.r * 255.0).round())
+            .abs();
+    final deltaG =
+        ((transformed1.g * 255.0).round() - (transformed2.g * 255.0).round())
+            .abs();
+    final deltaB =
+        ((transformed1.b * 255.0).round() - (transformed2.b * 255.0).round())
+            .abs();
+
     final difference = (deltaR + deltaG + deltaB) / 3;
-    
+
     // Threshold for distinguishability (adjust as needed)
     return difference > 30;
   }
@@ -306,17 +301,13 @@ class ColorBlindnessHelper {
   /// Get high contrast version of a color
   static Color getHighContrastColor(Color color, bool isDarkMode) {
     final luminance = color.computeLuminance();
-    
+
     if (isDarkMode) {
       // In dark mode, make light colors lighter and dark colors darker
-      return luminance > 0.5 
-          ? Colors.white 
-          : Colors.black;
+      return luminance > 0.5 ? Colors.white : Colors.black;
     } else {
       // In light mode, make dark colors darker and light colors lighter
-      return luminance > 0.5 
-          ? Colors.black 
-          : Colors.white;
+      return luminance > 0.5 ? Colors.black : Colors.white;
     }
   }
 }

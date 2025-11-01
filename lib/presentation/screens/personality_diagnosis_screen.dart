@@ -404,23 +404,22 @@ class _PersonalityDiagnosisScreenState
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  ..._getArchetypeTraits(archetype)
-                      .map(
-                        (trait) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.check_circle,
-                                size: 16,
-                                color: Colors.green,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(child: Text(trait)),
-                            ],
+                  ..._getArchetypeTraits(archetype).map(
+                    (trait) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.check_circle,
+                            size: 16,
+                            color: Colors.green,
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(trait)),
+                        ],
                       ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -440,23 +439,18 @@ class _PersonalityDiagnosisScreenState
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  ..._getArchetypeRecommendedHabits(archetype)
-                      .map(
-                        (habit) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.star,
-                                size: 16,
-                                color: Colors.amber,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(child: Text(habit)),
-                            ],
-                          ),
-                        ),
+                  ..._getArchetypeRecommendedHabits(archetype).map(
+                    (habit) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.star, size: 16, color: Colors.amber),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(habit)),
+                        ],
                       ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -564,9 +558,7 @@ class _PersonalityDiagnosisScreenState
                           ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: Text(
-                              '${rec.title}: ${rec.customization}',
-                            ),
+                            child: Text('${rec.title}: ${rec.customization}'),
                           ),
                         ],
                       ),
@@ -595,9 +587,7 @@ class _PersonalityDiagnosisScreenState
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ..._currentDiagnosis!.compatibility.entries.map((
-                      entry,
-                    ) {
+                    ..._currentDiagnosis!.compatibility.entries.map((entry) {
                       final archetype = entry.key;
                       final compatibility = entry.value;
 

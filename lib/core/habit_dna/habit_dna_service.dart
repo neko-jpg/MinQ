@@ -70,7 +70,10 @@ class HabitDNAService {
       if (questLogsSnapshot.docs.length < 10) {
         MinqLogger.info(
           'Not enough data to determine archetype',
-          metadata: {'userId': userId, 'questCount': questLogsSnapshot.docs.length},
+          metadata: {
+            'userId': userId,
+            'questCount': questLogsSnapshot.docs.length,
+          },
         );
         return null; // Need at least 10 completed quests
       }

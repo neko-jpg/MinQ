@@ -54,7 +54,7 @@ class HealthStatusCard extends StatelessWidget {
   Widget _buildStatusIcon() {
     IconData icon;
     Color color;
-    
+
     switch (status) {
       case AppHealthStatus.healthy:
         icon = Icons.check_circle;
@@ -69,7 +69,7 @@ class HealthStatusCard extends StatelessWidget {
         color = Colors.red;
         break;
     }
-    
+
     return Icon(icon, color: color, size: 32);
   }
 

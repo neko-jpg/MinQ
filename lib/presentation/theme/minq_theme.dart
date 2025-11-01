@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:minq/presentation/theme/color_tokens.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
 
 class MinqRadius {
   const MinqRadius({
@@ -36,10 +35,7 @@ class MinqSpacing {
 }
 
 class MinqShadow {
-  const MinqShadow({
-    required this.soft,
-    required this.strong,
-  });
+  const MinqShadow({required this.soft, required this.strong});
   final List<BoxShadow> soft;
   final List<BoxShadow> strong;
 }
@@ -69,6 +65,9 @@ class MinqTypography {
   final TextStyle bodySmall;
   final TextStyle button;
   final TextStyle caption;
+  
+  // Additional computed properties
+  TextStyle get titleMedium => h4;
 }
 
 class MinqTheme extends ThemeExtension<MinqTheme> {
@@ -121,10 +120,10 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
          primary: brandPrimary,
          primaryHover: primaryHover,
          primaryContainer: surface,
-        background: background,
-        onBackground: textPrimary,
-        surfaceContainer: surfaceAlt,
-        surfaceContainerHigh: divider,
+         background: background,
+         onBackground: textPrimary,
+         surfaceContainer: surfaceAlt,
+         surfaceContainerHigh: divider,
          onPrimary: primaryForeground,
          onPrimaryContainer: textPrimary,
          secondary: accentSecondary,
@@ -271,17 +270,18 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     EdgeInsets? basePadding,
     required Size contentSize,
   }) {
-    final base = basePadding ?? EdgeInsets.symmetric(
-      horizontal: spacing.md,
-      vertical: spacing.sm,
-    );
-    
+    final base =
+        basePadding ??
+        EdgeInsets.symmetric(horizontal: spacing.md, vertical: spacing.sm);
+
     final totalWidth = contentSize.width + base.horizontal;
     final totalHeight = contentSize.height + base.vertical;
-    
-    final additionalHorizontal = (minTouchTargetSize - totalWidth).clamp(0.0, double.infinity) / 2;
-    final additionalVertical = (minTouchTargetSize - totalHeight).clamp(0.0, double.infinity) / 2;
-    
+
+    final additionalHorizontal =
+        (minTouchTargetSize - totalWidth).clamp(0.0, double.infinity) / 2;
+    final additionalVertical =
+        (minTouchTargetSize - totalHeight).clamp(0.0, double.infinity) / 2;
+
     return EdgeInsets.symmetric(
       horizontal: base.horizontal / 2 + additionalHorizontal,
       vertical: base.vertical / 2 + additionalVertical,
@@ -391,12 +391,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       highContrastText: palette.highContrastText,
       highContrastBackground: palette.highContrastBackground,
       highContrastPrimary: palette.highContrastPrimary,
-      radius: const MinqRadius(
-        sm: 8,
-        md: 12,
-        lg: 16,
-        xl: 28,
-      ),
+      radius: const MinqRadius(sm: 8, md: 12, lg: 16, xl: 28),
       spacing: const MinqSpacing(
         xxs: base / 2,
         xs: base,
@@ -534,12 +529,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       highContrastText: palette.highContrastText,
       highContrastBackground: palette.highContrastBackground,
       highContrastPrimary: palette.highContrastPrimary,
-      radius: const MinqRadius(
-        sm: 8,
-        md: 12,
-        lg: 16,
-        xl: 28,
-      ),
+      radius: const MinqRadius(sm: 8, md: 12, lg: 16, xl: 28),
       spacing: const MinqSpacing(
         xxs: base / 2,
         xs: base,

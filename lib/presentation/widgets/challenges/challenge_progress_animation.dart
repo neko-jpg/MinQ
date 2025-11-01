@@ -24,7 +24,8 @@ class ChallengeProgressAnimation extends StatefulWidget {
   final bool showShimmer;
 
   @override
-  State<ChallengeProgressAnimation> createState() => _ChallengeProgressAnimationState();
+  State<ChallengeProgressAnimation> createState() =>
+      _ChallengeProgressAnimationState();
 }
 
 class _ChallengeProgressAnimationState extends State<ChallengeProgressAnimation>
@@ -37,36 +38,31 @@ class _ChallengeProgressAnimationState extends State<ChallengeProgressAnimation>
   @override
   void initState() {
     super.initState();
-    
+
     _progressController = AnimationController(
       duration: widget.animationDuration,
       vsync: this,
     );
-    
+
     _shimmerController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
+
     _progressAnimation = Tween<double>(
       begin: 0.0,
       end: widget.progress.clamp(0.0, 1.0),
-    ).animate(CurvedAnimation(
-      parent: _progressController,
-      curve: Curves.easeOutCubic,
-    ));
-    
-    _shimmerAnimation = Tween<double>(
-      begin: -1.0,
-      end: 2.0,
-    ).animate(CurvedAnimation(
-      parent: _shimmerController,
-      curve: Curves.easeInOut,
-    ));
-    
+    ).animate(
+      CurvedAnimation(parent: _progressController, curve: Curves.easeOutCubic),
+    );
+
+    _shimmerAnimation = Tween<double>(begin: -1.0, end: 2.0).animate(
+      CurvedAnimation(parent: _shimmerController, curve: Curves.easeInOut),
+    );
+
     // Start animations
     _progressController.forward();
-    
+
     if (widget.showShimmer && !widget.isCompleted) {
       _shimmerController.repeat();
     }
@@ -75,21 +71,25 @@ class _ChallengeProgressAnimationState extends State<ChallengeProgressAnimation>
   @override
   void didUpdateWidget(ChallengeProgressAnimation oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     if (oldWidget.progress != widget.progress) {
       _progressAnimation = Tween<double>(
         begin: _progressAnimation.value,
         end: widget.progress.clamp(0.0, 1.0),
-      ).animate(CurvedAnimation(
-        parent: _progressController,
-        curve: Curves.easeOutCubic,
-      ));
-      
+      ).animate(
+        CurvedAnimation(
+          parent: _progressController,
+          curve: Curves.easeOutCubic,
+        ),
+      );
+
       _progressController.reset();
       _progressController.forward();
     }
-    
-    if (widget.showShimmer && !widget.isCompleted && !_shimmerController.isAnimating) {
+
+    if (widget.showShimmer &&
+        !widget.isCompleted &&
+        !_shimmerController.isAnimating) {
       _shimmerController.repeat();
     } else if (!widget.showShimmer || widget.isCompleted) {
       _shimmerController.stop();
@@ -105,8 +105,8 @@ class _ChallengeProgressAnimationState extends State<ChallengeProgressAnimation>
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = widget.backgroundColor ?? 
-        Colors.white.withOpacity(0.3);
+    final backgroundColor =
+        widget.backgroundColor ?? Colors.white.withOpacity(0.3);
     final progressColor = widget.progressColor ?? Colors.white;
     final completedColor = widget.completedColor ?? Colors.green.shade200;
 
@@ -130,23 +130,31 @@ class _ChallengeProgressAnimationState extends State<ChallengeProgressAnimation>
                     height: widget.height,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: widget.isCompleted
-                            ? [completedColor, completedColor.withOpacity(0.8)]
-                            : [progressColor, progressColor.withOpacity(0.8)],
+                        colors:
+                            widget.isCompleted
+                                ? [
+                                  completedColor,
+                                  completedColor.withOpacity(0.8),
+                                ]
+                                : [
+                                  progressColor,
+                                  progressColor.withOpacity(0.8),
+                                ],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
                     ),
                   ),
                 ),
-                
+
                 // Shimmer effect
-                if (widget.showShimmer && !widget.isCompleted && _progressAnimation.value > 0)
+                if (widget.showShimmer &&
+                    !widget.isCompleted &&
+                    _progressAnimation.value > 0)
                   _buildShimmerEffect(progressColor),
-                
+
                 // Completion glow effect
-                if (widget.isCompleted)
-                  _buildCompletionGlow(completedColor),
+                if (widget.isCompleted) _buildCompletionGlow(completedColor),
               ],
             ),
           ),
@@ -218,7 +226,8 @@ class ChallengeCircularProgress extends StatefulWidget {
   final Duration animationDuration;
 
   @override
-  State<ChallengeCircularProgress> createState() => _ChallengeCircularProgressState();
+  State<ChallengeCircularProgress> createState() =>
+      _ChallengeCircularProgressState();
 }
 
 class _ChallengeCircularProgressState extends State<ChallengeCircularProgress>
@@ -229,36 +238,32 @@ class _ChallengeCircularProgressState extends State<ChallengeCircularProgress>
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
       duration: widget.animationDuration,
       vsync: this,
     );
-    
+
     _animation = Tween<double>(
       begin: 0.0,
       end: widget.progress.clamp(0.0, 1.0),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
-    
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+
     _controller.forward();
   }
 
   @override
   void didUpdateWidget(ChallengeCircularProgress oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     if (oldWidget.progress != widget.progress) {
       _animation = Tween<double>(
         begin: _animation.value,
         end: widget.progress.clamp(0.0, 1.0),
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutCubic,
-      ));
-      
+      ).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+      );
+
       _controller.reset();
       _controller.forward();
     }
@@ -272,10 +277,10 @@ class _ChallengeCircularProgressState extends State<ChallengeCircularProgress>
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = widget.backgroundColor ?? 
-        Colors.grey.withOpacity(0.3);
-    final progressColor = widget.progressColor ?? 
-        Theme.of(context).primaryColor;
+    final backgroundColor =
+        widget.backgroundColor ?? Colors.grey.withOpacity(0.3);
+    final progressColor =
+        widget.progressColor ?? Theme.of(context).primaryColor;
     final completedColor = widget.completedColor ?? Colors.green;
     final isCompleted = widget.progress >= 1.0;
 
@@ -298,7 +303,7 @@ class _ChallengeCircularProgressState extends State<ChallengeCircularProgress>
                   valueColor: AlwaysStoppedAnimation(backgroundColor),
                 ),
               ),
-              
+
               // Progress circle
               SizedBox(
                 width: widget.size,
@@ -311,7 +316,7 @@ class _ChallengeCircularProgressState extends State<ChallengeCircularProgress>
                   ),
                 ),
               ),
-              
+
               // Center content
               if (widget.showPercentage)
                 Column(

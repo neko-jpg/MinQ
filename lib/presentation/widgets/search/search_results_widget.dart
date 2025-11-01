@@ -14,7 +14,7 @@ class SearchResultsWidget extends ConsumerWidget {
   final Function(SearchableItem)? onItemTap;
   final SearchSortOrder sortOrder;
   final bool showSortOptions;
-  
+
   const SearchResultsWidget({
     super.key,
     required this.searchQuery,
@@ -22,32 +22,31 @@ class SearchResultsWidget extends ConsumerWidget {
     this.sortOrder = SearchSortOrder.relevance,
     this.showSortOptions = true,
   });
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final results = ref.watch(searchResultsProvider(searchQuery));
-    
+
     return results.when(
       data: (results) => _buildResults(context, results),
       loading: () => _buildLoadingState(),
       error: (error, stack) => _buildErrorState(context, error),
     );
   }
-  
+
   Widget _buildResults(BuildContext context, List<SearchResult> results) {
     if (results.isEmpty) {
       return _buildEmptyState(context);
     }
-    
+
     return Column(
       children: [
         // ソートオプション
-        if (showSortOptions)
-          _buildSortOptions(context),
-        
+        if (showSortOptions) _buildSortOptions(context),
+
         // 結果数表示
         _buildResultsHeader(context, results.length),
-        
+
         // 結果リスト
         Expanded(
           child: ListView.builder(
@@ -61,11 +60,11 @@ class SearchResultsWidget extends ConsumerWidget {
       ],
     );
   }
-  
+
   Widget _buildSortOptions(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: tokens.spacing.md,
@@ -84,24 +83,25 @@ class SearchResultsWidget extends ConsumerWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: SearchSortOrder.values.map((order) {
-                  final isSelected = order == sortOrder;
-                  return Padding(
-                    padding: EdgeInsets.only(right: tokens.spacing.sm),
-                    child: FilterChip(
-                      label: Text(_getSortOrderLabel(context, order)),
-                      selected: isSelected,
-                      onSelected: (selected) {
-                        if (selected) {
-                          // TODO: ソート順変更の実装
-                        }
-                      },
-                      backgroundColor: tokens.surface,
-                      selectedColor: tokens.primary.withOpacity(0.2),
-                      checkmarkColor: tokens.primary,
-                    ),
-                  );
-                }).toList(),
+                children:
+                    SearchSortOrder.values.map((order) {
+                      final isSelected = order == sortOrder;
+                      return Padding(
+                        padding: EdgeInsets.only(right: tokens.spacing.sm),
+                        child: FilterChip(
+                          label: Text(_getSortOrderLabel(context, order)),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            if (selected) {
+                              // TODO: ソート順変更の実装
+                            }
+                          },
+                          backgroundColor: tokens.surface,
+                          selectedColor: tokens.primary.withOpacity(0.2),
+                          checkmarkColor: tokens.primary,
+                        ),
+                      );
+                    }).toList(),
               ),
             ),
           ),
@@ -109,11 +109,11 @@ class SearchResultsWidget extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildResultsHeader(BuildContext context, int count) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: tokens.spacing.md,
@@ -130,22 +130,18 @@ class SearchResultsWidget extends ConsumerWidget {
           const Spacer(),
           // 結果をエクスポート
           IconButton(
-            icon: Icon(
-              Icons.share,
-              size: 16,
-              color: tokens.textSecondary,
-            ),
+            icon: Icon(Icons.share, size: 16, color: tokens.textSecondary),
             onPressed: () => _exportResults(context),
           ),
         ],
       ),
     );
   }
-  
+
   Widget _buildResultItem(BuildContext context, SearchResult result) {
     final tokens = context.tokens;
     final item = result.item;
-    
+
     return Card(
       margin: EdgeInsets.symmetric(
         horizontal: tokens.spacing.md,
@@ -175,9 +171,9 @@ class SearchResultsWidget extends ConsumerWidget {
                       color: _getItemTypeColor(item),
                     ),
                   ),
-                  
+
                   SizedBox(width: tokens.spacing.sm),
-                  
+
                   // タイトル
                   Expanded(
                     child: SearchHighlightText(
@@ -188,7 +184,7 @@ class SearchResultsWidget extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  
+
                   // 関連度スコア（デバッグ用）
                   if (sortOrder == SearchSortOrder.relevance)
                     Container(
@@ -210,9 +206,9 @@ class SearchResultsWidget extends ConsumerWidget {
                     ),
                 ],
               ),
-              
+
               SizedBox(height: tokens.spacing.sm),
-              
+
               // 説明
               if (item.description.isNotEmpty)
                 SearchHighlightText(
@@ -223,9 +219,9 @@ class SearchResultsWidget extends ConsumerWidget {
                   ),
                   maxLines: 2,
                 ),
-              
+
               SizedBox(height: tokens.spacing.sm),
-              
+
               // タグとメタデータ
               Row(
                 children: [
@@ -246,51 +242,54 @@ class SearchResultsWidget extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  
+
                   SizedBox(width: tokens.spacing.sm),
-                  
+
                   // タグ
                   Expanded(
                     child: Wrap(
                       spacing: tokens.spacing.xs,
-                      children: item.tags.take(3).map((tag) {
-                        return Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: tokens.spacing.xs,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: tokens.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(tokens.radius.xs),
-                          ),
-                          child: Text(
-                            tag,
-                            style: context.textTheme.bodySmall?.copyWith(
-                              color: tokens.primary,
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                      children:
+                          item.tags.take(3).map((tag) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: tokens.spacing.xs,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: tokens.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(
+                                  tokens.radius.xs,
+                                ),
+                              ),
+                              child: Text(
+                                tag,
+                                style: context.textTheme.bodySmall?.copyWith(
+                                  color: tokens.primary,
+                                ),
+                              ),
+                            );
+                          }).toList(),
                     ),
                   ),
-                  
+
                   // 作成日
                   Text(
-                    _formatDate(item.createdAt),
+                    _formatDate(context, item.createdAt),
                     style: context.textTheme.bodySmall?.copyWith(
                       color: tokens.textMuted,
                     ),
                   ),
                 ],
               ),
-              
+
               // マッチしたキーワード
               if (result.matchedKeywords.isNotEmpty) ...[
                 SizedBox(height: tokens.spacing.sm),
                 Text(
-                  AppLocalizations.of(context).matchedKeywords(
-                    result.matchedKeywords.join(', ')
-                  ),
+                  AppLocalizations.of(
+                    context,
+                  ).matchedKeywords(result.matchedKeywords.join(', ')),
                   style: context.textTheme.bodySmall?.copyWith(
                     color: tokens.textMuted,
                     fontStyle: FontStyle.italic,
@@ -303,23 +302,17 @@ class SearchResultsWidget extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildLoadingState() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
+    return const Center(child: CircularProgressIndicator());
   }
-  
+
   Widget _buildErrorState(BuildContext context, Object error) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: context.tokens.error,
-          ),
+          Icon(Icons.error_outline, size: 64, color: context.tokens.error),
           SizedBox(height: context.tokens.spacing.md),
           Text(
             AppLocalizations.of(context).searchError,
@@ -337,13 +330,13 @@ class SearchResultsWidget extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildEmptyState(BuildContext context) {
     return EmptyStateWidget.emptySearch(
       searchQuery: searchQuery.query.isNotEmpty ? searchQuery.query : null,
     );
   }
-  
+
   IconData _getItemTypeIcon(SearchableItem item) {
     if (item is SearchableQuest) {
       return Icons.task_alt;
@@ -352,7 +345,7 @@ class SearchResultsWidget extends ConsumerWidget {
     }
     return Icons.help_outline;
   }
-  
+
   Color _getItemTypeColor(SearchableItem item) {
     if (item is SearchableQuest) {
       return Colors.blue;
@@ -361,7 +354,7 @@ class SearchResultsWidget extends ConsumerWidget {
     }
     return Colors.grey;
   }
-  
+
   String _getSortOrderLabel(BuildContext context, SearchSortOrder order) {
     final l10n = AppLocalizations.of(context);
     switch (order) {
@@ -375,11 +368,11 @@ class SearchResultsWidget extends ConsumerWidget {
         return l10n.sortByAlphabetical;
     }
   }
-  
-  String _formatDate(DateTime date) {
+
+  String _formatDate(BuildContext context, DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inDays == 0) {
       return AppLocalizations.of(context).today;
     } else if (difference.inDays == 1) {
@@ -390,7 +383,7 @@ class SearchResultsWidget extends ConsumerWidget {
       return '${date.year}/${date.month}/${date.day}';
     }
   }
-  
+
   void _exportResults(BuildContext context) {
     // TODO: 検索結果のエクスポート機能
     ScaffoldMessenger.of(context).showSnackBar(

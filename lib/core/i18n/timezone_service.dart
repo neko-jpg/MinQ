@@ -7,11 +7,11 @@ import 'package:timezone/timezone.dart' as tz;
 /// Service for handling timezone operations and conversions
 class TimezoneService {
   static bool _initialized = false;
-  
+
   /// Initialize timezone data
   static Future<void> initialize() async {
     if (_initialized) return;
-    
+
     tz_data.initializeTimeZones();
     _initialized = true;
   }
@@ -19,9 +19,11 @@ class TimezoneService {
   /// Get the device's current timezone
   static tz.Location getCurrentTimezone() {
     if (!_initialized) {
-      throw StateError('TimezoneService not initialized. Call initialize() first.');
+      throw StateError(
+        'TimezoneService not initialized. Call initialize() first.',
+      );
     }
-    
+
     // Try to get system timezone
     try {
       final timezoneName = _getSystemTimezoneName();
@@ -35,7 +37,9 @@ class TimezoneService {
   /// Get timezone for a specific locale/region
   static tz.Location getTimezoneForLocale(Locale locale) {
     if (!_initialized) {
-      throw StateError('TimezoneService not initialized. Call initialize() first.');
+      throw StateError(
+        'TimezoneService not initialized. Call initialize() first.',
+      );
     }
 
     final timezoneMap = {
@@ -48,7 +52,7 @@ class TimezoneService {
     };
 
     final timezoneName = timezoneMap[locale.languageCode] ?? 'UTC';
-    
+
     try {
       return tz.getLocation(timezoneName);
     } catch (e) {
@@ -57,9 +61,14 @@ class TimezoneService {
   }
 
   /// Convert DateTime to specific timezone
-  static tz.TZDateTime convertToTimezone(DateTime dateTime, tz.Location timezone) {
+  static tz.TZDateTime convertToTimezone(
+    DateTime dateTime,
+    tz.Location timezone,
+  ) {
     if (!_initialized) {
-      throw StateError('TimezoneService not initialized. Call initialize() first.');
+      throw StateError(
+        'TimezoneService not initialized. Call initialize() first.',
+      );
     }
 
     if (dateTime is tz.TZDateTime) {
@@ -72,7 +81,9 @@ class TimezoneService {
   /// Get current time in specific timezone
   static tz.TZDateTime nowInTimezone(tz.Location timezone) {
     if (!_initialized) {
-      throw StateError('TimezoneService not initialized. Call initialize() first.');
+      throw StateError(
+        'TimezoneService not initialized. Call initialize() first.',
+      );
     }
 
     return tz.TZDateTime.now(timezone);
@@ -85,30 +96,37 @@ class TimezoneService {
   }
 
   /// Format time with timezone information
-  static String formatWithTimezone(tz.TZDateTime dateTime, {bool showTimezone = true}) {
-    final timeStr = '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-    
+  static String formatWithTimezone(
+    tz.TZDateTime dateTime, {
+    bool showTimezone = true,
+  }) {
+    final timeStr =
+        '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+
     if (!showTimezone) {
       return timeStr;
     }
 
     final offsetHours = dateTime.timeZoneOffset.inHours;
     final offsetMinutes = dateTime.timeZoneOffset.inMinutes.remainder(60);
-    final offsetStr = '${offsetHours >= 0 ? '+' : ''}${offsetHours.toString().padLeft(2, '0')}:${offsetMinutes.abs().toString().padLeft(2, '0')}';
-    
+    final offsetStr =
+        '${offsetHours >= 0 ? '+' : ''}${offsetHours.toString().padLeft(2, '0')}:${offsetMinutes.abs().toString().padLeft(2, '0')}';
+
     return '$timeStr (UTC$offsetStr)';
   }
 
   /// Check if daylight saving time is active
   static bool isDaylightSavingTime(tz.TZDateTime dateTime) {
     if (!_initialized) {
-      throw StateError('TimezoneService not initialized. Call initialize() first.');
+      throw StateError(
+        'TimezoneService not initialized. Call initialize() first.',
+      );
     }
 
     // Create a date in winter (January) and summer (July) to compare offsets
     final winterDate = tz.TZDateTime(dateTime.location, dateTime.year, 1, 1);
     final summerDate = tz.TZDateTime(dateTime.location, dateTime.year, 7, 1);
-    
+
     // If current offset is different from winter offset, DST might be active
     return dateTime.timeZoneOffset != winterDate.timeZoneOffset;
   }
@@ -122,7 +140,9 @@ class TimezoneService {
   /// Get all available timezones
   static List<String> getAllTimezones() {
     if (!_initialized) {
-      throw StateError('TimezoneService not initialized. Call initialize() first.');
+      throw StateError(
+        'TimezoneService not initialized. Call initialize() first.',
+      );
     }
 
     return tz.timeZoneDatabase.locations.keys.toList()..sort();
@@ -144,7 +164,11 @@ class TimezoneService {
       const TimezoneInfo('Asia/Seoul', 'Korea Standard Time', 'KST'),
       const TimezoneInfo('Asia/Riyadh', 'Arabia Standard Time', 'AST'),
       const TimezoneInfo('Asia/Dubai', 'Gulf Standard Time', 'GST'),
-      const TimezoneInfo('Australia/Sydney', 'Australian Eastern Time', 'AEST/AEDT'),
+      const TimezoneInfo(
+        'Australia/Sydney',
+        'Australian Eastern Time',
+        'AEST/AEDT',
+      ),
     ];
   }
 
@@ -153,7 +177,7 @@ class TimezoneService {
     final now = DateTime.now();
     final fromTime = tz.TZDateTime.from(now, from);
     final toTime = tz.TZDateTime.from(now, to);
-    
+
     return toTime.timeZoneOffset - fromTime.timeZoneOffset;
   }
 
@@ -173,7 +197,7 @@ class TimezoneService {
         // On mobile platforms, try to get timezone from system
         final now = DateTime.now();
         final offset = now.timeZoneOffset;
-        
+
         // Map common offsets to timezone names
         final offsetHours = offset.inHours;
         switch (offsetHours) {
@@ -204,7 +228,7 @@ class TimezoneService {
     } catch (e) {
       // Ignore errors and fall back to UTC
     }
-    
+
     return 'UTC';
   }
 
@@ -223,7 +247,7 @@ class TimezoneService {
         range.start.hour,
         range.start.minute,
       );
-      
+
       final endInBusiness = tz.TZDateTime(
         businessTimezone,
         DateTime.now().year,
@@ -232,10 +256,10 @@ class TimezoneService {
         range.end.hour,
         range.end.minute,
       );
-      
+
       final startInUser = tz.TZDateTime.from(startInBusiness, userTimezone);
       final endInUser = tz.TZDateTime.from(endInBusiness, userTimezone);
-      
+
       return TimeRange(
         TimeOfDay(hour: startInUser.hour, minute: startInUser.minute),
         TimeOfDay(hour: endInUser.hour, minute: endInUser.minute),
@@ -265,7 +289,7 @@ class TimeRange {
     final startMinutes = start.hour * 60 + start.minute;
     final endMinutes = end.hour * 60 + end.minute;
     final timeMinutes = time.hour * 60 + time.minute;
-    
+
     if (startMinutes <= endMinutes) {
       // Same day range
       return timeMinutes >= startMinutes && timeMinutes <= endMinutes;

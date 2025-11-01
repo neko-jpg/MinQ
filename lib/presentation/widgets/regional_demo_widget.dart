@@ -15,7 +15,7 @@ class RegionalDemoWidget extends ConsumerWidget {
     final greeting = ref.watch(greetingProvider);
     final currentTime = ref.watch(currentTimeProvider);
     final upcomingHolidays = ref.watch(upcomingHolidaysProvider);
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -40,9 +40,9 @@ class RegionalDemoWidget extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Current time in local timezone
             Container(
               padding: const EdgeInsets.all(12),
@@ -69,9 +69,9 @@ class RegionalDemoWidget extends ConsumerWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Sample currency formatting
             Container(
               padding: const EdgeInsets.all(12),
@@ -98,9 +98,9 @@ class RegionalDemoWidget extends ConsumerWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Number formatting demo
             Container(
               padding: const EdgeInsets.all(12),
@@ -127,9 +127,9 @@ class RegionalDemoWidget extends ConsumerWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Cultural colors demonstration
             Text(
               'Cultural Colors:',
@@ -139,7 +139,7 @@ class RegionalDemoWidget extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 8),
-            
+
             Row(
               children: [
                 _buildColorDemo(ref, 'Lucky', 'lucky'),
@@ -149,14 +149,14 @@ class RegionalDemoWidget extends ConsumerWidget {
                 _buildColorDemo(ref, 'Prosperity', 'prosperity'),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Lucky/Unlucky numbers
             _buildNumbersDemo(ref, theme, tokens),
-            
+
             const SizedBox(height: 16),
-            
+
             // Upcoming holidays
             if (upcomingHolidays.isNotEmpty) ...[
               Text(
@@ -167,39 +167,45 @@ class RegionalDemoWidget extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              
-              ...upcomingHolidays.map((holiday) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.event,
-                      size: 16,
-                      color: ref.watch(culturalColorProvider('celebration')),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${ref.watch(dateFormatterProvider(holiday.getDateForYear(DateTime.now().year)))} - ${holiday.name}',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: tokens.textSecondary,
+
+              ...upcomingHolidays.map(
+                (holiday) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.event,
+                        size: 16,
+                        color: ref.watch(culturalColorProvider('celebration')),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 4),
+                      Text(
+                        '${ref.watch(dateFormatterProvider(holiday.getDateForYear(DateTime.now().year)))} - ${holiday.name}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: tokens.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )),
+              ),
             ],
-            
+
             const SizedBox(height: 16),
-            
+
             // Motivational message
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: ref.watch(culturalColorProvider('lucky')).withAlpha((255 * 0.1).round()),
+                color: ref
+                    .watch(culturalColorProvider('lucky'))
+                    .withAlpha((255 * 0.1).round()),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: ref.watch(culturalColorProvider('lucky')).withAlpha((255 * 0.3).round()),
+                  color: ref
+                      .watch(culturalColorProvider('lucky'))
+                      .withAlpha((255 * 0.3).round()),
                 ),
               ),
               child: Text(
@@ -211,14 +217,16 @@ class RegionalDemoWidget extends ConsumerWidget {
                 textAlign: ref.watch(textAlignmentProvider),
               ),
             ),
-            
+
             // RTL indicator
             if (isRTL) ...[
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withAlpha((255 * 0.1).round()),
+                  color: theme.colorScheme.primary.withAlpha(
+                    (255 * 0.1).round(),
+                  ),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Row(
@@ -249,7 +257,7 @@ class RegionalDemoWidget extends ConsumerWidget {
 
   Widget _buildColorDemo(WidgetRef ref, String label, String concept) {
     final color = ref.watch(culturalColorProvider(concept));
-    
+
     return Column(
       children: [
         Container(
@@ -264,24 +272,18 @@ class RegionalDemoWidget extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
-          ),
-        ),
+        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
       ],
     );
   }
 
   Widget _buildNumbersDemo(WidgetRef ref, ThemeData theme, MinqTheme tokens) {
     final culturalNumbers = ref.watch(culturalNumbersProvider);
-    
+
     if (culturalNumbers.lucky.isEmpty && culturalNumbers.unlucky.isEmpty) {
       return const SizedBox.shrink();
     }
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -293,7 +295,7 @@ class RegionalDemoWidget extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 8),
-        
+
         if (culturalNumbers.lucky.isNotEmpty) ...[
           Row(
             children: [
@@ -312,7 +314,7 @@ class RegionalDemoWidget extends ConsumerWidget {
             ],
           ),
         ],
-        
+
         if (culturalNumbers.unlucky.isNotEmpty) ...[
           const SizedBox(height: 4),
           Row(

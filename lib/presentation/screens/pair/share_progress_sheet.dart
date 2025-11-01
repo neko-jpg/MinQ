@@ -37,38 +37,39 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     final memoController = TextEditingController();
     showDialog(
       context: context,
-      builder: (dialogCtx) => AlertDialog(
-        title: const Text('メモを添付'),
-        content: TextField(
-          controller: memoController,
-          autofocus: true,
-          decoration: const InputDecoration(hintText: '今日の頑張りを伝えよう'),
-          maxLines: 3,
-        ),
-        actions: [
-          TextButton(
-            child: const Text('キャンセル'),
-            onPressed: () => Navigator.of(dialogCtx).pop(),
+      builder:
+          (dialogCtx) => AlertDialog(
+            title: const Text('メモを添付'),
+            content: TextField(
+              controller: memoController,
+              autofocus: true,
+              decoration: const InputDecoration(hintText: '今日の頑張りを伝えよう'),
+              maxLines: 3,
+            ),
+            actions: [
+              TextButton(
+                child: const Text('キャンセル'),
+                onPressed: () => Navigator.of(dialogCtx).pop(),
+              ),
+              TextButton(
+                child: const Text('送信'),
+                onPressed: () {
+                  final repo = ref.read(pairRepositoryProvider);
+                  final uid = ref.read(uidProvider);
+                  final memo = memoController.text.trim();
+                  if (memo.isNotEmpty && repo != null && uid != null) {
+                    repo.sendMessage(
+                      pairId: widget.pairId,
+                      senderId: uid,
+                      text: memo,
+                    );
+                  }
+                  Navigator.of(dialogCtx).pop();
+                  Navigator.of(context).pop(); // Close the bottom sheet as well
+                },
+              ),
+            ],
           ),
-          TextButton(
-            child: const Text('送信'),
-            onPressed: () {
-              final repo = ref.read(pairRepositoryProvider);
-              final uid = ref.read(uidProvider);
-              final memo = memoController.text.trim();
-              if (memo.isNotEmpty && repo != null && uid != null) {
-                repo.sendMessage(
-                  pairId: widget.pairId,
-                  senderId: uid,
-                  text: memo,
-                );
-              }
-              Navigator.of(dialogCtx).pop();
-              Navigator.of(context).pop(); // Close the bottom sheet as well
-            },
-          ),
-        ],
-      ),
     );
   }
 
@@ -83,7 +84,9 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
         decoration: BoxDecoration(
           color: tokens.surface.withAlpha((255 * 0.8).round()),
           borderRadius: tokens.cornerXLarge(),
-          border: Border.all(color: tokens.border.withAlpha((255 * 0.5).round())),
+          border: Border.all(
+            color: tokens.border.withAlpha((255 * 0.5).round()),
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -154,9 +157,12 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
         SizedBox(height: tokens.spacing.sm),
         DropdownButtonFormField<String>(
           initialValue: _selectedQuest,
-          items: ['運動', '勉強', '読書']
-              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-              .toList(),
+          items:
+              [
+                '運動',
+                '勉強',
+                '読書',
+              ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
           onChanged: (value) {
             if (value != null) {
               setState(() => _selectedQuest = value);
@@ -215,7 +221,10 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('達成度', style: tokens.typography.body.copyWith(color: tokens.textMuted)),
+        Text(
+          '達成度',
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
+        ),
         SizedBox(height: tokens.spacing.sm),
         ToggleButtons(
           isSelected: List.generate(
@@ -255,7 +264,9 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
           children: [
             Text(
               '連続記録',
-              style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+              style: tokens.typography.bodySmall.copyWith(
+                color: tokens.textMuted,
+              ),
             ),
             Text(
               '🔥 7 日目',

@@ -234,13 +234,13 @@ void main() {
 
         // Act - Add reaction
         final withReaction = message.toggleReaction('👍', 'user2');
-        
+
         // Assert - Reaction added
         expect(withReaction.reactions['👍'], contains('user2'));
 
         // Act - Remove reaction
         final withoutReaction = withReaction.toggleReaction('👍', 'user2');
-        
+
         // Assert - Reaction removed
         expect(withoutReaction.reactions.containsKey('👍'), isFalse);
       });

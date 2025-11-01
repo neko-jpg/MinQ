@@ -31,9 +31,10 @@ class _GamificationDashboardScreenState
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeIn));
     _fadeController.forward();
   }
 
@@ -354,62 +355,63 @@ class _GamificationDashboardScreenState
 
   Widget _buildRecentAchievements(List<Badge> badges) {
     return Column(
-      children: badges.take(3).map((badge) {
-        return Container(
-          margin: EdgeInsets.only(bottom: MinqTokens.spacing(3)),
-          padding: EdgeInsets.all(MinqTokens.spacing(3)),
-          decoration: BoxDecoration(
-            color: MinqTokens.surface,
-            borderRadius: MinqTokens.cornerMedium(),
-            border: Border.all(color: Colors.transparent),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: MinqTokens.spacing(6),
-                height: MinqTokens.spacing(6),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [MinqTokens.brandPrimary, MinqTokens.brandSecondary],
+      children:
+          badges.take(3).map((badge) {
+            return Container(
+              margin: EdgeInsets.only(bottom: MinqTokens.spacing(3)),
+              padding: EdgeInsets.all(MinqTokens.spacing(3)),
+              decoration: BoxDecoration(
+                color: MinqTokens.surface,
+                borderRadius: MinqTokens.cornerMedium(),
+                border: Border.all(color: Colors.transparent),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: MinqTokens.spacing(6),
+                    height: MinqTokens.spacing(6),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          MinqTokens.brandPrimary,
+                          MinqTokens.brandSecondary,
+                        ],
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.military_tech, color: Colors.white),
                   ),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.military_tech,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(width: MinqTokens.spacing(3)),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      badge.name,
-                      style: MinqTokens.bodyLarge.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: MinqTokens.textPrimary,
-                      ),
+                  SizedBox(width: MinqTokens.spacing(3)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          badge.name,
+                          style: MinqTokens.bodyLarge.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: MinqTokens.textPrimary,
+                          ),
+                        ),
+                        Text(
+                          badge.description,
+                          style: MinqTokens.bodySmall.copyWith(
+                            color: MinqTokens.textSecondary,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      badge.description,
-                      style: MinqTokens.bodySmall.copyWith(
-                        color: MinqTokens.textSecondary,
-                      ),
+                  ),
+                  Text(
+                    _formatDate(badge.earnedAt),
+                    style: MinqTokens.bodySmall.copyWith(
+                      color: MinqTokens.textSecondary,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Text(
-                _formatDate(badge.earnedAt),
-                style: MinqTokens.bodySmall.copyWith(
-                  color: MinqTokens.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
+            );
+          }).toList(),
     );
   }
 
@@ -489,7 +491,10 @@ class _GamificationDashboardScreenState
                   height: MinqTokens.spacing(12),
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [MinqTokens.brandPrimary, MinqTokens.brandSecondary],
+                      colors: [
+                        MinqTokens.brandPrimary,
+                        MinqTokens.brandSecondary,
+                      ],
                     ),
                     shape: BoxShape.circle,
                   ),
@@ -598,11 +603,7 @@ class _GamificationDashboardScreenState
     );
   }
 
-  Widget _buildActionButton(
-    String label,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
+  Widget _buildActionButton(String label, IconData icon, VoidCallback onTap) {
     return GestureDetector(
       onTap: () async {
         await HapticsSystem.buttonTap();
@@ -654,27 +655,28 @@ class _GamificationDashboardScreenState
   void _showBadgeDetails(Badge badge) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(badge.name),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(badge.description),
-            const SizedBox(height: 16),
-            Text(
-              '獲得日: ${_formatDate(badge.earnedAt)}',
-              style: Theme.of(context).textTheme.bodySmall,
+      builder:
+          (context) => AlertDialog(
+            title: Text(badge.name),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(badge.description),
+                const SizedBox(height: 16),
+                Text(
+                  '獲得日: ${_formatDate(badge.earnedAt)}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('閉じる'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('閉じる'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

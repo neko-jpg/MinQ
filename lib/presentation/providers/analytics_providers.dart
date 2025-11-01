@@ -8,7 +8,9 @@ import 'package:minq/domain/analytics/behavior_pattern.dart';
 import 'package:minq/domain/analytics/dashboard_config.dart';
 
 // Analytics Services Providers
-final behaviorAnalysisServiceProvider = Provider<BehaviorAnalysisService>((ref) {
+final behaviorAnalysisServiceProvider = Provider<BehaviorAnalysisService>((
+  ref,
+) {
   final databaseService = ref.watch(databaseServiceProvider);
   return BehaviorAnalysisService(databaseService);
 });
@@ -24,20 +26,30 @@ final dashboardServiceProvider = Provider<DashboardService>((ref) {
 });
 
 // Data Providers
-final userDashboardsProvider = FutureProvider<List<CustomDashboardConfig>>((ref) async {
+final userDashboardsProvider = FutureProvider<List<CustomDashboardConfig>>((
+  ref,
+) async {
   final dashboardService = ref.watch(dashboardServiceProvider);
-  return await dashboardService.getUserDashboards('current_user'); // TODO: 実際のユーザーIDを使用
+  return await dashboardService.getUserDashboards(
+    'current_user',
+  ); // TODO: 実際のユーザーIDを使用
 });
 
-final selectedDashboardProvider = FutureProvider.family<CustomDashboardConfig, String>((ref, dashboardId) async {
-  final dashboards = await ref.watch(userDashboardsProvider.future);
-  return dashboards.firstWhere(
-    (dashboard) => dashboard.id == dashboardId,
-    orElse: () => DefaultDashboardConfigs.overview,
-  );
-});
+final selectedDashboardProvider =
+    FutureProvider.family<CustomDashboardConfig, String>((
+      ref,
+      dashboardId,
+    ) async {
+      final dashboards = await ref.watch(userDashboardsProvider.future);
+      return dashboards.firstWhere(
+        (dashboard) => dashboard.id == dashboardId,
+        orElse: () => DefaultDashboardConfigs.overview,
+      );
+    });
 
-final analyticsInsightsProvider = FutureProvider<List<AnalyticsInsight>>((ref) async {
+final analyticsInsightsProvider = FutureProvider<List<AnalyticsInsight>>((
+  ref,
+) async {
   final insightsEngine = ref.watch(insightsEngineProvider);
   return await insightsEngine.generateAllInsights();
 });
@@ -47,33 +59,46 @@ final timePatternProvider = FutureProvider<List<TimePattern>>((ref) async {
   return await behaviorAnalysisService.analyzeTimePatterns();
 });
 
-final dayOfWeekPatternProvider = FutureProvider<List<DayOfWeekPattern>>((ref) async {
+final dayOfWeekPatternProvider = FutureProvider<List<DayOfWeekPattern>>((
+  ref,
+) async {
   final behaviorAnalysisService = ref.watch(behaviorAnalysisServiceProvider);
   return await behaviorAnalysisService.analyzeDayOfWeekPatterns();
 });
 
-final seasonalPatternProvider = FutureProvider<List<SeasonalPattern>>((ref) async {
+final seasonalPatternProvider = FutureProvider<List<SeasonalPattern>>((
+  ref,
+) async {
   final behaviorAnalysisService = ref.watch(behaviorAnalysisServiceProvider);
   return await behaviorAnalysisService.analyzeSeasonalPatterns();
 });
 
-final failurePatternsProvider = FutureProvider<List<BehaviorPattern>>((ref) async {
+final failurePatternsProvider = FutureProvider<List<BehaviorPattern>>((
+  ref,
+) async {
   final behaviorAnalysisService = ref.watch(behaviorAnalysisServiceProvider);
   return await behaviorAnalysisService.analyzeFailurePatterns();
 });
 
-final goalPredictionsProvider = FutureProvider<List<GoalPrediction>>((ref) async {
+final goalPredictionsProvider = FutureProvider<List<GoalPrediction>>((
+  ref,
+) async {
   final behaviorAnalysisService = ref.watch(behaviorAnalysisServiceProvider);
   return await behaviorAnalysisService.generateGoalPredictions();
 });
 
-final riskWarningsProvider = FutureProvider<List<AnalyticsInsight>>((ref) async {
+final riskWarningsProvider = FutureProvider<List<AnalyticsInsight>>((
+  ref,
+) async {
   final behaviorAnalysisService = ref.watch(behaviorAnalysisServiceProvider);
   return await behaviorAnalysisService.generateRiskWarnings();
 });
 
 // Habit Continuity Rate Provider
-final habitContinuityRateProvider = FutureProvider.family<double, DateRange>((ref, dateRange) async {
+final habitContinuityRateProvider = FutureProvider.family<double, DateRange>((
+  ref,
+  dateRange,
+) async {
   final behaviorAnalysisService = ref.watch(behaviorAnalysisServiceProvider);
   return await behaviorAnalysisService.analyzeHabitContinuityRate(
     startDate: dateRange.startDate,
@@ -131,10 +156,7 @@ class DateRange {
   final DateTime startDate;
   final DateTime endDate;
 
-  DateRange({
-    required this.startDate,
-    required this.endDate,
-  });
+  DateRange({required this.startDate, required this.endDate});
 
   @override
   bool operator ==(Object other) {
@@ -186,15 +208,11 @@ class AnalyticsFilter {
   }
 
   @override
-  int get hashCode => Object.hash(categories, timeRange, includeFailures, includeSuccesses);
+  int get hashCode =>
+      Object.hash(categories, timeRange, includeFailures, includeSuccesses);
 }
 
-enum TimeRange {
-  week,
-  month,
-  quarter,
-  year,
-}
+enum TimeRange { week, month, quarter, year }
 
 extension TimeRangeExtension on TimeRange {
   String get displayName {

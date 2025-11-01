@@ -14,12 +14,13 @@ void main() {
     });
 
     test('システムプロンプトが正しく生成される', () {
-      final user = User()
-        ..uid = 'test-user'
-        ..displayName = 'テストユーザー'
-        ..currentLevel = 5
-        ..totalPoints = 1000
-        ..focusTags = ['健康', '学習'];
+      final user =
+          User()
+            ..uid = 'test-user'
+            ..displayName = 'テストユーザー'
+            ..currentLevel = 5
+            ..totalPoints = 1000
+            ..focusTags = ['健康', '学習'];
 
       final context = UserProgressContext(
         user: user,
@@ -41,15 +42,17 @@ void main() {
     });
 
     test('クイックアクションが適切に生成される', () {
-      final user = User()
-        ..uid = 'test-user'
-        ..displayName = 'テストユーザー';
+      final user =
+          User()
+            ..uid = 'test-user'
+            ..displayName = 'テストユーザー';
 
-      final quest = Quest()
-        ..id = 1
-        ..title = 'テストクエスト'
-        ..category = 'health'
-        ..status = QuestStatus.active;
+      final quest =
+          Quest()
+            ..id = 1
+            ..title = 'テストクエスト'
+            ..category = 'health'
+            ..status = QuestStatus.active;
 
       final context = UserProgressContext(
         user: user,
@@ -68,9 +71,10 @@ void main() {
     });
 
     test('文脈プロンプトが正しく生成される', () {
-      final user = User()
-        ..uid = 'test-user'
-        ..displayName = 'テストユーザー';
+      final user =
+          User()
+            ..uid = 'test-user'
+            ..displayName = 'テストユーザー';
 
       final context = UserProgressContext(
         user: user,

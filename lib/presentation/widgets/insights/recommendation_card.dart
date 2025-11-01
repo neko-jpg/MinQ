@@ -5,10 +5,7 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// Card widget for displaying personalized recommendations
 class RecommendationCard extends StatelessWidget {
-  const RecommendationCard({
-    super.key,
-    required this.recommendation,
-  });
+  const RecommendationCard({super.key, required this.recommendation});
 
   final PersonalizedRecommendation recommendation;
 
@@ -37,11 +34,7 @@ class RecommendationCard extends StatelessWidget {
                   color: typeColor.withAlpha((255 * 0.2).round()),
                   borderRadius: BorderRadius.circular(tokens.radius.md),
                 ),
-                child: Icon(
-                  typeIcon,
-                  color: typeColor,
-                  size: 20,
-                ),
+                child: Icon(typeIcon, color: typeColor, size: 20),
               ),
               SizedBox(width: tokens.spacing.md),
               Expanded(
@@ -69,9 +62,9 @@ class RecommendationCard extends StatelessWidget {
               _buildConfidenceIndicator(recommendation.confidence, tokens),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing.md),
-          
+
           // Description
           Text(
             recommendation.description,
@@ -80,7 +73,7 @@ class RecommendationCard extends StatelessWidget {
               height: 1.5,
             ),
           ),
-          
+
           // Related habits (if any)
           if (recommendation.relatedHabits.isNotEmpty) ...[
             SizedBox(height: tokens.spacing.md),
@@ -95,36 +88,42 @@ class RecommendationCard extends StatelessWidget {
             Wrap(
               spacing: tokens.spacing.xs,
               runSpacing: tokens.spacing.xs,
-              children: recommendation.relatedHabits.take(3).map((habit) =>
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: tokens.spacing.sm,
-                    vertical: tokens.spacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: tokens.surfaceVariant,
-                    borderRadius: BorderRadius.circular(tokens.radius.sm),
-                  ),
-                  child: Text(
-                    habit,
-                    style: tokens.typography.caption.copyWith(
-                      color: tokens.textSecondary,
-                    ),
-                  ),
-                ),
-              ).toList(),
+              children:
+                  recommendation.relatedHabits
+                      .take(3)
+                      .map(
+                        (habit) => Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: tokens.spacing.sm,
+                            vertical: tokens.spacing.xs,
+                          ),
+                          decoration: BoxDecoration(
+                            color: tokens.surfaceVariant,
+                            borderRadius: BorderRadius.circular(
+                              tokens.radius.sm,
+                            ),
+                          ),
+                          child: Text(
+                            habit,
+                            style: tokens.typography.caption.copyWith(
+                              color: tokens.textSecondary,
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
             ),
           ],
-          
+
           SizedBox(height: tokens.spacing.lg),
-          
+
           // Action button
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () => _handleAction(context, recommendation),
               icon: Icon(
-                recommendation.iconKey != null 
+                recommendation.iconKey != null
                     ? _getIconFromKey(recommendation.iconKey!)
                     : Icons.arrow_forward,
                 size: 16,
@@ -147,7 +146,7 @@ class RecommendationCard extends StatelessWidget {
 
   Widget _buildConfidenceIndicator(double confidence, MinqTheme tokens) {
     final color = _getConfidenceColor(confidence);
-    
+
     return Column(
       children: [
         SizedBox(
@@ -263,7 +262,10 @@ class RecommendationCard extends StatelessWidget {
     }
   }
 
-  void _handleAction(BuildContext context, PersonalizedRecommendation recommendation) {
+  void _handleAction(
+    BuildContext context,
+    PersonalizedRecommendation recommendation,
+  ) {
     // Handle different recommendation actions
     switch (recommendation.type) {
       case RecommendationType.habitSuggestion:

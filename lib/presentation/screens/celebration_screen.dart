@@ -89,8 +89,10 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
             .maybeRequestReview(currentStreak: currentStreak);
       }
     } catch (error) {
-      logger.debug('In-app review trigger skipped', 
-        data: {'error': error.toString()});
+      logger.debug(
+        'In-app review trigger skipped',
+        data: {'error': error.toString()},
+      );
     }
   }
 
@@ -108,8 +110,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
         totalCompleted: totalCompleted,
       );
     } catch (error) {
-      logger.error('Share failed', 
-        data: {'error': error.toString()});
+      logger.error('Share failed', data: {'error': error.toString()});
       if (mounted) {
         ScaffoldMessenger.of(
           context,
@@ -199,7 +200,9 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
           SizedBox(height: tokens.spacing.sm),
           Text(
             subtitleText,
-            style: tokens.typography.bodyLarge.copyWith(color: tokens.textMuted),
+            style: tokens.typography.bodyLarge.copyWith(
+              color: tokens.textMuted,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -240,7 +243,9 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
                       width: tokens.spacing.xxl * 2,
                       height: tokens.spacing.xxl * 2,
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+                        color: tokens.brandPrimary.withAlpha(
+                          (255 * 0.2).round(),
+                        ),
                         borderRadius: BorderRadius.circular(tokens.radius.lg),
                       ),
                       child: Icon(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:minq/domain/notification/notification_settings.dart';
 import 'package:minq/l10n/l10n.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// 通知分析設定カード
 class AnalyticsCard extends StatelessWidget {
@@ -34,16 +35,13 @@ class AnalyticsCard extends StatelessWidget {
               },
               contentPadding: EdgeInsets.zero,
             ),
-            
+
             if (settings.enabled) ...[
               const Divider(),
-              
-              Text(
-                l10n.trackingOptions,
-                style: theme.textTheme.titleSmall,
-              ),
+
+              Text(l10n.trackingOptions, style: theme.textTheme.titleSmall),
               const SizedBox(height: 8),
-              
+
               // 開封率追跡
               CheckboxListTile(
                 title: Text(l10n.trackOpenRate),
@@ -57,7 +55,7 @@ class AnalyticsCard extends StatelessWidget {
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               // エンゲージメント率追跡
               CheckboxListTile(
                 title: Text(l10n.trackEngagementRate),
@@ -65,13 +63,15 @@ class AnalyticsCard extends StatelessWidget {
                 value: settings.trackEngagementRate,
                 onChanged: (value) {
                   if (value != null) {
-                    onSettingsChanged(settings.copyWith(trackEngagementRate: value));
+                    onSettingsChanged(
+                      settings.copyWith(trackEngagementRate: value),
+                    );
                   }
                 },
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               // コンバージョン率追跡
               CheckboxListTile(
                 title: Text(l10n.trackConversionRate),
@@ -79,13 +79,15 @@ class AnalyticsCard extends StatelessWidget {
                 value: settings.trackConversionRate,
                 onChanged: (value) {
                   if (value != null) {
-                    onSettingsChanged(settings.copyWith(trackConversionRate: value));
+                    onSettingsChanged(
+                      settings.copyWith(trackConversionRate: value),
+                    );
                   }
                 },
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               // 最適タイミング分析
               CheckboxListTile(
                 title: Text(l10n.trackOptimalTiming),
@@ -93,22 +95,21 @@ class AnalyticsCard extends StatelessWidget {
                 value: settings.trackOptimalTiming,
                 onChanged: (value) {
                   if (value != null) {
-                    onSettingsChanged(settings.copyWith(trackOptimalTiming: value));
+                    onSettingsChanged(
+                      settings.copyWith(trackOptimalTiming: value),
+                    );
                   }
                 },
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // データ保持期間
-              Text(
-                l10n.dataRetentionPeriod,
-                style: theme.textTheme.titleSmall,
-              ),
+              Text(l10n.dataRetentionPeriod, style: theme.textTheme.titleSmall),
               const SizedBox(height: 8),
-              
+
               Row(
                 children: [
                   Expanded(
@@ -119,7 +120,9 @@ class AnalyticsCard extends StatelessWidget {
                       divisions: 51, // 7日から365日まで、約7日刻み
                       label: l10n.daysCount(settings.retentionPeriodDays),
                       onChanged: (value) {
-                        onSettingsChanged(settings.copyWith(retentionPeriodDays: value.round()));
+                        onSettingsChanged(
+                          settings.copyWith(retentionPeriodDays: value.round()),
+                        );
                       },
                     ),
                   ),
@@ -133,21 +136,23 @@ class AnalyticsCard extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               Text(
                 l10n.dataRetentionDescription,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // プライバシー情報
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                  color: theme.colorScheme.surfaceContainerHighest.withOpacity(
+                    0.3,
+                  ),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -167,9 +172,9 @@ class AnalyticsCard extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // データ管理ボタン
               Row(
                 children: [
@@ -200,88 +205,90 @@ class AnalyticsCard extends StatelessWidget {
   void _showDataExportDialog(BuildContext context, AppLocalizations l10n) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.exportAnalyticsData),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.exportAnalyticsDataDescription),
-            const SizedBox(height: 16),
-            
-            // エクスポート形式選択
-            Text(
-              l10n.exportFormat,
-              style: Theme.of(context).textTheme.titleSmall,
+      builder:
+          (context) => AlertDialog(
+            title: Text(l10n.exportAnalyticsData),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.exportAnalyticsDataDescription),
+                const SizedBox(height: 16),
+
+                // エクスポート形式選択
+                Text(
+                  l10n.exportFormat,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(height: 8),
+
+                RadioListTile<String>(
+                  title: Text(l10n.csvFormat),
+                  subtitle: Text(l10n.csvFormatDescription),
+                  value: 'csv',
+                  groupValue: 'csv', // デフォルト選択
+                  onChanged: (value) {},
+                  contentPadding: EdgeInsets.zero,
+                ),
+
+                RadioListTile<String>(
+                  title: Text(l10n.jsonFormat),
+                  subtitle: Text(l10n.jsonFormatDescription),
+                  value: 'json',
+                  groupValue: 'csv',
+                  onChanged: (value) {},
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            
-            RadioListTile<String>(
-              title: Text(l10n.csvFormat),
-              subtitle: Text(l10n.csvFormatDescription),
-              value: 'csv',
-              groupValue: 'csv', // デフォルト選択
-              onChanged: (value) {},
-              contentPadding: EdgeInsets.zero,
-            ),
-            
-            RadioListTile<String>(
-              title: Text(l10n.jsonFormat),
-              subtitle: Text(l10n.jsonFormatDescription),
-              value: 'json',
-              groupValue: 'csv',
-              onChanged: (value) {},
-              contentPadding: EdgeInsets.zero,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.cancel),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // 実際の実装ではデータエクスポートを実行
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(l10n.dataExported)));
+                },
+                child: Text(l10n.export),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // 実際の実装ではデータエクスポートを実行
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.dataExported)),
-              );
-            },
-            child: Text(l10n.export),
-          ),
-        ],
-      ),
     );
   }
 
   void _showDataDeleteDialog(BuildContext context, AppLocalizations l10n) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteAnalyticsData),
-        content: Text(l10n.deleteAnalyticsDataConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.cancel),
+      builder:
+          (context) => AlertDialog(
+            title: Text(l10n.deleteAnalyticsData),
+            content: Text(l10n.deleteAnalyticsDataConfirmation),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // 実際の実装では分析データを削除
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.analyticsDataDeleted)),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  foregroundColor: Theme.of(context).colorScheme.onError,
+                ),
+                child: Text(l10n.delete),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // 実際の実装では分析データを削除
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.analyticsDataDeleted)),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Theme.of(context).colorScheme.onError,
-            ),
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
     );
   }
 }

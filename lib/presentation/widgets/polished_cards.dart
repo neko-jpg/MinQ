@@ -57,18 +57,12 @@ class _PolishedCardState extends State<PolishedCard>
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.interactive ? 0.98 : 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _shadowAnimation = Tween<double>(
       begin: 1.0,
       end: widget.interactive ? 1.5 : 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -108,28 +102,28 @@ class _PolishedCardState extends State<PolishedCard>
       margin: widget.margin,
       padding: widget.padding ?? EdgeInsets.all(MinqTokens.spacing(4)),
       decoration: BoxDecoration(
-        color: widget.gradient == null
-            ? (widget.backgroundColor ?? MinqTokens.surface)
-            : null,
+        color:
+            widget.gradient == null
+                ? (widget.backgroundColor ?? MinqTokens.surface)
+                : null,
         gradient: widget.gradient,
         borderRadius: MinqTokens.cornerLarge(),
-        boxShadow: widget.elevated
-            ? [
-                BoxShadow(
-                  color: Colors.black.withAlpha(
-                    (25 * _shadowAnimation.value).round(),
+        boxShadow:
+            widget.elevated
+                ? [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(
+                      (25 * _shadowAnimation.value).round(),
+                    ),
+                    blurRadius: 10 * _shadowAnimation.value,
+                    offset: const Offset(0, 5),
                   ),
-                  blurRadius: 10 * _shadowAnimation.value,
-                  offset: const Offset(0, 5),
-                ),
-              ]
-            : null,
-        border: !widget.elevated
-            ? Border.all(
-                color: const Color(0xFFE5E7EB),
-                width: 1,
-              )
-            : null,
+                ]
+                : null,
+        border:
+            !widget.elevated
+                ? Border.all(color: const Color(0xFFE5E7EB), width: 1)
+                : null,
       ),
       child: widget.child,
     );
@@ -206,11 +200,7 @@ class PolishedFeatureCard extends StatelessWidget {
               color: Colors.white.withAlpha(51),
               borderRadius: MinqTokens.cornerMedium(),
             ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: Icon(icon, color: Colors.white, size: 24),
           ),
           SizedBox(width: MinqTokens.spacing(4)),
           Expanded(
@@ -292,11 +282,7 @@ class PolishedStatsCard extends StatelessWidget {
                     color: accent.withAlpha(25),
                     borderRadius: MinqTokens.cornerSmall(),
                   ),
-                  child: Icon(
-                    icon,
-                    color: accent,
-                    size: 18,
-                  ),
+                  child: Icon(icon, color: accent, size: 18),
                 ),
                 SizedBox(width: MinqTokens.spacing(2)),
               ],
@@ -369,9 +355,10 @@ class PolishedActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = isDestructive
-        ? const Color(0xFFEF4444)
-        : (accentColor ?? MinqTokens.brandPrimary);
+    final accent =
+        isDestructive
+            ? const Color(0xFFEF4444)
+            : (accentColor ?? MinqTokens.brandPrimary);
 
     return PolishedCard(
       child: Column(
@@ -387,11 +374,7 @@ class PolishedActionCard extends StatelessWidget {
                     color: accent.withAlpha(25),
                     borderRadius: MinqTokens.cornerMedium(),
                   ),
-                  child: Icon(
-                    icon,
-                    color: accent,
-                    size: 20,
-                  ),
+                  child: Icon(icon, color: accent, size: 20),
                 ),
                 SizedBox(width: MinqTokens.spacing(4)),
               ],
@@ -427,9 +410,7 @@ class PolishedActionCard extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: MinqTokens.cornerMedium(),
                 ),
-                padding: EdgeInsets.symmetric(
-                  vertical: MinqTokens.spacing(4),
-                ),
+                padding: EdgeInsets.symmetric(vertical: MinqTokens.spacing(4)),
               ),
               child: Text(
                 actionText,
@@ -485,21 +466,13 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
       vsync: this,
     );
 
-    _slideAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _dismissController,
-      curve: Curves.easeInOut,
-    ));
+    _slideAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _dismissController, curve: Curves.easeInOut),
+    );
 
-    _fadeAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _dismissController,
-      curve: Curves.easeInOut,
-    ));
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(parent: _dismissController, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -537,11 +510,7 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
                         color: accent.withAlpha(25),
                         borderRadius: MinqTokens.cornerSmall(),
                       ),
-                      child: Icon(
-                        widget.icon,
-                        color: accent,
-                        size: 18,
-                      ),
+                      child: Icon(widget.icon, color: accent, size: 18),
                     ),
                     SizedBox(width: MinqTokens.spacing(4)),
                   ],
@@ -578,7 +547,7 @@ class _PolishedNotificationCardState extends State<PolishedNotificationCard>
                           color: MinqTokens.textSecondary.withAlpha(25),
                           borderRadius: MinqTokens.cornerSmall(),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.close,
                           color: MinqTokens.textSecondary,
                           size: 16,
@@ -637,10 +606,9 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
     _progressAnimation = Tween<double>(
       begin: 0.0,
       end: widget.progress,
-    ).animate(CurvedAnimation(
-      parent: _progressController,
-      curve: Curves.easeOut,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _progressController, curve: Curves.easeOut),
+    );
 
     _progressController.forward();
   }
@@ -652,10 +620,9 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
       _progressAnimation = Tween<double>(
         begin: _progressAnimation.value,
         end: widget.progress,
-      ).animate(CurvedAnimation(
-        parent: _progressController,
-        curve: Curves.easeOut,
-      ));
+      ).animate(
+        CurvedAnimation(parent: _progressController, curve: Curves.easeOut),
+      );
       _progressController.forward(from: 0.0);
     }
   }
@@ -686,11 +653,7 @@ class _PolishedProgressCardState extends State<PolishedProgressCard>
                     color: accent.withAlpha(25),
                     borderRadius: MinqTokens.cornerMedium(),
                   ),
-                  child: Icon(
-                    widget.icon,
-                    color: accent,
-                    size: 20,
-                  ),
+                  child: Icon(widget.icon, color: accent, size: 20),
                 ),
                 SizedBox(width: MinqTokens.spacing(4)),
               ],

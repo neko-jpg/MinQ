@@ -85,7 +85,7 @@ void main() {
       test('should start and stop traces', () async {
         final trace = performanceMonitoring.startTrace('test_trace');
         expect(trace.name, equals('test_trace'));
-        
+
         await Future.delayed(Duration(milliseconds: 100));
         await performanceMonitoring.stopTrace('test_trace');
         // Verify trace was completed and recorded
@@ -110,7 +110,7 @@ void main() {
             return 'success';
           },
         );
-        
+
         expect(result, equals('success'));
         // Verify operation was tracked
       });
@@ -184,9 +184,9 @@ void main() {
           isActive: true,
           startDate: DateTime.now(),
         );
-        
+
         abTesting.createTest(test);
-        
+
         final variant = abTesting.getVariant('test_experiment');
         expect(['control', 'treatment'], contains(variant));
       });
@@ -206,7 +206,7 @@ void main() {
           'country': 'US',
           'premium': true,
         });
-        
+
         // Test targeting based on attributes
         final variant = abTesting.getVariant('targeted_test');
         expect(variant, isA<String>());
@@ -230,24 +230,27 @@ void main() {
 
         // Simulate user journey with monitoring
         await userAnalytics.trackScreenView('home');
-        
+
         final trace = performanceMonitoring.startTrace('user_action');
         await userAnalytics.trackUserAction('button_tap');
         await performanceMonitoring.stopTrace('user_action');
-        
+
         // Track A/B test interaction
-        final variant = abTesting.getVariant('feature_test', defaultVariant: 'control');
+        final variant = abTesting.getVariant(
+          'feature_test',
+          defaultVariant: 'control',
+        );
         await abTesting.trackConversion('feature_test', 'interaction');
-        
+
         // Simulate error
         await crashReporting.recordNonFatalError('Test integration error');
-        
+
         // Verify all services recorded data
         final healthStatus = appMonitoring.getHealthStatus();
         final perfStats = performanceMonitoring.getPerformanceStatistics();
         final crashStats = await crashReporting.getCrashStatistics();
         final userInsights = await userAnalytics.getUserBehaviorInsights();
-        
+
         expect(healthStatus, isA<AppHealthStatus>());
         expect(perfStats, isA<PerformanceStatistics>());
         expect(crashStats, isA<CrashStatistics>());
@@ -258,7 +261,7 @@ void main() {
         // Test that monitoring works when offline
         await userAnalytics.trackUserAction('offline_action');
         await performanceMonitoring.recordMetric('offline_metric', 100.0);
-        
+
         // Verify data is stored locally for later sync
         // This would require mock network service
       });

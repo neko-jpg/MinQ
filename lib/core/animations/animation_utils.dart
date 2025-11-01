@@ -7,7 +7,7 @@ import 'package:minq/core/animations/particle_system.dart';
 /// アニメーションユーティリティクラス（要件46、47、48）
 class AnimationUtils {
   static final AnimationSystem _animationSystem = AnimationSystem.instance;
-  
+
   /// 成功アニメーション（XP獲得、レベルアップ等）
   static void showSuccessAnimation(
     BuildContext context, {
@@ -17,30 +17,117 @@ class AnimationUtils {
   }) {
     if (!_animationSystem.animationsEnabled) {
       // アニメーション無効時はスナックバーで代替
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+      return;
+    }
+
+    final overlay = Overlay.of(context);
+    late OverlayEntry entry;
+
+    entry = OverlayEntry(
+      builder:
+          (context) => Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: Stack(
+                children: [
+                  // パーティクルエフェクト
+                  if (particleConfig != null)
+                    ParticleSystem(config: particleConfig, isActive: true),
+
+                  // メッセージ表示
+                  Center(
+                    child: FluidAnimations.elasticScale(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.green.withOpacity(0.3),
+                              blurRadius: 8,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.check_circle,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              message,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            if (xpGained != null) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                '+$xpGained XP',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
+
+    overlay.insert(entry);
+
+    // ハプティックフィードバック
+    _animationSystem.playSuccessHaptic();
+
+    // 自動削除
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      entry.remove();
+    });
+  }
+
+  /// エラーアニメーション
+  static void showErrorAnimation(
+    BuildContext context, {
+    required String message,
+    IconData? icon,
+  }) {
+    if (!_animationSystem.animationsEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
+        SnackBar(content: Text(message), backgroundColor: Colors.red),
       );
       return;
     }
-    
+
     final overlay = Overlay.of(context);
     late OverlayEntry entry;
-    
+
     entry = OverlayEntry(
-      builder: (context) => Positioned.fill(
-        child: Material(
-          color: Colors.transparent,
-          child: Stack(
-            children: [
-              // パーティクルエフェクト
-              if (particleConfig != null)
-                ParticleSystem(
-                  config: particleConfig,
-                  isActive: true,
-                ),
-              
-              // メッセージ表示
-              Center(
+      builder:
+          (context) => Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: Center(
                 child: FluidAnimations.elasticScale(
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -48,11 +135,11 @@ class AnimationUtils {
                       vertical: 16,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.green,
+                      color: Colors.red,
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.green.withOpacity(0.3),
+                          color: Colors.red.withOpacity(0.3),
                           blurRadius: 8,
                           spreadRadius: 2,
                         ),
@@ -61,8 +148,8 @@ class AnimationUtils {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
-                          Icons.check_circle,
+                        Icon(
+                          icon ?? Icons.error,
                           color: Colors.white,
                           size: 32,
                         ),
@@ -76,13 +163,60 @@ class AnimationUtils {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        if (xpGained != null) ...[
-                          const SizedBox(height: 4),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+    );
+
+    overlay.insert(entry);
+
+    // エラー用ハプティックフィードバック
+    _animationSystem.playErrorHaptic();
+
+    // 自動削除
+    Future.delayed(const Duration(milliseconds: 2000), () {
+      entry.remove();
+    });
+  }
+
+  /// ローディングアニメーション
+  static OverlayEntry showLoadingAnimation(
+    BuildContext context, {
+    String? message,
+  }) {
+    final overlay = Overlay.of(context);
+
+    final entry = OverlayEntry(
+      builder:
+          (context) => Positioned.fill(
+            child: Material(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
+                child: FluidAnimations.fadeIn(
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (_animationSystem.animationsEnabled)
+                          MicroInteractions.loadingDots()
+                        else
+                          const CircularProgressIndicator(),
+                        if (message != null) ...[
+                          const SizedBox(height: 16),
                           Text(
-                            '+$xpGained XP',
+                            message,
                             style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],
@@ -91,151 +225,14 @@ class AnimationUtils {
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-    
-    overlay.insert(entry);
-    
-    // ハプティックフィードバック
-    _animationSystem.playSuccessHaptic();
-    
-    // 自動削除
-    Future.delayed(const Duration(milliseconds: 2500), () {
-      entry.remove();
-    });
-  }
-  
-  /// エラーアニメーション
-  static void showErrorAnimation(
-    BuildContext context, {
-    required String message,
-    IconData? icon,
-  }) {
-    if (!_animationSystem.animationsEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-    
-    final overlay = Overlay.of(context);
-    late OverlayEntry entry;
-    
-    entry = OverlayEntry(
-      builder: (context) => Positioned.fill(
-        child: Material(
-          color: Colors.transparent,
-          child: Center(
-            child: FluidAnimations.elasticScale(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.red.withOpacity(0.3),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      icon ?? Icons.error,
-                      color: Colors.white,
-                      size: 32,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      message,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
             ),
           ),
-        ),
-      ),
     );
-    
-    overlay.insert(entry);
-    
-    // エラー用ハプティックフィードバック
-    _animationSystem.playErrorHaptic();
-    
-    // 自動削除
-    Future.delayed(const Duration(milliseconds: 2000), () {
-      entry.remove();
-    });
-  }
-  
-  /// ローディングアニメーション
-  static OverlayEntry showLoadingAnimation(
-    BuildContext context, {
-    String? message,
-  }) {
-    final overlay = Overlay.of(context);
-    
-    final entry = OverlayEntry(
-      builder: (context) => Positioned.fill(
-        child: Material(
-          color: Colors.black.withOpacity(0.5),
-          child: Center(
-            child: FluidAnimations.fadeIn(
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (_animationSystem.animationsEnabled)
-                      MicroInteractions.loadingDots()
-                    else
-                      const CircularProgressIndicator(),
-                    if (message != null) ...[
-                      const SizedBox(height: 16),
-                      Text(
-                        message,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-    
+
     overlay.insert(entry);
     return entry;
   }
-  
+
   /// カスタムページトランジション
   static PageRouteBuilder createPageTransition({
     required Widget page,
@@ -248,7 +245,7 @@ class AnimationUtils {
       duration: duration ?? const Duration(milliseconds: 300),
     );
   }
-  
+
   /// リストアイテムのスタガードアニメーション
   static Widget buildStaggeredList({
     required List<Widget> children,
@@ -258,22 +255,23 @@ class AnimationUtils {
     if (!_animationSystem.animationsEnabled) {
       return Column(children: children);
     }
-    
+
     return Column(
-      children: children.asMap().entries.map((entry) {
-        final index = entry.key;
-        final child = entry.value;
-        
-        return FluidAnimations.staggeredList(
-          index: index,
-          duration: duration,
-          delay: delay,
-          child: child,
-        );
-      }).toList(),
+      children:
+          children.asMap().entries.map((entry) {
+            final index = entry.key;
+            final child = entry.value;
+
+            return FluidAnimations.staggeredList(
+              index: index,
+              duration: duration,
+              delay: delay,
+              child: child,
+            );
+          }).toList(),
     );
   }
-  
+
   /// グリッドアイテムのスタガードアニメーション
   static Widget buildStaggeredGrid({
     required List<Widget> children,
@@ -284,23 +282,24 @@ class AnimationUtils {
     if (!_animationSystem.animationsEnabled) {
       return Wrap(children: children);
     }
-    
+
     return Wrap(
-      children: children.asMap().entries.map((entry) {
-        final index = entry.key;
-        final child = entry.value;
-        
-        return FluidAnimations.staggeredGrid(
-          index: index,
-          columnCount: columnCount,
-          duration: duration,
-          delay: delay,
-          child: child,
-        );
-      }).toList(),
+      children:
+          children.asMap().entries.map((entry) {
+            final index = entry.key;
+            final child = entry.value;
+
+            return FluidAnimations.staggeredGrid(
+              index: index,
+              columnCount: columnCount,
+              duration: duration,
+              delay: delay,
+              child: child,
+            );
+          }).toList(),
     );
   }
-  
+
   /// ボタンのプレスアニメーション
   static Widget buildAnimatedButton({
     required Widget child,
@@ -315,7 +314,7 @@ class AnimationUtils {
       child: child,
     );
   }
-  
+
   /// カードのホバーアニメーション
   static Widget buildHoverCard({
     required Widget child,
@@ -330,7 +329,7 @@ class AnimationUtils {
       child: child,
     );
   }
-  
+
   /// プログレスバーのアニメーション
   static Widget buildAnimatedProgress({
     required double progress,
@@ -347,7 +346,7 @@ class AnimationUtils {
       height: height,
     );
   }
-  
+
   /// FABのアニメーション
   static Widget buildAnimatedFAB({
     required Widget child,
@@ -362,7 +361,7 @@ class AnimationUtils {
       child: child,
     );
   }
-  
+
   /// 拡張FAB
   static Widget buildExpandingFAB({
     required List<FABAction> actions,
@@ -377,7 +376,7 @@ class AnimationUtils {
       foregroundColor: foregroundColor,
     );
   }
-  
+
   /// ハートライクアニメーション
   static Widget buildHeartLike({
     required bool isLiked,
@@ -394,7 +393,7 @@ class AnimationUtils {
       size: size,
     );
   }
-  
+
   /// スワイプアクション
   static Widget buildSwipeAction({
     required Widget child,
@@ -407,7 +406,7 @@ class AnimationUtils {
       rightActions: rightActions,
     );
   }
-  
+
   /// パーティクルエフェクトの表示
   static void showParticleEffect(
     BuildContext context, {
@@ -419,27 +418,28 @@ class AnimationUtils {
       onComplete?.call();
       return;
     }
-    
+
     final overlay = Overlay.of(context);
     late OverlayEntry entry;
-    
+
     entry = OverlayEntry(
-      builder: (context) => Positioned.fill(
-        child: IgnorePointer(
-          child: ParticleEffect(
-            config: config,
-            onComplete: () {
-              entry.remove();
-              onComplete?.call();
-            },
+      builder:
+          (context) => Positioned.fill(
+            child: IgnorePointer(
+              child: ParticleEffect(
+                config: config,
+                onComplete: () {
+                  entry.remove();
+                  onComplete?.call();
+                },
+              ),
+            ),
           ),
-        ),
-      ),
     );
-    
+
     overlay.insert(entry);
   }
-  
+
   /// レベルアップ祝福アニメーション
   static void showLevelUpCelebration(
     BuildContext context, {
@@ -448,63 +448,45 @@ class AnimationUtils {
     List<String> rewards = const [],
   }) {
     // パーティクルエフェクト
-    showParticleEffect(
-      context,
-      config: ParticleConfig.levelUp(),
-    );
-    
+    showParticleEffect(context, config: ParticleConfig.levelUp());
+
     // ハプティックフィードバック
     _animationSystem.playSuccessHaptic();
-    
+
     // 遅延してもう一度ハプティック
     Future.delayed(const Duration(milliseconds: 500), () {
       _animationSystem.playSuccessHaptic();
     });
   }
-  
+
   /// XP獲得祝福アニメーション
   static void showXPGainCelebration(
     BuildContext context, {
     required int xpGained,
     required String reason,
   }) {
-    showParticleEffect(
-      context,
-      config: ParticleConfig.xpGain(),
-    );
-    
+    showParticleEffect(context, config: ParticleConfig.xpGain());
+
     _animationSystem.playSuccessHaptic();
   }
-  
+
   /// 成功祝福アニメーション
-  static void showSuccessCelebration(
-    BuildContext context, {
-    String? message,
-  }) {
-    showParticleEffect(
-      context,
-      config: ParticleConfig.success(),
-    );
-    
+  static void showSuccessCelebration(BuildContext context, {String? message}) {
+    showParticleEffect(context, config: ParticleConfig.success());
+
     _animationSystem.playSuccessHaptic();
-    
+
     if (message != null) {
       showSuccessAnimation(context, message: message);
     }
   }
-  
+
   /// 一般的な祝福アニメーション
-  static void showCelebration(
-    BuildContext context, {
-    String? message,
-  }) {
-    showParticleEffect(
-      context,
-      config: ParticleConfig.celebration(),
-    );
-    
+  static void showCelebration(BuildContext context, {String? message}) {
+    showParticleEffect(context, config: ParticleConfig.celebration());
+
     _animationSystem.playSuccessHaptic();
-    
+
     if (message != null) {
       showSuccessAnimation(context, message: message);
     }

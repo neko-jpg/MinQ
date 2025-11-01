@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:minq/domain/notification/notification_analytics.dart';
 import 'package:minq/domain/notification/notification_settings.dart';
 import 'package:minq/l10n/l10n.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// 通知メトリクスカード
 class NotificationMetricsCard extends StatelessWidget {
@@ -39,9 +40,14 @@ class NotificationMetricsCard extends StatelessWidget {
                 ),
                 if (metrics.totalSent > 0)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: _getPerformanceColor(metrics.openRate).withOpacity(0.1),
+                      color: _getPerformanceColor(
+                        metrics.openRate,
+                      ).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -54,9 +60,9 @@ class NotificationMetricsCard extends StatelessWidget {
                   ),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             Row(
               children: [
                 Expanded(
@@ -85,12 +91,12 @@ class NotificationMetricsCard extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             if (showDetails) ...[
               const SizedBox(height: 16),
               const Divider(),
               const SizedBox(height: 16),
-              
+
               _buildDetailedMetrics(context, metrics, l10n),
             ],
           ],
@@ -107,23 +113,16 @@ class NotificationMetricsCard extends StatelessWidget {
   ) {
     return Column(
       children: [
-        Icon(
-          icon,
-          size: 20,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
         const SizedBox(height: 4),
         Text(
           value,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 2),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
       ],
     );
   }
@@ -136,12 +135,9 @@ class NotificationMetricsCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Detailed Metrics',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
+        Text('Detailed Metrics', style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 12),
-        
+
         Row(
           children: [
             Expanded(
@@ -160,9 +156,9 @@ class NotificationMetricsCard extends StatelessWidget {
             ),
           ],
         ),
-        
+
         const SizedBox(height: 8),
-        
+
         Row(
           children: [
             Expanded(
@@ -181,13 +177,10 @@ class NotificationMetricsCard extends StatelessWidget {
             ),
           ],
         ),
-        
+
         if (metrics.hourlyDistribution != null) ...[
           const SizedBox(height: 16),
-          Text(
-            'Peak Hours',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
+          Text('Peak Hours', style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: 8),
           _buildPeakHours(context, metrics.hourlyDistribution!),
         ],
@@ -208,40 +201,45 @@ class NotificationMetricsCard extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           value,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w500,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
         ),
       ],
     );
   }
 
-  Widget _buildPeakHours(BuildContext context, Map<String, int> hourlyDistribution) {
-    final sortedHours = hourlyDistribution.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    
+  Widget _buildPeakHours(
+    BuildContext context,
+    Map<String, int> hourlyDistribution,
+  ) {
+    final sortedHours =
+        hourlyDistribution.entries.toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
+
     final topHours = sortedHours.take(3).toList();
-    
+
     return Wrap(
       spacing: 8,
-      children: topHours.map((entry) {
-        final hour = int.parse(entry.key);
-        final count = entry.value;
-        
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            '${hour.toString().padLeft(2, '0')}:00 ($count)',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-            ),
-          ),
-        );
-      }).toList(),
+      children:
+          topHours.map((entry) {
+            final hour = int.parse(entry.key);
+            final count = entry.value;
+
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '${hour.toString().padLeft(2, '0')}:00 ($count)',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+              ),
+            );
+          }).toList(),
     );
   }
 
@@ -266,7 +264,10 @@ class NotificationMetricsCard extends StatelessWidget {
     }
   }
 
-  String _getCategoryDisplayName(NotificationCategory category, AppLocalizations l10n) {
+  String _getCategoryDisplayName(
+    NotificationCategory category,
+    AppLocalizations l10n,
+  ) {
     switch (category) {
       case NotificationCategory.quest:
         return l10n.questNotifications;

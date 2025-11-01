@@ -2038,4 +2038,125 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get thankYou => 'Thank you!';
+
+  @override
+  String get accountDeletionTitle => 'Delete Account';
+
+  @override
+  String get accountDeletionWarning =>
+      'This action will permanently delete your account and all associated data. This cannot be undone.';
+
+  @override
+  String get accountDeletionConfirmPhrase => 'DELETE MY ACCOUNT';
+
+  @override
+  String get accountDeletionConfirmationCheckbox =>
+      'I understand that this action cannot be undone';
+
+  @override
+  String get accountDeletionConfirmDialogTitle => 'Confirm Account Deletion';
+
+  @override
+  String get accountDeletionConfirmDialogDescription =>
+      'Are you sure you want to delete your account? All your data will be permanently lost.';
+
+  @override
+  String get accountDeletionConfirmDialogPrompt =>
+      'Type \'DELETE MY ACCOUNT\' to confirm:';
+
+  @override
+  String get accountDeletionConfirmButton => 'Delete Account';
+
+  @override
+  String get celebrationNewLongestStreak => 'New Longest Streak!';
+
+  @override
+  String celebrationStreakMessage(int streak) {
+    return '$streak day streak!';
+  }
+
+  @override
+  String get celebrationLongestSubtitle =>
+      'You\'ve reached a new personal best!';
+
+  @override
+  String get celebrationKeepGoingSubtitle => 'Keep up the great work!';
+
+  @override
+  String get celebrationRewardTitle => 'Reward Unlocked';
+
+  @override
+  String get celebrationRewardName => 'Streak Master';
+
+  @override
+  String get celebrationRewardDescription =>
+      'Earned for maintaining a consistent habit streak';
+
+  @override
+  String get celebrationDone => 'Continue';
+
+  @override
+  String get notificationPermissionDialogTitle => 'Enable Notifications';
+
+  @override
+  String get notificationPermissionDialogMessage =>
+      'Stay on track with helpful reminders and updates from your habit partner.';
+
+  @override
+  String get notificationPermissionDialogBenefitsHeading => 'Benefits:';
+
+  @override
+  String get notificationPermissionDialogBenefitReminders =>
+      'Daily habit reminders';
+
+  @override
+  String get notificationPermissionDialogBenefitPair => 'Partner encouragement';
+
+  @override
+  String get notificationPermissionDialogBenefitGoal =>
+      'Goal achievement celebrations';
+
+  @override
+  String get notificationPermissionDialogFooter =>
+      'You can change this setting anytime in the app settings.';
+
+  @override
+  String get reportUser => 'Report User';
+
+  @override
+  String get reportConfirmation => 'Are you sure you want to report this user?';
+
+  @override
+  String get report => 'Report';
+
+  @override
+  String get reportSubmitted => 'Report submitted successfully';
+
+  @override
+  String get blockUser => 'Block User';
+
+  @override
+  String get blockConfirmation => 'Are you sure you want to block this user?';
+
+  @override
+  String get block => 'Block';
+
+  @override
+  String get userBlocked => 'User has been blocked';
+
+  @override
+  String get reason => 'Reason';
+
+  @override
+  String get messageSentFailed => 'Failed to send message';
+
+  @override
+  String get chatInputHint => 'Type a message...';
+
+  @override
+  String get pairMatchingTimeoutTitle => 'Matching Timeout';
+
+  @override
+  String get pairMatchingTimeoutMessage =>
+      'We couldn\'t find a partner right now. Please try again later.';
 }

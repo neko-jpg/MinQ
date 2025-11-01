@@ -3921,6 +3921,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Thank you!'**
   String get thankYou;
+
+  /// No description provided for @accountDeletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get accountDeletionTitle;
+
+  /// No description provided for @accountDeletionWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This action will permanently delete your account and all associated data. This cannot be undone.'**
+  String get accountDeletionWarning;
+
+  /// No description provided for @accountDeletionConfirmPhrase.
+  ///
+  /// In en, this message translates to:
+  /// **'DELETE MY ACCOUNT'**
+  String get accountDeletionConfirmPhrase;
+
+  /// No description provided for @accountDeletionConfirmationCheckbox.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand that this action cannot be undone'**
+  String get accountDeletionConfirmationCheckbox;
+
+  /// No description provided for @accountDeletionConfirmDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Account Deletion'**
+  String get accountDeletionConfirmDialogTitle;
+
+  /// No description provided for @accountDeletionConfirmDialogDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account? All your data will be permanently lost.'**
+  String get accountDeletionConfirmDialogDescription;
+
+  /// No description provided for @accountDeletionConfirmDialogPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Type \'DELETE MY ACCOUNT\' to confirm:'**
+  String get accountDeletionConfirmDialogPrompt;
+
+  /// No description provided for @accountDeletionConfirmButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get accountDeletionConfirmButton;
+
+  /// No description provided for @celebrationNewLongestStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'New Longest Streak!'**
+  String get celebrationNewLongestStreak;
+
+  /// No description provided for @celebrationStreakMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{streak} day streak!'**
+  String celebrationStreakMessage(int streak);
+
+  /// No description provided for @celebrationLongestSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached a new personal best!'**
+  String get celebrationLongestSubtitle;
+
+  /// No description provided for @celebrationKeepGoingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep up the great work!'**
+  String get celebrationKeepGoingSubtitle;
+
+  /// No description provided for @celebrationRewardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward Unlocked'**
+  String get celebrationRewardTitle;
+
+  /// No description provided for @celebrationRewardName.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak Master'**
+  String get celebrationRewardName;
+
+  /// No description provided for @celebrationRewardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Earned for maintaining a consistent habit streak'**
+  String get celebrationRewardDescription;
+
+  /// No description provided for @celebrationDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get celebrationDone;
+
+  /// No description provided for @notificationPermissionDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Notifications'**
+  String get notificationPermissionDialogTitle;
+
+  /// No description provided for @notificationPermissionDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay on track with helpful reminders and updates from your habit partner.'**
+  String get notificationPermissionDialogMessage;
+
+  /// No description provided for @notificationPermissionDialogBenefitsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Benefits:'**
+  String get notificationPermissionDialogBenefitsHeading;
+
+  /// No description provided for @notificationPermissionDialogBenefitReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily habit reminders'**
+  String get notificationPermissionDialogBenefitReminders;
+
+  /// No description provided for @notificationPermissionDialogBenefitPair.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner encouragement'**
+  String get notificationPermissionDialogBenefitPair;
+
+  /// No description provided for @notificationPermissionDialogBenefitGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal achievement celebrations'**
+  String get notificationPermissionDialogBenefitGoal;
+
+  /// No description provided for @notificationPermissionDialogFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change this setting anytime in the app settings.'**
+  String get notificationPermissionDialogFooter;
+
+  /// No description provided for @reportUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Report User'**
+  String get reportUser;
+
+  /// No description provided for @reportConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to report this user?'**
+  String get reportConfirmation;
+
+  /// No description provided for @report.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get report;
+
+  /// No description provided for @reportSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Report submitted successfully'**
+  String get reportSubmitted;
+
+  /// No description provided for @blockUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Block User'**
+  String get blockUser;
+
+  /// No description provided for @blockConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to block this user?'**
+  String get blockConfirmation;
+
+  /// No description provided for @block.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get block;
+
+  /// No description provided for @userBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'User has been blocked'**
+  String get userBlocked;
+
+  /// No description provided for @reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get reason;
+
+  /// No description provided for @messageSentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send message'**
+  String get messageSentFailed;
+
+  /// No description provided for @chatInputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message...'**
+  String get chatInputHint;
+
+  /// No description provided for @pairMatchingTimeoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching Timeout'**
+  String get pairMatchingTimeoutTitle;
+
+  /// No description provided for @pairMatchingTimeoutMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find a partner right now. Please try again later.'**
+  String get pairMatchingTimeoutMessage;
 }
 
 class _AppLocalizationsDelegate

@@ -22,7 +22,7 @@ class LayoutFixes {
         children: children,
       );
     }
-    
+
     return SafeRow(
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
@@ -46,7 +46,7 @@ class LayoutFixes {
         children: children,
       );
     }
-    
+
     return SafeColumn(
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
@@ -106,7 +106,7 @@ class LayoutFixes {
     bool enableScrolling = false,
   }) {
     Widget content = child;
-    
+
     if (enableScrolling) {
       content = SingleChildScrollView(child: content);
     }
@@ -119,10 +119,7 @@ class LayoutFixes {
         boxShadow: boxShadow,
         border: border,
       ),
-      child: SafeContainer(
-        padding: padding,
-        child: content,
-      ),
+      child: SafeContainer(padding: padding, child: content),
     );
   }
 
@@ -204,10 +201,7 @@ class LayoutFixes {
     return Container(
       margin: margin,
       padding: padding,
-      constraints: BoxConstraints(
-        minWidth: minWidth,
-        minHeight: minHeight,
-      ),
+      constraints: BoxConstraints(minWidth: minWidth, minHeight: minHeight),
       child: button,
     );
   }
@@ -227,15 +221,9 @@ class LayoutFixes {
     );
 
     if (enableScrolling) {
-      content = SingleChildScrollView(
-        padding: padding,
-        child: content,
-      );
+      content = SingleChildScrollView(padding: padding, child: content);
     } else if (padding != null) {
-      content = Padding(
-        padding: padding,
-        child: content,
-      );
+      content = Padding(padding: padding, child: content);
     }
 
     if (handleKeyboard) {
@@ -243,10 +231,7 @@ class LayoutFixes {
     }
 
     if (formKey != null) {
-      content = Form(
-        key: formKey,
-        child: content,
-      );
+      content = Form(key: formKey, child: content);
     }
 
     return content;
@@ -266,17 +251,19 @@ class LayoutFixes {
     // Ensure actions have proper touch targets
     List<Widget>? safeActions;
     if (actions != null) {
-      safeActions = actions.map((action) {
-        return ResponsiveLayout.ensureTouchTarget(child: action);
-      }).toList();
+      safeActions =
+          actions.map((action) {
+            return ResponsiveLayout.ensureTouchTarget(child: action);
+          }).toList();
     }
 
     return AppBar(
       title: Text(title, style: titleStyle),
       actions: safeActions,
-      leading: leading != null 
-        ? ResponsiveLayout.ensureTouchTarget(child: leading)
-        : null,
+      leading:
+          leading != null
+              ? ResponsiveLayout.ensureTouchTarget(child: leading)
+              : null,
       centerTitle: centerTitle,
       backgroundColor: backgroundColor,
       elevation: elevation,
@@ -338,14 +325,13 @@ class LayoutFixes {
           maxWidth: maxWidth ?? 400,
           maxHeight: maxHeight ?? 600,
         ),
-        child: SingleChildScrollView(
-          child: content,
-        ),
+        child: SingleChildScrollView(child: content),
       ),
       contentPadding: contentPadding,
-      actions: actions?.map((action) {
-        return ResponsiveLayout.ensureTouchTarget(child: action);
-      }).toList(),
+      actions:
+          actions?.map((action) {
+            return ResponsiveLayout.ensureTouchTarget(child: action);
+          }).toList(),
     );
 
     return dialog;

@@ -50,11 +50,7 @@ class PdfExportService {
       logger.info('Stats PDF export completed');
       return null;
     } catch (e, stack) {
-      logger.error(
-        'Failed to export stats PDF',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.error('Failed to export stats PDF', error: e, stackTrace: stack);
       return null;
     }
   }

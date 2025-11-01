@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// ユーザーの進捗に応じて段階的にヒントを表示し、SharedPreferencesで状態管理
 class ProgressiveHintService {
   static const String _keyPrefix = 'progressive_hint_';
-  
+
   // ヒントID定数
   static const String hintFirstQuest = 'first_quest';
   static const String hintFirstCompletion = 'first_completion';
@@ -75,7 +75,10 @@ class ProgressiveHintService {
   }
 
   /// ストリーク達成ヒントを表示
-  static Future<void> showStreakHint(BuildContext context, int streakDays) async {
+  static Future<void> showStreakHint(
+    BuildContext context,
+    int streakDays,
+  ) async {
     if (await hasShownHint(hintStreak)) return;
     if (!context.mounted) return;
 
@@ -195,19 +198,15 @@ class ProgressiveHintService {
               const SizedBox(width: 8),
             ],
             Expanded(
-              child: Text(
-                message,
-                style: const TextStyle(color: Colors.white),
-              ),
+              child: Text(message, style: const TextStyle(color: Colors.white)),
             ),
           ],
         ),
-        backgroundColor: backgroundColor ?? Theme.of(context).colorScheme.primary,
+        backgroundColor:
+            backgroundColor ?? Theme.of(context).colorScheme.primary,
         duration: duration,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         action: SnackBarAction(
           label: '了解',
           textColor: Colors.white,
@@ -235,14 +234,15 @@ class ProgressiveHintService {
     late OverlayEntry overlayEntry;
 
     overlayEntry = OverlayEntry(
-      builder: (context) => ProgressiveHintOverlay(
-        message: message,
-        targetWidget: targetWidget,
-        onDismiss: () {
-          overlayEntry.remove();
-          markHintShown(hintId);
-        },
-      ),
+      builder:
+          (context) => ProgressiveHintOverlay(
+            message: message,
+            targetWidget: targetWidget,
+            onDismiss: () {
+              overlayEntry.remove();
+              markHintShown(hintId);
+            },
+          ),
     );
 
     overlay.insert(overlayEntry);
@@ -292,21 +292,13 @@ class _ProgressiveHintDialogState extends State<ProgressiveHintDialog>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
+    );
 
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
     _animationController.forward();
   }
@@ -338,11 +330,7 @@ class _ProgressiveHintDialogState extends State<ProgressiveHintDialog>
                       color: widget.color.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(
-                      widget.icon,
-                      color: widget.color,
-                      size: 24,
-                    ),
+                    child: Icon(widget.icon, color: widget.color, size: 24),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -365,10 +353,7 @@ class _ProgressiveHintDialogState extends State<ProgressiveHintDialog>
                     widget.onDismiss?.call();
                     Navigator.of(context).pop();
                   },
-                  child: Text(
-                    '了解',
-                    style: TextStyle(color: widget.color),
-                  ),
+                  child: Text('了解', style: TextStyle(color: widget.color)),
                 ),
               ],
             ),
@@ -410,21 +395,13 @@ class _ProgressiveHintOverlayState extends State<ProgressiveHintOverlay>
       vsync: this,
     );
 
-    _slideAnimation = Tween<double>(
-      begin: -50.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
+    _slideAnimation = Tween<double>(begin: -50.0, end: 0.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
     _animationController.forward();
   }
@@ -464,11 +441,7 @@ class _ProgressiveHintOverlayState extends State<ProgressiveHintOverlay>
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.lightbulb,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                    const Icon(Icons.lightbulb, color: Colors.white, size: 20),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(

@@ -10,9 +10,11 @@ class PremiumService {
   final StreamController<PremiumSubscription?> _subscriptionController;
 
   PremiumService(this._localStorage)
-      : _subscriptionController = StreamController<PremiumSubscription?>.broadcast();
+    : _subscriptionController =
+          StreamController<PremiumSubscription?>.broadcast();
 
-  Stream<PremiumSubscription?> get subscriptionStream => _subscriptionController.stream;
+  Stream<PremiumSubscription?> get subscriptionStream =>
+      _subscriptionController.stream;
 
   // Premium Plans Configuration
   static final List<PremiumPlan> availablePlans = [
@@ -145,7 +147,9 @@ class PremiumService {
 
   Future<PremiumSubscription?> getCurrentSubscription() async {
     try {
-      final subscriptionData = await _localStorage.getString('premium_subscription');
+      final subscriptionData = await _localStorage.getString(
+        'premium_subscription',
+      );
       if (subscriptionData != null) {
         final json = Map<String, dynamic>.from(subscriptionData as Map);
         return PremiumSubscription.fromJson(json);
@@ -158,7 +162,8 @@ class PremiumService {
 
   Future<PremiumTier> getCurrentTier() async {
     final subscription = await getCurrentSubscription();
-    if (subscription != null && subscription.status == SubscriptionStatus.active) {
+    if (subscription != null &&
+        subscription.status == SubscriptionStatus.active) {
       return subscription.tier;
     }
     return PremiumTier.free;
@@ -172,7 +177,7 @@ class PremiumService {
   Future<bool> canCreateQuest() async {
     final tier = await getCurrentTier();
     if (tier.questLimit == -1) return true; // Unlimited
-    
+
     // Check current quest count (this would be implemented with actual quest service)
     final currentQuestCount = await _getCurrentQuestCount();
     return currentQuestCount < tier.questLimit;
@@ -181,7 +186,7 @@ class PremiumService {
   Future<int> getRemainingQuests() async {
     final tier = await getCurrentTier();
     if (tier.questLimit == -1) return -1; // Unlimited
-    
+
     final currentQuestCount = await _getCurrentQuestCount();
     return (tier.questLimit - currentQuestCount).clamp(0, tier.questLimit);
   }
@@ -224,7 +229,7 @@ class PremiumService {
 
   Future<List<FamilyMember>> getFamilyMembers() async {
     if (!await canUseFamily()) return [];
-    
+
     // Mock implementation - would fetch from actual family service
     return [
       FamilyMember(
@@ -248,19 +253,19 @@ class PremiumService {
 
   Future<bool> inviteFamilyMember(String email, FamilyRole role) async {
     if (!await canUseFamily()) return false;
-    
+
     final currentMembers = await getFamilyMembers();
     final limit = await getFamilyMemberLimit();
-    
+
     if (currentMembers.length >= limit) return false;
-    
+
     // Mock implementation - would send actual invitation
     return true;
   }
 
   Future<bool> removeFamilyMember(String memberId) async {
     if (!await canUseFamily()) return false;
-    
+
     // Mock implementation - would remove from actual family service
     return true;
   }
@@ -269,16 +274,18 @@ class PremiumService {
     if (!await isStudentPlan()) {
       return StudentVerificationStatus.notApplicable;
     }
-    
+
     // Mock implementation - would check actual verification status
-    final verificationData = await _localStorage.getString('student_verification');
+    final verificationData = await _localStorage.getString(
+      'student_verification',
+    );
     if (verificationData == null) {
       return StudentVerificationStatus.pending;
     }
-    
+
     final data = Map<String, dynamic>.from(verificationData as Map);
     final status = data['status'] as String;
-    
+
     return StudentVerificationStatus.values.firstWhere(
       (s) => s.name == status,
       orElse: () => StudentVerificationStatus.pending,
@@ -291,7 +298,7 @@ class PremiumService {
     required String documentUrl,
   }) async {
     if (!await isStudentPlan()) return false;
-    
+
     final verificationData = {
       'schoolName': schoolName,
       'studentId': studentId,
@@ -299,8 +306,11 @@ class PremiumService {
       'submittedAt': DateTime.now().toIso8601String(),
       'status': StudentVerificationStatus.pending.name,
     };
-    
-    await _localStorage.setString('student_verification', jsonEncode(verificationData));
+
+    await _localStorage.setString(
+      'student_verification',
+      jsonEncode(verificationData),
+    );
     return true;
   }
 
@@ -322,72 +332,87 @@ class PremiumService {
   Future<List<PremiumBenefit>> getActiveBenefits() async {
     final tier = await getCurrentTier();
     final benefits = <PremiumBenefit>[];
-    
+
     if (tier.questLimit == -1) {
-      benefits.add(const PremiumBenefit(
-        id: 'unlimited_quests',
-        title: 'Unlimited Quests',
-        description: 'Create as many quests as you need',
-        icon: 'infinity',
-        isActive: true,
-      ));
+      benefits.add(
+        const PremiumBenefit(
+          id: 'unlimited_quests',
+          title: 'Unlimited Quests',
+          description: 'Create as many quests as you need',
+          icon: 'infinity',
+          isActive: true,
+        ),
+      );
     }
-    
+
     if (await hasPriorityAICoach()) {
-      benefits.add(const PremiumBenefit(
-        id: 'priority_ai',
-        title: 'Priority AI Coach',
-        description: 'Faster response times and advanced insights',
-        icon: 'robot',
-        isActive: true,
-      ));
+      benefits.add(
+        const PremiumBenefit(
+          id: 'priority_ai',
+          title: 'Priority AI Coach',
+          description: 'Faster response times and advanced insights',
+          icon: 'robot',
+          isActive: true,
+        ),
+      );
     }
-    
+
     if (await hasAdvancedAnalytics()) {
-      benefits.add(const PremiumBenefit(
-        id: 'advanced_analytics',
-        title: 'Advanced Analytics',
-        description: 'Detailed insights and predictions',
-        icon: 'chart',
-        isActive: true,
-      ));
+      benefits.add(
+        const PremiumBenefit(
+          id: 'advanced_analytics',
+          title: 'Advanced Analytics',
+          description: 'Detailed insights and predictions',
+          icon: 'chart',
+          isActive: true,
+        ),
+      );
     }
-    
+
     if (await hasFeature(FeatureType.export)) {
-      benefits.add(const PremiumBenefit(
-        id: 'data_export',
-        title: 'Data Export',
-        description: 'Export your data in multiple formats',
-        icon: 'download',
-        isActive: true,
-      ));
+      benefits.add(
+        const PremiumBenefit(
+          id: 'data_export',
+          title: 'Data Export',
+          description: 'Export your data in multiple formats',
+          icon: 'download',
+          isActive: true,
+        ),
+      );
     }
-    
+
     if (await hasFeature(FeatureType.backup)) {
-      benefits.add(const PremiumBenefit(
-        id: 'cloud_backup',
-        title: 'Cloud Backup',
-        description: 'Automatic backup and restore',
-        icon: 'cloud',
-        isActive: true,
-      ));
+      benefits.add(
+        const PremiumBenefit(
+          id: 'cloud_backup',
+          title: 'Cloud Backup',
+          description: 'Automatic backup and restore',
+          icon: 'cloud',
+          isActive: true,
+        ),
+      );
     }
-    
+
     if (await canUseFamily()) {
-      benefits.add(const PremiumBenefit(
-        id: 'family_plan',
-        title: 'Family Sharing',
-        description: 'Share with up to 6 family members',
-        icon: 'family',
-        isActive: true,
-      ));
+      benefits.add(
+        const PremiumBenefit(
+          id: 'family_plan',
+          title: 'Family Sharing',
+          description: 'Share with up to 6 family members',
+          icon: 'family',
+          isActive: true,
+        ),
+      );
     }
-    
+
     return benefits;
   }
 
   Future<void> activateSubscription(PremiumSubscription subscription) async {
-    await _localStorage.setString('premium_subscription', jsonEncode(subscription.toJson()));
+    await _localStorage.setString(
+      'premium_subscription',
+      jsonEncode(subscription.toJson()),
+    );
     _subscriptionController.add(subscription);
   }
 
@@ -400,15 +425,19 @@ class PremiumService {
         cancellationDate: DateTime.now(),
         autoRenew: false,
       );
-      
-      await _localStorage.setString('premium_subscription', jsonEncode(cancelledSubscription.toJson()));
+
+      await _localStorage.setString(
+        'premium_subscription',
+        jsonEncode(cancelledSubscription.toJson()),
+      );
       _subscriptionController.add(cancelledSubscription);
     }
   }
 
   Future<void> renewSubscription() async {
     final subscription = await getCurrentSubscription();
-    if (subscription != null && subscription.status == SubscriptionStatus.expired) {
+    if (subscription != null &&
+        subscription.status == SubscriptionStatus.expired) {
       final renewedSubscription = subscription.copyWith(
         status: SubscriptionStatus.active,
         startDate: DateTime.now(),
@@ -424,8 +453,11 @@ class PremiumService {
               : const Duration(days: 365),
         ),
       );
-      
-      await _localStorage.setString('premium_subscription', jsonEncode(renewedSubscription.toJson()));
+
+      await _localStorage.setString(
+        'premium_subscription',
+        jsonEncode(renewedSubscription.toJson()),
+      );
       _subscriptionController.add(renewedSubscription);
     }
   }
@@ -448,7 +480,9 @@ class PremiumService {
 
   Future<List<PremiumFeature>> getUnlockedFeatures() async {
     final tier = await getCurrentTier();
-    return premiumFeatures.where((feature) => tier.hasFeature(feature.type)).toList();
+    return premiumFeatures
+        .where((feature) => tier.hasFeature(feature.type))
+        .toList();
   }
 
   Future<bool> isTrialAvailable() async {
@@ -470,7 +504,7 @@ class PremiumService {
         billingCycle: BillingCycle.monthly,
         autoRenew: false,
       );
-      
+
       await activateSubscription(trialSubscription);
       await _localStorage.setBool('has_used_trial', true);
     }

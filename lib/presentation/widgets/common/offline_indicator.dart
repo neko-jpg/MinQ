@@ -18,7 +18,7 @@ class OfflineIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final indicatorColor = color ?? MinqTokens.accentWarning;
-    
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -28,16 +28,9 @@ class OfflineIndicator extends ConsumerWidget {
           decoration: BoxDecoration(
             color: indicatorColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(size / 2),
-            border: Border.all(
-              color: indicatorColor,
-              width: 1.5,
-            ),
+            border: Border.all(color: indicatorColor, width: 1.5),
           ),
-          child: Icon(
-            Icons.cloud_off,
-            size: size * 0.6,
-            color: indicatorColor,
-          ),
+          child: Icon(Icons.cloud_off, size: size * 0.6, color: indicatorColor),
         ),
         if (showLabel) ...[
           SizedBox(width: MinqTokens.spacing(1)),
@@ -87,11 +80,7 @@ class OfflineBanner extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.cloud_off,
-            color: MinqTokens.primaryForeground,
-            size: 20,
-          ),
+          Icon(Icons.cloud_off, color: MinqTokens.primaryForeground, size: 20),
           SizedBox(width: MinqTokens.spacing(2)),
           Expanded(
             child: Text(
@@ -144,7 +133,7 @@ class SyncStatusIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = _getSyncStatusConfig(status);
-    
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -155,20 +144,17 @@ class SyncStatusIndicator extends ConsumerWidget {
             color: config.color.withOpacity(0.2),
             borderRadius: BorderRadius.circular(size / 2),
           ),
-          child: status == SyncStatus.syncing
-              ? SizedBox(
-                  width: size * 0.6,
-                  height: size * 0.6,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 1.5,
-                    valueColor: AlwaysStoppedAnimation(config.color),
-                  ),
-                )
-              : Icon(
-                  config.icon,
-                  size: size * 0.6,
-                  color: config.color,
-                ),
+          child:
+              status == SyncStatus.syncing
+                  ? SizedBox(
+                    width: size * 0.6,
+                    height: size * 0.6,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5,
+                      valueColor: AlwaysStoppedAnimation(config.color),
+                    ),
+                  )
+                  : Icon(config.icon, size: size * 0.6, color: config.color),
         ),
         if (showLabel) ...[
           SizedBox(width: MinqTokens.spacing(1)),
@@ -233,10 +219,10 @@ class _SyncStatusConfig {
 }
 
 /// Enum for sync status (should match the one in local models)
-enum SyncStatus { 
-  synced,      // Successfully synced with server
-  pending,     // Waiting to be synced
-  syncing,     // Currently being synced
-  failed,      // Sync failed
-  conflict     // Conflict detected, needs resolution
+enum SyncStatus {
+  synced, // Successfully synced with server
+  pending, // Waiting to be synced
+  syncing, // Currently being synced
+  failed, // Sync failed
+  conflict, // Conflict detected, needs resolution
 }

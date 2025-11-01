@@ -5,5 +5,7 @@ targets:
         generate_for:
           include:
             - lib/domain/**.dart
+            - lib/data/local/models/**.dart
+            - lib/core/sync/**.dart
           exclude:
             - lib/domain/pair/**.dart

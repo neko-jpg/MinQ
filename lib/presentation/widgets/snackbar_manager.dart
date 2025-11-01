@@ -174,17 +174,20 @@ class SnackBarManager {
       ),
       backgroundColor: _getBackgroundColor(context, request.type),
       duration: request.duration,
-      action: request.actionLabel != null
-          ? SnackBarAction(
-              label: request.actionLabel!,
-              textColor: _getForegroundColor(context, request.type),
-              onPressed: request.onAction ?? () {},
-            )
-          : null,
+      action:
+          request.actionLabel != null
+              ? SnackBarAction(
+                label: request.actionLabel!,
+                textColor: _getForegroundColor(context, request.type),
+                onPressed: request.onAction ?? () {},
+              )
+              : null,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       dismissDirection:
-          request.dismissible ? DismissDirection.horizontal : DismissDirection.none,
+          request.dismissible
+              ? DismissDirection.horizontal
+              : DismissDirection.none,
     );
 
     _messenger?.showSnackBar(snackBar).closed.then((_) {

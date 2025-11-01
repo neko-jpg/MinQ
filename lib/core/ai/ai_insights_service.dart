@@ -15,7 +15,8 @@ class AIInsightsService {
 
   AIInsightsService._();
 
-  final tflite.TFLiteUnifiedAIService _aiService = tflite.TFLiteUnifiedAIService.instance;
+  final tflite.TFLiteUnifiedAIService _aiService =
+      tflite.TFLiteUnifiedAIService.instance;
 
   /// Generate comprehensive AI insights for user
   Future<AIInsights> generateInsights({
@@ -49,10 +50,7 @@ class AIInsightsService {
       );
 
       // Generate failure prediction if needed
-      final failurePrediction = await _generateFailurePrediction(
-        quests,
-        logs,
-      );
+      final failurePrediction = await _generateFailurePrediction(quests, logs);
 
       return AIInsights(
         userId: userId,
@@ -82,13 +80,16 @@ class AIInsightsService {
     for (int i = 0; i < 4; i++) {
       final weekStart = now.subtract(Duration(days: (i + 1) * 7));
       final weekEnd = now.subtract(Duration(days: i * 7));
-      final weekLogs = logs.where((log) =>
-          log.ts.isAfter(weekStart) && log.ts.isBefore(weekEnd)).toList();
-      
-      final completionRate = quests.isEmpty 
-          ? 0.0 
-          : weekLogs.length / (quests.length * 7);
-      
+      final weekLogs =
+          logs
+              .where(
+                (log) => log.ts.isAfter(weekStart) && log.ts.isBefore(weekEnd),
+              )
+              .toList();
+
+      final completionRate =
+          quests.isEmpty ? 0.0 : weekLogs.length / (quests.length * 7);
+
       weeklyTrends['Week ${4 - i}'] = completionRate.clamp(0.0, 1.0);
     }
 
@@ -98,28 +99,32 @@ class AIInsightsService {
       final day = now.subtract(Duration(days: i + 1));
       final dayStart = DateTime(day.year, day.month, day.day);
       final dayEnd = dayStart.add(const Duration(days: 1));
-      
-      final dayLogs = logs.where((log) =>
-          log.ts.isAfter(dayStart) && log.ts.isBefore(dayEnd)).toList();
-      
-      final completionRate = quests.isEmpty 
-          ? 0.0 
-          : dayLogs.length / quests.length;
-      
+
+      final dayLogs =
+          logs
+              .where(
+                (log) => log.ts.isAfter(dayStart) && log.ts.isBefore(dayEnd),
+              )
+              .toList();
+
+      final completionRate =
+          quests.isEmpty ? 0.0 : dayLogs.length / quests.length;
+
       dailyTrends[dayNames[6 - i]] = completionRate.clamp(0.0, 1.0);
     }
 
     // Calculate category distribution
     for (final quest in quests) {
-      categoryDistribution[quest.category] = 
+      categoryDistribution[quest.category] =
           (categoryDistribution[quest.category] ?? 0) + 1;
     }
 
     // Calculate overall trend
     final recentWeeks = weeklyTrends.values.toList();
-    final overallTrend = recentWeeks.length >= 2
-        ? (recentWeeks.last - recentWeeks.first) / recentWeeks.length
-        : 0.0;
+    final overallTrend =
+        recentWeeks.length >= 2
+            ? (recentWeeks.last - recentWeeks.first) / recentWeeks.length
+            : 0.0;
 
     // Generate trend description using AI
     final trendDescription = await _generateTrendDescription(
@@ -148,7 +153,11 @@ class AIInsightsService {
 
       final prompt = '''
 週次完了率データ: $trendData
-全体トレンド: ${overallTrend > 0 ? '上昇' : overallTrend < 0 ? '下降' : '安定'}
+全体トレンド: ${overallTrend > 0
+          ? '上昇'
+          : overallTrend < 0
+          ? '下降'
+          : '安定'}
 
 このデータから、ユーザーの習慣継続パターンを1-2文で簡潔に説明してください。
 ''';
@@ -159,8 +168,8 @@ class AIInsightsService {
         maxTokens: 80,
       );
 
-      return description.isNotEmpty 
-          ? description 
+      return description.isNotEmpty
+          ? description
           : _getFallbackTrendDescription(overallTrend);
     } catch (e) {
       log('AIInsightsService: Error generating trend description - $e');
@@ -178,9 +187,10 @@ class AIInsightsService {
 
     try {
       // Analyze completion patterns
-      final completionRate = quests.isEmpty 
-          ? 0.0 
-          : logs.length / (quests.length * 30); // Last 30 days
+      final completionRate =
+          quests.isEmpty
+              ? 0.0
+              : logs.length / (quests.length * 30); // Last 30 days
 
       // Low completion rate recommendation
       if (completionRate < 0.5) {
@@ -206,7 +216,8 @@ class AIInsightsService {
             id: 'category_balance',
             type: RecommendationType.categoryBalance,
             title: '新しいカテゴリに挑戦してみませんか？',
-            description: '現在${categories.join('、')}の習慣に取り組んでいます。バランスの取れた成長のため、他のカテゴリも試してみましょう。',
+            description:
+                '現在${categories.join('、')}の習慣に取り組んでいます。バランスの取れた成長のため、他のカテゴリも試してみましょう。',
             confidence: 0.7,
             relatedHabits: [],
             actionText: '新しい習慣を追加',
@@ -216,9 +227,15 @@ class AIInsightsService {
       }
 
       // Streak recovery recommendation
-      final recentLogs = logs.where((log) => 
-          log.ts.isAfter(DateTime.now().subtract(const Duration(days: 3)))).toList();
-      
+      final recentLogs =
+          logs
+              .where(
+                (log) => log.ts.isAfter(
+                  DateTime.now().subtract(const Duration(days: 3)),
+                ),
+              )
+              .toList();
+
       if (recentLogs.isEmpty && logs.isNotEmpty) {
         recommendations.add(
           PersonalizedRecommendation(
@@ -284,10 +301,14 @@ class AIInsightsService {
     try {
       // Calculate streaks
       final currentStreak = await questLogRepository.calculateStreak(userId);
-      final longestStreak = await questLogRepository.calculateLongestStreak(userId);
+      final longestStreak = await questLogRepository.calculateLongestStreak(
+        userId,
+      );
 
       // Calculate completion rates
-      final weeklyRate = await questLogRepository.calculateWeeklyCompletionRate(userId);
+      final weeklyRate = await questLogRepository.calculateWeeklyCompletionRate(
+        userId,
+      );
       final monthlyRate = _calculateMonthlyCompletionRate(quests, logs);
 
       // Calculate category performance
@@ -295,16 +316,18 @@ class AIInsightsService {
       for (final quest in quests) {
         final questLogs = logs.where((log) => log.questId == quest.id).length;
         const expectedLogs = 30; // Last 30 days
-        categoryPerformance[quest.category] = 
-            (categoryPerformance[quest.category] ?? 0.0) + (questLogs / expectedLogs);
+        categoryPerformance[quest.category] =
+            (categoryPerformance[quest.category] ?? 0.0) +
+            (questLogs / expectedLogs);
       }
 
       // Normalize category performance
       final categories = quests.map((q) => q.category).toSet();
       for (final category in categories) {
-        final questsInCategory = quests.where((q) => q.category == category).length;
+        final questsInCategory =
+            quests.where((q) => q.category == category).length;
         if (questsInCategory > 0) {
-          categoryPerformance[category] = 
+          categoryPerformance[category] =
               (categoryPerformance[category] ?? 0.0) / questsInCategory;
         }
       }
@@ -347,12 +370,17 @@ class AIInsightsService {
   ) async {
     try {
       // Calculate risk factors
-      final recentLogs = logs.where((log) => 
-          log.ts.isAfter(DateTime.now().subtract(const Duration(days: 7)))).toList();
-      
-      final weeklyCompletionRate = quests.isEmpty 
-          ? 0.0 
-          : recentLogs.length / (quests.length * 7);
+      final recentLogs =
+          logs
+              .where(
+                (log) => log.ts.isAfter(
+                  DateTime.now().subtract(const Duration(days: 7)),
+                ),
+              )
+              .toList();
+
+      final weeklyCompletionRate =
+          quests.isEmpty ? 0.0 : recentLogs.length / (quests.length * 7);
 
       // Only generate prediction if there are risk factors
       if (weeklyCompletionRate > 0.6) return null;
@@ -371,7 +399,12 @@ class AIInsightsService {
       }
 
       final riskScore = 1.0 - weeklyCompletionRate;
-      final riskLevel = riskScore > 0.7 ? 'high' : riskScore > 0.4 ? 'medium' : 'low';
+      final riskLevel =
+          riskScore > 0.7
+              ? 'high'
+              : riskScore > 0.4
+              ? 'medium'
+              : 'low';
 
       return FailurePrediction(
         riskScore: riskScore,
@@ -387,16 +420,19 @@ class AIInsightsService {
   }
 
   /// Helper methods
-  double _calculateMonthlyCompletionRate(List<Quest> quests, List<QuestLog> logs) {
+  double _calculateMonthlyCompletionRate(
+    List<Quest> quests,
+    List<QuestLog> logs,
+  ) {
     if (quests.isEmpty) return 0.0;
-    
+
     final now = DateTime.now();
     final monthStart = DateTime(now.year, now.month, 1);
     final monthLogs = logs.where((log) => log.ts.isAfter(monthStart)).length;
-    
+
     final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
     final expectedLogs = quests.length * daysInMonth;
-    
+
     return expectedLogs > 0 ? monthLogs / expectedLogs : 0.0;
   }
 
@@ -482,22 +518,24 @@ class AIInsightsService {
     Map<String, double> categoryPerformance,
   ) {
     var score = 0.0;
-    
+
     // Streak contribution (30%)
     score += (currentStreak / 30.0).clamp(0.0, 1.0) * 0.3;
-    
+
     // Weekly rate contribution (40%)
     score += weeklyRate * 0.4;
-    
+
     // Monthly rate contribution (20%)
     score += monthlyRate * 0.2;
-    
+
     // Category balance contribution (10%)
-    final avgCategoryPerformance = categoryPerformance.values.isEmpty
-        ? 0.0
-        : categoryPerformance.values.reduce((a, b) => a + b) / categoryPerformance.length;
+    final avgCategoryPerformance =
+        categoryPerformance.values.isEmpty
+            ? 0.0
+            : categoryPerformance.values.reduce((a, b) => a + b) /
+                categoryPerformance.length;
     score += avgCategoryPerformance * 0.1;
-    
+
     return score.clamp(0.0, 1.0);
   }
 
@@ -507,8 +545,21 @@ class AIInsightsService {
       userId: userId,
       generatedAt: DateTime.now(),
       trends: const HabitCompletionTrends(
-        weeklyTrends: {'Week 1': 0.5, 'Week 2': 0.6, 'Week 3': 0.7, 'Week 4': 0.8},
-        dailyTrends: {'Mon': 0.7, 'Tue': 0.8, 'Wed': 0.6, 'Thu': 0.9, 'Fri': 0.5, 'Sat': 0.4, 'Sun': 0.6},
+        weeklyTrends: {
+          'Week 1': 0.5,
+          'Week 2': 0.6,
+          'Week 3': 0.7,
+          'Week 4': 0.8,
+        },
+        dailyTrends: {
+          'Mon': 0.7,
+          'Tue': 0.8,
+          'Wed': 0.6,
+          'Thu': 0.9,
+          'Fri': 0.5,
+          'Sat': 0.4,
+          'Sun': 0.6,
+        },
         categoryDistribution: {'学習': 2, '運動': 1, 'セルフケア': 1},
         overallTrend: 0.1,
         trendDescription: '着実に習慣を継続できています。',

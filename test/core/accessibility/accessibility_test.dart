@@ -20,7 +20,10 @@ void main() {
 
         // Test low contrast combinations
         expect(
-          ContrastValidator.meetsWCAGAA(Colors.grey.shade400, Colors.grey.shade300),
+          ContrastValidator.meetsWCAGAA(
+            Colors.grey.shade400,
+            Colors.grey.shade300,
+          ),
           isFalse,
         );
 
@@ -32,7 +35,10 @@ void main() {
       });
 
       test('should calculate contrast ratios correctly', () {
-        final ratio = ContrastValidator.calculateContrastRatio(Colors.black, Colors.white);
+        final ratio = ContrastValidator.calculateContrastRatio(
+          Colors.black,
+          Colors.white,
+        );
         expect(ratio, closeTo(21.0, 0.1)); // Black on white should be 21:1
 
         final grayRatio = ContrastValidator.calculateContrastRatio(
@@ -70,17 +76,19 @@ void main() {
     });
 
     group('AccessibilitySettings', () {
-      testWidgets('should detect system accessibility features', (tester) async {
+      testWidgets('should detect system accessibility features', (
+        tester,
+      ) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Builder(
               builder: (context) {
                 final settings = AccessibilitySettings.fromMediaQuery(context);
-                
+
                 // Test that settings are created without errors
                 expect(settings, isNotNull);
                 expect(settings.textScaler, isNotNull);
-                
+
                 return Container();
               },
             ),
@@ -137,11 +145,11 @@ void main() {
           of: buttonFinder,
           matching: find.byType(Container),
         );
-        
+
         if (containerFinder.evaluate().isNotEmpty) {
           final container = tester.widget<Container>(containerFinder);
           final constraints = container.constraints;
-          
+
           if (constraints != null) {
             expect(constraints.minWidth, greaterThanOrEqualTo(44.0));
             expect(constraints.minHeight, greaterThanOrEqualTo(44.0));
@@ -151,7 +159,7 @@ void main() {
 
       testWidgets('should have proper semantics', (tester) async {
         const semanticLabel = 'Test Button';
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -167,7 +175,12 @@ void main() {
         // Verify semantics are properly set
         final semantics = tester.getSemantics(find.byType(AccessibleButton));
         expect(semantics.label, equals(semanticLabel));
-        expect(semantics.getSemanticsData().actions.keys.contains(SemanticsAction.tap), isTrue);
+        expect(
+          semantics.getSemanticsData().actions.keys.contains(
+            SemanticsAction.tap,
+          ),
+          isTrue,
+        );
       });
 
       testWidgets('should be disabled when onPressed is null', (tester) async {
@@ -193,7 +206,7 @@ void main() {
       testWidgets('should create proper button semantics', (tester) async {
         const label = 'Test Button';
         const hint = 'Tap to test';
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -216,7 +229,7 @@ void main() {
       testWidgets('should create proper progress semantics', (tester) async {
         const value = 0.75;
         const label = 'Progress';
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -237,7 +250,7 @@ void main() {
       testWidgets('should create proper header semantics', (tester) async {
         const text = 'Main Header';
         const level = 1;
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -260,7 +273,7 @@ void main() {
         const label = 'Item 1';
         const index = 0;
         const total = 5;
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -284,18 +297,15 @@ void main() {
       test('should be singleton', () {
         final service1 = AccessibilityService.instance;
         final service2 = AccessibilityService.instance;
-        
+
         expect(service1, same(service2));
       });
 
       testWidgets('should validate contrast correctly', (tester) async {
         final service = AccessibilityService.instance;
-        
-        expect(
-          service.validateContrast(Colors.black, Colors.white),
-          isTrue,
-        );
-        
+
+        expect(service.validateContrast(Colors.black, Colors.white), isTrue);
+
         expect(
           service.validateContrast(Colors.grey.shade400, Colors.grey.shade300),
           isFalse,
@@ -304,16 +314,13 @@ void main() {
 
       testWidgets('should provide accessible colors', (tester) async {
         final service = AccessibilityService.instance;
-        
+
         final accessibleColor = service.getAccessibleColor(
           Colors.grey.shade400,
           Colors.white,
         );
-        
-        expect(
-          service.validateContrast(accessibleColor, Colors.white),
-          isTrue,
-        );
+
+        expect(service.validateContrast(accessibleColor, Colors.white), isTrue);
       });
     });
 
@@ -321,20 +328,14 @@ void main() {
       testWidgets('should handle focus navigation', (tester) async {
         final focusNode1 = FocusNode();
         final focusNode2 = FocusNode();
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
               body: Column(
                 children: [
-                  Focus(
-                    focusNode: focusNode1,
-                    child: const TextField(),
-                  ),
-                  Focus(
-                    focusNode: focusNode2,
-                    child: const TextField(),
-                  ),
+                  Focus(focusNode: focusNode1, child: const TextField()),
+                  Focus(focusNode: focusNode2, child: const TextField()),
                 ],
               ),
             ),
@@ -354,7 +355,9 @@ void main() {
   });
 
   group('Color Contrast Integration Tests', () {
-    testWidgets('should ensure all theme colors meet WCAG AA standards', (tester) async {
+    testWidgets('should ensure all theme colors meet WCAG AA standards', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData.light(),
@@ -362,7 +365,7 @@ void main() {
             builder: (context) {
               final theme = Theme.of(context);
               final colorScheme = theme.colorScheme;
-              
+
               // Test primary colors
               expect(
                 ContrastValidator.meetsWCAGAA(
@@ -372,7 +375,7 @@ void main() {
                 isTrue,
                 reason: 'Primary color contrast should meet WCAG AA',
               );
-              
+
               // Test surface colors
               expect(
                 ContrastValidator.meetsWCAGAA(
@@ -382,7 +385,7 @@ void main() {
                 isTrue,
                 reason: 'Surface color contrast should meet WCAG AA',
               );
-              
+
               // Test background colors
               expect(
                 ContrastValidator.meetsWCAGAA(
@@ -392,7 +395,7 @@ void main() {
                 isTrue,
                 reason: 'Background color contrast should meet WCAG AA',
               );
-              
+
               return Container();
             },
           ),

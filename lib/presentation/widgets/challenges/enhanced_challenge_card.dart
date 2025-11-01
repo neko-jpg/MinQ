@@ -24,7 +24,8 @@ class EnhancedChallengeCard extends ConsumerStatefulWidget {
   final bool showOfflineIndicator;
 
   @override
-  ConsumerState<EnhancedChallengeCard> createState() => _EnhancedChallengeCardState();
+  ConsumerState<EnhancedChallengeCard> createState() =>
+      _EnhancedChallengeCardState();
 }
 
 class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
@@ -40,22 +41,14 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.98,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-    
-    _glowAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    _glowAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -66,10 +59,12 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
 
   @override
   Widget build(BuildContext context) {
-    final isCompleted = widget.challenge.progress >= widget.challenge.targetValue;
-    final progressPercentage = widget.challenge.targetValue > 0 
-        ? widget.challenge.progress / widget.challenge.targetValue 
-        : 0.0;
+    final isCompleted =
+        widget.challenge.progress >= widget.challenge.targetValue;
+    final progressPercentage =
+        widget.challenge.targetValue > 0
+            ? widget.challenge.progress / widget.challenge.targetValue
+            : 0.0;
     final isExpiringSoon = _isExpiringSoon();
     final isOffline = widget.challenge.syncStatus != SyncStatus.synced;
 
@@ -93,8 +88,10 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
                 gradient: _getCardGradient(isCompleted, isExpiringSoon),
                 boxShadow: [
                   BoxShadow(
-                    color: _getGlowColor(isCompleted, isExpiringSoon)
-                        .withOpacity(0.3 * _glowAnimation.value),
+                    color: _getGlowColor(
+                      isCompleted,
+                      isExpiringSoon,
+                    ).withOpacity(0.3 * _glowAnimation.value),
                     blurRadius: 12 + (8 * _glowAnimation.value),
                     spreadRadius: 2 + (2 * _glowAnimation.value),
                     offset: const Offset(0, 4),
@@ -112,7 +109,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
                   children: [
                     // Background pattern
                     _buildBackgroundPattern(),
-                    
+
                     // Main content
                     Padding(
                       padding: EdgeInsets.all(MinqTokens.spacing(4)),
@@ -121,25 +118,28 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
                         children: [
                           // Header with title and status indicators
                           _buildHeader(isCompleted, isExpiringSoon, isOffline),
-                          
+
                           SizedBox(height: MinqTokens.spacing(2)),
-                          
+
                           // Description
                           _buildDescription(),
-                          
+
                           SizedBox(height: MinqTokens.spacing(3)),
-                          
+
                           // Progress section
-                          _buildProgressSection(progressPercentage, isCompleted),
-                          
+                          _buildProgressSection(
+                            progressPercentage,
+                            isCompleted,
+                          ),
+
                           SizedBox(height: MinqTokens.spacing(3)),
-                          
+
                           // Footer with rewards and time
                           _buildFooter(isExpiringSoon),
                         ],
                       ),
                     ),
-                    
+
                     // Completion overlay
                     if (isCompleted) _buildCompletionOverlay(),
                   ],
@@ -173,15 +173,11 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
             color: Colors.white.withOpacity(0.2),
             borderRadius: MinqTokens.cornerMedium(),
           ),
-          child: Icon(
-            _getChallengeIcon(),
-            color: Colors.white,
-            size: 24,
-          ),
+          child: Icon(_getChallengeIcon(), color: Colors.white, size: 24),
         ),
-        
+
         SizedBox(width: MinqTokens.spacing(3)),
-        
+
         // Title and subtitle
         Expanded(
           child: Column(
@@ -214,7 +210,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
             ],
           ),
         ),
-        
+
         // Status badge
         _buildStatusBadge(isCompleted, isExpiringSoon),
       ],
@@ -254,18 +250,18 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
             ),
           ],
         ),
-        
+
         SizedBox(height: MinqTokens.spacing(2)),
-        
+
         // Animated progress bar
         ChallengeProgressAnimation(
           progress: progressPercentage,
           isCompleted: isCompleted,
           height: 8,
         ),
-        
+
         SizedBox(height: MinqTokens.spacing(1)),
-        
+
         // Progress percentage
         Align(
           alignment: Alignment.centerRight,
@@ -297,11 +293,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.stars,
-                color: Colors.white,
-                size: 16,
-              ),
+              const Icon(Icons.stars, color: Colors.white, size: 16),
               SizedBox(width: MinqTokens.spacing(1)),
               Text(
                 '${widget.challenge.xpReward} XP',
@@ -313,28 +305,31 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
             ],
           ),
         ),
-        
+
         const Spacer(),
-        
+
         // Time remaining
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               isExpiringSoon ? Icons.schedule : Icons.access_time,
-              color: isExpiringSoon 
-                  ? Colors.orange.shade200 
-                  : Colors.white.withOpacity(0.8),
+              color:
+                  isExpiringSoon
+                      ? Colors.orange.shade200
+                      : Colors.white.withOpacity(0.8),
               size: 16,
             ),
             SizedBox(width: MinqTokens.spacing(1)),
             Text(
               _getTimeRemaining(),
               style: MinqTokens.bodySmall.copyWith(
-                color: isExpiringSoon 
-                    ? Colors.orange.shade200 
-                    : Colors.white.withOpacity(0.8),
-                fontWeight: isExpiringSoon ? FontWeight.bold : FontWeight.normal,
+                color:
+                    isExpiringSoon
+                        ? Colors.orange.shade200
+                        : Colors.white.withOpacity(0.8),
+                fontWeight:
+                    isExpiringSoon ? FontWeight.bold : FontWeight.normal,
               ),
             ),
           ],
@@ -358,11 +353,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.check_circle,
-              color: Colors.green.shade200,
-              size: 16,
-            ),
+            Icon(Icons.check_circle, color: Colors.green.shade200, size: 16),
             SizedBox(width: MinqTokens.spacing(1)),
             Text(
               '完了',
@@ -375,7 +366,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
         ),
       );
     }
-    
+
     if (isExpiringSoon) {
       return Container(
         padding: EdgeInsets.symmetric(
@@ -390,11 +381,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.schedule,
-              color: Colors.orange.shade200,
-              size: 16,
-            ),
+            Icon(Icons.schedule, color: Colors.orange.shade200, size: 16),
             SizedBox(width: MinqTokens.spacing(1)),
             Text(
               '期限間近',
@@ -407,7 +394,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
         ),
       );
     }
-    
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: MinqTokens.spacing(2),
@@ -456,26 +443,20 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
   LinearGradient _getCardGradient(bool isCompleted, bool isExpiringSoon) {
     if (isCompleted) {
       return LinearGradient(
-        colors: [
-          Colors.green.shade600,
-          Colors.green.shade700,
-        ],
+        colors: [Colors.green.shade600, Colors.green.shade700],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
     }
-    
+
     if (isExpiringSoon) {
       return LinearGradient(
-        colors: [
-          Colors.orange.shade600,
-          Colors.red.shade600,
-        ],
+        colors: [Colors.orange.shade600, Colors.red.shade600],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
     }
-    
+
     return LinearGradient(
       colors: [
         MinqTokens.brandPrimary,
@@ -497,9 +478,12 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
     // For now, we'll use a default icon based on the title/description
     final title = widget.challenge.title.toLowerCase();
     if (title.contains('daily') || title.contains('毎日')) return Icons.today;
-    if (title.contains('weekly') || title.contains('週間')) return Icons.date_range;
-    if (title.contains('streak') || title.contains('連続')) return Icons.local_fire_department;
-    if (title.contains('social') || title.contains('ソーシャル')) return Icons.people;
+    if (title.contains('weekly') || title.contains('週間'))
+      return Icons.date_range;
+    if (title.contains('streak') || title.contains('連続'))
+      return Icons.local_fire_department;
+    if (title.contains('social') || title.contains('ソーシャル'))
+      return Icons.people;
     return Icons.emoji_events;
   }
 
@@ -519,15 +503,15 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
     if (difference.isNegative) {
       return '終了';
     }
-    
+
     if (difference.inDays > 0) {
       return '残り${difference.inDays}日';
     }
-    
+
     if (difference.inHours > 0) {
       return '残り${difference.inHours}時間';
     }
-    
+
     return '残り${difference.inMinutes}分';
   }
 
@@ -535,7 +519,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
     final now = DateTime.now();
     final endDate = widget.challenge.endDate;
     final difference = endDate.difference(now);
-    
+
     // Consider "expiring soon" if less than 24 hours remain
     return difference.inHours < 24 && difference.isPositive;
   }
@@ -549,10 +533,11 @@ class _ChallengeCardPatternPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = 1.0
+          ..style = PaintingStyle.stroke;
 
     // Draw subtle geometric pattern
     const spacing = 20.0;

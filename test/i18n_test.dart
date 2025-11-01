@@ -7,7 +7,9 @@ import 'package:minq/presentation/widgets/rtl_support_widget.dart';
 
 void main() {
   group('Internationalization Tests', () {
-    testWidgets('AppLocalizations supports all required locales', (tester) async {
+    testWidgets('AppLocalizations supports all required locales', (
+      tester,
+    ) async {
       // Test Japanese locale
       await tester.pumpWidget(
         MaterialApp(
@@ -69,22 +71,24 @@ void main() {
           home: Builder(
             builder: (context) {
               final l10n = AppLocalizations.of(context)!;
-              
+
               // Test question counter
               expect(
-                l10n.question.replaceAll('{current}', '1').replaceAll('{total}', '5'),
+                l10n.question
+                    .replaceAll('{current}', '1')
+                    .replaceAll('{total}', '5'),
                 'Question 1 / 5',
               );
-              
+
               // Test delivery date
               expect(
                 l10n.deliveryDate
-                  .replaceAll('{year}', '2025')
-                  .replaceAll('{month}', '10')
-                  .replaceAll('{day}', '26'),
+                    .replaceAll('{year}', '2025')
+                    .replaceAll('{month}', '10')
+                    .replaceAll('{day}', '26'),
                 'Delivery Date: 2025/10/26',
               );
-              
+
               return const SizedBox();
             },
           ),
@@ -94,17 +98,19 @@ void main() {
 
     test('AppLocaleController manages locales correctly', () {
       final controller = AppLocaleController(MockLocalPreferencesService());
-      
+
       // Test available locales
       final availableLocales = controller.getAvailableLocales();
       expect(availableLocales.length, 3);
-      expect(availableLocales.map((l) => l.locale.languageCode), 
-             containsAll(['ja', 'en', 'ar']));
-      
+      expect(
+        availableLocales.map((l) => l.locale.languageCode),
+        containsAll(['ja', 'en', 'ar']),
+      );
+
       // Test locale switching
       controller.setLocale(const Locale('en'));
       expect(controller.state, const Locale('en'));
-      
+
       controller.setLocale(const Locale('ar'));
       expect(controller.state, const Locale('ar'));
     });
@@ -119,8 +125,14 @@ void main() {
           home: Builder(
             builder: (context) {
               expect(RTLSupportWidget.isRTL(context), false);
-              expect(RTLSupportWidget.getTextDirection(context), TextDirection.ltr);
-              expect(CulturalAdaptations.getBackIcon(context), Icons.arrow_back_ios);
+              expect(
+                RTLSupportWidget.getTextDirection(context),
+                TextDirection.ltr,
+              );
+              expect(
+                CulturalAdaptations.getBackIcon(context),
+                Icons.arrow_back_ios,
+              );
               return const SizedBox();
             },
           ),
@@ -136,8 +148,14 @@ void main() {
           home: Builder(
             builder: (context) {
               expect(RTLSupportWidget.isRTL(context), true);
-              expect(RTLSupportWidget.getTextDirection(context), TextDirection.rtl);
-              expect(CulturalAdaptations.getBackIcon(context), Icons.arrow_forward_ios);
+              expect(
+                RTLSupportWidget.getTextDirection(context),
+                TextDirection.rtl,
+              );
+              expect(
+                CulturalAdaptations.getBackIcon(context),
+                Icons.arrow_forward_ios,
+              );
               return const SizedBox();
             },
           ),
@@ -151,9 +169,7 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: const Locale('en'),
-          home: const Scaffold(
-            body: LanguageSelectorWidget(),
-          ),
+          home: const Scaffold(body: LanguageSelectorWidget()),
         ),
       );
 
@@ -222,11 +238,7 @@ void main() {
           locale: const Locale('ar'),
           home: const Scaffold(
             body: RTLAwareRow(
-              children: [
-                Text('First'),
-                Text('Second'),
-                Text('Third'),
-              ],
+              children: [Text('First'), Text('Second'), Text('Third')],
             ),
           ),
         ),
@@ -242,11 +254,16 @@ void main() {
 
     test('Locale fallback works correctly', () {
       final controller = AppLocaleController(MockLocalPreferencesService());
-      
+
       // Test unsupported locale falls back to supported one
-      final supportedLocale = controller.findSupportedLocale(const Locale('fr'));
-      expect(supportedLocale, const Locale('ja')); // Should fallback to Japanese
-      
+      final supportedLocale = controller.findSupportedLocale(
+        const Locale('fr'),
+      );
+      expect(
+        supportedLocale,
+        const Locale('ja'),
+      ); // Should fallback to Japanese
+
       // Test supported locale is returned as-is
       final exactMatch = controller.findSupportedLocale(const Locale('en'));
       expect(exactMatch, const Locale('en'));
@@ -257,9 +274,9 @@ void main() {
 // Mock implementation for testing
 class MockLocalPreferencesService {
   String? _locale;
-  
+
   Future<String?> getPreferredLocale() async => _locale;
-  
+
   Future<void> setPreferredLocale(String? locale) async {
     _locale = locale;
   }

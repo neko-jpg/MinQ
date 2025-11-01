@@ -72,10 +72,7 @@ class NotificationService {
       } else {
         logger.error(
           'Failed to send Slack notification',
-          data: {
-            'status': response.statusCode,
-            'body': response.body,
-          },
+          data: {'status': response.statusCode, 'body': response.body},
         );
       }
     } catch (e, stack) {
@@ -120,10 +117,7 @@ class NotificationService {
       } else {
         logger.error(
           'Failed to send email notification',
-          data: {
-            'status': response.statusCode,
-            'body': response.body,
-          },
+          data: {'status': response.statusCode, 'body': response.body},
         );
       }
     } catch (e, stack) {
@@ -174,10 +168,7 @@ class NotificationService {
       } else {
         logger.error(
           'Failed to send PagerDuty alert',
-          data: {
-            'status': response.statusCode,
-            'body': response.body,
-          },
+          data: {'status': response.statusCode, 'body': response.body},
         );
       }
     } catch (e, stack) {

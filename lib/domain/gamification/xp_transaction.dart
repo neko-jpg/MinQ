@@ -1,15 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:isar/isar.dart';
 
 part 'xp_transaction.freezed.dart';
 part 'xp_transaction.g.dart';
 
 /// XP獲得履歴を記録するモデル
 @freezed
-@Collection()
 class XPTransaction with _$XPTransaction {
   const factory XPTransaction({
-    @Default(Isar.autoIncrement) Id id,
+    @Default(0) int id,
     required String userId,
     required int xpAmount,
     required String reason,

@@ -43,15 +43,13 @@ class MinqEmptyState extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style:
-                tokens.typography.h4.copyWith(color: tokens.textPrimary),
+            style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
           ),
           SizedBox(height: tokens.spacing.sm),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: tokens.typography.body
-                .copyWith(color: tokens.textMuted),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
           if (actionArea != null) ...<Widget>[
             SizedBox(height: tokens.spacing.md),

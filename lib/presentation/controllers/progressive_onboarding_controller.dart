@@ -9,7 +9,8 @@ import 'package:minq/data/repositories/user_repository.dart';
 
 /// プログレッシブオンボーディングコントローラー
 /// ユーザーの進捗に基づいてレベルアップを管理
-class ProgressiveOnboardingController extends StateNotifier<AsyncValue<ProgressiveOnboarding>> {
+class ProgressiveOnboardingController
+    extends StateNotifier<AsyncValue<ProgressiveOnboarding>> {
   final QuestLogRepository _questLogRepository;
   final UserRepository _userRepository;
   final Ref _ref;
@@ -76,7 +77,10 @@ class ProgressiveOnboardingController extends StateNotifier<AsyncValue<Progressi
   }
 
   /// レベルアップを実行
-  Future<void> _performLevelUp(ProgressiveOnboarding service, String uid) async {
+  Future<void> _performLevelUp(
+    ProgressiveOnboarding service,
+    String uid,
+  ) async {
     final oldLevel = service.currentLevel;
     service.levelUp();
     final newLevel = service.currentLevel;
@@ -105,9 +109,12 @@ class ProgressiveOnboardingController extends StateNotifier<AsyncValue<Progressi
     final questsCompleted = questLogs.length;
 
     // 使用日数を計算
-    final firstLogDate = questLogs.isEmpty
-        ? DateTime.now()
-        : questLogs.map((log) => log.completedAt).reduce((a, b) => a.isBefore(b) ? a : b);
+    final firstLogDate =
+        questLogs.isEmpty
+            ? DateTime.now()
+            : questLogs
+                .map((log) => log.completedAt)
+                .reduce((a, b) => a.isBefore(b) ? a : b);
     final daysUsed = DateTime.now().difference(firstLogDate).inDays + 1;
 
     // 現在のストリークを計算
@@ -165,7 +172,7 @@ class ProgressiveOnboardingController extends StateNotifier<AsyncValue<Progressi
 
     try {
       final stats = await _getUserStats(uid);
-      
+
       // 初回クエスト作成ヒント
       if (stats.questsCompleted == 0) {
         await ProgressiveHintService.showFirstQuestHint(context);
@@ -180,7 +187,10 @@ class ProgressiveOnboardingController extends StateNotifier<AsyncValue<Progressi
 
       // ストリークヒント
       if (stats.currentStreak >= 3) {
-        await ProgressiveHintService.showStreakHint(context, stats.currentStreak);
+        await ProgressiveHintService.showStreakHint(
+          context,
+          stats.currentStreak,
+        );
         return;
       }
 
@@ -233,9 +243,12 @@ class ProgressiveOnboardingController extends StateNotifier<AsyncValue<Progressi
   }
 
   /// クエスト完了時のヒント表示
-  Future<void> onQuestCompleted(BuildContext context, int totalCompleted) async {
+  Future<void> onQuestCompleted(
+    BuildContext context,
+    int totalCompleted,
+  ) async {
     if (!context.mounted) return;
-    
+
     if (totalCompleted == 1) {
       await ProgressiveHintService.showFirstCompletionHint(context);
     }
@@ -244,7 +257,7 @@ class ProgressiveOnboardingController extends StateNotifier<AsyncValue<Progressi
   /// ストリーク達成時のヒント表示
   Future<void> onStreakAchieved(BuildContext context, int streakDays) async {
     if (!context.mounted) return;
-    
+
     if (streakDays >= 3) {
       await ProgressiveHintService.showStreakHint(context, streakDays);
     }
@@ -302,8 +315,10 @@ class LevelUpEvent {
 }
 
 /// プロバイダー定義
-final progressiveOnboardingControllerProvider =
-    StateNotifierProvider<ProgressiveOnboardingController, AsyncValue<ProgressiveOnboarding>>((ref) {
+final progressiveOnboardingControllerProvider = StateNotifierProvider<
+  ProgressiveOnboardingController,
+  AsyncValue<ProgressiveOnboarding>
+>((ref) {
   return ProgressiveOnboardingController(
     ref.watch(questLogRepositoryProvider),
     ref.watch(userRepositoryProvider),
@@ -316,12 +331,16 @@ final levelUpEventProvider = StateProvider<LevelUpEvent?>((ref) => null);
 
 /// 機能アンロック状態プロバイダー
 final featureUnlockProvider = Provider.family<bool, String>((ref, featureId) {
-  final controller = ref.watch(progressiveOnboardingControllerProvider.notifier);
+  final controller = ref.watch(
+    progressiveOnboardingControllerProvider.notifier,
+  );
   return controller.isFeatureUnlocked(featureId);
 });
 
 /// 進捗プロバイダー
 final onboardingProgressProvider = Provider<OnboardingProgress?>((ref) {
-  final controller = ref.watch(progressiveOnboardingControllerProvider.notifier);
+  final controller = ref.watch(
+    progressiveOnboardingControllerProvider.notifier,
+  );
   return controller.getProgress();
 });

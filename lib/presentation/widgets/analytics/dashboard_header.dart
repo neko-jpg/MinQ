@@ -19,11 +19,7 @@ class DashboardHeader extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.withOpacity(0.2),
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: Colors.grey.withOpacity(0.2))),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,9 +40,9 @@ class DashboardHeader extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         dashboard.description,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                       ),
                     ],
                   ],
@@ -91,11 +87,7 @@ class DashboardHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.edit,
-            size: 16,
-            color: Theme.of(context).primaryColor,
-          ),
+          Icon(Icons.edit, size: 16, color: Theme.of(context).primaryColor),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -113,100 +105,97 @@ class DashboardHeader extends StatelessWidget {
   void _showLayoutSettings(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'レイアウト設定',
-              style: Theme.of(context).textTheme.titleLarge,
+      builder:
+          (context) => Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('レイアウト設定', style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 16),
+                const Text('カラム数'),
+                Slider(
+                  value: dashboard.layout.columns.toDouble(),
+                  min: 2,
+                  max: 6,
+                  divisions: 4,
+                  label: '${dashboard.layout.columns}',
+                  onChanged: (value) {
+                    final newLayout = dashboard.layout.copyWith(
+                      columns: value.toInt(),
+                    );
+                    onLayoutChanged(newLayout);
+                  },
+                ),
+                const SizedBox(height: 16),
+                const Text('行の高さ'),
+                Slider(
+                  value: dashboard.layout.rowHeight,
+                  min: 80,
+                  max: 200,
+                  divisions: 12,
+                  label: '${dashboard.layout.rowHeight.toInt()}px',
+                  onChanged: (value) {
+                    final newLayout = dashboard.layout.copyWith(
+                      rowHeight: value,
+                    );
+                    onLayoutChanged(newLayout);
+                  },
+                ),
+                const SizedBox(height: 16),
+                const Text('間隔'),
+                Slider(
+                  value: dashboard.layout.spacing,
+                  min: 4,
+                  max: 24,
+                  divisions: 10,
+                  label: '${dashboard.layout.spacing.toInt()}px',
+                  onChanged: (value) {
+                    final newLayout = dashboard.layout.copyWith(spacing: value);
+                    onLayoutChanged(newLayout);
+                  },
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('完了'),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            const Text('カラム数'),
-            Slider(
-              value: dashboard.layout.columns.toDouble(),
-              min: 2,
-              max: 6,
-              divisions: 4,
-              label: '${dashboard.layout.columns}',
-              onChanged: (value) {
-                final newLayout = dashboard.layout.copyWith(
-                  columns: value.toInt(),
-                );
-                onLayoutChanged(newLayout);
-              },
-            ),
-            const SizedBox(height: 16),
-            const Text('行の高さ'),
-            Slider(
-              value: dashboard.layout.rowHeight,
-              min: 80,
-              max: 200,
-              divisions: 12,
-              label: '${dashboard.layout.rowHeight.toInt()}px',
-              onChanged: (value) {
-                final newLayout = dashboard.layout.copyWith(
-                  rowHeight: value,
-                );
-                onLayoutChanged(newLayout);
-              },
-            ),
-            const SizedBox(height: 16),
-            const Text('間隔'),
-            Slider(
-              value: dashboard.layout.spacing,
-              min: 4,
-              max: 24,
-              divisions: 10,
-              label: '${dashboard.layout.spacing.toInt()}px',
-              onChanged: (value) {
-                final newLayout = dashboard.layout.copyWith(
-                  spacing: value,
-                );
-                onLayoutChanged(newLayout);
-              },
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('完了'),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
   void _resetLayout(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('レイアウトリセット'),
-        content: const Text('レイアウト設定をデフォルトに戻しますか？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('レイアウトリセット'),
+            content: const Text('レイアウト設定をデフォルトに戻しますか？'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () {
+                  const defaultLayout = DashboardLayout(
+                    columns: 4,
+                    rowHeight: 120,
+                    spacing: 16,
+                  );
+                  onLayoutChanged(defaultLayout);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('リセット'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              const defaultLayout = DashboardLayout(
-                columns: 4,
-                rowHeight: 120,
-                spacing: 16,
-              );
-              onLayoutChanged(defaultLayout);
-              Navigator.of(context).pop();
-            },
-            child: const Text('リセット'),
-          ),
-        ],
-      ),
     );
   }
 }

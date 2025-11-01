@@ -309,9 +309,12 @@ class _ScrollPositionIndicatorState extends State<ScrollPositionIndicator> {
           height: 8,
           margin: EdgeInsets.symmetric(horizontal: tokens.spacing.xs),
           decoration: BoxDecoration(
-            color: isActive
-                ? theme.colorScheme.primary
-                : theme.colorScheme.onSurface.withAlpha((255 * 0.3).round()),
+            color:
+                isActive
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurface.withAlpha(
+                      (255 * 0.3).round(),
+                    ),
             borderRadius: BorderRadius.circular(4),
           ),
         );

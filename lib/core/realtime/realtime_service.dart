@@ -9,10 +9,7 @@ import 'package:minq/core/realtime/websocket_manager.dart';
 /// Bridges realtime WebSocket events into typed streams and handles
 /// lightweight fan-out for the rest of the app.
 class RealtimeService {
-  RealtimeService(
-    this._webSocketManager, [
-    this._notificationService,
-  ]) {
+  RealtimeService(this._webSocketManager, [this._notificationService]) {
     _messageSubscription = _webSocketManager.messageStream.listen(
       _handleRealtimeMessage,
       onError: (error, stackTrace) {
@@ -35,16 +32,21 @@ class RealtimeService {
   late final StreamSubscription<RealtimeMessage> _messageSubscription;
   late final StreamSubscription<WebSocketStatus> _statusSubscription;
 
-  final _pairMessageController =
-      StreamController<RealtimeMessage>.broadcast(sync: true);
-  final _progressShareController =
-      StreamController<RealtimeMessage>.broadcast(sync: true);
-  final _gamificationController =
-      StreamController<RealtimeMessage>.broadcast(sync: true);
-  final _notificationController =
-      StreamController<RealtimeMessage>.broadcast(sync: true);
-  final _statusController =
-      StreamController<WebSocketStatus>.broadcast(sync: true);
+  final _pairMessageController = StreamController<RealtimeMessage>.broadcast(
+    sync: true,
+  );
+  final _progressShareController = StreamController<RealtimeMessage>.broadcast(
+    sync: true,
+  );
+  final _gamificationController = StreamController<RealtimeMessage>.broadcast(
+    sync: true,
+  );
+  final _notificationController = StreamController<RealtimeMessage>.broadcast(
+    sync: true,
+  );
+  final _statusController = StreamController<WebSocketStatus>.broadcast(
+    sync: true,
+  );
 
   Stream<RealtimeMessage> get pairMessageStream =>
       _pairMessageController.stream;
@@ -140,8 +142,7 @@ class RealtimeService {
         _pairMessageController.add(message);
         _maybeNotify(
           id: message.payload['notificationId'] as int? ?? 1001,
-          title: message.payload['title'] as String? ??
-              'New pair update',
+          title: message.payload['title'] as String? ?? 'New pair update',
           body: message.payload['text'] as String? ?? '',
           payload: 'pair_message',
         );

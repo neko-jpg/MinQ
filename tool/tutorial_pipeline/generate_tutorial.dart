@@ -15,12 +15,12 @@ class TutorialStep {
   final int durationSeconds;
 
   Map<String, dynamic> toStoryboardJson(int index) => <String, dynamic>{
-        'id': 'scene_${index + 1}',
-        'title': title,
-        'caption': caption,
-        'durationMs': durationSeconds * 1000,
-        'lottieSegment': lottieSegment,
-      };
+    'id': 'scene_${index + 1}',
+    'title': title,
+    'caption': caption,
+    'durationMs': durationSeconds * 1000,
+    'lottieSegment': lottieSegment,
+  };
 }
 
 Future<void> main(List<String> args) async {
@@ -44,7 +44,8 @@ Future<void> main(List<String> args) async {
     await outputDir.create(recursive: true);
   }
 
-  final input = jsonDecode(await inputFile.readAsString()) as Map<String, dynamic>;
+  final input =
+      jsonDecode(await inputFile.readAsString()) as Map<String, dynamic>;
   final title = input['title'] as String? ?? 'MinQ チュートリアル';
   final stepsRaw = input['steps'] as List<dynamic>?;
   if (stepsRaw == null || stepsRaw.isEmpty) {
@@ -63,7 +64,8 @@ Future<void> main(List<String> args) async {
         title: (raw['title'] as String?)?.trim() ?? caption,
         caption: caption,
         lottieSegment:
-            (raw['lottieSegment'] as String?)?.trim() ?? 'scenes/minq_default.json',
+            (raw['lottieSegment'] as String?)?.trim() ??
+            'scenes/minq_default.json',
         durationSeconds: (raw['durationSeconds'] as num?)?.toInt() ?? 5,
       ),
     );
@@ -83,9 +85,10 @@ Future<void> main(List<String> args) async {
     ],
   };
 
-  final voiceover = StringBuffer()
-    ..writeln('# $title')
-    ..writeln();
+  final voiceover =
+      StringBuffer()
+        ..writeln('# $title')
+        ..writeln();
   for (var i = 0; i < steps.length; i++) {
     final step = steps[i];
     voiceover
@@ -96,17 +99,22 @@ Future<void> main(List<String> args) async {
 
   final metadata = <String, dynamic>{
     'stepCount': steps.length,
-    'estimatedDurationSeconds':
-        steps.fold<int>(0, (previous, element) => previous + element.durationSeconds),
+    'estimatedDurationSeconds': steps.fold<int>(
+      0,
+      (previous, element) => previous + element.durationSeconds,
+    ),
     'segments': steps.map((step) => step.lottieSegment).toSet().length,
   };
 
-  await File('${outputDir.path}/tutorial_storyboard.json')
-      .writeAsString(const JsonEncoder.withIndent('  ').convert(storyboard));
-  await File('${outputDir.path}/voiceover_script.txt')
-      .writeAsString(voiceover.toString());
-  await File('${outputDir.path}/metadata.json')
-      .writeAsString(const JsonEncoder.withIndent('  ').convert(metadata));
+  await File(
+    '${outputDir.path}/tutorial_storyboard.json',
+  ).writeAsString(const JsonEncoder.withIndent('  ').convert(storyboard));
+  await File(
+    '${outputDir.path}/voiceover_script.txt',
+  ).writeAsString(voiceover.toString());
+  await File(
+    '${outputDir.path}/metadata.json',
+  ).writeAsString(const JsonEncoder.withIndent('  ').convert(metadata));
 
   stdout.writeln('Tutorial assets generated in ${outputDir.path}');
 }

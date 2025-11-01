@@ -29,19 +29,13 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.period,
-      vsync: this,
-    );
-    
+    _controller = AnimationController(duration: widget.period, vsync: this);
+
     _animation = Tween<double>(
       begin: -1.0,
       end: 2.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-    
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
     _controller.repeat();
   }
 
@@ -53,9 +47,11 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
 
   @override
   Widget build(BuildContext context) {
-    final baseColor = widget.baseColor ?? 
+    final baseColor =
+        widget.baseColor ??
         Theme.of(context).colorScheme.surface.withOpacity(0.3);
-    final highlightColor = widget.highlightColor ?? 
+    final highlightColor =
+        widget.highlightColor ??
         Theme.of(context).colorScheme.surface.withOpacity(0.1);
 
     return AnimatedBuilder(
@@ -64,11 +60,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
         return ShaderMask(
           shaderCallback: (bounds) {
             return LinearGradient(
-              colors: [
-                baseColor,
-                highlightColor,
-                baseColor,
-              ],
+              colors: [baseColor, highlightColor, baseColor],
               stops: const [0.0, 0.5, 1.0],
               begin: _getBeginAlignment(),
               end: _getEndAlignment(),
@@ -147,10 +139,7 @@ class ShimmerSkeletons {
   }
 
   /// Avatar skeleton
-  static Widget avatar({
-    double size = 40.0,
-    bool isCircular = true,
-  }) {
+  static Widget avatar({double size = 40.0, bool isCircular = true}) {
     return ShimmerLoading(
       child: Container(
         width: size,
@@ -194,10 +183,7 @@ class ShimmerSkeletons {
       padding: padding ?? const EdgeInsets.all(16),
       child: Row(
         children: [
-          if (showAvatar) ...[
-            avatar(),
-            const SizedBox(width: 16),
-          ],
+          if (showAvatar) ...[avatar(), const SizedBox(width: 16)],
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,10 +194,7 @@ class ShimmerSkeletons {
               ],
             ),
           ),
-          if (showTrailing) ...[
-            const SizedBox(width: 16),
-            textLine(width: 60),
-          ],
+          if (showTrailing) ...[const SizedBox(width: 16), textLine(width: 60)],
         ],
       ),
     );
@@ -255,7 +238,11 @@ class ShimmerSkeletons {
               const Spacer(),
               Row(
                 children: [
-                  textLine(width: 80, height: 24, borderRadius: BorderRadius.circular(12)),
+                  textLine(
+                    width: 80,
+                    height: 24,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   const Spacer(),
                   textLine(width: 60, height: 14),
                 ],

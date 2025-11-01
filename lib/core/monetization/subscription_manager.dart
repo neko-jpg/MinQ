@@ -174,9 +174,10 @@ class SubscriptionManager {
       case PremiumFeature.customPrograms:
         return isCoachingActive &&
             _currentStatus.maybeWhen(
-              coaching: (plan, _) => plan.id == coachingProId,
-              orElse: () => false,
-            ) == true;
+                  coaching: (plan, _) => plan.id == coachingProId,
+                  orElse: () => false,
+                ) ==
+                true;
     }
   }
 }

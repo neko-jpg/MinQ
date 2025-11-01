@@ -6,13 +6,13 @@ import 'package:minq/presentation/theme/design_tokens.dart';
 
 void main() {
   group('Settings Screen Tests', () {
-    testWidgets('Settings screen displays essential options only', (WidgetTester tester) async {
+    testWidgets('Settings screen displays essential options only', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
-            theme: ThemeData(
-              extensions: [MinqDesignTokens.light()],
-            ),
+            theme: ThemeData(extensions: [MinqDesignTokens.light()]),
             home: const SettingsScreen(),
           ),
         ),
@@ -33,13 +33,13 @@ void main() {
       expect(settingsTiles, findsNWidgets(8));
     });
 
-    testWidgets('Settings tiles have proper touch targets', (WidgetTester tester) async {
+    testWidgets('Settings tiles have proper touch targets', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
-            theme: ThemeData(
-              extensions: [MinqDesignTokens.light()],
-            ),
+            theme: ThemeData(extensions: [MinqDesignTokens.light()]),
             home: const SettingsScreen(),
           ),
         ),
@@ -47,23 +47,23 @@ void main() {
 
       // Find all ConstrainedBox widgets that should have minimum 44pt height
       final constrainedBoxes = find.byType(ConstrainedBox);
-      
+
       for (final constrainedBox in constrainedBoxes.evaluate()) {
         final widget = constrainedBox.widget as ConstrainedBox;
         final constraints = widget.constraints;
-        
+
         // Verify minimum touch target size (44pt)
         expect(constraints.minHeight, greaterThanOrEqualTo(44.0));
       }
     });
 
-    testWidgets('Advanced settings sheet can be opened', (WidgetTester tester) async {
+    testWidgets('Advanced settings sheet can be opened', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
-            theme: ThemeData(
-              extensions: [MinqDesignTokens.light()],
-            ),
+            theme: ThemeData(extensions: [MinqDesignTokens.light()]),
             home: const SettingsScreen(),
           ),
         ),
@@ -72,7 +72,7 @@ void main() {
       // Find and tap the more options button
       final moreButton = find.byIcon(Icons.more_vert);
       expect(moreButton, findsOneWidget);
-      
+
       await tester.tap(moreButton);
       await tester.pumpAndSettle();
 
@@ -86,9 +86,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
-            theme: ThemeData(
-              extensions: [MinqDesignTokens.light()],
-            ),
+            theme: ThemeData(extensions: [MinqDesignTokens.light()]),
             home: const SettingsScreen(),
           ),
         ),

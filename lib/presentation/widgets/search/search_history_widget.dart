@@ -12,19 +12,19 @@ class SearchHistoryWidget extends ConsumerWidget {
   final Function(String query, SearchFilter filter)? onHistoryTap;
   final Function(SavedSearch savedSearch)? onSavedSearchTap;
   final bool showSavedSearches;
-  
+
   const SearchHistoryWidget({
     super.key,
     this.onHistoryTap,
     this.onSavedSearchTap,
     this.showSavedSearches = true,
   });
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    
+
     return DefaultTabController(
       length: showSavedSearches ? 2 : 1,
       child: Column(
@@ -33,53 +33,48 @@ class SearchHistoryWidget extends ConsumerWidget {
           if (showSavedSearches)
             TabBar(
               tabs: [
-                Tab(
-                  icon: const Icon(Icons.history),
-                  text: l10n.searchHistory,
-                ),
-                Tab(
-                  icon: const Icon(Icons.bookmark),
-                  text: l10n.savedSearches,
-                ),
+                Tab(icon: const Icon(Icons.history), text: l10n.searchHistory),
+                Tab(icon: const Icon(Icons.bookmark), text: l10n.savedSearches),
               ],
             ),
-          
+
           // タブビュー
           Expanded(
-            child: showSavedSearches
-                ? TabBarView(
-                    children: [
-                      _buildHistoryTab(context, ref),
-                      _buildSavedSearchesTab(context, ref),
-                    ],
-                  )
-                : _buildHistoryTab(context, ref),
+            child:
+                showSavedSearches
+                    ? TabBarView(
+                      children: [
+                        _buildHistoryTab(context, ref),
+                        _buildSavedSearchesTab(context, ref),
+                      ],
+                    )
+                    : _buildHistoryTab(context, ref),
           ),
         ],
       ),
     );
   }
-  
+
   Widget _buildHistoryTab(BuildContext context, WidgetRef ref) {
     final history = ref.watch(searchHistoryProvider);
-    
+
     return history.when(
       data: (entries) => _buildHistoryList(context, ref, entries),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => _buildErrorState(context, error),
     );
   }
-  
+
   Widget _buildSavedSearchesTab(BuildContext context, WidgetRef ref) {
     final savedSearches = ref.watch(savedSearchesProvider);
-    
+
     return savedSearches.when(
       data: (searches) => _buildSavedSearchesList(context, ref, searches),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => _buildErrorState(context, error),
     );
   }
-  
+
   Widget _buildHistoryList(
     BuildContext context,
     WidgetRef ref,
@@ -87,11 +82,11 @@ class SearchHistoryWidget extends ConsumerWidget {
   ) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    
+
     if (entries.isEmpty) {
       return _buildEmptyHistoryState(context);
     }
-    
+
     return Column(
       children: [
         // ヘッダー
@@ -113,7 +108,7 @@ class SearchHistoryWidget extends ConsumerWidget {
             ],
           ),
         ),
-        
+
         // 履歴リスト
         Expanded(
           child: ListView.builder(
@@ -127,7 +122,7 @@ class SearchHistoryWidget extends ConsumerWidget {
       ],
     );
   }
-  
+
   Widget _buildSavedSearchesList(
     BuildContext context,
     WidgetRef ref,
@@ -135,11 +130,11 @@ class SearchHistoryWidget extends ConsumerWidget {
   ) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    
+
     if (searches.isEmpty) {
       return _buildEmptySavedSearchesState(context);
     }
-    
+
     return Column(
       children: [
         // ヘッダー
@@ -161,7 +156,7 @@ class SearchHistoryWidget extends ConsumerWidget {
             ],
           ),
         ),
-        
+
         // 保存された検索リスト
         Expanded(
           child: ListView.builder(
@@ -175,21 +170,20 @@ class SearchHistoryWidget extends ConsumerWidget {
       ],
     );
   }
-  
+
   Widget _buildHistoryItem(
     BuildContext context,
     WidgetRef ref,
     SearchHistoryEntry entry,
   ) {
     final tokens = context.tokens;
-    
+
     return ListTile(
-      leading: Icon(
-        Icons.history,
-        color: tokens.textSecondary,
-      ),
+      leading: Icon(Icons.history, color: tokens.textSecondary),
       title: Text(
-        entry.query.isNotEmpty ? entry.query : AppLocalizations.of(context).filterOnly,
+        entry.query.isNotEmpty
+            ? entry.query
+            : AppLocalizations.of(context).filterOnly,
         style: context.textTheme.bodyMedium,
       ),
       subtitle: Column(
@@ -211,29 +205,22 @@ class SearchHistoryWidget extends ConsumerWidget {
         ],
       ),
       trailing: IconButton(
-        icon: Icon(
-          Icons.close,
-          size: 16,
-          color: tokens.textMuted,
-        ),
+        icon: Icon(Icons.close, size: 16, color: tokens.textMuted),
         onPressed: () => _removeHistoryEntry(context, ref, entry),
       ),
       onTap: () => onHistoryTap?.call(entry.query, entry.filter),
     );
   }
-  
+
   Widget _buildSavedSearchItem(
     BuildContext context,
     WidgetRef ref,
     SavedSearch search,
   ) {
     final tokens = context.tokens;
-    
+
     return ListTile(
-      leading: Icon(
-        Icons.bookmark,
-        color: tokens.primary,
-      ),
+      leading: Icon(Icons.bookmark, color: tokens.primary),
       title: Text(
         search.name,
         style: context.textTheme.bodyMedium?.copyWith(
@@ -244,10 +231,7 @@ class SearchHistoryWidget extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (search.query.isNotEmpty)
-            Text(
-              search.query,
-              style: context.textTheme.bodySmall,
-            ),
+            Text(search.query, style: context.textTheme.bodySmall),
           if (!search.filter.isEmpty)
             Text(
               _formatFilter(context, search.filter),
@@ -274,39 +258,36 @@ class SearchHistoryWidget extends ConsumerWidget {
               break;
           }
         },
-        itemBuilder: (context) => [
-          PopupMenuItem(
-            value: 'edit',
-            child: ListTile(
-              leading: const Icon(Icons.edit),
-              title: Text(AppLocalizations.of(context).edit),
-            ),
-          ),
-          PopupMenuItem(
-            value: 'delete',
-            child: ListTile(
-              leading: const Icon(Icons.delete),
-              title: Text(AppLocalizations.of(context).delete),
-            ),
-          ),
-        ],
+        itemBuilder:
+            (context) => [
+              PopupMenuItem(
+                value: 'edit',
+                child: ListTile(
+                  leading: const Icon(Icons.edit),
+                  title: Text(AppLocalizations.of(context).edit),
+                ),
+              ),
+              PopupMenuItem(
+                value: 'delete',
+                child: ListTile(
+                  leading: const Icon(Icons.delete),
+                  title: Text(AppLocalizations.of(context).delete),
+                ),
+              ),
+            ],
       ),
       onTap: () => onSavedSearchTap?.call(search),
     );
   }
-  
+
   Widget _buildEmptyHistoryState(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.history,
-            size: 64,
-            color: tokens.textMuted,
-          ),
+          Icon(Icons.history, size: 64, color: tokens.textMuted),
           SizedBox(height: tokens.spacing.md),
           Text(
             AppLocalizations.of(context).noSearchHistory,
@@ -326,19 +307,15 @@ class SearchHistoryWidget extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildEmptySavedSearchesState(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.bookmark_border,
-            size: 64,
-            color: tokens.textMuted,
-          ),
+          Icon(Icons.bookmark_border, size: 64, color: tokens.textMuted),
           SizedBox(height: tokens.spacing.md),
           Text(
             AppLocalizations.of(context).noSavedSearches,
@@ -364,19 +341,15 @@ class SearchHistoryWidget extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildErrorState(BuildContext context, Object error) {
     final tokens = context.tokens;
-    
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: tokens.error,
-          ),
+          Icon(Icons.error_outline, size: 64, color: tokens.error),
           SizedBox(height: tokens.spacing.md),
           Text(
             AppLocalizations.of(context).loadError,
@@ -394,33 +367,37 @@ class SearchHistoryWidget extends ConsumerWidget {
       ),
     );
   }
-  
+
   String _formatFilter(BuildContext context, SearchFilter filter) {
     final parts = <String>[];
-    
+
     if (filter.categories.isNotEmpty) {
-      parts.add('${AppLocalizations.of(context).category}: ${filter.categories.join(', ')}');
+      parts.add(
+        '${AppLocalizations.of(context).category}: ${filter.categories.join(', ')}',
+      );
     }
-    
+
     if (filter.difficulty != null) {
-      parts.add('${AppLocalizations.of(context).difficulty}: ${filter.difficulty}');
+      parts.add(
+        '${AppLocalizations.of(context).difficulty}: ${filter.difficulty}',
+      );
     }
-    
+
     if (filter.location != null) {
       parts.add('${AppLocalizations.of(context).location}: ${filter.location}');
     }
-    
+
     if (filter.status != null) {
       parts.add('${AppLocalizations.of(context).status}: ${filter.status}');
     }
-    
+
     return parts.join(' • ');
   }
-  
+
   String _formatTimestamp(BuildContext context, DateTime timestamp) {
     final now = DateTime.now();
     final difference = now.difference(timestamp);
-    
+
     if (difference.inMinutes < 1) {
       return AppLocalizations.of(context).justNow;
     } else if (difference.inHours < 1) {
@@ -433,32 +410,35 @@ class SearchHistoryWidget extends ConsumerWidget {
       return '${timestamp.year}/${timestamp.month}/${timestamp.day}';
     }
   }
-  
+
   void _clearHistory(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context).clearSearchHistory),
-        content: Text(AppLocalizations.of(context).clearSearchHistoryConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context).cancel),
+      builder:
+          (context) => AlertDialog(
+            title: Text(AppLocalizations.of(context).clearSearchHistory),
+            content: Text(
+              AppLocalizations.of(context).clearSearchHistoryConfirmation,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(AppLocalizations.of(context).cancel),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  final searchService = ref.read(searchServiceProvider);
+                  await searchService.clearSearchHistory();
+                  ref.invalidate(searchHistoryProvider);
+                },
+                child: Text(AppLocalizations.of(context).clear),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              final searchService = ref.read(searchServiceProvider);
-              await searchService.clearSearchHistory();
-              ref.invalidate(searchHistoryProvider);
-            },
-            child: Text(AppLocalizations.of(context).clear),
-          ),
-        ],
-      ),
     );
   }
-  
+
   void _removeHistoryEntry(
     BuildContext context,
     WidgetRef ref,
@@ -466,12 +446,10 @@ class SearchHistoryWidget extends ConsumerWidget {
   ) async {
     // TODO: 個別履歴削除の実装
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context).historyEntryRemoved),
-      ),
+      SnackBar(content: Text(AppLocalizations.of(context).historyEntryRemoved)),
     );
   }
-  
+
   void _showSaveSearchDialog(BuildContext context, WidgetRef ref) {
     // TODO: 検索保存ダイアログの実装
     ScaffoldMessenger.of(context).showSnackBar(
@@ -480,38 +458,49 @@ class SearchHistoryWidget extends ConsumerWidget {
       ),
     );
   }
-  
-  void _editSavedSearch(BuildContext context, WidgetRef ref, SavedSearch search) {
+
+  void _editSavedSearch(
+    BuildContext context,
+    WidgetRef ref,
+    SavedSearch search,
+  ) {
     // TODO: 保存された検索の編集
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context).editNotImplemented),
-      ),
+      SnackBar(content: Text(AppLocalizations.of(context).editNotImplemented)),
     );
   }
-  
-  void _deleteSavedSearch(BuildContext context, WidgetRef ref, SavedSearch search) {
+
+  void _deleteSavedSearch(
+    BuildContext context,
+    WidgetRef ref,
+    SavedSearch search,
+  ) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context).deleteSavedSearch),
-        content: Text(AppLocalizations.of(context).deleteSavedSearchConfirmation(search.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context).cancel),
+      builder:
+          (context) => AlertDialog(
+            title: Text(AppLocalizations.of(context).deleteSavedSearch),
+            content: Text(
+              AppLocalizations.of(
+                context,
+              ).deleteSavedSearchConfirmation(search.name),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(AppLocalizations.of(context).cancel),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  final searchService = ref.read(searchServiceProvider);
+                  await searchService.deleteSavedSearch(search.id);
+                  ref.invalidate(savedSearchesProvider);
+                },
+                child: Text(AppLocalizations.of(context).delete),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              final searchService = ref.read(searchServiceProvider);
-              await searchService.deleteSavedSearch(search.id);
-              ref.invalidate(savedSearchesProvider);
-            },
-            child: Text(AppLocalizations.of(context).delete),
-          ),
-        ],
-      ),
     );
   }
 }

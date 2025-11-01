@@ -14,7 +14,7 @@ class AdvancedSearchBar extends ConsumerStatefulWidget {
   final VoidCallback? onClear;
   final bool showVoiceSearch;
   final bool showFilters;
-  
+
   const AdvancedSearchBar({
     super.key,
     this.initialQuery = '',
@@ -24,7 +24,7 @@ class AdvancedSearchBar extends ConsumerStatefulWidget {
     this.showVoiceSearch = true,
     this.showFilters = true,
   });
-  
+
   @override
   ConsumerState<AdvancedSearchBar> createState() => _AdvancedSearchBarState();
 }
@@ -35,33 +35,33 @@ class _AdvancedSearchBarState extends ConsumerState<AdvancedSearchBar> {
   SearchFilter _currentFilter = const SearchFilter();
   bool _showSuggestions = false;
   bool _showFilters = false;
-  
+
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initialQuery);
     _focusNode = FocusNode();
     _currentFilter = widget.initialFilter ?? const SearchFilter();
-    
+
     _focusNode.addListener(() {
       setState(() {
         _showSuggestions = _focusNode.hasFocus && _controller.text.isNotEmpty;
       });
     });
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    
+
     return Column(
       children: [
         // メイン検索バー
@@ -93,7 +93,7 @@ class _AdvancedSearchBarState extends ConsumerState<AdvancedSearchBar> {
                   size: 20,
                 ),
               ),
-              
+
               // 検索入力フィールド
               Expanded(
                 child: TextField(
@@ -109,9 +109,10 @@ class _AdvancedSearchBarState extends ConsumerState<AdvancedSearchBar> {
                   ),
                   onChanged: (value) {
                     setState(() {
-                      _showSuggestions = value.isNotEmpty && _focusNode.hasFocus;
+                      _showSuggestions =
+                          value.isNotEmpty && _focusNode.hasFocus;
                     });
-                    
+
                     // リアルタイム検索（デバウンス付き）
                     if (value.isNotEmpty) {
                       _performSearch(value, _currentFilter);
@@ -123,23 +124,23 @@ class _AdvancedSearchBarState extends ConsumerState<AdvancedSearchBar> {
                   },
                 ),
               ),
-              
+
               // 音声検索ボタン
               if (widget.showVoiceSearch)
                 IconButton(
-                  icon: Icon(
-                    Icons.mic,
-                    color: tokens.textSecondary,
-                  ),
+                  icon: Icon(Icons.mic, color: tokens.textSecondary),
                   onPressed: _startVoiceSearch,
                 ),
-              
+
               // フィルターボタン
               if (widget.showFilters)
                 IconButton(
                   icon: Icon(
                     _showFilters ? Icons.filter_alt : Icons.filter_alt_outlined,
-                    color: !_currentFilter.isEmpty ? tokens.primary : tokens.textSecondary,
+                    color:
+                        !_currentFilter.isEmpty
+                            ? tokens.primary
+                            : tokens.textSecondary,
                   ),
                   onPressed: () {
                     setState(() {
@@ -147,14 +148,11 @@ class _AdvancedSearchBarState extends ConsumerState<AdvancedSearchBar> {
                     });
                   },
                 ),
-              
+
               // クリアボタン
               if (_controller.text.isNotEmpty)
                 IconButton(
-                  icon: Icon(
-                    Icons.clear,
-                    color: tokens.textSecondary,
-                  ),
+                  icon: Icon(Icons.clear, color: tokens.textSecondary),
                   onPressed: () {
                     _controller.clear();
                     _currentFilter = const SearchFilter();
@@ -167,25 +165,25 @@ class _AdvancedSearchBarState extends ConsumerState<AdvancedSearchBar> {
             ],
           ),
         ),
-        
+
         // オートコンプリート候補
-        if (_showSuggestions)
-          _buildSuggestions(),
-        
+        if (_showSuggestions) _buildSuggestions(),
+
         // フィルター
-        if (_showFilters)
-          _buildFilters(),
+        if (_showFilters) _buildFilters(),
       ],
     );
   }
-  
+
   Widget _buildSuggestions() {
-    final suggestions = ref.watch(autocompleteSuggestionsProvider(_controller.text));
-    
+    final suggestions = ref.watch(
+      autocompleteSuggestionsProvider(_controller.text),
+    );
+
     return suggestions.when(
       data: (suggestions) {
         if (suggestions.isEmpty) return const SizedBox.shrink();
-        
+
         return Container(
           margin: EdgeInsets.only(top: context.tokens.spacing.sm),
           decoration: BoxDecoration(
@@ -202,28 +200,29 @@ class _AdvancedSearchBarState extends ConsumerState<AdvancedSearchBar> {
             ],
           ),
           child: Column(
-            children: suggestions.map((suggestion) {
-              return ListTile(
-                dense: true,
-                leading: Icon(
-                  Icons.history,
-                  color: context.tokens.textSecondary,
-                  size: 16,
-                ),
-                title: Text(
-                  suggestion,
-                  style: context.textTheme.bodyMedium,
-                ),
-                onTap: () {
-                  _controller.text = suggestion;
-                  _performSearch(suggestion, _currentFilter);
-                  setState(() {
-                    _showSuggestions = false;
-                  });
-                  _focusNode.unfocus();
-                },
-              );
-            }).toList(),
+            children:
+                suggestions.map((suggestion) {
+                  return ListTile(
+                    dense: true,
+                    leading: Icon(
+                      Icons.history,
+                      color: context.tokens.textSecondary,
+                      size: 16,
+                    ),
+                    title: Text(
+                      suggestion,
+                      style: context.textTheme.bodyMedium,
+                    ),
+                    onTap: () {
+                      _controller.text = suggestion;
+                      _performSearch(suggestion, _currentFilter);
+                      setState(() {
+                        _showSuggestions = false;
+                      });
+                      _focusNode.unfocus();
+                    },
+                  );
+                }).toList(),
           ),
         );
       },
@@ -231,117 +230,126 @@ class _AdvancedSearchBarState extends ConsumerState<AdvancedSearchBar> {
       error: (_, __) => const SizedBox.shrink(),
     );
   }
-  
+
   Widget _buildFilters() {
     final filterOptions = ref.watch(filterOptionsProvider);
-    
+
     return filterOptions.when(
-      data: (options) => Container(
-        margin: EdgeInsets.only(top: context.tokens.spacing.sm),
-        padding: EdgeInsets.all(context.tokens.spacing.md),
-        decoration: BoxDecoration(
-          color: context.tokens.surface,
-          borderRadius: BorderRadius.circular(context.tokens.radius.lg),
-          border: Border.all(color: context.tokens.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // フィルターヘッダー
-            Row(
+      data:
+          (options) => Container(
+            margin: EdgeInsets.only(top: context.tokens.spacing.sm),
+            padding: EdgeInsets.all(context.tokens.spacing.md),
+            decoration: BoxDecoration(
+              color: context.tokens.surface,
+              borderRadius: BorderRadius.circular(context.tokens.radius.lg),
+              border: Border.all(color: context.tokens.border),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  AppLocalizations.of(context).filters,
-                  style: context.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                // フィルターヘッダー
+                Row(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context).filters,
+                      style: context.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (!_currentFilter.isEmpty)
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _currentFilter = const SearchFilter();
+                          });
+                          _performSearch(_controller.text, _currentFilter);
+                        },
+                        child: Text(AppLocalizations.of(context).clearAll),
+                      ),
+                  ],
                 ),
-                const Spacer(),
-                if (!_currentFilter.isEmpty)
-                  TextButton(
-                    onPressed: () {
+
+                SizedBox(height: context.tokens.spacing.sm),
+
+                // カテゴリフィルター
+                if (options.categories.isNotEmpty) ...[
+                  _buildFilterSection(
+                    title: AppLocalizations.of(context).category,
+                    options: options.categories,
+                    selectedValues: _currentFilter.categories,
+                    onChanged: (selected) {
                       setState(() {
-                        _currentFilter = const SearchFilter();
+                        _currentFilter = _currentFilter.copyWith(
+                          categories: selected,
+                        );
                       });
                       _performSearch(_controller.text, _currentFilter);
                     },
-                    child: Text(AppLocalizations.of(context).clearAll),
                   ),
+                  SizedBox(height: context.tokens.spacing.md),
+                ],
+
+                // 難易度フィルター
+                if (options.difficulties.isNotEmpty) ...[
+                  _buildSingleSelectFilter(
+                    title: AppLocalizations.of(context).difficulty,
+                    options: options.difficulties,
+                    selectedValue: _currentFilter.difficulty,
+                    onChanged: (selected) {
+                      setState(() {
+                        _currentFilter = _currentFilter.copyWith(
+                          difficulty: selected,
+                        );
+                      });
+                      _performSearch(_controller.text, _currentFilter);
+                    },
+                  ),
+                  SizedBox(height: context.tokens.spacing.md),
+                ],
+
+                // 場所フィルター
+                if (options.locations.isNotEmpty) ...[
+                  _buildSingleSelectFilter(
+                    title: AppLocalizations.of(context).location,
+                    options: options.locations,
+                    selectedValue: _currentFilter.location,
+                    onChanged: (selected) {
+                      setState(() {
+                        _currentFilter = _currentFilter.copyWith(
+                          location: selected,
+                        );
+                      });
+                      _performSearch(_controller.text, _currentFilter);
+                    },
+                  ),
+                  SizedBox(height: context.tokens.spacing.md),
+                ],
+
+                // ステータスフィルター
+                if (options.statuses.isNotEmpty) ...[
+                  _buildSingleSelectFilter(
+                    title: AppLocalizations.of(context).status,
+                    options: options.statuses,
+                    selectedValue: _currentFilter.status,
+                    onChanged: (selected) {
+                      setState(() {
+                        _currentFilter = _currentFilter.copyWith(
+                          status: selected,
+                        );
+                      });
+                      _performSearch(_controller.text, _currentFilter);
+                    },
+                  ),
+                ],
               ],
             ),
-            
-            SizedBox(height: context.tokens.spacing.sm),
-            
-            // カテゴリフィルター
-            if (options.categories.isNotEmpty) ...[
-              _buildFilterSection(
-                title: AppLocalizations.of(context).category,
-                options: options.categories,
-                selectedValues: _currentFilter.categories,
-                onChanged: (selected) {
-                  setState(() {
-                    _currentFilter = _currentFilter.copyWith(categories: selected);
-                  });
-                  _performSearch(_controller.text, _currentFilter);
-                },
-              ),
-              SizedBox(height: context.tokens.spacing.md),
-            ],
-            
-            // 難易度フィルター
-            if (options.difficulties.isNotEmpty) ...[
-              _buildSingleSelectFilter(
-                title: AppLocalizations.of(context).difficulty,
-                options: options.difficulties,
-                selectedValue: _currentFilter.difficulty,
-                onChanged: (selected) {
-                  setState(() {
-                    _currentFilter = _currentFilter.copyWith(difficulty: selected);
-                  });
-                  _performSearch(_controller.text, _currentFilter);
-                },
-              ),
-              SizedBox(height: context.tokens.spacing.md),
-            ],
-            
-            // 場所フィルター
-            if (options.locations.isNotEmpty) ...[
-              _buildSingleSelectFilter(
-                title: AppLocalizations.of(context).location,
-                options: options.locations,
-                selectedValue: _currentFilter.location,
-                onChanged: (selected) {
-                  setState(() {
-                    _currentFilter = _currentFilter.copyWith(location: selected);
-                  });
-                  _performSearch(_controller.text, _currentFilter);
-                },
-              ),
-              SizedBox(height: context.tokens.spacing.md),
-            ],
-            
-            // ステータスフィルター
-            if (options.statuses.isNotEmpty) ...[
-              _buildSingleSelectFilter(
-                title: AppLocalizations.of(context).status,
-                options: options.statuses,
-                selectedValue: _currentFilter.status,
-                onChanged: (selected) {
-                  setState(() {
-                    _currentFilter = _currentFilter.copyWith(status: selected);
-                  });
-                  _performSearch(_controller.text, _currentFilter);
-                },
-              ),
-            ],
-          ],
-        ),
-      ),
+          ),
       loading: () => const CircularProgressIndicator(),
       error: (_, __) => const SizedBox.shrink(),
     );
   }
-  
+
   Widget _buildFilterSection({
     required String title,
     required List<String> options,
@@ -362,30 +370,31 @@ class _AdvancedSearchBarState extends ConsumerState<AdvancedSearchBar> {
         Wrap(
           spacing: context.tokens.spacing.sm,
           runSpacing: context.tokens.spacing.sm,
-          children: options.map((option) {
-            final isSelected = selectedValues.contains(option);
-            return FilterChip(
-              label: Text(option),
-              selected: isSelected,
-              onSelected: (selected) {
-                final newSelected = List<String>.from(selectedValues);
-                if (selected) {
-                  newSelected.add(option);
-                } else {
-                  newSelected.remove(option);
-                }
-                onChanged(newSelected);
-              },
-              backgroundColor: context.tokens.surface,
-              selectedColor: context.tokens.primary.withOpacity(0.2),
-              checkmarkColor: context.tokens.primary,
-            );
-          }).toList(),
+          children:
+              options.map((option) {
+                final isSelected = selectedValues.contains(option);
+                return FilterChip(
+                  label: Text(option),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    final newSelected = List<String>.from(selectedValues);
+                    if (selected) {
+                      newSelected.add(option);
+                    } else {
+                      newSelected.remove(option);
+                    }
+                    onChanged(newSelected);
+                  },
+                  backgroundColor: context.tokens.surface,
+                  selectedColor: context.tokens.primary.withOpacity(0.2),
+                  checkmarkColor: context.tokens.primary,
+                );
+              }).toList(),
         ),
       ],
     );
   }
-  
+
   Widget _buildSingleSelectFilter({
     required String title,
     required List<String> options,
@@ -437,11 +446,11 @@ class _AdvancedSearchBarState extends ConsumerState<AdvancedSearchBar> {
       ],
     );
   }
-  
+
   void _performSearch(String query, SearchFilter filter) {
     widget.onSearch(query, filter);
   }
-  
+
   void _startVoiceSearch() {
     // TODO: 音声検索の実装
     ScaffoldMessenger.of(context).showSnackBar(

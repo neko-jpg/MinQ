@@ -3,7 +3,6 @@ import 'package:minq/core/i18n/regional_service.dart';
 
 /// Service for cultural adaptations and considerations
 class CulturalAdaptationService {
-  
   /// Get culturally appropriate motivational messages
   static List<String> getMotivationalMessages(Locale locale) {
     switch (locale.languageCode) {
@@ -157,9 +156,12 @@ class CulturalAdaptationService {
   }
 
   /// Get culturally appropriate color schemes
-  static ColorScheme getCulturalColorScheme(Locale locale, Brightness brightness) {
+  static ColorScheme getCulturalColorScheme(
+    Locale locale,
+    Brightness brightness,
+  ) {
     final config = RegionalService.getRegionalConfig(locale);
-    
+
     if (brightness == Brightness.dark) {
       return ColorScheme.dark(
         primary: config.culturalColors.prosperity,
@@ -212,7 +214,11 @@ class CulturalAdaptationService {
   }
 
   /// Get culturally appropriate achievement titles
-  static String getAchievementTitle(String achievementType, int level, Locale locale) {
+  static String getAchievementTitle(
+    String achievementType,
+    int level,
+    Locale locale,
+  ) {
     switch (locale.languageCode) {
       case 'ja':
         switch (achievementType) {
@@ -323,23 +329,26 @@ class CulturalAdaptationService {
     // Arabic number formatting (right-to-left)
     final arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
     final western = number.toString();
-    return western.split('').map((digit) {
-      final index = int.tryParse(digit);
-      return index != null ? arabicDigits[index] : digit;
-    }).join('');
+    return western
+        .split('')
+        .map((digit) {
+          final index = int.tryParse(digit);
+          return index != null ? arabicDigits[index] : digit;
+        })
+        .join('');
   }
 
   static String _formatWesternNumber(int number) {
     final str = number.toString();
     final buffer = StringBuffer();
-    
+
     for (int i = 0; i < str.length; i++) {
       if (i > 0 && (str.length - i) % 3 == 0) {
         buffer.write(',');
       }
       buffer.write(str[i]);
     }
-    
+
     return buffer.toString();
   }
 
@@ -354,7 +363,8 @@ class CulturalAdaptationService {
   }
 
   /// Get appropriate edge insets for locale (considering RTL)
-  static EdgeInsets getDirectionalPadding(Locale locale, {
+  static EdgeInsets getDirectionalPadding(
+    Locale locale, {
     double start = 0,
     double top = 0,
     double end = 0,
@@ -362,20 +372,10 @@ class CulturalAdaptationService {
   }) {
     if (locale.languageCode == 'ar') {
       // RTL: swap start and end
-      return EdgeInsets.only(
-        left: end,
-        top: top,
-        right: start,
-        bottom: bottom,
-      );
+      return EdgeInsets.only(left: end, top: top, right: start, bottom: bottom);
     } else {
       // LTR: normal
-      return EdgeInsets.only(
-        left: start,
-        top: top,
-        right: end,
-        bottom: bottom,
-      );
+      return EdgeInsets.only(left: start, top: top, right: end, bottom: bottom);
     }
   }
 }

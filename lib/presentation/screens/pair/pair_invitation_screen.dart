@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +17,8 @@ class PairInvitationScreen extends ConsumerStatefulWidget {
   const PairInvitationScreen({super.key});
 
   @override
-  ConsumerState<PairInvitationScreen> createState() => _PairInvitationScreenState();
+  ConsumerState<PairInvitationScreen> createState() =>
+      _PairInvitationScreenState();
 }
 
 class _PairInvitationScreenState extends ConsumerState<PairInvitationScreen> {
@@ -46,25 +45,20 @@ class _PairInvitationScreenState extends ConsumerState<PairInvitationScreen> {
       final invitation = await pairSystem.createInvitation(
         userId: userId,
         category: _categoryController.text.trim(),
-        customMessage: _messageController.text.trim().isNotEmpty
-            ? _messageController.text.trim()
-            : null,
+        customMessage:
+            _messageController.text.trim().isNotEmpty
+                ? _messageController.text.trim()
+                : null,
       );
 
       setState(() => _invitation = invitation);
-      
+
       if (mounted) {
-        FeedbackMessenger.showSuccessSnackBar(
-          context,
-          '招待リンクを作成しました！',
-        );
+        FeedbackMessenger.showSuccessSnackBar(context, '招待リンクを作成しました！');
       }
     } catch (e) {
       if (mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          '招待リンクの作成に失敗しました: $e',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, '招待リンクの作成に失敗しました: $e');
       }
     } finally {
       setState(() => _isLoading = false);
@@ -84,22 +78,16 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
 #MinQ #習慣化 #ペア機能
 ''';
 
-    await Share.share(
-      message,
-      subject: 'MinQ ペア招待',
-    );
+    await Share.share(message, subject: 'MinQ ペア招待');
   }
 
   Future<void> _copyInviteCode() async {
     if (_invitation == null) return;
 
     await Clipboard.setData(ClipboardData(text: _invitation!.inviteCode));
-    
+
     if (mounted) {
-      FeedbackMessenger.showSuccessSnackBar(
-        context,
-        '招待コードをコピーしました',
-      );
+      FeedbackMessenger.showSuccessSnackBar(context, '招待コードをコピーしました');
     }
   }
 
@@ -107,12 +95,9 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
     if (_invitation == null) return;
 
     await Clipboard.setData(ClipboardData(text: _invitation!.webLink));
-    
+
     if (mounted) {
-      FeedbackMessenger.showSuccessSnackBar(
-        context,
-        '招待リンクをコピーしました',
-      );
+      FeedbackMessenger.showSuccessSnackBar(context, '招待リンクをコピーしました');
     }
   }
 
@@ -138,7 +123,10 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
           onPressed: () => context.pop(),
         ),
       ),
-      body: _invitation == null ? _buildInvitationForm(tokens, l10n) : _buildInvitationResult(tokens, l10n),
+      body:
+          _invitation == null
+              ? _buildInvitationForm(tokens, l10n)
+              : _buildInvitationResult(tokens, l10n),
     );
   }
 
@@ -158,11 +146,7 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
             ),
             child: Column(
               children: [
-                Icon(
-                  Icons.group_add,
-                  size: 48,
-                  color: tokens.primary,
-                ),
+                Icon(Icons.group_add, size: 48, color: tokens.primary),
                 SizedBox(height: tokens.spacing.md),
                 Text(
                   'ペア招待を作成',
@@ -211,7 +195,10 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
             items: const [
               DropdownMenuItem(value: 'fitness', child: Text('🏃‍♂️ フィットネス')),
               DropdownMenuItem(value: 'learning', child: Text('📚 学習')),
-              DropdownMenuItem(value: 'wellbeing', child: Text('🧘‍♀️ ウェルビーイング')),
+              DropdownMenuItem(
+                value: 'wellbeing',
+                child: Text('🧘‍♀️ ウェルビーイング'),
+              ),
               DropdownMenuItem(value: 'productivity', child: Text('💼 生産性')),
               DropdownMenuItem(value: 'creativity', child: Text('🎨 創造性')),
               DropdownMenuItem(value: 'general', child: Text('🌟 その他')),
@@ -254,16 +241,17 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
           // 作成ボタン
           PolishedPrimaryButton(
             onPressed: _isLoading ? null : _createInvitation,
-            child: _isLoading
-                ? SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation(tokens.onPrimary),
-                    ),
-                  )
-                : const Text('招待を作成'),
+            child:
+                _isLoading
+                    ? SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation(tokens.onPrimary),
+                      ),
+                    )
+                    : const Text('招待を作成'),
           ),
         ],
       ),
@@ -504,7 +492,7 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
   String _formatExpiryDate(DateTime date) {
     final now = DateTime.now();
     final difference = date.difference(now);
-    
+
     if (difference.inDays > 0) {
       return '${difference.inDays}日後';
     } else if (difference.inHours > 0) {

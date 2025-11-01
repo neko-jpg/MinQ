@@ -8,9 +8,10 @@ import 'package:minq/presentation/controllers/progressive_onboarding_controller.
 /// プログレッシブオンボーディング統合サービス
 /// ヒント表示、レベル管理、機能解放を統合的に管理
 class ProgressiveOnboardingIntegration {
-  static const ProgressiveOnboardingIntegration _instance = ProgressiveOnboardingIntegration._();
+  static const ProgressiveOnboardingIntegration _instance =
+      ProgressiveOnboardingIntegration._();
   static ProgressiveOnboardingIntegration get instance => _instance;
-  
+
   const ProgressiveOnboardingIntegration._();
 
   /// クエスト作成時の処理
@@ -21,8 +22,10 @@ class ProgressiveOnboardingIntegration {
   }) async {
     if (!context.mounted) return;
 
-    final controller = ref.read(progressiveOnboardingControllerProvider.notifier);
-    
+    final controller = ref.read(
+      progressiveOnboardingControllerProvider.notifier,
+    );
+
     // 初回クエスト作成ヒントを表示
     if (isFirstQuest) {
       await controller.onQuestCreated(context);
@@ -41,11 +44,13 @@ class ProgressiveOnboardingIntegration {
   }) async {
     if (!context.mounted) return;
 
-    final controller = ref.read(progressiveOnboardingControllerProvider.notifier);
-    
+    final controller = ref.read(
+      progressiveOnboardingControllerProvider.notifier,
+    );
+
     // 完了ヒントを表示
     await controller.onQuestCompleted(context, totalCompleted);
-    
+
     // ストリークヒントを表示
     if (currentStreak >= 3) {
       await controller.onStreakAchieved(context, currentStreak);
@@ -63,8 +68,10 @@ class ProgressiveOnboardingIntegration {
     if (!context.mounted) return;
 
     await ProgressiveHintService.showWeeklyGoalHint(context);
-    
-    final controller = ref.read(progressiveOnboardingControllerProvider.notifier);
+
+    final controller = ref.read(
+      progressiveOnboardingControllerProvider.notifier,
+    );
     await controller.checkLevelUp();
   }
 
@@ -97,8 +104,10 @@ class ProgressiveOnboardingIntegration {
   ) async {
     if (!context.mounted) return;
 
-    final controller = ref.read(progressiveOnboardingControllerProvider.notifier);
-    
+    final controller = ref.read(
+      progressiveOnboardingControllerProvider.notifier,
+    );
+
     // 画面固有のヒントを表示
     switch (screenId) {
       case 'home':
@@ -127,7 +136,9 @@ class ProgressiveOnboardingIntegration {
 
   /// 機能がロックされているかチェック
   static bool isFeatureLocked(WidgetRef ref, String featureId) {
-    final controller = ref.read(progressiveOnboardingControllerProvider.notifier);
+    final controller = ref.read(
+      progressiveOnboardingControllerProvider.notifier,
+    );
     return !controller.isFeatureUnlocked(featureId);
   }
 
@@ -164,39 +175,41 @@ class ProgressiveOnboardingIntegration {
               const SizedBox(width: 8),
             ],
             Expanded(
-              child: Text(
-                message,
-                style: const TextStyle(color: Colors.white),
-              ),
+              child: Text(message, style: const TextStyle(color: Colors.white)),
             ),
           ],
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         duration: duration,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
 }
 
 /// プログレッシブオンボーディング統合プロバイダー
-final progressiveOnboardingIntegrationProvider = Provider<ProgressiveOnboardingIntegration>(
-  (ref) => ProgressiveOnboardingIntegration.instance,
-);
+final progressiveOnboardingIntegrationProvider =
+    Provider<ProgressiveOnboardingIntegration>(
+      (ref) => ProgressiveOnboardingIntegration.instance,
+    );
 
 /// 機能ロック状態プロバイダー
-final featureLockStateProvider = Provider.family<bool, String>((ref, featureId) {
+final featureLockStateProvider = Provider.family<bool, String>((
+  ref,
+  featureId,
+) {
   final controller = ref.read(progressiveOnboardingControllerProvider.notifier);
   return !controller.isFeatureUnlocked(featureId);
 });
 
 /// 機能ロックメッセージプロバイダー
-final featureLockMessageProvider = Provider.family<String, String>((ref, featureId) {
+final featureLockMessageProvider = Provider.family<String, String>((
+  ref,
+  featureId,
+) {
   final onboardingState = ref.read(progressiveOnboardingControllerProvider);
-  
+
   return onboardingState.when(
     data: (onboarding) {
       // 必要なレベルを計算
@@ -208,7 +221,7 @@ final featureLockMessageProvider = Provider.family<String, String>((ref, feature
           break;
         }
       }
-      
+
       return FeatureLockMessages.getMessage(featureId, requiredLevel);
     },
     loading: () => '機能を確認中...',

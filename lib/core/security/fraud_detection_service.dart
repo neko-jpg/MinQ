@@ -29,8 +29,9 @@ class FraudDetectionService {
 
       if (lastHourCompletions > _maxQuestsPerHour) {
         _logger.warning(
-            'Suspicious activity detected: $lastHourCompletions quests in 1 hour',
-            data: {'userId': userId});
+          'Suspicious activity detected: $lastHourCompletions quests in 1 hour',
+          data: {'userId': userId},
+        );
         return FraudDetectionResult.suspicious(
           reason:
               '1時間に$lastHourCompletions個のクエストを完了しました（上限: $_maxQuestsPerHour）',
@@ -47,8 +48,9 @@ class FraudDetectionService {
 
       if (lastDayCompletions > _maxQuestsPerDay) {
         _logger.warning(
-            'Suspicious activity detected: $lastDayCompletions quests in 1 day',
-            data: {'userId': userId});
+          'Suspicious activity detected: $lastDayCompletions quests in 1 day',
+          data: {'userId': userId},
+        );
         return FraudDetectionResult.suspicious(
           reason: '1日に$lastDayCompletions個のクエストを完了しました（上限: $_maxQuestsPerDay）',
           severity: FraudSeverity.high,
@@ -59,8 +61,10 @@ class FraudDetectionService {
       // 短時間での連続完了をチェック
       final suspiciousPattern = _detectSuspiciousPattern(recentCompletions);
       if (suspiciousPattern != null) {
-        _logger.warning('Suspicious pattern detected',
-            data: {'userId': userId, 'pattern': suspiciousPattern});
+        _logger.warning(
+          'Suspicious pattern detected',
+          data: {'userId': userId, 'pattern': suspiciousPattern},
+        );
         return FraudDetectionResult.suspicious(
           reason: '短時間に連続してクエストを完了しています',
           severity: FraudSeverity.medium,
@@ -105,7 +109,10 @@ class FraudDetectionService {
     try {
       // 使い捨てメールアドレスのチェック
       if (_isDisposableEmail(email)) {
-        _logger.warning('Disposable email detected: $email', data: {'email': email});
+        _logger.warning(
+          'Disposable email detected: $email',
+          data: {'email': email},
+        );
         return FraudDetectionResult.suspicious(
           reason: '使い捨てメールアドレスが検出されました',
           severity: FraudSeverity.low,
@@ -154,8 +161,9 @@ class FraudDetectionService {
 
       if (timeWindow < checkWindow && pairChangeCount > maxPairChanges) {
         _logger.warning(
-            'Suspicious pair activity: $pairChangeCount changes in ${timeWindow.inHours} hours',
-            data: {'userId': userId});
+          'Suspicious pair activity: $pairChangeCount changes in ${timeWindow.inHours} hours',
+          data: {'userId': userId},
+        );
         return FraudDetectionResult.suspicious(
           reason: '短期間に頻繁にペアを変更しています',
           severity: FraudSeverity.medium,

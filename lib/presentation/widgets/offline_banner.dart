@@ -5,6 +5,7 @@ import 'package:minq/core/sync/sync_queue_manager.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/minq_tokens.dart';
 
 /// オフラインバナー
 /// ネットワーク接続がなぁE��合に表示
@@ -34,11 +35,7 @@ class OfflineBanner extends ConsumerWidget {
         color: tokens.accentWarning,
         child: Row(
           children: [
-            Icon(
-              Icons.cloud_off,
-              color: tokens.primaryForeground,
-              size: 20,
-            ),
+            Icon(Icons.cloud_off, color: tokens.primaryForeground, size: 20),
             SizedBox(width: tokens.spacing.sm),
             Expanded(
               child: Text(
@@ -50,10 +47,7 @@ class OfflineBanner extends ConsumerWidget {
               ),
             ),
             IconButton(
-              icon: Icon(
-                Icons.info_outline,
-                color: tokens.primaryForeground,
-              ),
+              icon: Icon(Icons.info_outline, color: tokens.primaryForeground),
               onPressed: () => _showOfflineInfo(context),
               tooltip: l10n.offlineMode,
               splashRadius: 20,
@@ -70,33 +64,30 @@ class OfflineBanner extends ConsumerWidget {
 
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Icons.cloud_off, color: tokens.accentWarning),
-            SizedBox(width: tokens.spacing.sm),
-            Text(l10n.offlineMode),
-          ],
-        ),
-        content: Text(l10n.noInternetConnection),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.ok),
+      builder:
+          (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.cloud_off, color: tokens.accentWarning),
+                SizedBox(width: tokens.spacing.sm),
+                Text(l10n.offlineMode),
+              ],
+            ),
+            content: Text(l10n.noInternetConnection),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(l10n.ok),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }
 
 /// オフライン時�E空状態ウィジェチE��
 class OfflineEmptyState extends StatelessWidget {
-  const OfflineEmptyState({
-    this.message,
-    this.onRetry,
-    super.key,
-  });
+  const OfflineEmptyState({this.message, this.onRetry, super.key});
 
   final String? message;
   final VoidCallback? onRetry;
@@ -112,11 +103,7 @@ class OfflineEmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.cloud_off,
-              size: 80,
-              color: tokens.textSecondary,
-            ),
+            Icon(Icons.cloud_off, size: 80, color: tokens.textSecondary),
             SizedBox(height: tokens.spacing.lg),
             Text(
               message ?? l10n.offlineOperationNotAvailable,
@@ -212,29 +199,30 @@ void showOfflineDialog(BuildContext context) {
 
   showDialog<void>(
     context: context,
-    builder: (context) => AlertDialog(
-      title: Row(
-        children: [
-          Icon(Icons.cloud_off, color: tokens.accentWarning),
-          SizedBox(width: tokens.spacing.sm),
-          Text(l10n.offline),
-        ],
-      ),
-      content: Text(l10n.noInternetConnection),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(l10n.ok),
+    builder:
+        (context) => AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.cloud_off, color: tokens.accentWarning),
+              SizedBox(width: tokens.spacing.sm),
+              Text(l10n.offline),
+            ],
+          ),
+          content: Text(l10n.noInternetConnection),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.ok),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                // TODO: Provide navigation to network settings when available.
+              },
+              child: Text(l10n.openSettings),
+            ),
+          ],
         ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            // TODO: Provide navigation to network settings when available.
-          },
-          child: Text(l10n.openSettings),
-        ),
-      ],
-    ),
   );
 }
 
@@ -264,6 +252,7 @@ void showOfflineSnackBar(BuildContext context) {
     ),
   );
 }
+
 /// Sync status indicator widget
 class SyncStatusWidget extends ConsumerWidget {
   const SyncStatusWidget({super.key});
@@ -278,11 +267,11 @@ class SyncStatusWidget extends ConsumerWidget {
       stream: ref.read(syncQueueManagerProvider).statusStream,
       builder: (context, snapshot) {
         final syncStatus = snapshot.data ?? SyncStatus.synced;
-        
+
         if (networkStatus == NetworkStatus.offline) {
           return _buildOfflineIndicator(context, tokens, l10n);
         }
-        
+
         switch (syncStatus) {
           case SyncStatus.syncing:
             return _buildSyncingIndicator(context, tokens, l10n);
@@ -300,7 +289,11 @@ class SyncStatusWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildOfflineIndicator(BuildContext context, MinqTokens tokens, AppLocalizations l10n) {
+  Widget _buildOfflineIndicator(
+    BuildContext context,
+    MinqTokens tokens,
+    AppLocalizations l10n,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -310,11 +303,7 @@ class SyncStatusWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.cloud_off,
-            color: tokens.primaryForeground,
-            size: 14,
-          ),
+          Icon(Icons.cloud_off, color: tokens.primaryForeground, size: 14),
           const SizedBox(width: 4),
           Text(
             l10n.offlineMode,
@@ -329,7 +318,11 @@ class SyncStatusWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildSyncingIndicator(BuildContext context, MinqTokens tokens, AppLocalizations l10n) {
+  Widget _buildSyncingIndicator(
+    BuildContext context,
+    MinqTokens tokens,
+    AppLocalizations l10n,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -344,7 +337,9 @@ class SyncStatusWidget extends ConsumerWidget {
             height: 14,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(tokens.primaryForeground),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                tokens.primaryForeground,
+              ),
             ),
           ),
           const SizedBox(width: 4),
@@ -361,7 +356,11 @@ class SyncStatusWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildPendingIndicator(BuildContext context, MinqTokens tokens, AppLocalizations l10n) {
+  Widget _buildPendingIndicator(
+    BuildContext context,
+    MinqTokens tokens,
+    AppLocalizations l10n,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -371,11 +370,7 @@ class SyncStatusWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.sync_problem,
-            color: tokens.primaryForeground,
-            size: 14,
-          ),
+          Icon(Icons.sync_problem, color: tokens.primaryForeground, size: 14),
           const SizedBox(width: 4),
           Text(
             'Sync Pending', // TODO: Add to l10n
@@ -390,7 +385,11 @@ class SyncStatusWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildFailedIndicator(BuildContext context, MinqTokens tokens, AppLocalizations l10n) {
+  Widget _buildFailedIndicator(
+    BuildContext context,
+    MinqTokens tokens,
+    AppLocalizations l10n,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -400,11 +399,7 @@ class SyncStatusWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.sync_disabled,
-            color: tokens.primaryForeground,
-            size: 14,
-          ),
+          Icon(Icons.sync_disabled, color: tokens.primaryForeground, size: 14),
           const SizedBox(width: 4),
           Text(
             'Sync Failed', // TODO: Add to l10n
@@ -419,7 +414,11 @@ class SyncStatusWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildConflictIndicator(BuildContext context, MinqTokens tokens, AppLocalizations l10n) {
+  Widget _buildConflictIndicator(
+    BuildContext context,
+    MinqTokens tokens,
+    AppLocalizations l10n,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -429,11 +428,7 @@ class SyncStatusWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.warning,
-            color: tokens.primaryForeground,
-            size: 14,
-          ),
+          Icon(Icons.warning, color: tokens.primaryForeground, size: 14),
           const SizedBox(width: 4),
           Text(
             'Sync Conflict', // TODO: Add to l10n

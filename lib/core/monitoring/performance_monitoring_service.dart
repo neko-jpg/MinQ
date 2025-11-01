@@ -9,30 +9,31 @@ import 'package:minq/core/storage/local_storage_service.dart';
 
 /// Comprehensive performance monitoring service
 class PerformanceMonitoringService {
-  static final PerformanceMonitoringService _instance = PerformanceMonitoringService._internal();
+  static final PerformanceMonitoringService _instance =
+      PerformanceMonitoringService._internal();
   factory PerformanceMonitoringService() => _instance;
   PerformanceMonitoringService._internal();
 
   final AnalyticsService _analytics = AnalyticsService();
   final LocalStorageService _storage = LocalStorageService();
-  
+
   // Performance tracking
   final Map<String, PerformanceTrace> _activeTraces = {};
   final Queue<PerformanceMetric> _metrics = Queue<PerformanceMetric>();
   final Map<String, List<double>> _metricHistory = {};
-  
+
   // Frame monitoring
   int _totalFrames = 0;
   int _droppedFrames = 0;
   Duration _totalFrameTime = Duration.zero;
-  
+
   // Memory monitoring
   Timer? _memoryTimer;
   final List<MemorySnapshot> _memorySnapshots = [];
-  
+
   // Network monitoring
   final Map<String, NetworkTrace> _networkTraces = {};
-  
+
   // App lifecycle monitoring
   DateTime? _appStartTime;
   DateTime? _lastResumeTime;
@@ -41,16 +42,16 @@ class PerformanceMonitoringService {
   /// Initialize performance monitoring
   Future<void> initialize() async {
     _appStartTime = DateTime.now();
-    
+
     // Start frame monitoring
     _startFrameMonitoring();
-    
+
     // Start memory monitoring
     _startMemoryMonitoring();
-    
+
     // Monitor app lifecycle
     _monitorAppLifecycle();
-    
+
     debugPrint('PerformanceMonitoringService initialized');
   }
 
@@ -61,19 +62,22 @@ class PerformanceMonitoringService {
       startTime: DateTime.now(),
       attributes: attributes ?? {},
     );
-    
+
     _activeTraces[name] = trace;
     return trace;
   }
 
   /// Stop a performance trace
-  Future<void> stopTrace(String name, {Map<String, dynamic>? additionalAttributes}) async {
+  Future<void> stopTrace(
+    String name, {
+    Map<String, dynamic>? additionalAttributes,
+  }) async {
     final trace = _activeTraces.remove(name);
     if (trace == null) return;
 
     trace.endTime = DateTime.now();
     trace.duration = trace.endTime!.difference(trace.startTime);
-    
+
     if (additionalAttributes != null) {
       trace.attributes.addAll(additionalAttributes);
     }
@@ -83,7 +87,9 @@ class PerformanceMonitoringService {
   }
 
   /// Record a custom metric
-  Future<void> recordMetric(String name, double value, {
+  Future<void> recordMetric(
+    String name,
+    double value, {
     Map<String, dynamic>? attributes,
   }) async {
     final metric = PerformanceMetric(
@@ -94,7 +100,7 @@ class PerformanceMonitoringService {
     );
 
     _metrics.add(metric);
-    
+
     // Keep history for trend analysis
     _metricHistory.putIfAbsent(name, () => []).add(value);
     if (_metricHistory[name]!.length > 100) {
@@ -103,7 +109,7 @@ class PerformanceMonitoringService {
 
     // Store metric
     await _storage.storePerformanceMetric(metric);
-    
+
     // Send to analytics if significant
     if (_isSignificantMetric(name, value)) {
       await _analytics.trackEvent('performance_metric', {
@@ -121,15 +127,16 @@ class PerformanceMonitoringService {
       method: method,
       startTime: DateTime.now(),
     );
-    
+
     final key = '${method}_${url}_${DateTime.now().millisecondsSinceEpoch}';
     _networkTraces[key] = trace;
-    
+
     return trace;
   }
 
   /// Stop network request monitoring
-  Future<void> stopNetworkTrace(NetworkTrace trace, {
+  Future<void> stopNetworkTrace(
+    NetworkTrace trace, {
     int? statusCode,
     int? responseSize,
     String? errorMessage,
@@ -142,7 +149,7 @@ class PerformanceMonitoringService {
 
     // Record network performance
     await _recordNetworkTrace(trace);
-    
+
     // Remove from active traces
     _networkTraces.removeWhere((key, value) => value == trace);
   }
@@ -150,7 +157,7 @@ class PerformanceMonitoringService {
   /// Monitor screen rendering performance
   Future<void> monitorScreenPerformance(String screenName) async {
     final trace = startTrace('screen_render_$screenName');
-    
+
     // Monitor first frame
     SchedulerBinding.instance.addPostFrameCallback((_) {
       stopTrace('screen_render_$screenName', {
@@ -163,30 +170,36 @@ class PerformanceMonitoringService {
   /// Monitor widget build performance
   T monitorWidgetBuild<T>(String widgetName, T Function() buildFunction) {
     final stopwatch = Stopwatch()..start();
-    
+
     try {
       final result = buildFunction();
       stopwatch.stop();
-      
-      recordMetric('widget_build_time', stopwatch.elapsedMicroseconds / 1000, attributes: {
-        'widget_name': widgetName,
-      });
-      
+
+      recordMetric(
+        'widget_build_time',
+        stopwatch.elapsedMicroseconds / 1000,
+        attributes: {'widget_name': widgetName},
+      );
+
       return result;
     } catch (e) {
       stopwatch.stop();
-      recordMetric('widget_build_error', 1, attributes: {
-        'widget_name': widgetName,
-        'error': e.toString(),
-      });
+      recordMetric(
+        'widget_build_error',
+        1,
+        attributes: {'widget_name': widgetName, 'error': e.toString()},
+      );
       rethrow;
     }
   }
 
   /// Monitor async operation performance
-  Future<T> monitorAsyncOperation<T>(String operationName, Future<T> Function() operation) async {
+  Future<T> monitorAsyncOperation<T>(
+    String operationName,
+    Future<T> Function() operation,
+  ) async {
     final trace = startTrace('async_$operationName');
-    
+
     try {
       final result = await operation();
       await stopTrace('async_$operationName', {
@@ -206,17 +219,16 @@ class PerformanceMonitoringService {
 
   /// Get current performance statistics
   PerformanceStatistics getPerformanceStatistics() {
-    final frameRate = _totalFrames > 0 
-        ? 1000000 / (_totalFrameTime.inMicroseconds / _totalFrames)
-        : 0.0;
-    
-    final frameDropRate = _totalFrames > 0 
-        ? _droppedFrames / _totalFrames 
-        : 0.0;
+    final frameRate =
+        _totalFrames > 0
+            ? 1000000 / (_totalFrameTime.inMicroseconds / _totalFrames)
+            : 0.0;
 
-    final currentMemory = _memorySnapshots.isNotEmpty 
-        ? _memorySnapshots.last.usedMemoryMB 
-        : 0.0;
+    final frameDropRate =
+        _totalFrames > 0 ? _droppedFrames / _totalFrames : 0.0;
+
+    final currentMemory =
+        _memorySnapshots.isNotEmpty ? _memorySnapshots.last.usedMemoryMB : 0.0;
 
     final avgNetworkLatency = _calculateAverageNetworkLatency();
 
@@ -234,25 +246,27 @@ class PerformanceMonitoringService {
   /// Get performance trends
   Map<String, PerformanceTrend> getPerformanceTrends() {
     final trends = <String, PerformanceTrend>{};
-    
+
     for (final entry in _metricHistory.entries) {
       final values = entry.value;
       if (values.length < 2) continue;
-      
+
       final recent = values.sublist(values.length - 10);
       final older = values.sublist(0, values.length - 10);
-      
+
       final recentAvg = recent.reduce((a, b) => a + b) / recent.length;
-      final olderAvg = older.isNotEmpty 
-          ? older.reduce((a, b) => a + b) / older.length 
-          : recentAvg;
-      
-      final trend = recentAvg > olderAvg 
-          ? TrendDirection.increasing 
-          : recentAvg < olderAvg 
-              ? TrendDirection.decreasing 
+      final olderAvg =
+          older.isNotEmpty
+              ? older.reduce((a, b) => a + b) / older.length
+              : recentAvg;
+
+      final trend =
+          recentAvg > olderAvg
+              ? TrendDirection.increasing
+              : recentAvg < olderAvg
+              ? TrendDirection.decreasing
               : TrendDirection.stable;
-      
+
       trends[entry.key] = PerformanceTrend(
         metricName: entry.key,
         direction: trend,
@@ -260,7 +274,7 @@ class PerformanceMonitoringService {
         currentValue: recentAvg,
       );
     }
-    
+
     return trends;
   }
 
@@ -277,15 +291,15 @@ class PerformanceMonitoringService {
   void _startFrameMonitoring() {
     SchedulerBinding.instance.addPersistentFrameCallback((timeStamp) {
       _totalFrames++;
-      
+
       final frameDuration = timeStamp;
       _totalFrameTime += frameDuration;
-      
+
       // Check for dropped frames (>16.67ms for 60fps)
       if (frameDuration.inMicroseconds > 16670) {
         _droppedFrames++;
       }
-      
+
       // Record frame metrics periodically
       if (_totalFrames % 60 == 0) {
         recordMetric('frame_rate', 60000000 / frameDuration.inMicroseconds);
@@ -302,17 +316,17 @@ class PerformanceMonitoringService {
         timestamp: DateTime.now(),
         usedMemoryMB: memoryUsage,
       );
-      
+
       _memorySnapshots.add(snapshot);
-      
+
       // Keep only last 100 snapshots
       if (_memorySnapshots.length > 100) {
         _memorySnapshots.removeAt(0);
       }
-      
+
       // Record memory metric
       await recordMetric('memory_usage', memoryUsage);
-      
+
       // Check for memory leaks
       if (_memorySnapshots.length > 10) {
         final trend = _analyzeMemoryTrend();
@@ -335,7 +349,7 @@ class PerformanceMonitoringService {
   /// Record performance trace
   Future<void> _recordTrace(PerformanceTrace trace) async {
     await _storage.storePerformanceTrace(trace);
-    
+
     // Send to analytics if trace is slow
     if (trace.duration.inMilliseconds > 1000) {
       await _analytics.trackEvent('slow_trace', {
@@ -349,14 +363,18 @@ class PerformanceMonitoringService {
   /// Record network trace
   Future<void> _recordNetworkTrace(NetworkTrace trace) async {
     await _storage.storeNetworkTrace(trace);
-    
+
     // Track network performance
-    await recordMetric('network_latency', trace.duration.inMilliseconds.toDouble(), attributes: {
-      'url': trace.url,
-      'method': trace.method,
-      'status_code': trace.statusCode,
-    });
-    
+    await recordMetric(
+      'network_latency',
+      trace.duration.inMilliseconds.toDouble(),
+      attributes: {
+        'url': trace.url,
+        'method': trace.method,
+        'status_code': trace.statusCode,
+      },
+    );
+
     // Track errors
     if (trace.statusCode != null && trace.statusCode! >= 400) {
       await _analytics.trackEvent('network_error', {
@@ -372,26 +390,25 @@ class PerformanceMonitoringService {
   bool _isSignificantMetric(String name, double value) {
     final history = _metricHistory[name];
     if (history == null || history.isEmpty) return true;
-    
+
     final avg = history.reduce((a, b) => a + b) / history.length;
     final deviation = (value - avg).abs() / avg;
-    
+
     // Report if deviation is more than 20%
     return deviation > 0.2;
   }
 
   /// Calculate average network latency
   double _calculateAverageNetworkLatency() {
-    final completedTraces = _networkTraces.values
-        .where((trace) => trace.endTime != null)
-        .toList();
-    
+    final completedTraces =
+        _networkTraces.values.where((trace) => trace.endTime != null).toList();
+
     if (completedTraces.isEmpty) return 0.0;
-    
+
     final totalLatency = completedTraces
         .map((trace) => trace.duration.inMilliseconds)
         .reduce((a, b) => a + b);
-    
+
     return totalLatency / completedTraces.length;
   }
 
@@ -415,15 +432,21 @@ class PerformanceMonitoringService {
   /// Analyze memory usage trend
   MemoryTrend _analyzeMemoryTrend() {
     if (_memorySnapshots.length < 5) return MemoryTrend.stable;
-    
+
     final recent = _memorySnapshots.sublist(_memorySnapshots.length - 5);
-    final older = _memorySnapshots.sublist(_memorySnapshots.length - 10, _memorySnapshots.length - 5);
-    
-    final recentAvg = recent.map((s) => s.usedMemoryMB).reduce((a, b) => a + b) / recent.length;
-    final olderAvg = older.map((s) => s.usedMemoryMB).reduce((a, b) => a + b) / older.length;
-    
+    final older = _memorySnapshots.sublist(
+      _memorySnapshots.length - 10,
+      _memorySnapshots.length - 5,
+    );
+
+    final recentAvg =
+        recent.map((s) => s.usedMemoryMB).reduce((a, b) => a + b) /
+        recent.length;
+    final olderAvg =
+        older.map((s) => s.usedMemoryMB).reduce((a, b) => a + b) / older.length;
+
     final changePercent = (recentAvg - olderAvg) / olderAvg;
-    
+
     if (changePercent > 0.1) return MemoryTrend.increasing;
     if (changePercent < -0.1) return MemoryTrend.decreasing;
     return MemoryTrend.stable;
@@ -440,7 +463,7 @@ class PerformanceTrace {
   final String name;
   final DateTime startTime;
   final Map<String, dynamic> attributes;
-  
+
   DateTime? endTime;
   Duration duration = Duration.zero;
 
@@ -471,7 +494,7 @@ class NetworkTrace {
   final String url;
   final String method;
   final DateTime startTime;
-  
+
   DateTime? endTime;
   Duration duration = Duration.zero;
   int? statusCode;
@@ -490,10 +513,7 @@ class MemorySnapshot {
   final DateTime timestamp;
   final double usedMemoryMB;
 
-  MemorySnapshot({
-    required this.timestamp,
-    required this.usedMemoryMB,
-  });
+  MemorySnapshot({required this.timestamp, required this.usedMemoryMB});
 }
 
 /// Performance statistics summary
@@ -533,4 +553,5 @@ class PerformanceTrend {
 }
 
 enum TrendDirection { increasing, decreasing, stable }
+
 enum MemoryTrend { increasing, decreasing, stable }

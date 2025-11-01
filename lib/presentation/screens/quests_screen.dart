@@ -334,12 +334,15 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
               ),
               child: Text(
                 category.label,
-                style: isSelected
-                    ? tokens.typography.body.copyWith(
-                        color: tokens.brandPrimary,
-                        fontWeight: FontWeight.bold,
-                      )
-                    : tokens.typography.body.copyWith(color: tokens.textMuted),
+                style:
+                    isSelected
+                        ? tokens.typography.body.copyWith(
+                          color: tokens.brandPrimary,
+                          fontWeight: FontWeight.bold,
+                        )
+                        : tokens.typography.body.copyWith(
+                          color: tokens.textMuted,
+                        ),
               ),
             ),
           );
@@ -548,10 +551,7 @@ class _QuestsSkeleton extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.all(tokens.spacing.md),
       children: <Widget>[
-        MinqSkeleton(
-          height: 52,
-          borderRadius: tokens.cornerFull(),
-        ),
+        MinqSkeleton(height: 52, borderRadius: tokens.cornerFull()),
         SizedBox(height: tokens.spacing.md),
         const MinqSkeletonLine(width: double.infinity, height: 48),
         SizedBox(height: tokens.spacing.lg),
@@ -776,8 +776,9 @@ class _AiSuggestionError extends StatelessWidget {
                     SizedBox(height: tokens.spacing.xxs),
                     Text(
                       'ネットワークを確認し、時間をおいてから再度お試しください。',
-                      style:
-                          tokens.typography.caption.copyWith(color: tokens.textMuted),
+                      style: tokens.typography.caption.copyWith(
+                        color: tokens.textMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -903,9 +904,7 @@ class _EmptySearchResults extends StatelessWidget {
                         onPressed: () => onSuggestionSelected(keyword),
                         backgroundColor: tokens.surface,
                         shape: StadiumBorder(
-                          side: BorderSide(
-                            color: tokens.border.withAlpha(153),
-                          ),
+                          side: BorderSide(color: tokens.border.withAlpha(153)),
                         ),
                       ),
                     )
@@ -917,7 +916,9 @@ class _EmptySearchResults extends StatelessWidget {
             icon: Icon(Icons.refresh, color: tokens.brandPrimary),
             label: Text(
               '検索条件をリセット',
-              style: tokens.typography.body.copyWith(color: tokens.brandPrimary),
+              style: tokens.typography.body.copyWith(
+                color: tokens.brandPrimary,
+              ),
             ),
           ),
         ],

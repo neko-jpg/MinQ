@@ -8,10 +8,7 @@ import 'package:minq/presentation/providers/analytics_providers.dart';
 class TimePatternWidget extends ConsumerWidget {
   final DashboardWidgetConfig config;
 
-  const TimePatternWidget({
-    super.key,
-    required this.config,
-  });
+  const TimePatternWidget({super.key, required this.config});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -88,25 +85,30 @@ class TimePatternWidget extends ConsumerWidget {
                     reservedSize: 30,
                   ),
                 ),
-                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
               ),
               borderData: FlBorderData(show: false),
-              barGroups: patterns.asMap().entries.map((entry) {
-                final index = entry.key;
-                final pattern = entry.value;
-                return BarChartGroupData(
-                  x: index,
-                  barRods: [
-                    BarChartRodData(
-                      toY: pattern.successRate,
-                      color: _getBarColor(pattern.successRate),
-                      width: 12,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ],
-                );
-              }).toList(),
+              barGroups:
+                  patterns.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final pattern = entry.value;
+                    return BarChartGroupData(
+                      x: index,
+                      barRods: [
+                        BarChartRodData(
+                          toY: pattern.successRate,
+                          color: _getBarColor(pattern.successRate),
+                          width: 12,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ],
+                    );
+                  }).toList(),
             ),
           ),
         ),
@@ -135,11 +137,7 @@ class TimePatternWidget extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.star,
-            size: 16,
-            color: Theme.of(context).primaryColor,
-          ),
+          Icon(Icons.star, size: 16, color: Theme.of(context).primaryColor),
           const SizedBox(width: 4),
           Expanded(
             child: Text(
@@ -160,23 +158,19 @@ class TimePatternWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.access_time,
-            size: 32,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.access_time, size: 32, color: Colors.grey),
           const SizedBox(height: 8),
           Text(
             'データなし',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
           ),
           Text(
             'クエストを完了すると\n時間帯パターンが表示されます',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
             textAlign: TextAlign.center,
           ),
         ],
@@ -195,10 +189,7 @@ class TimePatternWidget extends ConsumerWidget {
             child: CircularProgressIndicator(strokeWidth: 2),
           ),
           SizedBox(height: 8),
-          Text(
-            '分析中...',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
-          ),
+          Text('分析中...', style: TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
     );
@@ -209,17 +200,13 @@ class TimePatternWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.error_outline,
-            size: 32,
-            color: Colors.red,
-          ),
+          const Icon(Icons.error_outline, size: 32, color: Colors.red),
           const SizedBox(height: 8),
           Text(
             'エラー',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.red,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.red),
           ),
         ],
       ),

@@ -9,7 +9,9 @@ import 'package:minq/main.dart' as app;
 import 'package:mocktail/mocktail.dart';
 
 class MockAiCoachEngine extends Mock implements AiCoachEngine {}
-class MockDynamicPromptGenerator extends Mock implements DynamicPromptGenerator {}
+
+class MockDynamicPromptGenerator extends Mock
+    implements DynamicPromptGenerator {}
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -35,41 +37,46 @@ void main() {
       mockPromptGenerator = MockDynamicPromptGenerator();
 
       // Setup default mock behaviors
-      when(() => mockPromptGenerator.generateSystemPrompt(any()))
-          .thenReturn('You are MinQ AI Coach. Help users with habit formation.');
+      when(
+        () => mockPromptGenerator.generateSystemPrompt(any()),
+      ).thenReturn('You are MinQ AI Coach. Help users with habit formation.');
 
-      when(() => mockAiCoachEngine.generateResponse(any()))
-          .thenAnswer((_) async => AiCoachResponse(
-        message: 'Great job! Keep up the good work with your habits.',
-        quickActions: [
-          QuickAction(
-            id: 'create_quest',
-            title: 'Create New Quest',
-            icon: Icons.add_task,
-            route: '/create-quest',
-          ),
-        ],
-        encouragementLevel: EncouragementLevel.positive,
-        suggestions: ['Try setting a specific time for your habit'],
-      ));
+      when(() => mockAiCoachEngine.generateResponse(any())).thenAnswer(
+        (_) async => AiCoachResponse(
+          message: 'Great job! Keep up the good work with your habits.',
+          quickActions: [
+            QuickAction(
+              id: 'create_quest',
+              title: 'Create New Quest',
+              icon: Icons.add_task,
+              route: '/create-quest',
+            ),
+          ],
+          encouragementLevel: EncouragementLevel.positive,
+          suggestions: ['Try setting a specific time for your habit'],
+        ),
+      );
     });
 
     tearDown(() async {
       await isar.close(deleteFromDisk: true);
     });
 
-    testWidgets('AI Coach contextual response based on user progress', (tester) async {
+    testWidgets('AI Coach contextual response based on user progress', (
+      tester,
+    ) async {
       // Setup user with specific progress
-      final user = LocalUser()
-        ..uid = 'test-user'
-        ..displayName = 'Test User'
-        ..currentXP = 150
-        ..totalXP = 500
-        ..currentLevel = 2
-        ..currentStreak = 5
-        ..focusTags = ['health', 'fitness']
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now();
+      final user =
+          LocalUser()
+            ..uid = 'test-user'
+            ..displayName = 'Test User'
+            ..currentXP = 150
+            ..totalXP = 500
+            ..currentLevel = 2
+            ..currentStreak = 5
+            ..focusTags = ['health', 'fitness']
+            ..createdAt = DateTime.now()
+            ..updatedAt = DateTime.now();
 
       // Setup recent quest completions
       final recentQuests = [
@@ -99,29 +106,31 @@ void main() {
       });
 
       // Mock contextual AI response
-      when(() => mockAiCoachEngine.generateResponse(any()))
-          .thenAnswer((_) async => AiCoachResponse(
-        message: 'Excellent work on your 5-day streak! I see you completed "Morning Exercise" today and "Drink Water" yesterday. Your focus on health and fitness is paying off. Keep building these healthy habits!',
-        quickActions: [
-          QuickAction(
-            id: 'create_health_quest',
-            title: 'Add Health Quest',
-            icon: Icons.favorite,
-            route: '/create-quest?category=health',
-          ),
-          QuickAction(
-            id: 'view_streak',
-            title: 'View Streak Stats',
-            icon: Icons.local_fire_department,
-            route: '/stats?focus=streak',
-          ),
-        ],
-        encouragementLevel: EncouragementLevel.motivational,
-        suggestions: [
-          'Consider adding a nutrition quest to complement your exercise',
-          'Try setting reminders for consistent timing',
-        ],
-      ));
+      when(() => mockAiCoachEngine.generateResponse(any())).thenAnswer(
+        (_) async => AiCoachResponse(
+          message:
+              'Excellent work on your 5-day streak! I see you completed "Morning Exercise" today and "Drink Water" yesterday. Your focus on health and fitness is paying off. Keep building these healthy habits!',
+          quickActions: [
+            QuickAction(
+              id: 'create_health_quest',
+              title: 'Add Health Quest',
+              icon: Icons.favorite,
+              route: '/create-quest?category=health',
+            ),
+            QuickAction(
+              id: 'view_streak',
+              title: 'View Streak Stats',
+              icon: Icons.local_fire_department,
+              route: '/stats?focus=streak',
+            ),
+          ],
+          encouragementLevel: EncouragementLevel.motivational,
+          suggestions: [
+            'Consider adding a nutrition quest to complement your exercise',
+            'Try setting reminders for consistent timing',
+          ],
+        ),
+      );
 
       await tester.pumpWidget(app.MinQApp(skipOnboarding: true));
       await tester.pumpAndSettle();
@@ -134,8 +143,8 @@ void main() {
 
       // Send contextual message
       await tester.enterText(
-        find.byKey(const Key('ai_chat_input')), 
-        'How am I doing with my habits?'
+        find.byKey(const Key('ai_chat_input')),
+        'How am I doing with my habits?',
       );
       await tester.tap(find.byKey(const Key('send_message_button')));
       await tester.pumpAndSettle();
@@ -165,42 +174,49 @@ void main() {
 
       // Verify navigation to quest creation with category pre-filled
       expect(find.byKey(const Key('quest_creation_screen')), findsOneWidget);
-      expect(find.text('Health'), findsOneWidget); // Category should be pre-selected
+      expect(
+        find.text('Health'),
+        findsOneWidget,
+      ); // Category should be pre-selected
     });
 
     testWidgets('AI Coach offline fallback responses', (tester) async {
       // Setup user data
-      final user = LocalUser()
-        ..uid = 'test-user'
-        ..displayName = 'Test User'
-        ..currentXP = 50
-        ..totalXP = 200
-        ..currentLevel = 1
-        ..currentStreak = 0
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now();
+      final user =
+          LocalUser()
+            ..uid = 'test-user'
+            ..displayName = 'Test User'
+            ..currentXP = 50
+            ..totalXP = 200
+            ..currentLevel = 1
+            ..currentStreak = 0
+            ..createdAt = DateTime.now()
+            ..updatedAt = DateTime.now();
 
       await isar.writeTxn(() => isar.localUsers.put(user));
 
       // Mock offline scenario - AI service throws exception
-      when(() => mockAiCoachEngine.generateResponse(any()))
-          .thenThrow(NetworkException('No internet connection'));
+      when(
+        () => mockAiCoachEngine.generateResponse(any()),
+      ).thenThrow(NetworkException('No internet connection'));
 
       // Mock offline fallback response
-      when(() => mockAiCoachEngine.generateOfflineFallback(any()))
-          .thenReturn(AiCoachResponse(
-        message: 'I\'m currently offline, but here are some general tips: Start small, be consistent, and celebrate your progress!',
-        quickActions: [
-          QuickAction(
-            id: 'create_quest',
-            title: 'Create Quest',
-            icon: Icons.add,
-            route: '/create-quest',
-          ),
-        ],
-        encouragementLevel: EncouragementLevel.neutral,
-        suggestions: ['Focus on one habit at a time'],
-      ));
+      when(() => mockAiCoachEngine.generateOfflineFallback(any())).thenReturn(
+        AiCoachResponse(
+          message:
+              'I\'m currently offline, but here are some general tips: Start small, be consistent, and celebrate your progress!',
+          quickActions: [
+            QuickAction(
+              id: 'create_quest',
+              title: 'Create Quest',
+              icon: Icons.add,
+              route: '/create-quest',
+            ),
+          ],
+          encouragementLevel: EncouragementLevel.neutral,
+          suggestions: ['Focus on one habit at a time'],
+        ),
+      );
 
       await tester.pumpWidget(app.MinQApp(skipOnboarding: true));
       await tester.pumpAndSettle();
@@ -214,8 +230,8 @@ void main() {
 
       // Send message while offline
       await tester.enterText(
-        find.byKey(const Key('ai_chat_input')), 
-        'I need motivation'
+        find.byKey(const Key('ai_chat_input')),
+        'I need motivation',
       );
       await tester.tap(find.byKey(const Key('send_message_button')));
       await tester.pumpAndSettle();
@@ -226,7 +242,10 @@ void main() {
       // Verify offline fallback response
       expect(find.text('I\'m currently offline'), findsOneWidget);
       expect(find.text('Start small, be consistent'), findsOneWidget);
-      expect(find.byKey(const Key('offline_response_indicator')), findsOneWidget);
+      expect(
+        find.byKey(const Key('offline_response_indicator')),
+        findsOneWidget,
+      );
 
       // Verify limited quick actions
       expect(find.text('Create Quest'), findsOneWidget);
@@ -237,43 +256,46 @@ void main() {
 
     testWidgets('AI Coach progressive onboarding integration', (tester) async {
       // Setup new user
-      final user = LocalUser()
-        ..uid = 'new-user'
-        ..displayName = 'New User'
-        ..currentXP = 0
-        ..totalXP = 0
-        ..currentLevel = 1
-        ..currentStreak = 0
-        ..isFirstTime = true
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now();
+      final user =
+          LocalUser()
+            ..uid = 'new-user'
+            ..displayName = 'New User'
+            ..currentXP = 0
+            ..totalXP = 0
+            ..currentLevel = 1
+            ..currentStreak = 0
+            ..isFirstTime = true
+            ..createdAt = DateTime.now()
+            ..updatedAt = DateTime.now();
 
       await isar.writeTxn(() => isar.localUsers.put(user));
 
       // Mock onboarding AI responses
-      when(() => mockAiCoachEngine.generateResponse('Hello'))
-          .thenAnswer((_) async => AiCoachResponse(
-        message: 'Welcome to MinQ! I\'m your AI coach, here to help you build lasting habits. Let\'s start by creating your first quest. What habit would you like to work on?',
-        quickActions: [
-          QuickAction(
-            id: 'create_first_quest',
-            title: 'Create My First Quest',
-            icon: Icons.rocket_launch,
-            route: '/create-quest?first=true',
-          ),
-          QuickAction(
-            id: 'browse_templates',
-            title: 'Browse Quest Templates',
-            icon: Icons.template_outlined,
-            route: '/quest-templates',
-          ),
-        ],
-        encouragementLevel: EncouragementLevel.welcoming,
-        suggestions: [
-          'Start with something small and achievable',
-          'Choose a habit you\'re already motivated to do',
-        ],
-      ));
+      when(() => mockAiCoachEngine.generateResponse('Hello')).thenAnswer(
+        (_) async => AiCoachResponse(
+          message:
+              'Welcome to MinQ! I\'m your AI coach, here to help you build lasting habits. Let\'s start by creating your first quest. What habit would you like to work on?',
+          quickActions: [
+            QuickAction(
+              id: 'create_first_quest',
+              title: 'Create My First Quest',
+              icon: Icons.rocket_launch,
+              route: '/create-quest?first=true',
+            ),
+            QuickAction(
+              id: 'browse_templates',
+              title: 'Browse Quest Templates',
+              icon: Icons.template_outlined,
+              route: '/quest-templates',
+            ),
+          ],
+          encouragementLevel: EncouragementLevel.welcoming,
+          suggestions: [
+            'Start with something small and achievable',
+            'Choose a habit you\'re already motivated to do',
+          ],
+        ),
+      );
 
       await tester.pumpWidget(app.MinQApp(skipOnboarding: true));
       await tester.pumpAndSettle();
@@ -287,10 +309,7 @@ void main() {
       expect(find.text('Hi there! I\'m your AI coach'), findsOneWidget);
 
       // Send greeting
-      await tester.enterText(
-        find.byKey(const Key('ai_chat_input')), 
-        'Hello'
-      );
+      await tester.enterText(find.byKey(const Key('ai_chat_input')), 'Hello');
       await tester.tap(find.byKey(const Key('send_message_button')));
       await tester.pumpAndSettle();
 
@@ -299,7 +318,10 @@ void main() {
 
       // Verify onboarding response
       expect(find.text('Welcome to MinQ!'), findsOneWidget);
-      expect(find.text('Let\'s start by creating your first quest'), findsOneWidget);
+      expect(
+        find.text('Let\'s start by creating your first quest'),
+        findsOneWidget,
+      );
 
       // Verify onboarding-specific quick actions
       expect(find.text('Create My First Quest'), findsOneWidget);
@@ -310,35 +332,43 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify navigation to guided quest creation
-      expect(find.byKey(const Key('guided_quest_creation_screen')), findsOneWidget);
+      expect(
+        find.byKey(const Key('guided_quest_creation_screen')),
+        findsOneWidget,
+      );
       expect(find.text('Let\'s create your first quest!'), findsOneWidget);
     });
 
     testWidgets('AI Coach habit analysis and recommendations', (tester) async {
       // Setup user with varied quest history
-      final user = LocalUser()
-        ..uid = 'test-user'
-        ..displayName = 'Test User'
-        ..currentXP = 300
-        ..totalXP = 800
-        ..currentLevel = 3
-        ..currentStreak = 3
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now();
+      final user =
+          LocalUser()
+            ..uid = 'test-user'
+            ..displayName = 'Test User'
+            ..currentXP = 300
+            ..totalXP = 800
+            ..currentLevel = 3
+            ..currentStreak = 3
+            ..createdAt = DateTime.now()
+            ..updatedAt = DateTime.now();
 
       // Setup quest logs with patterns
       final questLogs = [
         // Successful morning routine
-        ...List.generate(7, (i) => LocalQuestLog()
-          ..logId = 'morning-$i'
-          ..uid = 'test-user'
-          ..questId = 'morning-exercise'
-          ..questTitle = 'Morning Exercise'
-          ..proofType = ProofType.check
-          ..xpEarned = 25
-          ..timestamp = DateTime.now().subtract(Duration(days: i))
-          ..createdAt = DateTime.now()),
-        
+        ...List.generate(
+          7,
+          (i) =>
+              LocalQuestLog()
+                ..logId = 'morning-$i'
+                ..uid = 'test-user'
+                ..questId = 'morning-exercise'
+                ..questTitle = 'Morning Exercise'
+                ..proofType = ProofType.check
+                ..xpEarned = 25
+                ..timestamp = DateTime.now().subtract(Duration(days: i))
+                ..createdAt = DateTime.now(),
+        ),
+
         // Inconsistent evening routine
         LocalQuestLog()
           ..logId = 'evening-1'
@@ -366,30 +396,34 @@ void main() {
       });
 
       // Mock analytical AI response
-      when(() => mockAiCoachEngine.generateResponse('Analyze my habits'))
-          .thenAnswer((_) async => AiCoachResponse(
-        message: 'I\'ve analyzed your habit patterns! Your morning exercise routine is fantastic - you\'ve completed it 7 days in a row! However, I notice your evening reading is inconsistent (only 2 out of 7 days). Consider linking it to your successful morning routine or setting a specific time.',
-        quickActions: [
-          QuickAction(
-            id: 'improve_evening_routine',
-            title: 'Improve Evening Routine',
-            icon: Icons.nightlight,
-            route: '/quest-edit/evening-reading',
-          ),
-          QuickAction(
-            id: 'view_patterns',
-            title: 'View Habit Patterns',
-            icon: Icons.analytics,
-            route: '/analytics?view=patterns',
-          ),
-        ],
-        encouragementLevel: EncouragementLevel.analytical,
-        suggestions: [
-          'Try habit stacking: read after dinner',
-          'Set a phone reminder for 8 PM reading time',
-          'Start with just 10 minutes to build consistency',
-        ],
-      ));
+      when(
+        () => mockAiCoachEngine.generateResponse('Analyze my habits'),
+      ).thenAnswer(
+        (_) async => AiCoachResponse(
+          message:
+              'I\'ve analyzed your habit patterns! Your morning exercise routine is fantastic - you\'ve completed it 7 days in a row! However, I notice your evening reading is inconsistent (only 2 out of 7 days). Consider linking it to your successful morning routine or setting a specific time.',
+          quickActions: [
+            QuickAction(
+              id: 'improve_evening_routine',
+              title: 'Improve Evening Routine',
+              icon: Icons.nightlight,
+              route: '/quest-edit/evening-reading',
+            ),
+            QuickAction(
+              id: 'view_patterns',
+              title: 'View Habit Patterns',
+              icon: Icons.analytics,
+              route: '/analytics?view=patterns',
+            ),
+          ],
+          encouragementLevel: EncouragementLevel.analytical,
+          suggestions: [
+            'Try habit stacking: read after dinner',
+            'Set a phone reminder for 8 PM reading time',
+            'Start with just 10 minutes to build consistency',
+          ],
+        ),
+      );
 
       await tester.pumpWidget(app.MinQApp(skipOnboarding: true));
       await tester.pumpAndSettle();
@@ -400,8 +434,8 @@ void main() {
 
       // Request habit analysis
       await tester.enterText(
-        find.byKey(const Key('ai_chat_input')), 
-        'Analyze my habits'
+        find.byKey(const Key('ai_chat_input')),
+        'Analyze my habits',
       );
       await tester.tap(find.byKey(const Key('send_message_button')));
       await tester.pumpAndSettle();
@@ -411,7 +445,10 @@ void main() {
 
       // Verify analytical response
       expect(find.text('I\'ve analyzed your habit patterns!'), findsOneWidget);
-      expect(find.text('morning exercise routine is fantastic'), findsOneWidget);
+      expect(
+        find.text('morning exercise routine is fantastic'),
+        findsOneWidget,
+      );
       expect(find.text('7 days in a row'), findsOneWidget);
       expect(find.text('evening reading is inconsistent'), findsOneWidget);
       expect(find.text('only 2 out of 7 days'), findsOneWidget);
@@ -436,45 +473,50 @@ void main() {
 
     testWidgets('AI Coach motivation and streak recovery', (tester) async {
       // Setup user with broken streak
-      final user = LocalUser()
-        ..uid = 'test-user'
-        ..displayName = 'Test User'
-        ..currentXP = 200
-        ..totalXP = 600
-        ..currentLevel = 2
-        ..currentStreak = 0
-        ..longestStreak = 12
-        ..lastActiveDate = DateTime.now().subtract(const Duration(days: 3))
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now();
+      final user =
+          LocalUser()
+            ..uid = 'test-user'
+            ..displayName = 'Test User'
+            ..currentXP = 200
+            ..totalXP = 600
+            ..currentLevel = 2
+            ..currentStreak = 0
+            ..longestStreak = 12
+            ..lastActiveDate = DateTime.now().subtract(const Duration(days: 3))
+            ..createdAt = DateTime.now()
+            ..updatedAt = DateTime.now();
 
       await isar.writeTxn(() => isar.localUsers.put(user));
 
       // Mock motivational response for streak recovery
-      when(() => mockAiCoachEngine.generateResponse('I broke my streak'))
-          .thenAnswer((_) async => AiCoachResponse(
-        message: 'Don\'t worry about breaking your streak! You had an amazing 12-day streak before - that shows you have the ability to build strong habits. Missing a few days doesn\'t erase your progress. Let\'s get back on track today!',
-        quickActions: [
-          QuickAction(
-            id: 'restart_streak',
-            title: 'Start New Streak',
-            icon: Icons.refresh,
-            route: '/quests?action=complete',
-          ),
-          QuickAction(
-            id: 'easy_quest',
-            title: 'Create Easy Quest',
-            icon: Icons.sentiment_satisfied,
-            route: '/create-quest?difficulty=easy',
-          ),
-        ],
-        encouragementLevel: EncouragementLevel.supportive,
-        suggestions: [
-          'Start with something very small today',
-          'Remember: progress, not perfection',
-          'Your 12-day streak proves you can do this',
-        ],
-      ));
+      when(
+        () => mockAiCoachEngine.generateResponse('I broke my streak'),
+      ).thenAnswer(
+        (_) async => AiCoachResponse(
+          message:
+              'Don\'t worry about breaking your streak! You had an amazing 12-day streak before - that shows you have the ability to build strong habits. Missing a few days doesn\'t erase your progress. Let\'s get back on track today!',
+          quickActions: [
+            QuickAction(
+              id: 'restart_streak',
+              title: 'Start New Streak',
+              icon: Icons.refresh,
+              route: '/quests?action=complete',
+            ),
+            QuickAction(
+              id: 'easy_quest',
+              title: 'Create Easy Quest',
+              icon: Icons.sentiment_satisfied,
+              route: '/create-quest?difficulty=easy',
+            ),
+          ],
+          encouragementLevel: EncouragementLevel.supportive,
+          suggestions: [
+            'Start with something very small today',
+            'Remember: progress, not perfection',
+            'Your 12-day streak proves you can do this',
+          ],
+        ),
+      );
 
       await tester.pumpWidget(app.MinQApp(skipOnboarding: true));
       await tester.pumpAndSettle();
@@ -485,8 +527,8 @@ void main() {
 
       // Express frustration about broken streak
       await tester.enterText(
-        find.byKey(const Key('ai_chat_input')), 
-        'I broke my streak'
+        find.byKey(const Key('ai_chat_input')),
+        'I broke my streak',
       );
       await tester.tap(find.byKey(const Key('send_message_button')));
       await tester.pumpAndSettle();
@@ -495,7 +537,10 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
 
       // Verify supportive and motivational response
-      expect(find.text('Don\'t worry about breaking your streak!'), findsOneWidget);
+      expect(
+        find.text('Don\'t worry about breaking your streak!'),
+        findsOneWidget,
+      );
       expect(find.text('amazing 12-day streak'), findsOneWidget);
       expect(find.text('doesn\'t erase your progress'), findsOneWidget);
       expect(find.text('Let\'s get back on track today!'), findsOneWidget);
@@ -518,42 +563,53 @@ void main() {
       expect(find.byKey(const Key('complete_quest_prompt')), findsOneWidget);
     });
 
-    testWidgets('AI Coach conversation history and context retention', (tester) async {
+    testWidgets('AI Coach conversation history and context retention', (
+      tester,
+    ) async {
       // Setup user
-      final user = LocalUser()
-        ..uid = 'test-user'
-        ..displayName = 'Test User'
-        ..currentXP = 100
-        ..totalXP = 300
-        ..currentLevel = 2
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now();
+      final user =
+          LocalUser()
+            ..uid = 'test-user'
+            ..displayName = 'Test User'
+            ..currentXP = 100
+            ..totalXP = 300
+            ..currentLevel = 2
+            ..createdAt = DateTime.now()
+            ..updatedAt = DateTime.now();
 
       await isar.writeTxn(() => isar.localUsers.put(user));
 
       // Mock conversation flow
-      when(() => mockAiCoachEngine.generateResponse('I want to exercise more'))
-          .thenAnswer((_) async => AiCoachResponse(
-        message: 'That\'s a great goal! What type of exercise interests you most? Running, strength training, yoga, or something else?',
-        quickActions: [],
-        encouragementLevel: EncouragementLevel.inquisitive,
-        suggestions: [],
-      ));
+      when(
+        () => mockAiCoachEngine.generateResponse('I want to exercise more'),
+      ).thenAnswer(
+        (_) async => AiCoachResponse(
+          message:
+              'That\'s a great goal! What type of exercise interests you most? Running, strength training, yoga, or something else?',
+          quickActions: [],
+          encouragementLevel: EncouragementLevel.inquisitive,
+          suggestions: [],
+        ),
+      );
 
-      when(() => mockAiCoachEngine.generateResponse('I like running'))
-          .thenAnswer((_) async => AiCoachResponse(
-        message: 'Perfect! Running is excellent for building cardiovascular health. Since you mentioned wanting to exercise more and you like running, let\'s create a running quest. How many days per week would you like to start with?',
-        quickActions: [
-          QuickAction(
-            id: 'create_running_quest',
-            title: 'Create Running Quest',
-            icon: Icons.directions_run,
-            route: '/create-quest?category=fitness&type=running',
-          ),
-        ],
-        encouragementLevel: EncouragementLevel.encouraging,
-        suggestions: ['Start with 2-3 days per week for beginners'],
-      ));
+      when(
+        () => mockAiCoachEngine.generateResponse('I like running'),
+      ).thenAnswer(
+        (_) async => AiCoachResponse(
+          message:
+              'Perfect! Running is excellent for building cardiovascular health. Since you mentioned wanting to exercise more and you like running, let\'s create a running quest. How many days per week would you like to start with?',
+          quickActions: [
+            QuickAction(
+              id: 'create_running_quest',
+              title: 'Create Running Quest',
+              icon: Icons.directions_run,
+              route: '/create-quest?category=fitness&type=running',
+            ),
+          ],
+          encouragementLevel: EncouragementLevel.encouraging,
+          suggestions: ['Start with 2-3 days per week for beginners'],
+        ),
+      );
 
       await tester.pumpWidget(app.MinQApp(skipOnboarding: true));
       await tester.pumpAndSettle();
@@ -564,8 +620,8 @@ void main() {
 
       // Start conversation
       await tester.enterText(
-        find.byKey(const Key('ai_chat_input')), 
-        'I want to exercise more'
+        find.byKey(const Key('ai_chat_input')),
+        'I want to exercise more',
       );
       await tester.tap(find.byKey(const Key('send_message_button')));
       await tester.pumpAndSettle();
@@ -579,8 +635,8 @@ void main() {
 
       // Continue conversation
       await tester.enterText(
-        find.byKey(const Key('ai_chat_input')), 
-        'I like running'
+        find.byKey(const Key('ai_chat_input')),
+        'I like running',
       );
       await tester.tap(find.byKey(const Key('send_message_button')));
       await tester.pumpAndSettle();
@@ -590,7 +646,10 @@ void main() {
 
       // Verify context retention
       expect(find.text('Perfect! Running is excellent'), findsOneWidget);
-      expect(find.text('Since you mentioned wanting to exercise more'), findsOneWidget);
+      expect(
+        find.text('Since you mentioned wanting to exercise more'),
+        findsOneWidget,
+      );
       expect(find.text('you like running'), findsOneWidget);
 
       // Verify conversation history is visible

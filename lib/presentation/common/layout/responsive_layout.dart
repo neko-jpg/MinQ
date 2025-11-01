@@ -5,13 +5,13 @@ class ResponsiveLayout {
   static const double mobileBreakpoint = 600;
   static const double tabletBreakpoint = 900;
   static const double desktopBreakpoint = 1200;
-  
+
   /// Minimum touch target size for accessibility (44pt)
   static const double minTouchTarget = 44.0;
-  
+
   /// Maximum content width for readability
   static const double maxContentWidth = 640.0;
-  
+
   /// Get screen type based on width
   static ScreenType getScreenType(double width) {
     if (width < mobileBreakpoint) return ScreenType.mobile;
@@ -19,12 +19,12 @@ class ResponsiveLayout {
     if (width < desktopBreakpoint) return ScreenType.desktop;
     return ScreenType.largeDesktop;
   }
-  
+
   /// Get responsive padding based on screen size
   static EdgeInsets getResponsivePadding(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final screenType = getScreenType(width);
-    
+
     switch (screenType) {
       case ScreenType.mobile:
         return const EdgeInsets.all(16.0);
@@ -35,12 +35,12 @@ class ResponsiveLayout {
         return const EdgeInsets.all(32.0);
     }
   }
-  
+
   /// Get responsive column count for grids
   static int getResponsiveColumns(BuildContext context, {int maxColumns = 4}) {
     final width = MediaQuery.of(context).size.width;
     final screenType = getScreenType(width);
-    
+
     switch (screenType) {
       case ScreenType.mobile:
         return 2;
@@ -51,12 +51,12 @@ class ResponsiveLayout {
         return maxColumns;
     }
   }
-  
+
   /// Get responsive font scale
   static double getResponsiveFontScale(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final screenType = getScreenType(width);
-    
+
     switch (screenType) {
       case ScreenType.mobile:
         return 1.0;
@@ -67,21 +67,18 @@ class ResponsiveLayout {
         return 1.2;
     }
   }
-  
+
   /// Ensure minimum touch target size
   static Widget ensureTouchTarget({
     required Widget child,
     double minSize = minTouchTarget,
   }) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        minWidth: minSize,
-        minHeight: minSize,
-      ),
+      constraints: BoxConstraints(minWidth: minSize, minHeight: minSize),
       child: child,
     );
   }
-  
+
   /// Create responsive container with max width constraint
   static Widget constrainedContainer({
     required Widget child,
@@ -91,7 +88,7 @@ class ResponsiveLayout {
     return LayoutBuilder(
       builder: (context, constraints) {
         Widget content = child;
-        
+
         if (constraints.maxWidth > maxWidth) {
           content = Align(
             alignment: Alignment.topCenter,
@@ -101,38 +98,35 @@ class ResponsiveLayout {
             ),
           );
         }
-        
+
         if (padding != null) {
           content = Padding(padding: padding, child: content);
         }
-        
+
         return content;
       },
     );
   }
 }
 
-enum ScreenType {
-  mobile,
-  tablet,
-  desktop,
-  largeDesktop,
-}
+enum ScreenType { mobile, tablet, desktop, largeDesktop }
 
 /// Extension for responsive utilities on BuildContext
 extension ResponsiveContext on BuildContext {
-  ScreenType get screenType => ResponsiveLayout.getScreenType(
-    MediaQuery.of(this).size.width,
-  );
-  
+  ScreenType get screenType =>
+      ResponsiveLayout.getScreenType(MediaQuery.of(this).size.width);
+
   bool get isMobile => screenType == ScreenType.mobile;
   bool get isTablet => screenType == ScreenType.tablet;
-  bool get isDesktop => screenType == ScreenType.desktop || screenType == ScreenType.largeDesktop;
-  
-  EdgeInsets get responsivePadding => ResponsiveLayout.getResponsivePadding(this);
-  
-  int responsiveColumns({int maxColumns = 4}) => 
-    ResponsiveLayout.getResponsiveColumns(this, maxColumns: maxColumns);
-    
-  double get responsiveFontScale => ResponsiveLayout.getResponsiveFontScale(this);
+  bool get isDesktop =>
+      screenType == ScreenType.desktop || screenType == ScreenType.largeDesktop;
+
+  EdgeInsets get responsivePadding =>
+      ResponsiveLayout.getResponsivePadding(this);
+
+  int responsiveColumns({int maxColumns = 4}) =>
+      ResponsiveLayout.getResponsiveColumns(this, maxColumns: maxColumns);
+
+  double get responsiveFontScale =>
+      ResponsiveLayout.getResponsiveFontScale(this);
 }

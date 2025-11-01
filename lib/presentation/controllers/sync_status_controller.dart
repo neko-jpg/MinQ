@@ -37,8 +37,8 @@ class SyncStatus {
 
 class SyncStatusNotifier extends StateNotifier<SyncStatus> {
   SyncStatusNotifier(this.ref)
-      : _connectivityService = ref.read(connectivityServiceProvider),
-        super(const SyncStatus()) {
+    : _connectivityService = ref.read(connectivityServiceProvider),
+      super(const SyncStatus()) {
     _init();
   }
 
@@ -50,7 +50,8 @@ class SyncStatusNotifier extends StateNotifier<SyncStatus> {
 
   Future<void> _init() async {
     await _connectivityService.initialize();
-    final ConnectivityStatus status = await _connectivityService.getCurrentStatus();
+    final ConnectivityStatus status =
+        await _connectivityService.getCurrentStatus();
     if (status == ConnectivityStatus.offline) {
       _wasOffline = true;
       state = state.copyWith(phase: SyncPhase.offline);
@@ -120,7 +121,11 @@ class SyncStatusNotifier extends StateNotifier<SyncStatus> {
 
   void acknowledgeBanner() {
     if (!state.showBanner) return;
-    state = state.copyWith(phase: state.phase, showBanner: false, clearBanner: true);
+    state = state.copyWith(
+      phase: state.phase,
+      showBanner: false,
+      clearBanner: true,
+    );
   }
 
   @override
@@ -132,4 +137,6 @@ class SyncStatusNotifier extends StateNotifier<SyncStatus> {
 }
 
 final StateNotifierProvider<SyncStatusNotifier, SyncStatus> syncStatusProvider =
-    StateNotifierProvider<SyncStatusNotifier, SyncStatus>(SyncStatusNotifier.new);
+    StateNotifierProvider<SyncStatusNotifier, SyncStatus>(
+      SyncStatusNotifier.new,
+    );

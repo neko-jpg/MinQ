@@ -56,10 +56,7 @@ class FeatureFlagService {
       );
       return activated;
     } catch (e) {
-      MinqLogger.error(
-        'Failed to fetch remote config',
-        exception: e,
-      );
+      MinqLogger.error('Failed to fetch remote config', exception: e);
       return false;
     }
   }

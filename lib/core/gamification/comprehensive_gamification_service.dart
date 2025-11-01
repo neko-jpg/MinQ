@@ -10,21 +10,22 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/badge_notification_widget.dart';
 
 /// Provider for the comprehensive gamification service
-final comprehensiveGamificationServiceProvider = Provider<ComprehensiveGamificationService>((ref) {
-  final gamificationEngine = ref.watch(gamificationEngineProvider);
-  return ComprehensiveGamificationService(gamificationEngine);
-});
+final comprehensiveGamificationServiceProvider =
+    Provider<ComprehensiveGamificationService>((ref) {
+      final gamificationEngine = ref.watch(gamificationEngineProvider);
+      return ComprehensiveGamificationService(gamificationEngine);
+    });
 
 /// Comprehensive gamification service that orchestrates all gamification features
 /// with enhanced user experience, animations, and feedback systems
 class ComprehensiveGamificationService {
   final GamificationEngine _gamificationEngine;
-  
+
   // Cache for performance
   final Map<String, LevelInfo> _levelCache = {};
   final Map<String, List<gamification.Badge>> _badgeCache = {};
   final Map<String, DateTime> _lastCacheUpdate = {};
-  
+
   // Configuration
   static const Duration _cacheExpiry = Duration(minutes: 5);
 
@@ -39,18 +40,20 @@ class ComprehensiveGamificationService {
   }) async {
     try {
       final result = GamificationResult();
-      
+
       // Calculate base points based on quest difficulty
       final difficulty = questMetadata?['difficulty'] as String? ?? 'normal';
       final basePoints = _calculateQuestPoints(difficulty);
-      
+
       // Check for streak bonus
-      final currentStreak = await _gamificationEngine.calculateCurrentStreak(userId);
+      final currentStreak = await _gamificationEngine.calculateCurrentStreak(
+        userId,
+      );
       final streakMultiplier = _calculateStreakMultiplier(currentStreak);
-      
+
       // Check for time-based bonuses
       final timeBonus = _calculateTimeBonus(DateTime.now());
-      
+
       // Award base points
       if (context.mounted) {
         await _gamificationEngine.awardPoints(
@@ -77,8 +80,10 @@ class ComprehensiveGamificationService {
         );
       }
 
-      result.pointsAwarded = (basePoints * _getDifficultyMultiplier(difficulty) * streakMultiplier).round();
-      
+      result.pointsAwarded =
+          (basePoints * _getDifficultyMultiplier(difficulty) * streakMultiplier)
+              .round();
+
       // Award time bonus if applicable
       if (timeBonus > 0) {
         if (context.mounted) {
@@ -101,25 +106,25 @@ class ComprehensiveGamificationService {
         }
         result.bonusPoints = timeBonus;
       }
-      
+
       // Check for new badges
       final newBadges =
           context.mounted
               ? await _gamificationEngine.checkAndAwardBadges(
-                  userId,
-                  context: context,
-                  showNotification: true,
-                  playSound: true,
-                  hapticFeedback: true,
-                )
+                userId,
+                context: context,
+                showNotification: true,
+                playSound: true,
+                hapticFeedback: true,
+              )
               : await _gamificationEngine.checkAndAwardBadges(userId);
 
       result.newBadges = newBadges;
-      
+
       // Check for level progression
       final levelInfo = await _gamificationEngine.getUserLevelInfo(userId);
       final previousLevel = _levelCache[userId]?.currentLevel ?? 0;
-      
+
       if (levelInfo.currentLevel > previousLevel) {
         result.leveledUp = true;
         result.newLevel = levelInfo.currentLevel;
@@ -127,21 +132,20 @@ class ComprehensiveGamificationService {
           await _showLevelUpCelebration(context, levelInfo);
         }
       }
-      
+
       // Update cache
       _levelCache[userId] = levelInfo;
       _lastCacheUpdate[userId] = DateTime.now();
-      
+
       // Show celebration for significant achievements
       if (result.shouldShowCelebration()) {
         if (context.mounted) {
           await _showAchievementCelebration(context, result);
         }
       }
-      
+
       MinqLogger.info('Quest completed successfully for user $userId');
       return result;
-      
     } catch (e) {
       MinqLogger.error('Failed to complete quest gamification', exception: e);
       return GamificationResult()..hasError = true;
@@ -160,7 +164,7 @@ class ComprehensiveGamificationService {
       context: context,
       metadata: {'streakDays': streakDays},
     );
-    
+
     // Special celebrations for milestone streaks
     if (_isStreakMilestone(streakDays) && context.mounted) {
       await _showStreakMilestoneCelebration(context, streakDays);
@@ -201,7 +205,7 @@ class ComprehensiveGamificationService {
       action: HabitAction.comebackQuest,
       context: context,
     );
-    
+
     if (context.mounted) {
       await _showComebackCelebration(context);
     }
@@ -211,17 +215,17 @@ class ComprehensiveGamificationService {
   Future<LevelInfo> getUserLevelInfo(String userId) async {
     final cached = _levelCache[userId];
     final lastUpdate = _lastCacheUpdate[userId];
-    
-    if (cached != null && 
-        lastUpdate != null && 
+
+    if (cached != null &&
+        lastUpdate != null &&
         DateTime.now().difference(lastUpdate) < _cacheExpiry) {
       return cached;
     }
-    
+
     final levelInfo = await _gamificationEngine.getUserLevelInfo(userId);
     _levelCache[userId] = levelInfo;
     _lastCacheUpdate[userId] = DateTime.now();
-    
+
     return levelInfo;
   }
 
@@ -277,17 +281,17 @@ class ComprehensiveGamificationService {
   /// Calculate time-based bonus points
   int _calculateTimeBonus(DateTime completionTime) {
     final hour = completionTime.hour;
-    
+
     // Early bird bonus (5-8 AM)
     if (hour >= 5 && hour < 8) {
       return 5;
     }
-    
+
     // Night owl bonus (10 PM - 12 AM)
     if (hour >= 22 || hour < 1) {
       return 3;
     }
-    
+
     return 0;
   }
 
@@ -298,17 +302,21 @@ class ComprehensiveGamificationService {
   }
 
   /// Show level up celebration
-  Future<void> _showLevelUpCelebration(BuildContext context, LevelInfo levelInfo) async {
+  Future<void> _showLevelUpCelebration(
+    BuildContext context,
+    LevelInfo levelInfo,
+  ) async {
     await HapticsSystem.levelUp();
     await SoundEffectsService.instance.play(SoundType.levelUp);
-    
+
     // Show celebration system
     if (!context.mounted) return;
     CelebrationSystem.showCelebration(
       context,
       config: CelebrationConfig(
         type: CelebrationType.trophy,
-        message: 'レベル${levelInfo.currentLevel}達成！\n${levelInfo.currentLevelName}',
+        message:
+            'レベル${levelInfo.currentLevel}達成！\n${levelInfo.currentLevelName}',
         primaryColor: Colors.amber,
         secondaryColor: Colors.orange,
         duration: const Duration(seconds: 4),
@@ -317,7 +325,10 @@ class ComprehensiveGamificationService {
   }
 
   /// Show achievement celebration
-  Future<void> _showAchievementCelebration(BuildContext context, GamificationResult result) async {
+  Future<void> _showAchievementCelebration(
+    BuildContext context,
+    GamificationResult result,
+  ) async {
     if (result.newBadges.isNotEmpty) {
       // Show enhanced badge notifications
       for (final badge in result.newBadges) {
@@ -329,12 +340,12 @@ class ComprehensiveGamificationService {
         }
       }
     }
-    
+
     if (result.leveledUp) {
       // Level up celebration is handled separately
       return;
     }
-    
+
     // Show general celebration for high point awards
     if (result.totalPoints >= 50) {
       if (!context.mounted) return;
@@ -351,8 +362,14 @@ class ComprehensiveGamificationService {
   }
 
   /// Show streak milestone celebration
-  Future<void> _showStreakMilestoneCelebration(BuildContext context, int streakDays) async {
-    final config = CelebrationSystem.getStreakCelebration(streakDays, MinqTheme.light());
+  Future<void> _showStreakMilestoneCelebration(
+    BuildContext context,
+    int streakDays,
+  ) async {
+    final config = CelebrationSystem.getStreakCelebration(
+      streakDays,
+      MinqTheme.light(),
+    );
     if (!context.mounted) return;
     CelebrationSystem.showCelebration(context, config: config);
   }

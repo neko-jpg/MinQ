@@ -42,10 +42,7 @@ class ProfileValidationResult {
   final bool isValid;
   final Map<String, String> errors;
 
-  const ProfileValidationResult({
-    required this.isValid,
-    required this.errors,
-  });
+  const ProfileValidationResult({required this.isValid, required this.errors});
 
   factory ProfileValidationResult.valid() {
     return const ProfileValidationResult(isValid: true, errors: {});

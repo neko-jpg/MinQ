@@ -87,8 +87,10 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
       );
     } catch (e) {
       // Firebase が初期化されていない場合はスキップ
-      logger.warning('SocialProofService initialization failed', 
-        data: {'error': e.toString()});
+      logger.warning(
+        'SocialProofService initialization failed',
+        data: {'error': e.toString()},
+      );
     }
   }
 
@@ -493,7 +495,9 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
               SizedBox(width: tokens.spacing.xs),
               Text(
                 '最近のアクティビティ',
-                style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.typography.body.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -520,8 +524,9 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
         Expanded(
           child: RichText(
             text: TextSpan(
-              style:
-                  tokens.typography.caption.copyWith(color: tokens.textPrimary),
+              style: tokens.typography.caption.copyWith(
+                color: tokens.textPrimary,
+              ),
               children: [
                 TextSpan(
                   text: activity.nickname,
@@ -603,8 +608,9 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
               padding: EdgeInsets.only(bottom: tokens.spacing.xs),
               child: Text(
                 message,
-                style:
-                    tokens.typography.caption.copyWith(color: tokens.textPrimary),
+                style: tokens.typography.caption.copyWith(
+                  color: tokens.textPrimary,
+                ),
               ),
             );
           }),
@@ -706,7 +712,9 @@ class _LiveActivitySettingsScreenState
             _buildSettingsSection('プライバシー設定', [
               SwitchListTile(
                 title: Text(AppLocalizations.of(context).showActivity),
-                subtitle: Text(AppLocalizations.of(context).showActivitySubtitle),
+                subtitle: Text(
+                  AppLocalizations.of(context).showActivitySubtitle,
+                ),
                 value: _settings.showActivity,
                 onChanged: (value) {
                   setState(() {
@@ -716,7 +724,9 @@ class _LiveActivitySettingsScreenState
               ),
               SwitchListTile(
                 title: Text(AppLocalizations.of(context).allowInteraction),
-                subtitle: Text(AppLocalizations.of(context).allowInteractionSubtitle),
+                subtitle: Text(
+                  AppLocalizations.of(context).allowInteractionSubtitle,
+                ),
                 value: _settings.allowInteraction,
                 onChanged: (value) {
                   setState(() {
@@ -732,7 +742,9 @@ class _LiveActivitySettingsScreenState
             _buildSettingsSection('通知設定', [
               SwitchListTile(
                 title: Text(AppLocalizations.of(context).hapticFeedback),
-                subtitle: Text(AppLocalizations.of(context).hapticFeedbackSubtitle),
+                subtitle: Text(
+                  AppLocalizations.of(context).hapticFeedbackSubtitle,
+                ),
                 value: _settings.enableHaptics,
                 onChanged: (value) {
                   setState(() {
@@ -742,7 +754,9 @@ class _LiveActivitySettingsScreenState
               ),
               SwitchListTile(
                 title: Text(AppLocalizations.of(context).celebrationEffects),
-                subtitle: Text(AppLocalizations.of(context).celebrationEffectsSubtitle),
+                subtitle: Text(
+                  AppLocalizations.of(context).celebrationEffectsSubtitle,
+                ),
                 value: _settings.enableCelebration,
                 onChanged: (value) {
                   setState(() {

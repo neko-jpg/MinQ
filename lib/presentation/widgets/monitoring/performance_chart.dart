@@ -5,17 +5,12 @@ import 'package:minq/core/monitoring/performance_monitoring_service.dart';
 class PerformanceChart extends StatelessWidget {
   final Map<String, PerformanceTrend> trends;
 
-  const PerformanceChart({
-    super.key,
-    required this.trends,
-  });
+  const PerformanceChart({super.key, required this.trends});
 
   @override
   Widget build(BuildContext context) {
     if (trends.isEmpty) {
-      return const Center(
-        child: Text('No performance data available'),
-      );
+      return const Center(child: Text('No performance data available'));
     }
 
     return Column(
@@ -93,16 +88,10 @@ class PerformanceChart extends StatelessWidget {
         horizontalInterval: 1,
         verticalInterval: 1,
         getDrawingHorizontalLine: (value) {
-          return const FlLine(
-            color: Colors.grey,
-            strokeWidth: 0.5,
-          );
+          return const FlLine(color: Colors.grey, strokeWidth: 0.5);
         },
         getDrawingVerticalLine: (value) {
-          return const FlLine(
-            color: Colors.grey,
-            strokeWidth: 0.5,
-          );
+          return const FlLine(color: Colors.grey, strokeWidth: 0.5);
         },
       ),
       titlesData: FlTitlesData(
@@ -110,9 +99,7 @@ class PerformanceChart extends StatelessWidget {
         rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
@@ -157,15 +144,15 @@ class PerformanceChart extends StatelessWidget {
   List<LineChartBarData> _generateLineChartData() {
     final colors = [Colors.blue, Colors.red, Colors.green, Colors.orange];
     final lines = <LineChartBarData>[];
-    
+
     int colorIndex = 0;
     for (final trend in trends.values.take(4)) {
       final spots = <FlSpot>[];
-      
+
       // Generate sample data points based on trend
       for (int i = 0; i <= 10; i++) {
         double value = 50; // Base value
-        
+
         switch (trend.direction) {
           case TrendDirection.increasing:
             value += i * 3 + (i * 0.5); // Increasing trend
@@ -177,10 +164,10 @@ class PerformanceChart extends StatelessWidget {
             value += (i % 2 == 0 ? 2 : -2); // Stable with minor fluctuations
             break;
         }
-        
+
         spots.add(FlSpot(i.toDouble(), value.clamp(0, 100)));
       }
-      
+
       lines.add(
         LineChartBarData(
           spots: spots,
@@ -195,10 +182,10 @@ class PerformanceChart extends StatelessWidget {
           ),
         ),
       );
-      
+
       colorIndex++;
     }
-    
+
     return lines;
   }
 

@@ -9,17 +9,17 @@ void main() {
   group('AI Insights Service', () {
     test('should generate fallback insights when no data available', () async {
       final service = AIInsightsService.instance;
-      
+
       // Create mock repositories (simplified for test)
       final mockQuestRepo = MockQuestRepository();
       final mockLogRepo = MockQuestLogRepository();
-      
+
       final insights = await service.generateInsights(
         userId: 'test_user',
         questRepository: mockQuestRepo,
         questLogRepository: mockLogRepo,
       );
-      
+
       expect(insights.userId, equals('test_user'));
       expect(insights.recommendations, isNotEmpty);
       expect(insights.progressAnalysis.overallScore, greaterThanOrEqualTo(0.0));
@@ -37,7 +37,7 @@ void main() {
         relatedHabits: ['habit1', 'habit2'],
         actionText: 'Take Action',
       );
-      
+
       expect(recommendation.type, equals(RecommendationType.habitSuggestion));
       expect(recommendation.confidence, equals(0.8));
       expect(recommendation.relatedHabits.length, equals(2));
@@ -54,7 +54,7 @@ void main() {
         insights: [],
         overallScore: 0.75,
       );
-      
+
       expect(analysis.currentStreak, equals(5.0));
       expect(analysis.overallScore, equals(0.75));
       expect(analysis.categoryPerformance['学習'], equals(0.8));
@@ -65,7 +65,7 @@ void main() {
 // Mock implementations for testing
 class MockQuestRepository extends QuestRepository {
   MockQuestRepository() : super(null as Isar);
-  
+
   @override
   Future<List<dynamic>> getQuestsForOwner(String owner) async {
     return [];
@@ -74,22 +74,22 @@ class MockQuestRepository extends QuestRepository {
 
 class MockQuestLogRepository extends QuestLogRepository {
   MockQuestLogRepository() : super(null as Isar);
-  
+
   @override
   Future<List<dynamic>> getLogsForUser(String uid) async {
     return [];
   }
-  
+
   @override
   Future<int> calculateStreak(String uid) async {
     return 3;
   }
-  
+
   @override
   Future<int> calculateLongestStreak(String uid) async {
     return 7;
   }
-  
+
   @override
   Future<double> calculateWeeklyCompletionRate(String uid) async {
     return 0.7;

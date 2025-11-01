@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/theme/theme_extensions.dart';
 
 /// フォーム保護付きダイアログ
 /// F009対応: ダイアログ内のフォームでも未保存データ保護を提供
@@ -25,7 +24,6 @@ class ProtectedFormDialog extends StatefulWidget {
 }
 
 class _ProtectedFormDialogState extends State<ProtectedFormDialog> {
-  
   Future<bool> _showDiscardChangesDialog() async {
     if (!widget.hasUnsavedChanges) {
       return true;
@@ -74,14 +72,14 @@ class _ProtectedFormDialogState extends State<ProtectedFormDialog> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return PopScope(
       canPop: !widget.hasUnsavedChanges,
       onPopInvokedWithResult: (bool didPop, dynamic result) async {
         if (didPop) {
           return;
         }
-        
+
         final shouldPop = await _showDiscardChangesDialog();
         if (mounted && shouldPop) {
           Navigator.of(context).pop();
@@ -91,10 +89,7 @@ class _ProtectedFormDialogState extends State<ProtectedFormDialog> {
         title: Text(widget.title),
         content: widget.child,
         actions: <Widget>[
-          TextButton(
-            onPressed: _handleCancel,
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: _handleCancel, child: const Text('キャンセル')),
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: tokens.brandPrimary,

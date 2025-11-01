@@ -21,8 +21,8 @@ class NotificationAnalyticsService {
   NotificationAnalyticsService({
     required SharedPreferences prefs,
     required Isar isar,
-  })  : _prefs = prefs,
-        _isar = isar;
+  }) : _prefs = prefs,
+       _isar = isar;
 
   /// 初期化
   Future<void> initialize() async {
@@ -52,15 +52,18 @@ class NotificationAnalyticsService {
     try {
       // ローカルストレージに保存
       final existingEventsJson = _prefs.getString(_eventsKey) ?? '[]';
-      final existingEvents = (jsonDecode(existingEventsJson) as List)
-          .map((e) => NotificationEvent.fromJson(e as Map<String, dynamic>))
-          .toList();
+      final existingEvents =
+          (jsonDecode(existingEventsJson) as List)
+              .map((e) => NotificationEvent.fromJson(e as Map<String, dynamic>))
+              .toList();
 
       existingEvents.addAll(_eventBuffer);
 
       // 古いイベントを削除（30日以上前）
       final cutoffDate = DateTime.now().subtract(const Duration(days: 30));
-      existingEvents.removeWhere((event) => event.timestamp.isBefore(cutoffDate));
+      existingEvents.removeWhere(
+        (event) => event.timestamp.isBefore(cutoffDate),
+      );
 
       // 保存
       final eventsJson = jsonEncode(
@@ -82,14 +85,33 @@ class NotificationAnalyticsService {
     required DateTime startDate,
     required DateTime endDate,
   }) async {
-    final events = await _getEventsInRange(userId, category, startDate, endDate);
+    final events = await _getEventsInRange(
+      userId,
+      category,
+      startDate,
+      endDate,
+    );
 
-    final totalSent = events.where((e) => e.eventType == NotificationEventType.sent).length;
-    final totalDelivered = events.where((e) => e.eventType == NotificationEventType.delivered).length;
-    final totalOpened = events.where((e) => e.eventType == NotificationEventType.opened).length;
-    final totalClicked = events.where((e) => e.eventType == NotificationEventType.clicked).length;
-    final totalDismissed = events.where((e) => e.eventType == NotificationEventType.dismissed).length;
-    final totalConverted = events.where((e) => e.eventType == NotificationEventType.converted).length;
+    final totalSent =
+        events.where((e) => e.eventType == NotificationEventType.sent).length;
+    final totalDelivered =
+        events
+            .where((e) => e.eventType == NotificationEventType.delivered)
+            .length;
+    final totalOpened =
+        events.where((e) => e.eventType == NotificationEventType.opened).length;
+    final totalClicked =
+        events
+            .where((e) => e.eventType == NotificationEventType.clicked)
+            .length;
+    final totalDismissed =
+        events
+            .where((e) => e.eventType == NotificationEventType.dismissed)
+            .length;
+    final totalConverted =
+        events
+            .where((e) => e.eventType == NotificationEventType.converted)
+            .length;
 
     final deliveryRate = totalSent > 0 ? totalDelivered / totalSent : 0.0;
     final openRate = totalDelivered > 0 ? totalOpened / totalDelivered : 0.0;
@@ -98,14 +120,16 @@ class NotificationAnalyticsService {
 
     // 平均アクション時間を計算
     final actionEvents = events.where((e) => e.timeToAction != null);
-    final averageTimeToAction = actionEvents.isNotEmpty
-        ? Duration(
-            milliseconds: actionEvents
-                .map((e) => e.timeToAction!.inMilliseconds)
-                .reduce((a, b) => a + b) ~/
-            actionEvents.length,
-          )
-        : Duration.zero;
+    final averageTimeToAction =
+        actionEvents.isNotEmpty
+            ? Duration(
+              milliseconds:
+                  actionEvents
+                      .map((e) => e.timeToAction!.inMilliseconds)
+                      .reduce((a, b) => a + b) ~/
+                  actionEvents.length,
+            )
+            : Duration.zero;
 
     // 時間別分布を計算
     final hourlyDistribution = <String, int>{};
@@ -121,10 +145,17 @@ class NotificationAnalyticsService {
     final dayOfWeekPerformance = <String, double>{};
     for (var i = 1; i <= 7; i++) {
       final dayEvents = events.where((e) => e.timestamp.weekday == i);
-      final dayOpened = dayEvents.where((e) => e.eventType == NotificationEventType.opened).length;
-      final dayDelivered = dayEvents.where((e) => e.eventType == NotificationEventType.delivered).length;
-      
-      dayOfWeekPerformance[i.toString()] = dayDelivered > 0 ? dayOpened / dayDelivered : 0.0;
+      final dayOpened =
+          dayEvents
+              .where((e) => e.eventType == NotificationEventType.opened)
+              .length;
+      final dayDelivered =
+          dayEvents
+              .where((e) => e.eventType == NotificationEventType.delivered)
+              .length;
+
+      dayOfWeekPerformance[i.toString()] =
+          dayDelivered > 0 ? dayOpened / dayDelivered : 0.0;
     }
 
     return NotificationMetrics(
@@ -157,9 +188,10 @@ class NotificationAnalyticsService {
   ) async {
     try {
       final eventsJson = _prefs.getString(_eventsKey) ?? '[]';
-      final allEvents = (jsonDecode(eventsJson) as List)
-          .map((e) => NotificationEvent.fromJson(e as Map<String, dynamic>))
-          .toList();
+      final allEvents =
+          (jsonDecode(eventsJson) as List)
+              .map((e) => NotificationEvent.fromJson(e as Map<String, dynamic>))
+              .toList();
 
       return allEvents.where((event) {
         return event.userId == userId &&
@@ -200,9 +232,16 @@ class NotificationAnalyticsService {
   }) async {
     final endDate = DateTime.now();
     final startDate = endDate.subtract(const Duration(days: 30));
-    
-    final events = await _getEventsInRange(userId, category, startDate, endDate);
-    final openedEvents = events.where((e) => e.eventType == NotificationEventType.opened);
+
+    final events = await _getEventsInRange(
+      userId,
+      category,
+      startDate,
+      endDate,
+    );
+    final openedEvents = events.where(
+      (e) => e.eventType == NotificationEventType.opened,
+    );
 
     // 時間別エンゲージメント率を計算
     final hourlyEngagementRates = <String, double>{};
@@ -211,31 +250,37 @@ class NotificationAnalyticsService {
     for (final event in events) {
       final hour = event.timestamp.hour;
       hourlyStats[hour] ??= [];
-      
+
       // 同じ通知IDの開封イベントがあるかチェック
-      final wasOpened = openedEvents.any((e) => e.notificationId == event.notificationId);
+      final wasOpened = openedEvents.any(
+        (e) => e.notificationId == event.notificationId,
+      );
       hourlyStats[hour]!.add(wasOpened);
     }
 
     for (final entry in hourlyStats.entries) {
       final hour = entry.key;
       final results = entry.value;
-      final engagementRate = results.isNotEmpty
-          ? results.where((opened) => opened).length / results.length
-          : 0.0;
+      final engagementRate =
+          results.isNotEmpty
+              ? results.where((opened) => opened).length / results.length
+              : 0.0;
       hourlyEngagementRates[hour.toString()] = engagementRate;
     }
 
     // 最適な時間帯を特定（エンゲージメント率が平均以上）
-    final averageEngagement = hourlyEngagementRates.values.isNotEmpty
-        ? hourlyEngagementRates.values.reduce((a, b) => a + b) / hourlyEngagementRates.length
-        : 0.0;
+    final averageEngagement =
+        hourlyEngagementRates.values.isNotEmpty
+            ? hourlyEngagementRates.values.reduce((a, b) => a + b) /
+                hourlyEngagementRates.length
+            : 0.0;
 
-    final optimalHours = hourlyEngagementRates.entries
-        .where((entry) => entry.value >= averageEngagement)
-        .map((entry) => int.parse(entry.key))
-        .toList()
-      ..sort();
+    final optimalHours =
+        hourlyEngagementRates.entries
+            .where((entry) => entry.value >= averageEngagement)
+            .map((entry) => int.parse(entry.key))
+            .toList()
+          ..sort();
 
     // 曜日別エンゲージメント率を計算
     final dailyEngagementRates = <String, double>{};
@@ -244,30 +289,36 @@ class NotificationAnalyticsService {
     for (final event in events) {
       final dayOfWeek = event.timestamp.weekday;
       dailyStats[dayOfWeek] ??= [];
-      
-      final wasOpened = openedEvents.any((e) => e.notificationId == event.notificationId);
+
+      final wasOpened = openedEvents.any(
+        (e) => e.notificationId == event.notificationId,
+      );
       dailyStats[dayOfWeek]!.add(wasOpened);
     }
 
     for (final entry in dailyStats.entries) {
       final day = entry.key;
       final results = entry.value;
-      final engagementRate = results.isNotEmpty
-          ? results.where((opened) => opened).length / results.length
-          : 0.0;
+      final engagementRate =
+          results.isNotEmpty
+              ? results.where((opened) => opened).length / results.length
+              : 0.0;
       dailyEngagementRates[day.toString()] = engagementRate;
     }
 
     // 最適な曜日を特定
-    final averageDailyEngagement = dailyEngagementRates.values.isNotEmpty
-        ? dailyEngagementRates.values.reduce((a, b) => a + b) / dailyEngagementRates.length
-        : 0.0;
+    final averageDailyEngagement =
+        dailyEngagementRates.values.isNotEmpty
+            ? dailyEngagementRates.values.reduce((a, b) => a + b) /
+                dailyEngagementRates.length
+            : 0.0;
 
-    final optimalDaysOfWeek = dailyEngagementRates.entries
-        .where((entry) => entry.value >= averageDailyEngagement)
-        .map((entry) => int.parse(entry.key))
-        .toList()
-      ..sort();
+    final optimalDaysOfWeek =
+        dailyEngagementRates.entries
+            .where((entry) => entry.value >= averageDailyEngagement)
+            .map((entry) => int.parse(entry.key))
+            .toList()
+          ..sort();
 
     // 信頼度を計算（サンプル数に基づく）
     final sampleSize = events.length;
@@ -291,9 +342,14 @@ class NotificationAnalyticsService {
     try {
       const key = 'ab_test_results';
       final existingResultsJson = _prefs.getString(key) ?? '[]';
-      final existingResults = (jsonDecode(existingResultsJson) as List)
-          .map((e) => NotificationABTestResult.fromJson(e as Map<String, dynamic>))
-          .toList();
+      final existingResults =
+          (jsonDecode(existingResultsJson) as List)
+              .map(
+                (e) => NotificationABTestResult.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList();
 
       existingResults.add(result);
 
@@ -315,16 +371,17 @@ class NotificationAnalyticsService {
   /// データをクリーンアップ
   Future<void> cleanup() async {
     await _flushEvents();
-    
+
     // 古いデータを削除
     final cutoffDate = DateTime.now().subtract(const Duration(days: 30));
-    
+
     try {
       final eventsJson = _prefs.getString(_eventsKey) ?? '[]';
-      final events = (jsonDecode(eventsJson) as List)
-          .map((e) => NotificationEvent.fromJson(e as Map<String, dynamic>))
-          .where((event) => event.timestamp.isAfter(cutoffDate))
-          .toList();
+      final events =
+          (jsonDecode(eventsJson) as List)
+              .map((e) => NotificationEvent.fromJson(e as Map<String, dynamic>))
+              .where((event) => event.timestamp.isAfter(cutoffDate))
+              .toList();
 
       final cleanedEventsJson = jsonEncode(
         events.map((e) => e.toJson()).toList(),

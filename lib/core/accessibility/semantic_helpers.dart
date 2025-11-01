@@ -14,14 +14,11 @@ class SemanticHelpers {
     EdgeInsets? padding,
   }) {
     Widget button = child;
-    
+
     if (tooltip != null) {
-      button = Tooltip(
-        message: tooltip,
-        child: button,
-      );
+      button = Tooltip(message: tooltip, child: button);
     }
-    
+
     return Semantics(
       label: semanticLabel,
       hint: semanticHint,
@@ -100,7 +97,7 @@ class SemanticHelpers {
     if (isDecorative) {
       return ExcludeSemantics(child: child);
     }
-    
+
     return Semantics(
       label: semanticLabel,
       hint: semanticHint,
@@ -132,11 +129,7 @@ class SemanticHelpers {
     required String semanticLabel,
     int level = 1,
   }) {
-    return Semantics(
-      label: semanticLabel,
-      header: true,
-      child: child,
-    );
+    return Semantics(label: semanticLabel, header: true, child: child);
   }
 
   /// Create an accessible progress indicator with proper semantics
@@ -224,19 +217,18 @@ class SemanticHelpers {
     String message, {
     Assertiveness assertiveness = Assertiveness.polite,
   }) {
-    SemanticsService.announce(message, TextDirection.ltr, assertiveness: assertiveness);
+    SemanticsService.announce(
+      message,
+      TextDirection.ltr,
+      assertiveness: assertiveness,
+    );
   }
 
   /// Create a focus trap for modal dialogs
-  static Widget focusTrap({
-    required Widget child,
-    required bool active,
-  }) {
+  static Widget focusTrap({required Widget child, required bool active}) {
     if (!active) return child;
-    
-    return FocusScope(
-      child: child,
-    );
+
+    return FocusScope(child: child);
   }
 
   /// Create an accessible loading indicator

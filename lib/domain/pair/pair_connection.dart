@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// ペア接続の状態
-enum PairStatus {
-  active,
-  paused,
-  ended,
-}
+enum PairStatus { active, paused, ended }
 
 /// ペア接続
 class PairConnection {
@@ -59,12 +55,17 @@ class PairConnection {
       ),
       category: data['category'] as String? ?? 'general',
       createdAt: (data['createdAt'] as Timestamp).toDate(),
-      endedAt: data['endedAt'] != null 
-          ? (data['endedAt'] as Timestamp).toDate() 
-          : null,
+      endedAt:
+          data['endedAt'] != null
+              ? (data['endedAt'] as Timestamp).toDate()
+              : null,
       endReason: data['endReason'] as String?,
-      settings: PairSettings.fromMap(data['settings'] as Map<String, dynamic>? ?? {}),
-      statistics: PairStatistics.fromMap(data['statistics'] as Map<String, dynamic>? ?? {}),
+      settings: PairSettings.fromMap(
+        data['settings'] as Map<String, dynamic>? ?? {},
+      ),
+      statistics: PairStatistics.fromMap(
+        data['statistics'] as Map<String, dynamic>? ?? {},
+      ),
     );
   }
 
@@ -182,7 +183,8 @@ class PairSettings {
     bool? allowEncouragement,
   }) {
     return PairSettings(
-      progressNotifications: progressNotifications ?? this.progressNotifications,
+      progressNotifications:
+          progressNotifications ?? this.progressNotifications,
       chatNotifications: chatNotifications ?? this.chatNotifications,
       challengeInvites: challengeInvites ?? this.challengeInvites,
       weeklyReports: weeklyReports ?? this.weeklyReports,
@@ -229,10 +231,13 @@ class PairStatistics {
       totalProgressShares: map['totalProgressShares'] as int? ?? 0,
       totalEncouragements: map['totalEncouragements'] as int? ?? 0,
       sharedStreakDays: map['sharedStreakDays'] as int? ?? 0,
-      lastInteractionAt: map['lastInteractionAt'] != null
-          ? (map['lastInteractionAt'] as Timestamp).toDate()
-          : null,
-      categoryProgress: Map<String, int>.from(map['categoryProgress'] as Map? ?? {}),
+      lastInteractionAt:
+          map['lastInteractionAt'] != null
+              ? (map['lastInteractionAt'] as Timestamp).toDate()
+              : null,
+      categoryProgress: Map<String, int>.from(
+        map['categoryProgress'] as Map? ?? {},
+      ),
     );
   }
 
@@ -243,9 +248,10 @@ class PairStatistics {
       'totalProgressShares': totalProgressShares,
       'totalEncouragements': totalEncouragements,
       'sharedStreakDays': sharedStreakDays,
-      'lastInteractionAt': lastInteractionAt != null
-          ? Timestamp.fromDate(lastInteractionAt!)
-          : null,
+      'lastInteractionAt':
+          lastInteractionAt != null
+              ? Timestamp.fromDate(lastInteractionAt!)
+              : null,
       'categoryProgress': categoryProgress,
     };
   }

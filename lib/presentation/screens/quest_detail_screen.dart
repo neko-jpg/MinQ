@@ -92,8 +92,9 @@ class _QuestDetailContent extends ConsumerWidget {
                           height: 48,
                           decoration: BoxDecoration(
                             color: tokens.brandPrimary.withAlpha(25),
-                            borderRadius:
-                                BorderRadius.circular(tokens.radius.lg),
+                            borderRadius: BorderRadius.circular(
+                              tokens.radius.lg,
+                            ),
                           ),
                           child: Icon(
                             icon,
@@ -259,11 +260,7 @@ class _QuestDetailNotFound extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 56,
-              color: tokens.textMuted,
-            ),
+            Icon(Icons.search_off, size: 56, color: tokens.textMuted),
             SizedBox(height: tokens.spacing.md),
             Text(
               'クエストが見つかりませんでした',
@@ -303,11 +300,7 @@ class _QuestDetailError extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 56,
-              color: tokens.accentError,
-            ),
+            Icon(Icons.error_outline, size: 56, color: tokens.accentError),
             SizedBox(height: tokens.spacing.md),
             Text(
               'クエスト情報を読み込めませんでした',
@@ -352,7 +345,9 @@ class _QuestInfoChip extends StatelessWidget {
           SizedBox(width: tokens.spacing.xs),
           Text(
             label,
-            style: tokens.typography.caption.copyWith(color: tokens.brandPrimary),
+            style: tokens.typography.caption.copyWith(
+              color: tokens.brandPrimary,
+            ),
           ),
         ],
       ),

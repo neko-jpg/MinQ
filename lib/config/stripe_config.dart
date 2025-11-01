@@ -27,9 +27,6 @@ class StripeConfig {
 
     final tipUri = remoteConfig.tryGetUri('tip_jar_endpoint');
 
-    return StripeConfig(
-      portalEndpoint: portalUri,
-      tipEndpoint: tipUri,
-    );
+    return StripeConfig(portalEndpoint: portalUri, tipEndpoint: tipUri);
   }
 }

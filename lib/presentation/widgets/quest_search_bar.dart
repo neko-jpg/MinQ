@@ -53,12 +53,12 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                     suffixIcon:
                         _controller.text.isNotEmpty
                             ? IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  _controller.clear();
-                                  widget.onSearch('');
-                                },
-                              )
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _controller.clear();
+                                widget.onSearch('');
+                              },
+                            )
                             : null,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(tokens.radius.xl),
@@ -127,8 +127,9 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                             widget.onTagsChanged?.call(_selectedTags.toList());
                           },
                           backgroundColor: tokens.surface,
-                          selectedColor: tokens.brandPrimary
-                              .withAlpha((255 * 0.2).round()),
+                          selectedColor: tokens.brandPrimary.withAlpha(
+                            (255 * 0.2).round(),
+                          ),
                           checkmarkColor: tokens.brandPrimary,
                         );
                       }).toList(),
@@ -310,8 +311,7 @@ class SearchHighlight extends StatelessWidget {
     final defaultHighlightStyle =
         highlightStyle ??
         TextStyle(
-          backgroundColor:
-              tokens.brandPrimary.withAlpha((255 * 0.3).round()),
+          backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.3).round()),
           fontWeight: FontWeight.bold,
         );
 

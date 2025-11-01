@@ -4,7 +4,9 @@ import 'package:minq/presentation/common/layout/responsive_layout.dart';
 
 void main() {
   group('ResponsiveLayout', () {
-    testWidgets('getScreenType returns correct type for different widths', (tester) async {
+    testWidgets('getScreenType returns correct type for different widths', (
+      tester,
+    ) async {
       expect(ResponsiveLayout.getScreenType(500), ScreenType.mobile);
       expect(ResponsiveLayout.getScreenType(700), ScreenType.tablet);
       expect(ResponsiveLayout.getScreenType(1000), ScreenType.desktop);
@@ -16,24 +18,30 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: ResponsiveLayout.ensureTouchTarget(
-              child: Container(
-                width: 20,
-                height: 20,
-                color: Colors.red,
-              ),
+              child: Container(width: 20, height: 20, color: Colors.red),
             ),
           ),
         ),
       );
 
       final container = tester.widget<Container>(find.byType(Container));
-      final constrainedBox = tester.widget<ConstrainedBox>(find.byType(ConstrainedBox));
-      
-      expect(constrainedBox.constraints.minWidth, ResponsiveLayout.minTouchTarget);
-      expect(constrainedBox.constraints.minHeight, ResponsiveLayout.minTouchTarget);
+      final constrainedBox = tester.widget<ConstrainedBox>(
+        find.byType(ConstrainedBox),
+      );
+
+      expect(
+        constrainedBox.constraints.minWidth,
+        ResponsiveLayout.minTouchTarget,
+      );
+      expect(
+        constrainedBox.constraints.minHeight,
+        ResponsiveLayout.minTouchTarget,
+      );
     });
 
-    testWidgets('constrainedContainer applies max width constraint', (tester) async {
+    testWidgets('constrainedContainer applies max width constraint', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -48,7 +56,9 @@ void main() {
         ),
       );
 
-      final constrainedBox = tester.widget<ConstrainedBox>(find.byType(ConstrainedBox));
+      final constrainedBox = tester.widget<ConstrainedBox>(
+        find.byType(ConstrainedBox),
+      );
       expect(constrainedBox.constraints.maxWidth, 600);
     });
 
@@ -57,9 +67,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              return Scaffold(
-                body: Container(),
-              );
+              return Scaffold(body: Container());
             },
           ),
         ),
@@ -67,7 +75,7 @@ void main() {
 
       await tester.binding.setSurfaceSize(const Size(500, 800));
       await tester.pumpAndSettle();
-      
+
       final context = tester.element(find.byType(Container));
       expect(ResponsiveLayout.getResponsiveColumns(context), 2);
 
@@ -104,7 +112,7 @@ void main() {
       // Test mobile size
       await tester.binding.setSurfaceSize(const Size(500, 800));
       await tester.pumpAndSettle();
-      
+
       expect(find.text('Mobile: true'), findsOneWidget);
       expect(find.text('Tablet: false'), findsOneWidget);
       expect(find.text('Desktop: false'), findsOneWidget);
@@ -112,7 +120,7 @@ void main() {
       // Test tablet size
       await tester.binding.setSurfaceSize(const Size(700, 800));
       await tester.pumpAndSettle();
-      
+
       expect(find.text('Mobile: false'), findsOneWidget);
       expect(find.text('Tablet: true'), findsOneWidget);
       expect(find.text('Desktop: false'), findsOneWidget);

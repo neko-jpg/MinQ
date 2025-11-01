@@ -24,7 +24,7 @@ void main() {
         LocalChallengeSchema,
         LocalQuestLogSchema,
       ], directory: '');
-      
+
       mockSyncQueueManager = MockSyncQueueManager();
       service = OfflineOperationsService(
         isar: isar,
@@ -56,15 +56,16 @@ void main() {
         expect(quest.category, equals(category));
         expect(quest.needsSync, isTrue);
         expect(quest.syncStatus, equals(SyncStatus.pending));
-        
+
         // Verify quest is stored in database
-        final storedQuest = await isar.localQuests
-            .filter()
-            .questIdEqualTo(quest.questId)
-            .findFirst();
+        final storedQuest =
+            await isar.localQuests
+                .filter()
+                .questIdEqualTo(quest.questId)
+                .findFirst();
         expect(storedQuest, isNotNull);
         expect(storedQuest!.title, equals(title));
-        
+
         // Verify sync job was enqueued
         verify(() => mockSyncQueueManager.enqueueSyncJob(any())).called(1);
       });
@@ -76,7 +77,7 @@ void main() {
           title: 'Original Title',
           category: 'health',
         );
-        
+
         const newTitle = 'Updated Title';
         const newCategory = 'fitness';
 
@@ -92,9 +93,11 @@ void main() {
         expect(updatedQuest.category, equals(newCategory));
         expect(updatedQuest.needsSync, isTrue);
         expect(updatedQuest.syncStatus, equals(SyncStatus.pending));
-        
+
         // Verify sync job was enqueued for update
-        verify(() => mockSyncQueueManager.enqueueSyncJob(any())).called(2); // Create + Update
+        verify(
+          () => mockSyncQueueManager.enqueueSyncJob(any()),
+        ).called(2); // Create + Update
       });
 
       test('should delete quest offline', () async {
@@ -109,16 +112,19 @@ void main() {
         await service.deleteQuest(quest.questId);
 
         // Assert
-        final deletedQuest = await isar.localQuests
-            .filter()
-            .questIdEqualTo(quest.questId)
-            .findFirst();
+        final deletedQuest =
+            await isar.localQuests
+                .filter()
+                .questIdEqualTo(quest.questId)
+                .findFirst();
         expect(deletedQuest, isNotNull);
         expect(deletedQuest!.deletedAt, isNotNull);
         expect(deletedQuest.needsSync, isTrue);
-        
+
         // Verify sync job was enqueued for delete
-        verify(() => mockSyncQueueManager.enqueueSyncJob(any())).called(2); // Create + Delete
+        verify(
+          () => mockSyncQueueManager.enqueueSyncJob(any()),
+        ).called(2); // Create + Delete
       });
 
       test('should get active quests for user', () async {
@@ -134,20 +140,26 @@ void main() {
           title: 'Active Quest 2',
           category: 'fitness',
         );
-        
+
         final pausedQuest = await service.createQuest(
           owner: uid,
           title: 'Paused Quest',
           category: 'health',
         );
-        await service.updateQuest(pausedQuest.questId, status: QuestStatus.paused);
+        await service.updateQuest(
+          pausedQuest.questId,
+          status: QuestStatus.paused,
+        );
 
         // Act
         final activeQuests = await service.getActiveQuests(uid);
 
         // Assert
         expect(activeQuests.length, equals(2));
-        expect(activeQuests.every((q) => q.status == QuestStatus.active), isTrue);
+        expect(
+          activeQuests.every((q) => q.status == QuestStatus.active),
+          isTrue,
+        );
         expect(activeQuests.every((q) => q.owner == uid), isTrue);
       });
     });
@@ -156,14 +168,15 @@ void main() {
       test('should update user XP offline', () async {
         // Arrange
         const uid = 'test-user';
-        final user = LocalUser()
-          ..uid = uid
-          ..displayName = 'Test User'
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now()
-          ..currentXP = 100
-          ..totalPoints = 500
-          ..currentLevel = 2;
+        final user =
+            LocalUser()
+              ..uid = uid
+              ..displayName = 'Test User'
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now()
+              ..currentXP = 100
+              ..totalPoints = 500
+              ..currentLevel = 2;
 
         await isar.writeTxn(() => isar.localUsers.put(user));
 
@@ -181,7 +194,7 @@ void main() {
         expect(updatedUser.totalPoints, equals(550));
         expect(updatedUser.needsSync, isTrue);
         expect(updatedUser.syncStatus, equals(SyncStatus.pending));
-        
+
         // Verify sync job was enqueued
         verify(() => mockSyncQueueManager.enqueueSyncJob(any())).called(1);
       });
@@ -189,24 +202,22 @@ void main() {
       test('should level up user when XP threshold reached', () async {
         // Arrange
         const uid = 'test-user';
-        final user = LocalUser()
-          ..uid = uid
-          ..displayName = 'Test User'
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now()
-          ..currentXP = 90
-          ..totalPoints = 90
-          ..currentLevel = 1;
+        final user =
+            LocalUser()
+              ..uid = uid
+              ..displayName = 'Test User'
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now()
+              ..currentXP = 90
+              ..totalPoints = 90
+              ..currentLevel = 1;
 
         await isar.writeTxn(() => isar.localUsers.put(user));
 
         const xpGained = 20; // This should trigger level up
 
         // Act
-        final updatedUser = await service.updateUserXP(
-          uid,
-          xpGained: xpGained,
-        );
+        final updatedUser = await service.updateUserXP(uid, xpGained: xpGained);
 
         // Assert
         expect(updatedUser.totalPoints, equals(110));
@@ -222,14 +233,15 @@ void main() {
         const xpEarned = 25;
 
         // Create user first
-        final user = LocalUser()
-          ..uid = uid
-          ..displayName = 'Test User'
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now()
-          ..currentXP = 100
-          ..totalPoints = 500
-          ..currentLevel = 2;
+        final user =
+            LocalUser()
+              ..uid = uid
+              ..displayName = 'Test User'
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now()
+              ..currentXP = 100
+              ..totalPoints = 500
+              ..currentLevel = 2;
 
         await isar.writeTxn(() => isar.localUsers.put(user));
 
@@ -248,18 +260,19 @@ void main() {
         expect(questLog.xpEarned, equals(xpEarned));
         expect(questLog.needsSync, isTrue);
         expect(questLog.syncStatus, equals(SyncStatus.pending));
-        
+
         // Verify quest log is stored
-        final storedLog = await isar.localQuestLogs
-            .filter()
-            .logIdEqualTo(questLog.logId)
-            .findFirst();
+        final storedLog =
+            await isar.localQuestLogs
+                .filter()
+                .logIdEqualTo(questLog.logId)
+                .findFirst();
         expect(storedLog, isNotNull);
-        
+
         // Verify user XP was updated
         final updatedUser = await service.getUser(uid);
         expect(updatedUser!.totalPoints, equals(525)); // 500 + 25
-        
+
         // Verify sync jobs were enqueued (quest log + user update)
         verify(() => mockSyncQueueManager.enqueueSyncJob(any())).called(2);
       });
@@ -267,16 +280,17 @@ void main() {
       test('should get user quest logs', () async {
         // Arrange
         const uid = 'test-user';
-        
+
         // Create user first
-        final user = LocalUser()
-          ..uid = uid
-          ..displayName = 'Test User'
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now()
-          ..currentXP = 100
-          ..totalPoints = 500
-          ..currentLevel = 2;
+        final user =
+            LocalUser()
+              ..uid = uid
+              ..displayName = 'Test User'
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now()
+              ..currentXP = 100
+              ..totalPoints = 500
+              ..currentLevel = 2;
 
         await isar.writeTxn(() => isar.localUsers.put(user));
 
@@ -301,7 +315,10 @@ void main() {
         // Assert
         expect(questLogs.length, equals(2));
         expect(questLogs.every((log) => log.uid == uid), isTrue);
-        expect(questLogs.first.timestamp.isAfter(questLogs.last.timestamp), isTrue); // Sorted by timestamp desc
+        expect(
+          questLogs.first.timestamp.isAfter(questLogs.last.timestamp),
+          isTrue,
+        ); // Sorted by timestamp desc
       });
     });
 
@@ -309,18 +326,19 @@ void main() {
       test('should update challenge progress offline', () async {
         // Arrange
         const challengeId = 'test-challenge';
-        final challenge = LocalChallenge()
-          ..challengeId = challengeId
-          ..title = 'Test Challenge'
-          ..description = 'Test Description'
-          ..startDate = DateTime.now().subtract(const Duration(days: 1))
-          ..endDate = DateTime.now().add(const Duration(days: 30))
-          ..isActive = true
-          ..progress = 50
-          ..targetValue = 100
-          ..xpReward = 100
-          ..participants = ['user1', 'user2']
-          ..updatedAt = DateTime.now();
+        final challenge =
+            LocalChallenge()
+              ..challengeId = challengeId
+              ..title = 'Test Challenge'
+              ..description = 'Test Description'
+              ..startDate = DateTime.now().subtract(const Duration(days: 1))
+              ..endDate = DateTime.now().add(const Duration(days: 30))
+              ..isActive = true
+              ..progress = 50
+              ..targetValue = 100
+              ..xpReward = 100
+              ..participants = ['user1', 'user2']
+              ..updatedAt = DateTime.now();
 
         await isar.writeTxn(() => isar.localChallenges.put(challenge));
 
@@ -336,7 +354,7 @@ void main() {
         expect(updatedChallenge.progress, equals(75)); // 50 + 25
         expect(updatedChallenge.needsSync, isTrue);
         expect(updatedChallenge.syncStatus, equals(SyncStatus.pending));
-        
+
         // Verify sync job was enqueued
         verify(() => mockSyncQueueManager.enqueueSyncJob(any())).called(1);
       });
@@ -344,48 +362,51 @@ void main() {
       test('should get active challenges', () async {
         // Arrange
         final now = DateTime.now();
-        
+
         // Active challenge
-        final activeChallenge = LocalChallenge()
-          ..challengeId = 'active-challenge'
-          ..title = 'Active Challenge'
-          ..description = 'Active Description'
-          ..startDate = now.subtract(const Duration(days: 1))
-          ..endDate = now.add(const Duration(days: 30))
-          ..isActive = true
-          ..progress = 0
-          ..targetValue = 100
-          ..xpReward = 100
-          ..participants = []
-          ..updatedAt = now;
+        final activeChallenge =
+            LocalChallenge()
+              ..challengeId = 'active-challenge'
+              ..title = 'Active Challenge'
+              ..description = 'Active Description'
+              ..startDate = now.subtract(const Duration(days: 1))
+              ..endDate = now.add(const Duration(days: 30))
+              ..isActive = true
+              ..progress = 0
+              ..targetValue = 100
+              ..xpReward = 100
+              ..participants = []
+              ..updatedAt = now;
 
         // Inactive challenge
-        final inactiveChallenge = LocalChallenge()
-          ..challengeId = 'inactive-challenge'
-          ..title = 'Inactive Challenge'
-          ..description = 'Inactive Description'
-          ..startDate = now.subtract(const Duration(days: 1))
-          ..endDate = now.add(const Duration(days: 30))
-          ..isActive = false
-          ..progress = 0
-          ..targetValue = 100
-          ..xpReward = 100
-          ..participants = []
-          ..updatedAt = now;
+        final inactiveChallenge =
+            LocalChallenge()
+              ..challengeId = 'inactive-challenge'
+              ..title = 'Inactive Challenge'
+              ..description = 'Inactive Description'
+              ..startDate = now.subtract(const Duration(days: 1))
+              ..endDate = now.add(const Duration(days: 30))
+              ..isActive = false
+              ..progress = 0
+              ..targetValue = 100
+              ..xpReward = 100
+              ..participants = []
+              ..updatedAt = now;
 
         // Expired challenge
-        final expiredChallenge = LocalChallenge()
-          ..challengeId = 'expired-challenge'
-          ..title = 'Expired Challenge'
-          ..description = 'Expired Description'
-          ..startDate = now.subtract(const Duration(days: 60))
-          ..endDate = now.subtract(const Duration(days: 30))
-          ..isActive = true
-          ..progress = 0
-          ..targetValue = 100
-          ..xpReward = 100
-          ..participants = []
-          ..updatedAt = now;
+        final expiredChallenge =
+            LocalChallenge()
+              ..challengeId = 'expired-challenge'
+              ..title = 'Expired Challenge'
+              ..description = 'Expired Description'
+              ..startDate = now.subtract(const Duration(days: 60))
+              ..endDate = now.subtract(const Duration(days: 30))
+              ..isActive = true
+              ..progress = 0
+              ..targetValue = 100
+              ..xpReward = 100
+              ..participants = []
+              ..updatedAt = now;
 
         await isar.writeTxn(() async {
           await isar.localChallenges.putAll([
@@ -421,21 +442,30 @@ void main() {
         );
       });
 
-      test('should throw exception when updating XP for non-existent user', () async {
-        // Act & Assert
-        expect(
-          () => service.updateUserXP('non-existent-user', xpGained: 10),
-          throwsA(isA<Exception>()),
-        );
-      });
+      test(
+        'should throw exception when updating XP for non-existent user',
+        () async {
+          // Act & Assert
+          expect(
+            () => service.updateUserXP('non-existent-user', xpGained: 10),
+            throwsA(isA<Exception>()),
+          );
+        },
+      );
 
-      test('should throw exception when updating non-existent challenge', () async {
-        // Act & Assert
-        expect(
-          () => service.updateChallengeProgress('non-existent-challenge', progressIncrement: 10),
-          throwsA(isA<Exception>()),
-        );
-      });
+      test(
+        'should throw exception when updating non-existent challenge',
+        () async {
+          // Act & Assert
+          expect(
+            () => service.updateChallengeProgress(
+              'non-existent-challenge',
+              progressIncrement: 10,
+            ),
+            throwsA(isA<Exception>()),
+          );
+        },
+      );
     });
   });
 }

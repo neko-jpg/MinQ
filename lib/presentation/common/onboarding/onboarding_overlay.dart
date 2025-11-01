@@ -346,9 +346,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
                   color:
                       index <= _currentStepIndex
                           ? Theme.of(context).colorScheme.primary
-                          : Theme.of(
-                            context,
-                          ).colorScheme.outline.withAlpha(77),
+                          : Theme.of(context).colorScheme.outline.withAlpha(77),
                 ),
               ),
             ),
@@ -372,9 +370,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
               Text(
                 '${_currentStepIndex + 1} / ${widget.steps.length}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withAlpha(179),
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(179),
                 ),
               ),
 

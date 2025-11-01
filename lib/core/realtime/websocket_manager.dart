@@ -28,33 +28,33 @@ class WebSocketManager {
   WebSocketChannel? _channel;
   Timer? _heartbeatTimer;
   Timer? _reconnectTimer;
-  
+
   String? _userId;
   int _reconnectAttempts = 0;
   WebSocketStatus _status = WebSocketStatus.disconnected;
 
-  final StreamController<RealtimeMessage> _messageController = 
+  final StreamController<RealtimeMessage> _messageController =
       StreamController<RealtimeMessage>.broadcast();
-  final StreamController<WebSocketStatus> _statusController = 
+  final StreamController<WebSocketStatus> _statusController =
       StreamController<WebSocketStatus>.broadcast();
 
   /// メッセージストリーム
   Stream<RealtimeMessage> get messageStream => _messageController.stream;
-  
+
   /// 接続状態ストリーム
   Stream<WebSocketStatus> get statusStream => _statusController.stream;
-  
+
   /// 現在の接続状態
   WebSocketStatus get status => _status;
-  
+
   /// 接続中かどうか
   bool get isConnected => _status == WebSocketStatus.connected;
 
   WebSocketManager(this._networkService) {
     // ネットワーク状態の監視
     _networkService.statusStream.listen((networkStatus) {
-      if (networkStatus == NetworkStatus.online && 
-          _status == WebSocketStatus.disconnected && 
+      if (networkStatus == NetworkStatus.online &&
+          _status == WebSocketStatus.disconnected &&
           _userId != null) {
         connect(_userId!);
       } else if (networkStatus == NetworkStatus.offline) {
@@ -65,7 +65,7 @@ class WebSocketManager {
 
   /// WebSocket接続を開始
   Future<void> connect(String userId) async {
-    if (_status == WebSocketStatus.connecting || 
+    if (_status == WebSocketStatus.connecting ||
         _status == WebSocketStatus.connected) {
       return;
     }
@@ -76,9 +76,9 @@ class WebSocketManager {
     try {
       final uri = Uri.parse('$_baseUrl?userId=$userId');
       _logger.i('Connecting to WebSocket: $uri');
-      
+
       _channel = WebSocketChannel.connect(uri);
-      
+
       // メッセージリスナーを設定
       _channel!.stream.listen(
         _handleMessage,
@@ -91,9 +91,8 @@ class WebSocketManager {
       _updateStatus(WebSocketStatus.connected);
       _reconnectAttempts = 0;
       _startHeartbeat();
-      
+
       _logger.i('WebSocket connected successfully');
-      
     } catch (e) {
       _logger.e('Failed to connect WebSocket: $e');
       _updateStatus(WebSocketStatus.error);
@@ -110,10 +109,10 @@ class WebSocketManager {
   void _disconnect() {
     _stopHeartbeat();
     _stopReconnectTimer();
-    
+
     _channel?.sink.close(status.goingAway);
     _channel = null;
-    
+
     _updateStatus(WebSocketStatus.disconnected);
   }
 
@@ -138,14 +137,14 @@ class WebSocketManager {
     try {
       final Map<String, dynamic> jsonData = json.decode(data as String);
       final message = RealtimeMessage.fromJson(jsonData);
-      
+
       _logger.d('Message received: ${message.type}');
-      
+
       // ハートビート応答の処理
       if (message.type == MessageType.heartbeatResponse) {
         return;
       }
-      
+
       _messageController.add(message);
     } catch (e) {
       _logger.e('Failed to parse message: $e');
@@ -175,14 +174,16 @@ class WebSocketManager {
 
     _stopReconnectTimer();
     _reconnectAttempts++;
-    
+
     final delay = Duration(
       seconds: _reconnectDelay.inSeconds * _reconnectAttempts,
     );
-    
-    _logger.i('Scheduling reconnect in ${delay.inSeconds} seconds (attempt $_reconnectAttempts)');
+
+    _logger.i(
+      'Scheduling reconnect in ${delay.inSeconds} seconds (attempt $_reconnectAttempts)',
+    );
     _updateStatus(WebSocketStatus.reconnecting);
-    
+
     _reconnectTimer = Timer(delay, () {
       if (_userId != null) {
         connect(_userId!);
@@ -193,7 +194,7 @@ class WebSocketManager {
   /// ハートビートを開始
   void _startHeartbeat() {
     _stopHeartbeat();
-    
+
     _heartbeatTimer = Timer.periodic(_heartbeatInterval, (timer) {
       if (isConnected) {
         final heartbeat = RealtimeMessage.heartbeat();

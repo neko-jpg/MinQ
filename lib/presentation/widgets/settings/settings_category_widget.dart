@@ -22,10 +22,7 @@ class SettingsCategoryWidget extends StatelessWidget {
       color: theme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: theme.cornerMedium(),
-        side: BorderSide(
-          color: theme.border,
-          width: 1,
-        ),
+        side: BorderSide(color: theme.border, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,9 +31,10 @@ class SettingsCategoryWidget extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(theme.spacing.md),
             decoration: BoxDecoration(
-              color: category.isAdvanced 
-                  ? theme.accentWarning.withOpacity(0.1)
-                  : theme.surfaceAlt,
+              color:
+                  category.isAdvanced
+                      ? theme.accentWarning.withOpacity(0.1)
+                      : theme.surfaceAlt,
               borderRadius: BorderRadius.vertical(
                 top: theme.cornerMedium().topLeft,
               ),
@@ -46,17 +44,19 @@ class SettingsCategoryWidget extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(theme.spacing.sm),
                   decoration: BoxDecoration(
-                    color: category.isAdvanced
-                        ? theme.accentWarning.withOpacity(0.2)
-                        : theme.brandPrimary.withOpacity(0.1),
+                    color:
+                        category.isAdvanced
+                            ? theme.accentWarning.withOpacity(0.2)
+                            : theme.brandPrimary.withOpacity(0.1),
                     borderRadius: theme.cornerSmall(),
                   ),
                   child: Icon(
                     category.icon,
                     size: 20,
-                    color: category.isAdvanced
-                        ? theme.accentWarning
-                        : theme.brandPrimary,
+                    color:
+                        category.isAdvanced
+                            ? theme.accentWarning
+                            : theme.brandPrimary,
                   ),
                 ),
                 SizedBox(width: theme.spacing.md),
@@ -119,10 +119,7 @@ class SettingsCategoryWidget extends StatelessWidget {
 
             return Column(
               children: [
-                SettingsItemWidget(
-                  item: item,
-                  category: category,
-                ),
+                SettingsItemWidget(item: item, category: category),
                 if (!isLast)
                   Divider(
                     color: theme.border,

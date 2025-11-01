@@ -237,7 +237,8 @@ class _RecoveryTabState extends ConsumerState<_RecoveryTab> {
                   Text(
                     'リカバリーチケットを使用してストリークを回復できます。\n24時間以内に1回まで使用可能です。',
                     style: tokens.typography.body.copyWith(
-                        color: tokens.textMuted),
+                      color: tokens.textMuted,
+                    ),
                   ),
                   SizedBox(height: tokens.spacing.md),
                   MinqPrimaryButton(
@@ -314,7 +315,8 @@ class _RecoveryTabState extends ConsumerState<_RecoveryTab> {
             elevation: 0,
             color: tokens.joyAccent.withAlpha(26),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(tokens.radius.lg)),
+              borderRadius: BorderRadius.circular(tokens.radius.lg),
+            ),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing.md),
               child: Column(
@@ -337,8 +339,9 @@ class _RecoveryTabState extends ConsumerState<_RecoveryTab> {
                     '• ストリーク回復は24時間以内に1回まで\n'
                     '• チケットは購入または広告視聴で獲得\n'
                     '• 回復後は通常通り習慣を継続してください',
-                    style:
-                        tokens.typography.caption.copyWith(color: tokens.textMuted),
+                    style: tokens.typography.caption.copyWith(
+                      color: tokens.textMuted,
+                    ),
                   ),
                 ],
               ),
@@ -408,7 +411,8 @@ class _ProtectionTab extends ConsumerWidget {
             elevation: 0,
             color: tokens.serenity.withAlpha(26),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(tokens.radius.lg)),
+              borderRadius: BorderRadius.circular(tokens.radius.lg),
+            ),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing.md),
               child: Column(
@@ -500,7 +504,8 @@ class _StreakStatusCard extends StatelessWidget {
       elevation: 0,
       color: tokens.encouragement.withAlpha(26),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.lg)),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
+      ),
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
         child: Column(
@@ -525,8 +530,9 @@ class _StreakStatusCard extends StatelessWidget {
             SizedBox(height: tokens.spacing.xs),
             Text(
               '最長記録: 15日',
-              style:
-                  tokens.typography.caption.copyWith(color: tokens.textMuted),
+              style: tokens.typography.caption.copyWith(
+                color: tokens.textMuted,
+              ),
             ),
           ],
         ),
@@ -648,8 +654,9 @@ class _PurchaseOption extends StatelessWidget {
                 ),
                 Text(
                   subtitle,
-                  style:
-                      tokens.typography.caption.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
               ],
             ),
@@ -666,13 +673,13 @@ class _PurchaseOption extends StatelessWidget {
               child:
                   isLoading
                       ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(Colors.white),
-                          ),
-                        )
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation(Colors.white),
+                        ),
+                      )
                       : Text(buttonText, style: tokens.typography.caption),
             ),
           ),
@@ -745,12 +752,15 @@ class _ProtectionTip extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.typography.body.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 description,
-                style:
-                    tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: tokens.typography.caption.copyWith(
+                  color: tokens.textMuted,
+                ),
               ),
             ],
           ),
@@ -958,8 +968,10 @@ class _StatItem extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(label,
-            style: tokens.typography.caption.copyWith(color: tokens.textMuted)),
+        Text(
+          label,
+          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+        ),
       ],
     );
   }

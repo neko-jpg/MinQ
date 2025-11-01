@@ -88,14 +88,22 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
           valueListenable: guildService.availableGuilds,
           builder: (context, availableGuilds, child) {
             if (availableGuilds.isEmpty) {
-              return _buildEmptyState(tokens, 'ギルドがありません', '新しいギルドを作成するか、検索してみてください');
+              return _buildEmptyState(
+                tokens,
+                'ギルドがありません',
+                '新しいギルドを作成するか、検索してみてください',
+              );
             }
 
             return ListView.builder(
               padding: EdgeInsets.all(tokens.spacing.lg),
               itemCount: availableGuilds.length,
               itemBuilder: (context, index) {
-                return _buildGuildCard(availableGuilds[index], guildService, tokens);
+                return _buildGuildCard(
+                  availableGuilds[index],
+                  guildService,
+                  tokens,
+                );
               },
             );
           },
@@ -104,7 +112,11 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
     );
   }
 
-  Widget _buildCurrentGuildView(Guild guild, GuildService guildService, MinqTheme tokens) {
+  Widget _buildCurrentGuildView(
+    Guild guild,
+    GuildService guildService,
+    MinqTheme tokens,
+  ) {
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing.lg),
       child: Column(
@@ -160,9 +172,24 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildStatItem(tokens, 'メンバー', '${guild.memberCount}', Icons.people),
-                      _buildStatItem(tokens, 'レベル', '${guild.level}', Icons.star),
-                      _buildStatItem(tokens, 'EXP', '${guild.experience}', Icons.trending_up),
+                      _buildStatItem(
+                        tokens,
+                        'メンバー',
+                        '${guild.memberCount}',
+                        Icons.people,
+                      ),
+                      _buildStatItem(
+                        tokens,
+                        'レベル',
+                        '${guild.level}',
+                        Icons.star,
+                      ),
+                      _buildStatItem(
+                        tokens,
+                        'EXP',
+                        '${guild.experience}',
+                        Icons.trending_up,
+                      ),
                     ],
                   ),
                 ],
@@ -203,7 +230,9 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
                           ),
                         )
                       else
-                        ...challenges.map((challenge) => _buildChallengeItem(challenge, tokens)),
+                        ...challenges.map(
+                          (challenge) => _buildChallengeItem(challenge, tokens),
+                        ),
                     ],
                   ),
                 ),
@@ -238,19 +267,15 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
         children: [
           Text(
             'ギルドを作成',
-            style: tokens.typography.h3.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: tokens.spacing.md),
           Text(
             '同じ目標を持つ仲間と一緒に習慣を継続しましょう',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing.xl),
-          
+
           // Create guild form would go here
           Card(
             elevation: 0,
@@ -263,11 +288,7 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
               padding: EdgeInsets.all(tokens.spacing.lg),
               child: Column(
                 children: [
-                  Icon(
-                    Icons.construction,
-                    size: 64,
-                    color: tokens.textMuted,
-                  ),
+                  Icon(Icons.construction, size: 64, color: tokens.textMuted),
                   SizedBox(height: tokens.spacing.md),
                   Text(
                     'ギルド作成機能',
@@ -300,12 +321,10 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
         children: [
           Text(
             'ギルドを検索',
-            style: tokens.typography.h3.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: tokens.spacing.md),
-          
+
           // Search functionality would go here
           Card(
             elevation: 0,
@@ -318,11 +337,7 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
               padding: EdgeInsets.all(tokens.spacing.lg),
               child: Column(
                 children: [
-                  Icon(
-                    Icons.search,
-                    size: 64,
-                    color: tokens.textMuted,
-                  ),
+                  Icon(Icons.search, size: 64, color: tokens.textMuted),
                   SizedBox(height: tokens.spacing.md),
                   Text(
                     'ギルド検索機能',
@@ -347,7 +362,11 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
     );
   }
 
-  Widget _buildGuildCard(Guild guild, GuildService guildService, MinqTheme tokens) {
+  Widget _buildGuildCard(
+    Guild guild,
+    GuildService guildService,
+    MinqTheme tokens,
+  ) {
     return Card(
       margin: EdgeInsets.only(bottom: tokens.spacing.md),
       elevation: 0,
@@ -368,10 +387,7 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
                 children: [
                   CircleAvatar(
                     backgroundColor: tokens.brandPrimary.withAlpha(26),
-                    child: Icon(
-                      Icons.groups,
-                      color: tokens.brandPrimary,
-                    ),
+                    child: Icon(Icons.groups, color: tokens.brandPrimary),
                   ),
                   SizedBox(width: tokens.spacing.md),
                   Expanded(
@@ -415,20 +431,14 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
               SizedBox(height: tokens.spacing.sm),
               Text(
                 guild.description,
-                style: tokens.typography.body.copyWith(
-                  color: tokens.textMuted,
-                ),
+                style: tokens.typography.body.copyWith(color: tokens.textMuted),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: tokens.spacing.sm),
               Row(
                 children: [
-                  Icon(
-                    Icons.people,
-                    size: 16,
-                    color: tokens.textMuted,
-                  ),
+                  Icon(Icons.people, size: 16, color: tokens.textMuted),
                   SizedBox(width: tokens.spacing.xs),
                   Text(
                     '${guild.memberCount}/${guild.maxMembers}',
@@ -453,22 +463,23 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
     );
   }
 
-  Widget _buildStatItem(MinqTheme tokens, String label, String value, IconData icon) {
+  Widget _buildStatItem(
+    MinqTheme tokens,
+    String label,
+    String value,
+    IconData icon,
+  ) {
     return Column(
       children: [
         Icon(icon, color: tokens.brandPrimary, size: 24),
         SizedBox(height: tokens.spacing.xs),
         Text(
           value,
-          style: tokens.typography.h4.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
         ),
         Text(
           label,
-          style: tokens.typography.caption.copyWith(
-            color: tokens.textMuted,
-          ),
+          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
         ),
       ],
     );
@@ -485,11 +496,7 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.emoji_events,
-            color: tokens.brandPrimary,
-            size: 20,
-          ),
+          Icon(Icons.emoji_events, color: tokens.brandPrimary, size: 20),
           SizedBox(width: tokens.spacing.sm),
           Expanded(
             child: Column(
@@ -522,24 +529,16 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.groups_outlined,
-              size: 80,
-              color: tokens.textMuted,
-            ),
+            Icon(Icons.groups_outlined, size: 80, color: tokens.textMuted),
             SizedBox(height: tokens.spacing.md),
             Text(
               title,
-              style: tokens.typography.h4.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing.sm),
             Text(
               message,
-              style: tokens.typography.body.copyWith(
-                color: tokens.textMuted,
-              ),
+              style: tokens.typography.body.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
           ],
@@ -555,15 +554,15 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
     try {
       await guildService.joinGuild(guild.id, uid);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ギルドに参加しました！')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('ギルドに参加しました！')));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('参加に失敗しました: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('参加に失敗しました: $e')));
       }
     }
   }
@@ -574,35 +573,36 @@ class _GuildScreenState extends ConsumerState<GuildScreen>
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('ギルドを退出'),
-        content: const Text('本当にギルドを退出しますか？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('ギルドを退出'),
+            content: const Text('本当にギルドを退出しますか？'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('退出'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('退出'),
-          ),
-        ],
-      ),
     );
 
     if (confirmed == true) {
       try {
         await guildService.leaveGuild(guild.id, uid);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('ギルドを退出しました')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('ギルドを退出しました')));
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('退出に失敗しました: $e')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('退出に失敗しました: $e')));
         }
       }
     }

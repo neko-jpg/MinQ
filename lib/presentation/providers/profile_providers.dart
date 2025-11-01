@@ -16,29 +16,34 @@ final profileServiceProvider = Provider<ProfileService>((ref) {
 final userProfileProvider = StreamProvider<UserProfile?>((ref) {
   final uid = ref.watch(uidProvider);
   if (uid == null) return Stream.value(null);
-  
+
   final profileService = ref.watch(profileServiceProvider);
   return profileService.watchProfile(uid);
 });
 
 /// Provider for profile update operations
-final profileUpdateProvider = StateNotifierProvider<ProfileUpdateNotifier, AsyncValue<void>>((ref) {
-  return ProfileUpdateNotifier(ref.watch(profileServiceProvider));
-});
+final profileUpdateProvider =
+    StateNotifierProvider<ProfileUpdateNotifier, AsyncValue<void>>((ref) {
+      return ProfileUpdateNotifier(ref.watch(profileServiceProvider));
+    });
 
 /// Notifier for handling profile updates
 class ProfileUpdateNotifier extends StateNotifier<AsyncValue<void>> {
-  ProfileUpdateNotifier(this._profileService) : super(const AsyncValue.data(null));
+  ProfileUpdateNotifier(this._profileService)
+    : super(const AsyncValue.data(null));
 
   final ProfileService _profileService;
 
   /// Update user profile
-  Future<ProfileValidationResult> updateProfile(String uid, ProfileUpdateRequest request) async {
+  Future<ProfileValidationResult> updateProfile(
+    String uid,
+    ProfileUpdateRequest request,
+  ) async {
     state = const AsyncValue.loading();
-    
+
     try {
       final result = await _profileService.updateProfile(uid, request);
-      
+
       if (result.isValid) {
         state = const AsyncValue.data(null);
       } else {
@@ -47,13 +52,11 @@ class ProfileUpdateNotifier extends StateNotifier<AsyncValue<void>> {
           StackTrace.current,
         );
       }
-      
+
       return result;
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
-      return ProfileValidationResult.invalid({
-        'general': 'プロフィールの更新に失敗しました',
-      });
+      return ProfileValidationResult.invalid({'general': 'プロフィールの更新に失敗しました'});
     }
   }
 
@@ -76,9 +79,9 @@ class ProfileUpdateNotifier extends StateNotifier<AsyncValue<void>> {
 /// Exception for profile update errors
 class ProfileUpdateException implements Exception {
   final Map<String, String> errors;
-  
+
   const ProfileUpdateException(this.errors);
-  
+
   @override
   String toString() {
     return 'ProfileUpdateException: ${errors.values.join(', ')}';
@@ -88,7 +91,9 @@ class ProfileUpdateException implements Exception {
 /// Provider for sync queue status related to profile
 final profileSyncStatusProvider = StreamProvider<SyncQueueStatus>((ref) {
   final syncQueueManager = ref.watch(syncQueueManagerProvider);
-  return syncQueueManager.statusStream.map((_) async {
-    return await syncQueueManager.getStatus();
-  }).asyncMap((future) => future);
+  return syncQueueManager.statusStream
+      .map((_) async {
+        return await syncQueueManager.getStatus();
+      })
+      .asyncMap((future) => future);
 });

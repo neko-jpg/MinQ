@@ -29,7 +29,10 @@ class DashboardService {
   }
 
   /// ダッシュボード設定を保存
-  Future<void> saveDashboardConfig(String userId, CustomDashboardConfig config) async {
+  Future<void> saveDashboardConfig(
+    String userId,
+    CustomDashboardConfig config,
+  ) async {
     await _databaseService.saveDashboardConfig(userId, config);
   }
 
@@ -41,24 +44,24 @@ class DashboardService {
   ) async {
     final dashboards = await getUserDashboards(userId);
     final dashboardIndex = dashboards.indexWhere((d) => d.id == dashboardId);
-    
+
     if (dashboardIndex == -1) return;
-    
+
     final dashboard = dashboards[dashboardIndex];
     final widgets = List<DashboardWidgetConfig>.from(dashboard.widgets);
     final widgetIndex = widgets.indexWhere((w) => w.id == widgetConfig.id);
-    
+
     if (widgetIndex != -1) {
       widgets[widgetIndex] = widgetConfig.copyWith(updatedAt: DateTime.now());
     } else {
       widgets.add(widgetConfig);
     }
-    
+
     final updatedDashboard = dashboard.copyWith(
       widgets: widgets,
       updatedAt: DateTime.now(),
     );
-    
+
     await saveDashboardConfig(userId, updatedDashboard);
   }
 
@@ -70,17 +73,17 @@ class DashboardService {
   ) async {
     final dashboards = await getUserDashboards(userId);
     final dashboardIndex = dashboards.indexWhere((d) => d.id == dashboardId);
-    
+
     if (dashboardIndex == -1) return;
-    
+
     final dashboard = dashboards[dashboardIndex];
     final widgets = dashboard.widgets.where((w) => w.id != widgetId).toList();
-    
+
     final updatedDashboard = dashboard.copyWith(
       widgets: widgets,
       updatedAt: DateTime.now(),
     );
-    
+
     await saveDashboardConfig(userId, updatedDashboard);
   }
 
@@ -92,12 +95,12 @@ class DashboardService {
   ) async {
     final dashboards = await getUserDashboards(userId);
     final dashboardIndex = dashboards.indexWhere((d) => d.id == dashboardId);
-    
+
     if (dashboardIndex == -1) return;
-    
+
     final dashboard = dashboards[dashboardIndex];
     final widgets = List<DashboardWidgetConfig>.from(dashboard.widgets);
-    
+
     // 適切な位置を計算
     final position = _calculateOptimalPosition(widgets, dashboard.layout);
     final newWidget = widgetConfig.copyWith(
@@ -105,14 +108,14 @@ class DashboardService {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
-    
+
     widgets.add(newWidget);
-    
+
     final updatedDashboard = dashboard.copyWith(
       widgets: widgets,
       updatedAt: DateTime.now(),
     );
-    
+
     await saveDashboardConfig(userId, updatedDashboard);
   }
 
@@ -124,7 +127,7 @@ class DashboardService {
   ) async {
     final dashboards = await getUserDashboards(userId);
     final originalDashboard = dashboards.firstWhere((d) => d.id == dashboardId);
-    
+
     final duplicatedDashboard = originalDashboard.copyWith(
       id: 'dashboard_${DateTime.now().millisecondsSinceEpoch}',
       name: newName,
@@ -132,7 +135,7 @@ class DashboardService {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
-    
+
     await saveDashboardConfig(userId, duplicatedDashboard);
     return duplicatedDashboard;
   }
@@ -150,15 +153,15 @@ class DashboardService {
   ) async {
     final dashboards = await getUserDashboards(userId);
     final dashboardIndex = dashboards.indexWhere((d) => d.id == dashboardId);
-    
+
     if (dashboardIndex == -1) return;
-    
+
     final dashboard = dashboards[dashboardIndex];
     final updatedDashboard = dashboard.copyWith(
       layout: layout,
       updatedAt: DateTime.now(),
     );
-    
+
     await saveDashboardConfig(userId, updatedDashboard);
   }
 
@@ -170,15 +173,16 @@ class DashboardService {
   ) async {
     final dashboards = await getUserDashboards(userId);
     final dashboardIndex = dashboards.indexWhere((d) => d.id == dashboardId);
-    
+
     if (dashboardIndex == -1) return;
-    
+
     final dashboard = dashboards[dashboardIndex];
     final updatedDashboard = dashboard.copyWith(
-      widgets: widgets.map((w) => w.copyWith(updatedAt: DateTime.now())).toList(),
+      widgets:
+          widgets.map((w) => w.copyWith(updatedAt: DateTime.now())).toList(),
       updatedAt: DateTime.now(),
     );
-    
+
     await saveDashboardConfig(userId, updatedDashboard);
   }
 
@@ -219,16 +223,18 @@ class DashboardService {
 
   // プライベートメソッド
 
-  Future<List<CustomDashboardConfig>> _createDefaultDashboards(String userId) async {
+  Future<List<CustomDashboardConfig>> _createDefaultDashboards(
+    String userId,
+  ) async {
     final defaultDashboards = [
       DefaultDashboardConfigs.overview,
       DefaultDashboardConfigs.detailed,
     ];
-    
+
     for (final dashboard in defaultDashboards) {
       await saveDashboardConfig(userId, dashboard);
     }
-    
+
     return defaultDashboards;
   }
 
@@ -238,7 +244,7 @@ class DashboardService {
   ) {
     // 既存のウィジェットの位置を確認して、空いている位置を見つける
     final occupiedPositions = existingWidgets.map((w) => w.position).toSet();
-    
+
     for (int row = 0; row < 10; row++) {
       for (int col = 0; col < layout.columns; col++) {
         final position = WidgetPosition(row: row, column: col);
@@ -247,9 +253,12 @@ class DashboardService {
         }
       }
     }
-    
+
     // 空いている位置がない場合は最下部に配置
-    final maxRow = existingWidgets.fold<int>(0, (max, w) => w.position.row > max ? w.position.row : max);
+    final maxRow = existingWidgets.fold<int>(
+      0,
+      (max, w) => w.position.row > max ? w.position.row : max,
+    );
     return WidgetPosition(row: maxRow + 1, column: 0);
   }
 }

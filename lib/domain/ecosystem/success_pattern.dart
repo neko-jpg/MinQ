@@ -8,9 +8,11 @@ class SuccessPattern with _$SuccessPattern {
   const factory SuccessPattern({
     required String id,
     required String userId,
-    required String description, // e.g., "Completing 'Morning Run' increases 'Healthy Breakfast' success by 40%"
+    required String
+    description, // e.g., "Completing 'Morning Run' increases 'Healthy Breakfast' success by 40%"
     required List<String> relatedHabitIds,
   }) = _SuccessPattern;
 
-  factory SuccessPattern.fromJson(Map<String, dynamic> json) => _$SuccessPatternFromJson(json);
+  factory SuccessPattern.fromJson(Map<String, dynamic> json) =>
+      _$SuccessPatternFromJson(json);
 }

@@ -6,22 +6,25 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Comprehensive accessibility service that manages all accessibility features
 /// including screen reader support, high contrast mode, font scaling, and more.
 class AccessibilityService extends StateNotifier<AccessibilitySettings> {
-  AccessibilityService(this._prefs) : super(AccessibilitySettings.defaultSettings()) {
+  AccessibilityService(this._prefs)
+    : super(AccessibilitySettings.defaultSettings()) {
     _loadSettings();
   }
 
   final SharedPreferences _prefs;
-  
+
   static AccessibilityService? _instance;
-  
+
   /// Get the singleton instance of AccessibilityService
   static AccessibilityService get instance {
     if (_instance == null) {
-      throw StateError('AccessibilityService not initialized. Call initialize() first.');
+      throw StateError(
+        'AccessibilityService not initialized. Call initialize() first.',
+      );
     }
     return _instance!;
   }
-  
+
   /// Initialize the AccessibilityService singleton
   static Future<void> initialize(SharedPreferences prefs) async {
     _instance = AccessibilityService(prefs);
@@ -33,11 +36,14 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   static const String _keyReduceMotion = 'accessibility_reduce_motion';
   static const String _keyTextScale = 'accessibility_text_scale';
   static const String _keyButtonScale = 'accessibility_button_scale';
-  static const String _keyScreenReaderOptimized = 'accessibility_screen_reader_optimized';
+  static const String _keyScreenReaderOptimized =
+      'accessibility_screen_reader_optimized';
   static const String _keyHapticFeedback = 'accessibility_haptic_feedback';
   static const String _keySoundFeedback = 'accessibility_sound_feedback';
-  static const String _keyColorBlindnessMode = 'accessibility_color_blindness_mode';
-  static const String _keyKeyboardNavigation = 'accessibility_keyboard_navigation';
+  static const String _keyColorBlindnessMode =
+      'accessibility_color_blindness_mode';
+  static const String _keyKeyboardNavigation =
+      'accessibility_keyboard_navigation';
   static const String _keyFocusIndicator = 'accessibility_focus_indicator';
 
   /// Load accessibility settings from SharedPreferences
@@ -52,13 +58,12 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
       screenReaderOptimized: _prefs.getBool(_keyScreenReaderOptimized) ?? false,
       hapticFeedback: _prefs.getBool(_keyHapticFeedback) ?? true,
       soundFeedback: _prefs.getBool(_keySoundFeedback) ?? true,
-      colorBlindnessMode: ColorBlindnessMode.values[
-        _prefs.getInt(_keyColorBlindnessMode) ?? 0
-      ],
+      colorBlindnessMode:
+          ColorBlindnessMode.values[_prefs.getInt(_keyColorBlindnessMode) ?? 0],
       keyboardNavigation: _prefs.getBool(_keyKeyboardNavigation) ?? false,
       focusIndicator: _prefs.getBool(_keyFocusIndicator) ?? true,
     );
-    
+
     state = settings;
   }
 
@@ -66,7 +71,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   Future<void> setHighContrast(bool enabled) async {
     await _prefs.setBool(_keyHighContrast, enabled);
     state = state.copyWith(highContrast: enabled);
-    
+
     if (enabled) {
       services.HapticFeedback.lightImpact();
     }
@@ -76,7 +81,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   Future<void> setLargeText(bool enabled) async {
     await _prefs.setBool(_keyLargeText, enabled);
     state = state.copyWith(largeText: enabled);
-    
+
     if (state.hapticFeedback) {
       services.HapticFeedback.lightImpact();
     }
@@ -86,7 +91,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   Future<void> setBoldText(bool enabled) async {
     await _prefs.setBool(_keyBoldText, enabled);
     state = state.copyWith(boldText: enabled);
-    
+
     if (state.hapticFeedback) {
       services.HapticFeedback.lightImpact();
     }
@@ -96,7 +101,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   Future<void> setReduceMotion(bool enabled) async {
     await _prefs.setBool(_keyReduceMotion, enabled);
     state = state.copyWith(reduceMotion: enabled);
-    
+
     if (state.hapticFeedback) {
       services.HapticFeedback.lightImpact();
     }
@@ -118,7 +123,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   Future<void> setScreenReaderOptimized(bool enabled) async {
     await _prefs.setBool(_keyScreenReaderOptimized, enabled);
     state = state.copyWith(screenReaderOptimized: enabled);
-    
+
     if (state.hapticFeedback) {
       services.HapticFeedback.lightImpact();
     }
@@ -128,7 +133,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   Future<void> setHapticFeedback(bool enabled) async {
     await _prefs.setBool(_keyHapticFeedback, enabled);
     state = state.copyWith(hapticFeedback: enabled);
-    
+
     if (enabled) {
       services.HapticFeedback.lightImpact();
     }
@@ -138,7 +143,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   Future<void> setSoundFeedback(bool enabled) async {
     await _prefs.setBool(_keySoundFeedback, enabled);
     state = state.copyWith(soundFeedback: enabled);
-    
+
     if (state.hapticFeedback) {
       services.HapticFeedback.lightImpact();
     }
@@ -148,7 +153,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   Future<void> setColorBlindnessMode(ColorBlindnessMode mode) async {
     await _prefs.setInt(_keyColorBlindnessMode, mode.index);
     state = state.copyWith(colorBlindnessMode: mode);
-    
+
     if (state.hapticFeedback) {
       services.HapticFeedback.lightImpact();
     }
@@ -158,7 +163,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   Future<void> setKeyboardNavigation(bool enabled) async {
     await _prefs.setBool(_keyKeyboardNavigation, enabled);
     state = state.copyWith(keyboardNavigation: enabled);
-    
+
     if (state.hapticFeedback) {
       services.HapticFeedback.lightImpact();
     }
@@ -168,7 +173,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   Future<void> setFocusIndicator(bool enabled) async {
     await _prefs.setBool(_keyFocusIndicator, enabled);
     state = state.copyWith(focusIndicator: enabled);
-    
+
     if (state.hapticFeedback) {
       services.HapticFeedback.lightImpact();
     }
@@ -189,7 +194,7 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
   double getEffectiveTextScale(BuildContext context) {
     final systemScale = MediaQuery.of(context).textScaler.scale(1.0);
     final userScale = state.textScale;
-    
+
     // Combine system and user scales, but cap at reasonable maximum
     return (systemScale * userScale).clamp(0.5, 3.0);
   }
@@ -222,6 +227,39 @@ class AccessibilityService extends StateNotifier<AccessibilitySettings> {
           services.HapticFeedback.lightImpact();
       }
     }
+  }
+
+  /// Wrap widget with semantic information
+  Widget wrapWithSemantics(Widget child, {
+    String? label,
+    String? hint,
+    bool? button,
+    bool? header,
+    bool? focusable,
+    VoidCallback? onTap,
+  }) {
+    return Semantics(
+      label: label,
+      hint: hint,
+      button: button ?? false,
+      header: header ?? false,
+      focusable: focusable ?? true,
+      onTap: onTap,
+      child: child,
+    );
+  }
+
+  /// Get current accessibility settings
+  AccessibilitySettings getCurrentSettings() {
+    return state;
+  }
+
+  /// Get accessible duration for animations
+  Duration getAccessibleDuration(Duration baseDuration) {
+    if (state.reduceMotion) {
+      return Duration.zero;
+    }
+    return baseDuration;
   }
 }
 
@@ -293,7 +331,8 @@ class AccessibilitySettings {
       reduceMotion: reduceMotion ?? this.reduceMotion,
       textScale: textScale ?? this.textScale,
       buttonScale: buttonScale ?? this.buttonScale,
-      screenReaderOptimized: screenReaderOptimized ?? this.screenReaderOptimized,
+      screenReaderOptimized:
+          screenReaderOptimized ?? this.screenReaderOptimized,
       hapticFeedback: hapticFeedback ?? this.hapticFeedback,
       soundFeedback: soundFeedback ?? this.soundFeedback,
       colorBlindnessMode: colorBlindnessMode ?? this.colorBlindnessMode,
@@ -306,10 +345,10 @@ class AccessibilitySettings {
 /// Color blindness support modes
 enum ColorBlindnessMode {
   none,
-  protanopia,    // Red-blind
-  deuteranopia,  // Green-blind
-  tritanopia,    // Blue-blind
-  monochromacy,  // Complete color blindness
+  protanopia, // Red-blind
+  deuteranopia, // Green-blind
+  tritanopia, // Blue-blind
+  monochromacy, // Complete color blindness
 }
 
 /// Haptic feedback types
@@ -321,6 +360,9 @@ enum HapticFeedbackType {
 }
 
 /// Provider for accessibility service
-final accessibilityServiceProvider = StateNotifierProvider<AccessibilityService, AccessibilitySettings>((ref) {
-  throw UnimplementedError('AccessibilityService provider must be overridden');
-});
+final accessibilityServiceProvider =
+    StateNotifierProvider<AccessibilityService, AccessibilitySettings>((ref) {
+      throw UnimplementedError(
+        'AccessibilityService provider must be overridden',
+      );
+    });

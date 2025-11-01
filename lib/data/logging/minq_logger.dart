@@ -43,6 +43,10 @@ class MinqLogger {
     _log(level: 'WARN', event: event, metadata: metadata, levelValue: 900);
   }
 
+  static void warning(String event, {Map<String, dynamic>? metadata}) {
+    _log(level: 'WARN', event: event, metadata: metadata, levelValue: 900);
+  }
+
   static void error(
     String event, {
     Map<String, dynamic>? metadata,
@@ -82,7 +86,9 @@ class MinqLogger {
     );
   }
 
-  static Map<String, dynamic> _sanitizeMetadata(Map<String, dynamic>? metadata) {
+  static Map<String, dynamic> _sanitizeMetadata(
+    Map<String, dynamic>? metadata,
+  ) {
     if (metadata == null || metadata.isEmpty) {
       return const <String, dynamic>{};
     }
@@ -96,11 +102,15 @@ class MinqLogger {
       } else if (value is Map<String, dynamic>) {
         sanitized[key] = _sanitizeMetadata(value);
       } else if (value is Iterable) {
-        sanitized[key] = value
-            .map((dynamic element) => element is Map<String, dynamic>
-                ? _sanitizeMetadata(element)
-                : element)
-            .toList();
+        sanitized[key] =
+            value
+                .map(
+                  (dynamic element) =>
+                      element is Map<String, dynamic>
+                          ? _sanitizeMetadata(element)
+                          : element,
+                )
+                .toList();
       } else {
         sanitized[key] = value;
       }

@@ -8,7 +8,9 @@ import 'package:minq/core/ai/ai_coach_engine.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockXPSystem extends Mock implements XPSystem {}
+
 class MockLeagueSystem extends Mock implements LeagueSystem {}
+
 class MockAiCoachEngine extends Mock implements AiCoachEngine {}
 
 void main() {
@@ -25,28 +27,34 @@ void main() {
       mockAiCoachEngine = MockAiCoachEngine();
 
       // Setup default mock behaviors
-      when(() => mockXPSystem.awardXP(
-        userId: any(named: 'userId'),
-        action: any(named: 'action'),
-        context: any(named: 'context'),
-      )).thenAnswer((_) async => XPGainResult(
-        xpGained: 25,
-        newTotalXP: 125,
-        leveledUp: false,
-        newLevel: 1,
-        rewards: [],
-      ));
+      when(
+        () => mockXPSystem.awardXP(
+          userId: any(named: 'userId'),
+          action: any(named: 'action'),
+          context: any(named: 'context'),
+        ),
+      ).thenAnswer(
+        (_) async => XPGainResult(
+          xpGained: 25,
+          newTotalXP: 125,
+          leveledUp: false,
+          newLevel: 1,
+          rewards: [],
+        ),
+      );
 
-      when(() => mockLeagueSystem.checkPromotion(any()))
-          .thenAnswer((_) async => null);
+      when(
+        () => mockLeagueSystem.checkPromotion(any()),
+      ).thenAnswer((_) async => null);
 
-      when(() => mockAiCoachEngine.generateResponse(any()))
-          .thenAnswer((_) async => AiCoachResponse(
-        message: 'Great job completing your first quest!',
-        quickActions: [],
-        encouragementLevel: EncouragementLevel.positive,
-        suggestions: ['Keep up the good work!'],
-      ));
+      when(() => mockAiCoachEngine.generateResponse(any())).thenAnswer(
+        (_) async => AiCoachResponse(
+          message: 'Great job completing your first quest!',
+          quickActions: [],
+          encouragementLevel: EncouragementLevel.positive,
+          suggestions: ['Keep up the good work!'],
+        ),
+      );
     });
 
     testWidgets('Complete new user onboarding journey', (tester) async {
@@ -65,12 +73,12 @@ void main() {
 
       // Setup profile
       expect(find.byKey(const Key('profile_setup_screen')), findsOneWidget);
-      
+
       await tester.enterText(
-        find.byKey(const Key('display_name_field')), 
-        'Test User'
+        find.byKey(const Key('display_name_field')),
+        'Test User',
       );
-      
+
       // Select focus tags
       await tester.tap(find.byKey(const Key('tag_health')));
       await tester.tap(find.byKey(const Key('tag_fitness')));
@@ -86,7 +94,10 @@ void main() {
 
       // Verify progressive hint is shown for first quest creation
       expect(find.byKey(const Key('progressive_hint')), findsOneWidget);
-      expect(find.text('Create your first quest to get started!'), findsOneWidget);
+      expect(
+        find.text('Create your first quest to get started!'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('First quest creation and completion journey', (tester) async {
@@ -102,12 +113,12 @@ void main() {
 
       // Fill quest form
       await tester.enterText(
-        find.byKey(const Key('quest_title_field')), 
-        'Morning Walk'
+        find.byKey(const Key('quest_title_field')),
+        'Morning Walk',
       );
       await tester.enterText(
-        find.byKey(const Key('quest_description_field')), 
-        'Take a 30-minute walk every morning'
+        find.byKey(const Key('quest_description_field')),
+        'Take a 30-minute walk every morning',
       );
 
       // Select category
@@ -161,14 +172,19 @@ void main() {
 
       // Verify quest is marked as completed
       expect(find.byKey(const Key('quest_list_screen')), findsOneWidget);
-      expect(find.byKey(const Key('completed_quest_indicator')), findsOneWidget);
+      expect(
+        find.byKey(const Key('completed_quest_indicator')),
+        findsOneWidget,
+      );
 
       // Verify XP system was called
-      verify(() => mockXPSystem.awardXP(
-        userId: any(named: 'userId'),
-        action: 'quest_complete',
-        context: any(named: 'context'),
-      )).called(1);
+      verify(
+        () => mockXPSystem.awardXP(
+          userId: any(named: 'userId'),
+          action: 'quest_complete',
+          context: any(named: 'context'),
+        ),
+      ).called(1);
     });
 
     testWidgets('AI Coach interaction journey', (tester) async {
@@ -183,8 +199,8 @@ void main() {
 
       // Send message to AI Coach
       await tester.enterText(
-        find.byKey(const Key('ai_chat_input')), 
-        'I need motivation to exercise'
+        find.byKey(const Key('ai_chat_input')),
+        'I need motivation to exercise',
       );
       await tester.tap(find.byKey(const Key('send_message_button')));
       await tester.pumpAndSettle();
@@ -196,14 +212,22 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
 
       // Verify AI response
-      expect(find.text('Great job completing your first quest!'), findsOneWidget);
+      expect(
+        find.text('Great job completing your first quest!'),
+        findsOneWidget,
+      );
 
       // Verify AI coach was called with user message
-      verify(() => mockAiCoachEngine.generateResponse('I need motivation to exercise'))
-          .called(1);
+      verify(
+        () =>
+            mockAiCoachEngine.generateResponse('I need motivation to exercise'),
+      ).called(1);
 
       // Test quick action
-      if (find.byKey(const Key('quick_action_create_quest')).evaluate().isNotEmpty) {
+      if (find
+          .byKey(const Key('quick_action_create_quest'))
+          .evaluate()
+          .isNotEmpty) {
         await tester.tap(find.byKey(const Key('quick_action_create_quest')));
         await tester.pumpAndSettle();
 
@@ -214,20 +238,21 @@ void main() {
 
     testWidgets('League progression journey', (tester) async {
       // Setup user with high XP for league promotion
-      when(() => mockLeagueSystem.checkPromotion(any()))
-          .thenAnswer((_) async => LeaguePromotion(
-        userId: 'test-user',
-        fromLeague: 'bronze',
-        toLeague: 'silver',
-        xpEarned: 1000,
-        totalXP: 1200,
-        rewards: LeagueRewards(
-          weeklyXP: 100,
-          badges: ['silver_champion'],
-          unlocks: ['advanced_themes'],
+      when(() => mockLeagueSystem.checkPromotion(any())).thenAnswer(
+        (_) async => LeaguePromotion(
+          userId: 'test-user',
+          fromLeague: 'bronze',
+          toLeague: 'silver',
+          xpEarned: 1000,
+          totalXP: 1200,
+          rewards: LeagueRewards(
+            weeklyXP: 100,
+            badges: ['silver_champion'],
+            unlocks: ['advanced_themes'],
+          ),
+          achievedAt: DateTime.now(),
         ),
-        achievedAt: DateTime.now(),
-      ));
+      );
 
       await tester.pumpWidget(app.MinQApp(skipOnboarding: true));
       await tester.pumpAndSettle();
@@ -246,7 +271,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify promotion animation
-      expect(find.byKey(const Key('league_promotion_animation')), findsOneWidget);
+      expect(
+        find.byKey(const Key('league_promotion_animation')),
+        findsOneWidget,
+      );
       expect(find.text('Promoted to Silver League!'), findsOneWidget);
 
       // Wait for animation to complete
@@ -283,14 +311,20 @@ void main() {
 
       // Verify join confirmation
       expect(find.text('Challenge Joined!'), findsOneWidget);
-      expect(find.byKey(const Key('challenge_progress_indicator')), findsOneWidget);
+      expect(
+        find.byKey(const Key('challenge_progress_indicator')),
+        findsOneWidget,
+      );
 
       // Update progress
       await tester.tap(find.byKey(const Key('update_progress_button')));
       await tester.pumpAndSettle();
 
       // Verify progress update
-      expect(find.byKey(const Key('progress_update_animation')), findsOneWidget);
+      expect(
+        find.byKey(const Key('progress_update_animation')),
+        findsOneWidget,
+      );
 
       // Navigate back to challenges list
       await tester.tap(find.byKey(const Key('back_button')));
@@ -400,8 +434,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('quest_title_field')), 
-        'Test Quest'
+        find.byKey(const Key('quest_title_field')),
+        'Test Quest',
       );
 
       // Simulate save failure

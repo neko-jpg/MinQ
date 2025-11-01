@@ -4,11 +4,10 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 /// フォーム保護ミックスイン
 /// F009対応: 未保存データがある場合の確認ダイアログを提供
 mixin FormProtectionMixin<T extends StatefulWidget> on State<T> {
-  
   /// 未保存の変更があるかどうかを判定する
   /// サブクラスで実装する必要がある
   bool get hasUnsavedChanges;
-  
+
   /// 変更破棄の確認ダイアログを表示
   Future<bool> showDiscardChangesDialog() async {
     if (!hasUnsavedChanges) {
@@ -43,24 +42,24 @@ mixin FormProtectionMixin<T extends StatefulWidget> on State<T> {
 
     return result ?? false;
   }
-  
+
   /// PopScopeで使用するためのコールバック
   Future<void> onPopInvokedWithResult(bool didPop, dynamic result) async {
     if (didPop) {
       return;
     }
-    
+
     final shouldPop = await showDiscardChangesDialog();
     if (mounted && shouldPop) {
       Navigator.of(context).pop();
     }
   }
-  
+
   /// WillPopScopeで使用するためのコールバック（レガシー対応）
   Future<bool> onWillPop() async {
     return await showDiscardChangesDialog();
   }
-  
+
   /// フォーム保護付きのScaffoldを構築
   Widget buildProtectedScaffold({
     required Widget body,

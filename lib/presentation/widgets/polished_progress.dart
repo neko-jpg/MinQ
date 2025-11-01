@@ -33,7 +33,8 @@ class PolishedCircularProgress extends StatefulWidget {
   });
 
   @override
-  State<PolishedCircularProgress> createState() => _PolishedCircularProgressState();
+  State<PolishedCircularProgress> createState() =>
+      _PolishedCircularProgressState();
 }
 
 class _PolishedCircularProgressState extends State<PolishedCircularProgress>
@@ -52,10 +53,7 @@ class _PolishedCircularProgressState extends State<PolishedCircularProgress>
     _animation = Tween<double>(
       begin: 0.0,
       end: widget.value,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
   }
@@ -67,10 +65,7 @@ class _PolishedCircularProgressState extends State<PolishedCircularProgress>
       _animation = Tween<double>(
         begin: _animation.value,
         end: widget.value,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ));
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
       _controller.forward(from: 0.0);
     }
   }
@@ -84,7 +79,7 @@ class _PolishedCircularProgressState extends State<PolishedCircularProgress>
   @override
   Widget build(BuildContext context) {
     final tokens = MinqDesignTokens.of(context);
-    
+
     return SizedBox(
       width: widget.size,
       height: widget.size,
@@ -95,22 +90,24 @@ class _PolishedCircularProgressState extends State<PolishedCircularProgress>
             painter: _CircularProgressPainter(
               progress: _animation.value,
               strokeWidth: widget.strokeWidth,
-              backgroundColor: widget.backgroundColor ?? 
-                  tokens.colors.outline.withAlpha(51),
+              backgroundColor:
+                  widget.backgroundColor ?? tokens.colors.outline.withAlpha(51),
               gradient: widget.gradient,
               valueColor: widget.valueColor ?? tokens.colors.primary,
             ),
             child: Center(
-              child: widget.child ?? 
+              child:
+                  widget.child ??
                   (widget.showPercentage
                       ? Text(
-                          '${(_animation.value * 100).round()}%',
-                          style: widget.percentageStyle ?? 
-                              tokens.typography.labelMedium.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: tokens.colors.onSurface,
-                              ),
-                        )
+                        '${(_animation.value * 100).round()}%',
+                        style:
+                            widget.percentageStyle ??
+                            tokens.typography.labelMedium.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: tokens.colors.onSurface,
+                            ),
+                      )
                       : null),
             ),
           );
@@ -141,19 +138,21 @@ class _CircularProgressPainter extends CustomPainter {
     final radius = (size.width - strokeWidth) / 2;
 
     // Background circle
-    final backgroundPaint = Paint()
-      ..color = backgroundColor
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final backgroundPaint =
+        Paint()
+          ..color = backgroundColor
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     canvas.drawCircle(center, radius, backgroundPaint);
 
     // Progress arc
-    final progressPaint = Paint()
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final progressPaint =
+        Paint()
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     if (gradient != null) {
       final rect = Rect.fromCircle(center: center, radius: radius);
@@ -221,10 +220,7 @@ class _PolishedLinearProgressState extends State<PolishedLinearProgress>
     _animation = Tween<double>(
       begin: 0.0,
       end: widget.value,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
   }
@@ -236,10 +232,7 @@ class _PolishedLinearProgressState extends State<PolishedLinearProgress>
       _animation = Tween<double>(
         begin: _animation.value,
         end: widget.value,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ));
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
       _controller.forward(from: 0.0);
     }
   }
@@ -253,8 +246,8 @@ class _PolishedLinearProgressState extends State<PolishedLinearProgress>
   @override
   Widget build(BuildContext context) {
     final tokens = MinqDesignTokens.of(context);
-    final borderRadius = widget.borderRadius ?? 
-        BorderRadius.circular(widget.height / 2);
+    final borderRadius =
+        widget.borderRadius ?? BorderRadius.circular(widget.height / 2);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +258,8 @@ class _PolishedLinearProgressState extends State<PolishedLinearProgress>
             return Container(
               height: widget.height,
               decoration: BoxDecoration(
-                color: widget.backgroundColor ?? 
+                color:
+                    widget.backgroundColor ??
                     tokens.colors.outline.withAlpha(51),
                 borderRadius: borderRadius,
               ),
@@ -274,11 +268,12 @@ class _PolishedLinearProgressState extends State<PolishedLinearProgress>
                 child: LinearProgressIndicator(
                   value: _animation.value,
                   backgroundColor: Colors.transparent,
-                  valueColor: widget.gradient != null
-                      ? null
-                      : AlwaysStoppedAnimation(
-                          widget.valueColor ?? tokens.colors.primary,
-                        ),
+                  valueColor:
+                      widget.gradient != null
+                          ? null
+                          : AlwaysStoppedAnimation(
+                            widget.valueColor ?? tokens.colors.primary,
+                          ),
                   minHeight: widget.height,
                 ),
               ),
@@ -292,7 +287,8 @@ class _PolishedLinearProgressState extends State<PolishedLinearProgress>
             builder: (context, child) {
               return Text(
                 '${(_animation.value * 100).round()}%',
-                style: widget.percentageStyle ?? 
+                style:
+                    widget.percentageStyle ??
                     tokens.typography.bodySmall.copyWith(
                       color: tokens.colors.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
@@ -350,21 +346,16 @@ class _PolishedStepProgressState extends State<PolishedStepProgress>
   void _initializeAnimations() {
     _controllers = List.generate(
       widget.totalSteps,
-      (index) => AnimationController(
-        duration: widget.animationDuration,
-        vsync: this,
-      ),
+      (index) =>
+          AnimationController(duration: widget.animationDuration, vsync: this),
     );
 
-    _scaleAnimations = _controllers.map((controller) {
-      return Tween<double>(
-        begin: 0.8,
-        end: 1.0,
-      ).animate(CurvedAnimation(
-        parent: controller,
-        curve: Curves.elasticOut,
-      ));
-    }).toList();
+    _scaleAnimations =
+        _controllers.map((controller) {
+          return Tween<double>(begin: 0.8, end: 1.0).animate(
+            CurvedAnimation(parent: controller, curve: Curves.elasticOut),
+          );
+        }).toList();
   }
 
   void _startAnimations() {
@@ -431,32 +422,38 @@ class _PolishedStepProgressState extends State<PolishedStepProgress>
                           decoration: BoxDecoration(
                             color: stepColor,
                             shape: BoxShape.circle,
-                            boxShadow: isActive || isCompleted
-                                ? [
-                                    BoxShadow(
-                                      color: stepColor.withAlpha(76),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ]
-                                : null,
+                            boxShadow:
+                                isActive || isCompleted
+                                    ? [
+                                      BoxShadow(
+                                        color: stepColor.withAlpha(76),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                    : null,
                           ),
                           child: Center(
-                            child: isCompleted
-                                ? Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: widget.stepSize * 0.5,
-                                  )
-                                : Text(
-                                    '${index + 1}',
-                                    style: tokens.typography.labelMedium.copyWith(
-                                      color: isInactive 
-                                          ? tokens.colors.onSurfaceVariant
-                                          : Colors.white,
-                                      fontWeight: FontWeight.w600,
+                            child:
+                                isCompleted
+                                    ? Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: widget.stepSize * 0.5,
+                                    )
+                                    : Text(
+                                      '${index + 1}',
+                                      style: tokens.typography.labelMedium
+                                          .copyWith(
+                                            color:
+                                                isInactive
+                                                    ? tokens
+                                                        .colors
+                                                        .onSurfaceVariant
+                                                    : Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
-                                  ),
                           ),
                         ),
                       );
@@ -466,9 +463,10 @@ class _PolishedStepProgressState extends State<PolishedStepProgress>
                     Expanded(
                       child: Container(
                         height: widget.lineWidth,
-                        color: index < widget.currentStep 
-                            ? completedColor 
-                            : inactiveColor,
+                        color:
+                            index < widget.currentStep
+                                ? completedColor
+                                : inactiveColor,
                       ),
                     ),
                 ],
@@ -482,15 +480,16 @@ class _PolishedStepProgressState extends State<PolishedStepProgress>
             children: List.generate(widget.totalSteps, (index) {
               final isCompleted = index < widget.currentStep;
               final isActive = index == widget.currentStep;
-              
+
               return Expanded(
                 child: Text(
                   widget.stepLabels![index],
                   textAlign: TextAlign.center,
                   style: tokens.typography.bodySmall.copyWith(
-                    color: isCompleted || isActive
-                        ? tokens.colors.onSurface
-                        : tokens.colors.onSurfaceVariant,
+                    color:
+                        isCompleted || isActive
+                            ? tokens.colors.onSurface
+                            : tokens.colors.onSurfaceVariant,
                     fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
                   ),
                 ),
@@ -541,15 +540,12 @@ class _PolishedRadialProgressState extends State<PolishedRadialProgress>
       vsync: this,
     );
 
-    _animations = widget.values.map((value) {
-      return Tween<double>(
-        begin: 0.0,
-        end: value,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutBack,
-      ));
-    }).toList();
+    _animations =
+        widget.values.map((value) {
+          return Tween<double>(begin: 0.0, end: value).animate(
+            CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+          );
+        }).toList();
 
     _controller.forward();
   }
@@ -563,7 +559,7 @@ class _PolishedRadialProgressState extends State<PolishedRadialProgress>
   @override
   Widget build(BuildContext context) {
     final tokens = MinqDesignTokens.of(context);
-    
+
     return SizedBox(
       width: widget.size,
       height: widget.size,
@@ -575,8 +571,8 @@ class _PolishedRadialProgressState extends State<PolishedRadialProgress>
               values: _animations.map((a) => a.value).toList(),
               colors: widget.colors,
               strokeWidth: widget.strokeWidth,
-              backgroundColor: widget.backgroundColor ?? 
-                  tokens.colors.outline.withAlpha(51),
+              backgroundColor:
+                  widget.backgroundColor ?? tokens.colors.outline.withAlpha(51),
             ),
             child: Center(child: widget.child),
           );
@@ -605,25 +601,27 @@ class _RadialProgressPainter extends CustomPainter {
     final radius = (size.width - strokeWidth) / 2;
 
     // Background circle
-    final backgroundPaint = Paint()
-      ..color = backgroundColor
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
+    final backgroundPaint =
+        Paint()
+          ..color = backgroundColor
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke;
 
     canvas.drawCircle(center, radius, backgroundPaint);
 
     // Progress arcs
     double startAngle = -math.pi / 2;
-    
+
     for (int i = 0; i < values.length; i++) {
-      final progressPaint = Paint()
-        ..color = colors[i % colors.length]
-        ..strokeWidth = strokeWidth
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round;
+      final progressPaint =
+          Paint()
+            ..color = colors[i % colors.length]
+            ..strokeWidth = strokeWidth
+            ..style = PaintingStyle.stroke
+            ..strokeCap = StrokeCap.round;
 
       final sweepAngle = 2 * math.pi * values[i];
-      
+
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius),
         startAngle,

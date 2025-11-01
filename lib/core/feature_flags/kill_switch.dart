@@ -22,11 +22,7 @@ class KillSwitch {
 
       return enabled;
     } catch (e, stack) {
-      _logger.error(
-        'Kill switch check failed',
-        error: e,
-        stackTrace: stack,
-      );
+      _logger.error('Kill switch check failed', error: e, stackTrace: stack);
       // エラー時はデフォルトで有効
       return true;
     }
@@ -60,11 +56,7 @@ class KillSwitch {
 
       return defaultValue;
     } catch (e, stack) {
-      _logger.error(
-        'Feature config fetch failed',
-        error: e,
-        stackTrace: stack,
-      );
+      _logger.error('Feature config fetch failed', error: e, stackTrace: stack);
       return defaultValue;
     }
   }
@@ -131,7 +123,6 @@ class FeatureKeys {
   static const ads = 'ads';
   static const rewardedAds = 'rewarded_ads';
 }
-
 
 /// Remote Config デフォルト値
 class RemoteConfigDefaults {

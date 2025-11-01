@@ -18,10 +18,10 @@ class EnhancedAICoachService {
 
   final TFLiteUnifiedAIService _aiService = TFLiteUnifiedAIService.instance;
   final DynamicPromptEngine _promptEngine = DynamicPromptEngine.instance;
-  
+
   Ref? _ref;
   UserProgressService? _progressService;
-  
+
   final List<String> _conversationHistory = [];
   UserProgressContext? _lastContext;
   DateTime? _lastContextUpdate;
@@ -30,7 +30,7 @@ class EnhancedAICoachService {
   Future<void> initialize({required Ref ref}) async {
     _ref = ref;
     _progressService = UserProgressService(ref);
-    
+
     try {
       await _aiService.initialize();
       log('EnhancedAICoach: サービスが初期化されました');
@@ -54,7 +54,7 @@ class EnhancedAICoachService {
 
       // 動的システムプロンプトを生成
       final systemPrompt = _promptEngine.generateSystemPrompt(context);
-      
+
       // 文脈情報を含むプロンプトを生成
       final contextualPrompt = _promptEngine.generateContextualPrompt(
         userMessage,
@@ -69,7 +69,7 @@ class EnhancedAICoachService {
       const isOnline = true; // TODO: 実際のネットワーク状態を取得
 
       String responseMessage;
-      
+
       if (isOnline) {
         // オンライン時はAIサービスを使用
         responseMessage = await _aiService.generateChatResponse(
@@ -94,7 +94,6 @@ class EnhancedAICoachService {
         suggestions: _generateSuggestions(context),
         encouragementLevel: context.motivationLevel,
       );
-
     } catch (e, stackTrace) {
       log('EnhancedAICoach: 応答生成エラー', error: e, stackTrace: stackTrace);
       return _generateFallbackResponse(userMessage);
@@ -104,9 +103,9 @@ class EnhancedAICoachService {
   /// ユーザー進捗コンテキストを取得または更新
   Future<UserProgressContext?> _getOrUpdateContext() async {
     final now = DateTime.now();
-    
+
     // キャッシュが有効な場合はそれを使用（5分間有効）
-    if (_lastContext != null && 
+    if (_lastContext != null &&
         _lastContextUpdate != null &&
         now.difference(_lastContextUpdate!).inMinutes < 5) {
       return _lastContext;
@@ -124,39 +123,42 @@ class EnhancedAICoachService {
   }
 
   /// オフライン時のヒューリスティック応答生成
-  String _generateHeuristicResponse(String userMessage, UserProgressContext context) {
+  String _generateHeuristicResponse(
+    String userMessage,
+    UserProgressContext context,
+  ) {
     final message = userMessage.toLowerCase();
-    
+
     // 挨拶パターン
     if (_containsAny(message, ['こんにちは', 'おはよう', 'こんばんは', 'はじめまして'])) {
       return _generateGreetingResponse(context);
     }
-    
+
     // モチベーション関連
     if (_containsAny(message, ['やる気', 'モチベーション', '続かない', '挫折', 'しんどい'])) {
       return _generateMotivationResponse(context);
     }
-    
+
     // 習慣・継続関連
     if (_containsAny(message, ['習慣', 'ルーティン', '続ける', 'コツ', '方法'])) {
       return _generateHabitAdviceResponse(context);
     }
-    
+
     // 進捗・成果関連
     if (_containsAny(message, ['進捗', '成果', '結果', '効果', '変化'])) {
       return _generateProgressResponse(context);
     }
-    
+
     // 時間・スケジュール関連
     if (_containsAny(message, ['時間', 'スケジュール', '忙しい', '時間がない'])) {
       return _generateTimeManagementResponse(context);
     }
-    
+
     // 目標・計画関連
     if (_containsAny(message, ['目標', '計画', '設定', 'プラン'])) {
       return _generateGoalSettingResponse(context);
     }
-    
+
     // デフォルト応答
     return _generateDefaultResponse(context);
   }
@@ -210,15 +212,16 @@ class EnhancedAICoachService {
   /// 時間管理応答の生成
   String _generateTimeManagementResponse(UserProgressContext context) {
     if (context.activeQuests.isNotEmpty) {
-      final shortQuest = context.activeQuests.where(
-        (quest) => quest.estimatedMinutes <= 10,
-      ).firstOrNull;
-      
+      final shortQuest =
+          context.activeQuests
+              .where((quest) => quest.estimatedMinutes <= 10)
+              .firstOrNull;
+
       if (shortQuest != null) {
         return '忙しい時こそ「${shortQuest.title}」のような短時間のクエストがおすすめです。5分でも継続が大切です。';
       }
     }
-    
+
     return '忙しい時は5分だけでも大丈夫。完璧を目指さず、継続することを優先しましょう。隙間時間を活用してみてください。';
   }
 
@@ -241,14 +244,14 @@ class EnhancedAICoachService {
       'MinQで一緒に成長していきましょう。小さな一歩も大切な進歩です。',
       'あなたのペースで大丈夫です。今日できることから始めてみませんか？',
     ];
-    
+
     return responses[math.Random().nextInt(responses.length)];
   }
 
   /// 提案事項を生成
   List<String> _generateSuggestions(UserProgressContext context) {
     final suggestions = <String>[];
-    
+
     // ストリーク状況に応じた提案
     if (context.streak == 0) {
       suggestions.add('今日から新しいストリークを始めましょう');
@@ -257,19 +260,19 @@ class EnhancedAICoachService {
     } else if (context.streak < 21) {
       suggestions.add('3週間で習慣が定着します');
     }
-    
+
     // 今日の活動に応じた提案
     if (context.completionsToday == 0) {
       suggestions.add('今日の最初のクエストを完了しましょう');
     } else if (context.completionsToday < 3) {
       suggestions.add('もう1つクエストに挑戦してみませんか');
     }
-    
+
     // フォーカスクエストの提案
     if (context.focusQuest != null) {
       suggestions.add('「${context.focusQuest!.title}」がおすすめです');
     }
-    
+
     return suggestions;
   }
 
@@ -298,7 +301,7 @@ class EnhancedAICoachService {
   void _updateConversationHistory(String userMessage, String aiResponse) {
     _conversationHistory.add('USER: $userMessage');
     _conversationHistory.add('AI: $aiResponse');
-    
+
     // 履歴は最新10件まで保持
     while (_conversationHistory.length > 10) {
       _conversationHistory.removeAt(0);
@@ -337,7 +340,7 @@ class EnhancedAICoachService {
   /// 診断情報の取得
   Future<Map<String, dynamic>> getDiagnosticInfo() async {
     final aiDiagnostics = await _aiService.getDiagnosticInfo();
-    
+
     return {
       ...aiDiagnostics,
       'enhancedCoach': {

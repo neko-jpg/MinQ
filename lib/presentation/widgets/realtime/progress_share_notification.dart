@@ -16,10 +16,12 @@ class ProgressShareNotification extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ProgressShareNotification> createState() => _ProgressShareNotificationState();
+  ConsumerState<ProgressShareNotification> createState() =>
+      _ProgressShareNotificationState();
 }
 
-class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotification>
+class _ProgressShareNotificationState
+    extends ConsumerState<ProgressShareNotification>
     with TickerProviderStateMixin {
   final List<RealtimeMessage> _recentShares = [];
   late AnimationController _animationController;
@@ -33,22 +35,17 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    
+
     _slideAnimation = Tween<Offset>(
       begin: const Offset(1.0, 0.0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeIn,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+    );
   }
 
   @override
@@ -60,7 +57,10 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
   @override
   Widget build(BuildContext context) {
     // 進捗共有メッセージを監視
-    ref.listen<AsyncValue<RealtimeMessage>>(progressShareStreamProvider, (previous, next) {
+    ref.listen<AsyncValue<RealtimeMessage>>(progressShareStreamProvider, (
+      previous,
+      next,
+    ) {
       next.whenData((message) {
         if (message.recipientId == widget.currentUserId) {
           _handleProgressShare(message);
@@ -73,7 +73,10 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
       right: 16,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
-        children: _recentShares.map((share) => _buildNotificationCard(share)).toList(),
+        children:
+            _recentShares
+                .map((share) => _buildNotificationCard(share))
+                .toList(),
       ),
     );
   }
@@ -135,7 +138,8 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
                               Text(
                                 'ペアが進捗を共有',
                                 style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onPrimaryContainer.withOpacity(0.8),
+                                  color: theme.colorScheme.onPrimaryContainer
+                                      .withOpacity(0.8),
                                 ),
                               ),
                               Text(
@@ -155,7 +159,8 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
                           icon: Icon(
                             Icons.close,
                             size: 18,
-                            color: theme.colorScheme.onPrimaryContainer.withOpacity(0.6),
+                            color: theme.colorScheme.onPrimaryContainer
+                                .withOpacity(0.6),
                           ),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(
@@ -165,9 +170,9 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 12),
-                    
+
                     // 説明
                     if (description.isNotEmpty)
                       Text(
@@ -178,15 +183,18 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    
+
                     const SizedBox(height: 8),
-                    
+
                     // スコアとタグ
                     Row(
                       children: [
                         if (score != null) ...[
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: theme.colorScheme.secondary,
                               borderRadius: BorderRadius.circular(12),
@@ -212,26 +220,36 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
                           ),
                           const SizedBox(width: 8),
                         ],
-                        
+
                         Expanded(
                           child: Wrap(
                             spacing: 4,
-                            children: tags.take(2).map((tag) => Chip(
-                              label: Text(
-                                tag,
-                                style: theme.textTheme.bodySmall,
-                              ),
-                              backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              visualDensity: VisualDensity.compact,
-                            )).toList(),
+                            children:
+                                tags
+                                    .take(2)
+                                    .map(
+                                      (tag) => Chip(
+                                        label: Text(
+                                          tag,
+                                          style: theme.textTheme.bodySmall,
+                                        ),
+                                        backgroundColor:
+                                            theme
+                                                .colorScheme
+                                                .surfaceContainerHighest,
+                                        materialTapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        visualDensity: VisualDensity.compact,
+                                      ),
+                                    )
+                                    .toList(),
                           ),
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 12),
-                    
+
                     // アクションボタン
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -242,7 +260,10 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
                           label: const Text('励ます'),
                           style: TextButton.styleFrom(
                             foregroundColor: theme.colorScheme.primary,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -253,7 +274,10 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
                           style: ElevatedButton.styleFrom(
                             backgroundColor: theme.colorScheme.primary,
                             foregroundColor: theme.colorScheme.onPrimary,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                           ),
                         ),
                       ],
@@ -317,32 +341,33 @@ class _ProgressShareNotificationState extends ConsumerState<ProgressShareNotific
 
   void _viewDetails(RealtimeMessage message) {
     _dismissNotification(message);
-    
+
     // 詳細画面に遷移（実装は省略）
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('進捗詳細'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('タイトル: ${message.payload['title']}'),
-            const SizedBox(height: 8),
-            Text('説明: ${message.payload['description']}'),
-            if (message.payload['score'] != null) ...[
-              const SizedBox(height: 8),
-              Text('スコア: ${message.payload['score']} pt'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('進捗詳細'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('タイトル: ${message.payload['title']}'),
+                const SizedBox(height: 8),
+                Text('説明: ${message.payload['description']}'),
+                if (message.payload['score'] != null) ...[
+                  const SizedBox(height: 8),
+                  Text('スコア: ${message.payload['score']} pt'),
+                ],
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('閉じる'),
+              ),
             ],
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('閉じる'),
           ),
-        ],
-      ),
     );
   }
 }

@@ -15,16 +15,19 @@ class MonitoringDashboardScreen extends ConsumerStatefulWidget {
   const MonitoringDashboardScreen({super.key});
 
   @override
-  ConsumerState<MonitoringDashboardScreen> createState() => _MonitoringDashboardScreenState();
+  ConsumerState<MonitoringDashboardScreen> createState() =>
+      _MonitoringDashboardScreenState();
 }
 
-class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardScreen>
+class _MonitoringDashboardScreenState
+    extends ConsumerState<MonitoringDashboardScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  
+
   final AppMonitoringService _appMonitoring = AppMonitoringService();
   final CrashReportingService _crashReporting = CrashReportingService();
-  final PerformanceMonitoringService _performance = PerformanceMonitoringService();
+  final PerformanceMonitoringService _performance =
+      PerformanceMonitoringService();
   final UserBehaviorAnalytics _userAnalytics = UserBehaviorAnalytics();
   final ABTestingService _abTesting = ABTestingService();
 
@@ -90,9 +93,9 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                 );
               },
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Recent Health Events
             Card(
               child: Padding(
@@ -105,16 +108,16 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 12),
-                    ...(_appMonitoring.getRecentHealthEvents(limit: 5).map(
-                      (event) => _buildHealthEventTile(event),
-                    )),
+                    ...(_appMonitoring
+                        .getRecentHealthEvents(limit: 5)
+                        .map((event) => _buildHealthEventTile(event))),
                   ],
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // System Information
             Card(
               child: Padding(
@@ -155,7 +158,7 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                
+
                 final stats = snapshot.data!;
                 return Column(
                   children: [
@@ -166,7 +169,9 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                             'Frame Rate',
                             '${stats.frameRate.toStringAsFixed(1)} fps',
                             Icons.speed,
-                            stats.frameRate >= 55 ? Colors.green : Colors.orange,
+                            stats.frameRate >= 55
+                                ? Colors.green
+                                : Colors.orange,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -175,7 +180,9 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                             'Memory Usage',
                             '${stats.currentMemoryUsage.toStringAsFixed(1)} MB',
                             Icons.memory,
-                            stats.currentMemoryUsage < 300 ? Colors.green : Colors.orange,
+                            stats.currentMemoryUsage < 300
+                                ? Colors.green
+                                : Colors.orange,
                           ),
                         ),
                       ],
@@ -188,7 +195,9 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                             'Network Latency',
                             '${stats.averageNetworkLatency.toStringAsFixed(0)} ms',
                             Icons.network_check,
-                            stats.averageNetworkLatency < 500 ? Colors.green : Colors.orange,
+                            stats.averageNetworkLatency < 500
+                                ? Colors.green
+                                : Colors.orange,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -206,9 +215,9 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                 );
               },
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Performance Charts
             Card(
               child: Padding(
@@ -231,9 +240,9 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Memory Usage History
             Card(
               child: Padding(
@@ -246,10 +255,7 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 12),
-                    SizedBox(
-                      height: 200,
-                      child: _buildMemoryChart(),
-                    ),
+                    SizedBox(height: 200, child: _buildMemoryChart()),
                   ],
                 ),
               ),
@@ -277,13 +283,13 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                
+
                 return CrashStatisticsCard(statistics: snapshot.data!);
               },
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Recent Crashes
             Card(
               child: Padding(
@@ -302,14 +308,17 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                         if (!snapshot.hasData) {
                           return const CircularProgressIndicator();
                         }
-                        
+
                         final crashes = snapshot.data!;
                         if (crashes.isEmpty) {
                           return const Text('No recent crashes');
                         }
-                        
+
                         return Column(
-                          children: crashes.map((crash) => _buildCrashTile(crash)).toList(),
+                          children:
+                              crashes
+                                  .map((crash) => _buildCrashTile(crash))
+                                  .toList(),
                         );
                       },
                     ),
@@ -340,13 +349,13 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                
+
                 return UserAnalyticsCard(insights: snapshot.data!);
               },
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Feature Adoption
             Card(
               child: Padding(
@@ -364,9 +373,9 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Retention Analysis
             FutureBuilder<RetentionAnalysis>(
               future: _userAnalytics.analyzeRetention(),
@@ -374,7 +383,7 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                 if (!snapshot.hasData) {
                   return const SizedBox();
                 }
-                
+
                 return Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -426,9 +435,9 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // User Assignments
             Card(
               child: Padding(
@@ -455,7 +464,7 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
   Widget _buildHealthEventTile(AppHealthEvent event) {
     IconData icon;
     Color color;
-    
+
     switch (event.type) {
       case AppHealthEventType.critical:
         icon = Icons.error;
@@ -473,7 +482,7 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
         icon = Icons.info;
         color = Colors.blue;
     }
-    
+
     return ListTile(
       leading: Icon(icon, color: color),
       title: Text(event.issues.join(', ')),
@@ -484,13 +493,24 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
 
   Widget _buildSystemInfoTiles() {
     final metrics = _appMonitoring.getHealthMetrics();
-    
+
     return Column(
       children: [
         _buildInfoTile('App Version', metrics['app_version'] ?? 'Unknown'),
-        _buildInfoTile('Uptime', _formatDuration(Duration(minutes: (metrics['uptime_minutes'] ?? 0).toInt()))),
-        _buildInfoTile('Memory Usage', '${(metrics['memory_usage_mb'] ?? 0).toStringAsFixed(1)} MB'),
-        _buildInfoTile('Frame Drop Rate', '${((metrics['frame_drop_rate'] ?? 0) * 100).toStringAsFixed(1)}%'),
+        _buildInfoTile(
+          'Uptime',
+          _formatDuration(
+            Duration(minutes: (metrics['uptime_minutes'] ?? 0).toInt()),
+          ),
+        ),
+        _buildInfoTile(
+          'Memory Usage',
+          '${(metrics['memory_usage_mb'] ?? 0).toStringAsFixed(1)} MB',
+        ),
+        _buildInfoTile(
+          'Frame Drop Rate',
+          '${((metrics['frame_drop_rate'] ?? 0) * 100).toStringAsFixed(1)}%',
+        ),
       ],
     );
   }
@@ -508,7 +528,12 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
     );
   }
 
-  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
+  Widget _buildMetricCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -538,15 +563,16 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
 
   Widget _buildMemoryChart() {
     final memoryHistory = _performance.getMemoryHistory(limit: 20);
-    
+
     if (memoryHistory.isEmpty) {
       return const Center(child: Text('No memory data available'));
     }
-    
-    final spots = memoryHistory.asMap().entries.map((entry) {
-      return FlSpot(entry.key.toDouble(), entry.value.usedMemoryMB);
-    }).toList();
-    
+
+    final spots =
+        memoryHistory.asMap().entries.map((entry) {
+          return FlSpot(entry.key.toDouble(), entry.value.usedMemoryMB);
+        }).toList();
+
     return LineChart(
       LineChartData(
         gridData: const FlGridData(show: true),
@@ -580,17 +606,13 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
       default:
         severityColor = Colors.blue;
     }
-    
+
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: severityColor,
         child: Text(crash.severity.name[0].toUpperCase()),
       ),
-      title: Text(
-        crash.error,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
+      title: Text(crash.error, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Text(_formatDateTime(crash.timestamp)),
       trailing: Chip(
         label: Text(crash.type.name),
@@ -602,11 +624,11 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
 
   Widget _buildFeatureAdoptionChart() {
     final adoption = _userAnalytics.getFeatureAdoption();
-    
+
     if (adoption.isEmpty) {
       return const Center(child: Text('No feature adoption data'));
     }
-    
+
     return SizedBox(
       height: 200,
       child: ListView.builder(
@@ -664,8 +686,14 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildRetentionMetric('Total Days', retention.totalDays.toString()),
-            _buildRetentionMetric('Active Days', retention.activeDays.toString()),
-            _buildRetentionMetric('Retention Rate', '${(retention.retentionRate * 100).toStringAsFixed(1)}%'),
+            _buildRetentionMetric(
+              'Active Days',
+              retention.activeDays.toString(),
+            ),
+            _buildRetentionMetric(
+              'Retention Rate',
+              '${(retention.retentionRate * 100).toStringAsFixed(1)}%',
+            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -676,9 +704,11 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
             itemCount: retention.sessionsByDay.length,
             itemBuilder: (context, index) {
               final entry = retention.sessionsByDay.entries.elementAt(index);
-              final maxSessions = retention.sessionsByDay.values.reduce((a, b) => a > b ? a : b);
+              final maxSessions = retention.sessionsByDay.values.reduce(
+                (a, b) => a > b ? a : b,
+              );
               final height = (entry.value / maxSessions) * 80;
-              
+
               return Container(
                 width: 30,
                 margin: const EdgeInsets.only(right: 4),
@@ -712,91 +742,97 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
       children: [
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12),
-        ),
+        Text(label, style: const TextStyle(fontSize: 12)),
       ],
     );
   }
 
   Widget _buildActiveABTests() {
     final assignments = _abTesting.getActiveAssignments();
-    
+
     if (assignments.isEmpty) {
       return const Text('No active A/B tests');
     }
-    
+
     return Column(
-      children: assignments.entries.map((entry) {
-        return ListTile(
-          title: Text(entry.key),
-          subtitle: Text('Variant: ${entry.value}'),
-          trailing: const Icon(Icons.science),
-        );
-      }).toList(),
+      children:
+          assignments.entries.map((entry) {
+            return ListTile(
+              title: Text(entry.key),
+              subtitle: Text('Variant: ${entry.value}'),
+              trailing: const Icon(Icons.science),
+            );
+          }).toList(),
     );
   }
 
   Widget _buildUserAssignments() {
     final assignments = _abTesting.getActiveAssignments();
-    
+
     if (assignments.isEmpty) {
       return const Text('No current assignments');
     }
-    
+
     return Column(
-      children: assignments.entries.map((entry) {
-        return Card(
-          child: ListTile(
-            title: Text(entry.key),
-            subtitle: Text('Assigned to: ${entry.value}'),
-            leading: const Icon(Icons.person),
-          ),
-        );
-      }).toList(),
+      children:
+          assignments.entries.map((entry) {
+            return Card(
+              child: ListTile(
+                title: Text(entry.key),
+                subtitle: Text('Assigned to: ${entry.value}'),
+                leading: const Icon(Icons.person),
+              ),
+            );
+          }).toList(),
     );
   }
 
   void _showCrashDetails(CrashReport crash) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Crash Details'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Type: ${crash.type.name}'),
-              Text('Severity: ${crash.severity.name}'),
-              Text('Time: ${_formatDateTime(crash.timestamp)}'),
-              const SizedBox(height: 8),
-              const Text('Error:', style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(crash.error),
-              if (crash.stackTrace != null) ...[
-                const SizedBox(height: 8),
-                const Text('Stack Trace:', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(
-                  crash.stackTrace!,
-                  style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-                ),
-              ],
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Crash Details'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Type: ${crash.type.name}'),
+                  Text('Severity: ${crash.severity.name}'),
+                  Text('Time: ${_formatDateTime(crash.timestamp)}'),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Error:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(crash.error),
+                  if (crash.stackTrace != null) ...[
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Stack Trace:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      crash.stackTrace!,
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -807,7 +843,7 @@ class _MonitoringDashboardScreenState extends ConsumerState<MonitoringDashboardS
   String _formatDuration(Duration duration) {
     final hours = duration.inHours;
     final minutes = duration.inMinutes % 60;
-    
+
     if (hours > 0) {
       return '${hours}h ${minutes}m';
     } else {

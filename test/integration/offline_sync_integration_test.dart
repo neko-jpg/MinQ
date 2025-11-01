@@ -10,6 +10,7 @@ import 'package:minq/main.dart' as app;
 import 'package:mocktail/mocktail.dart';
 
 class MockNetworkStatusService extends Mock implements NetworkStatusService {}
+
 class MockSyncQueueManager extends Mock implements SyncQueueManager {}
 
 void main() {
@@ -32,10 +33,10 @@ void main() {
         LocalChallengeSchema,
         LocalQuestLogSchema,
       ], directory: '');
-      
+
       mockNetworkService = MockNetworkStatusService();
       mockSyncQueueManager = MockSyncQueueManager();
-      
+
       offlineService = OfflineOperationsService(
         isar: isar,
         syncQueueManager: mockSyncQueueManager,
@@ -43,15 +44,18 @@ void main() {
 
       // Setup default mock behaviors
       when(() => mockNetworkService.isOnline).thenReturn(false);
-      when(() => mockSyncQueueManager.enqueueSyncJob(any()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockSyncQueueManager.enqueueSyncJob(any()),
+      ).thenAnswer((_) async {});
     });
 
     tearDown(() async {
       await isar.close(deleteFromDisk: true);
     });
 
-    testWidgets('Complete offline quest creation and sync workflow', (tester) async {
+    testWidgets('Complete offline quest creation and sync workflow', (
+      tester,
+    ) async {
       // Start with offline state
       when(() => mockNetworkService.isOnline).thenReturn(false);
 
@@ -64,12 +68,12 @@ void main() {
 
       // Fill quest form
       await tester.enterText(
-        find.byKey(const Key('quest_title_field')), 
-        'Morning Exercise'
+        find.byKey(const Key('quest_title_field')),
+        'Morning Exercise',
       );
       await tester.enterText(
-        find.byKey(const Key('quest_description_field')), 
-        '30 minutes of morning exercise'
+        find.byKey(const Key('quest_description_field')),
+        '30 minutes of morning exercise',
       );
 
       // Save quest offline
@@ -91,8 +95,9 @@ void main() {
 
       // Simulate network coming back online
       when(() => mockNetworkService.isOnline).thenReturn(true);
-      when(() => mockSyncQueueManager.processPendingJobs())
-          .thenAnswer((_) async {
+      when(() => mockSyncQueueManager.processPendingJobs()).thenAnswer((
+        _,
+      ) async {
         // Simulate successful sync
         final quest = localQuests.first;
         quest.needsSync = false;
@@ -122,24 +127,26 @@ void main() {
 
     testWidgets('Offline quest completion with XP gain', (tester) async {
       // Setup: Create a user and quest offline
-      final user = LocalUser()
-        ..uid = 'test-user'
-        ..displayName = 'Test User'
-        ..currentXP = 100
-        ..totalPoints = 500
-        ..currentLevel = 2
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now();
+      final user =
+          LocalUser()
+            ..uid = 'test-user'
+            ..displayName = 'Test User'
+            ..currentXP = 100
+            ..totalPoints = 500
+            ..currentLevel = 2
+            ..createdAt = DateTime.now()
+            ..updatedAt = DateTime.now();
 
-      final quest = LocalQuest()
-        ..questId = 'test-quest'
-        ..owner = 'test-user'
-        ..title = 'Test Quest'
-        ..category = 'health'
-        ..status = QuestStatus.active
-        ..xpReward = 25
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now();
+      final quest =
+          LocalQuest()
+            ..questId = 'test-quest'
+            ..owner = 'test-user'
+            ..title = 'Test Quest'
+            ..category = 'health'
+            ..status = QuestStatus.active
+            ..xpReward = 25
+            ..createdAt = DateTime.now()
+            ..updatedAt = DateTime.now();
 
       await isar.writeTxn(() async {
         await isar.localUsers.put(user);
@@ -173,10 +180,8 @@ void main() {
       expect(questLogs.first.needsSync, isTrue);
 
       // Verify user XP was updated
-      final updatedUser = await isar.localUsers
-          .filter()
-          .uidEqualTo('test-user')
-          .findFirst();
+      final updatedUser =
+          await isar.localUsers.filter().uidEqualTo('test-user').findFirst();
       expect(updatedUser!.totalPoints, equals(525)); // 500 + 25
       expect(updatedUser.needsSync, isTrue);
 
@@ -186,18 +191,19 @@ void main() {
 
     testWidgets('Offline challenge progress update', (tester) async {
       // Setup: Create a challenge offline
-      final challenge = LocalChallenge()
-        ..challengeId = 'test-challenge'
-        ..title = '7-Day Fitness Challenge'
-        ..description = 'Complete 7 days of exercise'
-        ..startDate = DateTime.now().subtract(const Duration(days: 1))
-        ..endDate = DateTime.now().add(const Duration(days: 6))
-        ..isActive = true
-        ..progress = 2
-        ..targetValue = 7
-        ..xpReward = 100
-        ..participants = ['test-user']
-        ..updatedAt = DateTime.now();
+      final challenge =
+          LocalChallenge()
+            ..challengeId = 'test-challenge'
+            ..title = '7-Day Fitness Challenge'
+            ..description = 'Complete 7 days of exercise'
+            ..startDate = DateTime.now().subtract(const Duration(days: 1))
+            ..endDate = DateTime.now().add(const Duration(days: 6))
+            ..isActive = true
+            ..progress = 2
+            ..targetValue = 7
+            ..xpReward = 100
+            ..participants = ['test-user']
+            ..updatedAt = DateTime.now();
 
       await isar.writeTxn(() => isar.localChallenges.put(challenge));
 
@@ -219,10 +225,11 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify progress was updated locally
-      final updatedChallenge = await isar.localChallenges
-          .filter()
-          .challengeIdEqualTo('test-challenge')
-          .findFirst();
+      final updatedChallenge =
+          await isar.localChallenges
+              .filter()
+              .challengeIdEqualTo('test-challenge')
+              .findFirst();
       expect(updatedChallenge!.progress, equals(3)); // 2 + 1
       expect(updatedChallenge.needsSync, isTrue);
       expect(updatedChallenge.syncStatus, equals(SyncStatus.pending));
@@ -233,21 +240,23 @@ void main() {
 
     testWidgets('Sync conflict resolution workflow', (tester) async {
       // Setup: Create a quest that exists both locally and remotely with conflicts
-      final localQuest = LocalQuest()
-        ..questId = 'conflict-quest'
-        ..owner = 'test-user'
-        ..title = 'Local Title'
-        ..category = 'health'
-        ..status = QuestStatus.active
-        ..updatedAt = DateTime.now()
-        ..needsSync = true
-        ..syncStatus = SyncStatus.pending;
+      final localQuest =
+          LocalQuest()
+            ..questId = 'conflict-quest'
+            ..owner = 'test-user'
+            ..title = 'Local Title'
+            ..category = 'health'
+            ..status = QuestStatus.active
+            ..updatedAt = DateTime.now()
+            ..needsSync = true
+            ..syncStatus = SyncStatus.pending;
 
       await isar.writeTxn(() => isar.localQuests.put(localQuest));
 
       // Simulate sync conflict
-      when(() => mockSyncQueueManager.processPendingJobs())
-          .thenAnswer((_) async {
+      when(() => mockSyncQueueManager.processPendingJobs()).thenAnswer((
+        _,
+      ) async {
         // Simulate conflict detected during sync
         throw SyncConflictException(
           entityId: 'conflict-quest',
@@ -288,24 +297,27 @@ void main() {
       // Setup: Create multiple items that need sync
       final items = <LocalQuest>[];
       for (int i = 0; i < 10; i++) {
-        items.add(LocalQuest()
-          ..questId = 'quest-$i'
-          ..owner = 'test-user'
-          ..title = 'Quest $i'
-          ..category = 'health'
-          ..status = QuestStatus.active
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now()
-          ..needsSync = true
-          ..syncStatus = SyncStatus.pending);
+        items.add(
+          LocalQuest()
+            ..questId = 'quest-$i'
+            ..owner = 'test-user'
+            ..title = 'Quest $i'
+            ..category = 'health'
+            ..status = QuestStatus.active
+            ..createdAt = DateTime.now()
+            ..updatedAt = DateTime.now()
+            ..needsSync = true
+            ..syncStatus = SyncStatus.pending,
+        );
       }
 
       await isar.writeTxn(() => isar.localQuests.putAll(items));
 
       // Setup progressive sync simulation
       int syncedCount = 0;
-      when(() => mockSyncQueueManager.processPendingJobs())
-          .thenAnswer((_) async {
+      when(() => mockSyncQueueManager.processPendingJobs()).thenAnswer((
+        _,
+      ) async {
         // Simulate progressive sync with delays
         for (final item in items) {
           await Future.delayed(const Duration(milliseconds: 100));
@@ -345,7 +357,10 @@ void main() {
       // Verify all items are synced
       final syncedItems = await isar.localQuests.where().findAll();
       expect(syncedItems.every((item) => !item.needsSync), isTrue);
-      expect(syncedItems.every((item) => item.syncStatus == SyncStatus.synced), isTrue);
+      expect(
+        syncedItems.every((item) => item.syncStatus == SyncStatus.synced),
+        isTrue,
+      );
     });
   });
 }

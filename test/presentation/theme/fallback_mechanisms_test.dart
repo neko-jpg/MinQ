@@ -14,10 +14,7 @@ class TokenUsageTestWidget extends StatelessWidget {
       home: Scaffold(
         backgroundColor: MinqTokens.background,
         appBar: AppBar(
-          title: const Text(
-            'Token Usage Test',
-            style: MinqTokens.titleMedium,
-          ),
+          title: const Text('Token Usage Test', style: MinqTokens.titleMedium),
           backgroundColor: MinqTokens.surface,
         ),
         body: Padding(
@@ -37,7 +34,10 @@ class TokenUsageTestWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text('Text with brand color', style: TextStyle(color: MinqTokens.brandPrimary)),
+              const Text(
+                'Text with brand color',
+                style: TextStyle(color: MinqTokens.brandPrimary),
+              ),
             ],
           ),
         ),
@@ -47,7 +47,9 @@ class TokenUsageTestWidget extends StatelessWidget {
 }
 
 void main() {
-  testWidgets('MinqTokens can be used without fallbacks', (WidgetTester tester) async {
+  testWidgets('MinqTokens can be used without fallbacks', (
+    WidgetTester tester,
+  ) async {
     // Build the test widget.
     await tester.pumpWidget(const TokenUsageTestWidget());
 

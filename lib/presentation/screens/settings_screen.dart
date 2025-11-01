@@ -38,9 +38,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     });
     // TODO: Implement theme switching logic
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(isDark ? 'ダークモードに切り替えました' : 'ライトモードに切り替えました'),
-      ),
+      SnackBar(content: Text(isDark ? 'ダークモードに切り替えました' : 'ライトモードに切り替えました')),
     );
   }
 
@@ -85,7 +83,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
         ],
-        backgroundColor: Color.lerp(MinqTokens.surface, Colors.transparent, 0.2),
+        backgroundColor: Color.lerp(
+          MinqTokens.surface,
+          Colors.transparent,
+          0.2,
+        ),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -223,9 +225,7 @@ class _SoundProfileSheetState extends ConsumerState<_SoundProfileSheet> {
     final selectedProfile = profiles.firstWhere((p) => p.id == value);
     navigator.pop();
     messenger.showSnackBar(
-      SnackBar(
-        content: Text('${selectedProfile.label}を通知音に設定しました。'),
-      ),
+      SnackBar(content: Text('${selectedProfile.label}を通知音に設定しました。')),
     );
     ref.invalidate(selectedNotificationSoundProfileProvider);
   }
@@ -255,28 +255,31 @@ class _SoundProfileSheetState extends ConsumerState<_SoundProfileSheet> {
                 await _onProfileSelected(context, profiles, value);
               },
               child: Column(
-                children: profiles.map((profile) {
-                  return ListTile(
-                    title: Text(
-                      profile.label,
-                      style: MinqTokens.titleMedium.copyWith(
-                        color: MinqTokens.textPrimary,
-                      ),
-                    ),
-                    subtitle: Text(
-                      profile.description,
-                      style: MinqTokens.bodyMedium.copyWith(
-                        color: MinqTokens.textSecondary,
-                      ),
-                    ),
-                    leading: Radio<String>(
-                      value: profile.id,
-                    ),
-                    onTap: () async {
-                      await _onProfileSelected(context, profiles, profile.id);
-                    },
-                  );
-                }).toList(),
+                children:
+                    profiles.map((profile) {
+                      return ListTile(
+                        title: Text(
+                          profile.label,
+                          style: MinqTokens.titleMedium.copyWith(
+                            color: MinqTokens.textPrimary,
+                          ),
+                        ),
+                        subtitle: Text(
+                          profile.description,
+                          style: MinqTokens.bodyMedium.copyWith(
+                            color: MinqTokens.textSecondary,
+                          ),
+                        ),
+                        leading: Radio<String>(value: profile.id),
+                        onTap: () async {
+                          await _onProfileSelected(
+                            context,
+                            profiles,
+                            profile.id,
+                          );
+                        },
+                      );
+                    }).toList(),
               ),
             ),
           ],
@@ -363,9 +366,7 @@ class _EssentialSettingsTileState extends State<_EssentialSettingsTile> {
         shadowColor: Colors.black.withAlpha(25),
         color: MinqTokens.surface,
         margin: EdgeInsets.symmetric(vertical: MinqTokens.spacing(2)),
-        shape: RoundedRectangleBorder(
-          borderRadius: MinqTokens.cornerMedium(),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: MinqTokens.cornerMedium()),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: widget.isSwitch ? null : widget.onTap,
@@ -375,8 +376,9 @@ class _EssentialSettingsTileState extends State<_EssentialSettingsTile> {
               minHeight: 44, // Ensure 44pt minimum
             ),
             child: Padding(
-              padding:
-                  EdgeInsets.all(MinqTokens.spacing(4)), // Increased padding
+              padding: EdgeInsets.all(
+                MinqTokens.spacing(4),
+              ), // Increased padding
               child: Row(
                 children: [
                   // Icon container with proper sizing
@@ -436,8 +438,9 @@ class _EssentialSettingsTileState extends State<_EssentialSettingsTile> {
                         thumbColor: const WidgetStatePropertyAll<Color>(
                           Colors.white,
                         ),
-                        trackColor:
-                            WidgetStateProperty.resolveWith<Color?>((states) {
+                        trackColor: WidgetStateProperty.resolveWith<Color?>((
+                          states,
+                        ) {
                           if (states.contains(WidgetState.selected)) {
                             return MinqTokens.brandPrimary;
                           }
@@ -446,7 +449,7 @@ class _EssentialSettingsTileState extends State<_EssentialSettingsTile> {
                       ),
                     )
                   else
-                    const Icon(
+                    Icon(
                       Icons.chevron_right,
                       color: MinqTokens.textSecondary,
                       size: 24,
@@ -488,24 +491,19 @@ class _SettingsTile extends StatefulWidget {
 class _SettingsTileState extends State<_SettingsTile> {
   @override
   Widget build(BuildContext context) {
-    final titleColor =
-        widget.isDelete ? Colors.red : MinqTokens.textPrimary;
+    final titleColor = widget.isDelete ? Colors.red : MinqTokens.textPrimary;
 
     return Card(
       elevation: 0,
       shadowColor: Colors.black.withAlpha(25),
       color: MinqTokens.surface,
       margin: EdgeInsets.symmetric(vertical: MinqTokens.spacing(2)),
-      shape: RoundedRectangleBorder(
-        borderRadius: MinqTokens.cornerMedium(),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: MinqTokens.cornerMedium()),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: widget.onTap,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            minHeight: 44,
-          ),
+          constraints: const BoxConstraints(minHeight: 44),
           child: Padding(
             padding: EdgeInsets.all(MinqTokens.spacing(3)),
             child: Row(
@@ -607,7 +605,9 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
               ),
               // Title
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: MinqTokens.spacing(3)),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MinqTokens.spacing(3),
+                ),
                 child: Row(
                   children: [
                     Text(
@@ -704,7 +704,8 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
                             // TODO: Implement data export
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content: Text('データエクスポート機能は準備中です')),
+                                content: Text('データエクスポート機能は準備中です'),
+                              ),
                             );
                           },
                         ),
@@ -712,8 +713,9 @@ class _AdvancedSettingsSheet extends ConsumerWidget {
                           title: '利用規約',
                           subtitle: 'サービス利用規約を確認',
                           icon: Icons.description_outlined,
-                          onTap: () =>
-                              navigation.goToPolicy(PolicyDocumentId.terms),
+                          onTap:
+                              () =>
+                                  navigation.goToPolicy(PolicyDocumentId.terms),
                         ),
                         const _SettingsTile(
                           title: 'アプリバージョン',

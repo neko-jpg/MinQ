@@ -7,11 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(
-    const ProviderScope(
-      child: ScreenshotGeneratorApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: ScreenshotGeneratorApp()));
 }
 
 class ScreenshotGeneratorApp extends StatelessWidget {
@@ -103,9 +99,10 @@ class _ScreenshotGeneratorScreenState extends State<ScreenshotGeneratorScreen> {
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: _isDark
-                    ? [Colors.blue.shade900, Colors.purple.shade900]
-                    : [Colors.blue.shade400, Colors.purple.shade400],
+                colors:
+                    _isDark
+                        ? [Colors.blue.shade900, Colors.purple.shade900]
+                        : [Colors.blue.shade400, Colors.purple.shade400],
               ),
             ),
             child: Column(
@@ -122,10 +119,7 @@ class _ScreenshotGeneratorScreenState extends State<ScreenshotGeneratorScreen> {
                 const SizedBox(height: 8),
                 Text(
                   config.description,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.white70,
-                  ),
+                  style: const TextStyle(fontSize: 18, color: Colors.white70),
                 ),
               ],
             ),
@@ -152,24 +146,26 @@ class _ScreenshotGeneratorScreenState extends State<ScreenshotGeneratorScreen> {
           children: [
             IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: _currentIndex > 0
-                  ? () {
-                      setState(() {
-                        _currentIndex--;
-                      });
-                    }
-                  : null,
+              onPressed:
+                  _currentIndex > 0
+                      ? () {
+                        setState(() {
+                          _currentIndex--;
+                        });
+                      }
+                      : null,
             ),
             Text('${_currentIndex + 1} / ${_screenshots.length}'),
             IconButton(
               icon: const Icon(Icons.arrow_forward),
-              onPressed: _currentIndex < _screenshots.length - 1
-                  ? () {
-                      setState(() {
-                        _currentIndex++;
-                      });
-                    }
-                  : null,
+              onPressed:
+                  _currentIndex < _screenshots.length - 1
+                      ? () {
+                        setState(() {
+                          _currentIndex++;
+                        });
+                      }
+                      : null,
             ),
           ],
         ),

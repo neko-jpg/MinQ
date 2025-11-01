@@ -7,35 +7,36 @@ import 'package:minq/core/storage/local_storage_service.dart';
 
 /// Comprehensive user behavior analytics service
 class UserBehaviorAnalytics {
-  static final UserBehaviorAnalytics _instance = UserBehaviorAnalytics._internal();
+  static final UserBehaviorAnalytics _instance =
+      UserBehaviorAnalytics._internal();
   factory UserBehaviorAnalytics() => _instance;
   UserBehaviorAnalytics._internal();
 
   final AnalyticsService _analytics = AnalyticsService();
   final LocalStorageService _storage = LocalStorageService();
-  
+
   // Session tracking
   DateTime? _sessionStart;
   String? _currentSessionId;
   final List<UserAction> _sessionActions = [];
-  
+
   // Screen tracking
   String? _currentScreen;
   DateTime? _screenStartTime;
   final Map<String, ScreenMetrics> _screenMetrics = {};
-  
+
   // Feature usage tracking
   final Map<String, FeatureUsage> _featureUsage = {};
-  
+
   // User journey tracking
   final List<String> _userJourney = [];
   final Map<String, UserFlow> _userFlows = {};
-  
+
   // Engagement tracking
   int _totalSessions = 0;
   Duration _totalSessionTime = Duration.zero;
   DateTime? _lastActiveTime;
-  
+
   // Funnel tracking
   final Map<String, FunnelStep> _activeFunnels = {};
 
@@ -43,7 +44,7 @@ class UserBehaviorAnalytics {
   Future<void> initialize() async {
     await _loadStoredData();
     _startNewSession();
-    
+
     debugPrint('UserBehaviorAnalytics initialized');
   }
 
@@ -53,7 +54,7 @@ class UserBehaviorAnalytics {
     _currentSessionId = _generateSessionId();
     _sessionActions.clear();
     _totalSessions++;
-    
+
     _trackEvent('session_start', {
       'session_id': _currentSessionId,
       'session_number': _totalSessions,
@@ -63,10 +64,10 @@ class UserBehaviorAnalytics {
   /// End current session
   Future<void> endSession() async {
     if (_sessionStart == null || _currentSessionId == null) return;
-    
+
     final sessionDuration = DateTime.now().difference(_sessionStart!);
     _totalSessionTime += sessionDuration;
-    
+
     final sessionData = {
       'session_id': _currentSessionId,
       'duration_seconds': sessionDuration.inSeconds,
@@ -74,33 +75,34 @@ class UserBehaviorAnalytics {
       'screens_visited': _screenMetrics.keys.length,
       'features_used': _featureUsage.keys.length,
     };
-    
+
     await _trackEvent('session_end', sessionData);
     await _storage.storeSessionData(_currentSessionId!, sessionData);
-    
+
     _sessionStart = null;
     _currentSessionId = null;
   }
 
   /// Track screen view
-  Future<void> trackScreenView(String screenName, {
+  Future<void> trackScreenView(
+    String screenName, {
     Map<String, dynamic>? parameters,
   }) async {
     // End previous screen tracking
     if (_currentScreen != null && _screenStartTime != null) {
       await _endScreenTracking();
     }
-    
+
     // Start new screen tracking
     _currentScreen = screenName;
     _screenStartTime = DateTime.now();
-    
+
     // Add to user journey
     _userJourney.add(screenName);
     if (_userJourney.length > 50) {
       _userJourney.removeAt(0);
     }
-    
+
     await _trackEvent('screen_view', {
       'screen_name': screenName,
       'parameters': parameters ?? {},
@@ -109,7 +111,8 @@ class UserBehaviorAnalytics {
   }
 
   /// Track user action
-  Future<void> trackUserAction(String action, {
+  Future<void> trackUserAction(
+    String action, {
     Map<String, dynamic>? properties,
     String? category,
   }) async {
@@ -121,15 +124,15 @@ class UserBehaviorAnalytics {
       screenName: _currentScreen,
       sessionId: _currentSessionId,
     );
-    
+
     _sessionActions.add(userAction);
     _lastActiveTime = DateTime.now();
-    
+
     // Track feature usage
     if (category != null) {
       _trackFeatureUsage(category, action);
     }
-    
+
     await _trackEvent('user_action', {
       'action': action,
       'category': category,
@@ -141,37 +144,47 @@ class UserBehaviorAnalytics {
 
   /// Track feature usage
   void _trackFeatureUsage(String feature, String action) {
-    final usage = _featureUsage.putIfAbsent(feature, () => FeatureUsage(
-      featureName: feature,
-      firstUsed: DateTime.now(),
-      totalUsage: 0,
-      lastUsed: DateTime.now(),
-    ));
-    
+    final usage = _featureUsage.putIfAbsent(
+      feature,
+      () => FeatureUsage(
+        featureName: feature,
+        firstUsed: DateTime.now(),
+        totalUsage: 0,
+        lastUsed: DateTime.now(),
+      ),
+    );
+
     usage.totalUsage++;
     usage.lastUsed = DateTime.now();
-    
+
     // Track specific actions within feature
     usage.actions.putIfAbsent(action, () => 0);
     usage.actions[action] = usage.actions[action]! + 1;
   }
 
   /// Track conversion funnel step
-  Future<void> trackFunnelStep(String funnelName, String stepName, {
+  Future<void> trackFunnelStep(
+    String funnelName,
+    String stepName, {
     Map<String, dynamic>? properties,
   }) async {
-    final funnel = _activeFunnels.putIfAbsent(funnelName, () => FunnelStep(
-      funnelName: funnelName,
-      steps: [],
-      startTime: DateTime.now(),
-    ));
-    
-    funnel.steps.add(FunnelStepData(
-      stepName: stepName,
-      timestamp: DateTime.now(),
-      properties: properties ?? {},
-    ));
-    
+    final funnel = _activeFunnels.putIfAbsent(
+      funnelName,
+      () => FunnelStep(
+        funnelName: funnelName,
+        steps: [],
+        startTime: DateTime.now(),
+      ),
+    );
+
+    funnel.steps.add(
+      FunnelStepData(
+        stepName: stepName,
+        timestamp: DateTime.now(),
+        properties: properties ?? {},
+      ),
+    );
+
     await _trackEvent('funnel_step', {
       'funnel_name': funnelName,
       'step_name': stepName,
@@ -182,15 +195,16 @@ class UserBehaviorAnalytics {
   }
 
   /// Complete conversion funnel
-  Future<void> completeFunnel(String funnelName, {
+  Future<void> completeFunnel(
+    String funnelName, {
     Map<String, dynamic>? properties,
   }) async {
     final funnel = _activeFunnels.remove(funnelName);
     if (funnel == null) return;
-    
+
     final completionTime = DateTime.now();
     final totalDuration = completionTime.difference(funnel.startTime);
-    
+
     await _trackEvent('funnel_completed', {
       'funnel_name': funnelName,
       'total_steps': funnel.steps.length,
@@ -201,7 +215,9 @@ class UserBehaviorAnalytics {
   }
 
   /// Track user engagement
-  Future<void> trackEngagement(String engagementType, double value, {
+  Future<void> trackEngagement(
+    String engagementType,
+    double value, {
     Map<String, dynamic>? context,
   }) async {
     await _trackEvent('user_engagement', {
@@ -213,7 +229,9 @@ class UserBehaviorAnalytics {
   }
 
   /// Track error or issue
-  Future<void> trackUserIssue(String issueType, String description, {
+  Future<void> trackUserIssue(
+    String issueType,
+    String description, {
     Map<String, dynamic>? context,
   }) async {
     await _trackEvent('user_issue', {
@@ -228,26 +246,27 @@ class UserBehaviorAnalytics {
   /// Get user behavior insights
   Future<UserBehaviorInsights> getUserBehaviorInsights() async {
     final sessionData = await _storage.getSessionData();
-    
+
     // Calculate engagement metrics
-    final avgSessionDuration = _totalSessions > 0 
-        ? _totalSessionTime.inSeconds / _totalSessions 
-        : 0.0;
-    
+    final avgSessionDuration =
+        _totalSessions > 0 ? _totalSessionTime.inSeconds / _totalSessions : 0.0;
+
     // Most used features
-    final sortedFeatures = _featureUsage.values.toList()
-      ..sort((a, b) => b.totalUsage.compareTo(a.totalUsage));
-    
+    final sortedFeatures =
+        _featureUsage.values.toList()
+          ..sort((a, b) => b.totalUsage.compareTo(a.totalUsage));
+
     // Most visited screens
-    final sortedScreens = _screenMetrics.values.toList()
-      ..sort((a, b) => b.totalVisits.compareTo(a.totalVisits));
-    
+    final sortedScreens =
+        _screenMetrics.values.toList()
+          ..sort((a, b) => b.totalVisits.compareTo(a.totalVisits));
+
     // User journey patterns
     final journeyPatterns = _analyzeUserJourneyPatterns();
-    
+
     // Engagement score
     final engagementScore = _calculateEngagementScore();
-    
+
     return UserBehaviorInsights(
       totalSessions: _totalSessions,
       averageSessionDuration: avgSessionDuration,
@@ -263,13 +282,15 @@ class UserBehaviorAnalytics {
   /// Get feature adoption metrics
   Map<String, FeatureAdoption> getFeatureAdoption() {
     final adoption = <String, FeatureAdoption>{};
-    
+
     for (final feature in _featureUsage.values) {
-      final daysSinceFirstUse = DateTime.now().difference(feature.firstUsed).inDays;
-      final usageFrequency = daysSinceFirstUse > 0 
-          ? feature.totalUsage / daysSinceFirstUse 
-          : feature.totalUsage.toDouble();
-      
+      final daysSinceFirstUse =
+          DateTime.now().difference(feature.firstUsed).inDays;
+      final usageFrequency =
+          daysSinceFirstUse > 0
+              ? feature.totalUsage / daysSinceFirstUse
+              : feature.totalUsage.toDouble();
+
       adoption[feature.featureName] = FeatureAdoption(
         featureName: feature.featureName,
         adoptionDate: feature.firstUsed,
@@ -278,7 +299,7 @@ class UserBehaviorAnalytics {
         lastUsed: feature.lastUsed,
       );
     }
-    
+
     return adoption;
   }
 
@@ -286,26 +307,27 @@ class UserBehaviorAnalytics {
   List<UserFlowStep> getUserFlowAnalysis(String flowName) {
     final flow = _userFlows[flowName];
     if (flow == null) return [];
-    
+
     return flow.steps;
   }
 
   /// Analyze user retention
   Future<RetentionAnalysis> analyzeRetention() async {
     final sessionData = await _storage.getSessionData();
-    
+
     // Group sessions by day
     final sessionsByDay = <String, int>{};
     for (final session in sessionData) {
-      final date = DateTime.parse(session['timestamp']).toIso8601String().split('T')[0];
+      final date =
+          DateTime.parse(session['timestamp']).toIso8601String().split('T')[0];
       sessionsByDay[date] = (sessionsByDay[date] ?? 0) + 1;
     }
-    
+
     // Calculate retention metrics
     final totalDays = sessionsByDay.length;
     final activeDays = sessionsByDay.values.where((count) => count > 0).length;
     final retentionRate = totalDays > 0 ? activeDays / totalDays : 0.0;
-    
+
     return RetentionAnalysis(
       totalDays: totalDays,
       activeDays: activeDays,
@@ -317,22 +339,25 @@ class UserBehaviorAnalytics {
   /// End screen tracking
   Future<void> _endScreenTracking() async {
     if (_currentScreen == null || _screenStartTime == null) return;
-    
+
     final duration = DateTime.now().difference(_screenStartTime!);
-    
-    final metrics = _screenMetrics.putIfAbsent(_currentScreen!, () => ScreenMetrics(
-      screenName: _currentScreen!,
-      totalVisits: 0,
-      totalTime: Duration.zero,
-      averageTime: Duration.zero,
-    ));
-    
+
+    final metrics = _screenMetrics.putIfAbsent(
+      _currentScreen!,
+      () => ScreenMetrics(
+        screenName: _currentScreen!,
+        totalVisits: 0,
+        totalTime: Duration.zero,
+        averageTime: Duration.zero,
+      ),
+    );
+
     metrics.totalVisits++;
     metrics.totalTime += duration;
     metrics.averageTime = Duration(
       milliseconds: metrics.totalTime.inMilliseconds ~/ metrics.totalVisits,
     );
-    
+
     await _trackEvent('screen_exit', {
       'screen_name': _currentScreen,
       'duration_seconds': duration.inSeconds,
@@ -343,41 +368,50 @@ class UserBehaviorAnalytics {
   /// Analyze user journey patterns
   List<JourneyPattern> _analyzeUserJourneyPatterns() {
     final patterns = <String, int>{};
-    
+
     // Look for common 3-step patterns
     for (int i = 0; i < _userJourney.length - 2; i++) {
-      final pattern = '${_userJourney[i]} -> ${_userJourney[i + 1]} -> ${_userJourney[i + 2]}';
+      final pattern =
+          '${_userJourney[i]} -> ${_userJourney[i + 1]} -> ${_userJourney[i + 2]}';
       patterns[pattern] = (patterns[pattern] ?? 0) + 1;
     }
-    
+
     // Sort by frequency
-    final sortedPatterns = patterns.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    
-    return sortedPatterns.take(10).map((entry) => JourneyPattern(
-      pattern: entry.key,
-      frequency: entry.value,
-    )).toList();
+    final sortedPatterns =
+        patterns.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
+    return sortedPatterns
+        .take(10)
+        .map(
+          (entry) => JourneyPattern(pattern: entry.key, frequency: entry.value),
+        )
+        .toList();
   }
 
   /// Calculate engagement score
   double _calculateEngagementScore() {
     if (_totalSessions == 0) return 0.0;
-    
+
     final avgSessionDuration = _totalSessionTime.inMinutes / _totalSessions;
     final actionsPerSession = _sessionActions.length / _totalSessions;
     final featuresUsed = _featureUsage.length;
-    
+
     // Weighted engagement score (0-100)
-    final durationScore = (avgSessionDuration / 30).clamp(0.0, 1.0) * 40; // Max 40 points
-    final actionScore = (actionsPerSession / 20).clamp(0.0, 1.0) * 30; // Max 30 points
-    final featureScore = (featuresUsed / 10).clamp(0.0, 1.0) * 30; // Max 30 points
-    
+    final durationScore =
+        (avgSessionDuration / 30).clamp(0.0, 1.0) * 40; // Max 40 points
+    final actionScore =
+        (actionsPerSession / 20).clamp(0.0, 1.0) * 30; // Max 30 points
+    final featureScore =
+        (featuresUsed / 10).clamp(0.0, 1.0) * 30; // Max 30 points
+
     return durationScore + actionScore + featureScore;
   }
 
   /// Track event to analytics
-  Future<void> _trackEvent(String eventName, Map<String, dynamic> properties) async {
+  Future<void> _trackEvent(
+    String eventName,
+    Map<String, dynamic> properties,
+  ) async {
     await _analytics.trackEvent(eventName, properties);
   }
 
@@ -487,10 +521,7 @@ class UserFlow {
   final String flowName;
   final List<UserFlowStep> steps;
 
-  UserFlow({
-    required this.flowName,
-    required this.steps,
-  });
+  UserFlow({required this.flowName, required this.steps});
 }
 
 class UserFlowStep {
@@ -550,10 +581,7 @@ class JourneyPattern {
   final String pattern;
   final int frequency;
 
-  JourneyPattern({
-    required this.pattern,
-    required this.frequency,
-  });
+  JourneyPattern({required this.pattern, required this.frequency});
 }
 
 /// Retention analysis results

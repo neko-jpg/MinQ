@@ -106,8 +106,9 @@ class _SurveyWidgetState extends State<SurveyWidget> {
           LinearProgressIndicator(
             value: (_currentQuestionIndex + 1) / widget.survey.questions.length,
             backgroundColor: MinqTokens.background,
-            valueColor:
-                const AlwaysStoppedAnimation<Color>(MinqTokens.brandPrimary),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              MinqTokens.brandPrimary,
+            ),
           ),
           SizedBox(height: MinqTokens.spacing(1)),
           Text(
@@ -136,9 +137,11 @@ class _SurveyWidgetState extends State<SurveyWidget> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: _canProceed ? _nextQuestion : null,
-                  child: Text(_isLastQuestion
-                      ? AppLocalizations.of(context).submit
-                      : AppLocalizations.of(context).next),
+                  child: Text(
+                    _isLastQuestion
+                        ? AppLocalizations.of(context).submit
+                        : AppLocalizations.of(context).next,
+                  ),
                 ),
               ),
             ],
@@ -162,7 +165,9 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         if (question.isRequired)
           Text(
             AppLocalizations.of(context).required,
-            style: MinqTokens.bodySmall.copyWith(color: const Color(0xFFEF4444)),
+            style: MinqTokens.bodySmall.copyWith(
+              color: const Color(0xFFEF4444),
+            ),
           ),
         SizedBox(height: MinqTokens.spacing(4)),
         _buildQuestionInput(question),
@@ -185,56 +190,62 @@ class _SurveyWidgetState extends State<SurveyWidget> {
 
   Widget _buildMultipleChoice(SurveyQuestion question) {
     return Column(
-      children: question.options!.map((option) {
-        final isSelected = _answers[question.id] == option;
-        return Padding(
-          padding: EdgeInsets.only(bottom: MinqTokens.spacing(2)),
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                _answers[question.id] = option;
-              });
-            },
-            borderRadius: MinqTokens.cornerMedium(),
-            child: Container(
-              padding: EdgeInsets.all(MinqTokens.spacing(4)),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? MinqTokens.brandPrimary.withAlpha((255 * 0.1).round())
-                    : MinqTokens.background,
+      children:
+          question.options!.map((option) {
+            final isSelected = _answers[question.id] == option;
+            return Padding(
+              padding: EdgeInsets.only(bottom: MinqTokens.spacing(2)),
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _answers[question.id] = option;
+                  });
+                },
                 borderRadius: MinqTokens.cornerMedium(),
-                border: Border.all(
-                  color: isSelected
-                      ? MinqTokens.brandPrimary
-                      : const Color(0xFFE5E7EB),
-                  width: isSelected ? 2 : 1,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    isSelected
-                        ? Icons.radio_button_checked
-                        : Icons.radio_button_unchecked,
-                    color: isSelected
-                        ? MinqTokens.brandPrimary
-                        : MinqTokens.textSecondary,
-                  ),
-                  SizedBox(width: MinqTokens.spacing(2)),
-                  Expanded(
-                    child: Text(
-                      option,
-                      style: MinqTokens.bodyLarge.copyWith(
-                        color: MinqTokens.textPrimary,
-                      ),
+                child: Container(
+                  padding: EdgeInsets.all(MinqTokens.spacing(4)),
+                  decoration: BoxDecoration(
+                    color:
+                        isSelected
+                            ? MinqTokens.brandPrimary.withAlpha(
+                              (255 * 0.1).round(),
+                            )
+                            : MinqTokens.background,
+                    borderRadius: MinqTokens.cornerMedium(),
+                    border: Border.all(
+                      color:
+                          isSelected
+                              ? MinqTokens.brandPrimary
+                              : const Color(0xFFE5E7EB),
+                      width: isSelected ? 2 : 1,
                     ),
                   ),
-                ],
+                  child: Row(
+                    children: [
+                      Icon(
+                        isSelected
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        color:
+                            isSelected
+                                ? MinqTokens.brandPrimary
+                                : MinqTokens.textSecondary,
+                      ),
+                      SizedBox(width: MinqTokens.spacing(2)),
+                      Expanded(
+                        child: Text(
+                          option,
+                          style: MinqTokens.bodyLarge.copyWith(
+                            color: MinqTokens.textPrimary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-        );
-      }).toList(),
+            );
+          }).toList(),
     );
   }
 
@@ -257,12 +268,14 @@ class _SurveyWidgetState extends State<SurveyWidget> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: isSelected ? MinqTokens.brandPrimary : MinqTokens.background,
+              color:
+                  isSelected ? MinqTokens.brandPrimary : MinqTokens.background,
               shape: BoxShape.circle,
               border: Border.all(
-                color: isSelected
-                    ? MinqTokens.brandPrimary
-                    : const Color(0xFFE5E7EB),
+                color:
+                    isSelected
+                        ? MinqTokens.brandPrimary
+                        : const Color(0xFFE5E7EB),
               ),
             ),
             child: Center(
@@ -284,9 +297,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
     return TextField(
       decoration: InputDecoration(
         hintText: AppLocalizations.of(context).pleaseEnterAnswer,
-        border: OutlineInputBorder(
-          borderRadius: MinqTokens.cornerMedium(),
-        ),
+        border: OutlineInputBorder(borderRadius: MinqTokens.cornerMedium()),
       ),
       maxLines: 3,
       onChanged: (value) {
@@ -301,12 +312,12 @@ class _SurveyWidgetState extends State<SurveyWidget> {
     return Row(
       children: [
         Expanded(
-            child:
-                _buildYesNoButton(AppLocalizations.of(context).yes, true)),
+          child: _buildYesNoButton(AppLocalizations.of(context).yes, true),
+        ),
         SizedBox(width: MinqTokens.spacing(4)),
         Expanded(
-            child:
-                _buildYesNoButton(AppLocalizations.of(context).no, false)),
+          child: _buildYesNoButton(AppLocalizations.of(context).no, false),
+        ),
       ],
     );
   }
@@ -327,9 +338,9 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         shape: RoundedRectangleBorder(
           borderRadius: MinqTokens.cornerMedium(),
           side: BorderSide(
-              color: isSelected
-                  ? MinqTokens.brandPrimary
-                  : const Color(0xFFE5E7EB)),
+            color:
+                isSelected ? MinqTokens.brandPrimary : const Color(0xFFE5E7EB),
+          ),
         ),
       ),
       child: Text(label),
@@ -398,39 +409,39 @@ class SurveyResponse {
 /// サンプルアンケート
 class SampleSurveys {
   static Survey userSatisfaction(BuildContext context) => Survey(
-        id: 'user_satisfaction_2025',
-        title: AppLocalizations.of(context).userSatisfactionSurvey,
-        description: AppLocalizations.of(context).userSatisfactionDescription,
-        questions: [
-          SurveyQuestion(
-            id: 'q1',
-            text: AppLocalizations.of(context).usabilityRating,
-            type: SurveyQuestionType.rating,
-            maxRating: 5,
-          ),
-          SurveyQuestion(
-            id: 'q2',
-            text: AppLocalizations.of(context).mostLikedFeature,
-            type: SurveyQuestionType.multipleChoice,
-            options: [
-              AppLocalizations.of(context).questManagement,
-              AppLocalizations.of(context).pairFeature,
-              AppLocalizations.of(context).statisticsGraphs,
-              AppLocalizations.of(context).notificationFeature,
-              AppLocalizations.of(context).other
-            ],
-          ),
-          SurveyQuestion(
-            id: 'q3',
-            text: AppLocalizations.of(context).wouldRecommendMinq,
-            type: SurveyQuestionType.yesNo,
-          ),
-          SurveyQuestion(
-            id: 'q4',
-            text: AppLocalizations.of(context).improvementSuggestions,
-            type: SurveyQuestionType.text,
-            isRequired: false,
-          ),
+    id: 'user_satisfaction_2025',
+    title: AppLocalizations.of(context).userSatisfactionSurvey,
+    description: AppLocalizations.of(context).userSatisfactionDescription,
+    questions: [
+      SurveyQuestion(
+        id: 'q1',
+        text: AppLocalizations.of(context).usabilityRating,
+        type: SurveyQuestionType.rating,
+        maxRating: 5,
+      ),
+      SurveyQuestion(
+        id: 'q2',
+        text: AppLocalizations.of(context).mostLikedFeature,
+        type: SurveyQuestionType.multipleChoice,
+        options: [
+          AppLocalizations.of(context).questManagement,
+          AppLocalizations.of(context).pairFeature,
+          AppLocalizations.of(context).statisticsGraphs,
+          AppLocalizations.of(context).notificationFeature,
+          AppLocalizations.of(context).other,
         ],
-      );
+      ),
+      SurveyQuestion(
+        id: 'q3',
+        text: AppLocalizations.of(context).wouldRecommendMinq,
+        type: SurveyQuestionType.yesNo,
+      ),
+      SurveyQuestion(
+        id: 'q4',
+        text: AppLocalizations.of(context).improvementSuggestions,
+        type: SurveyQuestionType.text,
+        isRequired: false,
+      ),
+    ],
+  );
 }

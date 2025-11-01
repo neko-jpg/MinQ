@@ -227,7 +227,9 @@ class _AnimatedCheckboxState extends State<AnimatedCheckbox>
                           BoxShadow(
                             color: (widget.activeColor ??
                                     theme.progressComplete)
-                                .withAlpha((_glowAnimation.value * 102).round()),
+                                .withAlpha(
+                                  (_glowAnimation.value * 102).round(),
+                                ),
                             blurRadius: 8 * _glowAnimation.value,
                             spreadRadius: 2 * _glowAnimation.value,
                           ),

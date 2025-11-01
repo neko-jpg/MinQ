@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'package:minq/core/gamification/league_system.dart';
 import 'package:minq/domain/gamification/league.dart';
+import 'package:minq/presentation/theme/theme_extensions.dart';
 
 /// Full-screen league promotion animation
 class LeaguePromotionAnimation extends StatefulWidget {
@@ -17,7 +18,8 @@ class LeaguePromotionAnimation extends StatefulWidget {
   });
 
   @override
-  State<LeaguePromotionAnimation> createState() => _LeaguePromotionAnimationState();
+  State<LeaguePromotionAnimation> createState() =>
+      _LeaguePromotionAnimationState();
 }
 
 class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
@@ -25,7 +27,7 @@ class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
   late AnimationController _mainController;
   late AnimationController _particleController;
   late AnimationController _textController;
-  
+
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotationAnimation;
   late Animation<double> _fadeAnimation;
@@ -35,17 +37,17 @@ class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
   @override
   void initState() {
     super.initState();
-    
+
     _mainController = AnimationController(
       duration: const Duration(milliseconds: 3000),
       vsync: this,
     );
-    
+
     _particleController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-    
+
     _textController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -56,62 +58,52 @@ class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
   }
 
   void _setupAnimations() {
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _mainController,
-      curve: const Interval(0.0, 0.4, curve: Curves.elasticOut),
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _mainController,
+        curve: const Interval(0.0, 0.4, curve: Curves.elasticOut),
+      ),
+    );
 
-    _rotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 2 * math.pi,
-    ).animate(CurvedAnimation(
-      parent: _mainController,
-      curve: const Interval(0.2, 0.8, curve: Curves.easeInOut),
-    ));
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 2 * math.pi).animate(
+      CurvedAnimation(
+        parent: _mainController,
+        curve: const Interval(0.2, 0.8, curve: Curves.easeInOut),
+      ),
+    );
 
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeIn,
-    ));
+    ).animate(CurvedAnimation(parent: _textController, curve: Curves.easeIn));
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: Curves.elasticOut,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _textController, curve: Curves.elasticOut),
+    );
 
-    _particleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _particleController,
-      curve: Curves.easeOut,
-    ));
+    _particleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _particleController, curve: Curves.easeOut),
+    );
   }
 
   void _startAnimation() async {
     // Haptic feedback
     HapticFeedback.heavyImpact();
-    
+
     // Start main animation
     _mainController.forward();
-    
+
     // Start particle animation after a delay
     await Future.delayed(const Duration(milliseconds: 500));
     _particleController.forward();
-    
+
     // Start text animation
     await Future.delayed(const Duration(milliseconds: 800));
     _textController.forward();
-    
+
     // Complete after all animations
     await Future.delayed(const Duration(milliseconds: 4000));
     if (widget.onComplete != null) {
@@ -146,10 +138,7 @@ class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
               gradient: RadialGradient(
                 center: Alignment.center,
                 radius: 1.0,
-                colors: [
-                  toLeague.color.withOpacity(0.3),
-                  Colors.black,
-                ],
+                colors: [toLeague.color.withOpacity(0.3), Colors.black],
               ),
             ),
           ),
@@ -228,9 +217,9 @@ class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            
+
                             const SizedBox(height: 16),
-                            
+
                             RichText(
                               textAlign: TextAlign.center,
                               text: TextSpan(
@@ -251,9 +240,9 @@ class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
                                 ],
                               ),
                             ),
-                            
+
                             const SizedBox(height: 24),
-                            
+
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
@@ -304,11 +293,7 @@ class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
             right: 16,
             child: IconButton(
               onPressed: widget.onComplete,
-              icon: const Icon(
-                Icons.close,
-                color: Colors.white,
-                size: 28,
-              ),
+              icon: const Icon(Icons.close, color: Colors.white, size: 28),
             ),
           ),
         ],
@@ -323,9 +308,7 @@ class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.3),
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.3)),
       ),
       child: Column(
         children: [
@@ -336,30 +319,28 @@ class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
               fontWeight: FontWeight.bold,
             ),
           ),
-          
+
           const SizedBox(height: 12),
-          
-          ...league.rewards.unlocks.map((unlock) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color: league.color,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    _getUnlockDescription(unlock),
-                    style: context.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.9),
+
+          ...league.rewards.unlocks.map(
+            (unlock) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Icon(Icons.check_circle, color: league.color, size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _getUnlockDescription(unlock),
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: Colors.white.withOpacity(0.9),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          )),
+          ),
         ],
       ),
     );
@@ -399,10 +380,8 @@ class ParticlesPainter extends CustomPainter {
   final Color color;
   final List<Particle> particles;
 
-  ParticlesPainter({
-    required this.animation,
-    required this.color,
-  }) : particles = List.generate(50, (index) => Particle()) {
+  ParticlesPainter({required this.animation, required this.color})
+    : particles = List.generate(50, (index) => Particle()) {
     animation.addListener(() {
       for (final particle in particles) {
         particle.update(animation.value);
@@ -412,19 +391,17 @@ class ParticlesPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color.withOpacity(0.7)
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = color.withOpacity(0.7)
+          ..style = PaintingStyle.fill;
 
     for (final particle in particles) {
       final opacity = (1.0 - particle.life) * 0.8;
       paint.color = color.withOpacity(opacity);
-      
+
       canvas.drawCircle(
-        Offset(
-          particle.x * size.width,
-          particle.y * size.height,
-        ),
+        Offset(particle.x * size.width, particle.y * size.height),
         particle.size,
         paint,
       );
@@ -445,18 +422,18 @@ class Particle {
   double size;
 
   Particle()
-      : x = math.Random().nextDouble(),
-        y = math.Random().nextDouble(),
-        vx = (math.Random().nextDouble() - 0.5) * 0.02,
-        vy = (math.Random().nextDouble() - 0.5) * 0.02,
-        life = 0.0,
-        size = math.Random().nextDouble() * 4 + 1;
+    : x = math.Random().nextDouble(),
+      y = math.Random().nextDouble(),
+      vx = (math.Random().nextDouble() - 0.5) * 0.02,
+      vy = (math.Random().nextDouble() - 0.5) * 0.02,
+      life = 0.0,
+      size = math.Random().nextDouble() * 4 + 1;
 
   void update(double animationValue) {
     life = animationValue;
     x += vx;
     y += vy;
-    
+
     // Wrap around edges
     if (x < 0) x = 1;
     if (x > 1) x = 0;

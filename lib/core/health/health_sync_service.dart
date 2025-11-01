@@ -58,8 +58,7 @@ class HealthSyncService {
     ];
 
     try {
-      List<HealthDataPoint> healthData =
-          await _health.getHealthDataFromTypes(
+      List<HealthDataPoint> healthData = await _health.getHealthDataFromTypes(
         startTime: startDate,
         endTime: endDate,
         types: types,

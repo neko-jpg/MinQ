@@ -41,9 +41,7 @@ class NotificationNavigationHandler {
           // ペアチャット画面へ - 詳細画面なのでcontext.push
           final pairId = payload?['pairId'] as String?;
           if (pairId != null) {
-            context.push(
-              AppRoutes.pairChat.replaceFirst(':pairId', pairId),
-            );
+            context.push(AppRoutes.pairChat.replaceFirst(':pairId', pairId));
           }
           break;
 

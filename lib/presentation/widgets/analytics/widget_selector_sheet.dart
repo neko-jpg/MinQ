@@ -15,7 +15,8 @@ class WidgetSelectorSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final availableWidgets = ref.read(dashboardServiceProvider).getAvailableWidgetTypes();
+    final availableWidgets =
+        ref.read(dashboardServiceProvider).getAvailableWidgetTypes();
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
@@ -25,10 +26,7 @@ class WidgetSelectorSheet extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Text(
-                'ウィジェットを追加',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              Text('ウィジェットを追加', style: Theme.of(context).textTheme.titleLarge),
               const Spacer(),
               IconButton(
                 icon: const Icon(Icons.close),
@@ -57,9 +55,15 @@ class WidgetSelectorSheet extends ConsumerWidget {
     );
   }
 
-  Widget _buildWidgetCard(BuildContext context, WidgetRef ref, DashboardWidgetType widgetType) {
-    final description = ref.read(dashboardServiceProvider).getWidgetTypeDescription(widgetType);
-    
+  Widget _buildWidgetCard(
+    BuildContext context,
+    WidgetRef ref,
+    DashboardWidgetType widgetType,
+  ) {
+    final description = ref
+        .read(dashboardServiceProvider)
+        .getWidgetTypeDescription(widgetType);
+
     return Card(
       elevation: 2,
       child: InkWell(
@@ -81,9 +85,9 @@ class WidgetSelectorSheet extends ConsumerWidget {
               const SizedBox(height: 8),
               Text(
                 _getWidgetTitle(widgetType),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -91,9 +95,9 @@ class WidgetSelectorSheet extends ConsumerWidget {
               const SizedBox(height: 4),
               Text(
                 description,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

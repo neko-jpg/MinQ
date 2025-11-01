@@ -75,11 +75,14 @@ import 'package:minq/domain/recommendation/daily_focus_service.dart';
 import 'package:minq/domain/recommendation/habit_ai_suggestion_service.dart';
 import 'package:minq/domain/user/user.dart' as minq_user;
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Export navigation provider
-export 'package:minq/core/navigation/navigation_use_case.dart' show navigationUseCaseProvider;
+export 'package:minq/core/navigation/navigation_use_case.dart'
+    show navigationUseCaseProvider;
 export 'package:minq/core/network/network_status_provider.dart'
-    show networkStatusProvider,
+    show
+        networkStatusProvider,
         networkStatusServiceProvider,
         NetworkStatusState,
         NetworkStatusNotifier;
@@ -236,6 +239,10 @@ final localPreferencesServiceProvider = Provider<LocalPreferencesService>(
   (_) => LocalPreferencesService(),
 );
 
+final sharedPreferencesProvider = FutureProvider<SharedPreferences>((ref) async {
+  return SharedPreferences.getInstance();
+});
+
 final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
   return ConnectivityService();
 });
@@ -324,12 +331,12 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
 });
 
 final referralServiceProvider = Provider<ReferralService>((ref) {
-  return ReferralService(
-    analytics: ref.watch(analyticsServiceProvider),
-  );
+  return ReferralService(analytics: ref.watch(analyticsServiceProvider));
 });
 
-final failurePredictionServiceProvider = Provider<FailurePredictionService>((ref) {
+final failurePredictionServiceProvider = Provider<FailurePredictionService>((
+  ref,
+) {
   return FailurePredictionService(
     questLogRepository: ref.watch(questLogRepositoryProvider),
     aiService: ref.watch(tfliteUnifiedAIServiceProvider),
@@ -337,17 +344,20 @@ final failurePredictionServiceProvider = Provider<FailurePredictionService>((ref
   );
 });
 
-final smartNotificationServiceProvider = Provider<SmartNotificationService>((ref) {
+final smartNotificationServiceProvider = Provider<SmartNotificationService>((
+  ref,
+) {
   return SmartNotificationService(
     aiService: ref.watch(tfliteUnifiedAIServiceProvider),
   );
 });
 
-final notificationPersonalizationEngineProvider = Provider<NotificationPersonalizationEngine>((ref) {
-  return NotificationPersonalizationEngine(
-    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
-  );
-});
+final notificationPersonalizationEngineProvider =
+    Provider<NotificationPersonalizationEngine>((ref) {
+      return NotificationPersonalizationEngine(
+        aiService: ref.watch(tfliteUnifiedAIServiceProvider),
+      );
+    });
 
 final reEngagementServiceProvider = Provider<ReEngagementService>((ref) {
   return ReEngagementService();
@@ -369,18 +379,18 @@ final dataExportServiceProvider = Provider<DataExportService?>((ref) {
 
 final isarServiceProvider = Provider<IsarService>((ref) {
   final service = IsarService();
-  
+
   // Add disposal callback
   ref.onDispose(() async {
     await service.dispose();
   });
-  
+
   return service;
 });
 
 final isarProvider = FutureProvider<Isar>((ref) async {
   final isarService = ref.watch(isarServiceProvider);
-  
+
   return isarService.init(
     onProgress: (message, progress) {
       // Log initialization progress in debug mode
@@ -439,23 +449,25 @@ final pairRepositoryProvider = Provider<PairRepository?>((ref) {
   return PairRepository(firestore, storage);
 });
 
-final enhancedFirestoreServiceProvider = Provider<EnhancedFirestoreService?>((ref) {
+final enhancedFirestoreServiceProvider = Provider<EnhancedFirestoreService?>((
+  ref,
+) {
   final firestore = ref.watch(firestoreProvider);
   if (firestore == null) {
     return null;
   }
-  
+
   final service = EnhancedFirestoreService(
     firestore: firestore,
     retryConfig: RetryConfig.networkConfig,
     maxRequestsPerSecond: 10,
   );
-  
+
   // Add disposal callback
   ref.onDispose(() async {
     await service.dispose();
   });
-  
+
   return service;
 });
 
@@ -767,11 +779,11 @@ final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
   return logs.take(30).toList();
 });
 
-final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>(
-  (ref) {
-    return HabitAiSuggestionService();
-  },
-);
+final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>((
+  ref,
+) {
+  return HabitAiSuggestionService();
+});
 
 // UID provider removed - already exists above
 
@@ -833,9 +845,10 @@ final battleServiceProvider = Provider<BattleService>((ref) {
   return BattleService.instance;
 });
 
-final personalityDiagnosisServiceProvider = Provider<PersonalityDiagnosisService>((ref) {
-  return PersonalityDiagnosisService.instance;
-});
+final personalityDiagnosisServiceProvider =
+    Provider<PersonalityDiagnosisService>((ref) {
+      return PersonalityDiagnosisService.instance;
+    });
 
 final weeklyReportServiceProvider = Provider<WeeklyReportService>((ref) {
   return WeeklyReportService.instance;

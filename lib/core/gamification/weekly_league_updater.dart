@@ -16,6 +16,7 @@ class WeeklyLeagueUpdater {
 
   Timer? _weeklyTimer;
   bool _isProcessing = false;
+  final List<WeeklyUpdateRecord> _historyRecords = <WeeklyUpdateRecord>[];
 
   WeeklyLeagueUpdater(
     this._isar,
@@ -95,7 +96,9 @@ class WeeklyLeagueUpdater {
   }
 
   /// Send promotion notifications to users
-  Future<void> _sendPromotionNotifications(List<LeaguePromotion> promotions) async {
+  Future<void> _sendPromotionNotifications(
+    List<LeaguePromotion> promotions,
+  ) async {
     for (final promotion in promotions) {
       try {
         final fromLeague = LeagueSystem.leagues[promotion.fromLeague];
@@ -117,7 +120,9 @@ class WeeklyLeagueUpdater {
   }
 
   /// Send relegation notifications to users
-  Future<void> _sendRelegationNotifications(List<LeagueRelegation> relegations) async {
+  Future<void> _sendRelegationNotifications(
+    List<LeagueRelegation> relegations,
+  ) async {
     for (final relegation in relegations) {
       try {
         final fromLeague = LeagueSystem.leagues[relegation.fromLeague];
@@ -143,62 +148,63 @@ class WeeklyLeagueUpdater {
   Future<void> _resetWeeklyXP() async {
     await _isar.writeTxn(() async {
       final allUsers = await _isar.collection<LocalUser>().where().findAll();
-      
+
       for (final user in allUsers) {
         user.weeklyXP = 0;
         user.updatedAt = DateTime.now();
         user.needsSync = true;
       }
-      
+
       await _isar.collection<LocalUser>().putAll(allUsers);
     });
   }
 
   /// Record weekly update in database
   Future<void> _recordWeeklyUpdate(WeeklyLeagueUpdate update) async {
-    await _isar.writeTxn(() async {
-      final record = WeeklyUpdateRecord()
-        ..processedAt = update.processedAt
-        ..totalPromotions = update.totalPromotions
-        ..totalRelegations = update.totalRelegations
-        ..totalUsersProcessed = update.totalUsersProcessed
-        ..promotionDetails = update.promotions.map((p) => {
-          'userId': p.userId,
-          'fromLeague': p.fromLeague,
-          'toLeague': p.toLeague,
-          'xpEarned': p.xpEarned,
-        }).toList()
-        ..relegationDetails = update.relegations.map((r) => {
-          'userId': r.userId,
-          'fromLeague': r.fromLeague,
-          'toLeague': r.toLeague,
-          'weeklyXP': r.weeklyXP,
-        }).toList();
+    final record = WeeklyUpdateRecord(
+      processedAt: update.processedAt,
+      totalPromotions: update.totalPromotions,
+      totalRelegations: update.totalRelegations,
+      totalUsersProcessed: update.totalUsersProcessed,
+      promotionDetails: update.promotions
+          .map(
+            (p) => {
+              'userId': p.userId,
+              'fromLeague': p.fromLeague,
+              'toLeague': p.toLeague,
+              'xpEarned': p.xpEarned,
+            },
+          )
+          .toList(),
+      relegationDetails: update.relegations
+          .map(
+            (r) => {
+              'userId': r.userId,
+              'fromLeague': r.fromLeague,
+              'toLeague': r.toLeague,
+              'weeklyXP': r.weeklyXP,
+            },
+          )
+          .toList(),
+    );
 
-      await _isar.collection<WeeklyUpdateRecord>().put(record);
-    });
+    _historyRecords.insert(0, record);
+    if (_historyRecords.length > 50) {
+      _historyRecords.removeRange(50, _historyRecords.length);
+    }
   }
 
   /// Get weekly update history
   Future<List<WeeklyUpdateRecord>> getUpdateHistory({int limit = 10}) async {
-    return await _isar.collection<WeeklyUpdateRecord>()
-        .where()
-        .sortByProcessedAtDesc()
-        .limit(limit)
-        .findAll();
+    final effectiveLimit = limit.clamp(0, _historyRecords.length);
+    return _historyRecords.take(effectiveLimit).toList(growable: false);
   }
 
   /// Get next update time
   DateTime getNextUpdateTime() {
     final now = DateTime.now();
     final nextSunday = _getNextSunday(now);
-    return DateTime(
-      nextSunday.year,
-      nextSunday.month,
-      nextSunday.day,
-      23,
-      59,
-    );
+    return DateTime(nextSunday.year, nextSunday.month, nextSunday.day, 23, 59);
   }
 
   /// Check if update is currently in progress
@@ -211,16 +217,23 @@ class WeeklyLeagueUpdater {
   }
 }
 
-/// Isar collection for weekly update records
-@collection
+/// Simple record of weekly league updates kept in memory.
 class WeeklyUpdateRecord {
-  Id id = Isar.autoIncrement;
-  late DateTime processedAt;
-  late int totalPromotions;
-  late int totalRelegations;
-  late int totalUsersProcessed;
-  late List<Map<String, dynamic>> promotionDetails;
-  late List<Map<String, dynamic>> relegationDetails;
+  WeeklyUpdateRecord({
+    required this.processedAt,
+    required this.totalPromotions,
+    required this.totalRelegations,
+    required this.totalUsersProcessed,
+    required this.promotionDetails,
+    required this.relegationDetails,
+  });
+
+  final DateTime processedAt;
+  final int totalPromotions;
+  final int totalRelegations;
+  final int totalUsersProcessed;
+  final List<Map<String, dynamic>> promotionDetails;
+  final List<Map<String, dynamic>> relegationDetails;
 }
 
 /// Extension for notification service to handle league notifications
@@ -233,7 +246,9 @@ extension LeagueNotifications on NotificationChannels {
   }) async {
     // Implementation would depend on your notification system
     // This is a placeholder for the actual notification sending logic
-    print('Sending promotion notification: $userId promoted from $fromLeague to $toLeague');
+    print(
+      'Sending promotion notification: $userId promoted from $fromLeague to $toLeague',
+    );
   }
 
   Future<void> sendLeagueRelegationNotification({
@@ -245,7 +260,9 @@ extension LeagueNotifications on NotificationChannels {
   }) async {
     // Implementation would depend on your notification system
     // This is a placeholder for the actual notification sending logic
-    print('Sending relegation notification: $userId relegated from $fromLeague to $toLeague');
+    print(
+      'Sending relegation notification: $userId relegated from $fromLeague to $toLeague',
+    );
   }
 }
 
@@ -255,7 +272,9 @@ final weeklyLeagueUpdaterProvider = Provider<WeeklyLeagueUpdater>((ref) {
   throw UnimplementedError('WeeklyLeagueUpdater provider needs proper setup');
 });
 
-final weeklyUpdateHistoryProvider = FutureProvider<List<WeeklyUpdateRecord>>((ref) {
+final weeklyUpdateHistoryProvider = FutureProvider<List<WeeklyUpdateRecord>>((
+  ref,
+) {
   final updater = ref.watch(weeklyLeagueUpdaterProvider);
   return updater.getUpdateHistory();
 });

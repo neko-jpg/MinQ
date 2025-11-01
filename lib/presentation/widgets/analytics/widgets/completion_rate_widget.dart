@@ -6,10 +6,7 @@ import 'package:minq/presentation/providers/analytics_providers.dart';
 class CompletionRateWidget extends ConsumerWidget {
   final DashboardWidgetConfig config;
 
-  const CompletionRateWidget({
-    super.key,
-    required this.config,
-  });
+  const CompletionRateWidget({super.key, required this.config});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +21,7 @@ class CompletionRateWidget extends ConsumerWidget {
 
   Widget _buildCompletionRateDisplay(BuildContext context, double rate) {
     final percentage = (rate * 100).toInt();
-    
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -53,9 +50,9 @@ class CompletionRateWidget extends ConsumerWidget {
                 ),
                 Text(
                   '完了率',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                 ),
               ],
             ),
@@ -112,10 +109,7 @@ class CompletionRateWidget extends ConsumerWidget {
             child: CircularProgressIndicator(strokeWidth: 2),
           ),
           SizedBox(height: 8),
-          Text(
-            '計算中...',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
-          ),
+          Text('計算中...', style: TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
     );
@@ -126,17 +120,13 @@ class CompletionRateWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.error_outline,
-            size: 32,
-            color: Colors.red,
-          ),
+          const Icon(Icons.error_outline, size: 32, color: Colors.red),
           const SizedBox(height: 8),
           Text(
             'エラー',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.red,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.red),
           ),
         ],
       ),

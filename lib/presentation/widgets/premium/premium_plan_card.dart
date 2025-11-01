@@ -18,22 +18,25 @@ class PremiumPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final price = billingCycle == BillingCycle.monthly 
-        ? plan.monthlyPrice 
-        : plan.yearlyPrice;
-    
-    final monthlyPrice = billingCycle == BillingCycle.yearly 
-        ? plan.yearlyPrice / 12 
-        : plan.monthlyPrice;
+    final price =
+        billingCycle == BillingCycle.monthly
+            ? plan.monthlyPrice
+            : plan.yearlyPrice;
+
+    final monthlyPrice =
+        billingCycle == BillingCycle.yearly
+            ? plan.yearlyPrice / 12
+            : plan.monthlyPrice;
 
     return Container(
       decoration: BoxDecoration(
         color: context.colorTokens.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: plan.isPopular 
-              ? context.colorTokens.primary 
-              : context.colorTokens.border,
+          color:
+              plan.isPopular
+                  ? context.colorTokens.primary
+                  : context.colorTokens.border,
           width: plan.isPopular ? 2 : 1,
         ),
         boxShadow: [
@@ -130,11 +133,7 @@ class PremiumPlanCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.school,
-                  size: 16,
-                  color: context.colorTokens.info,
-                ),
+                Icon(Icons.school, size: 16, color: context.colorTokens.info),
                 const SizedBox(width: 4),
                 Text(
                   'Student',
@@ -151,7 +150,11 @@ class PremiumPlanCard extends StatelessWidget {
     );
   }
 
-  Widget _buildPricing(BuildContext context, double price, double monthlyPrice) {
+  Widget _buildPricing(
+    BuildContext context,
+    double price,
+    double monthlyPrice,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -208,25 +211,24 @@ class PremiumPlanCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        ...plan.features.map((feature) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Row(
-            children: [
-              Icon(
-                Icons.check_circle,
-                size: 20,
-                color: context.colorTokens.success,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  feature,
-                  style: context.textTheme.bodyMedium,
+        ...plan.features.map(
+          (feature) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  size: 20,
+                  color: context.colorTokens.success,
                 ),
-              ),
-            ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(feature, style: context.textTheme.bodyMedium),
+                ),
+              ],
+            ),
           ),
-        )),
+        ),
       ],
     );
   }
@@ -267,15 +269,16 @@ class PremiumPlanCard extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onSubscribe,
         style: ElevatedButton.styleFrom(
-          backgroundColor: plan.isPopular 
-              ? context.colorTokens.primary 
-              : context.colorTokens.surface,
-          foregroundColor: plan.isPopular 
-              ? Colors.white 
-              : context.colorTokens.primary,
-          side: plan.isPopular 
-              ? null 
-              : BorderSide(color: context.colorTokens.primary),
+          backgroundColor:
+              plan.isPopular
+                  ? context.colorTokens.primary
+                  : context.colorTokens.surface,
+          foregroundColor:
+              plan.isPopular ? Colors.white : context.colorTokens.primary,
+          side:
+              plan.isPopular
+                  ? null
+                  : BorderSide(color: context.colorTokens.primary),
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -284,10 +287,7 @@ class PremiumPlanCard extends StatelessWidget {
         ),
         child: Text(
           plan.isPopular ? 'Get Premium' : 'Choose Plan',
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -313,11 +313,7 @@ class PremiumPlanCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.star,
-              size: 16,
-              color: Colors.white,
-            ),
+            Icon(Icons.star, size: 16, color: Colors.white),
             SizedBox(width: 4),
             Text(
               'Most Popular',

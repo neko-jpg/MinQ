@@ -108,7 +108,10 @@ class SettingsService {
   }
 
   Future<void> setEnabledNotificationCategories(Set<String> categories) async {
-    await _storage.setStringList(_notificationCategoriesKey, categories.toList());
+    await _storage.setStringList(
+      _notificationCategoriesKey,
+      categories.toList(),
+    );
   }
 
   // Accessibility Settings

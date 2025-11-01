@@ -151,8 +151,9 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
             animation: _controller,
             builder: (context, child) {
               return Container(
-                color: Colors.black
-                    .withAlpha((255 * 0.3 * _controller.value).round()),
+                color: Colors.black.withAlpha(
+                  (255 * 0.3 * _controller.value).round(),
+                ),
               );
             },
           ),
@@ -184,8 +185,7 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black
-                                .withAlpha((255 * 0.2).round()),
+                            color: Colors.black.withAlpha((255 * 0.2).round()),
                             blurRadius: 10,
                             spreadRadius: 2,
                           ),
@@ -209,8 +209,9 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
                           const SizedBox(height: 8),
                           Text(
                             '素晴らしい成果です！',
-                            style: tokens.typography.body
-                                .copyWith(color: Colors.grey),
+                            style: tokens.typography.body.copyWith(
+                              color: Colors.grey,
+                            ),
                           ),
                         ],
                       ),
@@ -481,8 +482,9 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.amber
-                                      .withAlpha((255 * 0.5).round()),
+                                  color: Colors.amber.withAlpha(
+                                    (255 * 0.5).round(),
+                                  ),
                                   blurRadius: 20,
                                   spreadRadius: 5,
                                 ),
@@ -661,8 +663,9 @@ class _EmotionalButtonState extends State<EmotionalButton>
               backgroundColor: _colorAnimation.value,
               foregroundColor: Colors.white,
               elevation: 4 + (_controller.value * 4),
-              shadowColor:
-                  _colorAnimation.value?.withAlpha((255 * 0.5).round()),
+              shadowColor: _colorAnimation.value?.withAlpha(
+                (255 * 0.5).round(),
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -748,8 +751,7 @@ class _EmotionalCardState extends State<EmotionalCard>
                       BoxShadow(
                         color: _getStateColor(
                           widget.state,
-                        ).withAlpha(
-                            (255 * 0.3 * _glowAnimation.value).round()),
+                        ).withAlpha((255 * 0.3 * _glowAnimation.value).round()),
                         blurRadius: 10 + (10 * _glowAnimation.value),
                         spreadRadius: 2 + (2 * _glowAnimation.value),
                       ),
@@ -763,8 +765,7 @@ class _EmotionalCardState extends State<EmotionalCard>
               side: BorderSide(
                 color: _getStateColor(
                   widget.state,
-                ).withAlpha(
-                    (255 * 0.3 * _glowAnimation.value).round()),
+                ).withAlpha((255 * 0.3 * _glowAnimation.value).round()),
                 width: 1 + _glowAnimation.value,
               ),
             ),

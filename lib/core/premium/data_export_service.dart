@@ -29,19 +29,22 @@ class DataExportService {
     bool anonymize = false,
   }) async {
     if (!await canExportData()) {
-      return ExportResult.failure('Premium subscription required for data export');
+      return ExportResult.failure(
+        'Premium subscription required for data export',
+      );
     }
 
     try {
       final data = await _getExportData(type, startDate, endDate, anonymize);
       final csvData = _convertToCSV(data, type);
-      
+
       final directory = await getApplicationDocumentsDirectory();
-      final fileName = '${type.name}_export_${DateTime.now().millisecondsSinceEpoch}.csv';
+      final fileName =
+          '${type.name}_export_${DateTime.now().millisecondsSinceEpoch}.csv';
       final file = File('${directory.path}/$fileName');
-      
+
       await file.writeAsString(csvData);
-      
+
       return ExportResult.success(
         filePath: file.path,
         fileName: fileName,
@@ -60,19 +63,22 @@ class DataExportService {
     bool anonymize = false,
   }) async {
     if (!await canExportData()) {
-      return ExportResult.failure('Premium subscription required for data export');
+      return ExportResult.failure(
+        'Premium subscription required for data export',
+      );
     }
 
     try {
       final data = await _getExportData(type, startDate, endDate, anonymize);
       final pdfBytes = await _generatePDF(data, type);
-      
+
       final directory = await getApplicationDocumentsDirectory();
-      final fileName = '${type.name}_report_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final fileName =
+          '${type.name}_report_${DateTime.now().millisecondsSinceEpoch}.pdf';
       final file = File('${directory.path}/$fileName');
-      
+
       await file.writeAsBytes(pdfBytes);
-      
+
       return ExportResult.success(
         filePath: file.path,
         fileName: fileName,
@@ -91,7 +97,9 @@ class DataExportService {
     bool anonymize = false,
   }) async {
     if (!await canExportData()) {
-      return ExportResult.failure('Premium subscription required for data export');
+      return ExportResult.failure(
+        'Premium subscription required for data export',
+      );
     }
 
     try {
@@ -105,13 +113,14 @@ class DataExportService {
         'recordCount': data.length,
         'data': data,
       });
-      
+
       final directory = await getApplicationDocumentsDirectory();
-      final fileName = '${type.name}_export_${DateTime.now().millisecondsSinceEpoch}.json';
+      final fileName =
+          '${type.name}_export_${DateTime.now().millisecondsSinceEpoch}.json';
       final file = File('${directory.path}/$fileName');
-      
+
       await file.writeAsString(jsonData);
-      
+
       return ExportResult.success(
         filePath: file.path,
         fileName: fileName,
@@ -125,10 +134,9 @@ class DataExportService {
 
   Future<void> shareExport(ExportResult result) async {
     if (result.isSuccess && result.filePath != null) {
-      await Share.shareXFiles(
-        [XFile(result.filePath!)],
-        text: 'MinQ Data Export - ${result.fileName}',
-      );
+      await Share.shareXFiles([
+        XFile(result.filePath!),
+      ], text: 'MinQ Data Export - ${result.fileName}');
     }
   }
 
@@ -152,7 +160,9 @@ class DataExportService {
         allData.addAll(await _getQuestData(startDate, endDate, anonymize));
         allData.addAll(await _getProgressData(startDate, endDate, anonymize));
         allData.addAll(await _getAnalyticsData(startDate, endDate, anonymize));
-        allData.addAll(await _getAchievementData(startDate, endDate, anonymize));
+        allData.addAll(
+          await _getAchievementData(startDate, endDate, anonymize),
+        );
         return allData;
     }
   }
@@ -269,16 +279,27 @@ class DataExportService {
 
   String _convertToCSV(List<Map<String, dynamic>> data, ExportType type) {
     if (data.isEmpty) return '';
-    
+
     final headers = data.first.keys.toList();
-    final rows = data.map((item) => headers.map((header) => item[header]?.toString() ?? '').toList()).toList();
-    
+    final rows =
+        data
+            .map(
+              (item) =>
+                  headers
+                      .map((header) => item[header]?.toString() ?? '')
+                      .toList(),
+            )
+            .toList();
+
     return const ListToCsvConverter().convert([headers, ...rows]);
   }
 
-  Future<Uint8List> _generatePDF(List<Map<String, dynamic>> data, ExportType type) async {
+  Future<Uint8List> _generatePDF(
+    List<Map<String, dynamic>> data,
+    ExportType type,
+  ) async {
     final pdf = pw.Document();
-    
+
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
@@ -297,7 +318,10 @@ class DataExportService {
                 context: context,
                 data: [
                   data.first.keys.toList(),
-                  ...data.map((item) => item.values.map((v) => v?.toString() ?? '').toList()),
+                  ...data.map(
+                    (item) =>
+                        item.values.map((v) => v?.toString() ?? '').toList(),
+                  ),
                 ],
                 headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                 cellAlignment: pw.Alignment.centerLeft,
@@ -309,7 +333,7 @@ class DataExportService {
         },
       ),
     );
-    
+
     return pdf.save();
   }
 }
@@ -347,26 +371,13 @@ class ExportResult {
   }
 
   factory ExportResult.failure(String errorMessage) {
-    return ExportResult._(
-      isSuccess: false,
-      errorMessage: errorMessage,
-    );
+    return ExportResult._(isSuccess: false, errorMessage: errorMessage);
   }
 }
 
-enum ExportType {
-  quests,
-  progress,
-  analytics,
-  achievements,
-  all,
-}
+enum ExportType { quests, progress, analytics, achievements, all }
 
-enum ExportFormat {
-  csv,
-  pdf,
-  json,
-}
+enum ExportFormat { csv, pdf, json }
 
 extension ExportTypeExtension on ExportType {
   String get displayName {

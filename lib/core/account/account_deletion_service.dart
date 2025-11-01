@@ -162,24 +162,27 @@ class AccountDeletionService {
     final userData = userDoc.data();
 
     // クエスト情報
-    final questsSnapshot = await _firestore
-        .collection('quests')
-        .where('userId', isEqualTo: userId)
-        .get();
+    final questsSnapshot =
+        await _firestore
+            .collection('quests')
+            .where('userId', isEqualTo: userId)
+            .get();
     final quests = questsSnapshot.docs.map((doc) => doc.data()).toList();
 
     // クエストログ
-    final logsSnapshot = await _firestore
-        .collection('questLogs')
-        .where('userId', isEqualTo: userId)
-        .get();
+    final logsSnapshot =
+        await _firestore
+            .collection('questLogs')
+            .where('userId', isEqualTo: userId)
+            .get();
     final logs = logsSnapshot.docs.map((doc) => doc.data()).toList();
 
     // アチーブメント
-    final achievementsSnapshot = await _firestore
-        .collection('achievements')
-        .where('userId', isEqualTo: userId)
-        .get();
+    final achievementsSnapshot =
+        await _firestore
+            .collection('achievements')
+            .where('userId', isEqualTo: userId)
+            .get();
     final achievements =
         achievementsSnapshot.docs.map((doc) => doc.data()).toList();
 

@@ -10,17 +10,21 @@ class AnalyticsDashboardScreen extends ConsumerStatefulWidget {
   const AnalyticsDashboardScreen({super.key});
 
   @override
-  ConsumerState<AnalyticsDashboardScreen> createState() => _AnalyticsDashboardScreenState();
+  ConsumerState<AnalyticsDashboardScreen> createState() =>
+      _AnalyticsDashboardScreenState();
 }
 
-class _AnalyticsDashboardScreenState extends ConsumerState<AnalyticsDashboardScreen> {
+class _AnalyticsDashboardScreenState
+    extends ConsumerState<AnalyticsDashboardScreen> {
   String _selectedDashboardId = 'overview';
   bool _isEditMode = false;
 
   @override
   Widget build(BuildContext context) {
     final dashboards = ref.watch(userDashboardsProvider);
-    final selectedDashboard = ref.watch(selectedDashboardProvider(_selectedDashboardId));
+    final selectedDashboard = ref.watch(
+      selectedDashboardProvider(_selectedDashboardId),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -37,38 +41,40 @@ class _AnalyticsDashboardScreenState extends ConsumerState<AnalyticsDashboardScr
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
             onSelected: _handleMenuAction,
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'add_widget',
-                child: ListTile(
-                  leading: Icon(Icons.add_box),
-                  title: Text('ウィジェットを追加'),
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'duplicate_dashboard',
-                child: ListTile(
-                  leading: Icon(Icons.copy),
-                  title: Text('ダッシュボードを複製'),
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'reset_layout',
-                child: ListTile(
-                  leading: Icon(Icons.refresh),
-                  title: Text('レイアウトをリセット'),
-                ),
-              ),
-            ],
+            itemBuilder:
+                (context) => [
+                  const PopupMenuItem(
+                    value: 'add_widget',
+                    child: ListTile(
+                      leading: Icon(Icons.add_box),
+                      title: Text('ウィジェットを追加'),
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'duplicate_dashboard',
+                    child: ListTile(
+                      leading: Icon(Icons.copy),
+                      title: Text('ダッシュボードを複製'),
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'reset_layout',
+                    child: ListTile(
+                      leading: Icon(Icons.refresh),
+                      title: Text('レイアウトをリセット'),
+                    ),
+                  ),
+                ],
           ),
         ],
       ),
       body: dashboards.when(
-        data: (dashboardList) => selectedDashboard.when(
-          data: (dashboard) => _buildDashboard(dashboard),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => _buildErrorState(error),
-        ),
+        data:
+            (dashboardList) => selectedDashboard.when(
+              data: (dashboard) => _buildDashboard(dashboard),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => _buildErrorState(error),
+            ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => _buildErrorState(error),
       ),
@@ -87,11 +93,13 @@ class _AnalyticsDashboardScreenState extends ConsumerState<AnalyticsDashboardScr
           dashboard: dashboard,
           isEditMode: _isEditMode,
           onLayoutChanged: (layout) {
-            ref.read(dashboardServiceProvider).updateDashboardLayout(
-              'current_user', // TODO: 実際のユーザーIDを使用
-              dashboard.id,
-              layout,
-            );
+            ref
+                .read(dashboardServiceProvider)
+                .updateDashboardLayout(
+                  'current_user', // TODO: 実際のユーザーIDを使用
+                  dashboard.id,
+                  layout,
+                );
           },
         ),
         Expanded(
@@ -99,25 +107,31 @@ class _AnalyticsDashboardScreenState extends ConsumerState<AnalyticsDashboardScr
             dashboard: dashboard,
             isEditMode: _isEditMode,
             onWidgetMoved: (widgets) {
-              ref.read(dashboardServiceProvider).updateWidgetPositions(
-                'current_user', // TODO: 実際のユーザーIDを使用
-                dashboard.id,
-                widgets,
-              );
+              ref
+                  .read(dashboardServiceProvider)
+                  .updateWidgetPositions(
+                    'current_user', // TODO: 実際のユーザーIDを使用
+                    dashboard.id,
+                    widgets,
+                  );
             },
             onWidgetRemoved: (widgetId) {
-              ref.read(dashboardServiceProvider).removeWidget(
-                'current_user', // TODO: 実際のユーザーIDを使用
-                dashboard.id,
-                widgetId,
-              );
+              ref
+                  .read(dashboardServiceProvider)
+                  .removeWidget(
+                    'current_user', // TODO: 実際のユーザーIDを使用
+                    dashboard.id,
+                    widgetId,
+                  );
             },
             onWidgetConfigChanged: (widgetConfig) {
-              ref.read(dashboardServiceProvider).updateWidgetConfig(
-                'current_user', // TODO: 実際のユーザーIDを使用
-                dashboard.id,
-                widgetConfig,
-              );
+              ref
+                  .read(dashboardServiceProvider)
+                  .updateWidgetConfig(
+                    'current_user', // TODO: 実際のユーザーIDを使用
+                    dashboard.id,
+                    widgetConfig,
+                  );
             },
           ),
         ),
@@ -136,7 +150,7 @@ class _AnalyticsDashboardScreenState extends ConsumerState<AnalyticsDashboardScr
         itemBuilder: (context, index) {
           final dashboard = dashboards[index];
           final isSelected = dashboard.id == _selectedDashboardId;
-          
+
           return Padding(
             padding: const EdgeInsets.only(right: 12),
             child: GestureDetector(
@@ -148,14 +162,16 @@ class _AnalyticsDashboardScreenState extends ConsumerState<AnalyticsDashboardScr
               child: Container(
                 width: 120,
                 decoration: BoxDecoration(
-                  color: isSelected 
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).cardColor,
+                  color:
+                      isSelected
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isSelected 
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey.withOpacity(0.3),
+                    color:
+                        isSelected
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey.withOpacity(0.3),
                   ),
                 ),
                 child: Column(
@@ -163,20 +179,23 @@ class _AnalyticsDashboardScreenState extends ConsumerState<AnalyticsDashboardScr
                   children: [
                     Icon(
                       _getDashboardIcon(dashboard.id),
-                      color: isSelected 
-                          ? Colors.white
-                          : Theme.of(context).iconTheme.color,
+                      color:
+                          isSelected
+                              ? Colors.white
+                              : Theme.of(context).iconTheme.color,
                       size: 24,
                     ),
                     const SizedBox(height: 4),
                     Text(
                       dashboard.name,
                       style: TextStyle(
-                        color: isSelected 
-                            ? Colors.white
-                            : Theme.of(context).textTheme.bodyMedium?.color,
+                        color:
+                            isSelected
+                                ? Colors.white
+                                : Theme.of(context).textTheme.bodyMedium?.color,
                         fontSize: 12,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
                       ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
@@ -197,11 +216,7 @@ class _AnalyticsDashboardScreenState extends ConsumerState<AnalyticsDashboardScr
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.error_outline, size: 64, color: Colors.grey),
           const SizedBox(height: 16),
           Text(
             'データの読み込みに失敗しました',
@@ -243,82 +258,91 @@ class _AnalyticsDashboardScreenState extends ConsumerState<AnalyticsDashboardScr
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => WidgetSelectorSheet(
-        dashboardId: _selectedDashboardId,
-        onWidgetSelected: (widgetType) {
-          final widgetConfig = DashboardWidgetConfig(
-            id: 'widget_${DateTime.now().millisecondsSinceEpoch}',
-            type: widgetType,
-            title: ref.read(dashboardServiceProvider).getWidgetTypeDescription(widgetType),
-            position: const WidgetPosition(row: 0, column: 0),
-            size: _getDefaultWidgetSize(widgetType),
-            isVisible: true,
-            settings: const {},
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now(),
-          );
-          
-          ref.read(dashboardServiceProvider).addWidget(
-            'current_user', // TODO: 実際のユーザーIDを使用
-            _selectedDashboardId,
-            widgetConfig,
-          );
-        },
-      ),
+      builder:
+          (context) => WidgetSelectorSheet(
+            dashboardId: _selectedDashboardId,
+            onWidgetSelected: (widgetType) {
+              final widgetConfig = DashboardWidgetConfig(
+                id: 'widget_${DateTime.now().millisecondsSinceEpoch}',
+                type: widgetType,
+                title: ref
+                    .read(dashboardServiceProvider)
+                    .getWidgetTypeDescription(widgetType),
+                position: const WidgetPosition(row: 0, column: 0),
+                size: _getDefaultWidgetSize(widgetType),
+                isVisible: true,
+                settings: const {},
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+              );
+
+              ref
+                  .read(dashboardServiceProvider)
+                  .addWidget(
+                    'current_user', // TODO: 実際のユーザーIDを使用
+                    _selectedDashboardId,
+                    widgetConfig,
+                  );
+            },
+          ),
     );
   }
 
   void _duplicateDashboard() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('ダッシュボードを複製'),
-        content: TextField(
-          decoration: const InputDecoration(
-            labelText: '新しいダッシュボード名',
-            hintText: '例: カスタムダッシュボード',
+      builder:
+          (context) => AlertDialog(
+            title: const Text('ダッシュボードを複製'),
+            content: TextField(
+              decoration: const InputDecoration(
+                labelText: '新しいダッシュボード名',
+                hintText: '例: カスタムダッシュボード',
+              ),
+              onSubmitted: (name) {
+                if (name.isNotEmpty) {
+                  ref
+                      .read(dashboardServiceProvider)
+                      .duplicateDashboard(
+                        'current_user', // TODO: 実際のユーザーIDを使用
+                        _selectedDashboardId,
+                        name,
+                      );
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('キャンセル'),
+              ),
+            ],
           ),
-          onSubmitted: (name) {
-            if (name.isNotEmpty) {
-              ref.read(dashboardServiceProvider).duplicateDashboard(
-                'current_user', // TODO: 実際のユーザーIDを使用
-                _selectedDashboardId,
-                name,
-              );
-              Navigator.of(context).pop();
-            }
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
-          ),
-        ],
-      ),
     );
   }
 
   void _resetLayout() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('レイアウトをリセット'),
-        content: const Text('ダッシュボードのレイアウトをデフォルトに戻しますか？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('レイアウトをリセット'),
+            content: const Text('ダッシュボードのレイアウトをデフォルトに戻しますか？'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () {
+                  // TODO: レイアウトリセット機能を実装
+                  Navigator.of(context).pop();
+                },
+                child: const Text('リセット'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              // TODO: レイアウトリセット機能を実装
-              Navigator.of(context).pop();
-            },
-            child: const Text('リセット'),
-          ),
-        ],
-      ),
     );
   }
 

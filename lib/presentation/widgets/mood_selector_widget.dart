@@ -44,11 +44,13 @@ class MoodSelectorWidget extends StatelessWidget {
                         duration: const Duration(milliseconds: 200),
                         padding: EdgeInsets.all(tokens.spacing.sm),
                         decoration: BoxDecoration(
-                          color: isSelected
-                              ? moodData.color.withAlpha((255 * 0.2).round())
-                              : Colors.transparent,
-                          borderRadius:
-                              BorderRadius.circular(tokens.radius.lg),
+                          color:
+                              isSelected
+                                  ? moodData.color.withAlpha(
+                                    (255 * 0.2).round(),
+                                  )
+                                  : Colors.transparent,
+                          borderRadius: BorderRadius.circular(tokens.radius.lg),
                           border:
                               isSelected
                                   ? Border.all(color: moodData.color, width: 2)
@@ -95,9 +97,9 @@ class MoodSelectorWidget extends StatelessWidget {
                 key: ValueKey(selectedMood),
                 padding: EdgeInsets.all(tokens.spacing.md),
                 decoration: BoxDecoration(
-                  color: moodOptions[selectedMood]!
-                      .color
-                      .withAlpha((255 * 0.1).round()),
+                  color: moodOptions[selectedMood]!.color.withAlpha(
+                    (255 * 0.1).round(),
+                  ),
                   borderRadius: BorderRadius.circular(tokens.radius.md),
                 ),
                 child: Row(
@@ -173,9 +175,10 @@ class CompactMoodSelector extends StatelessWidget {
                   margin: EdgeInsets.symmetric(horizontal: tokens.spacing.xs),
                   padding: EdgeInsets.all(tokens.spacing.xs),
                   decoration: BoxDecoration(
-                    color: isSelected
-                        ? tokens.brandPrimary.withAlpha((255 * 0.2).round())
-                        : Colors.transparent,
+                    color:
+                        isSelected
+                            ? tokens.brandPrimary.withAlpha((255 * 0.2).round())
+                            : Colors.transparent,
                     borderRadius: BorderRadius.circular(tokens.radius.md),
                   ),
                   child: Text(
@@ -283,8 +286,9 @@ class MoodHistoryItem extends StatelessWidget {
                     SizedBox(height: tokens.spacing.xs),
                     Text(
                       _formatTime(timestamp),
-                      style: tokens.typography.caption
-                          .copyWith(color: tokens.textMuted),
+                      style: tokens.typography.caption.copyWith(
+                        color: tokens.textMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -429,8 +433,10 @@ class _StatItem extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(label,
-            style: tokens.typography.caption.copyWith(color: tokens.textMuted)),
+        Text(
+          label,
+          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+        ),
       ],
     );
   }

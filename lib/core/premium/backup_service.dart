@@ -49,17 +49,14 @@ class BackupService {
 
       final directory = await _getBackupDirectory();
       final file = File('${directory.path}/${backup.id}.minq');
-      
+
       final backupJson = jsonEncode(backup.toJson());
       await file.writeAsString(backupJson);
 
       // Save backup metadata
       await _saveBackupMetadata(backup);
 
-      return BackupResult.success(
-        backup: backup,
-        filePath: file.path,
-      );
+      return BackupResult.success(backup: backup, filePath: file.path);
     } catch (e) {
       return BackupResult.failure('Failed to create backup: $e');
     }
@@ -73,7 +70,7 @@ class BackupService {
     try {
       final directory = await _getBackupDirectory();
       final file = File('${directory.path}/$backupId.minq');
-      
+
       if (!await file.exists()) {
         return BackupResult.failure('Backup file not found');
       }
@@ -116,7 +113,7 @@ class BackupService {
     try {
       final directory = await _getBackupDirectory();
       final file = File('${directory.path}/$backupId.minq');
-      
+
       if (await file.exists()) {
         await file.delete();
       }
@@ -132,7 +129,9 @@ class BackupService {
 
   Future<BackupResult> createCloudBackup() async {
     if (!await canBackupData()) {
-      return BackupResult.failure('Premium subscription required for cloud backup');
+      return BackupResult.failure(
+        'Premium subscription required for cloud backup',
+      );
     }
 
     try {
@@ -169,7 +168,9 @@ class BackupService {
 
   Future<List<CloudBackup>> getCloudBackups() async {
     try {
-      final backupsData = await _localStorage.getString('cloud_backup_metadata');
+      final backupsData = await _localStorage.getString(
+        'cloud_backup_metadata',
+      );
       if (backupsData == null) return [];
 
       final List<dynamic> backupsList = jsonDecode(backupsData);
@@ -181,7 +182,9 @@ class BackupService {
 
   Future<BackupResult> restoreFromCloud(String cloudBackupId) async {
     if (!await canBackupData()) {
-      return BackupResult.failure('Premium subscription required for cloud restore');
+      return BackupResult.failure(
+        'Premium subscription required for cloud restore',
+      );
     }
 
     try {
@@ -216,18 +219,22 @@ class BackupService {
     BackupFrequency frequency = BackupFrequency.weekly,
     bool cloudSync = true,
   }) async {
-    await _localStorage.setString('auto_backup_settings', jsonEncode({
-      'enabled': true,
-      'frequency': frequency.name,
-      'cloudSync': cloudSync,
-      'lastBackup': null,
-    }));
+    await _localStorage.setString(
+      'auto_backup_settings',
+      jsonEncode({
+        'enabled': true,
+        'frequency': frequency.name,
+        'cloudSync': cloudSync,
+        'lastBackup': null,
+      }),
+    );
   }
 
   Future<void> disableAutoBackup() async {
-    await _localStorage.setString('auto_backup_settings', jsonEncode({
-      'enabled': false,
-    }));
+    await _localStorage.setString(
+      'auto_backup_settings',
+      jsonEncode({'enabled': false}),
+    );
   }
 
   Future<Map<String, dynamic>> _collectBackupData({
@@ -479,25 +486,13 @@ class BackupResult {
   }
 
   factory BackupResult.failure(String errorMessage) {
-    return BackupResult._(
-      isSuccess: false,
-      errorMessage: errorMessage,
-    );
+    return BackupResult._(isSuccess: false, errorMessage: errorMessage);
   }
 }
 
-enum BackupFrequency {
-  daily,
-  weekly,
-  monthly,
-}
+enum BackupFrequency { daily, weekly, monthly }
 
-enum CloudSyncStatus {
-  pending,
-  syncing,
-  synced,
-  failed,
-}
+enum CloudSyncStatus { pending, syncing, synced, failed }
 
 final backupServiceProvider = Provider<BackupService>((ref) {
   final premiumService = ref.watch(premiumServiceProvider);

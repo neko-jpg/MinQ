@@ -5,22 +5,18 @@ import 'package:minq/core/gamification/xp_system.dart';
 import 'package:minq/domain/gamification/xp_transaction.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-/// XPトレンドチャートウィジェット（要件34）
+/// XPトレンドチャートウィジェット
 class XPTrendChart extends ConsumerWidget {
   final String userId;
   final int days;
-  
-  const XPTrendChart({
-    super.key,
-    required this.userId,
-    this.days = 30,
-  });
+
+  const XPTrendChart({super.key, required this.userId, this.days = 30});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final xpSystem = ref.watch(xpSystemProvider);
-    
+
     return FutureBuilder<List<XPTransaction>>(
       future: xpSystem.getXPHistory(
         userId: userId,
@@ -31,30 +27,22 @@ class XPTrendChart extends ConsumerWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (snapshot.hasError || !snapshot.hasData) {
           return Center(
-            child: Icon(
-              Icons.error_outline,
-              color: tokens.error,
-              size: 48,
-            ),
+            child: Icon(Icons.error_outline, color: tokens.error, size: 48),
           );
         }
-        
+
         final transactions = snapshot.data!;
         final chartData = _processChartData(transactions, days);
-        
+
         if (chartData.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.show_chart,
-                  color: tokens.textMuted,
-                  size: 48,
-                ),
+                Icon(Icons.show_chart, color: tokens.textMuted, size: 48),
                 SizedBox(height: tokens.spacing.sm),
                 Text(
                   'データがありません',
@@ -66,7 +54,7 @@ class XPTrendChart extends ConsumerWidget {
             ),
           );
         }
-        
+
         return LineChart(
           LineChartData(
             gridData: FlGridData(
@@ -74,10 +62,7 @@ class XPTrendChart extends ConsumerWidget {
               drawVerticalLine: false,
               horizontalInterval: _calculateInterval(chartData),
               getDrawingHorizontalLine: (value) {
-                return FlLine(
-                  color: tokens.border,
-                  strokeWidth: 1,
-                );
+                return FlLine(color: tokens.border, strokeWidth: 1);
               },
             ),
             titlesData: FlTitlesData(
@@ -98,7 +83,7 @@ class XPTrendChart extends ConsumerWidget {
                       Duration(days: days - value.toInt()),
                     );
                     return SideTitleWidget(
-                      axisSide: meta.axisSide,
+                      axisSide: AxisSide.left,
                       child: Text(
                         '${date.month}/${date.day}',
                         style: tokens.typography.caption.copyWith(
@@ -116,7 +101,7 @@ class XPTrendChart extends ConsumerWidget {
                   interval: _calculateInterval(chartData),
                   getTitlesWidget: (value, meta) {
                     return SideTitleWidget(
-                      axisSide: meta.axisSide,
+                      axisSide: AxisSide.left,
                       child: Text(
                         value.toInt().toString(),
                         style: tokens.typography.caption.copyWith(
@@ -175,7 +160,6 @@ class XPTrendChart extends ConsumerWidget {
             lineTouchData: LineTouchData(
               enabled: true,
               touchTooltipData: LineTouchTooltipData(
-                tooltipBgColor: tokens.surface,
                 tooltipBorder: BorderSide(color: tokens.border),
                 getTooltipItems: (touchedSpots) {
                   return touchedSpots.map((LineBarSpot touchedSpot) {
@@ -197,11 +181,11 @@ class XPTrendChart extends ConsumerWidget {
       },
     );
   }
-  
+
   List<FlSpot> _processChartData(List<XPTransaction> transactions, int days) {
     final now = DateTime.now();
     final dailyXP = <int, int>{};
-    
+
     // 日別XPを集計
     for (final transaction in transactions) {
       final daysDiff = now.difference(transaction.createdAt).inDays;
@@ -210,29 +194,29 @@ class XPTrendChart extends ConsumerWidget {
         dailyXP[dayIndex] = (dailyXP[dayIndex] ?? 0) + transaction.xpAmount;
       }
     }
-    
+
     // チャートデータを生成
     final spots = <FlSpot>[];
     for (int i = 0; i < days; i++) {
       spots.add(FlSpot(i.toDouble(), (dailyXP[i] ?? 0).toDouble()));
     }
-    
+
     return spots;
   }
-  
+
   double _calculateInterval(List<FlSpot> data) {
     if (data.isEmpty) return 10;
-    
+
     final maxY = data.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
     if (maxY <= 50) return 10;
     if (maxY <= 100) return 20;
     if (maxY <= 500) return 50;
     return 100;
   }
-  
+
   double _getMaxY(List<FlSpot> data) {
     if (data.isEmpty) return 100;
-    
+
     final maxY = data.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
     return (maxY * 1.2).ceilToDouble();
   }
@@ -242,18 +226,14 @@ class XPTrendChart extends ConsumerWidget {
 class CumulativeXPChart extends ConsumerWidget {
   final String userId;
   final int days;
-  
-  const CumulativeXPChart({
-    super.key,
-    required this.userId,
-    this.days = 30,
-  });
+
+  const CumulativeXPChart({super.key, required this.userId, this.days = 30});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final xpSystem = ref.watch(xpSystemProvider);
-    
+
     return FutureBuilder<List<XPTransaction>>(
       future: xpSystem.getXPHistory(
         userId: userId,
@@ -264,30 +244,23 @@ class CumulativeXPChart extends ConsumerWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (snapshot.hasError || !snapshot.hasData) {
           return Center(
-            child: Icon(
-              Icons.error_outline,
-              color: tokens.error,
-              size: 48,
-            ),
+            child: Icon(Icons.error_outline, color: tokens.error, size: 48),
           );
         }
-        
+
         final transactions = snapshot.data!;
         final chartData = _processCumulativeData(transactions, days);
-        
+
         return LineChart(
           LineChartData(
             gridData: FlGridData(
               show: true,
               drawVerticalLine: false,
               getDrawingHorizontalLine: (value) {
-                return FlLine(
-                  color: tokens.border,
-                  strokeWidth: 1,
-                );
+                return FlLine(color: tokens.border, strokeWidth: 1);
               },
             ),
             titlesData: FlTitlesData(
@@ -308,7 +281,7 @@ class CumulativeXPChart extends ConsumerWidget {
                       Duration(days: days - value.toInt()),
                     );
                     return SideTitleWidget(
-                      axisSide: meta.axisSide,
+                      axisSide: AxisSide.left,
                       child: Text(
                         '${date.month}/${date.day}',
                         style: tokens.typography.caption.copyWith(
@@ -325,7 +298,7 @@ class CumulativeXPChart extends ConsumerWidget {
                   reservedSize: 50,
                   getTitlesWidget: (value, meta) {
                     return SideTitleWidget(
-                      axisSide: meta.axisSide,
+                      axisSide: AxisSide.left,
                       child: Text(
                         value.toInt().toString(),
                         style: tokens.typography.caption.copyWith(
@@ -370,11 +343,14 @@ class CumulativeXPChart extends ConsumerWidget {
       },
     );
   }
-  
-  List<FlSpot> _processCumulativeData(List<XPTransaction> transactions, int days) {
+
+  List<FlSpot> _processCumulativeData(
+    List<XPTransaction> transactions,
+    int days,
+  ) {
     final now = DateTime.now();
     final dailyXP = <int, int>{};
-    
+
     // 日別XPを集計
     for (final transaction in transactions) {
       final daysDiff = now.difference(transaction.createdAt).inDays;
@@ -383,7 +359,7 @@ class CumulativeXPChart extends ConsumerWidget {
         dailyXP[dayIndex] = (dailyXP[dayIndex] ?? 0) + transaction.xpAmount;
       }
     }
-    
+
     // 累積データを生成
     final spots = <FlSpot>[];
     int cumulative = 0;
@@ -391,7 +367,7 @@ class CumulativeXPChart extends ConsumerWidget {
       cumulative += dailyXP[i] ?? 0;
       spots.add(FlSpot(i.toDouble(), cumulative.toDouble()));
     }
-    
+
     return spots;
   }
 }

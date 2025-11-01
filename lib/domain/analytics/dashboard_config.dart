@@ -82,37 +82,28 @@ class DashboardWidgetConfig {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        type,
-        title,
-        position,
-        size,
-        isVisible,
-        Object.hashAllUnordered(settings.entries),
-        createdAt,
-        updatedAt,
-      );
+    id,
+    type,
+    title,
+    position,
+    size,
+    isVisible,
+    Object.hashAllUnordered(settings.entries),
+    createdAt,
+    updatedAt,
+  );
 }
 
 /// ウィジェットの位置
 @immutable
 class WidgetPosition {
-  const WidgetPosition({
-    required this.row,
-    required this.column,
-  });
+  const WidgetPosition({required this.row, required this.column});
 
   final int row;
   final int column;
 
-  WidgetPosition copyWith({
-    int? row,
-    int? column,
-  }) {
-    return WidgetPosition(
-      row: row ?? this.row,
-      column: column ?? this.column,
-    );
+  WidgetPosition copyWith({int? row, int? column}) {
+    return WidgetPosition(row: row ?? this.row, column: column ?? this.column);
   }
 
   @override
@@ -130,18 +121,12 @@ class WidgetPosition {
 /// ウィジェットのサイズ
 @immutable
 class WidgetSize {
-  const WidgetSize({
-    required this.width,
-    required this.height,
-  });
+  const WidgetSize({required this.width, required this.height});
 
   final int width; // Grid units
   final int height; // Grid units
 
-  WidgetSize copyWith({
-    int? width,
-    int? height,
-  }) {
+  WidgetSize copyWith({int? width, int? height}) {
     return WidgetSize(
       width: width ?? this.width,
       height: height ?? this.height,
@@ -221,15 +206,15 @@ class CustomDashboardConfig {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        name,
-        description,
-        Object.hashAllUnordered(widgets),
-        layout,
-        isDefault,
-        createdAt,
-        updatedAt,
-      );
+    id,
+    name,
+    description,
+    Object.hashAllUnordered(widgets),
+    layout,
+    isDefault,
+    createdAt,
+    updatedAt,
+  );
 }
 
 /// ダッシュボードレイアウト
@@ -245,11 +230,7 @@ class DashboardLayout {
   final double rowHeight;
   final double spacing;
 
-  DashboardLayout copyWith({
-    int? columns,
-    double? rowHeight,
-    double? spacing,
-  }) {
+  DashboardLayout copyWith({int? columns, double? rowHeight, double? spacing}) {
     return DashboardLayout(
       columns: columns ?? this.columns,
       rowHeight: rowHeight ?? this.rowHeight,
@@ -322,11 +303,7 @@ class DefaultDashboardConfigs {
         updatedAt: _defaultDate,
       ),
     ],
-    layout: DashboardLayout(
-      columns: 4,
-      rowHeight: 120,
-      spacing: 16,
-    ),
+    layout: DashboardLayout(columns: 4, rowHeight: 120, spacing: 16),
     isDefault: true,
     createdAt: _defaultDate,
     updatedAt: _defaultDate,
@@ -382,11 +359,7 @@ class DefaultDashboardConfigs {
         updatedAt: _defaultDate,
       ),
     ],
-    layout: DashboardLayout(
-      columns: 4,
-      rowHeight: 120,
-      spacing: 16,
-    ),
+    layout: DashboardLayout(columns: 4, rowHeight: 120, spacing: 16),
     isDefault: false,
     createdAt: _defaultDate,
     updatedAt: _defaultDate,

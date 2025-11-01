@@ -289,7 +289,9 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
               Expanded(
                 child: Text(
                   message.message,
-                  style: tokens.typography.caption.copyWith(color: Colors.white),
+                  style: tokens.typography.caption.copyWith(
+                    color: Colors.white,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -532,7 +534,9 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
               ),
               ListTile(
                 title: Text(AppLocalizations.of(context).messageTest),
-                subtitle: Text(AppLocalizations.of(context).messageTestSubtitle),
+                subtitle: Text(
+                  AppLocalizations.of(context).messageTestSubtitle,
+                ),
                 trailing: const Icon(Icons.message),
                 onTap: _testMessage,
               ),
@@ -612,7 +616,9 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
     ValueChanged<Duration> onChanged,
   ) {
     final minutes = value.inMinutes;
-    final String intervalText = AppLocalizations.of(context).intervalMinutes(minutes);
+    final String intervalText = AppLocalizations.of(
+      context,
+    ).intervalMinutes(minutes);
 
     return ListTile(
       title: Text(title),
@@ -622,8 +628,8 @@ class _AICoachSettingsScreenState extends ConsumerState<AICoachSettingsScreen> {
         items:
             [1, 3, 5, 10, 15, 30].map((min) {
               return DropdownMenuItem(
-                value: min, 
-                child: Text(AppLocalizations.of(context).minutesShort(min))
+                value: min,
+                child: Text(AppLocalizations.of(context).minutesShort(min)),
               );
             }).toList(),
         onChanged: (value) {

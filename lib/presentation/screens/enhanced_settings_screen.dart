@@ -14,10 +14,12 @@ class EnhancedSettingsScreen extends ConsumerStatefulWidget {
   const EnhancedSettingsScreen({super.key});
 
   @override
-  ConsumerState<EnhancedSettingsScreen> createState() => _EnhancedSettingsScreenState();
+  ConsumerState<EnhancedSettingsScreen> createState() =>
+      _EnhancedSettingsScreenState();
 }
 
-class _EnhancedSettingsScreenState extends ConsumerState<EnhancedSettingsScreen> {
+class _EnhancedSettingsScreenState
+    extends ConsumerState<EnhancedSettingsScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   String _searchQuery = '';
@@ -48,9 +50,10 @@ class _EnhancedSettingsScreenState extends ConsumerState<EnhancedSettingsScreen>
   Widget build(BuildContext context) {
     final theme = MinqTheme.of(context);
     final categories = ref.watch(settingsCategoriesProvider);
-    final searchResults = _searchQuery.isNotEmpty
-        ? ref.watch(settingsSearchProvider(_searchQuery))
-        : <SettingsSearchResult>[];
+    final searchResults =
+        _searchQuery.isNotEmpty
+            ? ref.watch(settingsSearchProvider(_searchQuery))
+            : <SettingsSearchResult>[];
 
     return Scaffold(
       backgroundColor: theme.background,
@@ -100,9 +103,10 @@ class _EnhancedSettingsScreenState extends ConsumerState<EnhancedSettingsScreen>
 
           // Content
           Expanded(
-            child: _searchQuery.isNotEmpty
-                ? _buildSearchResults(searchResults)
-                : _buildCategorizedSettings(categories),
+            child:
+                _searchQuery.isNotEmpty
+                    ? _buildSearchResults(searchResults)
+                    : _buildCategorizedSettings(categories),
           ),
         ],
       ),
@@ -117,11 +121,7 @@ class _EnhancedSettingsScreenState extends ConsumerState<EnhancedSettingsScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: theme.textMuted,
-            ),
+            Icon(Icons.search_off, size: 64, color: theme.textMuted),
             SizedBox(height: theme.spacing.md),
             Text(
               '検索結果が見つかりませんでした',
@@ -196,9 +196,10 @@ class _EnhancedSettingsScreenState extends ConsumerState<EnhancedSettingsScreen>
 
   Widget _buildCategorizedSettings(List<SettingsCategory> categories) {
     final theme = MinqTheme.of(context);
-    final filteredCategories = categories
-        .where((category) => _showAdvancedSettings || !category.isAdvanced)
-        .toList();
+    final filteredCategories =
+        categories
+            .where((category) => _showAdvancedSettings || !category.isAdvanced)
+            .toList();
 
     return ListView.builder(
       padding: EdgeInsets.all(theme.spacing.md),
@@ -533,8 +534,9 @@ final settingsCategoriesProvider = Provider<List<SettingsCategory>>((ref) {
 });
 
 /// Provider for settings search results
-final settingsSearchProvider = Provider.family<List<SettingsSearchResult>, String>((ref, query) {
-  final searchService = ref.watch(settingsSearchServiceProvider);
-  final categories = ref.watch(settingsCategoriesProvider);
-  return searchService.searchSettings(categories, query);
-});
+final settingsSearchProvider =
+    Provider.family<List<SettingsSearchResult>, String>((ref, query) {
+      final searchService = ref.watch(settingsSearchServiceProvider);
+      final categories = ref.watch(settingsCategoriesProvider);
+      return searchService.searchSettings(categories, query);
+    });

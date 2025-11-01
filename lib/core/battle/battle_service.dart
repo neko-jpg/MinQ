@@ -546,8 +546,10 @@ class BattleService {
     for (final participant in battle.participants) {
       final userCompletions =
           completions.where((c) => c.userId == participant).toList();
-      final totalPoints =
-          userCompletions.fold(0, (currentSum, c) => currentSum + c.points);
+      final totalPoints = userCompletions.fold(
+        0,
+        (currentSum, c) => currentSum + c.points,
+      );
 
       participantStats[participant] = ParticipantStats(
         userId: participant,

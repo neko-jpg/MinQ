@@ -14,9 +14,8 @@ class NotificationABTestingService {
   final SharedPreferences _prefs;
   final math.Random _random = math.Random();
 
-  NotificationABTestingService({
-    required SharedPreferences prefs,
-  }) : _prefs = prefs;
+  NotificationABTestingService({required SharedPreferences prefs})
+    : _prefs = prefs;
 
   /// A/Bテストを作成
   Future<String> createABTest({
@@ -28,7 +27,7 @@ class NotificationABTestingService {
     double trafficAllocation = 1.0,
   }) async {
     final testId = _generateTestId();
-    
+
     final test = ABTest(
       id: testId,
       name: testName,
@@ -42,16 +41,13 @@ class NotificationABTestingService {
     );
 
     await _saveTest(test);
-    
+
     debugPrint('Created A/B test: $testName ($testId)');
     return testId;
   }
 
   /// ユーザーのバリアントを取得
-  Future<ABTestVariant?> getUserVariant(
-    String userId,
-    String testId,
-  ) async {
+  Future<ABTestVariant?> getUserVariant(String userId, String testId) async {
     final test = await _getTest(testId);
     if (test == null || !_isTestActive(test)) {
       return null;
@@ -71,8 +67,10 @@ class NotificationABTestingService {
     // バリアントを割り当て
     final variant = _assignVariant(test.variants);
     await _saveUserVariant(userId, testId, variant);
-    
-    debugPrint('Assigned variant ${variant.name} to user $userId for test $testId');
+
+    debugPrint(
+      'Assigned variant ${variant.name} to user $userId for test $testId',
+    );
     return variant;
   }
 
@@ -109,18 +107,21 @@ class NotificationABTestingService {
     }
 
     final results = await _getTestResults(testId);
-    
+
     // バリアント別統計を計算
     final variantStats = <String, ABTestVariantStats>{};
-    
+
     for (final variant in test.variants) {
-      final variantResults = results.where((r) => r.variantName == variant.name).toList();
-      
-      final impressions = variantResults.where((r) => r.event == ABTestEvent.impression).length;
-      final conversions = variantResults.where((r) => r.event == ABTestEvent.conversion).length;
-      
+      final variantResults =
+          results.where((r) => r.variantName == variant.name).toList();
+
+      final impressions =
+          variantResults.where((r) => r.event == ABTestEvent.impression).length;
+      final conversions =
+          variantResults.where((r) => r.event == ABTestEvent.conversion).length;
+
       final conversionRate = impressions > 0 ? conversions / impressions : 0.0;
-      
+
       variantStats[variant.name] = ABTestVariantStats(
         variantName: variant.name,
         impressions: impressions,
@@ -131,7 +132,7 @@ class NotificationABTestingService {
 
     // 統計的有意性を計算
     final significance = _calculateStatisticalSignificance(variantStats);
-    
+
     // 勝者を決定
     final winner = _determineWinner(variantStats, significance);
 
@@ -172,15 +173,15 @@ class NotificationABTestingService {
   bool _isTestActive(ABTest test) {
     final now = DateTime.now();
     return test.status == ABTestStatus.active &&
-           now.isAfter(test.startDate) &&
-           now.isBefore(test.endDate);
+        now.isAfter(test.startDate) &&
+        now.isBefore(test.endDate);
   }
 
   /// バリアントを割り当て
   ABTestVariant _assignVariant(List<ABTestVariant> variants) {
     final totalWeight = variants.fold(0.0, (sum, v) => sum + v.weight);
     final randomValue = _random.nextDouble() * totalWeight;
-    
+
     double currentWeight = 0.0;
     for (final variant in variants) {
       currentWeight += variant.weight;
@@ -188,38 +189,40 @@ class NotificationABTestingService {
         return variant;
       }
     }
-    
+
     return variants.last; // フォールバック
   }
 
   /// 統計的有意性を計算
-  double _calculateStatisticalSignificance(Map<String, ABTestVariantStats> stats) {
+  double _calculateStatisticalSignificance(
+    Map<String, ABTestVariantStats> stats,
+  ) {
     if (stats.length < 2) return 0.0;
-    
+
     final variants = stats.values.toList();
     final control = variants.first;
     final treatment = variants.last;
-    
+
     // 簡単なZ検定を実行
     final p1 = control.conversionRate;
     final p2 = treatment.conversionRate;
     final n1 = control.impressions;
     final n2 = treatment.impressions;
-    
+
     if (n1 < 30 || n2 < 30) return 0.0; // サンプルサイズが小さすぎる
-    
+
     final pooledP = (control.conversions + treatment.conversions) / (n1 + n2);
-    final se = math.sqrt(pooledP * (1 - pooledP) * (1/n1 + 1/n2));
-    
+    final se = math.sqrt(pooledP * (1 - pooledP) * (1 / n1 + 1 / n2));
+
     if (se == 0) return 0.0;
-    
+
     final z = (p2 - p1).abs() / se;
-    
+
     // Z値から信頼度を計算（簡略化）
     if (z > 2.58) return 0.99; // 99%
     if (z > 1.96) return 0.95; // 95%
     if (z > 1.65) return 0.90; // 90%
-    
+
     return 0.0;
   }
 
@@ -229,22 +232,27 @@ class NotificationABTestingService {
     double significance,
   ) {
     if (significance < 0.95) return null; // 統計的有意性が不十分
-    
-    final sortedVariants = stats.entries.toList()
-      ..sort((a, b) => b.value.conversionRate.compareTo(a.value.conversionRate));
-    
+
+    final sortedVariants =
+        stats.entries.toList()..sort(
+          (a, b) => b.value.conversionRate.compareTo(a.value.conversionRate),
+        );
+
     return sortedVariants.first.key;
   }
 
   /// 信頼度を計算
   double _calculateConfidence(Map<String, ABTestVariantStats> stats) {
-    final totalImpressions = stats.values.fold(0, (sum, s) => sum + s.impressions);
-    
+    final totalImpressions = stats.values.fold(
+      0,
+      (sum, s) => sum + s.impressions,
+    );
+
     if (totalImpressions < 100) return 0.0;
     if (totalImpressions < 500) return 0.3;
     if (totalImpressions < 1000) return 0.6;
     if (totalImpressions < 5000) return 0.8;
-    
+
     return 1.0;
   }
 
@@ -252,13 +260,13 @@ class NotificationABTestingService {
   Future<void> _saveTest(ABTest test) async {
     final tests = await _getAllTests();
     final index = tests.indexWhere((t) => t.id == test.id);
-    
+
     if (index >= 0) {
       tests[index] = test;
     } else {
       tests.add(test);
     }
-    
+
     final testsJson = jsonEncode(tests.map((t) => t.toJson()).toList());
     await _prefs.setString(_testsKey, testsJson);
   }
@@ -276,19 +284,24 @@ class NotificationABTestingService {
     final testsJson = _prefs.getString(_testsKey) ?? '[]';
     try {
       final testsList = jsonDecode(testsJson) as List;
-      return testsList.map((t) => ABTest.fromJson(t as Map<String, dynamic>)).toList();
+      return testsList
+          .map((t) => ABTest.fromJson(t as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       debugPrint('Failed to load A/B tests: $e');
       return [];
     }
   }
 
-  Future<ABTestVariant?> _getExistingVariant(String userId, String testId) async {
+  Future<ABTestVariant?> _getExistingVariant(
+    String userId,
+    String testId,
+  ) async {
     final variantsJson = _prefs.getString(_userVariantsKey) ?? '{}';
     try {
       final variants = jsonDecode(variantsJson) as Map<String, dynamic>;
       final userVariants = variants[userId] as Map<String, dynamic>?;
-      
+
       if (userVariants != null && userVariants.containsKey(testId)) {
         final variantData = userVariants[testId] as Map<String, dynamic>;
         return ABTestVariant.fromJson(variantData);
@@ -296,38 +309,45 @@ class NotificationABTestingService {
     } catch (e) {
       debugPrint('Failed to load user variants: $e');
     }
-    
+
     return null;
   }
 
-  Future<void> _saveUserVariant(String userId, String testId, ABTestVariant variant) async {
+  Future<void> _saveUserVariant(
+    String userId,
+    String testId,
+    ABTestVariant variant,
+  ) async {
     final variantsJson = _prefs.getString(_userVariantsKey) ?? '{}';
     final variants = jsonDecode(variantsJson) as Map<String, dynamic>;
-    
-    final userVariants = variants[userId] as Map<String, dynamic>? ?? <String, dynamic>{};
+
+    final userVariants =
+        variants[userId] as Map<String, dynamic>? ?? <String, dynamic>{};
     userVariants[testId] = variant.toJson();
     variants[userId] = userVariants;
-    
+
     await _prefs.setString(_userVariantsKey, jsonEncode(variants));
   }
 
   Future<void> _saveTestResult(ABTestResult result) async {
     final resultsKey = 'ab_test_results_${result.testId}';
     final resultsJson = _prefs.getString(resultsKey) ?? '[]';
-    
+
     final results = jsonDecode(resultsJson) as List;
     results.add(result.toJson());
-    
+
     await _prefs.setString(resultsKey, jsonEncode(results));
   }
 
   Future<List<ABTestResult>> _getTestResults(String testId) async {
     final resultsKey = 'ab_test_results_$testId';
     final resultsJson = _prefs.getString(resultsKey) ?? '[]';
-    
+
     try {
       final resultsList = jsonDecode(resultsJson) as List;
-      return resultsList.map((r) => ABTestResult.fromJson(r as Map<String, dynamic>)).toList();
+      return resultsList
+          .map((r) => ABTestResult.fromJson(r as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       debugPrint('Failed to load test results: $e');
       return [];
@@ -400,8 +420,13 @@ class ABTest {
   factory ABTest.fromJson(Map<String, dynamic> json) => ABTest(
     id: json['id'] as String,
     name: json['name'] as String,
-    category: NotificationCategory.values.firstWhere((c) => c.id == json['category']),
-    variants: (json['variants'] as List).map((v) => ABTestVariant.fromJson(v)).toList(),
+    category: NotificationCategory.values.firstWhere(
+      (c) => c.id == json['category'],
+    ),
+    variants:
+        (json['variants'] as List)
+            .map((v) => ABTestVariant.fromJson(v))
+            .toList(),
     startDate: DateTime.parse(json['startDate'] as String),
     endDate: DateTime.parse(json['endDate'] as String),
     trafficAllocation: (json['trafficAllocation'] as num).toDouble(),
@@ -443,6 +468,7 @@ class ABTestVariant {
 }
 
 enum ABTestStatus { active, stopped, completed }
+
 enum ABTestEvent { impression, click, conversion, dismissal }
 
 class ABTestResult {

@@ -120,10 +120,14 @@ class NotificationAnalyticsSettings with _$NotificationAnalyticsSettings {
 class NotificationSettings with _$NotificationSettings {
   const factory NotificationSettings({
     @Default(true) bool globalEnabled,
-    @Default({}) Map<NotificationCategory, CategoryNotificationSettings> categorySettings,
-    @Default(TimeBasedNotificationSettings()) TimeBasedNotificationSettings timeSettings,
-    @Default(SmartNotificationSettings()) SmartNotificationSettings smartSettings,
-    @Default(NotificationAnalyticsSettings()) NotificationAnalyticsSettings analyticsSettings,
+    @Default({})
+    Map<NotificationCategory, CategoryNotificationSettings> categorySettings,
+    @Default(TimeBasedNotificationSettings())
+    TimeBasedNotificationSettings timeSettings,
+    @Default(SmartNotificationSettings())
+    SmartNotificationSettings smartSettings,
+    @Default(NotificationAnalyticsSettings())
+    NotificationAnalyticsSettings analyticsSettings,
     @Default('') String deviceToken,
     DateTime? lastUpdated,
   }) = _NotificationSettings;
@@ -133,8 +137,9 @@ class NotificationSettings with _$NotificationSettings {
 
   /// デフォルト設定を生成
   factory NotificationSettings.defaultSettings() {
-    final categorySettings = <NotificationCategory, CategoryNotificationSettings>{};
-    
+    final categorySettings =
+        <NotificationCategory, CategoryNotificationSettings>{};
+
     for (final category in NotificationCategory.values) {
       categorySettings[category] = CategoryNotificationSettings(
         category: category,
@@ -152,7 +157,12 @@ class NotificationSettings with _$NotificationSettings {
       categorySettings: categorySettings,
       timeSettings: const TimeBasedNotificationSettings(
         enabled: true,
-        sleepTime: TimeSlot(startHour: 22, startMinute: 0, endHour: 7, endMinute: 0),
+        sleepTime: TimeSlot(
+          startHour: 22,
+          startMinute: 0,
+          endHour: 7,
+          endMinute: 0,
+        ),
         respectSystemDnd: true,
       ),
       smartSettings: const SmartNotificationSettings(),

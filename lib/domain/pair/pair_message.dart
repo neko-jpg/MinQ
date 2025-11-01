@@ -1,13 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// メッセージタイプ
-enum MessageType {
-  text,
-  image,
-  sticker,
-  encouragement,
-  system,
-}
+enum MessageType { text, image, sticker, encouragement, system }
 
 /// ペアメッセージ
 class PairMessage {
@@ -128,9 +122,10 @@ class PairMessage {
         ),
       ),
       isRead: data['isRead'] as bool? ?? false,
-      readAt: data['readAt'] != null
-          ? (data['readAt'] as Timestamp).toDate()
-          : null,
+      readAt:
+          data['readAt'] != null
+              ? (data['readAt'] as Timestamp).toDate()
+              : null,
     );
   }
 
@@ -143,9 +138,7 @@ class PairMessage {
       'imageUrl': imageUrl,
       'stickerUrl': stickerUrl,
       'timestamp': Timestamp.fromDate(timestamp),
-      'reactions': reactions.map(
-        (key, value) => MapEntry(key, value),
-      ),
+      'reactions': reactions.map((key, value) => MapEntry(key, value)),
       'isRead': isRead,
       'readAt': readAt != null ? Timestamp.fromDate(readAt!) : null,
     };
@@ -153,16 +146,13 @@ class PairMessage {
 
   /// 既読にする
   PairMessage markAsRead() {
-    return copyWith(
-      isRead: true,
-      readAt: DateTime.now(),
-    );
+    return copyWith(isRead: true, readAt: DateTime.now());
   }
 
   /// リアクションを追加/削除
   PairMessage toggleReaction(String emoji, String userId) {
     final newReactions = Map<String, List<String>>.from(reactions);
-    
+
     if (newReactions.containsKey(emoji)) {
       if (newReactions[emoji]!.contains(userId)) {
         newReactions[emoji]!.remove(userId);

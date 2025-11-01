@@ -4,10 +4,7 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// Chart widget for displaying category distribution
 class CategoryDistributionChart extends StatelessWidget {
-  const CategoryDistributionChart({
-    super.key,
-    required this.trends,
-  });
+  const CategoryDistributionChart({super.key, required this.trends});
 
   final HabitCompletionTrends trends;
 
@@ -21,8 +18,8 @@ class CategoryDistributionChart extends StatelessWidget {
     }
 
     final total = categories.values.reduce((a, b) => a + b);
-    final sortedCategories = categories.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedCategories =
+        categories.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     return Container(
       padding: EdgeInsets.all(tokens.spacing.lg),
@@ -36,11 +33,7 @@ class CategoryDistributionChart extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.pie_chart,
-                color: tokens.brandPrimary,
-                size: 20,
-              ),
+              Icon(Icons.pie_chart, color: tokens.brandPrimary, size: 20),
               SizedBox(width: tokens.spacing.sm),
               Text(
                 'カテゴリ別分布',
@@ -51,7 +44,7 @@ class CategoryDistributionChart extends StatelessWidget {
             ],
           ),
           SizedBox(height: tokens.spacing.lg),
-          
+
           // Pie chart representation using stacked bars
           Row(
             children: [
@@ -67,85 +60,93 @@ class CategoryDistributionChart extends StatelessWidget {
                         borderRadius: BorderRadius.circular(tokens.radius.md),
                       ),
                       child: Row(
-                        children: sortedCategories.asMap().entries.map((entry) {
-                          final index = entry.key;
-                          final category = entry.value;
-                          final percentage = category.value / total;
-                          
-                          return Expanded(
-                            flex: (percentage * 100).round(),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: _getCategoryColor(index),
-                                borderRadius: BorderRadius.horizontal(
-                                  left: index == 0 
-                                      ? Radius.circular(tokens.radius.md) 
-                                      : Radius.zero,
-                                  right: index == sortedCategories.length - 1 
-                                      ? Radius.circular(tokens.radius.md) 
-                                      : Radius.zero,
+                        children:
+                            sortedCategories.asMap().entries.map((entry) {
+                              final index = entry.key;
+                              final category = entry.value;
+                              final percentage = category.value / total;
+
+                              return Expanded(
+                                flex: (percentage * 100).round(),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: _getCategoryColor(index),
+                                    borderRadius: BorderRadius.horizontal(
+                                      left:
+                                          index == 0
+                                              ? Radius.circular(
+                                                tokens.radius.md,
+                                              )
+                                              : Radius.zero,
+                                      right:
+                                          index == sortedCategories.length - 1
+                                              ? Radius.circular(
+                                                tokens.radius.md,
+                                              )
+                                              : Radius.zero,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                              );
+                            }).toList(),
                       ),
                     ),
                     SizedBox(height: tokens.spacing.lg),
-                    
+
                     // Circular progress indicators
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: sortedCategories.asMap().entries.take(3).map((entry) {
-                        final index = entry.key;
-                        final category = entry.value;
-                        final percentage = category.value / total;
-                        
-                        return _buildCircularIndicator(
-                          category.key,
-                          percentage,
-                          _getCategoryColor(index),
-                          tokens,
-                        );
-                      }).toList(),
+                      children:
+                          sortedCategories.asMap().entries.take(3).map((entry) {
+                            final index = entry.key;
+                            final category = entry.value;
+                            final percentage = category.value / total;
+
+                            return _buildCircularIndicator(
+                              category.key,
+                              percentage,
+                              _getCategoryColor(index),
+                              tokens,
+                            );
+                          }).toList(),
                     ),
                   ],
                 ),
               ),
-              
+
               SizedBox(width: tokens.spacing.lg),
-              
+
               // Legend
               Expanded(
                 flex: 1,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: sortedCategories.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final category = entry.value;
-                    final percentage = (category.value / total * 100).toStringAsFixed(0);
-                    
-                    return _buildLegendItem(
-                      category.key,
-                      category.value,
-                      '$percentage%',
-                      _getCategoryColor(index),
-                      tokens,
-                    );
-                  }).toList(),
+                  children:
+                      sortedCategories.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final category = entry.value;
+                        final percentage = (category.value / total * 100)
+                            .toStringAsFixed(0);
+
+                        return _buildLegendItem(
+                          category.key,
+                          category.value,
+                          '$percentage%',
+                          _getCategoryColor(index),
+                          tokens,
+                        );
+                      }).toList(),
                 ),
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing.md),
-          
+
           // Summary text
           Text(
             '合計 $total 個の習慣が ${categories.length} カテゴリに分散',
-            style: tokens.typography.caption.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
           ),
         ],
       ),
@@ -262,24 +263,16 @@ class CategoryDistributionChart extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.pie_chart_outline,
-            size: 48,
-            color: tokens.textMuted,
-          ),
+          Icon(Icons.pie_chart_outline, size: 48, color: tokens.textMuted),
           SizedBox(height: tokens.spacing.md),
           Text(
             'カテゴリデータがありません',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing.sm),
           Text(
             '習慣を追加すると、カテゴリ別の分布が表示されます',
-            style: tokens.typography.caption.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -298,7 +291,7 @@ class CategoryDistributionChart extends StatelessWidget {
       const Color(0xFFEC4899), // Pink
       const Color(0xFF84CC16), // Lime
     ];
-    
+
     return colors[index % colors.length];
   }
 }

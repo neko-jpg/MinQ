@@ -57,10 +57,7 @@ class AppProviderObserver extends ProviderObserver {
   }
 
   @override
-  void didDisposeProvider(
-    ProviderBase provider,
-    ProviderContainer container,
-  ) {
+  void didDisposeProvider(ProviderBase provider, ProviderContainer container) {
     if (!enableLogging || !logDispose) return;
 
     _logger.d(
@@ -89,21 +86,21 @@ class AppProviderObserver extends ProviderObserver {
 /// 開発環境用の詳細ログObserver
 class DevProviderObserver extends AppProviderObserver {
   DevProviderObserver()
-      : super(
-          enableLogging: true,
-          logStateChanges: true,
-          logErrors: true,
-          logDispose: true,
-        );
+    : super(
+        enableLogging: true,
+        logStateChanges: true,
+        logErrors: true,
+        logDispose: true,
+      );
 }
 
 /// 本番環境用の最小ログObserver
 class ProdProviderObserver extends AppProviderObserver {
   ProdProviderObserver()
-      : super(
-          enableLogging: true,
-          logStateChanges: false,
-          logErrors: true,
-          logDispose: false,
-        );
+    : super(
+        enableLogging: true,
+        logStateChanges: false,
+        logErrors: true,
+        logDispose: false,
+      );
 }

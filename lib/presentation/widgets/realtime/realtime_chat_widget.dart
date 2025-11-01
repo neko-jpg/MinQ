@@ -48,11 +48,14 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
   @override
   Widget build(BuildContext context) {
     // リアルタイムメッセージを監視
-    ref.listen<AsyncValue<RealtimeMessage>>(pairMessageStreamProvider, (previous, next) {
+    ref.listen<AsyncValue<RealtimeMessage>>(pairMessageStreamProvider, (
+      previous,
+      next,
+    ) {
       next.whenData((realtimeMessage) {
         if (realtimeMessage.type == MessageType.pairMessage &&
             (realtimeMessage.senderId == widget.partnerId ||
-             realtimeMessage.recipientId == widget.currentUserId)) {
+                realtimeMessage.recipientId == widget.currentUserId)) {
           _handleRealtimeMessage(realtimeMessage);
         }
       });
@@ -61,10 +64,8 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
     return Column(
       children: [
         // メッセージリスト
-        Expanded(
-          child: _buildMessageList(),
-        ),
-        
+        Expanded(child: _buildMessageList()),
+
         // メッセージ入力欄
         _buildMessageInput(),
       ],
@@ -79,7 +80,7 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
       itemBuilder: (context, index) {
         final message = _messages[index];
         final isCurrentUser = message.senderId == widget.currentUserId;
-        
+
         return _buildMessageBubble(message, isCurrentUser);
       },
     );
@@ -87,13 +88,12 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
 
   Widget _buildMessageBubble(PairMessage message, bool isCurrentUser) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        mainAxisAlignment: isCurrentUser 
-            ? MainAxisAlignment.end 
-            : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           if (!isCurrentUser) ...[
             CircleAvatar(
@@ -109,14 +109,15 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
             ),
             const SizedBox(width: 8),
           ],
-          
+
           Flexible(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: isCurrentUser 
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.surfaceContainerHighest,
+                color:
+                    isCurrentUser
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -126,12 +127,13 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
                     Text(
                       message.text!,
                       style: TextStyle(
-                        color: isCurrentUser 
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.onSurfaceVariant,
+                        color:
+                            isCurrentUser
+                                ? theme.colorScheme.onPrimary
+                                : theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
-                  
+
                   if (message.imageUrl != null) ...[
                     if (message.text != null) const SizedBox(height: 8),
                     ClipRRect(
@@ -154,22 +156,25 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
                       ),
                     ),
                   ],
-                  
+
                   const SizedBox(height: 4),
                   Text(
                     _formatTimestamp(message.timestamp),
                     style: TextStyle(
                       fontSize: 10,
-                      color: isCurrentUser 
-                          ? theme.colorScheme.onPrimary.withOpacity(0.7)
-                          : theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
+                      color:
+                          isCurrentUser
+                              ? theme.colorScheme.onPrimary.withOpacity(0.7)
+                              : theme.colorScheme.onSurfaceVariant.withOpacity(
+                                0.7,
+                              ),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          
+
           if (isCurrentUser) ...[
             const SizedBox(width: 8),
             CircleAvatar(
@@ -191,15 +196,13 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
 
   Widget _buildMessageInput() {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         border: Border(
-          top: BorderSide(
-            color: theme.colorScheme.outline.withOpacity(0.2),
-          ),
+          top: BorderSide(color: theme.colorScheme.outline.withOpacity(0.2)),
         ),
       ),
       child: Row(
@@ -225,9 +228,9 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
               onSubmitted: (_) => _sendMessage(),
             ),
           ),
-          
+
           const SizedBox(width: 8),
-          
+
           IconButton(
             onPressed: _sendMessage,
             icon: const Icon(Icons.send),
@@ -266,7 +269,7 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
       text: text,
       timestamp: DateTime.now(),
     );
-    
+
     setState(() {
       _messages.add(localMessage);
     });

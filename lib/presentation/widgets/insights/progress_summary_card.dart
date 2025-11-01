@@ -4,10 +4,7 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// Card widget displaying progress analysis summary
 class ProgressSummaryCard extends StatelessWidget {
-  const ProgressSummaryCard({
-    super.key,
-    required this.analysis,
-  });
+  const ProgressSummaryCard({super.key, required this.analysis});
 
   final ProgressAnalysis analysis;
 
@@ -72,9 +69,9 @@ class ProgressSummaryCard extends StatelessWidget {
               _buildScoreCircle(analysis.overallScore, tokens),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing.lg),
-          
+
           // Key metrics grid
           Row(
             children: [
@@ -99,9 +96,9 @@ class ProgressSummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          
+
           SizedBox(height: tokens.spacing.md),
-          
+
           Row(
             children: [
               Expanded(
@@ -125,19 +122,18 @@ class ProgressSummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          
+
           // Category performance section
           if (analysis.categoryPerformance.isNotEmpty) ...[
             SizedBox(height: tokens.spacing.lg),
             Text(
               'カテゴリ別パフォーマンス',
-              style: tokens.typography.h4.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing.md),
-            ...analysis.categoryPerformance.entries.map((entry) =>
-              _buildCategoryPerformanceBar(entry.key, entry.value, tokens),
+            ...analysis.categoryPerformance.entries.map(
+              (entry) =>
+                  _buildCategoryPerformanceBar(entry.key, entry.value, tokens),
             ),
           ],
         ],
@@ -147,7 +143,7 @@ class ProgressSummaryCard extends StatelessWidget {
 
   Widget _buildScoreCircle(double score, MinqTheme tokens) {
     final color = _getScoreColor(score);
-    
+
     return SizedBox(
       width: 60,
       height: 60,
@@ -244,7 +240,7 @@ class ProgressSummaryCard extends StatelessWidget {
     MinqTheme tokens,
   ) {
     final color = _getPerformanceColor(performance);
-    
+
     return Padding(
       padding: EdgeInsets.only(bottom: tokens.spacing.sm),
       child: Column(

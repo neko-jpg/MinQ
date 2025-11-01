@@ -102,7 +102,7 @@ class PointsDisplayWidget extends ConsumerWidget {
         gradient: LinearGradient(
           colors: [
             tokens.brandPrimary,
-            tokens.brandPrimary.withAlpha((255 * 0.8).round())
+            tokens.brandPrimary.withAlpha((255 * 0.8).round()),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -145,7 +145,7 @@ class PointsDisplayWidget extends ConsumerWidget {
         gradient: LinearGradient(
           colors: [
             tokens.brandPrimary,
-            tokens.brandPrimary.withAlpha((255 * 0.8).round())
+            tokens.brandPrimary.withAlpha((255 * 0.8).round()),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -358,8 +358,9 @@ class RankProgressWidget extends ConsumerWidget {
                 children: [
                   Text(
                     '現在のランク',
-                    style: tokens.typography.caption
-                        .copyWith(color: tokens.textMuted),
+                    style: tokens.typography.caption.copyWith(
+                      color: tokens.textMuted,
+                    ),
                   ),
                   Text(
                     currentRank,
@@ -378,8 +379,9 @@ class RankProgressWidget extends ConsumerWidget {
                   children: [
                     Text(
                       '次のランクまで',
-                      style: tokens.typography.caption
-                          .copyWith(color: tokens.textMuted),
+                      style: tokens.typography.caption.copyWith(
+                        color: tokens.textMuted,
+                      ),
                     ),
                     Text(
                       '$pointsToNext ポイント',
@@ -396,16 +398,18 @@ class RankProgressWidget extends ConsumerWidget {
                   child: LinearProgressIndicator(
                     value: progress,
                     minHeight: tokens.spacing.sm,
-                    backgroundColor:
-                        tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+                    backgroundColor: tokens.brandPrimary.withAlpha(
+                      (255 * 0.1).round(),
+                    ),
                     valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
                   ),
                 ),
                 SizedBox(height: tokens.spacing.xs),
                 Text(
                   '次のランク: $nextRank',
-                  style: tokens.typography.caption
-                      .copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
               ],
             ],

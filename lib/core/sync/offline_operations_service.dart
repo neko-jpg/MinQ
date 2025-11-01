@@ -11,7 +11,8 @@ class OfflineOperationsService {
   OfflineOperationsService({
     required Isar isar,
     required SyncQueueManager syncQueueManager,
-  }) : _isar = isar, _syncQueueManager = syncQueueManager;
+  }) : _isar = isar,
+       _syncQueueManager = syncQueueManager;
 
   final Isar _isar;
   final SyncQueueManager _syncQueueManager;
@@ -36,44 +37,47 @@ class OfflineOperationsService {
   }) async {
     final now = DateTime.now();
     final questId = _uuid.v4();
-    
-    final quest = LocalQuest()
-      ..questId = questId
-      ..owner = owner
-      ..title = title
-      ..category = category
-      ..estimatedMinutes = estimatedMinutes
-      ..difficulty = difficulty
-      ..location = location
-      ..iconKey = iconKey
-      ..isTemplate = isTemplate
-      ..status = QuestStatus.active
-      ..createdAt = now
-      ..updatedAt = now
-      ..needsSync = true
-      ..syncStatus = SyncStatus.pending
-      ..xpReward = xpReward
-      ..tags = tags
-      ..priority = priority
-      ..dueDate = dueDate;
+
+    final quest =
+        LocalQuest()
+          ..questId = questId
+          ..owner = owner
+          ..title = title
+          ..category = category
+          ..estimatedMinutes = estimatedMinutes
+          ..difficulty = difficulty
+          ..location = location
+          ..iconKey = iconKey
+          ..isTemplate = isTemplate
+          ..status = QuestStatus.active
+          ..createdAt = now
+          ..updatedAt = now
+          ..needsSync = true
+          ..syncStatus = SyncStatus.pending
+          ..xpReward = xpReward
+          ..tags = tags
+          ..priority = priority
+          ..dueDate = dueDate;
 
     await _isar.writeTxn(() async {
       await _isar.localQuests.put(quest);
     });
 
     // Enqueue sync job
-    await _syncQueueManager.enqueueSyncJob(SyncJob()
-      ..entityType = 'quest'
-      ..entityId = questId
-      ..operation = 'create'
-      ..data = _questToMap(quest)
-      ..createdAt = now
-      ..priority = 1);
+    await _syncQueueManager.enqueueSyncJob(
+      SyncJob()
+        ..entityType = 'quest'
+        ..entityId = questId
+        ..operation = 'create'
+        ..data = _questToMap(quest)
+        ..createdAt = now
+        ..priority = 1,
+    );
 
-    MinqLogger.info('Quest created offline', metadata: {
-      'questId': questId,
-      'title': title,
-    });
+    MinqLogger.info(
+      'Quest created offline',
+      metadata: {'questId': questId, 'title': title},
+    );
 
     return quest;
   }
@@ -93,17 +97,15 @@ class OfflineOperationsService {
     int? priority,
     DateTime? dueDate,
   }) async {
-    final quest = await _isar.localQuests
-        .filter()
-        .questIdEqualTo(questId)
-        .findFirst();
+    final quest =
+        await _isar.localQuests.filter().questIdEqualTo(questId).findFirst();
 
     if (quest == null) {
       throw Exception('Quest not found: $questId');
     }
 
     final now = DateTime.now();
-    
+
     // Update fields
     if (title != null) quest.title = title;
     if (category != null) quest.category = category;
@@ -116,7 +118,7 @@ class OfflineOperationsService {
     if (tags != null) quest.tags = tags;
     if (priority != null) quest.priority = priority;
     if (dueDate != null) quest.dueDate = dueDate;
-    
+
     quest.updatedAt = now;
     quest.needsSync = true;
     quest.syncStatus = SyncStatus.pending;
@@ -126,27 +128,25 @@ class OfflineOperationsService {
     });
 
     // Enqueue sync job
-    await _syncQueueManager.enqueueSyncJob(SyncJob()
-      ..entityType = 'quest'
-      ..entityId = questId
-      ..operation = 'update'
-      ..data = _questToMap(quest)
-      ..createdAt = now
-      ..priority = 1);
+    await _syncQueueManager.enqueueSyncJob(
+      SyncJob()
+        ..entityType = 'quest'
+        ..entityId = questId
+        ..operation = 'update'
+        ..data = _questToMap(quest)
+        ..createdAt = now
+        ..priority = 1,
+    );
 
-    MinqLogger.info('Quest updated offline', metadata: {
-      'questId': questId,
-    });
+    MinqLogger.info('Quest updated offline', metadata: {'questId': questId});
 
     return quest;
   }
 
   /// Delete a quest offline
   Future<void> deleteQuest(String questId) async {
-    final quest = await _isar.localQuests
-        .filter()
-        .questIdEqualTo(questId)
-        .findFirst();
+    final quest =
+        await _isar.localQuests.filter().questIdEqualTo(questId).findFirst();
 
     if (quest == null) {
       throw Exception('Quest not found: $questId');
@@ -163,17 +163,17 @@ class OfflineOperationsService {
     });
 
     // Enqueue sync job
-    await _syncQueueManager.enqueueSyncJob(SyncJob()
-      ..entityType = 'quest'
-      ..entityId = questId
-      ..operation = 'delete'
-      ..data = {'questId': questId}
-      ..createdAt = now
-      ..priority = 1);
+    await _syncQueueManager.enqueueSyncJob(
+      SyncJob()
+        ..entityType = 'quest'
+        ..entityId = questId
+        ..operation = 'delete'
+        ..data = {'questId': questId}
+        ..createdAt = now
+        ..priority = 1,
+    );
 
-    MinqLogger.info('Quest deleted offline', metadata: {
-      'questId': questId,
-    });
+    MinqLogger.info('Quest deleted offline', metadata: {'questId': questId});
   }
 
   // User Operations
@@ -189,17 +189,14 @@ class OfflineOperationsService {
     List<String>? notificationTimes,
     String? privacy,
   }) async {
-    final user = await _isar.localUsers
-        .filter()
-        .uidEqualTo(uid)
-        .findFirst();
+    final user = await _isar.localUsers.filter().uidEqualTo(uid).findFirst();
 
     if (user == null) {
       throw Exception('User not found: $uid');
     }
 
     final now = DateTime.now();
-    
+
     // Update fields
     if (displayName != null) user.displayName = displayName;
     if (handle != null) user.handle = handle;
@@ -208,7 +205,7 @@ class OfflineOperationsService {
     if (focusTags != null) user.focusTags = focusTags;
     if (notificationTimes != null) user.notificationTimes = notificationTimes;
     if (privacy != null) user.privacy = privacy;
-    
+
     user.updatedAt = now;
     user.needsSync = true;
     user.syncStatus = SyncStatus.pending;
@@ -218,17 +215,17 @@ class OfflineOperationsService {
     });
 
     // Enqueue sync job
-    await _syncQueueManager.enqueueSyncJob(SyncJob()
-      ..entityType = 'user'
-      ..entityId = uid
-      ..operation = 'update'
-      ..data = _userToMap(user)
-      ..createdAt = now
-      ..priority = 2); // Higher priority for user updates
+    await _syncQueueManager.enqueueSyncJob(
+      SyncJob()
+        ..entityType = 'user'
+        ..entityId = uid
+        ..operation = 'update'
+        ..data = _userToMap(user)
+        ..createdAt = now
+        ..priority = 2,
+    ); // Higher priority for user updates
 
-    MinqLogger.info('User profile updated offline', metadata: {
-      'uid': uid,
-    });
+    MinqLogger.info('User profile updated offline', metadata: {'uid': uid});
 
     return user;
   }
@@ -239,28 +236,25 @@ class OfflineOperationsService {
     required int xpGained,
     String? reason,
   }) async {
-    final user = await _isar.localUsers
-        .filter()
-        .uidEqualTo(uid)
-        .findFirst();
+    final user = await _isar.localUsers.filter().uidEqualTo(uid).findFirst();
 
     if (user == null) {
       throw Exception('User not found: $uid');
     }
 
     final now = DateTime.now();
-    
+
     // Update XP
     user.currentXP += xpGained;
     user.totalPoints += xpGained;
     user.weeklyXP += xpGained;
-    
+
     // Calculate new level
     final newLevel = _calculateLevel(user.totalPoints);
     if (newLevel > user.currentLevel) {
       user.currentLevel = newLevel;
     }
-    
+
     user.updatedAt = now;
     user.needsSync = true;
     user.syncStatus = SyncStatus.pending;
@@ -270,21 +264,26 @@ class OfflineOperationsService {
     });
 
     // Enqueue sync job
-    await _syncQueueManager.enqueueSyncJob(SyncJob()
-      ..entityType = 'user'
-      ..entityId = uid
-      ..operation = 'update'
-      ..data = _userToMap(user)
-      ..createdAt = now
-      ..priority = 1);
+    await _syncQueueManager.enqueueSyncJob(
+      SyncJob()
+        ..entityType = 'user'
+        ..entityId = uid
+        ..operation = 'update'
+        ..data = _userToMap(user)
+        ..createdAt = now
+        ..priority = 1,
+    );
 
-    MinqLogger.info('User XP updated offline', metadata: {
-      'uid': uid,
-      'xpGained': xpGained,
-      'newTotal': user.totalPoints,
-      'newLevel': user.currentLevel,
-      'reason': reason,
-    });
+    MinqLogger.info(
+      'User XP updated offline',
+      metadata: {
+        'uid': uid,
+        'xpGained': xpGained,
+        'newTotal': user.totalPoints,
+        'newLevel': user.currentLevel,
+        'reason': reason,
+      },
+    );
 
     return user;
   }
@@ -301,18 +300,19 @@ class OfflineOperationsService {
   }) async {
     final now = DateTime.now();
     final logId = _uuid.v4();
-    
-    final questLog = LocalQuestLog()
-      ..logId = logId
-      ..uid = uid
-      ..questId = questId
-      ..timestamp = now
-      ..proofType = proofType
-      ..proofValue = proofValue
-      ..xpEarned = xpEarned
-      ..updatedAt = now
-      ..needsSync = true
-      ..syncStatus = SyncStatus.pending;
+
+    final questLog =
+        LocalQuestLog()
+          ..logId = logId
+          ..uid = uid
+          ..questId = questId
+          ..timestamp = now
+          ..proofType = proofType
+          ..proofValue = proofValue
+          ..xpEarned = xpEarned
+          ..updatedAt = now
+          ..needsSync = true
+          ..syncStatus = SyncStatus.pending;
 
     await _isar.writeTxn(() async {
       await _isar.localQuestLogs.put(questLog);
@@ -322,19 +322,20 @@ class OfflineOperationsService {
     await updateUserXP(uid, xpGained: xpEarned, reason: 'quest_completion');
 
     // Enqueue sync job
-    await _syncQueueManager.enqueueSyncJob(SyncJob()
-      ..entityType = 'questLog'
-      ..entityId = logId
-      ..operation = 'create'
-      ..data = _questLogToMap(questLog)
-      ..createdAt = now
-      ..priority = 1);
+    await _syncQueueManager.enqueueSyncJob(
+      SyncJob()
+        ..entityType = 'questLog'
+        ..entityId = logId
+        ..operation = 'create'
+        ..data = _questLogToMap(questLog)
+        ..createdAt = now
+        ..priority = 1,
+    );
 
-    MinqLogger.info('Quest completed offline', metadata: {
-      'questId': questId,
-      'uid': uid,
-      'xpEarned': xpEarned,
-    });
+    MinqLogger.info(
+      'Quest completed offline',
+      metadata: {'questId': questId, 'uid': uid, 'xpEarned': xpEarned},
+    );
 
     return questLog;
   }
@@ -347,17 +348,18 @@ class OfflineOperationsService {
     required int progressIncrement,
     String? uid,
   }) async {
-    final challenge = await _isar.localChallenges
-        .filter()
-        .challengeIdEqualTo(challengeId)
-        .findFirst();
+    final challenge =
+        await _isar.localChallenges
+            .filter()
+            .challengeIdEqualTo(challengeId)
+            .findFirst();
 
     if (challenge == null) {
       throw Exception('Challenge not found: $challengeId');
     }
 
     final now = DateTime.now();
-    
+
     challenge.progress += progressIncrement;
     challenge.updatedAt = now;
     challenge.needsSync = true;
@@ -368,19 +370,24 @@ class OfflineOperationsService {
     });
 
     // Enqueue sync job
-    await _syncQueueManager.enqueueSyncJob(SyncJob()
-      ..entityType = 'challenge'
-      ..entityId = challengeId
-      ..operation = 'update'
-      ..data = _challengeToMap(challenge)
-      ..createdAt = now
-      ..priority = 1);
+    await _syncQueueManager.enqueueSyncJob(
+      SyncJob()
+        ..entityType = 'challenge'
+        ..entityId = challengeId
+        ..operation = 'update'
+        ..data = _challengeToMap(challenge)
+        ..createdAt = now
+        ..priority = 1,
+    );
 
-    MinqLogger.info('Challenge progress updated offline', metadata: {
-      'challengeId': challengeId,
-      'progressIncrement': progressIncrement,
-      'newProgress': challenge.progress,
-    });
+    MinqLogger.info(
+      'Challenge progress updated offline',
+      metadata: {
+        'challengeId': challengeId,
+        'progressIncrement': progressIncrement,
+        'newProgress': challenge.progress,
+      },
+    );
 
     return challenge;
   }
@@ -497,24 +504,19 @@ class OfflineOperationsService {
 
   /// Get quest logs for a user
   Future<List<LocalQuestLog>> getUserQuestLogs(String uid, {int? limit}) async {
-    var query = _isar.localQuestLogs
-        .filter()
-        .uidEqualTo(uid)
-        .sortByTimestampDesc();
-    
+    var query =
+        _isar.localQuestLogs.filter().uidEqualTo(uid).sortByTimestampDesc();
+
     if (limit != null) {
       query = query.limit(limit);
     }
-    
+
     return await query.findAll();
   }
 
   /// Get user by uid
   Future<LocalUser?> getUser(String uid) async {
-    return await _isar.localUsers
-        .filter()
-        .uidEqualTo(uid)
-        .findFirst();
+    return await _isar.localUsers.filter().uidEqualTo(uid).findFirst();
   }
 
   /// Get active challenges

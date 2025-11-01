@@ -38,11 +38,7 @@ class _CrashRecoveryScreenState extends ConsumerState<CrashRecoveryScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.refresh,
-                    size: 48,
-                    color: tokens.brandPrimary,
-                  ),
+                  Icon(Icons.refresh, size: 48, color: tokens.brandPrimary),
                   SizedBox(height: tokens.spacing.lg),
                   Text(
                     '前回のセッションを復元しますか？',
@@ -160,7 +156,9 @@ class _CrashDetailCard extends StatelessWidget {
             SizedBox(height: tokens.spacing.md),
             Text(
               'スタックトレース',
-              style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+              style: tokens.typography.caption.copyWith(
+                color: tokens.textMuted,
+              ),
             ),
             SizedBox(height: tokens.spacing.xs),
             Container(
@@ -175,8 +173,9 @@ class _CrashDetailCard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: SelectableText(
                   report.stackTrace,
-                  style:
-                      tokens.typography.caption.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
               ),
             ),

@@ -64,16 +64,17 @@ class _SmartNotificationSettingsScreenState
           tabs: const [Tab(text: '設定'), Tab(text: '分析'), Tab(text: 'A/Bテスト')],
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-              controller: _tabController,
-              children: [
-                _buildSettingsTab(),
-                _buildAnalyticsTab(),
-                _buildABTestTab(),
-              ],
-            ),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildSettingsTab(),
+                  _buildAnalyticsTab(),
+                  _buildABTestTab(),
+                ],
+              ),
     );
   }
 
@@ -151,8 +152,9 @@ class _SmartNotificationSettingsScreenState
               SizedBox(width: tokens.spacing.xs),
               Text(
                 'AI通知設定',
-                style:
-                    tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.typography.h4.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -208,8 +210,9 @@ class _SmartNotificationSettingsScreenState
               SizedBox(width: tokens.spacing.xs),
               Text(
                 '最適時刻設定',
-                style:
-                    tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.typography.h4.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -238,12 +241,13 @@ class _SmartNotificationSettingsScreenState
             subtitle: const Text('1日最大3回'),
             trailing: DropdownButton<int>(
               value: 3,
-              items: [1, 2, 3, 4, 5].map((count) {
-                return DropdownMenuItem(
-                  value: count,
-                  child: Text('$count回'),
-                );
-              }).toList(),
+              items:
+                  [1, 2, 3, 4, 5].map((count) {
+                    return DropdownMenuItem(
+                      value: count,
+                      child: Text('$count回'),
+                    );
+                  }).toList(),
               onChanged: (value) {
                 // TODO: 頻度設定を保存
               },
@@ -272,8 +276,9 @@ class _SmartNotificationSettingsScreenState
               SizedBox(width: tokens.spacing.xs),
               Text(
                 'パーソナライゼーション',
-                style:
-                    tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.typography.h4.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -333,8 +338,9 @@ class _SmartNotificationSettingsScreenState
               SizedBox(width: tokens.spacing.xs),
               Text(
                 '再エンゲージメント',
-                style:
-                    tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.typography.h4.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -352,12 +358,13 @@ class _SmartNotificationSettingsScreenState
             subtitle: const Text('2日間非アクティブ後'),
             trailing: DropdownButton<int>(
               value: 2,
-              items: [1, 2, 3, 5, 7].map((days) {
-                return DropdownMenuItem(
-                  value: days,
-                  child: Text('$days日後'),
-                );
-              }).toList(),
+              items:
+                  [1, 2, 3, 5, 7].map((days) {
+                    return DropdownMenuItem(
+                      value: days,
+                      child: Text('$days日後'),
+                    );
+                  }).toList(),
               onChanged: (value) {
                 // TODO: 設定を保存
               },
@@ -394,18 +401,8 @@ class _SmartNotificationSettingsScreenState
           ),
           SizedBox(height: tokens.spacing.md),
           // モックテスト
-          _buildTestItem(
-            'メッセージトーン比較',
-            '励まし vs データ重視',
-            '実行中',
-            Colors.green,
-          ),
-          _buildTestItem(
-            '送信タイミング最適化',
-            '朝9時 vs 夕方6時',
-            '分析中',
-            Colors.orange,
-          ),
+          _buildTestItem('メッセージトーン比較', '励まし vs データ重視', '実行中', Colors.green),
+          _buildTestItem('送信タイミング最適化', '朝9時 vs 夕方6時', '分析中', Colors.orange),
         ],
       ),
     );
@@ -428,12 +425,7 @@ class _SmartNotificationSettingsScreenState
             style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: tokens.spacing.md),
-          _buildTestItem(
-            '絵文字使用効果',
-            '絵文字あり: 65% vs なし: 45%',
-            '完了',
-            Colors.blue,
-          ),
+          _buildTestItem('絵文字使用効果', '絵文字あり: 65% vs なし: 45%', '完了', Colors.blue),
         ],
       ),
     );
@@ -468,8 +460,9 @@ class _SmartNotificationSettingsScreenState
                 SizedBox(height: tokens.spacing.xs),
                 Text(
                   description,
-                  style: tokens.typography.caption
-                      .copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
               ],
             ),

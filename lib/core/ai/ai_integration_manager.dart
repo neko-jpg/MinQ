@@ -50,7 +50,7 @@ class AIIntegrationManager {
 
       // 基盤AIサービスの初期化（TensorFlow Lite）
       await _unifiedAI.initialize();
-      
+
       // ヘルスチェックを実行
       final isHealthy = await _unifiedAI.healthCheck();
       if (!isHealthy) {
@@ -103,7 +103,7 @@ class AIIntegrationManager {
           timestamp: DateTime.now(),
         ),
       );
-      
+
       // AIServiceExceptionとして再スロー
       throw AIServiceException(
         'AI統合システムの初期化に失敗しました: $e',

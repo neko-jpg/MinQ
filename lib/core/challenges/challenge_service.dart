@@ -39,12 +39,12 @@ final completedChallengesProvider = StreamProvider<List<Challenge>>((ref) {
 // Stream provider for a specific challenge's progress
 final challengeProgressProvider = StreamProvider.autoDispose
     .family<ChallengeProgress?, ChallengeProgressIdentity>((ref, identity) {
-  final service = ref.watch(challengeServiceProvider);
-  if (service == null) {
-    return Stream.value(null);
-  }
-  return service.getChallengeProgressStream(identity.challengeId);
-});
+      final service = ref.watch(challengeServiceProvider);
+      if (service == null) {
+        return Stream.value(null);
+      }
+      return service.getChallengeProgressStream(identity.challengeId);
+    });
 
 class ChallengeProgressIdentity {
   final String userId;
@@ -83,20 +83,23 @@ class ChallengeService {
         .where('endDate', isGreaterThanOrEqualTo: DateTime.now())
         .snapshots()
         .asyncMap((snapshot) async {
-      final progressSnapshot = await _progressRef.get();
-      final completedIds = progressSnapshot.docs
-          .where((doc) {
-            final data = doc.data() as Map<String, dynamic>?;
-            return data?['completed'] == true;
-          })
-          .map((doc) => doc.id)
-          .toSet();
+          final progressSnapshot = await _progressRef.get();
+          final completedIds =
+              progressSnapshot.docs
+                  .where((doc) {
+                    final data = doc.data() as Map<String, dynamic>?;
+                    return data?['completed'] == true;
+                  })
+                  .map((doc) => doc.id)
+                  .toSet();
 
-      return snapshot.docs
-          .map((doc) => Challenge.fromJson(doc.data() as Map<String, dynamic>))
-          .where((challenge) => !completedIds.contains(challenge.id))
-          .toList();
-    });
+          return snapshot.docs
+              .map(
+                (doc) => Challenge.fromJson(doc.data() as Map<String, dynamic>),
+              )
+              .where((challenge) => !completedIds.contains(challenge.id))
+              .toList();
+        });
   }
 
   /// Fetches completed challenges as a stream.
@@ -105,23 +108,26 @@ class ChallengeService {
         .where('completed', isEqualTo: true)
         .snapshots()
         .asyncMap((progressSnapshot) async {
-      if (progressSnapshot.docs.isEmpty) return [];
+          if (progressSnapshot.docs.isEmpty) return [];
 
-      final challengeIds = progressSnapshot.docs.map((doc) => doc.id).toList();
+          final challengeIds =
+              progressSnapshot.docs.map((doc) => doc.id).toList();
 
-      // Firestore 'in' query has a limit of 10 elements.
-      // We need to fetch challenges in batches if needed.
-      final challengeFutures = <Future<DocumentSnapshot>>[];
-      for (final challengeId in challengeIds) {
-        challengeFutures.add(_challengesRef.doc(challengeId).get());
-      }
-      final challengeSnapshots = await Future.wait(challengeFutures);
+          // Firestore 'in' query has a limit of 10 elements.
+          // We need to fetch challenges in batches if needed.
+          final challengeFutures = <Future<DocumentSnapshot>>[];
+          for (final challengeId in challengeIds) {
+            challengeFutures.add(_challengesRef.doc(challengeId).get());
+          }
+          final challengeSnapshots = await Future.wait(challengeFutures);
 
-      return challengeSnapshots
-          .where((doc) => doc.exists)
-          .map((doc) => Challenge.fromJson(doc.data() as Map<String, dynamic>))
-          .toList();
-    });
+          return challengeSnapshots
+              .where((doc) => doc.exists)
+              .map(
+                (doc) => Challenge.fromJson(doc.data() as Map<String, dynamic>),
+              )
+              .toList();
+        });
   }
 
   /// Gets a stream of progress for a specific challenge.
@@ -129,7 +135,8 @@ class ChallengeService {
     return _progressRef.doc(challengeId).snapshots().map((snapshot) {
       if (snapshot.exists) {
         return ChallengeProgress.fromJson(
-            snapshot.data() as Map<String, dynamic>);
+          snapshot.data() as Map<String, dynamic>,
+        );
       }
       // If no progress exists, create one. This is useful for new challenges.
       _createInitialProgress(challengeId);
@@ -160,14 +167,17 @@ class ChallengeService {
     final challengeDoc = await _challengesRef.doc(challengeId).get();
 
     if (!challengeDoc.exists) return;
-    final challenge =
-        Challenge.fromJson(challengeDoc.data() as Map<String, dynamic>);
+    final challenge = Challenge.fromJson(
+      challengeDoc.data() as Map<String, dynamic>,
+    );
 
     final progressSnapshot = await progressDocRef.get();
-    final currentProgress = progressSnapshot.exists
-        ? ChallengeProgress.fromJson(
-            progressSnapshot.data() as Map<String, dynamic>)
-        : null;
+    final currentProgress =
+        progressSnapshot.exists
+            ? ChallengeProgress.fromJson(
+              progressSnapshot.data() as Map<String, dynamic>,
+            )
+            : null;
 
     if (currentProgress == null || currentProgress.completed) return;
 

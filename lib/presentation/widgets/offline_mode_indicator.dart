@@ -15,14 +15,11 @@ class OfflineModeIndicator extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final status = ref.watch(networkStatusProvider);
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Stack(
       children: [
-        Opacity(
-          opacity: status.isOnline ? 1 : 0.7,
-          child: child,
-        ),
+        Opacity(opacity: status.isOnline ? 1 : 0.7, child: child),
         if (status.isOffline)
           Positioned(
             top: 0,
@@ -74,7 +71,7 @@ class OfflineModeIndicator extends ConsumerWidget {
   }
 }
 
-/// 読み取り専用モードラチE��ー
+/// 読み取り専用モードラッパー
 class ReadOnlyModeWrapper extends ConsumerWidget {
   const ReadOnlyModeWrapper({super.key, required this.child, this.onTap});
 

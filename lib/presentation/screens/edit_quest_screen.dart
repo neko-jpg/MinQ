@@ -96,9 +96,10 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
           _titleController.text = quest.title;
           _selectedIconKey = quest.iconKey ?? 'default';
           _isTimeGoal = quest.estimatedMinutes > 0;
-          _goalValueController.text = quest.estimatedMinutes > 0
-              ? quest.estimatedMinutes.toString()
-              : '10';
+          _goalValueController.text =
+              quest.estimatedMinutes > 0
+                  ? quest.estimatedMinutes.toString()
+                  : '10';
           _originalContactLink = link;
           _contactLinkController.text = link ?? '';
           _isLoading = false;
@@ -360,21 +361,22 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
 
     final shouldDelete = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('習慣を削除'),
-        content: Text('「${_originalQuest!.title}」を削除しますか？この操作は取り消せません。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('習慣を削除'),
+            content: Text('「${_originalQuest!.title}」を削除しますか？この操作は取り消せません。'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                child: const Text('削除'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('削除'),
-          ),
-        ],
-      ),
     );
 
     if (shouldDelete != true) return;
@@ -715,7 +717,10 @@ class _HabitNameInput extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('習慣名', style: tokens.typography.body.copyWith(color: tokens.textMuted)),
+        Text(
+          '習慣名',
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
+        ),
         SizedBox(height: tokens.spacing.sm),
         TextFormField(
           controller: controller,
@@ -724,7 +729,9 @@ class _HabitNameInput extends StatelessWidget {
                   value?.trim().isEmpty == true ? '習慣名を入力してください' : null,
           decoration: InputDecoration(
             hintText: '例: 朝のランニング',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(tokens.radius.lg)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(tokens.radius.lg),
+            ),
           ),
         ),
       ],
@@ -758,7 +765,9 @@ class _ContactLinkInput extends StatelessWidget {
           keyboardType: TextInputType.url,
           decoration: InputDecoration(
             hintText: '例：https://line.me/R/xxxxx',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(tokens.radius.lg)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(tokens.radius.lg),
+            ),
             prefixIcon: const Icon(Icons.link),
           ),
           validator: (String? value) {
@@ -833,7 +842,9 @@ class _IconChoice extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final backgroundColor =
-        isSelected ? tokens.brandPrimary.withAlpha((255 * 0.12).round()) : tokens.surface;
+        isSelected
+            ? tokens.brandPrimary.withAlpha((255 * 0.12).round())
+            : tokens.surface;
     final borderColor = isSelected ? tokens.brandPrimary : tokens.border;
     final iconColor = isSelected ? tokens.brandPrimary : tokens.textPrimary;
     final textColor = isSelected ? tokens.brandPrimary : tokens.textMuted;
@@ -864,7 +875,9 @@ class _IconChoice extends StatelessWidget {
                   isSelected
                       ? [
                         BoxShadow(
-                          color: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+                          color: tokens.brandPrimary.withAlpha(
+                            (255 * 0.2).round(),
+                          ),
                           blurRadius: 14,
                           offset: const Offset(0, 6),
                         ),
@@ -916,7 +929,10 @@ class _GoalTypeSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('目標値', style: tokens.typography.body.copyWith(color: tokens.textMuted)),
+        Text(
+          '目標値',
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
+        ),
         SizedBox(height: tokens.spacing.sm),
         TextFormField(
           controller: goalValueController,
@@ -924,7 +940,9 @@ class _GoalTypeSelector extends StatelessWidget {
           decoration: InputDecoration(
             hintText: '10',
             suffixText: '分',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(tokens.radius.lg)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(tokens.radius.lg),
+            ),
           ),
         ),
       ],
@@ -1031,7 +1049,9 @@ class _ReminderSettings extends StatelessWidget {
             color: tokens.accentError.withAlpha((255 * 0.08).round()),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(tokens.radius.lg),
-              side: BorderSide(color: tokens.accentError.withAlpha((255 * 0.4).round())),
+              side: BorderSide(
+                color: tokens.accentError.withAlpha((255 * 0.4).round()),
+              ),
             ),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing.lg),
@@ -1109,7 +1129,9 @@ class _ReminderSettings extends StatelessWidget {
                   SizedBox(height: tokens.spacing.sm),
                   Text(
                     '朝や夜など複数の時間を登録すると、習慣の記録を忘れずに続けられます。',
-                    style: tokens.typography.body.copyWith(color: tokens.textMuted),
+                    style: tokens.typography.body.copyWith(
+                      color: tokens.textMuted,
+                    ),
                   ),
                 ],
               ),
@@ -1149,7 +1171,9 @@ class _ReminderSettings extends StatelessWidget {
                 horizontal: tokens.spacing.lg,
                 vertical: tokens.spacing.sm,
               ),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(tokens.radius.lg)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(tokens.radius.lg),
+              ),
             ),
           ),
         ),

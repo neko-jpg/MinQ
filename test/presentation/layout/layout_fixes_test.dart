@@ -6,7 +6,9 @@ import 'package:minq/presentation/common/layout/safe_scaffold.dart';
 
 void main() {
   group('Layout Fixes Tests', () {
-    testWidgets('fixRowOverflow prevents overflow with long content', (tester) async {
+    testWidgets('fixRowOverflow prevents overflow with long content', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -72,17 +74,16 @@ void main() {
     });
 
     testWidgets('fixTextOverflow handles long text properly', (tester) async {
-      final longText = 'This is a very long text that should overflow if not handled properly. ' * 10;
-      
+      final longText =
+          'This is a very long text that should overflow if not handled properly. ' *
+          10;
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: SizedBox(
               width: 200,
-              child: LayoutFixes.fixTextOverflow(
-                text: longText,
-                maxLines: 2,
-              ),
+              child: LayoutFixes.fixTextOverflow(text: longText, maxLines: 2),
             ),
           ),
         ),
@@ -133,7 +134,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('fixButtonLayout ensures minimum touch targets', (tester) async {
+    testWidgets('fixButtonLayout ensures minimum touch targets', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -159,9 +162,15 @@ void main() {
           home: Scaffold(
             body: LayoutFixes.safeForm(
               children: [
-                TextFormField(decoration: const InputDecoration(labelText: 'Field 1')),
-                TextFormField(decoration: const InputDecoration(labelText: 'Field 2')),
-                TextFormField(decoration: const InputDecoration(labelText: 'Field 3')),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Field 1'),
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Field 2'),
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Field 3'),
+                ),
               ],
             ),
           ),
@@ -173,17 +182,16 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('fixAppBar creates proper app bar with touch targets', (tester) async {
+    testWidgets('fixAppBar creates proper app bar with touch targets', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             appBar: LayoutFixes.fixAppBar(
               title: 'Test Title',
               actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search),
-                ),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
               ],
             ),
           ),
@@ -196,14 +204,19 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('responsiveBottomNavigation adapts to screen size', (tester) async {
+    testWidgets('responsiveBottomNavigation adapts to screen size', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             bottomNavigationBar: LayoutFixes.responsiveBottomNavigation(
               items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-                BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.search),
+                  label: 'Search',
+                ),
               ],
               currentIndex: 0,
               onTap: (index) {},
@@ -282,15 +295,13 @@ void main() {
     });
 
     testWidgets('SafeText handles overflow', (tester) async {
-      const longText = 'This is a very long text that should be handled properly';
-      
+      const longText =
+          'This is a very long text that should be handled properly';
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: SizedBox(
-              width: 100,
-              child: const SafeText(longText),
-            ),
+            body: SizedBox(width: 100, child: const SafeText(longText)),
           ),
         ),
       );
@@ -304,9 +315,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: KeyboardAwareWidget(
-              child: const Text('Content'),
-            ),
+            body: KeyboardAwareWidget(child: const Text('Content')),
           ),
         ),
       );
@@ -318,16 +327,18 @@ void main() {
   });
 
   group('Responsive Layout Tests', () {
-    testWidgets('ResponsiveLayout provides correct breakpoints', (tester) async {
+    testWidgets('ResponsiveLayout provides correct breakpoints', (
+      tester,
+    ) async {
       // Test mobile breakpoint
       expect(ResponsiveLayout.getScreenType(500), ScreenType.mobile);
-      
+
       // Test tablet breakpoint
       expect(ResponsiveLayout.getScreenType(700), ScreenType.tablet);
-      
+
       // Test desktop breakpoint
       expect(ResponsiveLayout.getScreenType(1000), ScreenType.desktop);
-      
+
       // Test large desktop breakpoint
       expect(ResponsiveLayout.getScreenType(1300), ScreenType.largeDesktop);
     });
@@ -339,10 +350,7 @@ void main() {
             builder: (context) {
               final padding = ResponsiveLayout.getResponsivePadding(context);
               return Scaffold(
-                body: Padding(
-                  padding: padding,
-                  child: const Text('Content'),
-                ),
+                body: Padding(padding: padding, child: const Text('Content')),
               );
             },
           ),
@@ -368,9 +376,17 @@ void main() {
         ),
       );
 
-      final constrainedBox = tester.widget<ConstrainedBox>(find.byType(ConstrainedBox));
-      expect(constrainedBox.constraints.minWidth, ResponsiveLayout.minTouchTarget);
-      expect(constrainedBox.constraints.minHeight, ResponsiveLayout.minTouchTarget);
+      final constrainedBox = tester.widget<ConstrainedBox>(
+        find.byType(ConstrainedBox),
+      );
+      expect(
+        constrainedBox.constraints.minWidth,
+        ResponsiveLayout.minTouchTarget,
+      );
+      expect(
+        constrainedBox.constraints.minHeight,
+        ResponsiveLayout.minTouchTarget,
+      );
       expect(tester.takeException(), isNull);
     });
   });

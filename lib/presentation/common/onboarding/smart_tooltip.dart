@@ -200,7 +200,9 @@ class _SmartTooltipState extends State<SmartTooltip>
             child: Icon(
               Icons.close,
               size: 16,
-              color: theme.colorScheme.onInverseSurface.withAlpha((255 * 0.7).round()),
+              color: theme.colorScheme.onInverseSurface.withAlpha(
+                (255 * 0.7).round(),
+              ),
             ),
           ),
         ],
@@ -369,7 +371,9 @@ class _AutoSmartTooltipState extends State<AutoSmartTooltip>
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).colorScheme.primary.withAlpha((255 * 0.3).round()),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withAlpha((255 * 0.3).round()),
               blurRadius: 8,
               spreadRadius: 2,
             ),

@@ -25,10 +25,7 @@ class CiRun {
 }
 
 class GcpUsage {
-  GcpUsage({
-    required this.service,
-    required this.energyKwh,
-  });
+  GcpUsage({required this.service, required this.energyKwh});
 
   final String service;
   final double energyKwh;
@@ -41,7 +38,9 @@ Future<void> main(List<String> args) async {
   final String? outputPath = parsedArgs['--output'];
 
   if (ciPath == null || gcpPath == null) {
-    stderr.writeln('Usage: dart run tool/carbon_report.dart --ci=ci_runs.csv --gcp=gcp_usage.csv');
+    stderr.writeln(
+      'Usage: dart run tool/carbon_report.dart --ci=ci_runs.csv --gcp=gcp_usage.csv',
+    );
     exitCode = 64;
     return;
   }
@@ -51,7 +50,8 @@ Future<void> main(List<String> args) async {
 
   final double ciEnergyKwh = ciRuns.fold<double>(0, (double acc, CiRun run) {
     final double factor =
-        _runnerEnergyPerMinute[run.runnerType] ?? _runnerEnergyPerMinute['ubuntu-latest']!;
+        _runnerEnergyPerMinute[run.runnerType] ??
+        _runnerEnergyPerMinute['ubuntu-latest']!;
     return acc + run.minutes * factor;
   });
 
@@ -70,7 +70,9 @@ Future<void> main(List<String> args) async {
     'totalCo2Kg': totalCo2,
   };
 
-  final String summaryJson = const JsonEncoder.withIndent('  ').convert(summary);
+  final String summaryJson = const JsonEncoder.withIndent(
+    '  ',
+  ).convert(summary);
   stdout.writeln(summaryJson);
 
   if (outputPath != null) {
@@ -99,8 +101,10 @@ Future<List<CiRun>> _loadCiRuns(String path) async {
     throw FileSystemException('CI CSV not found', path);
   }
   final String csvContent = await file.readAsString();
-  final List<List<dynamic>> rows = const CsvToListConverter()
-      .convert(csvContent, eol: '\n');
+  final List<List<dynamic>> rows = const CsvToListConverter().convert(
+    csvContent,
+    eol: '\n',
+  );
 
   final int workflowIndex = rows.first.indexOf('workflow');
   final int minutesIndex = rows.first.indexOf('minutes');
@@ -121,8 +125,10 @@ Future<List<GcpUsage>> _loadGcpUsage(String path) async {
     throw FileSystemException('GCP CSV not found', path);
   }
   final String csvContent = await file.readAsString();
-  final List<List<dynamic>> rows = const CsvToListConverter()
-      .convert(csvContent, eol: '\n');
+  final List<List<dynamic>> rows = const CsvToListConverter().convert(
+    csvContent,
+    eol: '\n',
+  );
 
   final int serviceIndex = rows.first.indexOf('service');
   final int energyIndex = rows.first.indexOf('energy_kwh');
@@ -146,15 +152,17 @@ Future<void> _maybeNotifySlack(
     return;
   }
 
-  final String message = '*Monthly Carbon Report*\n'
+  final String message =
+      '*Monthly Carbon Report*\n'
       'CI energy: ${ciEnergy.toStringAsFixed(2)} kWh\n'
       'GCP energy: ${gcpEnergy.toStringAsFixed(2)} kWh\n'
       'Total CO2e: ${totalCo2.toStringAsFixed(2)} kg';
 
   final HttpClient client = HttpClient();
   try {
-    final HttpClientRequest request =
-        await client.postUrl(Uri.parse(webhookUrl));
+    final HttpClientRequest request = await client.postUrl(
+      Uri.parse(webhookUrl),
+    );
     request.headers.contentType = ContentType.json;
     request.write(jsonEncode({'text': message}));
     await request.close();

@@ -19,16 +19,9 @@ class WhatsNewScreen extends StatelessWidget {
             padding: EdgeInsets.all(tokens.spacing.xl),
             child: Column(
               children: [
-                Icon(
-                  Icons.celebration,
-                  size: 64,
-                  color: tokens.brandPrimary,
-                ),
+                Icon(Icons.celebration, size: 64, color: tokens.brandPrimary),
                 SizedBox(height: tokens.spacing.md),
-                Text(
-                  'バージョン $version',
-                  style: tokens.typography.h2,
-                ),
+                Text('バージョン $version', style: tokens.typography.h2),
               ],
             ),
           ),
@@ -79,15 +72,9 @@ class WhatsNewScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    item.title,
-                    style: tokens.typography.h3,
-                  ),
+                  Text(item.title, style: tokens.typography.h3),
                   SizedBox(height: tokens.spacing.xs),
-                  Text(
-                    item.description,
-                    style: tokens.typography.body,
-                  ),
+                  Text(item.description, style: tokens.typography.body),
                 ],
               ),
             ),

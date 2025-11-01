@@ -9,7 +9,9 @@ import 'package:minq/presentation/widgets/rtl_support_widget.dart';
 
 void main() {
   group('Internationalization System Tests', () {
-    testWidgets('AppLocalizations supports all required locales', (tester) async {
+    testWidgets('AppLocalizations supports all required locales', (
+      tester,
+    ) async {
       const supportedLocales = [
         Locale('en'),
         Locale('ja'),
@@ -56,9 +58,7 @@ void main() {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
-          home: const RTLSupportWidget(
-            child: Text('Test RTL'),
-          ),
+          home: const RTLSupportWidget(child: Text('Test RTL')),
         ),
       );
 
@@ -70,7 +70,9 @@ void main() {
       expect(directionality.textDirection, TextDirection.rtl);
     });
 
-    testWidgets('LTR support works correctly for non-RTL languages', (tester) async {
+    testWidgets('LTR support works correctly for non-RTL languages', (
+      tester,
+    ) async {
       const ltrLocales = [
         Locale('en'),
         Locale('ja'),
@@ -90,9 +92,7 @@ void main() {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
-            home: const RTLSupportWidget(
-              child: Text('Test LTR'),
-            ),
+            home: const RTLSupportWidget(child: Text('Test LTR')),
           ),
         );
 
@@ -110,9 +110,10 @@ void main() {
       final availableLocales = controller.getAvailableLocales();
 
       expect(availableLocales.length, greaterThanOrEqualTo(6));
-      
+
       // Check that all expected locales are present
-      final localeCodes = availableLocales.map((option) => option.locale.languageCode).toSet();
+      final localeCodes =
+          availableLocales.map((option) => option.locale.languageCode).toSet();
       expect(localeCodes, contains('en'));
       expect(localeCodes, contains('ja'));
       expect(localeCodes, contains('ar'));
@@ -140,7 +141,9 @@ void main() {
       expect(exactMatch.languageCode, 'en');
 
       // Test language code match
-      final languageMatch = controller.findSupportedLocale(const Locale('en', 'US'));
+      final languageMatch = controller.findSupportedLocale(
+        const Locale('en', 'US'),
+      );
       expect(languageMatch.languageCode, 'en');
 
       // Test fallback to Japanese for unsupported locale
@@ -148,7 +151,9 @@ void main() {
       expect(fallback.languageCode, 'ja');
     });
 
-    testWidgets('Language selector widget displays all locales', (tester) async {
+    testWidgets('Language selector widget displays all locales', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
@@ -159,9 +164,7 @@ void main() {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
-            home: const Scaffold(
-              body: LanguageSelectorWidget(),
-            ),
+            home: const Scaffold(body: LanguageSelectorWidget()),
           ),
         ),
       );
@@ -189,12 +192,7 @@ void main() {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
           home: const Scaffold(
-            body: RTLAwareRow(
-              children: [
-                Text('First'),
-                Text('Second'),
-              ],
-            ),
+            body: RTLAwareRow(children: [Text('First'), Text('Second')]),
           ),
         ),
       );
@@ -260,13 +258,7 @@ void main() {
     group('No Mojibake Tests', () {
       test('Japanese ARB file contains no corrupted characters', () {
         // This test would be run by the CI script, but we can also test programmatically
-        const corruptedPatterns = [
-          'E,',
-          'E��',
-          'ぁE',
-          'めE',
-          '�',
-        ];
+        const corruptedPatterns = ['E,', 'E��', 'ぁE', 'めE', '�'];
 
         // In a real test, we would read the ARB file and check for these patterns
         // For now, we just verify the patterns are defined

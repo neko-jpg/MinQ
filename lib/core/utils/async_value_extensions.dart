@@ -14,46 +14,34 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
   }
 
   /// データまたはデフォルト値を取得
-  T? get dataOrNull => when(
-        data: (data) => data,
-        loading: () => null,
-        error: (_, __) => null,
-      );
+  T? get dataOrNull =>
+      when(data: (data) => data, loading: () => null, error: (_, __) => null);
 
   /// データまたは例外をスロー
   T get dataOrThrow => when(
-        data: (data) => data,
-        loading: () => throw StateError('Data is loading'),
-        error: (error, _) => throw error,
-      );
+    data: (data) => data,
+    loading: () => throw StateError('Data is loading'),
+    error: (error, _) => throw error,
+  );
 
   /// エラーメッセージを取得
   String? get errorMessage => when(
-        data: (_) => null,
-        loading: () => null,
-        error: (error, _) => _getErrorMessage(error),
-      );
+    data: (_) => null,
+    loading: () => null,
+    error: (error, _) => _getErrorMessage(error),
+  );
 
   /// ローディング中かどうか
-  bool get isLoading => when(
-        data: (_) => false,
-        loading: () => true,
-        error: (_, __) => false,
-      );
+  bool get isLoading =>
+      when(data: (_) => false, loading: () => true, error: (_, __) => false);
 
   /// エラーかどうか
-  bool get isError => when(
-        data: (_) => false,
-        loading: () => false,
-        error: (_, __) => true,
-      );
+  bool get isError =>
+      when(data: (_) => false, loading: () => false, error: (_, __) => true);
 
   /// データがあるかどうか
-  bool get hasData => when(
-        data: (_) => true,
-        loading: () => false,
-        error: (_, __) => false,
-      );
+  bool get hasData =>
+      when(data: (_) => true, loading: () => false, error: (_, __) => false);
 
   /// UIウィジェットに変換（標準パターン）
   Widget toWidget({
@@ -63,24 +51,18 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
   }) {
     return when(
       data: data,
-      loading: loading ?? () => const Center(child: CircularProgressIndicator()),
-      error: error ??
-          (err, stack) => Center(
-                child: ErrorDisplay(
-                  error: err,
-                  stackTrace: stack,
-                ),
-              ),
+      loading:
+          loading ?? () => const Center(child: CircularProgressIndicator()),
+      error:
+          error ??
+          (err, stack) =>
+              Center(child: ErrorDisplay(error: err, stackTrace: stack)),
     );
   }
 
   /// UIウィジェットに変換（データのみ表示、エラーは無視）
   Widget? toWidgetOrNull(Widget Function(T data) builder) {
-    return when(
-      data: builder,
-      loading: () => null,
-      error: (_, __) => null,
-    );
+    return when(data: builder, loading: () => null, error: (_, __) => null);
   }
 
   /// リストの場合の空状態チェック
@@ -130,7 +112,8 @@ class AsyncValueUI<T> extends StatelessWidget {
         return data(d);
       },
       loading: loading ?? () => const LoadingWidget(),
-      error: error ?? (err, stack) => ErrorWidget2(error: err, stackTrace: stack),
+      error:
+          error ?? (err, stack) => ErrorWidget2(error: err, stackTrace: stack),
     );
   }
 }
@@ -150,10 +133,7 @@ class LoadingWidget extends StatelessWidget {
           const CircularProgressIndicator(),
           if (message != null) ...[
             const SizedBox(height: 16),
-            Text(
-              message!,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            Text(message!, style: Theme.of(context).textTheme.bodyMedium),
           ],
         ],
       ),
@@ -182,16 +162,9 @@ class ErrorWidget2 extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red,
-            ),
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
             const SizedBox(height: 16),
-            Text(
-              'エラーが発生しました',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text('エラーが発生しました', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(
               AsyncValueExtensions._getErrorMessage(error),
@@ -236,17 +209,10 @@ class EmptyWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon ?? Icons.inbox_outlined,
-              size: 64,
-              color: Colors.grey,
-            ),
+            Icon(icon ?? Icons.inbox_outlined, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             if (title != null)
-              Text(
-                title!,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              Text(title!, style: Theme.of(context).textTheme.titleLarge),
             if (message != null) ...[
               const SizedBox(height: 8),
               Text(
@@ -255,10 +221,7 @@ class EmptyWidget extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ],
-            if (action != null) ...[
-              const SizedBox(height: 24),
-              action!,
-            ],
+            if (action != null) ...[const SizedBox(height: 24), action!],
           ],
         ),
       ),
@@ -281,11 +244,7 @@ class ErrorDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ErrorWidget2(
-      error: error,
-      stackTrace: stackTrace,
-      onRetry: onRetry,
-    );
+    return ErrorWidget2(error: error, stackTrace: stackTrace, onRetry: onRetry);
   }
 }
 
@@ -294,7 +253,8 @@ class AsyncValueBuilder<T> extends StatelessWidget {
   final AsyncValue<T> value;
   final Widget Function(BuildContext context, T data) builder;
   final Widget Function(BuildContext context)? loading;
-  final Widget Function(BuildContext context, Object error, StackTrace stack)? error;
+  final Widget Function(BuildContext context, Object error, StackTrace stack)?
+  error;
   final Widget Function(BuildContext context)? empty;
 
   const AsyncValueBuilder({
@@ -317,9 +277,10 @@ class AsyncValueBuilder<T> extends StatelessWidget {
         return builder(context, data);
       },
       loading: () => loading?.call(context) ?? const LoadingWidget(),
-      error: (err, stack) =>
-          error?.call(context, err, stack) ??
-          ErrorWidget2(error: err, stackTrace: stack),
+      error:
+          (err, stack) =>
+              error?.call(context, err, stack) ??
+              ErrorWidget2(error: err, stackTrace: stack),
     );
   }
 }

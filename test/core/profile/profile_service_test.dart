@@ -19,11 +19,8 @@ void main() {
     });
 
     setUp(() async {
-      isar = await Isar.open([
-        UserSchema,
-        SyncJobSchema,
-      ], directory: '');
-      
+      isar = await Isar.open([UserSchema, SyncJobSchema], directory: '');
+
       mockSyncQueueManager = MockSyncQueueManager();
       profileService = ProfileService(
         isar: isar,
@@ -38,15 +35,16 @@ void main() {
     group('updateProfile', () {
       test('should update user profile successfully', () async {
         // Arrange
-        final user = User()
-          ..uid = 'test-uid'
-          ..displayName = 'Old Name'
-          ..bio = 'Old bio'
-          ..avatarSeed = 'old-seed'
-          ..focusTags = ['old-tag']
-          ..notificationTimes = []
-          ..privacy = 'public'
-          ..createdAt = DateTime.now();
+        final user =
+            User()
+              ..uid = 'test-uid'
+              ..displayName = 'Old Name'
+              ..bio = 'Old bio'
+              ..avatarSeed = 'old-seed'
+              ..focusTags = ['old-tag']
+              ..notificationTimes = []
+              ..privacy = 'public'
+              ..createdAt = DateTime.now();
 
         await isar.writeTxn(() => isar.users.put(user));
 
@@ -63,28 +61,31 @@ void main() {
 
         // Assert
         expect(result.isValid, isTrue);
-        
-        final updatedUser = await isar.users.filter().uidEqualTo('test-uid').findFirst();
+
+        final updatedUser =
+            await isar.users.filter().uidEqualTo('test-uid').findFirst();
         expect(updatedUser?.displayName, equals('New Name'));
         expect(updatedUser?.bio, equals('New bio'));
         expect(updatedUser?.avatarSeed, equals('new-seed'));
         expect(updatedUser?.focusTags, equals(['new-tag1', 'new-tag2']));
         expect(updatedUser?.privacy, equals('private'));
-        
+
         verify(() => mockSyncQueueManager.enqueueSyncJob(any())).called(1);
       });
 
       test('should validate display name length', () async {
         // Arrange
-        final user = User()
-          ..uid = 'test-uid'
-          ..displayName = 'Test'
-          ..createdAt = DateTime.now();
+        final user =
+            User()
+              ..uid = 'test-uid'
+              ..displayName = 'Test'
+              ..createdAt = DateTime.now();
 
         await isar.writeTxn(() => isar.users.put(user));
 
         final request = ProfileUpdateRequest(
-          displayName: 'This is a very long display name that exceeds the maximum allowed length',
+          displayName:
+              'This is a very long display name that exceeds the maximum allowed length',
         );
 
         // Act
@@ -97,16 +98,15 @@ void main() {
 
       test('should validate handle format', () async {
         // Arrange
-        final user = User()
-          ..uid = 'test-uid'
-          ..displayName = 'Test'
-          ..createdAt = DateTime.now();
+        final user =
+            User()
+              ..uid = 'test-uid'
+              ..displayName = 'Test'
+              ..createdAt = DateTime.now();
 
         await isar.writeTxn(() => isar.users.put(user));
 
-        final request = ProfileUpdateRequest(
-          handle: 'invalid-handle!',
-        );
+        final request = ProfileUpdateRequest(handle: 'invalid-handle!');
 
         // Act
         final result = await profileService.updateProfile('test-uid', request);
@@ -118,10 +118,11 @@ void main() {
 
       test('should limit focus tags to 5', () async {
         // Arrange
-        final user = User()
-          ..uid = 'test-uid'
-          ..displayName = 'Test'
-          ..createdAt = DateTime.now();
+        final user =
+            User()
+              ..uid = 'test-uid'
+              ..displayName = 'Test'
+              ..createdAt = DateTime.now();
 
         await isar.writeTxn(() => isar.users.put(user));
 
@@ -141,19 +142,20 @@ void main() {
     group('getProfile', () {
       test('should return user profile', () async {
         // Arrange
-        final user = User()
-          ..uid = 'test-uid'
-          ..displayName = 'Test User'
-          ..bio = 'Test bio'
-          ..avatarSeed = 'test-seed'
-          ..focusTags = ['tag1', 'tag2']
-          ..notificationTimes = ['09:00', '18:00']
-          ..privacy = 'public'
-          ..longestStreak = 10
-          ..currentStreak = 5
-          ..currentLevel = 2
-          ..totalPoints = 150
-          ..createdAt = DateTime.now();
+        final user =
+            User()
+              ..uid = 'test-uid'
+              ..displayName = 'Test User'
+              ..bio = 'Test bio'
+              ..avatarSeed = 'test-seed'
+              ..focusTags = ['tag1', 'tag2']
+              ..notificationTimes = ['09:00', '18:00']
+              ..privacy = 'public'
+              ..longestStreak = 10
+              ..currentStreak = 5
+              ..currentLevel = 2
+              ..totalPoints = 150
+              ..createdAt = DateTime.now();
 
         await isar.writeTxn(() => isar.users.put(user));
 

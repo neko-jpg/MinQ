@@ -1,4 +1,3 @@
-
 /// Base exception class for all MinQ application exceptions
 abstract class MinqException implements Exception {
   final String message;
@@ -19,19 +18,19 @@ abstract class MinqException implements Exception {
   String toString() {
     final buffer = StringBuffer();
     buffer.write('$runtimeType: $message');
-    
+
     if (code != null) {
       buffer.write(' (code: $code)');
     }
-    
+
     if (context != null && context!.isNotEmpty) {
       buffer.write(' [context: $context]');
     }
-    
+
     if (originalError != null) {
       buffer.write(' [original: $originalError]');
     }
-    
+
     return buffer.toString();
   }
 
@@ -60,7 +59,10 @@ class AIServiceException extends MinqException {
   });
 
   /// AI model loading failed
-  factory AIServiceException.modelLoadFailed(dynamic error, [StackTrace? stackTrace]) {
+  factory AIServiceException.modelLoadFailed(
+    dynamic error, [
+    StackTrace? stackTrace,
+  ]) {
     return AIServiceException(
       'Failed to load AI model',
       code: 'AI_MODEL_LOAD_FAILED',
@@ -70,7 +72,10 @@ class AIServiceException extends MinqException {
   }
 
   /// AI inference failed
-  factory AIServiceException.inferenceFailed(dynamic error, [StackTrace? stackTrace]) {
+  factory AIServiceException.inferenceFailed(
+    dynamic error, [
+    StackTrace? stackTrace,
+  ]) {
     return AIServiceException(
       'AI inference failed',
       code: 'AI_INFERENCE_FAILED',
@@ -107,7 +112,10 @@ class DatabaseException extends MinqException {
   });
 
   /// Database connection failed
-  factory DatabaseException.connectionFailed(dynamic error, [StackTrace? stackTrace]) {
+  factory DatabaseException.connectionFailed(
+    dynamic error, [
+    StackTrace? stackTrace,
+  ]) {
     return DatabaseException(
       'Failed to connect to database',
       code: 'DB_CONNECTION_FAILED',
@@ -117,7 +125,11 @@ class DatabaseException extends MinqException {
   }
 
   /// Database operation failed
-  factory DatabaseException.operationFailed(String operation, dynamic error, [StackTrace? stackTrace]) {
+  factory DatabaseException.operationFailed(
+    String operation,
+    dynamic error, [
+    StackTrace? stackTrace,
+  ]) {
     return DatabaseException(
       'Database operation failed: $operation',
       code: 'DB_OPERATION_FAILED',
@@ -146,7 +158,11 @@ class DatabaseException extends MinqException {
   }
 
   /// Database schema migration failed
-  factory DatabaseException.migrationFailed(int version, dynamic error, [StackTrace? stackTrace]) {
+  factory DatabaseException.migrationFailed(
+    int version,
+    dynamic error, [
+    StackTrace? stackTrace,
+  ]) {
     return DatabaseException(
       'Database migration failed for version $version',
       code: 'DB_MIGRATION_FAILED',
@@ -189,12 +205,19 @@ class NetworkException extends MinqException {
     return NetworkException(
       'Server error: ${message ?? 'HTTP $statusCode'}',
       code: 'NETWORK_SERVER_ERROR',
-      context: {'statusCode': statusCode, if (message != null) 'message': message},
+      context: {
+        'statusCode': statusCode,
+        if (message != null) 'message': message,
+      },
     );
   }
 
   /// Request failed
-  factory NetworkException.requestFailed(String url, dynamic error, [StackTrace? stackTrace]) {
+  factory NetworkException.requestFailed(
+    String url,
+    dynamic error, [
+    StackTrace? stackTrace,
+  ]) {
     return NetworkException(
       'Network request failed: $url',
       code: 'NETWORK_REQUEST_FAILED',
@@ -233,7 +256,10 @@ class AuthException extends MinqException {
   }
 
   /// Authentication failed
-  factory AuthException.authenticationFailed(dynamic error, [StackTrace? stackTrace]) {
+  factory AuthException.authenticationFailed(
+    dynamic error, [
+    StackTrace? stackTrace,
+  ]) {
     return AuthException(
       'Authentication failed',
       code: 'AUTH_FAILED',
@@ -289,7 +315,10 @@ class ValidationException extends MinqException {
   }
 
   /// Invalid format
-  factory ValidationException.invalidFormat(String field, String expectedFormat) {
+  factory ValidationException.invalidFormat(
+    String field,
+    String expectedFormat,
+  ) {
     return ValidationException(
       'Invalid format for field "$field", expected: $expectedFormat',
       code: 'VALIDATION_INVALID_FORMAT',
@@ -318,7 +347,11 @@ class StorageException extends MinqException {
   }
 
   /// Upload failed
-  factory StorageException.uploadFailed(String path, dynamic error, [StackTrace? stackTrace]) {
+  factory StorageException.uploadFailed(
+    String path,
+    dynamic error, [
+    StackTrace? stackTrace,
+  ]) {
     return StorageException(
       'File upload failed: $path',
       code: 'STORAGE_UPLOAD_FAILED',
@@ -329,11 +362,17 @@ class StorageException extends MinqException {
   }
 
   /// Insufficient storage space
-  factory StorageException.insufficientSpace(int requiredBytes, int availableBytes) {
+  factory StorageException.insufficientSpace(
+    int requiredBytes,
+    int availableBytes,
+  ) {
     return StorageException(
       'Insufficient storage space. Required: ${requiredBytes}B, Available: ${availableBytes}B',
       code: 'STORAGE_INSUFFICIENT_SPACE',
-      context: {'requiredBytes': requiredBytes, 'availableBytes': availableBytes},
+      context: {
+        'requiredBytes': requiredBytes,
+        'availableBytes': availableBytes,
+      },
     );
   }
 }
@@ -378,7 +417,10 @@ class BusinessLogicException extends MinqException {
   });
 
   /// Operation not allowed
-  factory BusinessLogicException.operationNotAllowed(String operation, String reason) {
+  factory BusinessLogicException.operationNotAllowed(
+    String operation,
+    String reason,
+  ) {
     return BusinessLogicException(
       'Operation not allowed: $operation. Reason: $reason',
       code: 'BUSINESS_OPERATION_NOT_ALLOWED',
@@ -387,7 +429,10 @@ class BusinessLogicException extends MinqException {
   }
 
   /// Resource conflict
-  factory BusinessLogicException.resourceConflict(String resource, String details) {
+  factory BusinessLogicException.resourceConflict(
+    String resource,
+    String details,
+  ) {
     return BusinessLogicException(
       'Resource conflict: $resource. Details: $details',
       code: 'BUSINESS_RESOURCE_CONFLICT',
@@ -396,7 +441,11 @@ class BusinessLogicException extends MinqException {
   }
 
   /// Quota exceeded
-  factory BusinessLogicException.quotaExceeded(String resource, int limit, int current) {
+  factory BusinessLogicException.quotaExceeded(
+    String resource,
+    int limit,
+    int current,
+  ) {
     return BusinessLogicException(
       'Quota exceeded for $resource. Limit: $limit, Current: $current',
       code: 'BUSINESS_QUOTA_EXCEEDED',
@@ -412,16 +461,16 @@ class ExceptionUtils {
     if (exception is NetworkException) {
       return exception.code != 'NETWORK_NO_CONNECTION';
     }
-    
+
     if (exception is DatabaseException) {
-      return exception.code == 'DB_CONNECTION_FAILED' || 
-             exception.code == 'DB_OPERATION_FAILED';
+      return exception.code == 'DB_CONNECTION_FAILED' ||
+          exception.code == 'DB_OPERATION_FAILED';
     }
-    
+
     if (exception is AIServiceException) {
       return exception.code == 'AI_SERVICE_UNAVAILABLE';
     }
-    
+
     return false;
   }
 
@@ -445,7 +494,7 @@ class ExceptionUtils {
           return 'エラーが発生しました。しばらく待ってからもう一度お試しください';
       }
     }
-    
+
     return '予期しないエラーが発生しました';
   }
 
@@ -462,27 +511,26 @@ class ExceptionUtils {
     if (error is MinqException) {
       return error;
     }
-    
+
     // Try to categorize the error
     final errorString = error.toString().toLowerCase();
-    
-    if (errorString.contains('network') || 
+
+    if (errorString.contains('network') ||
         errorString.contains('connection') ||
         errorString.contains('timeout')) {
       return NetworkException.requestFailed('unknown', error, stackTrace);
     }
-    
-    if (errorString.contains('database') || 
+
+    if (errorString.contains('database') ||
         errorString.contains('firestore') ||
         errorString.contains('isar')) {
       return DatabaseException.operationFailed('unknown', error, stackTrace);
     }
-    
-    if (errorString.contains('auth') || 
-        errorString.contains('permission')) {
+
+    if (errorString.contains('auth') || errorString.contains('permission')) {
       return AuthException.authenticationFailed(error, stackTrace);
     }
-    
+
     // Default to generic MinqException
     return _GenericMinqException(
       'An unexpected error occurred: ${error.toString()}',

@@ -49,7 +49,10 @@ final isRTLProvider = Provider<bool>((ref) {
 });
 
 /// Provider for formatted currency
-final currencyFormatterProvider = Provider.family<String, double>((ref, amount) {
+final currencyFormatterProvider = Provider.family<String, double>((
+  ref,
+  amount,
+) {
   final locale = ref.watch(appLocaleControllerProvider) ?? const Locale('ja');
   return RegionalService.formatCurrency(amount, locale);
 });
@@ -120,7 +123,7 @@ final holidaysProvider = Provider<List<Holiday>>((ref) {
 final upcomingHolidaysProvider = Provider<List<Holiday>>((ref) {
   final holidays = ref.watch(holidaysProvider);
   final now = DateTime.now();
-  
+
   return holidays
       .where((holiday) => holiday.getDateForYear(now.year).isAfter(now))
       .take(3)
@@ -140,7 +143,10 @@ final culturalColorProvider = Provider.family<Color, String>((ref, concept) {
 });
 
 /// Provider for achievement title formatting
-final achievementTitleProvider = Provider.family<String, AchievementParams>((ref, params) {
+final achievementTitleProvider = Provider.family<String, AchievementParams>((
+  ref,
+  params,
+) {
   final locale = ref.watch(appLocaleControllerProvider) ?? const Locale('ja');
   return CulturalAdaptationService.getAchievementTitle(
     params.type,
@@ -162,7 +168,10 @@ final isUnluckyNumberProvider = Provider.family<bool, int>((ref, number) {
 });
 
 /// Provider for directional padding based on locale
-final directionalPaddingProvider = Provider.family<EdgeInsets, PaddingParams>((ref, params) {
+final directionalPaddingProvider = Provider.family<EdgeInsets, PaddingParams>((
+  ref,
+  params,
+) {
   final locale = ref.watch(appLocaleControllerProvider) ?? const Locale('ja');
   return CulturalAdaptationService.getDirectionalPadding(
     locale,
@@ -181,10 +190,7 @@ final textAlignmentProvider = Provider<TextAlign>((ref) {
 
 /// Helper classes for provider parameters
 class AchievementParams {
-  const AchievementParams({
-    required this.type,
-    required this.level,
-  });
+  const AchievementParams({required this.type, required this.level});
 
   final String type;
   final int level;

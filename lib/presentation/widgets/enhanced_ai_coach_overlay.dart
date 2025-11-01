@@ -39,19 +39,19 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
         children: [
           // ヘッダー
           _buildHeader(context),
-          
+
           // クイックアクション
           if (quickActions.isNotEmpty) ...[
             const SizedBox(height: 8),
             _buildQuickActions(context),
           ],
-          
+
           // 提案
           if (suggestions.isNotEmpty) ...[
             const SizedBox(height: 8),
             _buildSuggestions(context),
           ],
-          
+
           const SizedBox(height: 16),
         ],
       ),
@@ -92,10 +92,7 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
                 size: 18,
               ),
               padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(
-                minWidth: 24,
-                minHeight: 24,
-              ),
+              constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
             ),
         ],
       ),
@@ -117,19 +114,15 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
-          ...quickActions.map((action) => _buildQuickActionItem(
-            context,
-            action,
-          )),
+          ...quickActions.map(
+            (action) => _buildQuickActionItem(context, action),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildQuickActionItem(
-    BuildContext context,
-    QuickAction action,
-  ) {
+  Widget _buildQuickActionItem(BuildContext context, QuickAction action) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: Material(
@@ -216,19 +209,15 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
-          ...suggestions.map((suggestion) => _buildSuggestionItem(
-            context,
-            suggestion,
-          )),
+          ...suggestions.map(
+            (suggestion) => _buildSuggestionItem(context, suggestion),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSuggestionItem(
-    BuildContext context,
-    String suggestion,
-  ) {
+  Widget _buildSuggestionItem(BuildContext context, String suggestion) {
     return Container(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -251,10 +240,7 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
           Expanded(
             child: Text(
               suggestion,
-              style: TextStyle(
-                color: MinqTokens.textPrimary,
-                fontSize: 13,
-              ),
+              style: TextStyle(color: MinqTokens.textPrimary, fontSize: 13),
             ),
           ),
         ],
@@ -265,9 +251,11 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
   void _handleQuickAction(BuildContext context, QuickAction action) {
     // ナビゲーション処理
     if (action.route.isNotEmpty) {
-      Navigator.of(context).pushNamed(action.route, arguments: action.parameters);
+      Navigator.of(
+        context,
+      ).pushNamed(action.route, arguments: action.parameters);
     }
-    
+
     // オーバーレイを閉じる
     onDismiss?.call();
   }
@@ -320,30 +308,25 @@ class AICoachMessageBubble extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       child: Row(
-        mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!isUser) ...[
-            _buildAvatar(),
-            const SizedBox(width: 8),
-          ],
+          if (!isUser) ...[_buildAvatar(), const SizedBox(width: 8)],
           Flexible(
             child: Column(
-              crossAxisAlignment: isUser 
-                  ? CrossAxisAlignment.end 
-                  : CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
                 _buildMessageBubble(context),
-                if (!isUser && (quickActions.isNotEmpty || suggestions.isNotEmpty))
+                if (!isUser &&
+                    (quickActions.isNotEmpty || suggestions.isNotEmpty))
                   _buildEnhancements(context),
                 _buildTimestamp(),
               ],
             ),
           ),
-          if (isUser) ...[
-            const SizedBox(width: 8),
-            _buildUserAvatar(),
-          ],
+          if (isUser) ...[const SizedBox(width: 8), _buildUserAvatar()],
         ],
       ),
     );
@@ -354,7 +337,10 @@ class AICoachMessageBubble extends ConsumerWidget {
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-        color: isOffline ? Colors.orange.withOpacity(0.2) : MinqTokens.brandPrimary.withOpacity(0.2),
+        color:
+            isOffline
+                ? Colors.orange.withOpacity(0.2)
+                : MinqTokens.brandPrimary.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Icon(
@@ -373,11 +359,7 @@ class AICoachMessageBubble extends ConsumerWidget {
         color: MinqTokens.brandPrimary.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Icon(
-        Icons.person,
-        color: MinqTokens.brandPrimary,
-        size: 16,
-      ),
+      child: Icon(Icons.person, color: MinqTokens.brandPrimary, size: 16),
     );
   }
 
@@ -387,13 +369,18 @@ class AICoachMessageBubble extends ConsumerWidget {
       decoration: BoxDecoration(
         color: isUser ? MinqTokens.brandPrimary : MinqTokens.surface,
         borderRadius: BorderRadius.circular(16).copyWith(
-          bottomLeft: isUser ? const Radius.circular(16) : const Radius.circular(4),
-          bottomRight: isUser ? const Radius.circular(4) : const Radius.circular(16),
+          bottomLeft:
+              isUser ? const Radius.circular(16) : const Radius.circular(4),
+          bottomRight:
+              isUser ? const Radius.circular(4) : const Radius.circular(16),
         ),
-        border: isUser ? null : Border.all(
-          color: MinqTokens.textSecondary.withOpacity(0.2),
-          width: 1,
-        ),
+        border:
+            isUser
+                ? null
+                : Border.all(
+                  color: MinqTokens.textSecondary.withOpacity(0.2),
+                  width: 1,
+                ),
       ),
       child: Text(
         message,
@@ -412,10 +399,8 @@ class AICoachMessageBubble extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (quickActions.isNotEmpty)
-            _buildQuickActionsRow(context),
-          if (suggestions.isNotEmpty)
-            _buildSuggestionsRow(context),
+          if (quickActions.isNotEmpty) _buildQuickActionsRow(context),
+          if (suggestions.isNotEmpty) _buildSuggestionsRow(context),
         ],
       ),
     );
@@ -425,16 +410,15 @@ class AICoachMessageBubble extends ConsumerWidget {
     return Wrap(
       spacing: 8,
       runSpacing: 4,
-      children: quickActions.take(2).map((action) => 
-        _buildQuickActionChip(context, action)
-      ).toList(),
+      children:
+          quickActions
+              .take(2)
+              .map((action) => _buildQuickActionChip(context, action))
+              .toList(),
     );
   }
 
-  Widget _buildQuickActionChip(
-    BuildContext context,
-    QuickAction action,
-  ) {
+  Widget _buildQuickActionChip(BuildContext context, QuickAction action) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -480,22 +464,29 @@ class AICoachMessageBubble extends ConsumerWidget {
       child: Wrap(
         spacing: 4,
         runSpacing: 2,
-        children: suggestions.take(2).map((suggestion) =>
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: MinqTokens.brandPrimary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              suggestion,
-              style: TextStyle(
-                color: MinqTokens.brandPrimary,
-                fontSize: 11,
-              ),
-            ),
-          )
-        ).toList(),
+        children:
+            suggestions
+                .take(2)
+                .map(
+                  (suggestion) => Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: MinqTokens.brandPrimary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      suggestion,
+                      style: TextStyle(
+                        color: MinqTokens.brandPrimary,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
       ),
     );
   }
@@ -505,10 +496,7 @@ class AICoachMessageBubble extends ConsumerWidget {
       margin: const EdgeInsets.only(top: 4),
       child: Text(
         _formatTimestamp(timestamp),
-        style: TextStyle(
-          color: MinqTokens.textSecondary,
-          fontSize: 10,
-        ),
+        style: TextStyle(color: MinqTokens.textSecondary, fontSize: 10),
       ),
     );
   }
@@ -530,7 +518,9 @@ class AICoachMessageBubble extends ConsumerWidget {
 
   void _handleQuickAction(BuildContext context, QuickAction action) {
     if (action.route.isNotEmpty) {
-      Navigator.of(context).pushNamed(action.route, arguments: action.parameters);
+      Navigator.of(
+        context,
+      ).pushNamed(action.route, arguments: action.parameters);
     }
   }
 

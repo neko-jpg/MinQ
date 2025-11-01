@@ -103,18 +103,20 @@ class _AiInsightsScreenState extends ConsumerState<AiInsightsScreen> {
             // Recommendations Section
             _buildSectionHeader('パーソナライズされた提案', tokens),
             SizedBox(height: tokens.spacing.md),
-            ...insights.recommendations.map((recommendation) => Padding(
-              padding: EdgeInsets.only(bottom: tokens.spacing.md),
-              child: RecommendationCard(recommendation: recommendation),
-            )),
+            ...insights.recommendations.map(
+              (recommendation) => Padding(
+                padding: EdgeInsets.only(bottom: tokens.spacing.md),
+                child: RecommendationCard(recommendation: recommendation),
+              ),
+            ),
 
             // Progress Insights
             if (insights.progressAnalysis.insights.isNotEmpty) ...[
               SizedBox(height: tokens.spacing.lg),
               _buildSectionHeader('進捗インサイト', tokens),
               SizedBox(height: tokens.spacing.md),
-              ...insights.progressAnalysis.insights.map((insight) => 
-                _buildInsightCard(insight, tokens),
+              ...insights.progressAnalysis.insights.map(
+                (insight) => _buildInsightCard(insight, tokens),
               ),
             ],
 
@@ -192,9 +194,7 @@ class _AiInsightsScreenState extends ConsumerState<AiInsightsScreen> {
           SizedBox(height: tokens.spacing.sm),
           Text(
             '最終更新: ${_formatDateTime(insights.generatedAt)}',
-            style: tokens.typography.caption.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
           ),
         ],
       ),
@@ -267,9 +267,7 @@ class _AiInsightsScreenState extends ConsumerState<AiInsightsScreen> {
           SizedBox(height: tokens.spacing.md),
           Text(
             insight.description,
-            style: tokens.typography.body.copyWith(
-              color: tokens.textSecondary,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textSecondary),
           ),
           if (insight.actionRecommendation != null) ...[
             SizedBox(height: tokens.spacing.sm),
@@ -297,9 +295,7 @@ class _AiInsightsScreenState extends ConsumerState<AiInsightsScreen> {
           SizedBox(height: tokens.spacing.lg),
           Text(
             'AIがあなたの習慣データを分析中...',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
         ],
       ),
@@ -313,25 +309,17 @@ class _AiInsightsScreenState extends ConsumerState<AiInsightsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: tokens.textMuted,
-            ),
+            Icon(Icons.error_outline, size: 64, color: tokens.textMuted),
             SizedBox(height: tokens.spacing.lg),
             Text(
               'インサイトを読み込めませんでした',
-              style: tokens.typography.h4.copyWith(
-                color: tokens.textPrimary,
-              ),
+              style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: tokens.spacing.md),
             Text(
               'ネットワーク接続を確認して、もう一度お試しください。',
-              style: tokens.typography.body.copyWith(
-                color: tokens.textMuted,
-              ),
+              style: tokens.typography.body.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: tokens.spacing.lg),
@@ -349,7 +337,7 @@ class _AiInsightsScreenState extends ConsumerState<AiInsightsScreen> {
     if (_isRefreshing) return;
 
     setState(() => _isRefreshing = true);
-    
+
     try {
       unawaited(ref.refresh(aiInsightsProvider.future));
     } finally {
@@ -410,10 +398,10 @@ final aiInsightsProvider = FutureProvider<AIInsights>((ref) async {
   final insightsService = ref.read(aiInsightsServiceProvider);
   final questRepository = ref.read(questRepositoryProvider);
   final questLogRepository = ref.read(questLogRepositoryProvider);
-  
+
   // Get current user ID (replace with actual user ID logic)
   const userId = 'current_user';
-  
+
   return insightsService.generateInsights(
     userId: userId,
     questRepository: questRepository,

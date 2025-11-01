@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/sync/sync_queue_manager.dart';
 import 'package:minq/presentation/providers/profile_providers.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/theme/theme_extensions.dart';
 
 /// Widget to display profile sync status
 class SyncStatusWidget extends ConsumerWidget {
@@ -21,27 +20,31 @@ class SyncStatusWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildSyncStatus(BuildContext context, MinqTheme tokens, SyncQueueStatus status) {
+  Widget _buildSyncStatus(
+    BuildContext context,
+    MinqTheme tokens,
+    SyncQueueStatus status,
+  ) {
     if (status.isIdle && status.isOnline) {
       return _buildSyncedStatus(tokens);
     }
-    
+
     if (!status.isOnline) {
       return _buildOfflineStatus(tokens);
     }
-    
+
     if (status.isProcessing || status.syncingJobs > 0) {
       return _buildSyncingStatus(tokens, status);
     }
-    
+
     if (status.pendingJobs > 0) {
       return _buildPendingStatus(tokens, status);
     }
-    
+
     if (status.failedJobs > 0) {
       return _buildFailedStatus(context, tokens, status);
     }
-    
+
     return _buildSyncedStatus(tokens);
   }
 
@@ -59,11 +62,7 @@ class SyncStatusWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.cloud_done,
-            size: 16,
-            color: tokens.success,
-          ),
+          Icon(Icons.cloud_done, size: 16, color: tokens.success),
           SizedBox(width: tokens.spacing.xs),
           Text(
             '同期済み',
@@ -126,11 +125,7 @@ class SyncStatusWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.schedule,
-            size: 16,
-            color: tokens.warning,
-          ),
+          Icon(Icons.schedule, size: 16, color: tokens.warning),
           SizedBox(width: tokens.spacing.xs),
           Text(
             '同期待ち (${status.pendingJobs})',
@@ -144,7 +139,11 @@ class SyncStatusWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildFailedStatus(BuildContext context, MinqTheme tokens, SyncQueueStatus status) {
+  Widget _buildFailedStatus(
+    BuildContext context,
+    MinqTheme tokens,
+    SyncQueueStatus status,
+  ) {
     return GestureDetector(
       onTap: () => _showSyncErrorDialog(context, status),
       child: Container(
@@ -160,11 +159,7 @@ class SyncStatusWidget extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 16,
-              color: tokens.error,
-            ),
+            Icon(Icons.error_outline, size: 16, color: tokens.error),
             SizedBox(width: tokens.spacing.xs),
             Text(
               '同期エラー (${status.failedJobs})',
@@ -193,11 +188,7 @@ class SyncStatusWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.cloud_off,
-            size: 16,
-            color: tokens.textMuted,
-          ),
+          Icon(Icons.cloud_off, size: 16, color: tokens.textMuted),
           SizedBox(width: tokens.spacing.xs),
           Text(
             'オフライン',
@@ -259,11 +250,7 @@ class SyncStatusWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.error,
-            size: 16,
-            color: tokens.error,
-          ),
+          Icon(Icons.error, size: 16, color: tokens.error),
           SizedBox(width: tokens.spacing.xs),
           Text(
             'ステータス取得エラー',
@@ -280,32 +267,33 @@ class SyncStatusWidget extends ConsumerWidget {
   void _showSyncErrorDialog(BuildContext context, SyncQueueStatus status) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('同期エラー'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${status.failedJobs}件の同期に失敗しました。'),
-            const SizedBox(height: 16),
-            const Text('ネットワーク接続を確認して、再試行してください。'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('閉じる'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('同期エラー'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${status.failedJobs}件の同期に失敗しました。'),
+                const SizedBox(height: 16),
+                const Text('ネットワーク接続を確認して、再試行してください。'),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('閉じる'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // Retry failed sync jobs
+                  // This would need to be implemented in the sync queue manager
+                },
+                child: const Text('再試行'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // Retry failed sync jobs
-              // This would need to be implemented in the sync queue manager
-            },
-            child: const Text('再試行'),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -322,7 +310,8 @@ class CompactSyncStatusWidget extends ConsumerWidget {
     return syncStatusAsync.when(
       data: (status) => _buildCompactStatus(tokens, status),
       loading: () => Icon(Icons.sync, size: 20, color: tokens.textMuted),
-      error: (error, _) => Icon(Icons.sync_problem, size: 20, color: tokens.error),
+      error:
+          (error, _) => Icon(Icons.sync_problem, size: 20, color: tokens.error),
     );
   }
 
@@ -330,7 +319,7 @@ class CompactSyncStatusWidget extends ConsumerWidget {
     if (!status.isOnline) {
       return Icon(Icons.cloud_off, size: 20, color: tokens.textMuted);
     }
-    
+
     if (status.isProcessing || status.syncingJobs > 0) {
       return SizedBox(
         width: 20,
@@ -341,15 +330,15 @@ class CompactSyncStatusWidget extends ConsumerWidget {
         ),
       );
     }
-    
+
     if (status.failedJobs > 0) {
       return Icon(Icons.sync_problem, size: 20, color: tokens.error);
     }
-    
+
     if (status.pendingJobs > 0) {
       return Icon(Icons.schedule, size: 20, color: tokens.warning);
     }
-    
+
     return Icon(Icons.cloud_done, size: 20, color: tokens.success);
   }
 }

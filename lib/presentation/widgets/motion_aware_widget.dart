@@ -20,20 +20,17 @@ class MotionAwareWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
     final settings = accessibilityService.getCurrentSettings(context);
-    
+
     if (settings.reduceMotion) {
       return reducedMotionChild ?? _buildReducedMotionAlternative();
     }
-    
+
     return child;
   }
 
   Widget _buildReducedMotionAlternative() {
     // Provide a static alternative when motion is reduced
-    return AnimatedSwitcher(
-      duration: Duration.zero,
-      child: child,
-    );
+    return AnimatedSwitcher(duration: Duration.zero, child: child);
   }
 }
 
@@ -77,8 +74,11 @@ class AccessibleAnimatedContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
-    final adjustedDuration = accessibilityService.getAccessibleDuration(context, duration);
-    
+    final adjustedDuration = accessibilityService.getAccessibleDuration(
+      context,
+      duration,
+    );
+
     return AnimatedContainer(
       duration: adjustedDuration,
       curve: curve,
@@ -121,8 +121,11 @@ class AccessibleAnimatedOpacity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
-    final adjustedDuration = accessibilityService.getAccessibleDuration(context, duration);
-    
+    final adjustedDuration = accessibilityService.getAccessibleDuration(
+      context,
+      duration,
+    );
+
     return AnimatedOpacity(
       opacity: opacity,
       duration: adjustedDuration,
@@ -150,7 +153,7 @@ class AccessibleScaleTransition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = AccessibilityService.instance.getCurrentSettings(context);
-    
+
     if (settings.reduceMotion) {
       // Show final state without animation
       return Transform.scale(
@@ -159,12 +162,8 @@ class AccessibleScaleTransition extends StatelessWidget {
         child: child,
       );
     }
-    
-    return ScaleTransition(
-      scale: scale,
-      alignment: alignment,
-      child: child,
-    );
+
+    return ScaleTransition(scale: scale, alignment: alignment, child: child);
   }
 }
 
@@ -186,7 +185,7 @@ class AccessibleSlideTransition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = AccessibilityService.instance.getCurrentSettings(context);
-    
+
     if (settings.reduceMotion) {
       // Show final position without animation
       return FractionalTranslation(
@@ -195,7 +194,7 @@ class AccessibleSlideTransition extends StatelessWidget {
         child: child,
       );
     }
-    
+
     return SlideTransition(
       position: position,
       textDirection: textDirection,
@@ -221,7 +220,7 @@ class AccessibleFadeTransition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = AccessibilityService.instance.getCurrentSettings(context);
-    
+
     if (settings.reduceMotion) {
       // Show final opacity without animation
       return Opacity(
@@ -230,7 +229,7 @@ class AccessibleFadeTransition extends StatelessWidget {
         child: child,
       );
     }
-    
+
     return FadeTransition(
       opacity: opacity,
       alwaysIncludeSemantics: alwaysIncludeSemantics,
@@ -251,31 +250,31 @@ class AccessiblePageTransition extends PageRouteBuilder {
     this.reverseDuration = const Duration(milliseconds: 300),
     super.settings,
   }) : super(
-          pageBuilder: (context, animation, secondaryAnimation) => child,
-          transitionDuration: duration,
-          reverseTransitionDuration: reverseDuration,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final accessibilityService = AccessibilityService.instance;
-            final accessibilitySettings = accessibilityService.getCurrentSettings(context);
-            
-            if (accessibilitySettings.reduceMotion) {
-              // No transition animation
-              return child;
-            }
-            
-            // Standard slide transition
-            return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeInOut,
-              )),
-              child: child,
-            );
-          },
-        );
+         pageBuilder: (context, animation, secondaryAnimation) => child,
+         transitionDuration: duration,
+         reverseTransitionDuration: reverseDuration,
+         transitionsBuilder: (context, animation, secondaryAnimation, child) {
+           final accessibilityService = AccessibilityService.instance;
+           final accessibilitySettings = accessibilityService
+               .getCurrentSettings(context);
+
+           if (accessibilitySettings.reduceMotion) {
+             // No transition animation
+             return child;
+           }
+
+           // Standard slide transition
+           return SlideTransition(
+             position: Tween<Offset>(
+               begin: const Offset(1.0, 0.0),
+               end: Offset.zero,
+             ).animate(
+               CurvedAnimation(parent: animation, curve: Curves.easeInOut),
+             ),
+             child: child,
+           );
+         },
+       );
 }
 
 /// Hero animation that respects motion preferences
@@ -300,12 +299,12 @@ class AccessibleHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = AccessibilityService.instance.getCurrentSettings(context);
-    
+
     if (settings.reduceMotion) {
       // Skip hero animation
       return child;
     }
-    
+
     return Hero(
       tag: tag,
       createRectTween: createRectTween,
@@ -347,7 +346,7 @@ class AccessibleAnimatedList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = AccessibilityService.instance.getCurrentSettings(context);
-    
+
     if (settings.reduceMotion) {
       // Use regular ListView without animations
       return ListView.builder(
@@ -362,7 +361,7 @@ class AccessibleAnimatedList extends StatelessWidget {
         padding: padding,
       );
     }
-    
+
     // Use AnimatedList for motion-enabled users
     return ListView.builder(
       itemCount: itemCount,

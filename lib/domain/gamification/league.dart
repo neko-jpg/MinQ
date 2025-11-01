@@ -228,15 +228,16 @@ class LeagueStatistics {
   /// Get percentage distribution
   Map<String, double> get percentageDistribution {
     if (totalUsers == 0) return {};
-    
-    return leagueDistribution.map((league, count) => 
-      MapEntry(league, (count / totalUsers) * 100));
+
+    return leagueDistribution.map(
+      (league, count) => MapEntry(league, (count / totalUsers) * 100),
+    );
   }
 
   /// Get most populated league
   String? get mostPopulatedLeague {
     if (leagueDistribution.isEmpty) return null;
-    
+
     return leagueDistribution.entries
         .reduce((a, b) => a.value > b.value ? a : b)
         .key;

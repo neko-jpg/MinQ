@@ -7,7 +7,7 @@ class MinqThemeConfig {
   /// Light theme configuration
   static ThemeData light() {
     final minqTheme = MinqTheme.light();
-    
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
@@ -15,12 +15,10 @@ class MinqThemeConfig {
         primary: minqTheme.brandPrimary,
         secondary: minqTheme.accentSecondary,
         surface: minqTheme.surface,
-        background: minqTheme.background,
         error: minqTheme.accentError,
         onPrimary: minqTheme.textPrimary,
         onSecondary: minqTheme.textSecondary,
         onSurface: minqTheme.textPrimary,
-        onBackground: minqTheme.textPrimary,
         onError: Colors.white,
       ),
       textTheme: TextTheme(
@@ -47,7 +45,7 @@ class MinqThemeConfig {
   /// Dark theme configuration
   static ThemeData dark() {
     final minqTheme = MinqTheme.dark();
-    
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
@@ -55,12 +53,10 @@ class MinqThemeConfig {
         primary: minqTheme.brandPrimary,
         secondary: minqTheme.accentSecondary,
         surface: minqTheme.surface,
-        background: minqTheme.background,
         error: minqTheme.accentError,
         onPrimary: minqTheme.textPrimary,
         onSecondary: minqTheme.textSecondary,
         onSurface: minqTheme.textPrimary,
-        onBackground: minqTheme.textPrimary,
         onError: Colors.white,
       ),
       textTheme: TextTheme(

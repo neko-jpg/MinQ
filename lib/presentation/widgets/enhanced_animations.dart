@@ -44,39 +44,34 @@ class _StaggeredListAnimationState extends State<StaggeredListAnimation>
   void _initializeAnimations() {
     _controllers = List.generate(
       widget.children.length,
-      (index) => AnimationController(
-        duration: widget.itemDuration,
-        vsync: this,
-      ),
+      (index) =>
+          AnimationController(duration: widget.itemDuration, vsync: this),
     );
 
-    _slideAnimations = _controllers.map((controller) {
-      return Tween<double>(
-        begin: widget.direction == Axis.vertical ? 50.0 : 30.0,
-        end: 0.0,
-      ).animate(CurvedAnimation(
-        parent: controller,
-        curve: widget.curve,
-      ));
-    }).toList();
+    _slideAnimations =
+        _controllers.map((controller) {
+          return Tween<double>(
+            begin: widget.direction == Axis.vertical ? 50.0 : 30.0,
+            end: 0.0,
+          ).animate(CurvedAnimation(parent: controller, curve: widget.curve));
+        }).toList();
 
-    _fadeAnimations = _controllers.map((controller) {
-      return Tween<double>(
-        begin: 0.0,
-        end: 1.0,
-      ).animate(CurvedAnimation(
-        parent: controller,
-        curve: Curves.easeOut,
-      ));
-    }).toList();
+    _fadeAnimations =
+        _controllers.map((controller) {
+          return Tween<double>(
+            begin: 0.0,
+            end: 1.0,
+          ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
+        }).toList();
   }
 
   void _startAnimations() {
     for (int i = 0; i < _controllers.length; i++) {
-      final delay = widget.reverse 
-          ? widget.staggerDelay * (_controllers.length - 1 - i)
-          : widget.staggerDelay * i;
-      
+      final delay =
+          widget.reverse
+              ? widget.staggerDelay * (_controllers.length - 1 - i)
+              : widget.staggerDelay * i;
+
       Future.delayed(delay, () {
         if (mounted) {
           _controllers[i].forward();
@@ -96,12 +91,8 @@ class _StaggeredListAnimationState extends State<StaggeredListAnimation>
   @override
   Widget build(BuildContext context) {
     return widget.direction == Axis.vertical
-        ? Column(
-            children: _buildAnimatedChildren(),
-          )
-        : Row(
-            children: _buildAnimatedChildren(),
-          );
+        ? Column(children: _buildAnimatedChildren())
+        : Row(children: _buildAnimatedChildren());
   }
 
   List<Widget> _buildAnimatedChildren() {
@@ -110,9 +101,10 @@ class _StaggeredListAnimationState extends State<StaggeredListAnimation>
         animation: _controllers[index],
         builder: (context, child) {
           return Transform.translate(
-            offset: widget.direction == Axis.vertical
-                ? Offset(0, _slideAnimations[index].value)
-                : Offset(_slideAnimations[index].value, 0),
+            offset:
+                widget.direction == Axis.vertical
+                    ? Offset(0, _slideAnimations[index].value)
+                    : Offset(_slideAnimations[index].value, 0),
             child: Opacity(
               opacity: _fadeAnimations[index].value,
               child: widget.children[index],
@@ -164,10 +156,7 @@ class _MorphingContainerState extends State<MorphingContainer>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _controller.forward();
   }
 
@@ -236,18 +225,12 @@ class _PulseAnimationState extends State<PulseAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _scaleAnimation = Tween<double>(
       begin: widget.minScale,
       end: widget.maxScale,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     if (widget.repeat) {
       _controller.repeat(reverse: true);
@@ -303,15 +286,9 @@ class _ShakeAnimationState extends State<ShakeAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
-    _shakeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(_controller);
+    _shakeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
   }
 
   void shake() {
@@ -330,7 +307,9 @@ class _ShakeAnimationState extends State<ShakeAnimation>
     return AnimatedBuilder(
       animation: _shakeAnimation,
       builder: (context, child) {
-        final sineValue = math.sin(widget.shakeCount * math.pi * _shakeAnimation.value);
+        final sineValue = math.sin(
+          widget.shakeCount * math.pi * _shakeAnimation.value,
+        );
         return Transform.translate(
           offset: Offset(sineValue * widget.offset, 0),
           child: widget.child,
@@ -372,10 +351,7 @@ class _SlideRevealAnimationState extends State<SlideRevealAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     final offsetValue = widget.offset;
     Offset beginOffset;
@@ -398,18 +374,12 @@ class _SlideRevealAnimationState extends State<SlideRevealAnimation>
     _slideAnimation = Tween<Offset>(
       begin: beginOffset,
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     if (widget.autoStart) {
       _controller.forward();
@@ -437,10 +407,7 @@ class _SlideRevealAnimationState extends State<SlideRevealAnimation>
       builder: (context, child) {
         return Transform.translate(
           offset: _slideAnimation.value,
-          child: Opacity(
-            opacity: _fadeAnimation.value,
-            child: widget.child,
-          ),
+          child: Opacity(opacity: _fadeAnimation.value, child: widget.child),
         );
       },
     );
@@ -476,18 +443,12 @@ class _RotationAnimationState extends State<RotationAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _rotationAnimation = Tween<double>(
       begin: 0.0,
       end: widget.turns,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     if (widget.repeat) {
       _controller.repeat();
@@ -543,18 +504,12 @@ class _ElasticScaleAnimationState extends State<ElasticScaleAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.scale,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
   }
 
   void animate() {
@@ -606,10 +561,7 @@ class FadeTransitionSwitcher extends StatelessWidget {
       switchInCurve: curve,
       switchOutCurve: curve,
       transitionBuilder: (child, animation) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
+        return FadeTransition(opacity: animation, child: child);
       },
       child: child,
     );
@@ -636,10 +588,7 @@ class ScaleTransitionSwitcher extends StatelessWidget {
       switchInCurve: curve,
       switchOutCurve: curve,
       transitionBuilder: (child, animation) {
-        return ScaleTransition(
-          scale: animation,
-          child: child,
-        );
+        return ScaleTransition(scale: animation, child: child);
       },
       child: child,
     );
@@ -647,12 +596,7 @@ class ScaleTransitionSwitcher extends StatelessWidget {
 }
 
 /// Slide direction enum
-enum SlideDirection {
-  fromLeft,
-  fromRight,
-  fromTop,
-  fromBottom,
-}
+enum SlideDirection { fromLeft, fromRight, fromTop, fromBottom }
 
 /// Animated counter with smooth number transitions
 class AnimatedCounter extends StatefulWidget {
@@ -686,18 +630,12 @@ class _AnimatedCounterState extends State<AnimatedCounter>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _animation = Tween<double>(
       begin: 0.0,
       end: widget.value.toDouble(),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     _controller.forward();
   }
@@ -710,10 +648,7 @@ class _AnimatedCounterState extends State<AnimatedCounter>
       _animation = Tween<double>(
         begin: _previousValue.toDouble(),
         end: widget.value.toDouble(),
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: widget.curve,
-      ));
+      ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
       _controller.forward(from: 0.0);
     }
   }

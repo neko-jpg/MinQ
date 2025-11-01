@@ -48,8 +48,9 @@ class PolicyViewerScreen extends StatelessWidget {
                     SizedBox(height: tokens.spacing.xs),
                     Text(
                       document.titleEn,
-                      style: tokens.typography.bodySmall
-                          .copyWith(color: tokens.textMuted),
+                      style: tokens.typography.bodySmall.copyWith(
+                        color: tokens.textMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -59,15 +60,14 @@ class PolicyViewerScreen extends StatelessWidget {
           SizedBox(height: tokens.spacing.lg),
           Text(
             '最終更新日 / Last updated: ${document.lastUpdated}',
-            style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+            style: tokens.typography.bodySmall.copyWith(
+              color: tokens.textMuted,
+            ),
           ),
           if (document.highlightTag != null) ...<Widget>[
             SizedBox(height: tokens.spacing.md),
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
                 borderRadius: tokens.cornerLarge(),
@@ -140,8 +140,9 @@ class _PolicyMarkdownCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       'ドキュメントを読み込めませんでした。時間を置いて再度お試しください。',
-                      style: tokens.typography.bodySmall
-                          .copyWith(color: tokens.textMuted),
+                      style: tokens.typography.bodySmall.copyWith(
+                        color: tokens.textMuted,
+                      ),
                     ),
                   ),
                 ],
@@ -169,10 +170,12 @@ class _PolicyMarkdownCard extends StatelessWidget {
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
-          listBullet:
-              tokens.typography.bodyMedium.copyWith(color: tokens.textPrimary),
-          blockquote:
-              tokens.typography.bodySmall.copyWith(color: tokens.textSecondary),
+          listBullet: tokens.typography.bodyMedium.copyWith(
+            color: tokens.textPrimary,
+          ),
+          blockquote: tokens.typography.bodySmall.copyWith(
+            color: tokens.textSecondary,
+          ),
         );
 
         return Card(
@@ -219,8 +222,9 @@ class _PolicySectionCard extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               section.titleEn,
-              style:
-                  tokens.typography.caption.copyWith(color: tokens.textMuted),
+              style: tokens.typography.caption.copyWith(
+                color: tokens.textMuted,
+              ),
             ),
             SizedBox(height: tokens.spacing.md),
             ...section.paragraphs.map((PolicyParagraph paragraph) {
@@ -238,8 +242,9 @@ class _PolicySectionCard extends StatelessWidget {
                     SizedBox(height: tokens.spacing.sm),
                     Text(
                       paragraph.en,
-                      style: tokens.typography.bodySmall
-                          .copyWith(color: tokens.textMuted),
+                      style: tokens.typography.bodySmall.copyWith(
+                        color: tokens.textMuted,
+                      ),
                     ),
                   ],
                 ),

@@ -352,7 +352,9 @@ class FeatureUnlockDialog extends ConsumerWidget {
                 SizedBox(height: tokens.spacing.xs),
                 Text(
                   featureInfo.description,
-                  style: tokens.typography.body.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.body.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
               ],
             ),
@@ -368,8 +370,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.orange.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(tokens.radius.md),
-        border:
-            Border.all(color: Colors.orange.withAlpha((255 * 0.3).round())),
+        border: Border.all(color: Colors.orange.withAlpha((255 * 0.3).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -431,15 +432,16 @@ class FeatureUnlockDialog extends ConsumerWidget {
         children: [
           Icon(icon, size: tokens.spacing.lg, color: tokens.textMuted),
           SizedBox(width: tokens.spacing.sm),
-          Text(text,
-              style: tokens.typography.caption.copyWith(color: tokens.textMuted)),
+          Text(
+            text,
+            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildProgressSection(
-      MinqTheme tokens, OnboardingProgress progress) {
+  Widget _buildProgressSection(MinqTheme tokens, OnboardingProgress progress) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
@@ -501,13 +503,16 @@ class FeatureUnlockDialog extends ConsumerWidget {
               SizedBox(width: tokens.spacing.sm),
               Text(
                 label,
-                style:
-                    tokens.typography.caption.copyWith(fontWeight: FontWeight.w600),
+                style: tokens.typography.caption.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const Spacer(),
               Text(
                 '${(progress * 100).toInt()}%',
-                style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: tokens.typography.caption.copyWith(
+                  color: tokens.textMuted,
+                ),
               ),
             ],
           ),
@@ -539,7 +544,10 @@ class FeatureUnlockDialog extends ConsumerWidget {
               color: tokens.textMuted,
             ),
             SizedBox(height: tokens.spacing.lg),
-            Text(AppLocalizations.of(context).errorOccurred, style: tokens.typography.h3),
+            Text(
+              AppLocalizations.of(context).errorOccurred,
+              style: tokens.typography.h3,
+            ),
             SizedBox(height: tokens.spacing.lg),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),

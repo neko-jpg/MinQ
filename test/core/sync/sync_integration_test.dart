@@ -11,6 +11,7 @@ import 'package:minq/data/local/models/local_quest.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockNetworkStatusService extends Mock implements NetworkStatusService {}
+
 class MockCloudDatabaseService extends Mock implements CloudDatabaseService {}
 
 void main() {
@@ -43,20 +44,20 @@ void main() {
       // Setup default network service behavior
       when(() => mockNetworkService.isOnline).thenReturn(true);
       when(() => mockNetworkService.isOffline).thenReturn(false);
-      when(() => mockNetworkService.statusStream).thenAnswer(
-        (_) => Stream.value(NetworkStatus.online),
-      );
+      when(
+        () => mockNetworkService.statusStream,
+      ).thenAnswer((_) => Stream.value(NetworkStatus.online));
 
       // Setup default cloud service behavior
-      when(() => mockCloudService.upsertQuest(any())).thenAnswer(
-        (_) async => SyncResult.success(),
-      );
-      when(() => mockCloudService.upsertUser(any())).thenAnswer(
-        (_) async => SyncResult.success(),
-      );
-      when(() => mockCloudService.upsertQuestLog(any())).thenAnswer(
-        (_) async => SyncResult.success(),
-      );
+      when(
+        () => mockCloudService.upsertQuest(any()),
+      ).thenAnswer((_) async => SyncResult.success());
+      when(
+        () => mockCloudService.upsertUser(any()),
+      ).thenAnswer((_) async => SyncResult.success());
+      when(
+        () => mockCloudService.upsertQuestLog(any()),
+      ).thenAnswer((_) async => SyncResult.success());
 
       syncQueueManager = SyncQueueManager(
         isar: isar,
@@ -71,7 +72,7 @@ void main() {
 
       conflictResolutionService = ConflictResolutionService(isar: isar);
       cleanupService = DatabaseCleanupService(isar: isar);
-      
+
       backgroundSyncService = BackgroundSyncService(
         syncQueueManager: syncQueueManager,
         networkService: mockNetworkService,
@@ -104,10 +105,11 @@ void main() {
         expect(quest.syncStatus, equals(SyncStatus.pending));
 
         // Verify sync job was enqueued
-        final pendingJobs = await isar.syncJobs
-            .filter()
-            .statusEqualTo(SyncJobStatus.pending)
-            .findAll();
+        final pendingJobs =
+            await isar.syncJobs
+                .filter()
+                .statusEqualTo(SyncJobStatus.pending)
+                .findAll();
         expect(pendingJobs.length, equals(1));
         expect(pendingJobs.first.entityType, equals('quest'));
 
@@ -119,10 +121,11 @@ void main() {
         await syncQueueManager.processPendingJobs();
 
         // Assert - Sync job completed
-        final completedJobs = await isar.syncJobs
-            .filter()
-            .statusEqualTo(SyncJobStatus.pending)
-            .findAll();
+        final completedJobs =
+            await isar.syncJobs
+                .filter()
+                .statusEqualTo(SyncJobStatus.pending)
+                .findAll();
         expect(completedJobs.length, equals(0));
 
         // Verify cloud service was called
@@ -151,22 +154,24 @@ void main() {
         await syncQueueManager.processPendingJobs();
 
         // Assert - Job should be marked for retry
-        final failedJobs = await isar.syncJobs
-            .filter()
-            .statusEqualTo(SyncJobStatus.pending)
-            .and()
-            .retryCountGreaterThan(0)
-            .findAll();
+        final failedJobs =
+            await isar.syncJobs
+                .filter()
+                .statusEqualTo(SyncJobStatus.pending)
+                .and()
+                .retryCountGreaterThan(0)
+                .findAll();
         expect(failedJobs.length, equals(1));
 
         // Second sync attempt (should succeed)
         await syncQueueManager.processPendingJobs();
 
         // Assert - Job should be completed
-        final remainingJobs = await isar.syncJobs
-            .filter()
-            .statusEqualTo(SyncJobStatus.pending)
-            .findAll();
+        final remainingJobs =
+            await isar.syncJobs
+                .filter()
+                .statusEqualTo(SyncJobStatus.pending)
+                .findAll();
         expect(remainingJobs.length, equals(0));
 
         // Verify cloud service was called twice
@@ -176,14 +181,15 @@ void main() {
       test('should complete quest offline and sync user XP', () async {
         // Arrange - Create user and quest
         const uid = 'test-user';
-        final user = LocalUser()
-          ..uid = uid
-          ..displayName = 'Test User'
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now()
-          ..currentXP = 100
-          ..totalPoints = 500
-          ..currentLevel = 2;
+        final user =
+            LocalUser()
+              ..uid = uid
+              ..displayName = 'Test User'
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now()
+              ..currentXP = 100
+              ..totalPoints = 500
+              ..currentLevel = 2;
 
         await isar.writeTxn(() => isar.localUsers.put(user));
 
@@ -210,10 +216,11 @@ void main() {
         expect(updatedUser!.totalPoints, equals(525)); // 500 + 25
 
         // Verify sync jobs were created (quest log + user update)
-        final pendingJobs = await isar.syncJobs
-            .filter()
-            .statusEqualTo(SyncJobStatus.pending)
-            .findAll();
+        final pendingJobs =
+            await isar.syncJobs
+                .filter()
+                .statusEqualTo(SyncJobStatus.pending)
+                .findAll();
         expect(pendingJobs.length, greaterThanOrEqualTo(2));
 
         // Process sync
@@ -240,7 +247,8 @@ void main() {
           'owner': 'test-user',
           'title': 'Server Title',
           'category': 'fitness',
-          'updatedAt': DateTime.now().add(const Duration(minutes: 1)).toIso8601String(),
+          'updatedAt':
+              DateTime.now().add(const Duration(minutes: 1)).toIso8601String(),
         };
 
         // Act - Resolve conflict
@@ -262,10 +270,11 @@ void main() {
         );
 
         // Verify quest was updated
-        final updatedQuest = await isar.localQuests
-            .filter()
-            .questIdEqualTo(quest.questId)
-            .findFirst();
+        final updatedQuest =
+            await isar.localQuests
+                .filter()
+                .questIdEqualTo(quest.questId)
+                .findFirst();
         expect(updatedQuest!.title, equals('Server Title'));
         expect(updatedQuest.category, equals('fitness'));
         expect(updatedQuest.syncStatus, equals(SyncStatus.synced));
@@ -299,35 +308,46 @@ void main() {
         );
 
         // Assert - Should auto-merge, preferring local for mergeable fields
-        expect(resolution.resolution, equals(ConflictResolutionType.autoMerged));
-        expect(resolution.resolvedData!['estimatedMinutes'], equals(10)); // Local preferred
-        expect(resolution.resolvedData!['tags'], equals(['local-tag'])); // Local preferred
+        expect(
+          resolution.resolution,
+          equals(ConflictResolutionType.autoMerged),
+        );
+        expect(
+          resolution.resolvedData!['estimatedMinutes'],
+          equals(10),
+        ); // Local preferred
+        expect(
+          resolution.resolvedData!['tags'],
+          equals(['local-tag']),
+        ); // Local preferred
       });
     });
 
     group('Database Cleanup', () {
       test('should clean up old sync jobs and soft-deleted records', () async {
         // Arrange - Create old completed sync job
-        final oldJob = SyncJob()
-          ..entityType = 'quest'
-          ..entityId = 'old-quest'
-          ..operation = 'create'
-          ..data = {}
-          ..createdAt = DateTime.now().subtract(const Duration(days: 10))
-          ..status = SyncJobStatus.completed;
+        final oldJob =
+            SyncJob()
+              ..entityType = 'quest'
+              ..entityId = 'old-quest'
+              ..operation = 'create'
+              ..data = {}
+              ..createdAt = DateTime.now().subtract(const Duration(days: 10))
+              ..status = SyncJobStatus.completed;
 
         await isar.writeTxn(() => isar.syncJobs.put(oldJob));
 
         // Create soft-deleted quest
-        final deletedQuest = LocalQuest()
-          ..questId = 'deleted-quest'
-          ..owner = 'test-user'
-          ..title = 'Deleted Quest'
-          ..category = 'health'
-          ..status = QuestStatus.active
-          ..createdAt = DateTime.now().subtract(const Duration(days: 40))
-          ..updatedAt = DateTime.now().subtract(const Duration(days: 35))
-          ..deletedAt = DateTime.now().subtract(const Duration(days: 35));
+        final deletedQuest =
+            LocalQuest()
+              ..questId = 'deleted-quest'
+              ..owner = 'test-user'
+              ..title = 'Deleted Quest'
+              ..category = 'health'
+              ..status = QuestStatus.active
+              ..createdAt = DateTime.now().subtract(const Duration(days: 40))
+              ..updatedAt = DateTime.now().subtract(const Duration(days: 35))
+              ..deletedAt = DateTime.now().subtract(const Duration(days: 35));
 
         await isar.writeTxn(() => isar.localQuests.put(deletedQuest));
 
@@ -346,7 +366,10 @@ void main() {
 
         // Verify soft-deleted quest was removed
         final remainingQuests = await isar.localQuests.findAll();
-        expect(remainingQuests.any((quest) => quest.questId == 'deleted-quest'), isFalse);
+        expect(
+          remainingQuests.any((quest) => quest.questId == 'deleted-quest'),
+          isFalse,
+        );
       });
 
       test('should get accurate database statistics', () async {
@@ -367,7 +390,10 @@ void main() {
 
         // Assert - Stats are accurate
         expect(stats.questCount, equals(2));
-        expect(stats.syncJobCount, greaterThanOrEqualTo(2)); // At least 2 from quest creation
+        expect(
+          stats.syncJobCount,
+          greaterThanOrEqualTo(2),
+        ); // At least 2 from quest creation
         expect(stats.totalRecords, greaterThanOrEqualTo(2));
       });
     });
@@ -433,16 +459,17 @@ void main() {
 
         // Act - Perform offline operations
         const uid = 'test-user';
-        
+
         // Create user
-        final user = LocalUser()
-          ..uid = uid
-          ..displayName = 'Test User'
-          ..createdAt = DateTime.now()
-          ..updatedAt = DateTime.now()
-          ..currentXP = 0
-          ..totalPoints = 0
-          ..currentLevel = 1;
+        final user =
+            LocalUser()
+              ..uid = uid
+              ..displayName = 'Test User'
+              ..createdAt = DateTime.now()
+              ..updatedAt = DateTime.now()
+              ..currentXP = 0
+              ..totalPoints = 0
+              ..currentLevel = 1;
 
         await isar.writeTxn(() => isar.localUsers.put(user));
 
@@ -468,11 +495,15 @@ void main() {
         );
 
         // Assert - All operations created sync jobs
-        final pendingJobs = await isar.syncJobs
-            .filter()
-            .statusEqualTo(SyncJobStatus.pending)
-            .findAll();
-        expect(pendingJobs.length, greaterThanOrEqualTo(3)); // Quest create, quest log, user update, quest update
+        final pendingJobs =
+            await isar.syncJobs
+                .filter()
+                .statusEqualTo(SyncJobStatus.pending)
+                .findAll();
+        expect(
+          pendingJobs.length,
+          greaterThanOrEqualTo(3),
+        ); // Quest create, quest log, user update, quest update
 
         // Arrange - Go online
         when(() => mockNetworkService.isOnline).thenReturn(true);
@@ -482,14 +513,17 @@ void main() {
         await syncQueueManager.processPendingJobs();
 
         // Assert - All sync jobs completed
-        final remainingJobs = await isar.syncJobs
-            .filter()
-            .statusEqualTo(SyncJobStatus.pending)
-            .findAll();
+        final remainingJobs =
+            await isar.syncJobs
+                .filter()
+                .statusEqualTo(SyncJobStatus.pending)
+                .findAll();
         expect(remainingJobs.length, equals(0));
 
         // Verify all cloud services were called
-        verify(() => mockCloudService.upsertQuest(any())).called(atLeast(2)); // Create + Update
+        verify(
+          () => mockCloudService.upsertQuest(any()),
+        ).called(atLeast(2)); // Create + Update
         verify(() => mockCloudService.upsertQuestLog(any())).called(1);
         verify(() => mockCloudService.upsertUser(any())).called(atLeast(1));
 
@@ -497,10 +531,11 @@ void main() {
         final finalUser = await offlineOperationsService.getUser(uid);
         expect(finalUser!.totalPoints, equals(50));
 
-        final finalQuest = await isar.localQuests
-            .filter()
-            .questIdEqualTo(quest.questId)
-            .findFirst();
+        final finalQuest =
+            await isar.localQuests
+                .filter()
+                .questIdEqualTo(quest.questId)
+                .findFirst();
         expect(finalQuest!.title, equals('Updated Offline Quest'));
       });
     });

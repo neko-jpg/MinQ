@@ -56,12 +56,14 @@ class _MinqSkeletonState extends State<MinqSkeleton>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final baseColor = Theme.of(context).brightness == Brightness.dark
-        ? tokens.surface.withAlpha((255 * 0.35).round())
-        : tokens.surface.withAlpha((255 * 0.6).round());
-    final highlightColor = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white.withAlpha((255 * 0.25).round())
-        : Colors.white.withAlpha((255 * 0.6).round());
+    final baseColor =
+        Theme.of(context).brightness == Brightness.dark
+            ? tokens.surface.withAlpha((255 * 0.35).round())
+            : tokens.surface.withAlpha((255 * 0.6).round());
+    final highlightColor =
+        Theme.of(context).brightness == Brightness.dark
+            ? Colors.white.withAlpha((255 * 0.25).round())
+            : Colors.white.withAlpha((255 * 0.6).round());
     final borderRadius =
         widget.borderRadius ?? BorderRadius.circular(tokens.radius.lg);
 
@@ -202,7 +204,8 @@ class MinqSkeletonGrid extends StatelessWidget {
                 width: itemWidth,
                 height: itemHeight,
                 child: MinqSkeleton(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg)),
+                  borderRadius: BorderRadius.circular(tokens.radius.lg),
+                ),
               );
             },
           ),

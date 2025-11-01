@@ -54,7 +54,7 @@ Future<void> _bootstrapApplication() async {
   final crashRecoveryStore = CrashRecoveryStore(sharedPrefs);
   final operationsMetricsService = OperationsMetricsService(sharedPrefs);
   await operationsMetricsService.recordSessionStart(DateTime.now());
-  
+
   // Initialize timezone service for regional support
   await TimezoneService.initialize();
 
@@ -158,7 +158,6 @@ class MinQApp extends ConsumerStatefulWidget {
 }
 
 class _MinQAppState extends ConsumerState<MinQApp> {
-
   @override
   void initState() {
     super.initState();
@@ -169,8 +168,6 @@ class _MinQAppState extends ConsumerState<MinQApp> {
       _handleDeepLinkNavigation(ref.read(deepLinkStreamProvider));
     });
   }
-
-
 
   void _handleNotificationNavigation(AsyncValue<String> notification) {
     notification.whenData((route) {

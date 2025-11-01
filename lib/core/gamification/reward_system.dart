@@ -146,11 +146,11 @@ class RewardSystem {
             .doc(userId)
             .collection('points_transactions')
             .add({
-          'value': points,
-          'reason': 'Surprise Reward: ${selectedReward.name}',
-          'createdAt': FieldValue.serverTimestamp(),
-          'userId': userId,
-        });
+              'value': points,
+              'reason': 'Surprise Reward: ${selectedReward.name}',
+              'createdAt': FieldValue.serverTimestamp(),
+              'userId': userId,
+            });
         MinqLogger.info('Awarded $points surprise points to user $userId');
       } else {
         await _firestore
@@ -160,7 +160,8 @@ class RewardSystem {
             .doc(selectedReward.id)
             .set(selectedReward.toJson());
         MinqLogger.info(
-            'Awarded surprise reward ${selectedReward.name} to user $userId');
+          'Awarded surprise reward ${selectedReward.name} to user $userId',
+        );
       }
       return selectedReward;
     } catch (e) {

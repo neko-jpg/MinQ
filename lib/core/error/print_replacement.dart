@@ -15,7 +15,7 @@ void secureLog(
   }
 
   final formattedMessage = tag != null ? '[$tag] $message' : message.toString();
-  
+
   switch (level) {
     case LogLevel.debug:
       logger.debug(formattedMessage, data: data);
@@ -33,12 +33,7 @@ void secureLog(
 }
 
 /// Log levels for secure logging
-enum LogLevel {
-  debug,
-  info,
-  warning,
-  error,
-}
+enum LogLevel { debug, info, warning, error }
 
 /// Secure debug print that only works in debug mode
 void secureDebugPrint(dynamic message, {String? tag}) {
@@ -64,27 +59,13 @@ void logError(
 }
 
 /// Log warning with context
-void logWarning(
-  String message, {
-  Map<String, dynamic>? context,
-  String? tag,
-}) {
-  logger.warning(
-    tag != null ? '[$tag] $message' : message,
-    data: context,
-  );
+void logWarning(String message, {Map<String, dynamic>? context, String? tag}) {
+  logger.warning(tag != null ? '[$tag] $message' : message, data: context);
 }
 
 /// Log info with context
-void logInfo(
-  String message, {
-  Map<String, dynamic>? context,
-  String? tag,
-}) {
-  logger.info(
-    tag != null ? '[$tag] $message' : message,
-    data: context,
-  );
+void logInfo(String message, {Map<String, dynamic>? context, String? tag}) {
+  logger.info(tag != null ? '[$tag] $message' : message, data: context);
 }
 
 /// Performance logging helper
@@ -94,7 +75,10 @@ class PerformanceTracker {
   /// Start tracking performance for an operation
   static void start(String operationName) {
     _trackers[operationName] = Stopwatch()..start();
-    secureDebugPrint('Performance tracking started: $operationName', tag: 'PERF');
+    secureDebugPrint(
+      'Performance tracking started: $operationName',
+      tag: 'PERF',
+    );
   }
 
   /// Stop tracking and log the result
@@ -102,7 +86,11 @@ class PerformanceTracker {
     final stopwatch = _trackers.remove(operationName);
     if (stopwatch != null) {
       stopwatch.stop();
-      logger.logPerformance(operationName, stopwatch.elapsed, metadata: metadata);
+      logger.logPerformance(
+        operationName,
+        stopwatch.elapsed,
+        metadata: metadata,
+      );
     }
   }
 
@@ -123,7 +111,7 @@ void logNetworkRequest(
 }) {
   final isError = statusCode != null && statusCode >= 400;
   final level = isError ? LogLevel.error : LogLevel.debug;
-  
+
   final logData = {
     'method': method,
     'url': url,

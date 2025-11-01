@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 class RTLSupportWidget extends StatelessWidget {
   final Widget child;
 
-  const RTLSupportWidget({
-    super.key,
-    required this.child,
-  });
+  const RTLSupportWidget({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +35,9 @@ class RTLSupportWidget extends StatelessWidget {
   /// Get text direction for the current locale
   static TextDirection getTextDirection(BuildContext context) {
     final locale = Localizations.localeOf(context);
-    return _isRTLLanguage(locale.languageCode) 
-      ? TextDirection.rtl 
-      : TextDirection.ltr;
+    return _isRTLLanguage(locale.languageCode)
+        ? TextDirection.rtl
+        : TextDirection.ltr;
   }
 
   /// Check if current locale is RTL
@@ -55,22 +52,22 @@ extension RTLAwareEdgeInsets on EdgeInsets {
   /// Create RTL-aware horizontal padding
   static EdgeInsets horizontalRTL(BuildContext context, double value) {
     return RTLSupportWidget.isRTL(context)
-      ? EdgeInsets.only(right: value)
-      : EdgeInsets.only(left: value);
+        ? EdgeInsets.only(right: value)
+        : EdgeInsets.only(left: value);
   }
 
   /// Create RTL-aware start padding (left in LTR, right in RTL)
   static EdgeInsets startRTL(BuildContext context, double value) {
     return RTLSupportWidget.isRTL(context)
-      ? EdgeInsets.only(right: value)
-      : EdgeInsets.only(left: value);
+        ? EdgeInsets.only(right: value)
+        : EdgeInsets.only(left: value);
   }
 
   /// Create RTL-aware end padding (right in LTR, left in RTL)
   static EdgeInsets endRTL(BuildContext context, double value) {
     return RTLSupportWidget.isRTL(context)
-      ? EdgeInsets.only(left: value)
-      : EdgeInsets.only(right: value);
+        ? EdgeInsets.only(left: value)
+        : EdgeInsets.only(right: value);
   }
 }
 
@@ -79,15 +76,15 @@ extension RTLAwareAlignment on Alignment {
   /// Get start alignment (left in LTR, right in RTL)
   static Alignment start(BuildContext context) {
     return RTLSupportWidget.isRTL(context)
-      ? Alignment.centerRight
-      : Alignment.centerLeft;
+        ? Alignment.centerRight
+        : Alignment.centerLeft;
   }
 
   /// Get end alignment (right in LTR, left in RTL)
   static Alignment end(BuildContext context) {
     return RTLSupportWidget.isRTL(context)
-      ? Alignment.centerLeft
-      : Alignment.centerRight;
+        ? Alignment.centerLeft
+        : Alignment.centerRight;
   }
 }
 
@@ -96,15 +93,15 @@ extension RTLAwareCrossAxisAlignment on CrossAxisAlignment {
   /// Get start cross axis alignment
   static CrossAxisAlignment start(BuildContext context) {
     return RTLSupportWidget.isRTL(context)
-      ? CrossAxisAlignment.end
-      : CrossAxisAlignment.start;
+        ? CrossAxisAlignment.end
+        : CrossAxisAlignment.start;
   }
 
   /// Get end cross axis alignment
   static CrossAxisAlignment end(BuildContext context) {
     return RTLSupportWidget.isRTL(context)
-      ? CrossAxisAlignment.start
-      : CrossAxisAlignment.end;
+        ? CrossAxisAlignment.start
+        : CrossAxisAlignment.end;
   }
 }
 
@@ -113,15 +110,15 @@ extension RTLAwareMainAxisAlignment on MainAxisAlignment {
   /// Get start main axis alignment
   static MainAxisAlignment start(BuildContext context) {
     return RTLSupportWidget.isRTL(context)
-      ? MainAxisAlignment.end
-      : MainAxisAlignment.start;
+        ? MainAxisAlignment.end
+        : MainAxisAlignment.start;
   }
 
   /// Get end main axis alignment
   static MainAxisAlignment end(BuildContext context) {
     return RTLSupportWidget.isRTL(context)
-      ? MainAxisAlignment.start
-      : MainAxisAlignment.end;
+        ? MainAxisAlignment.start
+        : MainAxisAlignment.end;
   }
 }
 
@@ -182,15 +179,15 @@ class CulturalAdaptations {
   /// Get appropriate icon for the locale (e.g., back arrow)
   static IconData getBackIcon(BuildContext context) {
     return RTLSupportWidget.isRTL(context)
-      ? Icons.arrow_forward_ios
-      : Icons.arrow_back_ios;
+        ? Icons.arrow_forward_ios
+        : Icons.arrow_back_ios;
   }
 
   /// Get appropriate icon for forward navigation
   static IconData getForwardIcon(BuildContext context) {
     return RTLSupportWidget.isRTL(context)
-      ? Icons.arrow_back_ios
-      : Icons.arrow_forward_ios;
+        ? Icons.arrow_back_ios
+        : Icons.arrow_forward_ios;
   }
 }
 
@@ -212,7 +209,7 @@ class RTLAwareRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isRTL = RTLSupportWidget.isRTL(context);
-    
+
     return Row(
       mainAxisAlignment: _adaptMainAxisAlignment(mainAxisAlignment, isRTL),
       crossAxisAlignment: crossAxisAlignment,
@@ -226,7 +223,7 @@ class RTLAwareRow extends StatelessWidget {
     bool isRTL,
   ) {
     if (!isRTL) return alignment;
-    
+
     switch (alignment) {
       case MainAxisAlignment.start:
         return MainAxisAlignment.end;
@@ -255,7 +252,7 @@ class RTLAwarePadding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isRTL = RTLSupportWidget.isRTL(context);
-    
+
     EdgeInsetsGeometry adaptedPadding = padding;
     if (isRTL && padding is EdgeInsets) {
       final edgeInsets = padding as EdgeInsets;
@@ -267,9 +264,6 @@ class RTLAwarePadding extends StatelessWidget {
       );
     }
 
-    return Padding(
-      padding: adaptedPadding,
-      child: child,
-    );
+    return Padding(padding: adaptedPadding, child: child);
   }
 }

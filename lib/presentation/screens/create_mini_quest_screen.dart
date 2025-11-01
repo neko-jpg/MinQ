@@ -6,6 +6,7 @@ import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/controllers/sync_status_controller.dart';
+import 'package:minq/presentation/controllers/home_data_controller.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CreateMiniQuestScreen extends ConsumerStatefulWidget {
@@ -89,7 +90,10 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
               },
             ),
             SizedBox(height: tokens.spacing.xl),
-            const _SectionHeader(title: '目標タイプ', subtitle: '計測したい単位を選び、目標値を設定します。'),
+            const _SectionHeader(
+              title: '目標タイプ',
+              subtitle: '計測したい単位を選び、目標値を設定します。',
+            ),
             SizedBox(height: tokens.spacing.md),
             SegmentedButton<bool>(
               segments: const [
@@ -118,7 +122,10 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
               },
             ),
             SizedBox(height: tokens.spacing.xl),
-            const _SectionHeader(title: 'アイコンとカラー', subtitle: '視覚的なモチベーションにつながります。'),
+            const _SectionHeader(
+              title: 'アイコンとカラー',
+              subtitle: '視覚的なモチベーションにつながります。',
+            ),
             SizedBox(height: tokens.spacing.md),
             _IconSelector(
               selectedKey: _iconKey,
@@ -219,7 +226,7 @@ class _PreviewCard extends StatelessWidget {
       padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: tokens.radius.lg,
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         boxShadow: tokens.shadow.soft,
       ),
       child: Row(
@@ -325,7 +332,7 @@ class _IconSelector extends StatelessWidget {
                     isSelected
                         ? tokens.brandPrimary.withOpacity(0.15)
                         : tokens.surface,
-                borderRadius: tokens.radius.lg,
+                borderRadius: BorderRadius.circular(tokens.radius.lg),
                 border: Border.all(
                   color: isSelected ? tokens.brandPrimary : tokens.border,
                 ),
@@ -396,7 +403,7 @@ class _OfflineHint extends StatelessWidget {
       padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
         color: Colors.orange.withOpacity(0.12),
-        borderRadius: tokens.radius.lg,
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         border: Border.all(color: Colors.orange.withOpacity(0.4)),
       ),
       child: Row(

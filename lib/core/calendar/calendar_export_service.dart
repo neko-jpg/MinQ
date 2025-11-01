@@ -25,16 +25,16 @@ class CalendarExportService {
     );
 
     final directory = await getTemporaryDirectory();
-    final file = File('${directory.path}/quest_${DateTime.now().millisecondsSinceEpoch}.ics');
+    final file = File(
+      '${directory.path}/quest_${DateTime.now().millisecondsSinceEpoch}.ics',
+    );
     await file.writeAsString(icsContent);
 
     return file;
   }
 
   /// 複数のクエストをICSファイルとしてエクスポート
-  Future<File> exportQuestsToICS({
-    required List<QuestSchedule> quests,
-  }) async {
+  Future<File> exportQuestsToICS({required List<QuestSchedule> quests}) async {
     final buffer = StringBuffer();
 
     buffer.writeln('BEGIN:VCALENDAR');
@@ -46,21 +46,25 @@ class CalendarExportService {
     buffer.writeln('X-WR-TIMEZONE:Asia/Tokyo');
 
     for (final quest in quests) {
-      buffer.write(_generateEvent(
-        title: quest.title,
-        startTime: quest.scheduledTime,
-        description: quest.description,
-        location: quest.location,
-        duration: quest.duration,
-        isRecurring: quest.isRecurring,
-        recurrenceRule: quest.recurrenceRule,
-      ));
+      buffer.write(
+        _generateEvent(
+          title: quest.title,
+          startTime: quest.scheduledTime,
+          description: quest.description,
+          location: quest.location,
+          duration: quest.duration,
+          isRecurring: quest.isRecurring,
+          recurrenceRule: quest.recurrenceRule,
+        ),
+      );
     }
 
     buffer.writeln('END:VCALENDAR');
 
     final directory = await getTemporaryDirectory();
-    final file = File('${directory.path}/quests_${DateTime.now().millisecondsSinceEpoch}.ics');
+    final file = File(
+      '${directory.path}/quests_${DateTime.now().millisecondsSinceEpoch}.ics',
+    );
     await file.writeAsString(buffer.toString());
 
     return file;
@@ -84,15 +88,17 @@ class CalendarExportService {
     buffer.writeln('CALSCALE:GREGORIAN');
     buffer.writeln('METHOD:PUBLISH');
 
-    buffer.write(_generateEvent(
-      title: title,
-      startTime: startTime,
-      description: description,
-      location: location,
-      duration: duration,
-      isRecurring: isRecurring,
-      recurrenceRule: recurrenceRule,
-    ));
+    buffer.write(
+      _generateEvent(
+        title: title,
+        startTime: startTime,
+        description: description,
+        location: location,
+        duration: duration,
+        isRecurring: isRecurring,
+        recurrenceRule: recurrenceRule,
+      ),
+    );
 
     buffer.writeln('END:VCALENDAR');
 
@@ -216,7 +222,11 @@ class RecurrenceRule {
   });
 
   /// 毎日
-  factory RecurrenceRule.daily({int interval = 1, int? count, DateTime? until}) {
+  factory RecurrenceRule.daily({
+    int interval = 1,
+    int? count,
+    DateTime? until,
+  }) {
     return RecurrenceRule(
       frequency: RecurrenceFrequency.daily,
       interval: interval,
@@ -322,12 +332,7 @@ class RecurrenceRule {
 }
 
 /// 繰り返し頻度
-enum RecurrenceFrequency {
-  daily,
-  weekly,
-  monthly,
-  yearly,
-}
+enum RecurrenceFrequency { daily, weekly, monthly, yearly }
 
 /// カレンダー統合ヘルパー
 class CalendarIntegrationHelper {

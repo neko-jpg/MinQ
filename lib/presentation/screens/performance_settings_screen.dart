@@ -5,17 +5,19 @@ import 'package:minq/presentation/providers/performance_providers.dart';
 
 class PerformanceSettingsScreen extends ConsumerStatefulWidget {
   const PerformanceSettingsScreen({super.key});
-  
+
   @override
-  ConsumerState<PerformanceSettingsScreen> createState() => _PerformanceSettingsScreenState();
+  ConsumerState<PerformanceSettingsScreen> createState() =>
+      _PerformanceSettingsScreenState();
 }
 
-class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsScreen> {
+class _PerformanceSettingsScreenState
+    extends ConsumerState<PerformanceSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final settingsAsync = ref.watch(performanceSettingsProvider);
     final recommendationsAsync = ref.watch(performanceRecommendationsProvider);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Performance Settings'),
@@ -27,50 +29,56 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
           ),
           PopupMenuButton<String>(
             onSelected: _handleMenuAction,
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'reset',
-                child: Text('Reset to Defaults'),
-              ),
-              const PopupMenuItem(
-                value: 'performance',
-                child: Text('Performance Preset'),
-              ),
-              const PopupMenuItem(
-                value: 'balanced',
-                child: Text('Balanced Preset'),
-              ),
-              const PopupMenuItem(
-                value: 'battery',
-                child: Text('Battery Preset'),
-              ),
-            ],
+            itemBuilder:
+                (context) => [
+                  const PopupMenuItem(
+                    value: 'reset',
+                    child: Text('Reset to Defaults'),
+                  ),
+                  const PopupMenuItem(
+                    value: 'performance',
+                    child: Text('Performance Preset'),
+                  ),
+                  const PopupMenuItem(
+                    value: 'balanced',
+                    child: Text('Balanced Preset'),
+                  ),
+                  const PopupMenuItem(
+                    value: 'battery',
+                    child: Text('Battery Preset'),
+                  ),
+                ],
           ),
         ],
       ),
       body: settingsAsync.when(
-        data: (settings) => _buildSettingsContent(settings, recommendationsAsync),
+        data:
+            (settings) => _buildSettingsContent(settings, recommendationsAsync),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('Error loading settings: $error'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => ref.refresh(performanceSettingsProvider),
-                child: const Text('Retry'),
+        error:
+            (error, stack) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text('Error loading settings: $error'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => ref.refresh(performanceSettingsProvider),
+                    child: const Text('Retry'),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
       ),
     );
   }
-  
-  Widget _buildSettingsContent(PerformanceSettings settings, AsyncValue<List<PerformanceRecommendation>> recommendationsAsync) {
+
+  Widget _buildSettingsContent(
+    PerformanceSettings settings,
+    AsyncValue<List<PerformanceRecommendation>> recommendationsAsync,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -79,30 +87,34 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
           // Performance Mode Section
           _buildPerformanceModeSection(settings),
           const SizedBox(height: 24),
-          
+
           // Animation Settings
           _buildAnimationSection(settings),
           const SizedBox(height: 24),
-          
+
           // Optimization Settings
           _buildOptimizationSection(settings),
           const SizedBox(height: 24),
-          
+
           // Advanced Settings
           _buildAdvancedSection(settings),
           const SizedBox(height: 24),
-          
+
           // Recommendations Section
           recommendationsAsync.when(
-            data: (recommendations) => _buildRecommendationsSection(recommendations),
+            data:
+                (recommendations) =>
+                    _buildRecommendationsSection(recommendations),
             loading: () => _buildLoadingSection('Loading recommendations...'),
-            error: (error, stack) => _buildErrorSection('Failed to load recommendations'),
+            error:
+                (error, stack) =>
+                    _buildErrorSection('Failed to load recommendations'),
           ),
         ],
       ),
     );
   }
-  
+
   Widget _buildPerformanceModeSection(PerformanceSettings settings) {
     return Card(
       child: Padding(
@@ -117,24 +129,26 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
             const SizedBox(height: 8),
             Text(
               'Choose a preset that matches your priorities',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[600],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
             ),
             const SizedBox(height: 16),
-            ...PerformanceMode.values.map((mode) => RadioListTile<PerformanceMode>(
-              title: Text(_getPerformanceModeTitle(mode)),
-              subtitle: Text(_getPerformanceModeDescription(mode)),
-              value: mode,
-              groupValue: settings.performanceMode,
-              onChanged: (value) => _updatePerformanceMode(value!),
-            )),
+            ...PerformanceMode.values.map(
+              (mode) => RadioListTile<PerformanceMode>(
+                title: Text(_getPerformanceModeTitle(mode)),
+                subtitle: Text(_getPerformanceModeDescription(mode)),
+                value: mode,
+                groupValue: settings.performanceMode,
+                onChanged: (value) => _updatePerformanceMode(value!),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-  
+
   Widget _buildAnimationSection(PerformanceSettings settings) {
     return Card(
       child: Padding(
@@ -161,7 +175,9 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
             ),
             SwitchListTile(
               title: const Text('Heavy Animations'),
-              subtitle: const Text('Complex animations that may impact performance'),
+              subtitle: const Text(
+                'Complex animations that may impact performance',
+              ),
               value: settings.heavyAnimationsEnabled,
               onChanged: _updateHeavyAnimationsEnabled,
             ),
@@ -170,7 +186,7 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
       ),
     );
   }
-  
+
   Widget _buildOptimizationSection(PerformanceSettings settings) {
     return Card(
       child: Padding(
@@ -185,7 +201,9 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
             const SizedBox(height: 16),
             SwitchListTile(
               title: const Text('Image Optimization'),
-              subtitle: const Text('Compress and cache images for better performance'),
+              subtitle: const Text(
+                'Compress and cache images for better performance',
+              ),
               value: settings.imageOptimizationEnabled,
               onChanged: _updateImageOptimizationEnabled,
             ),
@@ -218,7 +236,7 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
       ),
     );
   }
-  
+
   Widget _buildAdvancedSection(PerformanceSettings settings) {
     return Card(
       child: Padding(
@@ -233,7 +251,9 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
             const SizedBox(height: 16),
             ListTile(
               title: const Text('Frame Rate Limit'),
-              subtitle: Text('Maximum frames per second: ${settings.frameRateLimit} FPS'),
+              subtitle: Text(
+                'Maximum frames per second: ${settings.frameRateLimit} FPS',
+              ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => _showFrameRateDialog(settings.frameRateLimit),
             ),
@@ -242,8 +262,10 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
       ),
     );
   }
-  
-  Widget _buildRecommendationsSection(List<PerformanceRecommendation> recommendations) {
+
+  Widget _buildRecommendationsSection(
+    List<PerformanceRecommendation> recommendations,
+  ) {
     if (recommendations.isEmpty) {
       return Card(
         child: Padding(
@@ -258,16 +280,16 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
               ),
               Text(
                 'Your settings are optimized for your device',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[600],
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
               ),
             ],
           ),
         ),
       );
     }
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -285,7 +307,7 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
       ),
     );
   }
-  
+
   Widget _buildRecommendationItem(PerformanceRecommendation recommendation) {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -307,7 +329,7 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
       ),
     );
   }
-  
+
   Widget _buildLoadingSection(String message) {
     return Card(
       child: Padding(
@@ -322,7 +344,7 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
       ),
     );
   }
-  
+
   Widget _buildErrorSection(String message) {
     return Card(
       child: Padding(
@@ -337,44 +359,46 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
       ),
     );
   }
-  
+
   // Event handlers
-  
+
   void _updatePerformanceMode(PerformanceMode mode) async {
     final service = ref.read(performanceSettingsServiceProvider);
     await service.applyPerformanceModePreset(mode);
     ref.refresh(performanceSettingsProvider);
   }
-  
+
   void _updateAnimationsEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
     await service.setAnimationsEnabled(value);
     ref.refresh(performanceSettingsProvider);
   }
-  
+
   void _updateParticleEffectsEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
     await service.setParticleEffectsEnabled(value);
     ref.refresh(performanceSettingsProvider);
   }
-  
+
   void _updateHeavyAnimationsEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
     await service.setHeavyAnimationsEnabled(value);
     ref.refresh(performanceSettingsProvider);
   }
-  
+
   void _updateImageOptimizationEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
     final settings = await service.getSettings();
-    await service.updateSettings(settings.copyWith(imageOptimizationEnabled: value));
+    await service.updateSettings(
+      settings.copyWith(imageOptimizationEnabled: value),
+    );
     ref.refresh(performanceSettingsProvider);
   }
-  
+
   void _updateLazyLoadingEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
@@ -382,45 +406,51 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
     await service.updateSettings(settings.copyWith(lazyLoadingEnabled: value));
     ref.refresh(performanceSettingsProvider);
   }
-  
+
   void _updateMemoryOptimizationEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
     final settings = await service.getSettings();
-    await service.updateSettings(settings.copyWith(memoryOptimizationEnabled: value));
+    await service.updateSettings(
+      settings.copyWith(memoryOptimizationEnabled: value),
+    );
     ref.refresh(performanceSettingsProvider);
   }
-  
+
   void _updateBatteryOptimizationEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
     final settings = await service.getSettings();
-    await service.updateSettings(settings.copyWith(batteryOptimizationEnabled: value));
+    await service.updateSettings(
+      settings.copyWith(batteryOptimizationEnabled: value),
+    );
     ref.refresh(performanceSettingsProvider);
   }
-  
+
   void _updateNetworkOptimizationEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
     final settings = await service.getSettings();
-    await service.updateSettings(settings.copyWith(networkOptimizationEnabled: value));
+    await service.updateSettings(
+      settings.copyWith(networkOptimizationEnabled: value),
+    );
     ref.refresh(performanceSettingsProvider);
   }
-  
+
   void _autoOptimize() async {
     final service = ref.read(performanceSettingsServiceProvider);
     await service.autoOptimize();
     ref.refresh(performanceSettingsProvider);
     ref.refresh(performanceRecommendationsProvider);
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Settings auto-optimized for your device')),
     );
   }
-  
+
   void _handleMenuAction(String action) async {
     final service = ref.read(performanceSettingsServiceProvider);
-    
+
     switch (action) {
       case 'reset':
         await service.resetToDefaults();
@@ -435,51 +465,54 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
         await service.applyPerformanceModePreset(PerformanceMode.battery);
         break;
     }
-    
+
     ref.refresh(performanceSettingsProvider);
     ref.refresh(performanceRecommendationsProvider);
   }
-  
+
   void _showFrameRateDialog(int currentFrameRate) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Frame Rate Limit'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Select maximum frame rate:'),
-            const SizedBox(height: 16),
-            ...([30, 60, 90, 120].map((fps) => RadioListTile<int>(
-              title: Text('$fps FPS'),
-              value: fps,
-              groupValue: currentFrameRate,
-              onChanged: (value) {
-                Navigator.pop(context);
-                _updateFrameRate(value!);
-              },
-            ))),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Frame Rate Limit'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Select maximum frame rate:'),
+                const SizedBox(height: 16),
+                ...([30, 60, 90, 120].map(
+                  (fps) => RadioListTile<int>(
+                    title: Text('$fps FPS'),
+                    value: fps,
+                    groupValue: currentFrameRate,
+                    onChanged: (value) {
+                      Navigator.pop(context);
+                      _updateFrameRate(value!);
+                    },
+                  ),
+                )),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
-  
+
   void _updateFrameRate(int frameRate) async {
     final service = ref.read(performanceSettingsServiceProvider);
     final settings = await service.getSettings();
     await service.updateSettings(settings.copyWith(frameRateLimit: frameRate));
     ref.refresh(performanceSettingsProvider);
   }
-  
+
   // Helper methods
-  
+
   String _getPerformanceModeTitle(PerformanceMode mode) {
     switch (mode) {
       case PerformanceMode.performance:
@@ -490,7 +523,7 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
         return 'Battery Saver';
     }
   }
-  
+
   String _getPerformanceModeDescription(PerformanceMode mode) {
     switch (mode) {
       case PerformanceMode.performance:
@@ -501,7 +534,7 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
         return 'Optimized for battery life, reduced performance';
     }
   }
-  
+
   IconData _getRecommendationIcon(RecommendationType type) {
     switch (type) {
       case RecommendationType.memory:
@@ -516,7 +549,7 @@ class _PerformanceSettingsScreenState extends ConsumerState<PerformanceSettingsS
         return Icons.display_settings;
     }
   }
-  
+
   Color _getRecommendationColor(RecommendationPriority priority) {
     switch (priority) {
       case RecommendationPriority.low:

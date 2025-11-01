@@ -24,14 +24,10 @@ class _ExampleProgressiveOnboardingScreenState
   @override
   void initState() {
     super.initState();
-    
+
     // 画面表示時にヒントをチェック
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ProgressiveOnboardingIntegration.onScreenDisplayed(
-        context,
-        ref,
-        'home',
-      );
+      ProgressiveOnboardingIntegration.onScreenDisplayed(context, ref, 'home');
     });
   }
 
@@ -40,9 +36,7 @@ class _ExampleProgressiveOnboardingScreenState
     return ProgressiveOnboardingWidget(
       screenId: 'home',
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('プログレッシブオンボーディング例'),
-        ),
+        appBar: AppBar(title: const Text('プログレッシブオンボーディング例')),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -67,29 +61,29 @@ class _ExampleProgressiveOnboardingScreenState
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // アクションボタン
               ElevatedButton(
                 onPressed: _createQuest,
                 child: const Text('クエストを作成'),
               ),
-              
+
               const SizedBox(height: 8),
-              
+
               ElevatedButton(
                 onPressed: _questCount > 0 ? _completeQuest : null,
                 child: const Text('クエストを完了'),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // 機能ロック例
               _buildFeatureLockExample(),
-              
+
               const SizedBox(height: 16),
-              
+
               // デバッグボタン
               if (kDebugMode) ...[
                 const Divider(),
@@ -121,16 +115,10 @@ class _ExampleProgressiveOnboardingScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'ペア機能',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('ペア機能', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             if (isPairLocked) ...[
-              Icon(
-                Icons.lock,
-                color: Theme.of(context).colorScheme.outline,
-              ),
+              Icon(Icons.lock, color: Theme.of(context).colorScheme.outline),
               const SizedBox(height: 4),
               Text(
                 lockMessage,
@@ -139,10 +127,7 @@ class _ExampleProgressiveOnboardingScreenState
                 ),
               ),
             ] else ...[
-              Icon(
-                Icons.people,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              Icon(Icons.people, color: Theme.of(context).colorScheme.primary),
               const SizedBox(height: 4),
               const Text('ペア機能が利用できます！'),
               ElevatedButton(
@@ -193,13 +178,11 @@ class _ExampleProgressiveOnboardingScreenState
 
   void _resetHints() async {
     await ProgressiveOnboardingIntegration.resetAllHints();
-    
+
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('全てのヒントをリセットしました'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('全てのヒントをリセットしました')));
     }
   }
 
@@ -211,4 +194,3 @@ class _ExampleProgressiveOnboardingScreenState
     );
   }
 }
-

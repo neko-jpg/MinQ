@@ -36,9 +36,10 @@ class UserProgressService {
       // アクティブなクエストを取得
       final questRepo = _ref.read(questRepositoryProvider);
       final activeQuests = await questRepo.getQuestsForOwner(user.uid);
-      final activeQuestList = activeQuests.where(
-        (quest) => quest.status == QuestStatus.active,
-      ).toList();
+      final activeQuestList =
+          activeQuests
+              .where((quest) => quest.status == QuestStatus.active)
+              .toList();
 
       // フォーカスクエストの変換
       HomeQuestItem? focusQuest;
@@ -142,9 +143,12 @@ class UserProgressService {
       challenges.add('取り組むクエストが設定されていません');
     }
 
-    final recentActivity = context.recentLogs.where(
-      (log) => DateTime.now().difference(log.timestamp).inDays <= 7,
-    ).length;
+    final recentActivity =
+        context.recentLogs
+            .where(
+              (log) => DateTime.now().difference(log.timestamp).inDays <= 7,
+            )
+            .length;
 
     if (recentActivity < 3) {
       challenges.add('最近の活動頻度が低下しています');
@@ -198,14 +202,14 @@ class UserProgressService {
     final questTitles = <String>[];
     final questRepo = _ref.read(questRepositoryProvider);
 
-    for (final log in context.recentLogs.take(limit)) {
+    for (final progressLog in context.recentLogs.take(limit)) {
       try {
-        final quest = await questRepo.getQuestById(log.questId);
+        final quest = await questRepo.getQuestById(progressLog.questId);
         if (quest != null) {
           questTitles.add(quest.title);
         }
       } catch (e) {
-        log('UserProgressService: クエスト取得エラー - ${log.questId}');
+        log('UserProgressService: クエスト取得エラー - ${progressLog.questId}');
       }
     }
 
@@ -246,8 +250,9 @@ class UserProgressService {
     final now = DateTime.now();
     final weekStart = now.subtract(Duration(days: now.weekday - 1));
 
-    for (final log in context.recentLogs) {
-      final daysSinceWeekStart = log.timestamp.difference(weekStart).inDays;
+    for (final progressLog in context.recentLogs) {
+      final daysSinceWeekStart =
+          progressLog.timestamp.difference(weekStart).inDays;
       if (daysSinceWeekStart >= 0 && daysSinceWeekStart < 7) {
         weekdayActivity[daysSinceWeekStart]++;
       }
@@ -348,8 +353,8 @@ final userProgressServiceProvider = Provider<UserProgressService>((ref) {
   return UserProgressService(ref);
 });
 
-  /// 課題を特定（実装）
-  List<String> _identifyChallenges(UserProgressContext context) {
+/// 課題を特定（実装）
+List<String> _identifyChallenges(UserProgressContext context) {
   final challenges = <String>[];
 
   if (context.streak == 0 && context.recentLogs.isNotEmpty) {
@@ -364,9 +369,10 @@ final userProgressServiceProvider = Provider<UserProgressService>((ref) {
     challenges.add('取り組むクエストが設定されていません');
   }
 
-  final recentActivity = context.recentLogs.where(
-    (log) => DateTime.now().difference(log.timestamp).inDays <= 7,
-  ).length;
+  final recentActivity =
+      context.recentLogs
+          .where((log) => DateTime.now().difference(log.timestamp).inDays <= 7)
+          .length;
 
   if (recentActivity < 3) {
     challenges.add('最近の活動頻度が低下しています');

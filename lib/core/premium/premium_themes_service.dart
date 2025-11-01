@@ -18,7 +18,7 @@ class PremiumThemesService {
   Future<List<PremiumTheme>> getAvailableThemes() async {
     final canUsePremium = await canUsePremiumThemes();
     final allThemes = _getAllThemes();
-    
+
     if (canUsePremium) {
       return allThemes;
     } else {
@@ -27,7 +27,8 @@ class PremiumThemesService {
   }
 
   Future<PremiumTheme?> getCurrentTheme() async {
-    final themeId = await _localStorage.getString('selected_theme') ?? 'default';
+    final themeId =
+        await _localStorage.getString('selected_theme') ?? 'default';
     return _getThemeById(themeId);
   }
 
@@ -46,7 +47,7 @@ class PremiumThemesService {
   Future<List<PremiumAnimation>> getAvailableAnimations() async {
     final canUsePremium = await canUsePremiumThemes();
     final allAnimations = _getAllAnimations();
-    
+
     if (canUsePremium) {
       return allAnimations;
     } else {
@@ -91,7 +92,7 @@ class PremiumThemesService {
         darkColorTokens: _createMinimalDarkTokens(),
         category: ThemeCategory.minimal,
       ),
-      
+
       // Premium themes
       PremiumTheme(
         id: 'aurora',
@@ -104,10 +105,7 @@ class PremiumThemesService {
         gradientBackground: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF667EEA),
-            Color(0xFF764BA2),
-          ],
+          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
         ),
       ),
       PremiumTheme(
@@ -121,11 +119,7 @@ class PremiumThemesService {
         gradientBackground: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFFF9A8B),
-            Color(0xFFFECFEF),
-            Color(0xFFFECFEF),
-          ],
+          colors: [Color(0xFFFF9A8B), Color(0xFFFECFEF), Color(0xFFFECFEF)],
         ),
       ),
       PremiumTheme(
@@ -139,10 +133,7 @@ class PremiumThemesService {
         gradientBackground: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF2E3192),
-            Color(0xFF1BFFFF),
-          ],
+          colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
         ),
       ),
       PremiumTheme(
@@ -194,7 +185,7 @@ class PremiumThemesService {
         isPremium: false,
         category: AnimationCategory.transitions,
       ),
-      
+
       // Premium animations
       const PremiumAnimation(
         id: 'particle_effects',
@@ -454,20 +445,9 @@ class PremiumAnimation {
   });
 }
 
-enum ThemeCategory {
-  classic,
-  minimal,
-  nature,
-  futuristic,
-  soft,
-}
+enum ThemeCategory { classic, minimal, nature, futuristic, soft }
 
-enum AnimationCategory {
-  transitions,
-  effects,
-  interactions,
-  loading,
-}
+enum AnimationCategory { transitions, effects, interactions, loading }
 
 final premiumThemesServiceProvider = Provider<PremiumThemesService>((ref) {
   final premiumService = ref.watch(premiumServiceProvider);
@@ -485,7 +465,9 @@ final currentThemeProvider = FutureProvider<PremiumTheme?>((ref) {
   return themesService.getCurrentTheme();
 });
 
-final availableAnimationsProvider = FutureProvider<List<PremiumAnimation>>((ref) {
+final availableAnimationsProvider = FutureProvider<List<PremiumAnimation>>((
+  ref,
+) {
   final themesService = ref.watch(premiumThemesServiceProvider);
   return themesService.getAvailableAnimations();
 });

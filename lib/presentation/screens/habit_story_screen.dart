@@ -48,21 +48,22 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
         setState(() => _isLoading = false);
         return;
       }
-      
+
       final quests = await ref.read(userQuestsProvider.future);
       final logs = await ref.read(recentLogsProvider.future);
       final streak = await ref.read(streakProvider.future);
       final StatsViewData statsData = await ref.read(statsDataProvider.future);
-      
+
       if (quests.isEmpty) {
         setState(() => _isLoading = false);
         return;
       }
-      
+
       // 最も活発な習慣を選択
       final mostActiveQuest = _findMostActiveQuest(quests, logs);
-      final questLogs = logs.where((log) => log.questId == mostActiveQuest.id).toList();
-      
+      final questLogs =
+          logs.where((log) => log.questId == mostActiveQuest.id).toList();
+
       final habitData = HabitProgressData(
         habitTitle: mostActiveQuest.title,
         category: mostActiveQuest.category,
@@ -616,7 +617,9 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withAlpha((255 * 0.1).round()),
+                              color: Colors.black.withAlpha(
+                                (255 * 0.1).round(),
+                              ),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -838,16 +841,16 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
   /// Find the most active quest based on recent logs
   Quest _findMostActiveQuest(List<Quest> quests, List<QuestLog> logs) {
     if (quests.isEmpty) throw StateError('No quests available');
-    
+
     final questActivity = <int, int>{};
     for (final log in logs) {
       questActivity[log.questId] = (questActivity[log.questId] ?? 0) + 1;
     }
-    
+
     // Find quest with most activity, fallback to first quest
     Quest mostActive = quests.first;
     int maxActivity = 0;
-    
+
     for (final quest in quests) {
       final activity = questActivity[quest.id] ?? 0;
       if (activity > maxActivity) {
@@ -855,14 +858,14 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
         mostActive = quest;
       }
     }
-    
+
     return mostActive;
   }
 
   /// Generate achievements based on streak and completion count
   List<String> _generateAchievements(int streak, int completions) {
     final achievements = <String>[];
-    
+
     if (streak >= 7) {
       achievements.add('$streak日連続達成');
     }
@@ -875,7 +878,7 @@ class _HabitStoryScreenState extends ConsumerState<HabitStoryScreen>
     if (completions >= 30) {
       achievements.add('30回完了達成');
     }
-    
+
     return achievements.isEmpty ? ['継続中'] : achievements;
   }
 }

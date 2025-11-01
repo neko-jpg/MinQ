@@ -19,13 +19,13 @@ class XPHistoryScreen extends ConsumerStatefulWidget {
 class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
   }
-  
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -37,7 +37,7 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final uid = ref.watch(uidProvider);
-    
+
     if (uid == null) {
       return Scaffold(
         appBar: AppBar(title: Text(l10n.xpHistory)),
@@ -50,10 +50,7 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
         title: Text(l10n.xpHistory),
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
-            Tab(text: l10n.history),
-            Tab(text: l10n.statistics),
-          ],
+          tabs: [Tab(text: l10n.history), Tab(text: l10n.statistics)],
         ),
       ),
       body: TabBarView(
@@ -68,14 +65,14 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
 
   Widget _buildHistoryTab(String uid, MinqTheme tokens, AppLocalizations l10n) {
     final xpSystem = ref.watch(xpSystemProvider);
-    
+
     return FutureBuilder<List<XPTransaction>>(
       future: xpSystem.getXPHistory(userId: uid, limit: 100),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (snapshot.hasError) {
           return Center(
             child: Column(
@@ -91,9 +88,9 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
             ),
           );
         }
-        
+
         final transactions = snapshot.data ?? [];
-        
+
         if (transactions.isEmpty) {
           return Center(
             child: Column(
@@ -103,13 +100,15 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                 SizedBox(height: tokens.spacing.md),
                 Text(
                   l10n.noXPHistory,
-                  style: tokens.typography.body.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.body.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
               ],
             ),
           );
         }
-        
+
         return ListView.builder(
           padding: EdgeInsets.all(tokens.spacing.md),
           itemCount: transactions.length,
@@ -122,9 +121,13 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     );
   }
 
-  Widget _buildTransactionCard(XPTransaction transaction, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildTransactionCard(
+    XPTransaction transaction,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     final dateFormat = DateFormat('MM/dd HH:mm');
-    
+
     return Card(
       margin: EdgeInsets.only(bottom: tokens.spacing.sm),
       child: Padding(
@@ -145,9 +148,9 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                 size: 24,
               ),
             ),
-            
+
             SizedBox(width: tokens.spacing.md),
-            
+
             // 詳細情報
             Expanded(
               child: Column(
@@ -176,7 +179,7 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                 ],
               ),
             ),
-            
+
             // XP量
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -194,7 +197,8 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                     color: tokens.textMuted,
                   ),
                 ),
-                if (transaction.multiplier != null && transaction.multiplier! > 1.0) ...[
+                if (transaction.multiplier != null &&
+                    transaction.multiplier! > 1.0) ...[
                   SizedBox(height: tokens.spacing.xs),
                   Container(
                     padding: EdgeInsets.symmetric(
@@ -222,16 +226,20 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     );
   }
 
-  Widget _buildStatisticsTab(String uid, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildStatisticsTab(
+    String uid,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     final xpSystem = ref.watch(xpSystemProvider);
-    
+
     return FutureBuilder<XPAnalytics>(
       future: xpSystem.getDetailedXPAnalytics(uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (snapshot.hasError) {
           return Center(
             child: Column(
@@ -247,9 +255,9 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
             ),
           );
         }
-        
+
         final analytics = snapshot.data!;
-        
+
         return SingleChildScrollView(
           padding: EdgeInsets.all(tokens.spacing.md),
           child: Column(
@@ -257,24 +265,24 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
             children: [
               // 総合統計
               _buildOverallStatsEnhanced(analytics, tokens, l10n),
-              
+
               SizedBox(height: tokens.spacing.lg),
-              
+
               // 成長トレンド
               _buildGrowthTrendCard(analytics, tokens, l10n),
-              
+
               SizedBox(height: tokens.spacing.lg),
-              
+
               // XPトレンドチャート
               _buildXPTrendChart(uid, tokens, l10n),
-              
+
               SizedBox(height: tokens.spacing.lg),
-              
+
               // 時間帯・曜日別分析
               _buildTimeAnalysis(analytics, tokens, l10n),
-              
+
               SizedBox(height: tokens.spacing.lg),
-              
+
               // ソース別統計（拡張版）
               _buildSourceStatsEnhanced(analytics, tokens, l10n),
             ],
@@ -284,7 +292,11 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     );
   }
 
-  Widget _buildOverallStats(Map<String, dynamic> stats, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildOverallStats(
+    Map<String, dynamic> stats,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
@@ -293,12 +305,10 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
           children: [
             Text(
               l10n.overallStatistics,
-              style: tokens.typography.h3.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing.md),
-            
+
             Row(
               children: [
                 Expanded(
@@ -321,9 +331,9 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                 ),
               ],
             ),
-            
+
             SizedBox(height: tokens.spacing.md),
-            
+
             Row(
               children: [
                 Expanded(
@@ -352,7 +362,11 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     );
   }
 
-  Widget _buildOverallStatsEnhanced(XPAnalytics analytics, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildOverallStatsEnhanced(
+    XPAnalytics analytics,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
@@ -361,12 +375,10 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
           children: [
             Text(
               l10n.overallStatistics,
-              style: tokens.typography.h3.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing.md),
-            
+
             // 第1行
             Row(
               children: [
@@ -390,9 +402,9 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                 ),
               ],
             ),
-            
+
             SizedBox(height: tokens.spacing.md),
-            
+
             // 第2行
             Row(
               children: [
@@ -416,9 +428,9 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                 ),
               ],
             ),
-            
+
             SizedBox(height: tokens.spacing.md),
-            
+
             // 第3行
             Row(
               children: [
@@ -448,19 +460,23 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     );
   }
 
-  Widget _buildGrowthTrendCard(XPAnalytics analytics, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildGrowthTrendCard(
+    XPAnalytics analytics,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     final trendIcon = switch (analytics.growthTrend) {
       GrowthTrend.increasing => Icons.trending_up,
       GrowthTrend.stable => Icons.trending_flat,
       GrowthTrend.decreasing => Icons.trending_down,
     };
-    
+
     final trendColor = switch (analytics.growthTrend) {
       GrowthTrend.increasing => tokens.success,
       GrowthTrend.stable => tokens.warning,
       GrowthTrend.decreasing => tokens.error,
     };
-    
+
     final trendText = switch (analytics.growthTrend) {
       GrowthTrend.increasing => '成長中',
       GrowthTrend.stable => '安定',
@@ -475,12 +491,10 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
           children: [
             Text(
               '成長トレンド',
-              style: tokens.typography.h3.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing.md),
-            
+
             Row(
               children: [
                 Container(
@@ -489,15 +503,11 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                     color: trendColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(tokens.radius.md),
                   ),
-                  child: Icon(
-                    trendIcon,
-                    color: trendColor,
-                    size: 32,
-                  ),
+                  child: Icon(trendIcon, color: trendColor, size: 32),
                 ),
-                
+
                 SizedBox(width: tokens.spacing.md),
-                
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -519,7 +529,7 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                     ],
                   ),
                 ),
-                
+
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -546,9 +556,13 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     );
   }
 
-  Widget _buildTimeAnalysis(XPAnalytics analytics, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildTimeAnalysis(
+    XPAnalytics analytics,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     final weekdays = ['月', '火', '水', '木', '金', '土', '日'];
-    
+
     return Card(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
@@ -557,12 +571,10 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
           children: [
             Text(
               '活動パターン分析',
-              style: tokens.typography.h3.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing.md),
-            
+
             Row(
               children: [
                 Expanded(
@@ -591,14 +603,19 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     );
   }
 
-  Widget _buildSourceStatsEnhanced(XPAnalytics analytics, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildSourceStatsEnhanced(
+    XPAnalytics analytics,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     if (analytics.sourceAnalysis.isEmpty) {
       return const SizedBox.shrink();
     }
-    
-    final sortedSources = analytics.sourceAnalysis.entries.toList()
-      ..sort((a, b) => b.value.totalXP.compareTo(a.value.totalXP));
-    
+
+    final sortedSources =
+        analytics.sourceAnalysis.entries.toList()
+          ..sort((a, b) => b.value.totalXP.compareTo(a.value.totalXP));
+
     return Card(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
@@ -607,17 +624,15 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
           children: [
             Text(
               'XPソース分析',
-              style: tokens.typography.h3.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing.md),
-            
+
             ...sortedSources.take(5).map((entry) {
               final source = entry.key;
               final sourceData = entry.value;
               final percentage = (sourceData.totalXP / analytics.totalXP) * 100;
-              
+
               return Padding(
                 padding: EdgeInsets.only(bottom: tokens.spacing.sm),
                 child: Column(
@@ -672,7 +687,9 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                     LinearProgressIndicator(
                       value: percentage / 100,
                       backgroundColor: tokens.border,
-                      valueColor: AlwaysStoppedAnimation(_getSourceColor(source)),
+                      valueColor: AlwaysStoppedAnimation(
+                        _getSourceColor(source),
+                      ),
                     ),
                   ],
                 ),
@@ -684,7 +701,13 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     );
   }
 
-  Widget _buildStatItem(String label, String value, IconData icon, Color color, MinqTheme tokens) {
+  Widget _buildStatItem(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+    MinqTheme tokens,
+  ) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing.sm),
       decoration: BoxDecoration(
@@ -715,7 +738,11 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     );
   }
 
-  Widget _buildXPTrendChart(String uid, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildXPTrendChart(
+    String uid,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
@@ -724,28 +751,27 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
           children: [
             Text(
               l10n.xpTrend,
-              style: tokens.typography.h3.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing.md),
-            SizedBox(
-              height: 200,
-              child: XPTrendChart(userId: uid),
-            ),
+            SizedBox(height: 200, child: XPTrendChart(userId: uid)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSourceStats(Map<String, dynamic> stats, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildSourceStats(
+    Map<String, dynamic> stats,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     final topSources = stats['topSources'] as Map<String, int>? ?? {};
-    
+
     if (topSources.isEmpty) {
       return const SizedBox.shrink();
     }
-    
+
     return Card(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
@@ -754,19 +780,18 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
           children: [
             Text(
               l10n.xpSources,
-              style: tokens.typography.h3.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing.md),
-            
+
             ...topSources.entries.take(5).map((entry) {
               final source = XPSource.values.firstWhere(
                 (s) => s.name == entry.key,
                 orElse: () => XPSource.questComplete,
               );
-              final percentage = (entry.value / (stats['totalXP'] as int)) * 100;
-              
+              final percentage =
+                  (entry.value / (stats['totalXP'] as int)) * 100;
+
               return Padding(
                 padding: EdgeInsets.only(bottom: tokens.spacing.sm),
                 child: Row(

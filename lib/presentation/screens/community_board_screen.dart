@@ -179,8 +179,9 @@ class _CommunityPostCard extends ConsumerWidget {
                 ),
                 Text(
                   _formatTimestamp(post.createdAt),
-                  style:
-                      tokens.typography.caption.copyWith(color: tokens.textMuted),
+                  style: tokens.typography.caption.copyWith(
+                    color: tokens.textMuted,
+                  ),
                 ),
               ],
             ),

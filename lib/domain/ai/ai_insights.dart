@@ -61,7 +61,8 @@ class ProgressAnalysis with _$ProgressAnalysis {
     required double weeklyCompletionRate,
     required double monthlyCompletionRate,
     required int totalHabitsCompleted,
-    required Map<String, double> categoryPerformance, // Category -> completion rate
+    required Map<String, double>
+    categoryPerformance, // Category -> completion rate
     required List<ProgressInsight> insights,
     required double overallScore, // 0.0 to 1.0
   }) = _ProgressAnalysis;
@@ -109,10 +110,4 @@ enum RecommendationType {
   motivationalBoost,
 }
 
-enum InsightType {
-  achievement,
-  improvement,
-  warning,
-  opportunity,
-  pattern,
-}
+enum InsightType { achievement, improvement, warning, opportunity, pattern }

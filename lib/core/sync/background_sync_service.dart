@@ -53,8 +53,11 @@ class BackgroundSyncService {
       _isInitialized = true;
       MinqLogger.info('Background sync service initialized');
     } catch (e, stackTrace) {
-      MinqLogger.error('Failed to initialize background sync service', 
-          error: e, stackTrace: stackTrace);
+      MinqLogger.error(
+        'Failed to initialize background sync service',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -73,8 +76,11 @@ class BackgroundSyncService {
 
       MinqLogger.info('Periodic sync task registered');
     } catch (e, stackTrace) {
-      MinqLogger.error('Failed to register periodic sync task', 
-          error: e, stackTrace: stackTrace);
+      MinqLogger.error(
+        'Failed to register periodic sync task',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -89,15 +95,16 @@ class BackgroundSyncService {
       await Workmanager().registerOneOffTask(
         _syncTaskName,
         _syncTaskName,
-        constraints: Constraints(
-          networkType: NetworkType.connected,
-        ),
+        constraints: Constraints(networkType: NetworkType.connected),
       );
 
       MinqLogger.info('One-off sync task scheduled');
     } catch (e, stackTrace) {
-      MinqLogger.error('Failed to schedule sync task', 
-          error: e, stackTrace: stackTrace);
+      MinqLogger.error(
+        'Failed to schedule sync task',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -117,7 +124,11 @@ class BackgroundSyncService {
       await _syncQueueManager.processPendingJobs();
       MinqLogger.info('Foreground sync completed');
     } catch (e, stackTrace) {
-      MinqLogger.error('Foreground sync failed', error: e, stackTrace: stackTrace);
+      MinqLogger.error(
+        'Foreground sync failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -133,18 +144,21 @@ class BackgroundSyncService {
 
     try {
       MinqLogger.info('Starting forced sync');
-      
+
       final startTime = DateTime.now();
       await _syncQueueManager.processPendingJobs();
       final duration = DateTime.now().difference(startTime);
 
       final status = await _syncQueueManager.getStatus();
-      
-      MinqLogger.info('Forced sync completed', metadata: {
-        'durationMs': duration.inMilliseconds,
-        'pendingJobs': status.pendingJobs,
-        'failedJobs': status.failedJobs,
-      });
+
+      MinqLogger.info(
+        'Forced sync completed',
+        metadata: {
+          'durationMs': duration.inMilliseconds,
+          'pendingJobs': status.pendingJobs,
+          'failedJobs': status.failedJobs,
+        },
+      );
 
       return SyncResult(
         success: true,
@@ -153,19 +167,15 @@ class BackgroundSyncService {
       );
     } catch (e, stackTrace) {
       MinqLogger.error('Forced sync failed', error: e, stackTrace: stackTrace);
-      
-      return SyncResult(
-        success: false,
-        error: e.toString(),
-        syncedItems: 0,
-      );
+
+      return SyncResult(success: false, error: e.toString(), syncedItems: 0);
     }
   }
 
   /// Get sync status
   Future<BackgroundSyncStatus> getSyncStatus() async {
     final queueStatus = await _syncQueueManager.getStatus();
-    
+
     return BackgroundSyncStatus(
       isOnline: _networkService.isOnline,
       pendingJobs: queueStatus.pendingJobs,
@@ -185,9 +195,10 @@ class BackgroundSyncService {
   /// Set last sync time
   Future<void> _setLastSyncTime(DateTime time) async {
     // This would typically write to SharedPreferences
-    MinqLogger.info('Last sync time updated', metadata: {
-      'time': time.toIso8601String(),
-    });
+    MinqLogger.info(
+      'Last sync time updated',
+      metadata: {'time': time.toIso8601String()},
+    );
   }
 
   /// Enable/disable background sync
@@ -203,8 +214,11 @@ class BackgroundSyncService {
         MinqLogger.info('Background sync disabled');
       }
     } catch (e, stackTrace) {
-      MinqLogger.error('Failed to toggle background sync', 
-          error: e, stackTrace: stackTrace);
+      MinqLogger.error(
+        'Failed to toggle background sync',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -230,15 +244,22 @@ void callbackDispatcher() {
           await _performBackgroundSync();
           break;
         default:
-          MinqLogger.warning('Unknown background task', metadata: {'task': task});
+          MinqLogger.warning(
+            'Unknown background task',
+            metadata: {'task': task},
+          );
           return false;
       }
 
       MinqLogger.info('Background task completed', metadata: {'task': task});
       return true;
     } catch (e, stackTrace) {
-      MinqLogger.error('Background task failed', 
-          error: e, stackTrace: stackTrace, metadata: {'task': task});
+      MinqLogger.error(
+        'Background task failed',
+        error: e,
+        stackTrace: stackTrace,
+        metadata: {'task': task},
+      );
       return false;
     }
   });
@@ -249,13 +270,13 @@ Future<void> _performBackgroundSync() async {
   // This would need to be implemented with proper dependency injection
   // For now, just log the operation
   MinqLogger.info('Performing background sync');
-  
+
   // In a real implementation, you would:
   // 1. Initialize necessary services
   // 2. Check network connectivity
   // 3. Process pending sync jobs
   // 4. Update last sync time
-  
+
   await Future.delayed(const Duration(seconds: 2)); // Simulate work
   MinqLogger.info('Background sync completed');
 }
@@ -290,7 +311,7 @@ class BackgroundSyncStatus {
   });
 
   bool get hasIssues => failedJobs > 0 || (!isOnline && pendingJobs > 0);
-  
+
   String get statusText {
     if (!isOnline) return 'Offline';
     if (isProcessing) return 'Syncing...';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:minq/domain/notification/notification_settings.dart';
 import 'package:minq/l10n/l10n.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// スマート通知設定カード
 class SmartSettingsCard extends StatelessWidget {
@@ -34,10 +35,10 @@ class SmartSettingsCard extends StatelessWidget {
               },
               contentPadding: EdgeInsets.zero,
             ),
-            
+
             if (settings.enabled) ...[
               const Divider(),
-              
+
               // 行動パターン学習
               CheckboxListTile(
                 title: Text(l10n.behaviorLearning),
@@ -45,13 +46,15 @@ class SmartSettingsCard extends StatelessWidget {
                 value: settings.behaviorLearning,
                 onChanged: (value) {
                   if (value != null) {
-                    onSettingsChanged(settings.copyWith(behaviorLearning: value));
+                    onSettingsChanged(
+                      settings.copyWith(behaviorLearning: value),
+                    );
                   }
                 },
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               // 適応的頻度調整
               CheckboxListTile(
                 title: Text(l10n.adaptiveFrequency),
@@ -59,13 +62,15 @@ class SmartSettingsCard extends StatelessWidget {
                 value: settings.adaptiveFrequency,
                 onChanged: (value) {
                   if (value != null) {
-                    onSettingsChanged(settings.copyWith(adaptiveFrequency: value));
+                    onSettingsChanged(
+                      settings.copyWith(adaptiveFrequency: value),
+                    );
                   }
                 },
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               // コンテキスト認識
               CheckboxListTile(
                 title: Text(l10n.contextAware),
@@ -79,7 +84,7 @@ class SmartSettingsCard extends StatelessWidget {
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               // エンゲージメント最適化
               CheckboxListTile(
                 title: Text(l10n.engagementOptimization),
@@ -87,22 +92,21 @@ class SmartSettingsCard extends StatelessWidget {
                 value: settings.engagementOptimization,
                 onChanged: (value) {
                   if (value != null) {
-                    onSettingsChanged(settings.copyWith(engagementOptimization: value));
+                    onSettingsChanged(
+                      settings.copyWith(engagementOptimization: value),
+                    );
                   }
                 },
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // 信頼度閾値
-              Text(
-                l10n.confidenceThreshold,
-                style: theme.textTheme.titleSmall,
-              ),
+              Text(l10n.confidenceThreshold, style: theme.textTheme.titleSmall),
               const SizedBox(height: 8),
-              
+
               Row(
                 children: [
                   Expanded(
@@ -113,7 +117,9 @@ class SmartSettingsCard extends StatelessWidget {
                       divisions: 10,
                       label: '${(settings.confidenceThreshold * 100).round()}%',
                       onChanged: (value) {
-                        onSettingsChanged(settings.copyWith(confidenceThreshold: value));
+                        onSettingsChanged(
+                          settings.copyWith(confidenceThreshold: value),
+                        );
                       },
                     ),
                   ),
@@ -127,23 +133,20 @@ class SmartSettingsCard extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               Text(
                 l10n.confidenceThresholdDescription,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // 学習期間
-              Text(
-                l10n.learningPeriod,
-                style: theme.textTheme.titleSmall,
-              ),
+              Text(l10n.learningPeriod, style: theme.textTheme.titleSmall),
               const SizedBox(height: 8),
-              
+
               Row(
                 children: [
                   Expanded(
@@ -154,7 +157,9 @@ class SmartSettingsCard extends StatelessWidget {
                       divisions: 29,
                       label: l10n.daysCount(settings.learningPeriodDays),
                       onChanged: (value) {
-                        onSettingsChanged(settings.copyWith(learningPeriodDays: value.round()));
+                        onSettingsChanged(
+                          settings.copyWith(learningPeriodDays: value.round()),
+                        );
                       },
                     ),
                   ),
@@ -168,16 +173,16 @@ class SmartSettingsCard extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               Text(
                 l10n.learningPeriodDescription,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // 学習データ管理
               Row(
                 children: [
@@ -208,47 +213,48 @@ class SmartSettingsCard extends StatelessWidget {
   void _showLearningDataDialog(BuildContext context, AppLocalizations l10n) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.learningDataTitle),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(l10n.learningDataDescription),
-              const SizedBox(height: 16),
-              
-              // 学習統計の表示（実際の実装では実データを表示）
-              _buildLearningStatItem(
-                l10n.totalNotificationsSent,
-                '127',
-                Icons.send,
+      builder:
+          (context) => AlertDialog(
+            title: Text(l10n.learningDataTitle),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(l10n.learningDataDescription),
+                  const SizedBox(height: 16),
+
+                  // 学習統計の表示（実際の実装では実データを表示）
+                  _buildLearningStatItem(
+                    l10n.totalNotificationsSent,
+                    '127',
+                    Icons.send,
+                  ),
+                  _buildLearningStatItem(
+                    l10n.totalNotificationsOpened,
+                    '89',
+                    Icons.open_in_new,
+                  ),
+                  _buildLearningStatItem(
+                    l10n.averageOpenRate,
+                    '70%',
+                    Icons.trending_up,
+                  ),
+                  _buildLearningStatItem(
+                    l10n.optimalTimeSlots,
+                    '9:00, 13:00, 19:00',
+                    Icons.schedule,
+                  ),
+                ],
               ),
-              _buildLearningStatItem(
-                l10n.totalNotificationsOpened,
-                '89',
-                Icons.open_in_new,
-              ),
-              _buildLearningStatItem(
-                l10n.averageOpenRate,
-                '70%',
-                Icons.trending_up,
-              ),
-              _buildLearningStatItem(
-                l10n.optimalTimeSlots,
-                '9:00, 13:00, 19:00',
-                Icons.schedule,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(l10n.close),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.close),
-          ),
-        ],
-      ),
     );
   }
 
@@ -260,10 +266,7 @@ class SmartSettingsCard extends StatelessWidget {
           Icon(icon, size: 20),
           const SizedBox(width: 8),
           Expanded(child: Text(label)),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -272,26 +275,27 @@ class SmartSettingsCard extends StatelessWidget {
   void _showResetLearningDialog(BuildContext context, AppLocalizations l10n) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.resetLearningData),
-        content: Text(l10n.resetLearningDataConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.cancel),
+      builder:
+          (context) => AlertDialog(
+            title: Text(l10n.resetLearningData),
+            content: Text(l10n.resetLearningDataConfirmation),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // 実際の実装では学習データをリセット
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.learningDataReset)),
+                  );
+                },
+                child: Text(l10n.reset),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // 実際の実装では学習データをリセット
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.learningDataReset)),
-              );
-            },
-            child: Text(l10n.reset),
-          ),
-        ],
-      ),
     );
   }
 }

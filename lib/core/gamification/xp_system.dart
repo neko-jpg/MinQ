@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
@@ -20,7 +19,7 @@ final xpSystemProvider = Provider<XPSystem>((ref) {
 /// XP獲得、レベル計算、レベルアップ処理を管理
 class XPSystem {
   final Isar _isar;
-  
+
   // レベル定義（要件34に基づく）
   static const List<LevelInfo> _levelDefinitions = [
     LevelInfo(
@@ -136,7 +135,8 @@ class XPSystem {
   }) async {
     try {
       // 現在のユーザー情報を取得
-      final user = await _isar.collection<User>().where().uidEqualTo(userId).findFirst();
+      final user =
+          await _isar.collection<User>().where().uidEqualTo(userId).findFirst();
       if (user == null) {
         throw Exception('User not found: $userId');
       }
@@ -146,13 +146,13 @@ class XPSystem {
 
       // 基本XPを計算
       final baseXP = _baseXPRewards[source] ?? 10;
-      
+
       // マルチプライヤーを計算
       final multiplier = _calculateMultiplier(source, metadata, user);
-      
+
       // ボーナスXPを計算
       final bonusXP = _calculateBonusXP(source, metadata, user);
-      
+
       // 総XPを計算
       final totalXP = (baseXP * multiplier).round() + bonusXP;
 
@@ -177,7 +177,7 @@ class XPSystem {
       await _isar.writeTxn(() async {
         // XPトランザクションを保存
         await _isar.collection<XPTransaction>().put(transaction);
-        
+
         // ユーザー情報を更新
         user.totalPoints = newTotalXP;
         user.currentLevel = newLevel;
@@ -187,7 +187,9 @@ class XPSystem {
       // レベルアップ報酬を処理
       final newRewards = <String>[];
       if (leveledUp) {
-        newRewards.addAll(await _processLevelUpRewards(userId, newLevel, context));
+        newRewards.addAll(
+          await _processLevelUpRewards(userId, newLevel, context),
+        );
       }
 
       // フィードバックを提供
@@ -195,15 +197,15 @@ class XPSystem {
         if (hapticFeedback) {
           await HapticsSystem.success();
         }
-        
+
         if (playSound) {
           await SoundEffectsService.instance.play(SoundType.coin);
         }
-        
+
         if (showAnimation) {
           XPGainOverlay.show(context, totalXP, reason);
         }
-        
+
         if (leveledUp) {
           await _showLevelUpCelebration(context, newLevel);
         }
@@ -221,7 +223,6 @@ class XPSystem {
 
       MinqLogger.info('XP awarded: $totalXP to user $userId (${source.name})');
       return result;
-
     } catch (e) {
       MinqLogger.error('Failed to award XP', exception: e);
       rethrow;
@@ -240,7 +241,11 @@ class XPSystem {
   }
 
   /// マルチプライヤーを計算する
-  double _calculateMultiplier(XPSource source, Map<String, dynamic>? metadata, User user) {
+  double _calculateMultiplier(
+    XPSource source,
+    Map<String, dynamic>? metadata,
+    User user,
+  ) {
     double multiplier = 1.0;
 
     // ストリークボーナス（要件34）
@@ -274,7 +279,11 @@ class XPSystem {
   }
 
   /// ボーナスXPを計算する
-  int _calculateBonusXP(XPSource source, Map<String, dynamic>? metadata, User user) {
+  int _calculateBonusXP(
+    XPSource source,
+    Map<String, dynamic>? metadata,
+    User user,
+  ) {
     int bonus = 0;
 
     // パーフェクト完了ボーナス
@@ -294,9 +303,11 @@ class XPSystem {
 
     // 時間帯ボーナス
     final hour = DateTime.now().hour;
-    if (hour >= 5 && hour < 8) { // 早朝ボーナス
+    if (hour >= 5 && hour < 8) {
+      // 早朝ボーナス
       bonus += 5;
-    } else if (hour >= 22 || hour < 1) { // 夜更かしボーナス
+    } else if (hour >= 22 || hour < 1) {
+      // 夜更かしボーナス
       bonus += 3;
     }
 
@@ -315,24 +326,27 @@ class XPSystem {
 
   /// ユーザーのレベル進捗情報を取得する
   Future<UserLevelProgress> getUserLevelProgress(String userId) async {
-    final user = await _isar.collection<User>().where().uidEqualTo(userId).findFirst();
+    final user =
+        await _isar.collection<User>().where().uidEqualTo(userId).findFirst();
     if (user == null) {
       throw Exception('User not found: $userId');
     }
 
     final currentLevelInfo = _levelDefinitions[user.currentLevel - 1];
-    final nextLevelInfo = user.currentLevel < _levelDefinitions.length 
-        ? _levelDefinitions[user.currentLevel] 
-        : null;
+    final nextLevelInfo =
+        user.currentLevel < _levelDefinitions.length
+            ? _levelDefinitions[user.currentLevel]
+            : null;
 
-    final xpToNextLevel = nextLevelInfo != null 
-        ? nextLevelInfo.minXP - user.totalPoints 
-        : 0;
+    final xpToNextLevel =
+        nextLevelInfo != null ? nextLevelInfo.minXP - user.totalPoints : 0;
 
-    final progressToNextLevel = nextLevelInfo != null
-        ? ((user.totalPoints - currentLevelInfo.minXP) / 
-           (nextLevelInfo.minXP - currentLevelInfo.minXP)).clamp(0.0, 1.0)
-        : 1.0;
+    final progressToNextLevel =
+        nextLevelInfo != null
+            ? ((user.totalPoints - currentLevelInfo.minXP) /
+                    (nextLevelInfo.minXP - currentLevelInfo.minXP))
+                .clamp(0.0, 1.0)
+            : 1.0;
 
     return UserLevelProgress(
       currentLevel: user.currentLevel,
@@ -353,10 +367,12 @@ class XPSystem {
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    var query = _isar.collection<XPTransaction>()
-        .where()
-        .userIdEqualTo(userId)
-        .sortByCreatedAtDesc();
+    var query =
+        _isar
+            .collection<XPTransaction>()
+            .where()
+            .userIdEqualTo(userId)
+            .sortByCreatedAtDesc();
 
     if (startDate != null || endDate != null) {
       query = query.filter();
@@ -373,10 +389,12 @@ class XPSystem {
 
   /// XP統計を取得する（要件34）
   Future<Map<String, dynamic>> getXPStatistics(String userId) async {
-    final transactions = await _isar.collection<XPTransaction>()
-        .where()
-        .userIdEqualTo(userId)
-        .findAll();
+    final transactions =
+        await _isar
+            .collection<XPTransaction>()
+            .where()
+            .userIdEqualTo(userId)
+            .findAll();
 
     if (transactions.isEmpty) {
       return {
@@ -393,13 +411,11 @@ class XPSystem {
     final weekAgo = now.subtract(const Duration(days: 7));
     final monthAgo = now.subtract(const Duration(days: 30));
 
-    final weeklyTransactions = transactions
-        .where((t) => t.createdAt.isAfter(weekAgo))
-        .toList();
-    
-    final monthlyTransactions = transactions
-        .where((t) => t.createdAt.isAfter(monthAgo))
-        .toList();
+    final weeklyTransactions =
+        transactions.where((t) => t.createdAt.isAfter(weekAgo)).toList();
+
+    final monthlyTransactions =
+        transactions.where((t) => t.createdAt.isAfter(monthAgo)).toList();
 
     // ソース別XP集計
     final sourceXP = <String, int>{};
@@ -410,13 +426,13 @@ class XPSystem {
 
     // トップソースを取得
     final topSources = Map.fromEntries(
-      sourceXP.entries.toList()
-        ..sort((a, b) => b.value.compareTo(a.value))
+      sourceXP.entries.toList()..sort((a, b) => b.value.compareTo(a.value)),
     );
 
     // 平均XP/日を計算
     final firstTransaction = transactions.last;
-    final daysSinceFirst = now.difference(firstTransaction.createdAt).inDays + 1;
+    final daysSinceFirst =
+        now.difference(firstTransaction.createdAt).inDays + 1;
     final totalXP = transactions.fold<int>(0, (sum, t) => sum + t.xpAmount);
     final averageXPPerDay = totalXP / daysSinceFirst;
 
@@ -426,7 +442,10 @@ class XPSystem {
       'averageXPPerDay': averageXPPerDay,
       'topSources': topSources,
       'weeklyXP': weeklyTransactions.fold<int>(0, (sum, t) => sum + t.xpAmount),
-      'monthlyXP': monthlyTransactions.fold<int>(0, (sum, t) => sum + t.xpAmount),
+      'monthlyXP': monthlyTransactions.fold<int>(
+        0,
+        (sum, t) => sum + t.xpAmount,
+      ),
     };
   }
 
@@ -440,13 +459,15 @@ class XPSystem {
 
   /// 全レベル定義を取得する
   List<LevelInfo> getAllLevels() => _levelDefinitions;
-  
+
   /// 詳細なXP分析を取得する（要件34）
   Future<XPAnalytics> getDetailedXPAnalytics(String userId) async {
-    final transactions = await _isar.collection<XPTransaction>()
-        .where()
-        .userIdEqualTo(userId)
-        .findAll();
+    final transactions =
+        await _isar
+            .collection<XPTransaction>()
+            .where()
+            .userIdEqualTo(userId)
+            .findAll();
 
     if (transactions.isEmpty) {
       return XPAnalytics.empty();
@@ -458,54 +479,63 @@ class XPSystem {
     final monthAgo = today.subtract(const Duration(days: 30));
 
     // 期間別フィルタリング
-    final todayTransactions = transactions
-        .where((t) => _isSameDay(t.createdAt, today))
-        .toList();
-    
-    final weeklyTransactions = transactions
-        .where((t) => t.createdAt.isAfter(weekAgo))
-        .toList();
-    
-    final monthlyTransactions = transactions
-        .where((t) => t.createdAt.isAfter(monthAgo))
-        .toList();
+    final todayTransactions =
+        transactions.where((t) => _isSameDay(t.createdAt, today)).toList();
+
+    final weeklyTransactions =
+        transactions.where((t) => t.createdAt.isAfter(weekAgo)).toList();
+
+    final monthlyTransactions =
+        transactions.where((t) => t.createdAt.isAfter(monthAgo)).toList();
 
     // 時間帯別分析
     final hourlyDistribution = <int, int>{};
     for (final transaction in transactions) {
       final hour = transaction.createdAt.hour;
-      hourlyDistribution[hour] = (hourlyDistribution[hour] ?? 0) + transaction.xpAmount;
+      hourlyDistribution[hour] =
+          (hourlyDistribution[hour] ?? 0) + transaction.xpAmount;
     }
 
     // 曜日別分析
     final weekdayDistribution = <int, int>{};
     for (final transaction in transactions) {
       final weekday = transaction.createdAt.weekday;
-      weekdayDistribution[weekday] = (weekdayDistribution[weekday] ?? 0) + transaction.xpAmount;
+      weekdayDistribution[weekday] =
+          (weekdayDistribution[weekday] ?? 0) + transaction.xpAmount;
     }
 
     // ソース別分析
     final sourceAnalysis = <XPSource, SourceAnalytics>{};
     for (final source in XPSource.values) {
-      final sourceTransactions = transactions.where((t) => t.source == source).toList();
+      final sourceTransactions =
+          transactions.where((t) => t.source == source).toList();
       if (sourceTransactions.isNotEmpty) {
-        final totalXP = sourceTransactions.fold<int>(0, (sum, t) => sum + t.xpAmount);
+        final totalXP = sourceTransactions.fold<int>(
+          0,
+          (sum, t) => sum + t.xpAmount,
+        );
         final avgXP = totalXP / sourceTransactions.length;
         sourceAnalysis[source] = SourceAnalytics(
           totalXP: totalXP,
           transactionCount: sourceTransactions.length,
           averageXP: avgXP,
-          lastActivity: sourceTransactions.map((t) => t.createdAt).reduce((a, b) => a.isAfter(b) ? a : b),
+          lastActivity: sourceTransactions
+              .map((t) => t.createdAt)
+              .reduce((a, b) => a.isAfter(b) ? a : b),
         );
       }
     }
 
     // ストリーク分析
-    final streakBonuses = transactions
-        .where((t) => t.streakBonus != null && t.streakBonus! > 0)
-        .toList();
-    
-    final totalStreakBonus = streakBonuses.fold<int>(0, (sum, t) => sum + (t.streakBonus ?? 0));
+    final streakBonuses =
+        transactions
+            .where((t) => t.streakBonus != null && t.streakBonus! > 0)
+            .toList();
+
+    final totalStreakBonus = streakBonuses.fold<int>(
+      0,
+      (sum, t) => sum + (t.streakBonus ?? 0),
+    );
 
     // 成長トレンド分析
     final growthTrend = _calculateGrowthTrend(transactions);
@@ -517,7 +547,9 @@ class XPSystem {
       weeklyXP: weeklyTransactions.fold<int>(0, (sum, t) => sum + t.xpAmount),
       monthlyXP: monthlyTransactions.fold<int>(0, (sum, t) => sum + t.xpAmount),
       averageXPPerDay: _calculateAverageXPPerDay(transactions),
-      averageXPPerTransaction: transactions.fold<int>(0, (sum, t) => sum + t.xpAmount) / transactions.length,
+      averageXPPerTransaction:
+          transactions.fold<int>(0, (sum, t) => sum + t.xpAmount) /
+          transactions.length,
       hourlyDistribution: hourlyDistribution,
       weekdayDistribution: weekdayDistribution,
       sourceAnalysis: sourceAnalysis,
@@ -527,47 +559,58 @@ class XPSystem {
       mostActiveHour: _getMostActiveHour(hourlyDistribution),
       mostActiveWeekday: _getMostActiveWeekday(weekdayDistribution),
       topSource: _getTopSource(sourceAnalysis),
-      firstActivity: transactions.map((t) => t.createdAt).reduce((a, b) => a.isBefore(b) ? a : b),
-      lastActivity: transactions.map((t) => t.createdAt).reduce((a, b) => a.isAfter(b) ? a : b),
+      firstActivity: transactions
+          .map((t) => t.createdAt)
+          .reduce((a, b) => a.isBefore(b) ? a : b),
+      lastActivity: transactions
+          .map((t) => t.createdAt)
+          .reduce((a, b) => a.isAfter(b) ? a : b),
     );
   }
 
   bool _isSameDay(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&
-           date1.month == date2.month &&
-           date1.day == date2.day;
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   double _calculateAverageXPPerDay(List<XPTransaction> transactions) {
     if (transactions.isEmpty) return 0.0;
-    
-    final firstTransaction = transactions.map((t) => t.createdAt).reduce((a, b) => a.isBefore(b) ? a : b);
-    final daysSinceFirst = DateTime.now().difference(firstTransaction).inDays + 1;
+
+    final firstTransaction = transactions
+        .map((t) => t.createdAt)
+        .reduce((a, b) => a.isBefore(b) ? a : b);
+    final daysSinceFirst =
+        DateTime.now().difference(firstTransaction).inDays + 1;
     final totalXP = transactions.fold<int>(0, (sum, t) => sum + t.xpAmount);
-    
+
     return totalXP / daysSinceFirst;
   }
 
   GrowthTrend _calculateGrowthTrend(List<XPTransaction> transactions) {
     if (transactions.length < 2) return GrowthTrend.stable;
-    
+
     // 最近7日と前の7日を比較
     final now = DateTime.now();
     final recent7Days = now.subtract(const Duration(days: 7));
     final previous7Days = now.subtract(const Duration(days: 14));
-    
+
     final recentXP = transactions
         .where((t) => t.createdAt.isAfter(recent7Days))
         .fold<int>(0, (sum, t) => sum + t.xpAmount);
-    
+
     final previousXP = transactions
-        .where((t) => t.createdAt.isAfter(previous7Days) && t.createdAt.isBefore(recent7Days))
+        .where(
+          (t) =>
+              t.createdAt.isAfter(previous7Days) &&
+              t.createdAt.isBefore(recent7Days),
+        )
         .fold<int>(0, (sum, t) => sum + t.xpAmount);
-    
+
     if (previousXP == 0) return GrowthTrend.stable;
-    
+
     final growthRate = (recentXP - previousXP) / previousXP;
-    
+
     if (growthRate > 0.2) return GrowthTrend.increasing;
     if (growthRate < -0.2) return GrowthTrend.decreasing;
     return GrowthTrend.stable;
@@ -595,17 +638,21 @@ class XPSystem {
   }
 
   /// レベルアップ報酬を処理する
-  Future<List<String>> _processLevelUpRewards(String userId, int newLevel, BuildContext? context) async {
+  Future<List<String>> _processLevelUpRewards(
+    String userId,
+    int newLevel,
+    BuildContext? context,
+  ) async {
     final levelInfo = getLevelInfo(newLevel);
     final rewards = <String>[];
-    
+
     try {
       // 基本報酬を付与
       rewards.addAll(levelInfo.rewards);
-      
+
       // 機能解放を処理
       await _unlockFeatures(userId, levelInfo.unlockedFeatures);
-      
+
       // レベル別特別報酬
       switch (newLevel) {
         case 2:
@@ -649,37 +696,39 @@ class XPSystem {
           rewards.add('究極のマスター称号獲得');
           break;
       }
-      
+
       // レベルアップ記録を保存
       await _recordLevelUpAchievement(userId, newLevel);
-      
-      MinqLogger.info('Level up rewards processed for user $userId, level $newLevel: $rewards');
+
+      MinqLogger.info(
+        'Level up rewards processed for user $userId, level $newLevel: $rewards',
+      );
       return rewards;
-      
     } catch (e) {
       MinqLogger.error('Failed to process level up rewards', exception: e);
       return levelInfo.rewards; // フォールバック
     }
   }
-  
+
   /// 機能を解放する
   Future<void> _unlockFeatures(String userId, List<String> features) async {
     if (features.isEmpty) return;
-    
+
     try {
-      final user = await _isar.collection<User>().where().uidEqualTo(userId).findFirst();
+      final user =
+          await _isar.collection<User>().where().uidEqualTo(userId).findFirst();
       if (user == null) return;
-      
+
       // ユーザーの解放済み機能リストを更新
       // 注意: User モデルに unlockedFeatures フィールドが必要
       // 現在のUser モデルには存在しないため、将来の拡張として記録
-      
+
       MinqLogger.info('Features unlocked for user $userId: $features');
     } catch (e) {
       MinqLogger.error('Failed to unlock features', exception: e);
     }
   }
-  
+
   /// ボーナスXPを付与する
   Future<void> _grantBonusXP(String userId, int bonusXP, String reason) async {
     try {
@@ -696,9 +745,13 @@ class XPSystem {
       MinqLogger.error('Failed to grant bonus XP', exception: e);
     }
   }
-  
+
   /// バッジを付与する
-  Future<void> _grantBadge(String userId, String badgeId, String badgeName) async {
+  Future<void> _grantBadge(
+    String userId,
+    String badgeId,
+    String badgeName,
+  ) async {
     try {
       // バッジシステムとの連携
       // 注意: バッジシステムが実装されている場合のみ動作
@@ -707,9 +760,13 @@ class XPSystem {
       MinqLogger.error('Failed to grant badge', exception: e);
     }
   }
-  
+
   /// 称号を付与する
-  Future<void> _grantTitle(String userId, String titleId, String titleName) async {
+  Future<void> _grantTitle(
+    String userId,
+    String titleId,
+    String titleName,
+  ) async {
     try {
       // 称号システムとの連携
       // 注意: 称号システムが実装されている場合のみ動作
@@ -718,7 +775,7 @@ class XPSystem {
       MinqLogger.error('Failed to grant title', exception: e);
     }
   }
-  
+
   /// レベルアップ実績を記録する
   Future<void> _recordLevelUpAchievement(String userId, int level) async {
     try {
@@ -729,31 +786,35 @@ class XPSystem {
         reason: 'レベル$level到達',
         source: XPSource.specialEvent,
         createdAt: DateTime.now(),
-        metadata: {
-          'achievement_type': 'level_up',
-          'level': level,
-        },
+        metadata: {'achievement_type': 'level_up', 'level': level},
       );
-      
+
       await _isar.writeTxn(() async {
         await _isar.collection<XPTransaction>().put(achievement);
       });
-      
     } catch (e) {
       MinqLogger.error('Failed to record level up achievement', exception: e);
     }
   }
 
   /// レベルアップ祝福を表示する
-  Future<void> _showLevelUpCelebration(BuildContext context, int newLevel) async {
+  Future<void> _showLevelUpCelebration(
+    BuildContext context,
+    int newLevel,
+  ) async {
     if (!context.mounted) return;
-    
+
     await HapticsSystem.levelUp();
     await SoundEffectsService.instance.play(SoundType.levelUp);
-    
+
     final levelInfo = getLevelInfo(newLevel);
-    
+
     // レベルアップオーバーレイを表示（報酬情報も含める）
-    LevelUpOverlay.show(context, newLevel, levelInfo.name, rewards: levelInfo.rewards);
+    LevelUpOverlay.show(
+      context,
+      newLevel,
+      levelInfo.name,
+      rewards: levelInfo.rewards,
+    );
   }
 }

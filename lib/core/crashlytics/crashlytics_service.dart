@@ -8,7 +8,7 @@ class CrashlyticsService {
   final FirebaseCrashlytics _crashlytics;
 
   CrashlyticsService({FirebaseCrashlytics? crashlytics})
-      : _crashlytics = crashlytics ?? FirebaseCrashlytics.instance;
+    : _crashlytics = crashlytics ?? FirebaseCrashlytics.instance;
 
   /// 初期化
   Future<void> initialize() async {
@@ -50,12 +50,7 @@ class CrashlyticsService {
     StackTrace? stack, {
     String? reason,
   }) async {
-    await recordError(
-      exception,
-      stack,
-      reason: reason,
-      fatal: false,
-    );
+    await recordError(exception, stack, reason: reason, fatal: false);
   }
 
   /// カスタムログを記録
@@ -74,7 +69,10 @@ class CrashlyticsService {
   }
 
   /// パンくずを追加
-  Future<void> addBreadcrumb(String message, {Map<String, dynamic>? data}) async {
+  Future<void> addBreadcrumb(
+    String message, {
+    Map<String, dynamic>? data,
+  }) async {
     final breadcrumb = StringBuffer(message);
     if (data != null) {
       breadcrumb.write(' - ${data.toString()}');
@@ -123,7 +121,10 @@ class CrashlyticsWrapper {
   }
 
   /// パンくずを追加
-  static Future<void> addBreadcrumb(String message, {Map<String, dynamic>? data}) async {
+  static Future<void> addBreadcrumb(
+    String message, {
+    Map<String, dynamic>? data,
+  }) async {
     await _service.addBreadcrumb(message, data: data);
   }
 }

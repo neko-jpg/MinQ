@@ -16,7 +16,7 @@ class ConflictResolutionService {
     Map<String, dynamic> serverData,
   ) async {
     final serverUpdatedAt = DateTime.parse(serverData['updatedAt'] as String);
-    
+
     // Check if there's a conflict
     if (localQuest.updatedAt.isAfter(serverUpdatedAt)) {
       // Local is newer - use local data
@@ -36,7 +36,7 @@ class ConflictResolutionService {
       // Same timestamp - check for actual differences
       final localData = _questToMap(localQuest);
       final differences = _findDifferences(localData, serverData);
-      
+
       if (differences.isEmpty) {
         // No actual differences
         return ConflictResolution(
@@ -46,7 +46,11 @@ class ConflictResolutionService {
         );
       } else {
         // Attempt automatic merge
-        final mergedData = _attemptAutoMerge(localData, serverData, differences);
+        final mergedData = _attemptAutoMerge(
+          localData,
+          serverData,
+          differences,
+        );
         if (mergedData != null) {
           return ConflictResolution(
             resolution: ConflictResolutionType.autoMerged,
@@ -75,7 +79,7 @@ class ConflictResolutionService {
     Map<String, dynamic> serverData,
   ) async {
     final serverUpdatedAt = DateTime.parse(serverData['updatedAt'] as String);
-    
+
     // Check if there's a conflict
     if (localUser.updatedAt.isAfter(serverUpdatedAt)) {
       return ConflictResolution(
@@ -93,7 +97,7 @@ class ConflictResolutionService {
       // Same timestamp - check for differences
       final localData = _userToMap(localUser);
       final differences = _findDifferences(localData, serverData);
-      
+
       if (differences.isEmpty) {
         return ConflictResolution(
           resolution: ConflictResolutionType.noConflict,
@@ -140,12 +144,15 @@ class ConflictResolutionService {
         break;
     }
 
-    MinqLogger.info('Conflict resolution applied', metadata: {
-      'entityType': entityType,
-      'entityId': entityId,
-      'resolution': resolution.resolution.name,
-      'reason': resolution.reason,
-    });
+    MinqLogger.info(
+      'Conflict resolution applied',
+      metadata: {
+        'entityType': entityType,
+        'entityId': entityId,
+        'resolution': resolution.resolution.name,
+        'reason': resolution.reason,
+      },
+    );
   }
 
   /// Apply quest conflict resolution
@@ -153,15 +160,13 @@ class ConflictResolutionService {
     String questId,
     ConflictResolution resolution,
   ) async {
-    final quest = await _isar.localQuests
-        .filter()
-        .questIdEqualTo(questId)
-        .findFirst();
+    final quest =
+        await _isar.localQuests.filter().questIdEqualTo(questId).findFirst();
 
     if (quest == null) return;
 
     final data = resolution.resolvedData!;
-    
+
     await _isar.writeTxn(() async {
       quest.title = data['title'] as String;
       quest.category = data['category'] as String;
@@ -175,16 +180,17 @@ class ConflictResolutionService {
       quest.xpReward = data['xpReward'] as int? ?? 10;
       quest.tags = List<String>.from(data['tags'] as List? ?? []);
       quest.priority = data['priority'] as int? ?? 0;
-      quest.dueDate = data['dueDate'] != null 
-          ? DateTime.parse(data['dueDate'] as String) 
-          : null;
-      
+      quest.dueDate =
+          data['dueDate'] != null
+              ? DateTime.parse(data['dueDate'] as String)
+              : null;
+
       // Clear conflict state
       quest.syncStatus = SyncStatus.synced;
       quest.needsSync = false;
       quest.conflictData = null;
       quest.serverUpdatedAt = null;
-      
+
       await _isar.localQuests.put(quest);
     });
   }
@@ -194,28 +200,28 @@ class ConflictResolutionService {
     String uid,
     ConflictResolution resolution,
   ) async {
-    final user = await _isar.localUsers
-        .filter()
-        .uidEqualTo(uid)
-        .findFirst();
+    final user = await _isar.localUsers.filter().uidEqualTo(uid).findFirst();
 
     if (user == null) return;
 
     final data = resolution.resolvedData!;
-    
+
     await _isar.writeTxn(() async {
       user.displayName = data['displayName'] as String;
       user.handle = data['handle'] as String?;
       user.bio = data['bio'] as String;
       user.avatarSeed = data['avatarSeed'] as String;
       user.focusTags = List<String>.from(data['focusTags'] as List);
-      user.notificationTimes = List<String>.from(data['notificationTimes'] as List);
+      user.notificationTimes = List<String>.from(
+        data['notificationTimes'] as List,
+      );
       user.privacy = data['privacy'] as String;
       user.longestStreak = data['longestStreak'] as int;
       user.currentStreak = data['currentStreak'] as int;
-      user.longestStreakReachedAt = data['longestStreakReachedAt'] != null
-          ? DateTime.parse(data['longestStreakReachedAt'] as String)
-          : null;
+      user.longestStreakReachedAt =
+          data['longestStreakReachedAt'] != null
+              ? DateTime.parse(data['longestStreakReachedAt'] as String)
+              : null;
       user.pairId = data['pairId'] as String?;
       user.onboardingCompleted = data['onboardingCompleted'] as bool;
       user.onboardingLevel = data['onboardingLevel'] as int?;
@@ -225,13 +231,13 @@ class ConflictResolutionService {
       user.weeklyXP = data['weeklyXP'] as int? ?? 0;
       user.currentLeague = data['currentLeague'] as String? ?? 'bronze';
       user.updatedAt = DateTime.parse(data['updatedAt'] as String);
-      
+
       // Clear conflict state
       user.syncStatus = SyncStatus.synced;
       user.needsSync = false;
       user.conflictData = null;
       user.serverUpdatedAt = null;
-      
+
       await _isar.localUsers.put(user);
     });
   }
@@ -241,15 +247,16 @@ class ConflictResolutionService {
     String challengeId,
     ConflictResolution resolution,
   ) async {
-    final challenge = await _isar.localChallenges
-        .filter()
-        .challengeIdEqualTo(challengeId)
-        .findFirst();
+    final challenge =
+        await _isar.localChallenges
+            .filter()
+            .challengeIdEqualTo(challengeId)
+            .findFirst();
 
     if (challenge == null) return;
 
     final data = resolution.resolvedData!;
-    
+
     await _isar.writeTxn(() async {
       challenge.title = data['title'] as String;
       challenge.description = data['description'] as String;
@@ -261,13 +268,13 @@ class ConflictResolutionService {
       challenge.xpReward = data['xpReward'] as int;
       challenge.participants = List<String>.from(data['participants'] as List);
       challenge.updatedAt = DateTime.parse(data['updatedAt'] as String);
-      
+
       // Clear conflict state
       challenge.syncStatus = SyncStatus.synced;
       challenge.needsSync = false;
       challenge.conflictData = null;
       challenge.serverUpdatedAt = null;
-      
+
       await _isar.localChallenges.put(challenge);
     });
   }
@@ -277,15 +284,13 @@ class ConflictResolutionService {
     String logId,
     ConflictResolution resolution,
   ) async {
-    final questLog = await _isar.localQuestLogs
-        .filter()
-        .logIdEqualTo(logId)
-        .findFirst();
+    final questLog =
+        await _isar.localQuestLogs.filter().logIdEqualTo(logId).findFirst();
 
     if (questLog == null) return;
 
     final data = resolution.resolvedData!;
-    
+
     await _isar.writeTxn(() async {
       questLog.uid = data['uid'] as String;
       questLog.questId = data['questId'] as String;
@@ -294,13 +299,13 @@ class ConflictResolutionService {
       questLog.proofValue = data['proofValue'] as String?;
       questLog.xpEarned = data['xpEarned'] as int;
       questLog.updatedAt = DateTime.parse(data['updatedAt'] as String);
-      
+
       // Clear conflict state
       questLog.syncStatus = SyncStatus.synced;
       questLog.needsSync = false;
       questLog.conflictData = null;
       questLog.serverUpdatedAt = null;
-      
+
       await _isar.localQuestLogs.put(questLog);
     });
   }
@@ -320,10 +325,11 @@ class ConflictResolutionService {
 
     switch (entityType) {
       case 'quest':
-        final quest = await _isar.localQuests
-            .filter()
-            .questIdEqualTo(entityId)
-            .findFirst();
+        final quest =
+            await _isar.localQuests
+                .filter()
+                .questIdEqualTo(entityId)
+                .findFirst();
         if (quest != null) {
           await _isar.writeTxn(() async {
             quest.syncStatus = SyncStatus.conflict;
@@ -333,10 +339,8 @@ class ConflictResolutionService {
         }
         break;
       case 'user':
-        final user = await _isar.localUsers
-            .filter()
-            .uidEqualTo(entityId)
-            .findFirst();
+        final user =
+            await _isar.localUsers.filter().uidEqualTo(entityId).findFirst();
         if (user != null) {
           await _isar.writeTxn(() async {
             user.syncStatus = SyncStatus.conflict;
@@ -354,18 +358,18 @@ class ConflictResolutionService {
     Map<String, dynamic> serverData,
   ) {
     final differences = <String>[];
-    
+
     for (final key in localData.keys) {
       if (serverData.containsKey(key)) {
         final localValue = localData[key];
         final serverValue = serverData[key];
-        
+
         if (localValue != serverValue) {
           differences.add(key);
         }
       }
     }
-    
+
     return differences;
   }
 
@@ -377,17 +381,22 @@ class ConflictResolutionService {
   ) {
     // Only auto-merge if differences are in non-critical fields
     final autoMergeableFields = {
-      'tags', 'priority', 'estimatedMinutes', 'difficulty', 'location'
+      'tags',
+      'priority',
+      'estimatedMinutes',
+      'difficulty',
+      'location',
     };
-    
-    final criticalDifferences = differences
-        .where((field) => !autoMergeableFields.contains(field))
-        .toList();
-    
+
+    final criticalDifferences =
+        differences
+            .where((field) => !autoMergeableFields.contains(field))
+            .toList();
+
     if (criticalDifferences.isNotEmpty) {
       return null; // Cannot auto-merge critical differences
     }
-    
+
     // Merge by preferring local changes for auto-mergeable fields
     final merged = Map<String, dynamic>.from(serverData);
     for (final field in differences) {
@@ -395,7 +404,7 @@ class ConflictResolutionService {
         merged[field] = localData[field];
       }
     }
-    
+
     return merged;
   }
 
@@ -405,55 +414,65 @@ class ConflictResolutionService {
     Map<String, dynamic> serverData,
   ) {
     final merged = Map<String, dynamic>.from(serverData);
-    
+
     // Prefer local values for XP and level-related fields
     final localPreferredFields = {
-      'currentXP', 'totalPoints', 'weeklyXP', 'currentLevel', 'currentLeague'
+      'currentXP',
+      'totalPoints',
+      'weeklyXP',
+      'currentLevel',
+      'currentLeague',
     };
-    
+
     for (final field in localPreferredFields) {
       if (localData.containsKey(field)) {
         merged[field] = localData[field];
       }
     }
-    
+
     return merged;
   }
 
   /// Get entities with conflicts
   Future<List<ConflictEntity>> getConflictingEntities() async {
     final conflicts = <ConflictEntity>[];
-    
+
     // Get conflicting quests
-    final conflictingQuests = await _isar.localQuests
-        .filter()
-        .syncStatusEqualTo(SyncStatus.conflict)
-        .findAll();
-    
+    final conflictingQuests =
+        await _isar.localQuests
+            .filter()
+            .syncStatusEqualTo(SyncStatus.conflict)
+            .findAll();
+
     for (final quest in conflictingQuests) {
-      conflicts.add(ConflictEntity(
-        entityType: 'quest',
-        entityId: quest.questId,
-        title: quest.title,
-        conflictData: quest.conflictData,
-      ));
+      conflicts.add(
+        ConflictEntity(
+          entityType: 'quest',
+          entityId: quest.questId,
+          title: quest.title,
+          conflictData: quest.conflictData,
+        ),
+      );
     }
-    
+
     // Get conflicting users
-    final conflictingUsers = await _isar.localUsers
-        .filter()
-        .syncStatusEqualTo(SyncStatus.conflict)
-        .findAll();
-    
+    final conflictingUsers =
+        await _isar.localUsers
+            .filter()
+            .syncStatusEqualTo(SyncStatus.conflict)
+            .findAll();
+
     for (final user in conflictingUsers) {
-      conflicts.add(ConflictEntity(
-        entityType: 'user',
-        entityId: user.uid,
-        title: user.displayName,
-        conflictData: user.conflictData,
-      ));
+      conflicts.add(
+        ConflictEntity(
+          entityType: 'user',
+          entityId: user.uid,
+          title: user.displayName,
+          conflictData: user.conflictData,
+        ),
+      );
     }
-    
+
     return conflicts;
   }
 

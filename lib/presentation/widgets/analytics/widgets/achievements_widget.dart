@@ -5,20 +5,20 @@ import 'package:minq/domain/analytics/dashboard_config.dart';
 class AchievementsWidget extends ConsumerWidget {
   final DashboardWidgetConfig config;
 
-  const AchievementsWidget({
-    super.key,
-    required this.config,
-  });
+  const AchievementsWidget({super.key, required this.config});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: 実際の実績データプロバイダーを実装
     final achievements = _getMockAchievements();
-    
+
     return _buildAchievementsList(context, achievements);
   }
 
-  Widget _buildAchievementsList(BuildContext context, List<Achievement> achievements) {
+  Widget _buildAchievementsList(
+    BuildContext context,
+    List<Achievement> achievements,
+  ) {
     if (achievements.isEmpty) {
       return _buildEmptyState(context);
     }
@@ -37,14 +37,16 @@ class AchievementsWidget extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: achievement.isUnlocked 
-            ? _getRarityColor(achievement.rarity).withOpacity(0.1)
-            : Colors.grey.withOpacity(0.1),
+        color:
+            achievement.isUnlocked
+                ? _getRarityColor(achievement.rarity).withOpacity(0.1)
+                : Colors.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: achievement.isUnlocked 
-              ? _getRarityColor(achievement.rarity).withOpacity(0.3)
-              : Colors.grey.withOpacity(0.3),
+          color:
+              achievement.isUnlocked
+                  ? _getRarityColor(achievement.rarity).withOpacity(0.3)
+                  : Colors.grey.withOpacity(0.3),
         ),
       ),
       child: Row(
@@ -53,16 +55,13 @@ class AchievementsWidget extends ConsumerWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: achievement.isUnlocked 
-                  ? _getRarityColor(achievement.rarity)
-                  : Colors.grey,
+              color:
+                  achievement.isUnlocked
+                      ? _getRarityColor(achievement.rarity)
+                      : Colors.grey,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              achievement.icon,
-              color: Colors.white,
-              size: 20,
-            ),
+            child: Icon(achievement.icon, color: Colors.white, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -88,12 +87,14 @@ class AchievementsWidget extends ConsumerWidget {
                 Text(
                   achievement.description,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: achievement.isUnlocked 
-                        ? Theme.of(context).textTheme.bodySmall?.color
-                        : Colors.grey,
+                    color:
+                        achievement.isUnlocked
+                            ? Theme.of(context).textTheme.bodySmall?.color
+                            : Colors.grey,
                   ),
                 ),
-                if (!achievement.isUnlocked && achievement.progress != null) ...[
+                if (!achievement.isUnlocked &&
+                    achievement.progress != null) ...[
                   const SizedBox(height: 6),
                   LinearProgressIndicator(
                     value: achievement.progress,
@@ -142,23 +143,19 @@ class AchievementsWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.emoji_events,
-            size: 32,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.emoji_events, size: 32, color: Colors.grey),
           const SizedBox(height: 8),
           Text(
             '実績なし',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
           ),
           Text(
             'クエストを完了して\n実績を解除しましょう',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
             textAlign: TextAlign.center,
           ),
         ],
@@ -247,9 +244,4 @@ class Achievement {
   });
 }
 
-enum AchievementRarity {
-  common,
-  rare,
-  epic,
-  legendary,
-}
+enum AchievementRarity { common, rare, epic, legendary }

@@ -6,12 +6,14 @@ import 'package:minq/presentation/routing/app_router.dart';
 
 void main() {
   group('Navigation System Tests', () {
-    testWidgets('MinqBackButtonDispatcher handles back navigation correctly', (tester) async {
+    testWidgets('MinqBackButtonDispatcher handles back navigation correctly', (
+      tester,
+    ) async {
       final dispatcher = MinqBackButtonDispatcher.instance;
-      
+
       // Test that dispatcher can be instantiated
       expect(dispatcher, isNotNull);
-      
+
       // Test singleton pattern
       expect(MinqBackButtonDispatcher.instance, same(dispatcher));
     });
@@ -19,7 +21,7 @@ void main() {
     testWidgets('FormProtectionMixin shows discard dialog', (tester) async {
       bool hasChanges = true;
       bool dialogShown = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: _TestFormScreen(
@@ -37,7 +39,7 @@ void main() {
       );
 
       await tester.pumpAndSettle();
-      
+
       // Should show dialog when there are unsaved changes
       expect(find.text('変更を破棄しますか？'), findsOneWidget);
     });
@@ -46,7 +48,7 @@ void main() {
       // Test that notification types are handled correctly
       const notificationTypes = [
         'quest_reminder',
-        'quest_deadline', 
+        'quest_deadline',
         'pair_message',
         'achievement_unlocked',
         'weekly_summary',
@@ -85,9 +87,8 @@ class _TestFormScreen extends StatefulWidget {
   State<_TestFormScreen> createState() => _TestFormScreenState();
 }
 
-class _TestFormScreenState extends State<_TestFormScreen> 
+class _TestFormScreenState extends State<_TestFormScreen>
     with FormProtectionMixin<_TestFormScreen> {
-  
   @override
   bool get hasUnsavedChanges => widget.hasUnsavedChanges();
 
@@ -101,9 +102,7 @@ class _TestFormScreenState extends State<_TestFormScreen>
   Widget build(BuildContext context) {
     return buildProtectedScaffold(
       appBar: AppBar(title: const Text('Test Form')),
-      body: const Center(
-        child: Text('Test Form Content'),
-      ),
+      body: const Center(child: Text('Test Form Content')),
     );
   }
 }

@@ -12,10 +12,7 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 class PairChatScreen extends ConsumerStatefulWidget {
   final String pairId;
 
-  const PairChatScreen({
-    super.key,
-    required this.pairId,
-  });
+  const PairChatScreen({super.key, required this.pairId});
 
   @override
   ConsumerState<PairChatScreen> createState() => _PairChatScreenState();
@@ -52,10 +49,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
         timestamp: DateTime.now(),
       );
 
-      await pairSystem.sendMessage(
-        pairId: widget.pairId,
-        message: message,
-      );
+      await pairSystem.sendMessage(pairId: widget.pairId, message: message);
 
       // メッセージ送信後にスクロール
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -69,10 +63,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
       });
     } catch (e) {
       if (mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          'メッセージの送信に失敗しました: $e',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, 'メッセージの送信に失敗しました: $e');
       }
     } finally {
       setState(() => _isLoading = false);
@@ -98,17 +89,11 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
       );
 
       if (mounted) {
-        FeedbackMessenger.showSuccessSnackBar(
-          context,
-          '励ましメッセージを送信しました！',
-        );
+        FeedbackMessenger.showSuccessSnackBar(context, '励ましメッセージを送信しました！');
       }
     } catch (e) {
       if (mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          '励ましメッセージの送信に失敗しました: $e',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, '励ましメッセージの送信に失敗しました: $e');
       }
     }
   }
@@ -127,10 +112,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
       );
     } catch (e) {
       if (mounted) {
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          'リアクションの追加に失敗しました: $e',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, 'リアクションの追加に失敗しました: $e');
       }
     }
   }
@@ -168,12 +150,10 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
         children: [
           // 励ましメッセージクイックアクション
           _buildQuickEncouragements(tokens),
-          
+
           // メッセージリスト
-          Expanded(
-            child: _buildMessageList(tokens, userId),
-          ),
-          
+          Expanded(child: _buildMessageList(tokens, userId)),
+
           // メッセージ入力
           _buildMessageInput(tokens),
         ],
@@ -182,21 +162,14 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
   }
 
   Widget _buildQuickEncouragements(MinqTheme tokens) {
-    final encouragements = [
-      '👏 お疲れさま！',
-      '🔥 頑張って！',
-      '✨ 素晴らしい！',
-      '💪 一緒に頑張ろう！',
-    ];
+    final encouragements = ['👏 お疲れさま！', '🔥 頑張って！', '✨ 素晴らしい！', '💪 一緒に頑張ろう！'];
 
     return Container(
       height: 60,
       padding: EdgeInsets.symmetric(horizontal: tokens.spacing.md),
       decoration: BoxDecoration(
         color: tokens.surface,
-        border: Border(
-          bottom: BorderSide(color: tokens.border, width: 0.5),
-        ),
+        border: Border(bottom: BorderSide(color: tokens.border, width: 0.5)),
       ),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -229,7 +202,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
 
   Widget _buildMessageList(MinqTheme tokens, String? userId) {
     final pairSystem = ref.watch(pairSystemProvider);
-    
+
     return StreamBuilder<List<PairMessage>>(
       stream: pairSystem.getMessagesStream(widget.pairId),
       builder: (context, snapshot) {
@@ -241,9 +214,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
           return Center(
             child: Text(
               'メッセージの読み込みに失敗しました',
-              style: tokens.typography.body.copyWith(
-                color: tokens.error,
-              ),
+              style: tokens.typography.body.copyWith(color: tokens.error),
             ),
           );
         }
@@ -324,28 +295,32 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
     );
   }
 
-  Widget _buildChatMessage(MinqTheme tokens, PairMessage message, bool isMyMessage) {
+  Widget _buildChatMessage(
+    MinqTheme tokens,
+    PairMessage message,
+    bool isMyMessage,
+  ) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: tokens.spacing.xs),
       child: Row(
-        mainAxisAlignment: isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMyMessage) ...[
             CircleAvatar(
               radius: 16,
               backgroundColor: tokens.primary.withOpacity(0.2),
-              child: Icon(
-                Icons.person,
-                size: 16,
-                color: tokens.primary,
-              ),
+              child: Icon(Icons.person, size: 16, color: tokens.primary),
             ),
             SizedBox(width: tokens.spacing.xs),
           ],
           Flexible(
             child: Column(
-              crossAxisAlignment: isMyMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  isMyMessage
+                      ? CrossAxisAlignment.end
+                      : CrossAxisAlignment.start,
               children: [
                 GestureDetector(
                   onLongPress: () => _showReactionPicker(message.id),
@@ -356,11 +331,14 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: isMyMessage ? tokens.primary : tokens.surface,
-                      borderRadius: BorderRadius.circular(tokens.radius.lg).copyWith(
+                      borderRadius: BorderRadius.circular(
+                        tokens.radius.lg,
+                      ).copyWith(
                         bottomLeft: isMyMessage ? null : Radius.zero,
                         bottomRight: isMyMessage ? Radius.zero : null,
                       ),
-                      border: isMyMessage ? null : Border.all(color: tokens.border),
+                      border:
+                          isMyMessage ? null : Border.all(color: tokens.border),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -374,13 +352,19 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
                                 Icon(
                                   Icons.favorite,
                                   size: 16,
-                                  color: isMyMessage ? tokens.onPrimary : tokens.error,
+                                  color:
+                                      isMyMessage
+                                          ? tokens.onPrimary
+                                          : tokens.error,
                                 ),
                                 SizedBox(width: tokens.spacing.xs),
                                 Text(
                                   '励まし',
                                   style: tokens.typography.bodySmall.copyWith(
-                                    color: isMyMessage ? tokens.onPrimary : tokens.error,
+                                    color:
+                                        isMyMessage
+                                            ? tokens.onPrimary
+                                            : tokens.error,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -390,57 +374,67 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
                         Text(
                           message.text ?? '',
                           style: tokens.typography.body.copyWith(
-                            color: isMyMessage ? tokens.onPrimary : tokens.textPrimary,
+                            color:
+                                isMyMessage
+                                    ? tokens.onPrimary
+                                    : tokens.textPrimary,
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                
+
                 // リアクション表示
                 if (message.reactions.isNotEmpty)
                   Container(
                     margin: EdgeInsets.only(top: tokens.spacing.xs),
                     child: Wrap(
                       spacing: tokens.spacing.xs,
-                      children: message.reactions.entries.map((entry) {
-                        final emoji = entry.key;
-                        final users = entry.value;
-                        return GestureDetector(
-                          onTap: () => _addReaction(message.id, emoji),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: tokens.spacing.xs,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: tokens.surface,
-                              borderRadius: BorderRadius.circular(tokens.radius.sm),
-                              border: Border.all(color: tokens.border),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(emoji, style: const TextStyle(fontSize: 12)),
-                                if (users.length > 1) ...[
-                                  const SizedBox(width: 2),
-                                  Text(
-                                    '${users.length}',
-                                    style: tokens.typography.bodySmall.copyWith(
-                                      color: tokens.textSecondary,
-                                      fontSize: 10,
-                                    ),
+                      children:
+                          message.reactions.entries.map((entry) {
+                            final emoji = entry.key;
+                            final users = entry.value;
+                            return GestureDetector(
+                              onTap: () => _addReaction(message.id, emoji),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: tokens.spacing.xs,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: tokens.surface,
+                                  borderRadius: BorderRadius.circular(
+                                    tokens.radius.sm,
                                   ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                                  border: Border.all(color: tokens.border),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      emoji,
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                    if (users.length > 1) ...[
+                                      const SizedBox(width: 2),
+                                      Text(
+                                        '${users.length}',
+                                        style: tokens.typography.bodySmall
+                                            .copyWith(
+                                              color: tokens.textSecondary,
+                                              fontSize: 10,
+                                            ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
                     ),
                   ),
-                
+
                 // タイムスタンプ
                 Container(
                   margin: EdgeInsets.only(top: tokens.spacing.xs),
@@ -460,11 +454,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
             CircleAvatar(
               radius: 16,
               backgroundColor: tokens.primary.withOpacity(0.2),
-              child: Icon(
-                Icons.person,
-                size: 16,
-                color: tokens.primary,
-              ),
+              child: Icon(Icons.person, size: 16, color: tokens.primary),
             ),
           ],
         ],
@@ -477,9 +467,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
       padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
         color: tokens.surface,
-        border: Border(
-          top: BorderSide(color: tokens.border, width: 0.5),
-        ),
+        border: Border(top: BorderSide(color: tokens.border, width: 0.5)),
       ),
       child: Row(
         children: [
@@ -507,16 +495,17 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
           SizedBox(width: tokens.spacing.sm),
           IconButton(
             onPressed: _isLoading ? null : _sendMessage,
-            icon: _isLoading
-                ? SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation(tokens.primary),
-                    ),
-                  )
-                : Icon(Icons.send, color: tokens.primary),
+            icon:
+                _isLoading
+                    ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation(tokens.primary),
+                      ),
+                    )
+                    : Icon(Icons.send, color: tokens.primary),
             style: IconButton.styleFrom(
               backgroundColor: tokens.primary.withOpacity(0.1),
               shape: RoundedRectangleBorder(
@@ -531,7 +520,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
 
   void _showReactionPicker(String messageId) {
     final reactions = ['👍', '❤️', '😊', '🎉', '👏', '🔥'];
-    
+
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -550,29 +539,32 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
               SizedBox(height: tokens.spacing.md),
               Wrap(
                 spacing: tokens.spacing.md,
-                children: reactions.map((emoji) {
-                  return GestureDetector(
-                    onTap: () {
-                      _addReaction(messageId, emoji);
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: tokens.surface,
-                        borderRadius: BorderRadius.circular(tokens.radius.md),
-                        border: Border.all(color: tokens.border),
-                      ),
-                      child: Center(
-                        child: Text(
-                          emoji,
-                          style: const TextStyle(fontSize: 24),
+                children:
+                    reactions.map((emoji) {
+                      return GestureDetector(
+                        onTap: () {
+                          _addReaction(messageId, emoji);
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: tokens.surface,
+                            borderRadius: BorderRadius.circular(
+                              tokens.radius.md,
+                            ),
+                            border: Border.all(color: tokens.border),
+                          ),
+                          child: Center(
+                            child: Text(
+                              emoji,
+                              style: const TextStyle(fontSize: 24),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                      );
+                    }).toList(),
               ),
             ],
           ),

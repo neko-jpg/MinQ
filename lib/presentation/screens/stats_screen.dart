@@ -52,28 +52,23 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<SyncStatus>(
-      syncStatusProvider,
-      (previous, next) {
-        if (!mounted ||
-            !next.showBanner ||
-            next.bannerMessage == null) {
-          return;
-        }
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
-          final messenger = ScaffoldMessenger.of(context);
-          messenger.hideCurrentSnackBar();
-          messenger.showSnackBar(
-            SnackBar(
-              content: Text(next.bannerMessage!),
-              duration: const Duration(seconds: 2),
-            ),
-          );
-          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
-        });
-      },
-    );
+    ref.listen<SyncStatus>(syncStatusProvider, (previous, next) {
+      if (!mounted || !next.showBanner || next.bannerMessage == null) {
+        return;
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final messenger = ScaffoldMessenger.of(context);
+        messenger.hideCurrentSnackBar();
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(next.bannerMessage!),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+        ref.read(syncStatusProvider.notifier).acknowledgeBanner();
+      });
+    });
 
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
@@ -190,9 +185,7 @@ Widget _buildStreakCard(
         children: [
           Text(
             '現在の連続日数',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing.xs),
           Semantics(
@@ -220,9 +213,7 @@ Widget _buildStreakCard(
           SizedBox(height: tokens.spacing.xs),
           Text(
             hasStreak ? streakDescription : '今日の最初の習慣を記録して連続日数をスタートしましょう。',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -252,11 +243,7 @@ Widget _buildGoalCard(BuildContext context, MinqTheme tokens) {
           color: tokens.brandPrimary.withAlpha(31),
           borderRadius: BorderRadius.circular(tokens.radius.lg),
         ),
-        child: Icon(
-          Icons.flag,
-          color: tokens.brandPrimary,
-          size: 24,
-        ),
+        child: Icon(Icons.flag, color: tokens.brandPrimary, size: 24),
       ),
       title: Text(
         '目標設定',
@@ -291,7 +278,8 @@ void _showGoalBottomSheet(BuildContext context, MinqTheme tokens) {
     context: context,
     isScrollControlled: true,
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.xl)),
+      borderRadius: BorderRadius.circular(tokens.radius.xl),
+    ),
     builder: (context) {
       return SafeArea(
         child: ConstrainedBox(
@@ -431,9 +419,10 @@ Widget _buildCompareProgressCard(
     ),
   ];
   final hasProgress = entries.any((entry) => entry.progress > 0);
-  final double? deltaFromPrevious = entries.length >= 2
-      ? (entries.first.value - entries[1].value).toDouble()
-      : null;
+  final double? deltaFromPrevious =
+      entries.length >= 2
+          ? (entries.first.value - entries[1].value).toDouble()
+          : null;
 
   if (!hasProgress) {
     return _buildZeroChart(
@@ -557,7 +546,8 @@ Widget _buildWeeklyProgressCard(
       value: (totalMinutes / 60).toDouble(),
       unit: '時間',
       progress:
-          ((totalMinutes / 60) / (weeklyGoal * dailyGoalMinutes / 60)).toDouble(),
+          ((totalMinutes / 60) / (weeklyGoal * dailyGoalMinutes / 60))
+              .toDouble(),
     ),
     _RingMetric(
       label: '平均時間',
@@ -595,10 +585,7 @@ Widget _buildWeeklyProgressCard(
                     padding: EdgeInsets.symmetric(
                       horizontal: tokens.spacing.xs,
                     ),
-                    child: _buildProgressRing(
-                      tokens: tokens,
-                      metric: metric,
-                    ),
+                    child: _buildProgressRing(tokens: tokens, metric: metric),
                   ),
                 ),
             ],
@@ -910,10 +897,12 @@ Widget _buildCalendarCard(
               return Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: value > 0
-                      ? tokens.brandPrimary
-                          .withAlpha((255 * (value.toDouble() / 5.0)).round())
-                      : Colors.transparent,
+                  color:
+                      value > 0
+                          ? tokens.brandPrimary.withAlpha(
+                            (255 * (value.toDouble() / 5.0)).round(),
+                          )
+                          : Colors.transparent,
                   shape: BoxShape.circle,
                   border:
                       isToday
@@ -922,7 +911,9 @@ Widget _buildCalendarCard(
                 ),
                 child: Text(
                   '$day',
-                  style: tokens.typography.body.copyWith(color: tokens.textPrimary),
+                  style: tokens.typography.body.copyWith(
+                    color: tokens.textPrimary,
+                  ),
                 ),
               );
             },
@@ -1000,9 +991,7 @@ Widget _buildTodayStatsCard(
         children: [
           Text(
             '今日の完了数',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing.xs),
           Row(
@@ -1026,9 +1015,7 @@ Widget _buildTodayStatsCard(
             todayCount >= 3
                 ? '素晴らしい！今日の目標を達成しました。'
                 : '目標まであと${3 - todayCount}個です。',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -1105,9 +1092,7 @@ Widget _buildWeeklyStatsCard(
         children: [
           Text(
             '今週の達成率',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
           ),
           SizedBox(height: tokens.spacing.md),
           SizedBox(
@@ -1146,7 +1131,9 @@ Widget _buildWeeklyStatsCard(
                     ),
                     Text(
                       '達成',
-                      style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                      style: tokens.typography.caption.copyWith(
+                        color: tokens.textMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -1160,9 +1147,7 @@ Widget _buildWeeklyStatsCard(
                 : weeklyRate >= 0.5
                 ? '良いペースです。継続していきましょう。'
                 : '今週はもう少し頑張ってみましょう。',
-            style: tokens.typography.body.copyWith(
-              color: tokens.textMuted,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],

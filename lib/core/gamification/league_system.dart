@@ -32,7 +32,7 @@ class LeagueSystem {
     ),
     'silver': LeagueConfig(
       id: 'silver',
-      name: 'シルバーリーグ',
+      name: 'シルバ�Eリーグ',
       nameEn: 'Silver League',
       color: Color(0xFF9CA3AF),
       minXP: 1000,
@@ -109,7 +109,7 @@ class LeagueSystem {
     if (currentLeague == null) return null;
 
     // Check promotion eligibility
-    if (user.weeklyXP >= currentLeague.promotionThreshold && 
+    if (user.weeklyXP >= currentLeague.promotionThreshold &&
         user.totalXP >= currentLeague.maxXP) {
       final nextLeague = _getNextLeague(user.currentLeague);
       if (nextLeague != null) {
@@ -166,14 +166,15 @@ class LeagueSystem {
         await _isar.collection<LocalUser>().put(user);
 
         // Record promotion history
-        final promotionRecord = LeaguePromotionRecord()
-          ..userId = promotion.userId
-          ..fromLeague = promotion.fromLeague
-          ..toLeague = promotion.toLeague
-          ..xpEarned = promotion.xpEarned
-          ..totalXP = promotion.totalXP
-          ..achievedAt = promotion.achievedAt
-          ..rewards = promotion.rewards.toJson().toString();
+        final promotionRecord =
+            LeaguePromotionRecord()
+              ..userId = promotion.userId
+              ..fromLeague = promotion.fromLeague
+              ..toLeague = promotion.toLeague
+              ..xpEarned = promotion.xpEarned
+              ..totalXP = promotion.totalXP
+              ..achievedAt = promotion.achievedAt
+              ..rewards = promotion.rewards.toJson().toString();
 
         await _isar.collection<LeaguePromotionRecord>().put(promotionRecord);
       }
@@ -192,13 +193,14 @@ class LeagueSystem {
         await _isar.collection<LocalUser>().put(user);
 
         // Record relegation history
-        final relegationRecord = LeagueRelegationRecord()
-          ..userId = relegation.userId
-          ..fromLeague = relegation.fromLeague
-          ..toLeague = relegation.toLeague
-          ..weeklyXP = relegation.weeklyXP
-          ..threshold = relegation.threshold
-          ..relegatedAt = relegation.relegatedAt;
+        final relegationRecord =
+            LeagueRelegationRecord()
+              ..userId = relegation.userId
+              ..fromLeague = relegation.fromLeague
+              ..toLeague = relegation.toLeague
+              ..weeklyXP = relegation.weeklyXP
+              ..threshold = relegation.threshold
+              ..relegatedAt = relegation.relegatedAt;
 
         await _isar.collection<LeagueRelegationRecord>().put(relegationRecord);
       }
@@ -206,20 +208,25 @@ class LeagueSystem {
   }
 
   /// Get league rankings for specific league
-  Future<List<LeagueRanking>> getLeagueRankings(String league, {int limit = 50}) async {
-    final users = await _isar.collection<LocalUser>()
-        .filter()
-        .currentLeagueEqualTo(league)
-        .sortByWeeklyXPDesc()
-        .limit(limit)
-        .findAll();
+  Future<List<LeagueRanking>> getLeagueRankings(
+    String league, {
+    int limit = 50,
+  }) async {
+    final users =
+        await _isar
+            .collection<LocalUser>()
+            .filter()
+            .currentLeagueEqualTo(league)
+            .sortByWeeklyXPDesc()
+            .limit(limit)
+            .findAll();
 
     return users.asMap().entries.map((entry) {
       final index = entry.key;
       final user = entry.value;
-      
+
       return LeagueRanking(
-        userId: user.userId,
+        userId: user.uid,
         displayName: user.displayName,
         avatarSeed: user.avatarSeed,
         rank: index + 1,
@@ -240,17 +247,18 @@ class LeagueSystem {
     final rankings = await getLeagueRankings(user.currentLeague);
     return rankings.firstWhere(
       (ranking) => ranking.userId == userId,
-      orElse: () => LeagueRanking(
-        userId: userId,
-        displayName: user.displayName,
-        avatarSeed: user.avatarSeed,
-        rank: rankings.length + 1,
-        weeklyXP: user.weeklyXP,
-        totalXP: user.totalXP,
-        league: user.currentLeague,
-        streakDays: user.currentStreak,
-        lastActive: user.updatedAt,
-      ),
+      orElse:
+          () => LeagueRanking(
+            userId: userId,
+            displayName: user.displayName,
+            avatarSeed: user.avatarSeed,
+            rank: rankings.length + 1,
+            weeklyXP: user.weeklyXP,
+            totalXP: user.totalXP,
+            league: user.currentLeague,
+            streakDays: user.currentStreak,
+            lastActive: user.updatedAt,
+          ),
     );
   }
 
@@ -264,13 +272,13 @@ class LeagueSystem {
 
     for (final user in allUsers) {
       // Check for promotion
-      final promotion = await checkPromotion(user.userId);
+      final promotion = await checkPromotion(user.uid);
       if (promotion != null) {
         await executePromotion(promotion);
         promotions.add(promotion);
       } else {
         // Check for relegation if no promotion
-        final relegation = await checkRelegation(user.userId);
+        final relegation = await checkRelegation(user.uid);
         if (relegation != null) {
           await executeRelegation(relegation);
           relegations.add(relegation);
@@ -289,17 +297,19 @@ class LeagueSystem {
   /// Get league statistics
   Future<LeagueStatistics> getLeagueStatistics() async {
     final stats = <String, int>{};
-    
+
     for (final leagueId in leagues.keys) {
-      final count = await _isar.collection<LocalUser>()
-          .filter()
-          .currentLeagueEqualTo(leagueId)
-          .count();
+      final count =
+          await _isar
+              .collection<LocalUser>()
+              .filter()
+              .currentLeagueEqualTo(leagueId)
+              .count();
       stats[leagueId] = count;
     }
 
     final totalUsers = stats.values.fold(0, (sum, count) => sum + count);
-    
+
     return LeagueStatistics(
       totalUsers: totalUsers,
       leagueDistribution: stats,
@@ -309,7 +319,8 @@ class LeagueSystem {
 
   // Helper methods
   Future<LocalUser?> _getUserById(String userId) async {
-    return await _isar.collection<LocalUser>()
+    return await _isar
+        .collection<LocalUser>()
         .filter()
         .uidEqualTo(userId)
         .findFirst();
@@ -335,7 +346,8 @@ class LeagueSystem {
 
   LeagueRewards _calculatePromotionRewards(String league) {
     final config = leagues[league];
-    return config?.rewards ?? const LeagueRewards(weeklyXP: 0, badges: [], unlocks: []);
+    return config?.rewards ??
+        const LeagueRewards(weeklyXP: 0, badges: [], unlocks: []);
   }
 }
 
@@ -370,12 +382,16 @@ final leagueSystemProvider = Provider<LeagueSystem>((ref) {
   throw UnimplementedError('LeagueSystem provider needs proper Isar setup');
 });
 
-final leagueRankingsProvider = FutureProvider.family<List<LeagueRanking>, String>((ref, league) {
-  final leagueSystem = ref.watch(leagueSystemProvider);
-  return leagueSystem.getLeagueRankings(league);
-});
+final leagueRankingsProvider =
+    FutureProvider.family<List<LeagueRanking>, String>((ref, league) {
+      final leagueSystem = ref.watch(leagueSystemProvider);
+      return leagueSystem.getLeagueRankings(league);
+    });
 
-final userRankingProvider = FutureProvider.family<LeagueRanking?, String>((ref, userId) {
+final userRankingProvider = FutureProvider.family<LeagueRanking?, String>((
+  ref,
+  userId,
+) {
   final leagueSystem = ref.watch(leagueSystemProvider);
   return leagueSystem.getUserRanking(userId);
 });

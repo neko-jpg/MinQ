@@ -7,7 +7,9 @@ import 'package:minq/presentation/screens/organic_splash_screen.dart';
 
 void main() {
   group('OrganicSplashScreen', () {
-    testWidgets('displays organic growth animation', (WidgetTester tester) async {
+    testWidgets('displays organic growth animation', (
+      WidgetTester tester,
+    ) async {
       // アプリ初期化をモック
       final container = ProviderContainer(
         overrides: [
@@ -20,9 +22,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(
-            home: const OrganicSplashScreen(),
-          ),
+          child: MaterialApp(home: const OrganicSplashScreen()),
         ),
       );
 
@@ -41,7 +41,9 @@ void main() {
       container.dispose();
     });
 
-    testWidgets('shows app name when mature stage is reached', (WidgetTester tester) async {
+    testWidgets('shows app name when mature stage is reached', (
+      WidgetTester tester,
+    ) async {
       final container = ProviderContainer(
         overrides: [
           optimizedAppStartupProvider.overrideWith((ref) async {
@@ -53,9 +55,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(
-            home: const OrganicSplashScreen(),
-          ),
+          child: MaterialApp(home: const OrganicSplashScreen()),
         ),
       );
 
@@ -69,7 +69,9 @@ void main() {
       container.dispose();
     });
 
-    testWidgets('handles initialization errors gracefully', (WidgetTester tester) async {
+    testWidgets('handles initialization errors gracefully', (
+      WidgetTester tester,
+    ) async {
       final container = ProviderContainer(
         overrides: [
           optimizedAppStartupProvider.overrideWith((ref) async {
@@ -81,9 +83,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(
-            home: const OrganicSplashScreen(),
-          ),
+          child: MaterialApp(home: const OrganicSplashScreen()),
         ),
       );
 
@@ -96,9 +96,11 @@ void main() {
       container.dispose();
     });
 
-    testWidgets('respects minimum animation duration', (WidgetTester tester) async {
+    testWidgets('respects minimum animation duration', (
+      WidgetTester tester,
+    ) async {
       final stopwatch = Stopwatch()..start();
-      
+
       final container = ProviderContainer(
         overrides: [
           optimizedAppStartupProvider.overrideWith((ref) async {
@@ -111,9 +113,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(
-            home: const OrganicSplashScreen(),
-          ),
+          child: MaterialApp(home: const OrganicSplashScreen()),
         ),
       );
 
@@ -121,7 +121,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 1600));
 
       stopwatch.stop();
-      
+
       // 最小アニメーション時間が確保されていることを確認
       expect(stopwatch.elapsedMilliseconds, greaterThanOrEqualTo(1500));
 
@@ -130,7 +130,9 @@ void main() {
   });
 
   group('OrganicGrowthPainter', () {
-    testWidgets('renders different stages correctly', (WidgetTester tester) async {
+    testWidgets('renders different stages correctly', (
+      WidgetTester tester,
+    ) async {
       for (final stage in GrowthStage.values) {
         await tester.pumpWidget(
           MaterialApp(

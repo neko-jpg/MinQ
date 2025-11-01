@@ -31,7 +31,7 @@ void main() {
 
       test('should provide diagnostic information', () async {
         final diagnostics = await aiService.getDiagnosticInfo();
-        
+
         expect(diagnostics, isA<Map<String, dynamic>>());
         expect(diagnostics.containsKey('isInitialized'), isTrue);
         expect(diagnostics.containsKey('status'), isTrue);
@@ -45,14 +45,14 @@ void main() {
           'こんにちは',
           systemPrompt: 'テスト用プロンプト',
         );
-        
+
         expect(response, isNotEmpty);
         expect(response, isA<String>());
       });
 
       test('should handle empty input gracefully', () async {
         final response = await aiService.generateChatResponse('');
-        
+
         expect(response, isNotEmpty);
         expect(response, isA<String>());
       });
@@ -62,7 +62,7 @@ void main() {
           'ありがとう',
           conversationHistory: ['こんにちは', 'お元気ですか？'],
         );
-        
+
         expect(response, isNotEmpty);
         expect(response, isA<String>());
       });
@@ -72,7 +72,7 @@ void main() {
           '長い応答をお願いします',
           maxTokens: 50,
         );
-        
+
         expect(response, isNotEmpty);
         expect(response, isA<String>());
       });
@@ -81,7 +81,7 @@ void main() {
     group('Sentiment Analysis', () {
       test('should analyze positive sentiment', () async {
         final result = await aiService.analyzeSentiment('とても嬉しいです！');
-        
+
         expect(result, isA<SentimentResult>());
         expect(result.positive, greaterThanOrEqualTo(0.0));
         expect(result.negative, greaterThanOrEqualTo(0.0));
@@ -90,7 +90,7 @@ void main() {
 
       test('should analyze negative sentiment', () async {
         final result = await aiService.analyzeSentiment('とても悲しいです');
-        
+
         expect(result, isA<SentimentResult>());
         expect(result.positive, greaterThanOrEqualTo(0.0));
         expect(result.negative, greaterThanOrEqualTo(0.0));
@@ -99,7 +99,7 @@ void main() {
 
       test('should analyze neutral sentiment', () async {
         final result = await aiService.analyzeSentiment('今日は普通の日です');
-        
+
         expect(result, isA<SentimentResult>());
         expect(result.positive, greaterThanOrEqualTo(0.0));
         expect(result.negative, greaterThanOrEqualTo(0.0));
@@ -108,7 +108,7 @@ void main() {
 
       test('should handle empty text', () async {
         final result = await aiService.analyzeSentiment('');
-        
+
         expect(result, isA<SentimentResult>());
         expect(result.dominantSentiment, isA<SentimentType>());
       });
@@ -122,10 +122,10 @@ void main() {
           preferences: {'fitness': 0.8, 'learning': 0.6},
           limit: 3,
         );
-        
+
         expect(recommendations, isA<List<HabitRecommendation>>());
         expect(recommendations.length, lessThanOrEqualTo(3));
-        
+
         for (final recommendation in recommendations) {
           expect(recommendation.title, isNotEmpty);
           expect(recommendation.score, greaterThanOrEqualTo(0.0));
@@ -140,7 +140,7 @@ void main() {
           completedHabits: [],
           preferences: {},
         );
-        
+
         expect(recommendations, isA<List<HabitRecommendation>>());
         expect(recommendations, isNotEmpty);
       });
@@ -152,7 +152,7 @@ void main() {
           preferences: {},
           limit: 2,
         );
-        
+
         expect(recommendations.length, lessThanOrEqualTo(2));
       });
     });
@@ -175,7 +175,7 @@ void main() {
           history: history,
           targetDate: DateTime.now(),
         );
-        
+
         expect(prediction, isA<FailurePrediction>());
         expect(prediction.riskScore, greaterThanOrEqualTo(0.0));
         expect(prediction.riskScore, lessThanOrEqualTo(1.0));
@@ -191,7 +191,7 @@ void main() {
           history: [],
           targetDate: DateTime.now(),
         );
-        
+
         expect(prediction, isA<FailurePrediction>());
         expect(prediction.riskLevel, isA<FailureRiskLevel>());
       });
@@ -209,12 +209,15 @@ void main() {
           history: history,
           targetDate: DateTime.now(),
         );
-        
-        expect(prediction.riskLevel, isIn([
-          FailureRiskLevel.low,
-          FailureRiskLevel.medium,
-          FailureRiskLevel.high,
-        ]));
+
+        expect(
+          prediction.riskLevel,
+          isIn([
+            FailureRiskLevel.low,
+            FailureRiskLevel.medium,
+            FailureRiskLevel.high,
+          ]),
+        );
       });
     });
 
@@ -222,7 +225,7 @@ void main() {
       test('should handle consecutive errors gracefully', () async {
         // Reset error state first
         aiService.resetErrorState();
-        
+
         // Test that the service continues to work even with errors
         final response = await aiService.generateChatResponse('テスト');
         expect(response, isNotEmpty);
@@ -230,7 +233,7 @@ void main() {
 
       test('should reset error state', () {
         aiService.resetErrorState();
-        
+
         // After reset, the service should work normally
         expect(() => aiService.generateChatResponse('テスト'), returnsNormally);
       });
@@ -250,11 +253,8 @@ void main() {
 
   group('Custom Exceptions', () {
     test('AIServiceException should format correctly', () {
-      const exception = AIServiceException(
-        'Test error',
-        code: 'TEST_ERROR',
-      );
-      
+      const exception = AIServiceException('Test error', code: 'TEST_ERROR');
+
       expect(exception.message, equals('Test error'));
       expect(exception.code, equals('TEST_ERROR'));
       expect(exception.toString(), contains('AIServiceException'));
@@ -263,22 +263,16 @@ void main() {
     });
 
     test('DatabaseException should format correctly', () {
-      const exception = DatabaseException(
-        'Database error',
-        code: 'DB_ERROR',
-      );
-      
+      const exception = DatabaseException('Database error', code: 'DB_ERROR');
+
       expect(exception.message, equals('Database error'));
       expect(exception.code, equals('DB_ERROR'));
       expect(exception.toString(), contains('DatabaseException'));
     });
 
     test('NetworkException should format correctly', () {
-      const exception = NetworkException(
-        'Network error',
-        code: 'NET_ERROR',
-      );
-      
+      const exception = NetworkException('Network error', code: 'NET_ERROR');
+
       expect(exception.message, equals('Network error'));
       expect(exception.code, equals('NET_ERROR'));
       expect(exception.toString(), contains('NetworkException'));

@@ -22,17 +22,12 @@ class RealTimePreviewWidget extends ConsumerWidget {
 
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         decoration: BoxDecoration(
           color: previewTheme.background,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: previewTheme.border,
-            width: 2,
-          ),
+          border: Border.all(color: previewTheme.border, width: 2),
         ),
         child: Column(
           children: [
@@ -48,11 +43,7 @@ class RealTimePreviewWidget extends ConsumerWidget {
               child: Row(
                 children: [
                   const SizedBox(width: 16),
-                  Icon(
-                    Icons.menu,
-                    color: previewTheme.textPrimary,
-                    size: 20,
-                  ),
+                  Icon(Icons.menu, color: previewTheme.textPrimary, size: 20),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Text(
@@ -120,7 +111,8 @@ class RealTimePreviewWidget extends ConsumerWidget {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: previewTheme.brandPrimary.withOpacity(0.1),
+                                    color: previewTheme.brandPrimary
+                                        .withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
@@ -132,20 +124,25 @@ class RealTimePreviewWidget extends ConsumerWidget {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'サンプルクエスト',
-                                        style: previewTheme.typography.bodyLarge.copyWith(
-                                          color: previewTheme.textPrimary,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                        style: previewTheme.typography.bodyLarge
+                                            .copyWith(
+                                              color: previewTheme.textPrimary,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                       ),
                                       Text(
                                         '毎日の習慣を継続しよう',
-                                        style: previewTheme.typography.bodyMedium.copyWith(
-                                          color: previewTheme.textSecondary,
-                                        ),
+                                        style: previewTheme
+                                            .typography
+                                            .bodyMedium
+                                            .copyWith(
+                                              color: previewTheme.textSecondary,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -156,15 +153,17 @@ class RealTimePreviewWidget extends ConsumerWidget {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: previewTheme.accentSuccess.withOpacity(0.1),
+                                    color: previewTheme.accentSuccess
+                                        .withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
                                     '完了',
-                                    style: previewTheme.typography.caption.copyWith(
-                                      color: previewTheme.accentSuccess,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: previewTheme.typography.caption
+                                        .copyWith(
+                                          color: previewTheme.accentSuccess,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ),
                                 ),
                               ],
@@ -178,9 +177,10 @@ class RealTimePreviewWidget extends ConsumerWidget {
                               children: [
                                 Text(
                                   '今週の進捗',
-                                  style: previewTheme.typography.bodySmall.copyWith(
-                                    color: previewTheme.textSecondary,
-                                  ),
+                                  style: previewTheme.typography.bodySmall
+                                      .copyWith(
+                                        color: previewTheme.textSecondary,
+                                      ),
                                 ),
                                 const SizedBox(height: 4),
                                 LinearProgressIndicator(

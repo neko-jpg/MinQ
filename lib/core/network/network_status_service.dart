@@ -7,8 +7,8 @@ import 'package:minq/data/logging/minq_logger.dart';
 /// ネットワークステータスサービス
 class NetworkStatusService extends StateNotifier<NetworkStatus> {
   NetworkStatusService({Connectivity? connectivity})
-      : _connectivity = connectivity ?? Connectivity(),
-        super(NetworkStatus.online);
+    : _connectivity = connectivity ?? Connectivity(),
+      super(NetworkStatus.online);
 
   final Connectivity _connectivity;
   StreamSubscription<dynamic>? _connectivitySubscription;
@@ -25,8 +25,9 @@ class NetworkStatusService extends StateNotifier<NetworkStatus> {
 
     await _checkConnectivity();
 
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateDynamicStatus);
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
+      _updateDynamicStatus,
+    );
   }
 
   /// 接続状態をチェック
@@ -114,13 +115,12 @@ enum NetworkStatus {
 }
 
 /// Riverpod provider for network status service
-final networkStatusServiceProvider = StateNotifierProvider<NetworkStatusService, NetworkStatus>(
-  (ref) {
-    final service = NetworkStatusService();
-    service.initialize();
-    return service;
-  },
-);
+final networkStatusServiceProvider =
+    StateNotifierProvider<NetworkStatusService, NetworkStatus>((ref) {
+      final service = NetworkStatusService();
+      service.initialize();
+      return service;
+    });
 
 /// Convenience provider for checking if online
 final isOnlineProvider = Provider<bool>((ref) {

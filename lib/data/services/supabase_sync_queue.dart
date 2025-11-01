@@ -37,22 +37,17 @@ class SupabaseSyncQueue {
   Future<int> pendingCount({String? uid}) async {
     return _isar.pendingSyncJobs
         .filter()
-        .optional(
-          uid != null,
-          (q) => q.uidEqualTo(uid),
-        )
+        .optional(uid != null, (q) => q.uidEqualTo(uid))
         .count();
   }
 
   Future<SyncQueueSummary> processPendingJobs({String? uid}) async {
-    final jobs = await _isar.pendingSyncJobs
-        .filter()
-        .optional(
-          uid != null,
-          (q) => q.uidEqualTo(uid),
-        )
-        .sortByCreatedAt()
-        .findAll();
+    final jobs =
+        await _isar.pendingSyncJobs
+            .filter()
+            .optional(uid != null, (q) => q.uidEqualTo(uid))
+            .sortByCreatedAt()
+            .findAll();
 
     if (jobs.isEmpty) {
       return const SyncQueueSummary(processed: 0, failed: 0, remaining: 0);
@@ -143,7 +138,6 @@ abstract class SupabaseSyncApi {
 
 class NoopSupabaseSyncApi implements SupabaseSyncApi {
   const NoopSupabaseSyncApi();
-
 
   @override
   Future<void> upsertUserProfile(Map<String, dynamic> payload) async {

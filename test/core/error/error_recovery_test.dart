@@ -24,7 +24,7 @@ void main() {
 
     test('should execute operation successfully on first attempt', () async {
       var callCount = 0;
-      
+
       final result = await errorRecovery.executeWithRecovery<String>(
         operation: () async {
           callCount++;
@@ -42,7 +42,7 @@ void main() {
 
     test('should retry operation on retryable error', () async {
       var callCount = 0;
-      
+
       final result = await errorRecovery.executeWithRecovery<String>(
         operation: () async {
           callCount++;
@@ -52,7 +52,10 @@ void main() {
           return 'success after retry';
         },
         operationName: 'test_retry_operation',
-        retryConfig: const RetryConfig(maxAttempts: 3, initialDelay: Duration(milliseconds: 10)),
+        retryConfig: const RetryConfig(
+          maxAttempts: 3,
+          initialDelay: Duration(milliseconds: 10),
+        ),
         logErrors: false,
       );
 
@@ -65,14 +68,17 @@ void main() {
     test('should use fallback operation when retries fail', () async {
       var mainCallCount = 0;
       var fallbackCallCount = 0;
-      
+
       final result = await errorRecovery.executeWithRecovery<String>(
         operation: () async {
           mainCallCount++;
           throw NetworkException.serverError(500);
         },
         operationName: 'test_fallback_operation',
-        retryConfig: const RetryConfig(maxAttempts: 2, initialDelay: Duration(milliseconds: 10)),
+        retryConfig: const RetryConfig(
+          maxAttempts: 2,
+          initialDelay: Duration(milliseconds: 10),
+        ),
         fallbackOperation: () async {
           fallbackCallCount++;
           return 'fallback success';
@@ -89,14 +95,17 @@ void main() {
 
     test('should not retry non-retryable errors', () async {
       var callCount = 0;
-      
+
       final result = await errorRecovery.executeWithRecovery<String>(
         operation: () async {
           callCount++;
           throw NetworkException.noConnection();
         },
         operationName: 'test_non_retryable',
-        retryConfig: const RetryConfig(maxAttempts: 3, initialDelay: Duration(milliseconds: 10)),
+        retryConfig: const RetryConfig(
+          maxAttempts: 3,
+          initialDelay: Duration(milliseconds: 10),
+        ),
         logErrors: false,
       );
 
@@ -108,7 +117,7 @@ void main() {
 
     test('should register and use custom recovery strategy', () async {
       const customErrorCode = 'CUSTOM_ERROR';
-      
+
       errorRecovery.registerRecoveryStrategy(
         customErrorCode,
         (error) => RecoveryStrategy.ignore,
@@ -128,12 +137,12 @@ void main() {
 
     test('should register and use fallback action', () async {
       const errorCode = 'FALLBACK_ERROR';
-      
+
       errorRecovery.registerRecoveryStrategy(
         errorCode,
         (error) => RecoveryStrategy.fallback,
       );
-      
+
       errorRecovery.registerFallbackAction(
         errorCode,
         () async => 'registered fallback result',
@@ -164,7 +173,7 @@ void main() {
 
       var attempt = 0;
       final delays = <Duration>[];
-      
+
       try {
         await ErrorRecoveryManager().executeWithRecovery<void>(
           operation: () async {
@@ -194,7 +203,7 @@ void main() {
 
       var attempt = 0;
       final start = DateTime.now();
-      
+
       try {
         await ErrorRecoveryManager().executeWithRecovery<void>(
           operation: () async {
@@ -269,7 +278,9 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 150));
 
       // Circuit should allow execution again
-      final result = await circuitBreaker.execute(() async => 'success after reset');
+      final result = await circuitBreaker.execute(
+        () async => 'success after reset',
+      );
       expect(result, equals('success after reset'));
 
       final state = circuitBreaker.getState();
@@ -286,7 +297,9 @@ void main() {
 
       expect(() async {
         await circuitBreaker.execute(() async {
-          await Future.delayed(const Duration(milliseconds: 100)); // Longer than timeout
+          await Future.delayed(
+            const Duration(milliseconds: 100),
+          ); // Longer than timeout
           return 'should not complete';
         });
       }, throwsA(anything));
@@ -295,7 +308,11 @@ void main() {
 
   group('RecoveryResult', () {
     test('should create success result', () {
-      final result = RecoveryResult.success('data', RecoveryStrategy.retry, 'Success message');
+      final result = RecoveryResult.success(
+        'data',
+        RecoveryStrategy.retry,
+        'Success message',
+      );
 
       expect(result.success, isTrue);
       expect(result.data, equals('data'));
@@ -306,7 +323,11 @@ void main() {
 
     test('should create failure result', () {
       final error = NetworkException.noConnection();
-      final result = RecoveryResult.failure(error, RecoveryStrategy.failGracefully, 'Failure message');
+      final result = RecoveryResult.failure(
+        error,
+        RecoveryStrategy.failGracefully,
+        'Failure message',
+      );
 
       expect(result.success, isFalse);
       expect(result.error, equals(error));

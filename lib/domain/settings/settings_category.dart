@@ -54,20 +54,20 @@ class SettingsItem {
   /// Check if this item matches the search query
   bool matchesSearch(String query) {
     if (query.isEmpty) return true;
-    
+
     final lowerQuery = query.toLowerCase();
-    
+
     // Check title
     if (title.toLowerCase().contains(lowerQuery)) return true;
-    
+
     // Check subtitle
     if (subtitle?.toLowerCase().contains(lowerQuery) == true) return true;
-    
+
     // Check search keywords
     for (final keyword in searchKeywords) {
       if (keyword.toLowerCase().contains(lowerQuery)) return true;
     }
-    
+
     return false;
   }
 }

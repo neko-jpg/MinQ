@@ -5,6 +5,8 @@ import 'package:minq/core/profile/avatar_service.dart';
 import 'package:minq/core/profile/profile_service.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/user/user_profile.dart';
+import 'package:minq/core/network/network_status_provider.dart';
+import 'package:minq/core/sync/sync_providers.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/common/offline_indicator.dart';
 
@@ -21,7 +23,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   final _displayNameController = TextEditingController();
   final _handleController = TextEditingController();
   final _bioController = TextEditingController();
-  
+
   List<String> _selectedTags = [];
   String _selectedAvatarSeed = 'seed-01';
   String _selectedPrivacy = 'public';
@@ -32,7 +34,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadProfile());
-    
+
     // Listen for changes to track unsaved state
     _displayNameController.addListener(_onFieldChanged);
     _handleController.addListener(_onFieldChanged);
@@ -61,7 +63,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
       _displayNameController.text = user.displayName;
       _handleController.text = user.handle ?? '';
       _bioController.text = user.bio;
-      _selectedAvatarSeed = user.avatarSeed.isEmpty ? 'seed-01' : user.avatarSeed;
+      _selectedAvatarSeed =
+          user.avatarSeed.isEmpty ? 'seed-01' : user.avatarSeed;
       _selectedTags = List.from(user.focusTags);
       _selectedPrivacy = user.privacy;
       _hasUnsavedChanges = false;
@@ -100,21 +103,23 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           actions: [
             TextButton(
               onPressed: _isSaving ? null : _saveProfile,
-              child: _isSaving
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(
-                      '保存',
-                      style: TextStyle(
-                        color: _hasUnsavedChanges 
-                            ? tokens.primary 
-                            : tokens.textMuted,
-                        fontWeight: FontWeight.w600,
+              child:
+                  _isSaving
+                      ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                      : Text(
+                        '保存',
+                        style: TextStyle(
+                          color:
+                              _hasUnsavedChanges
+                                  ? tokens.primary
+                                  : tokens.textMuted,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
             ),
           ],
         ),
@@ -123,7 +128,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             // Offline indicator
             if (networkStatus == NetworkStatus.offline)
               const OfflineIndicator(),
-            
+
             Expanded(
               child: Form(
                 key: _formKey,
@@ -133,19 +138,19 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                     // Avatar section
                     _buildAvatarSection(tokens),
                     SizedBox(height: tokens.spacing.xl),
-                    
+
                     // Basic info section
                     _buildBasicInfoSection(tokens),
                     SizedBox(height: tokens.spacing.xl),
-                    
+
                     // Focus tags section
                     _buildFocusTagsSection(tokens),
                     SizedBox(height: tokens.spacing.xl),
-                    
+
                     // Privacy section
                     _buildPrivacySection(tokens),
                     SizedBox(height: tokens.spacing.xl),
-                    
+
                     // Advanced options
                     _buildAdvancedSection(tokens),
                   ],
@@ -179,7 +184,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             ),
           ),
           SizedBox(height: tokens.spacing.md),
-          
+
           // Avatar options
           Text(
             'アバターを選択',
@@ -189,7 +194,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             ),
           ),
           SizedBox(height: tokens.spacing.sm),
-          
+
           // Avatar grid
           GridView.builder(
             shrinkWrap: true,
@@ -203,7 +208,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             itemBuilder: (context, index) {
               final seed = AvatarService.getPredefinedSeeds()[index];
               final isSelected = seed == _selectedAvatarSeed;
-              
+
               return GestureDetector(
                 onTap: () {
                   setState(() {
@@ -219,16 +224,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       width: isSelected ? 3 : 1,
                     ),
                   ),
-                  child: ClipOval(
-                    child: _buildAvatarPreview(seed, tokens),
-                  ),
+                  child: ClipOval(child: _buildAvatarPreview(seed, tokens)),
                 ),
               );
             },
           ),
-          
+
           SizedBox(height: tokens.spacing.md),
-          
+
           // Generate random avatar button
           OutlinedButton.icon(
             onPressed: () {
@@ -247,15 +250,17 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
   Widget _buildAvatarPreview(String seed, MinqTheme tokens) {
     final displayName = _displayNameController.text.trim();
-    
+
     return Image.network(
       AvatarService.getAvatarUrl(seed),
       fit: BoxFit.cover,
       errorBuilder: (context, error, stackTrace) {
         // Fallback to initials avatar
-        final initials = AvatarService.getInitials(displayName.isEmpty ? 'User' : displayName);
+        final initials = AvatarService.getInitials(
+          displayName.isEmpty ? 'User' : displayName,
+        );
         final color = Color(AvatarService.getInitialsColor(seed));
-        
+
         return Container(
           color: color,
           child: Center(
@@ -273,9 +278,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
         if (loadingProgress == null) return child;
         return Container(
           color: tokens.surfaceVariant,
-          child: const Center(
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
+          child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
         );
       },
     );
@@ -310,7 +313,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             },
           ),
           SizedBox(height: tokens.spacing.md),
-          
+
           TextFormField(
             controller: _handleController,
             decoration: const InputDecoration(
@@ -321,7 +324,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) return null;
-              
+
               final trimmed = value.trim();
               final pattern = RegExp(r'^[a-zA-Z0-9_]{3,20}$');
               if (!pattern.hasMatch(trimmed)) {
@@ -331,7 +334,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             },
           ),
           SizedBox(height: tokens.spacing.md),
-          
+
           TextFormField(
             controller: _bioController,
             decoration: const InputDecoration(
@@ -354,8 +357,11 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   }
 
   Widget _buildFocusTagsSection(MinqTheme tokens) {
+    final isar = ref.read(isarProvider).value;
+    if (isar == null) return const SizedBox.shrink();
+    
     final profileService = ProfileService(
-      isar: ref.read(isarProvider),
+      isar: isar,
       syncQueueManager: ref.read(syncQueueManagerProvider),
     );
     final availableTags = profileService.getAvailableFocusTags();
@@ -373,35 +379,39 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             ),
           ),
           SizedBox(height: tokens.spacing.sm),
-          
+
           Wrap(
             spacing: tokens.spacing.sm,
             runSpacing: tokens.spacing.sm,
-            children: availableTags.map((tag) {
-              final isSelected = _selectedTags.contains(tag);
-              final canSelect = _selectedTags.length < 5 || isSelected;
-              
-              return FilterChip(
-                label: Text(tag),
-                selected: isSelected,
-                onSelected: canSelect ? (selected) {
-                  setState(() {
-                    if (selected) {
-                      _selectedTags.add(tag);
-                    } else {
-                      _selectedTags.remove(tag);
-                    }
-                    _hasUnsavedChanges = true;
-                  });
-                } : null,
-                backgroundColor: tokens.surface,
-                selectedColor: tokens.primary.withOpacity(0.2),
-                checkmarkColor: tokens.primary,
-                labelStyle: TextStyle(
-                  color: isSelected ? tokens.primary : tokens.textPrimary,
-                ),
-              );
-            }).toList(),
+            children:
+                availableTags.map((tag) {
+                  final isSelected = _selectedTags.contains(tag);
+                  final canSelect = _selectedTags.length < 5 || isSelected;
+
+                  return FilterChip(
+                    label: Text(tag),
+                    selected: isSelected,
+                    onSelected:
+                        canSelect
+                            ? (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedTags.add(tag);
+                                } else {
+                                  _selectedTags.remove(tag);
+                                }
+                                _hasUnsavedChanges = true;
+                              });
+                            }
+                            : null,
+                    backgroundColor: tokens.surface,
+                    selectedColor: tokens.primary.withOpacity(0.2),
+                    checkmarkColor: tokens.primary,
+                    labelStyle: TextStyle(
+                      color: isSelected ? tokens.primary : tokens.textPrimary,
+                    ),
+                  );
+                }).toList(),
           ),
         ],
       ),
@@ -467,9 +477,9 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               // Navigate to notification settings
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('通知設定は準備中です')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('通知設定は準備中です')));
             },
           ),
           ListTile(
@@ -500,26 +510,27 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   void _showUnsavedChangesDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('未保存の変更があります'),
-        content: const Text('変更を保存せずに戻りますか？変更内容は失われます。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('未保存の変更があります'),
+            content: const Text('変更を保存せずに戻りますか？変更内容は失われます。'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.pop();
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.error,
+                ),
+                child: const Text('破棄して戻る'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              context.pop();
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: const Text('破棄して戻る'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -535,8 +546,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     setState(() => _isSaving = true);
 
     try {
+      final isar = ref.read(isarProvider).value;
+      if (isar == null) {
+        _showErrorSnackBar('データベースが初期化されていません');
+        return;
+      }
+      
       final profileService = ProfileService(
-        isar: ref.read(isarProvider),
+        isar: isar,
         syncQueueManager: ref.read(syncQueueManagerProvider),
       );
 
@@ -556,14 +573,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
       if (result.isValid) {
         ref.invalidate(localUserProvider);
         setState(() => _hasUnsavedChanges = false);
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('プロフィールを保存しました'),
             backgroundColor: Colors.green,
           ),
         );
-        
+
         context.pop();
       } else {
         _showValidationErrors(result.errors);
@@ -600,11 +617,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 }
 
 class _SectionCard extends StatelessWidget {
-  const _SectionCard({
-    required this.title,
-    required this.child,
-    this.subtitle,
-  });
+  const _SectionCard({required this.title, required this.child, this.subtitle});
 
   final String title;
   final String? subtitle;

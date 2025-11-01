@@ -15,13 +15,13 @@ final webSocketManagerProvider = Provider<WebSocketManager>((ref) {
 final realtimeServiceProvider = Provider<RealtimeService>((ref) {
   final webSocketManager = ref.watch(webSocketManagerProvider);
   final notificationService = ref.watch(advancedNotificationServiceProvider);
-  
+
   final service = RealtimeService(webSocketManager, notificationService);
-  
+
   ref.onDispose(() {
     service.dispose();
   });
-  
+
   return service;
 });
 
@@ -56,10 +56,13 @@ final notificationStreamProvider = StreamProvider<RealtimeMessage>((ref) {
 });
 
 /// リアルタイム接続管理プロバイダー
-final realtimeConnectionProvider = StateNotifierProvider<RealtimeConnectionNotifier, RealtimeConnectionState>((ref) {
-  final realtimeService = ref.watch(realtimeServiceProvider);
-  return RealtimeConnectionNotifier(realtimeService);
-});
+final realtimeConnectionProvider =
+    StateNotifierProvider<RealtimeConnectionNotifier, RealtimeConnectionState>((
+      ref,
+    ) {
+      final realtimeService = ref.watch(realtimeServiceProvider);
+      return RealtimeConnectionNotifier(realtimeService);
+    });
 
 /// リアルタイム接続状態
 class RealtimeConnectionState {
@@ -91,14 +94,17 @@ class RealtimeConnectionState {
 }
 
 /// リアルタイム接続管理ノーティファイアー
-class RealtimeConnectionNotifier extends StateNotifier<RealtimeConnectionState> {
+class RealtimeConnectionNotifier
+    extends StateNotifier<RealtimeConnectionState> {
   final RealtimeService _realtimeService;
 
-  RealtimeConnectionNotifier(this._realtimeService) 
-      : super(const RealtimeConnectionState(
+  RealtimeConnectionNotifier(this._realtimeService)
+    : super(
+        const RealtimeConnectionState(
           isConnected: false,
           status: WebSocketStatus.disconnected,
-        )) {
+        ),
+      ) {
     _initializeStatusListener();
   }
 
@@ -108,7 +114,8 @@ class RealtimeConnectionNotifier extends StateNotifier<RealtimeConnectionState> 
       state = state.copyWith(
         status: status,
         isConnected: status == WebSocketStatus.connected,
-        errorMessage: status == WebSocketStatus.error ? 'Connection error' : null,
+        errorMessage:
+            status == WebSocketStatus.error ? 'Connection error' : null,
       );
     });
   }
@@ -117,14 +124,9 @@ class RealtimeConnectionNotifier extends StateNotifier<RealtimeConnectionState> 
   Future<void> connect(String userId) async {
     try {
       await _realtimeService.connect(userId);
-      state = state.copyWith(
-        userId: userId,
-        errorMessage: null,
-      );
+      state = state.copyWith(userId: userId, errorMessage: null);
     } catch (e) {
-      state = state.copyWith(
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(errorMessage: e.toString());
     }
   }
 

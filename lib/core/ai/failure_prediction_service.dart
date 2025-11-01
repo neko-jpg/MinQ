@@ -84,7 +84,13 @@ class FailurePredictionService {
         analysis: analysis,
       );
     } catch (e, stack) {
-      await _analytics.logEvent('error', parameters: {'failure_prediction_failed': e.toString(), 'stack': stack.toString()});
+      await _analytics.logEvent(
+        'error',
+        parameters: {
+          'failure_prediction_failed': e.toString(),
+          'stack': stack.toString(),
+        },
+      );
       rethrow;
     }
   }
@@ -317,13 +323,19 @@ class FailurePredictionService {
   ) async {
     try {
       final logs = await _questLogRepository.getQuestLogs(analysis.userId);
-      final habitLogs = logs
-          .where((log) => log.questId.toString() == analysis.habitId)
-          .toList();
-      final history = habitLogs
-          .map((log) => CompletionRecord(
-              completedAt: log.completedAt, habitId: log.questId.toString()))
-          .toList();
+      final habitLogs =
+          logs
+              .where((log) => log.questId.toString() == analysis.habitId)
+              .toList();
+      final history =
+          habitLogs
+              .map(
+                (log) => CompletionRecord(
+                  completedAt: log.completedAt,
+                  habitId: log.questId.toString(),
+                ),
+              )
+              .toList();
 
       final prediction = await _aiService.predictFailure(
         habitId: analysis.habitId,
@@ -332,13 +344,16 @@ class FailurePredictionService {
       );
 
       return prediction.suggestions
-          .map((s) => FailureSuggestion(
+          .map(
+            (s) => FailureSuggestion(
               id: 'ai_suggestion',
               type: SuggestionType.strategy,
               title: 'AIからの提案',
               description: s,
               priority: SuggestionPriority.medium,
-              actionable: true))
+              actionable: true,
+            ),
+          )
           .toList();
     } catch (e) {
       // AI生成に失敗した場合は空のリストを返す
@@ -469,10 +484,13 @@ class FailurePredictionService {
 
       return results;
     } catch (e, stack) {
-      await _analytics.logEvent('error', parameters: {
-        'get_recent_predictions_failed': e.toString(),
-        'stack': stack.toString()
-      });
+      await _analytics.logEvent(
+        'error',
+        parameters: {
+          'get_recent_predictions_failed': e.toString(),
+          'stack': stack.toString(),
+        },
+      );
       return [];
     }
   }

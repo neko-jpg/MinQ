@@ -217,7 +217,7 @@ class __$$XPTransactionImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$XPTransactionImpl implements _XPTransaction {
   const _$XPTransactionImpl(
-      {this.id = Isar.autoIncrement,
+      {this.id = 0,
       required this.userId,
       required this.xpAmount,
       required this.reason,

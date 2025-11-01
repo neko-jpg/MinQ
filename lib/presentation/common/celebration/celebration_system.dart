@@ -80,7 +80,10 @@ class CelebrationSystem {
   }
 
   /// 特定の祝福演出を取得（デザイントークンを使用）
-  static CelebrationConfig getCelebration(CelebrationType type, MinqTheme theme) {
+  static CelebrationConfig getCelebration(
+    CelebrationType type,
+    MinqTheme theme,
+  ) {
     final celebrations = _getCelebrations(theme);
     return celebrations.firstWhere(
       (config) => config.type == type,

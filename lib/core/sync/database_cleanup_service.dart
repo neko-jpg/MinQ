@@ -43,12 +43,15 @@ class DatabaseCleanupService {
       }
 
       final duration = DateTime.now().difference(startTime);
-      
-      MinqLogger.info('Database cleanup completed', metadata: {
-        'deletedRecords': deletedRecords,
-        'freedSpaceBytes': freedSpace,
-        'durationMs': duration.inMilliseconds,
-      });
+
+      MinqLogger.info(
+        'Database cleanup completed',
+        metadata: {
+          'deletedRecords': deletedRecords,
+          'freedSpaceBytes': freedSpace,
+          'durationMs': duration.inMilliseconds,
+        },
+      );
 
       return CleanupResult(
         success: true,
@@ -57,8 +60,12 @@ class DatabaseCleanupService {
         duration: duration,
       );
     } catch (e, stackTrace) {
-      MinqLogger.error('Database cleanup failed', error: e, stackTrace: stackTrace);
-      
+      MinqLogger.error(
+        'Database cleanup failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+
       return CleanupResult(
         success: false,
         error: e.toString(),
@@ -70,13 +77,14 @@ class DatabaseCleanupService {
   /// Clean up old completed sync jobs
   Future<int> _cleanupOldSyncJobs(Duration olderThan) async {
     final cutoffDate = DateTime.now().subtract(olderThan);
-    
-    final oldJobs = await _isar.syncJobs
-        .filter()
-        .statusEqualTo(SyncJobStatus.completed)
-        .and()
-        .createdAtLessThan(cutoffDate)
-        .findAll();
+
+    final oldJobs =
+        await _isar.syncJobs
+            .filter()
+            .statusEqualTo(SyncJobStatus.completed)
+            .and()
+            .createdAtLessThan(cutoffDate)
+            .findAll();
 
     if (oldJobs.isNotEmpty) {
       await _isar.writeTxn(() async {
@@ -85,10 +93,13 @@ class DatabaseCleanupService {
         }
       });
 
-      MinqLogger.info('Cleaned up old sync jobs', metadata: {
-        'count': oldJobs.length,
-        'cutoffDate': cutoffDate.toIso8601String(),
-      });
+      MinqLogger.info(
+        'Cleaned up old sync jobs',
+        metadata: {
+          'count': oldJobs.length,
+          'cutoffDate': cutoffDate.toIso8601String(),
+        },
+      );
     }
 
     return oldJobs.length;
@@ -100,12 +111,13 @@ class DatabaseCleanupService {
     final retentionPeriod = DateTime.now().subtract(const Duration(days: 30));
 
     // Clean up soft-deleted quests
-    final deletedQuests = await _isar.localQuests
-        .filter()
-        .deletedAtIsNotNull()
-        .and()
-        .deletedAtLessThan(retentionPeriod)
-        .findAll();
+    final deletedQuests =
+        await _isar.localQuests
+            .filter()
+            .deletedAtIsNotNull()
+            .and()
+            .deletedAtLessThan(retentionPeriod)
+            .findAll();
 
     if (deletedQuests.isNotEmpty) {
       await _isar.writeTxn(() async {
@@ -119,10 +131,13 @@ class DatabaseCleanupService {
     // Clean up old quest logs (keep only last 1000 per user)
     await _cleanupOldQuestLogs();
 
-    MinqLogger.info('Cleaned up soft-deleted records', metadata: {
-      'deletedQuests': deletedQuests.length,
-      'retentionPeriod': retentionPeriod.toIso8601String(),
-    });
+    MinqLogger.info(
+      'Cleaned up soft-deleted records',
+      metadata: {
+        'deletedQuests': deletedQuests.length,
+        'retentionPeriod': retentionPeriod.toIso8601String(),
+      },
+    );
 
     return deletedCount;
   }
@@ -132,35 +147,40 @@ class DatabaseCleanupService {
     const maxLogsPerUser = 1000;
 
     // Get all unique user IDs
-    final userIds = await _isar.localQuestLogs
-        .where()
-        .distinctByUid()
-        .uidProperty()
-        .findAll();
+    final userIds =
+        await _isar.localQuestLogs
+            .where()
+            .distinctByUid()
+            .uidProperty()
+            .findAll();
 
     for (final uid in userIds) {
       // Get logs for this user, sorted by timestamp descending
-      final userLogs = await _isar.localQuestLogs
-          .filter()
-          .uidEqualTo(uid)
-          .sortByTimestampDesc()
-          .findAll();
+      final userLogs =
+          await _isar.localQuestLogs
+              .filter()
+              .uidEqualTo(uid)
+              .sortByTimestampDesc()
+              .findAll();
 
       // If user has more than maxLogsPerUser, delete the oldest ones
       if (userLogs.length > maxLogsPerUser) {
         final logsToDelete = userLogs.skip(maxLogsPerUser).toList();
-        
+
         await _isar.writeTxn(() async {
           for (final log in logsToDelete) {
             await _isar.localQuestLogs.delete(log.id);
           }
         });
 
-        MinqLogger.info('Cleaned up old quest logs for user', metadata: {
-          'uid': uid,
-          'deletedCount': logsToDelete.length,
-          'remainingCount': maxLogsPerUser,
-        });
+        MinqLogger.info(
+          'Cleaned up old quest logs for user',
+          metadata: {
+            'uid': uid,
+            'deletedCount': logsToDelete.length,
+            'remainingCount': maxLogsPerUser,
+          },
+        );
       }
     }
   }
@@ -192,12 +212,16 @@ class DatabaseCleanupService {
         keepLatest: 10,
       );
 
-      MinqLogger.info('Cleaned up orphaned files', metadata: {
-        'freedSpaceBytes': freedSpace,
-      });
+      MinqLogger.info(
+        'Cleaned up orphaned files',
+        metadata: {'freedSpaceBytes': freedSpace},
+      );
     } catch (e, stackTrace) {
-      MinqLogger.error('Failed to clean up orphaned files', 
-          error: e, stackTrace: stackTrace);
+      MinqLogger.error(
+        'Failed to clean up orphaned files',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
 
     return freedSpace;
@@ -216,14 +240,17 @@ class DatabaseCleanupService {
     }
 
     try {
-      final files = await directory
-          .list(recursive: true)
-          .where((entity) => entity is File)
-          .cast<File>()
-          .toList();
+      final files =
+          await directory
+              .list(recursive: true)
+              .where((entity) => entity is File)
+              .cast<File>()
+              .toList();
 
       // Sort files by modification time (newest first)
-      files.sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
+      files.sort(
+        (a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()),
+      );
 
       final now = DateTime.now();
       final filesToDelete = <File>[];
@@ -231,7 +258,7 @@ class DatabaseCleanupService {
       for (int i = 0; i < files.length; i++) {
         final file = files[i];
         final fileAge = now.difference(file.lastModifiedSync());
-        
+
         bool shouldDelete = false;
 
         // Delete if older than maxAge
@@ -256,22 +283,29 @@ class DatabaseCleanupService {
           await file.delete();
           freedSpace += fileSize;
         } catch (e) {
-          MinqLogger.warning('Failed to delete file: ${file.path}', metadata: {
-            'error': e.toString(),
-          });
+          MinqLogger.warning(
+            'Failed to delete file: ${file.path}',
+            metadata: {'error': e.toString()},
+          );
         }
       }
 
       if (filesToDelete.isNotEmpty) {
-        MinqLogger.info('Cleaned up directory', metadata: {
-          'directory': directory.path,
-          'deletedFiles': filesToDelete.length,
-          'freedSpaceBytes': freedSpace,
-        });
+        MinqLogger.info(
+          'Cleaned up directory',
+          metadata: {
+            'directory': directory.path,
+            'deletedFiles': filesToDelete.length,
+            'freedSpaceBytes': freedSpace,
+          },
+        );
       }
     } catch (e, stackTrace) {
-      MinqLogger.error('Failed to clean up directory: ${directory.path}', 
-          error: e, stackTrace: stackTrace);
+      MinqLogger.error(
+        'Failed to clean up directory: ${directory.path}',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
 
     return freedSpace;
@@ -288,7 +322,11 @@ class DatabaseCleanupService {
 
       MinqLogger.info('Database compaction completed');
     } catch (e, stackTrace) {
-      MinqLogger.error('Database compaction failed', error: e, stackTrace: stackTrace);
+      MinqLogger.error(
+        'Database compaction failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -301,20 +339,20 @@ class DatabaseCleanupService {
       final questLogCount = await _isar.localQuestLogs.count();
       final syncJobCount = await _isar.syncJobs.count();
 
-      final pendingSyncJobs = await _isar.syncJobs
-          .filter()
-          .statusEqualTo(SyncJobStatus.pending)
-          .count();
+      final pendingSyncJobs =
+          await _isar.syncJobs
+              .filter()
+              .statusEqualTo(SyncJobStatus.pending)
+              .count();
 
-      final failedSyncJobs = await _isar.syncJobs
-          .filter()
-          .statusEqualTo(SyncJobStatus.failed)
-          .count();
+      final failedSyncJobs =
+          await _isar.syncJobs
+              .filter()
+              .statusEqualTo(SyncJobStatus.failed)
+              .count();
 
-      final deletedQuests = await _isar.localQuests
-          .filter()
-          .deletedAtIsNotNull()
-          .count();
+      final deletedQuests =
+          await _isar.localQuests.filter().deletedAtIsNotNull().count();
 
       return DatabaseStats(
         questCount: questCount,
@@ -327,7 +365,11 @@ class DatabaseCleanupService {
         deletedQuests: deletedQuests,
       );
     } catch (e, stackTrace) {
-      MinqLogger.error('Failed to get database stats', error: e, stackTrace: stackTrace);
+      MinqLogger.error(
+        'Failed to get database stats',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -336,9 +378,9 @@ class DatabaseCleanupService {
   Future<void> scheduleAutomaticCleanup() async {
     // This would typically be called during app initialization
     // and set up periodic cleanup tasks
-    
+
     MinqLogger.info('Automatic cleanup scheduled');
-    
+
     // Perform initial cleanup
     await performCleanup(
       olderThan: const Duration(days: 7),
@@ -395,7 +437,8 @@ class DatabaseStats {
     required this.deletedQuests,
   });
 
-  int get totalRecords => questCount + userCount + challengeCount + questLogCount;
-  
+  int get totalRecords =>
+      questCount + userCount + challengeCount + questLogCount;
+
   bool get hasIssues => failedSyncJobs > 0 || deletedQuests > 100;
 }

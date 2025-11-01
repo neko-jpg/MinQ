@@ -18,9 +18,18 @@ void main() {
       test('TFLite AI Service should be integrated', () async {
         final result = await checkFileContent(
           'lib/core/ai/tflite_unified_ai_service.dart',
-          ['generateChatResponse', 'recommendHabits', 'predictFailure', 'analyzeSentiment'],
+          [
+            'generateChatResponse',
+            'recommendHabits',
+            'predictFailure',
+            'analyzeSentiment',
+          ],
         );
-        expect(result, isTrue, reason: 'TFLite AI Service implementation is incomplete or missing');
+        expect(
+          result,
+          isTrue,
+          reason: 'TFLite AI Service implementation is incomplete or missing',
+        );
       });
 
       test('AI Integration Manager should be set up', () async {
@@ -28,7 +37,12 @@ void main() {
           'lib/core/ai/ai_integration_manager.dart',
           ['initializeAllServices', 'TFLiteUnifiedAIService'],
         );
-        expect(result, isTrue, reason: 'AI Integration Manager implementation is incomplete or missing');
+        expect(
+          result,
+          isTrue,
+          reason:
+              'AI Integration Manager implementation is incomplete or missing',
+        );
       });
 
       test('Realtime AI Coach should be implemented', () async {
@@ -36,7 +50,11 @@ void main() {
           'lib/core/ai/realtime_coach_service.dart',
           ['provideRealtimeCoaching', 'generateMotivationalMessage'],
         );
-        expect(result, isTrue, reason: 'Realtime AI Coach implementation is incomplete or missing');
+        expect(
+          result,
+          isTrue,
+          reason: 'Realtime AI Coach implementation is incomplete or missing',
+        );
       });
 
       test('Failure Prediction AI should be implemented', () async {
@@ -44,7 +62,12 @@ void main() {
           'lib/core/ai/failure_prediction_service.dart',
           ['predictFailureRisk', 'generateRecommendations'],
         );
-        expect(result, isTrue, reason: 'Failure Prediction AI implementation is incomplete or missing');
+        expect(
+          result,
+          isTrue,
+          reason:
+              'Failure Prediction AI implementation is incomplete or missing',
+        );
       });
     });
 
@@ -54,7 +77,12 @@ void main() {
           'lib/core/gamification/gamification_engine.dart',
           ['awardPoints', 'unlockBadge', 'calculateLevel'],
         );
-        expect(result, isTrue, reason: 'Gamification Engine Core implementation is incomplete or missing');
+        expect(
+          result,
+          isTrue,
+          reason:
+              'Gamification Engine Core implementation is incomplete or missing',
+        );
       });
 
       test('Reward System should be implemented', () async {
@@ -62,12 +90,20 @@ void main() {
           'lib/core/gamification/reward_system.dart',
           ['distributeReward', 'RewardType'],
         );
-        expect(result, isTrue, reason: 'Reward System implementation is incomplete or missing');
+        expect(
+          result,
+          isTrue,
+          reason: 'Reward System implementation is incomplete or missing',
+        );
       });
 
       test('Challenge System should be implemented', () async {
         final file = File('lib/core/challenges/challenge_service.dart');
-        expect(await file.exists(), isTrue, reason: 'Challenge Service file is missing');
+        expect(
+          await file.exists(),
+          isTrue,
+          reason: 'Challenge Service file is missing',
+        );
       });
     });
 
@@ -77,7 +113,11 @@ void main() {
           'lib/presentation/screens/pair_screen.dart',
           ['PairScreen', 'pair'],
         );
-        expect(result, isTrue, reason: 'Pair/Buddy System implementation is incomplete or missing');
+        expect(
+          result,
+          isTrue,
+          reason: 'Pair/Buddy System implementation is incomplete or missing',
+        );
       });
 
       test('Referral System should be implemented', () async {
@@ -85,17 +125,29 @@ void main() {
           'lib/presentation/screens/referral_screen.dart',
           ['ReferralScreen', 'referral'],
         );
-        expect(result, isTrue, reason: 'Referral System implementation is incomplete or missing');
+        expect(
+          result,
+          isTrue,
+          reason: 'Referral System implementation is incomplete or missing',
+        );
       });
 
       test('Guild/Community System should be implemented', () async {
         final file = File('lib/core/community/guild_service.dart');
-        expect(await file.exists(), isTrue, reason: 'Guild Service file is missing');
+        expect(
+          await file.exists(),
+          isTrue,
+          reason: 'Guild Service file is missing',
+        );
       });
 
       test('Habit Battle System should be implemented', () async {
         final file = File('lib/core/battle/battle_service.dart');
-        expect(await file.exists(), isTrue, reason: 'Battle Service file is missing');
+        expect(
+          await file.exists(),
+          isTrue,
+          reason: 'Battle Service file is missing',
+        );
       });
     });
 
@@ -105,12 +157,23 @@ void main() {
           'lib/core/monetization/subscription_manager.dart',
           ['purchaseSubscription', 'validateSubscription'],
         );
-        expect(result, isTrue, reason: 'Subscription Management implementation is incomplete or missing');
+        expect(
+          result,
+          isTrue,
+          reason:
+              'Subscription Management implementation is incomplete or missing',
+        );
       });
 
       test('Streak Recovery Purchase should be implemented', () async {
-        final file = File('lib/core/monetization/streak_recovery_purchase.dart');
-        expect(await file.exists(), isTrue, reason: 'Streak Recovery Purchase file is missing');
+        final file = File(
+          'lib/core/monetization/streak_recovery_purchase.dart',
+        );
+        expect(
+          await file.exists(),
+          isTrue,
+          reason: 'Streak Recovery Purchase file is missing',
+        );
       });
 
       test('Premium Subscription Screen should be present', () async {
@@ -118,7 +181,12 @@ void main() {
           'lib/presentation/screens/subscription_premium_screen.dart',
           ['SubscriptionPremiumScreen', 'premium'],
         );
-        expect(result, isTrue, reason: 'Premium Subscription Screen implementation is incomplete or missing');
+        expect(
+          result,
+          isTrue,
+          reason:
+              'Premium Subscription Screen implementation is incomplete or missing',
+        );
       });
     });
   });

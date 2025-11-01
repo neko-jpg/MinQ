@@ -13,5 +13,6 @@ class HabitArchetype with _$HabitArchetype {
     required List<String> challenges,
   }) = _HabitArchetype;
 
-  factory HabitArchetype.fromJson(Map<String, dynamic> json) => _$HabitArchetypeFromJson(json);
+  factory HabitArchetype.fromJson(Map<String, dynamic> json) =>
+      _$HabitArchetypeFromJson(json);
 }

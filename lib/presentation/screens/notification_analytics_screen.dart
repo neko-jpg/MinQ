@@ -16,10 +16,12 @@ class NotificationAnalyticsScreen extends ConsumerStatefulWidget {
   const NotificationAnalyticsScreen({super.key});
 
   @override
-  ConsumerState<NotificationAnalyticsScreen> createState() => _NotificationAnalyticsScreenState();
+  ConsumerState<NotificationAnalyticsScreen> createState() =>
+      _NotificationAnalyticsScreenState();
 }
 
-class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyticsScreen>
+class _NotificationAnalyticsScreenState
+    extends ConsumerState<NotificationAnalyticsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 30));
@@ -58,28 +60,29 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
           ),
           PopupMenuButton<String>(
             onSelected: (value) => _handleMenuAction(value, context, l10n),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'export',
-                child: Row(
-                  children: [
-                    const Icon(Icons.download),
-                    const SizedBox(width: 8),
-                    Text(l10n.exportData),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'refresh',
-                child: Row(
-                  children: [
-                    const Icon(Icons.refresh),
-                    const SizedBox(width: 8),
-                    Text(l10n.retry),
-                  ],
-                ),
-              ),
-            ],
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    value: 'export',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.download),
+                        const SizedBox(width: 8),
+                        Text(l10n.exportData),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'refresh',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.refresh),
+                        const SizedBox(width: 8),
+                        Text(l10n.retry),
+                      ],
+                    ),
+                  ),
+                ],
           ),
         ],
         bottom: TabBar(
@@ -105,94 +108,108 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
   }
 
   Widget _buildOverviewTab(BuildContext context, AppLocalizations l10n) {
-    final allMetrics = ref.watch(allCategoryMetricsProvider(AllMetricsParams(
-      userId: _selectedUserId,
-      startDate: _startDate,
-      endDate: _endDate,
-    )));
+    final allMetrics = ref.watch(
+      allCategoryMetricsProvider(
+        AllMetricsParams(
+          userId: _selectedUserId,
+          startDate: _startDate,
+          endDate: _endDate,
+        ),
+      ),
+    );
 
     return allMetrics.when(
-      data: (metrics) => SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 期間表示
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Icon(Icons.date_range, color: Theme.of(context).colorScheme.primary),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Period: ${_formatDate(_startDate)} - ${_formatDate(_endDate)}',
-                      style: Theme.of(context).textTheme.titleMedium,
+      data:
+          (metrics) => SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 期間表示
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.date_range,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Period: ${_formatDate(_startDate)} - ${_formatDate(_endDate)}',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // 全体統計
-            _buildOverallStats(context, metrics, l10n),
-            
-            const SizedBox(height: 16),
-            
-            // カテゴリ別メトリクス
-            Text(
-              'Category Performance',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            
-            ...metrics.entries.map((entry) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: NotificationMetricsCard(
-                  category: entry.key,
-                  metrics: entry.value,
+
+                const SizedBox(height: 16),
+
+                // 全体統計
+                _buildOverallStats(context, metrics, l10n),
+
+                const SizedBox(height: 16),
+
+                // カテゴリ別メトリクス
+                Text(
+                  'Category Performance',
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-              );
-            }),
-          ],
-        ),
-      ),
+                const SizedBox(height: 8),
+
+                ...metrics.entries.map((entry) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: NotificationMetricsCard(
+                      category: entry.key,
+                      metrics: entry.value,
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Theme.of(context).colorScheme.error,
+      error:
+          (error, stack) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Failed to load analytics data',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  error.toString(),
+                  style: Theme.of(context).textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed:
+                      () => ref.refresh(
+                        allCategoryMetricsProvider(
+                          AllMetricsParams(
+                            userId: _selectedUserId,
+                            startDate: _startDate,
+                            endDate: _endDate,
+                          ),
+                        ),
+                      ),
+                  child: Text(l10n.retry),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              'Failed to load analytics data',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              error.toString(),
-              style: Theme.of(context).textTheme.bodySmall,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => ref.refresh(allCategoryMetricsProvider(AllMetricsParams(
-                userId: _selectedUserId,
-                startDate: _startDate,
-                endDate: _endDate,
-              ))),
-              child: Text(l10n.retry),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -203,10 +220,14 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
   ) {
     final totalSent = metrics.values.fold(0, (sum, m) => sum + m.totalSent);
     final totalOpened = metrics.values.fold(0, (sum, m) => sum + m.totalOpened);
-    final totalConverted = metrics.values.fold(0, (sum, m) => sum + m.totalConverted);
-    
+    final totalConverted = metrics.values.fold(
+      0,
+      (sum, m) => sum + m.totalConverted,
+    );
+
     final overallOpenRate = totalSent > 0 ? (totalOpened / totalSent) : 0.0;
-    final overallConversionRate = totalOpened > 0 ? (totalConverted / totalOpened) : 0.0;
+    final overallConversionRate =
+        totalOpened > 0 ? (totalConverted / totalOpened) : 0.0;
 
     return Card(
       child: Padding(
@@ -219,7 +240,7 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
-            
+
             Row(
               children: [
                 Expanded(
@@ -242,9 +263,9 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             Row(
               children: [
                 Expanded(
@@ -319,30 +340,37 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 16),
-          
+
           // 各カテゴリの最適タイミング分析
           ...NotificationCategory.values.map((category) {
-            final analysis = ref.watch(optimalTimingAnalysisProvider(OptimalTimingParams(
-              userId: _selectedUserId,
-              category: category,
-            )));
-            
-            return analysis.when(
-              data: (data) => data != null
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: OptimalTimingChart(
-                        category: category,
-                        analysis: data,
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-              loading: () => const Card(
-                child: Padding(
-                  padding: EdgeInsets.all(32),
-                  child: Center(child: CircularProgressIndicator()),
+            final analysis = ref.watch(
+              optimalTimingAnalysisProvider(
+                OptimalTimingParams(
+                  userId: _selectedUserId,
+                  category: category,
                 ),
               ),
+            );
+
+            return analysis.when(
+              data:
+                  (data) =>
+                      data != null
+                          ? Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: OptimalTimingChart(
+                              category: category,
+                              analysis: data,
+                            ),
+                          )
+                          : const SizedBox.shrink(),
+              loading:
+                  () => const Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(32),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  ),
               error: (error, stack) => const SizedBox.shrink(),
             );
           }),
@@ -352,147 +380,156 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
   }
 
   Widget _buildCategoriesTab(BuildContext context, AppLocalizations l10n) {
-    final allMetrics = ref.watch(allCategoryMetricsProvider(AllMetricsParams(
-      userId: _selectedUserId,
-      startDate: _startDate,
-      endDate: _endDate,
-    )));
-
-    return allMetrics.when(
-      data: (metrics) => SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Category Performance Comparison',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            
-            CategoryPerformanceChart(metrics: metrics),
-            
-            const SizedBox(height: 24),
-            
-            Text(
-              'Detailed Category Metrics',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            
-            ...metrics.entries.map((entry) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: NotificationMetricsCard(
-                  category: entry.key,
-                  metrics: entry.value,
-                  showDetails: true,
-                ),
-              );
-            }),
-          ],
+    final allMetrics = ref.watch(
+      allCategoryMetricsProvider(
+        AllMetricsParams(
+          userId: _selectedUserId,
+          startDate: _startDate,
+          endDate: _endDate,
         ),
       ),
+    );
+
+    return allMetrics.when(
+      data:
+          (metrics) => SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Category Performance Comparison',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 16),
+
+                CategoryPerformanceChart(metrics: metrics),
+
+                const SizedBox(height: 24),
+
+                Text(
+                  'Detailed Category Metrics',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 16),
+
+                ...metrics.entries.map((entry) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: NotificationMetricsCard(
+                      category: entry.key,
+                      metrics: entry.value,
+                      showDetails: true,
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text('Error loading category data: $error'),
-      ),
+      error:
+          (error, stack) =>
+              Center(child: Text('Error loading category data: $error')),
     );
   }
 
   Widget _buildInsightsTab(BuildContext context, AppLocalizations l10n) {
-    final behaviorAnalysis = ref.watch(behaviorPatternAnalysisProvider(_selectedUserId));
+    final behaviorAnalysis = ref.watch(
+      behaviorPatternAnalysisProvider(_selectedUserId),
+    );
 
     return behaviorAnalysis.when(
-      data: (analysis) => analysis != null
-          ? SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Behavior Insights',
-                    style: Theme.of(context).textTheme.titleLarge,
+      data:
+          (analysis) =>
+              analysis != null
+                  ? SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Behavior Insights',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const SizedBox(height: 16),
+
+                        _buildInsightCard(
+                          context,
+                          'Active Hours',
+                          analysis.activeHours.join(', '),
+                          Icons.schedule,
+                          'Times when you are most active in the app',
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        _buildInsightCard(
+                          context,
+                          'Preferred Categories',
+                          analysis.preferredCategories.join(', '),
+                          Icons.favorite,
+                          'Notification types you engage with most',
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        _buildInsightCard(
+                          context,
+                          'Engagement Trend',
+                          '${(analysis.engagementTrend * 100).toStringAsFixed(1)}%',
+                          Icons.trending_up,
+                          'Overall engagement with notifications',
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        _buildInsightCard(
+                          context,
+                          'Responsiveness Score',
+                          '${(analysis.responsiveness * 100).toStringAsFixed(1)}%',
+                          Icons.speed,
+                          'How quickly you respond to notifications',
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        Text(
+                          'Recommendations',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const SizedBox(height: 16),
+
+                        _buildRecommendations(context, analysis),
+                      ],
+                    ),
+                  )
+                  : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.psychology_outlined,
+                          size: 64,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Not enough data for insights',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Use the app for a few more days to see personalized insights',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  
-                  _buildInsightCard(
-                    context,
-                    'Active Hours',
-                    analysis.activeHours.join(', '),
-                    Icons.schedule,
-                    'Times when you are most active in the app',
-                  ),
-                  
-                  const SizedBox(height: 12),
-                  
-                  _buildInsightCard(
-                    context,
-                    'Preferred Categories',
-                    analysis.preferredCategories.join(', '),
-                    Icons.favorite,
-                    'Notification types you engage with most',
-                  ),
-                  
-                  const SizedBox(height: 12),
-                  
-                  _buildInsightCard(
-                    context,
-                    'Engagement Trend',
-                    '${(analysis.engagementTrend * 100).toStringAsFixed(1)}%',
-                    Icons.trending_up,
-                    'Overall engagement with notifications',
-                  ),
-                  
-                  const SizedBox(height: 12),
-                  
-                  _buildInsightCard(
-                    context,
-                    'Responsiveness Score',
-                    '${(analysis.responsiveness * 100).toStringAsFixed(1)}%',
-                    Icons.speed,
-                    'How quickly you respond to notifications',
-                  ),
-                  
-                  const SizedBox(height: 24),
-                  
-                  Text(
-                    'Recommendations',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  _buildRecommendations(context, analysis),
-                ],
-              ),
-            )
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.psychology_outlined,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Not enough data for insights',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Use the app for a few more days to see personalized insights',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text('Error loading insights: $error'),
-      ),
+      error:
+          (error, stack) =>
+              Center(child: Text('Error loading insights: $error')),
     );
   }
 
@@ -514,20 +551,14 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
                 color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(
-                icon,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              child: Icon(icon, color: Theme.of(context).colorScheme.primary),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                  Text(title, style: Theme.of(context).textTheme.titleSmall),
                   const SizedBox(height: 4),
                   Text(
                     value,
@@ -551,49 +582,61 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
     );
   }
 
-  Widget _buildRecommendations(BuildContext context, BehaviorPatternAnalysis analysis) {
+  Widget _buildRecommendations(
+    BuildContext context,
+    BehaviorPatternAnalysis analysis,
+  ) {
     final recommendations = <String>[];
-    
+
     if (analysis.engagementTrend < 0.3) {
-      recommendations.add('Consider reducing notification frequency to avoid fatigue');
+      recommendations.add(
+        'Consider reducing notification frequency to avoid fatigue',
+      );
     }
-    
+
     if (analysis.responsiveness < 0.5) {
       recommendations.add('Try enabling smart notifications for better timing');
     }
-    
+
     if (analysis.activeHours.length < 3) {
-      recommendations.add('Notifications during ${analysis.activeHours.join(', ')} might be most effective');
+      recommendations.add(
+        'Notifications during ${analysis.activeHours.join(', ')} might be most effective',
+      );
     }
-    
+
     if (recommendations.isEmpty) {
-      recommendations.add('Your notification engagement is excellent! Keep it up.');
+      recommendations.add(
+        'Your notification engagement is excellent! Keep it up.',
+      );
     }
 
     return Column(
-      children: recommendations.map((recommendation) {
-        return Card(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.lightbulb_outline,
-                  color: Theme.of(context).colorScheme.primary,
+      children:
+          recommendations.map((recommendation) {
+            return Card(
+              color: Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.lightbulb_outline,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        recommendation,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    recommendation,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
+              ),
+            );
+          }).toList(),
     );
   }
 
@@ -613,7 +656,11 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
     }
   }
 
-  void _handleMenuAction(String action, BuildContext context, AppLocalizations l10n) {
+  void _handleMenuAction(
+    String action,
+    BuildContext context,
+    AppLocalizations l10n,
+  ) {
     switch (action) {
       case 'export':
         _exportAnalyticsData(context, l10n);
@@ -626,9 +673,9 @@ class _NotificationAnalyticsScreenState extends ConsumerState<NotificationAnalyt
 
   void _exportAnalyticsData(BuildContext context, AppLocalizations l10n) {
     // 実際の実装では分析データをエクスポート
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.dataExported)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.dataExported)));
   }
 
   void _refreshData() {

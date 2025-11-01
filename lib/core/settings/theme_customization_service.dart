@@ -49,9 +49,8 @@ class ThemeCustomizationService {
     required Brightness brightness,
     Color? accentColor,
   }) {
-    final baseTheme = brightness == Brightness.light 
-        ? MinqTheme.light() 
-        : MinqTheme.dark();
+    final baseTheme =
+        brightness == Brightness.light ? MinqTheme.light() : MinqTheme.dark();
 
     if (accentColor == null) {
       return baseTheme;
@@ -60,7 +59,7 @@ class ThemeCustomizationService {
     // Generate complementary colors based on accent
     final primaryHover = _adjustColorBrightness(accentColor, 0.1);
     final secondary = _adjustColorHue(accentColor, 30);
-    
+
     return baseTheme.copyWith(
       brandPrimary: accentColor,
       primaryHover: primaryHover,
@@ -122,7 +121,9 @@ class ThemePreviewData {
   });
 }
 
-final themeCustomizationServiceProvider = Provider<ThemeCustomizationService>((ref) {
+final themeCustomizationServiceProvider = Provider<ThemeCustomizationService>((
+  ref,
+) {
   final settingsService = ref.watch(settingsServiceProvider);
   return ThemeCustomizationService(settingsService);
 });
@@ -140,22 +141,20 @@ final accentColorProvider = FutureProvider<Color>((ref) async {
 });
 
 /// Provider for theme preview
-final themePreviewProvider = Provider.family<ThemePreviewData, ThemePreviewParams>((ref, params) {
-  final service = ref.watch(themeCustomizationServiceProvider);
-  return service.getThemePreview(
-    brightness: params.brightness,
-    accentColor: params.accentColor,
-  );
-});
+final themePreviewProvider =
+    Provider.family<ThemePreviewData, ThemePreviewParams>((ref, params) {
+      final service = ref.watch(themeCustomizationServiceProvider);
+      return service.getThemePreview(
+        brightness: params.brightness,
+        accentColor: params.accentColor,
+      );
+    });
 
 class ThemePreviewParams {
   final Brightness brightness;
   final Color? accentColor;
 
-  const ThemePreviewParams({
-    required this.brightness,
-    this.accentColor,
-  });
+  const ThemePreviewParams({required this.brightness, this.accentColor});
 
   @override
   bool operator ==(Object other) =>

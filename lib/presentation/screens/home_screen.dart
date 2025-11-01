@@ -26,30 +26,26 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-
   @override
   Widget build(BuildContext context) {
-    ref.listen<SyncStatus>(
-      syncStatusProvider,
-      (previous, next) {
-        if (!mounted || !next.showBanner || next.bannerMessage == null) {
-          return;
-        }
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
-          final messenger = ScaffoldMessenger.of(context);
-          messenger
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(next.bannerMessage!),
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
-        });
-      },
-    );
+    ref.listen<SyncStatus>(syncStatusProvider, (previous, next) {
+      if (!mounted || !next.showBanner || next.bannerMessage == null) {
+        return;
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final messenger = ScaffoldMessenger.of(context);
+        messenger
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(next.bannerMessage!),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        ref.read(syncStatusProvider.notifier).acknowledgeBanner();
+      });
+    });
 
     final syncStatus = ref.watch(syncStatusProvider);
     final homeAsync = ref.watch(homeDataProvider);
@@ -57,23 +53,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return SafeScaffold(
       body: homeAsync.when(
         loading: () => const _HomeScreenSkeleton(),
-        error: (error, _) => _HomeStateMessage(
-          icon: Icons.error_outline,
-          title: 'ホームデータの取得に失敗しました',
-          message: '通信状態を確認して再度お試しください。',
-          action: ResponsiveLayout.ensureTouchTarget(
-            child: FilledButton.icon(
-              onPressed: () => ref.invalidate(homeDataProvider),
-              icon: const Icon(Icons.refresh),
-              label: const Text('再読み込み'),
+        error:
+            (error, _) => _HomeStateMessage(
+              icon: Icons.error_outline,
+              title: 'ホームデータの取得に失敗しました',
+              message: '通信状態を確認して再度お試しください。',
+              action: ResponsiveLayout.ensureTouchTarget(
+                child: FilledButton.icon(
+                  onPressed: () => ref.invalidate(homeDataProvider),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('再読み込み'),
+                ),
+              ),
             ),
-          ),
-        ),
-        data: (data) => _HomeContent(
-          data: data,
-          isOffline: syncStatus.phase == SyncPhase.offline,
-          onRetry: () => ref.invalidate(homeDataProvider),
-        ),
+        data:
+            (data) => _HomeContent(
+              data: data,
+              isOffline: syncStatus.phase == SyncPhase.offline,
+              onRetry: () => ref.invalidate(homeDataProvider),
+            ),
       ),
     );
   }
@@ -141,12 +139,16 @@ class _Header extends StatelessWidget {
       children: [
         Text(
           'Welcome Home',
-          style: textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+          style: textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 8),
         Text(
           '今日のフォーカスとMiniQuestをチェックして、一日のスタートを切りましょう。',
-          style: textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          style: textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
       ],
     );
@@ -196,7 +198,9 @@ class _TodayFocusCard extends ConsumerWidget {
                 children: [
                   Text(
                     'Today’s Focus',
-                    style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -210,7 +214,9 @@ class _TodayFocusCard extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     focus?.headline ?? 'MiniQuestを作成して取り組むと、ここに今日のおすすめが表示されます。',
-                    style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -241,7 +247,9 @@ class _TodayFocusCard extends ConsumerWidget {
                       value: progress,
                       strokeWidth: 8,
                       valueColor: AlwaysStoppedAnimation(colorScheme.primary),
-                      backgroundColor: colorScheme.primary.withAlpha((255 * 0.1).round()),
+                      backgroundColor: colorScheme.primary.withAlpha(
+                        (255 * 0.1).round(),
+                      ),
                     ),
                   ),
                   Icon(
@@ -309,7 +317,9 @@ class _MiniQuestsSection extends ConsumerWidget {
           children: [
             Text(
               'Your Mini-Quests',
-              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             TextButton(
               onPressed: navigation.goToQuests,
@@ -331,7 +341,8 @@ class _MiniQuestsSection extends ConsumerWidget {
                 crossAxisSpacing: 12,
                 childAspectRatio: context.isMobile ? 1.45 : 1.2,
               ),
-              itemBuilder: (context, index) => _MiniQuestTile(quest: display[index]),
+              itemBuilder:
+                  (context, index) => _MiniQuestTile(quest: display[index]),
             );
           },
         ),
@@ -353,7 +364,10 @@ class _MiniQuestTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [colorScheme.primary, colorScheme.primary.withAlpha((255 * 0.75).round())],
+          colors: [
+            colorScheme.primary,
+            colorScheme.primary.withAlpha((255 * 0.75).round()),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -446,7 +460,9 @@ class _WeeklyStreakCard extends StatelessWidget {
           children: [
             Text(
               'Weekly Streak',
-              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 12),
             Row(
@@ -461,7 +477,9 @@ class _WeeklyStreakCard extends StatelessWidget {
                             _weekdayName(day.date.weekday),
                             style: textTheme.bodySmall?.copyWith(
                               color:
-                                  isToday ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
+                                  isToday
+                                      ? colorScheme.onSurface
+                                      : colorScheme.onSurfaceVariant,
                               fontWeight:
                                   isToday ? FontWeight.bold : FontWeight.normal,
                             ),
@@ -565,19 +583,20 @@ class _HomeStateMessage extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               title,
-              style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               message,
-              style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+              style: textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
             ),
-            if (action != null) ...[
-              const SizedBox(height: 16),
-              action!,
-            ],
+            if (action != null) ...[const SizedBox(height: 16), action!],
           ],
         ),
       ),

@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:minq/core/animations/animation_system.dart';
 import 'package:minq/core/animations/particle_system.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/theme/theme_extensions.dart';
 
 /// XP獲得時のアニメーションウィジェット（要件48）
 class XPGainAnimation extends StatefulWidget {
   final int xpGained;
   final String reason;
   final VoidCallback? onComplete;
-  
+
   const XPGainAnimation({
     super.key,
     required this.xpGained,
@@ -29,81 +28,96 @@ class _XPGainAnimationState extends State<XPGainAnimation>
   late Animation<double> _opacityAnimation;
   late Animation<Offset> _slideAnimation;
   late Animation<int> _countAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
-      duration: AnimationSystem.instance.getDuration(const Duration(milliseconds: 2000)),
+      duration: AnimationSystem.instance.getDuration(
+        const Duration(milliseconds: 2000),
+      ),
       vsync: this,
     );
-    
+
     _particleController = AnimationController(
-      duration: AnimationSystem.instance.getDuration(const Duration(milliseconds: 1500)),
+      duration: AnimationSystem.instance.getDuration(
+        const Duration(milliseconds: 1500),
+      ),
       vsync: this,
     );
-    
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Interval(0.0, 0.3, curve: AnimationSystem.instance.getCurve(Curves.elasticOut)),
-    ));
-    
-    _opacityAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Interval(0.7, 1.0, curve: AnimationSystem.instance.getCurve(Curves.easeOut)),
-    ));
-    
+
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(
+          0.0,
+          0.3,
+          curve: AnimationSystem.instance.getCurve(Curves.elasticOut),
+        ),
+      ),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(
+          0.7,
+          1.0,
+          curve: AnimationSystem.instance.getCurve(Curves.easeOut),
+        ),
+      ),
+    );
+
     _slideAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: const Offset(0, -2),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: AnimationSystem.instance.getCurve(Curves.easeOut),
-    ));
-    
-    _countAnimation = IntTween(
-      begin: 0,
-      end: widget.xpGained,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Interval(0.1, 0.6, curve: AnimationSystem.instance.getCurve(Curves.easeOutCubic)),
-    ));
-    
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: AnimationSystem.instance.getCurve(Curves.easeOut),
+      ),
+    );
+
+    _countAnimation = IntTween(begin: 0, end: widget.xpGained).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(
+          0.1,
+          0.6,
+          curve: AnimationSystem.instance.getCurve(Curves.easeOutCubic),
+        ),
+      ),
+    );
+
     _startAnimation();
   }
-  
+
   void _startAnimation() async {
     // ハプティックフィードバック
     AnimationSystem.instance.playSuccessHaptic();
-    
+
     if (AnimationSystem.instance.animationsEnabled) {
       await _controller.forward();
       _particleController.forward();
     }
-    
+
     if (widget.onComplete != null) {
       widget.onComplete!();
     }
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     _particleController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -122,7 +136,7 @@ class _XPGainAnimationState extends State<XPGainAnimation>
                       config: ParticleConfig.xpGain(),
                       isActive: _particleController.isAnimating,
                     ),
-                  
+
                   // メインXP表示
                   Container(
                     padding: EdgeInsets.symmetric(
@@ -189,37 +203,34 @@ class _XPGainAnimationState extends State<XPGainAnimation>
       },
     );
   }
-  
-
 }
-
-
 
 /// XP獲得オーバーレイ
 class XPGainOverlay {
   static void show(BuildContext context, int xpGained, String reason) {
     final overlay = Overlay.of(context);
     late OverlayEntry entry;
-    
+
     entry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: MediaQuery.of(context).size.height * 0.3,
-        left: 0,
-        right: 0,
-        child: Center(
-          child: XPGainAnimation(
-            xpGained: xpGained,
-            reason: reason,
-            onComplete: () {
-              Future.delayed(const Duration(milliseconds: 500), () {
-                entry.remove();
-              });
-            },
+      builder:
+          (context) => Positioned(
+            top: MediaQuery.of(context).size.height * 0.3,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: XPGainAnimation(
+                xpGained: xpGained,
+                reason: reason,
+                onComplete: () {
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    entry.remove();
+                  });
+                },
+              ),
+            ),
           ),
-        ),
-      ),
     );
-    
+
     overlay.insert(entry);
   }
 }
@@ -230,7 +241,7 @@ class LevelUpAnimation extends StatefulWidget {
   final String levelName;
   final List<String> rewards;
   final VoidCallback? onComplete;
-  
+
   const LevelUpAnimation({
     super.key,
     required this.newLevel,
@@ -249,43 +260,50 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotationAnimation;
   late Animation<double> _glowAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
-      duration: AnimationSystem.instance.getDuration(const Duration(milliseconds: 3000)),
+      duration: AnimationSystem.instance.getDuration(
+        const Duration(milliseconds: 3000),
+      ),
       vsync: this,
     );
-    
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Interval(0.0, 0.4, curve: AnimationSystem.instance.getCurve(Curves.elasticOut)),
-    ));
-    
-    _rotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 2.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Interval(0.2, 0.8, curve: AnimationSystem.instance.getCurve(Curves.easeInOut)),
-    ));
-    
-    _glowAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: AnimationSystem.instance.getCurve(Curves.easeInOut),
-    ));
-    
+
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(
+          0.0,
+          0.4,
+          curve: AnimationSystem.instance.getCurve(Curves.elasticOut),
+        ),
+      ),
+    );
+
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 2.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(
+          0.2,
+          0.8,
+          curve: AnimationSystem.instance.getCurve(Curves.easeInOut),
+        ),
+      ),
+    );
+
+    _glowAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: AnimationSystem.instance.getCurve(Curves.easeInOut),
+      ),
+    );
+
     // ハプティックフィードバック
     AnimationSystem.instance.playSuccessHaptic();
-    
+
     if (AnimationSystem.instance.animationsEnabled) {
       _controller.forward().then((_) {
         if (widget.onComplete != null) {
@@ -296,17 +314,17 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
       widget.onComplete!();
     }
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -329,14 +347,13 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: const RadialGradient(
-                          colors: [
-                            Colors.amber,
-                            Colors.orange,
-                          ],
+                          colors: [Colors.amber, Colors.orange],
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.amber.withOpacity(_glowAnimation.value * 0.8),
+                            color: Colors.amber.withOpacity(
+                              _glowAnimation.value * 0.8,
+                            ),
                             blurRadius: 30 * _glowAnimation.value,
                             spreadRadius: 10 * _glowAnimation.value,
                           ),
@@ -350,9 +367,9 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
                     ),
                   ),
                 ),
-                
+
                 SizedBox(height: tokens.spacing.xl),
-                
+
                 // レベルアップテキスト
                 FadeTransition(
                   opacity: _scaleAnimation,
@@ -391,26 +408,35 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
                           ),
                         ),
                         SizedBox(height: tokens.spacing.sm),
-                        ...widget.rewards.take(3).map((reward) => Padding(
-                          padding: EdgeInsets.only(bottom: tokens.spacing.xs),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                                size: 16,
-                              ),
-                              SizedBox(width: tokens.spacing.xs),
-                              Text(
-                                reward,
-                                style: tokens.typography.bodySmall.copyWith(
-                                  color: Colors.white.withOpacity(0.8),
+                        ...widget.rewards
+                            .take(3)
+                            .map(
+                              (reward) => Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: tokens.spacing.xs,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 16,
+                                    ),
+                                    SizedBox(width: tokens.spacing.xs),
+                                    Text(
+                                      reward,
+                                      style: tokens.typography.bodySmall
+                                          .copyWith(
+                                            color: Colors.white.withOpacity(
+                                              0.8,
+                                            ),
+                                          ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        )),
+                            ),
                       ],
                     ],
                   ),
@@ -426,23 +452,29 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
 
 /// レベルアップオーバーレイ
 class LevelUpOverlay {
-  static void show(BuildContext context, int newLevel, String levelName, {List<String> rewards = const []}) {
+  static void show(
+    BuildContext context,
+    int newLevel,
+    String levelName, {
+    List<String> rewards = const [],
+  }) {
     final overlay = Overlay.of(context);
     late OverlayEntry entry;
-    
+
     entry = OverlayEntry(
-      builder: (context) => LevelUpAnimation(
-        newLevel: newLevel,
-        levelName: levelName,
-        rewards: rewards,
-        onComplete: () {
-          Future.delayed(const Duration(milliseconds: 1000), () {
-            entry.remove();
-          });
-        },
-      ),
+      builder:
+          (context) => LevelUpAnimation(
+            newLevel: newLevel,
+            levelName: levelName,
+            rewards: rewards,
+            onComplete: () {
+              Future.delayed(const Duration(milliseconds: 1000), () {
+                entry.remove();
+              });
+            },
+          ),
     );
-    
+
     overlay.insert(entry);
   }
 }

@@ -40,7 +40,9 @@ void main(List<String> args) {
   }
 
   final coverage = coveredLines / totalLines * 100;
-  stdout.writeln('Line coverage: ${coverage.toStringAsFixed(2)}% (min ${minCoverage.toStringAsFixed(2)}%)');
+  stdout.writeln(
+    'Line coverage: ${coverage.toStringAsFixed(2)}% (min ${minCoverage.toStringAsFixed(2)}%)',
+  );
 
   if (coverage + 1e-6 < minCoverage) {
     stderr.writeln('Coverage requirement not met.');

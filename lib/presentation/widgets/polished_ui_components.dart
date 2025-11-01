@@ -50,10 +50,7 @@ class _PolishedProgressIndicatorState extends State<PolishedProgressIndicator>
       _animation = Tween<double>(
         begin: 0.0,
         end: widget.value!,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ));
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
       _controller.forward();
     }
   }
@@ -65,10 +62,7 @@ class _PolishedProgressIndicatorState extends State<PolishedProgressIndicator>
       _animation = Tween<double>(
         begin: _animation.value,
         end: widget.value!,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ));
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
       _controller.forward(from: 0.0);
     }
   }
@@ -81,8 +75,7 @@ class _PolishedProgressIndicatorState extends State<PolishedProgressIndicator>
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor =
-        widget.backgroundColor ?? MinqTokens.surface;
+    final backgroundColor = widget.backgroundColor ?? MinqTokens.surface;
     final valueColor = widget.valueColor ?? MinqTokens.brandPrimary;
 
     return SizedBox(
@@ -108,7 +101,8 @@ class _PolishedProgressIndicatorState extends State<PolishedProgressIndicator>
                 final percentage = (_animation.value * 100).round();
                 return Text(
                   '$percentage%',
-                  style: widget.percentageStyle ??
+                  style:
+                      widget.percentageStyle ??
                       MinqTokens.bodySmall.copyWith(
                         color: MinqTokens.textPrimary,
                         fontWeight: FontWeight.w600,
@@ -143,20 +137,22 @@ class _ProgressPainter extends CustomPainter {
     final radius = (size.width - strokeWidth) / 2;
 
     // Background circle
-    final backgroundPaint = Paint()
-      ..color = backgroundColor
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final backgroundPaint =
+        Paint()
+          ..color = backgroundColor
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     canvas.drawCircle(center, radius, backgroundPaint);
 
     // Progress arc
-    final progressPaint = Paint()
-      ..color = valueColor
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final progressPaint =
+        Paint()
+          ..color = valueColor
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     if (isIndeterminate) {
       // Spinning animation for indeterminate progress
@@ -234,10 +230,7 @@ class _PolishedLinearProgressIndicatorState
       _animation = Tween<double>(
         begin: 0.0,
         end: widget.value!,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ));
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
       _controller.forward();
     }
   }
@@ -249,10 +242,7 @@ class _PolishedLinearProgressIndicatorState
       _animation = Tween<double>(
         begin: _animation.value,
         end: widget.value!,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ));
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
       _controller.forward(from: 0.0);
     }
   }
@@ -265,8 +255,7 @@ class _PolishedLinearProgressIndicatorState
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor =
-        widget.backgroundColor ?? MinqTokens.surface;
+    final backgroundColor = widget.backgroundColor ?? MinqTokens.surface;
     final borderRadius =
         widget.borderRadius ?? BorderRadius.circular(widget.height / 2);
 
@@ -360,18 +349,12 @@ class _PolishedFloatingActionButtonState
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.92,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _shadowAnimation = Tween<double>(
       begin: 1.0,
       end: 0.3,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -406,10 +389,8 @@ class _PolishedFloatingActionButtonState
   @override
   Widget build(BuildContext context) {
     final size = widget.mini ? 40.0 : 56.0;
-    final backgroundColor =
-        widget.backgroundColor ?? MinqTokens.brandPrimary;
-    final foregroundColor =
-        widget.foregroundColor ?? MinqTokens.surface;
+    final backgroundColor = widget.backgroundColor ?? MinqTokens.brandPrimary;
+    final foregroundColor = widget.foregroundColor ?? MinqTokens.surface;
 
     return Tooltip(
       message: widget.tooltip ?? '',
@@ -427,7 +408,8 @@ class _PolishedFloatingActionButtonState
                 width: size,
                 height: size,
                 decoration: BoxDecoration(
-                  gradient: widget.gradient ??
+                  gradient:
+                      widget.gradient ??
                       LinearGradient(
                         colors: [
                           backgroundColor,
@@ -439,7 +421,9 @@ class _PolishedFloatingActionButtonState
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha((51 * _shadowAnimation.value).round()),
+                      color: Colors.black.withAlpha(
+                        (51 * _shadowAnimation.value).round(),
+                      ),
                       blurRadius: 10 * _shadowAnimation.value,
                       offset: const Offset(0, 5),
                     ),
@@ -520,18 +504,12 @@ class _PolishedElevatedButtonState extends State<PolishedElevatedButton>
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.96,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _shadowAnimation = Tween<double>(
       begin: 1.0,
       end: 0.5,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -566,10 +544,8 @@ class _PolishedElevatedButtonState extends State<PolishedElevatedButton>
   @override
   Widget build(BuildContext context) {
     final isEnabled = widget.onPressed != null && !widget.isLoading;
-    final backgroundColor =
-        widget.backgroundColor ?? MinqTokens.brandPrimary;
-    final foregroundColor =
-        widget.foregroundColor ?? MinqTokens.surface;
+    final backgroundColor = widget.backgroundColor ?? MinqTokens.brandPrimary;
+    final foregroundColor = widget.foregroundColor ?? MinqTokens.surface;
 
     return GestureDetector(
       onTapDown: _onTapDown,
@@ -584,41 +560,43 @@ class _PolishedElevatedButtonState extends State<PolishedElevatedButton>
             child: Container(
               width: widget.width,
               height: widget.height ?? 48,
-              constraints: const BoxConstraints(
-                minWidth: 48,
-                minHeight: 48,
-              ),
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
               decoration: BoxDecoration(
-                gradient: widget.gradient ??
+                gradient:
+                    widget.gradient ??
                     (isEnabled
                         ? LinearGradient(
-                            colors: [
-                              backgroundColor,
-                              Color.lerp(backgroundColor, Colors.black, 0.1)!,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          )
+                          colors: [
+                            backgroundColor,
+                            Color.lerp(backgroundColor, Colors.black, 0.1)!,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
                         : null),
-                color: widget.gradient == null && !isEnabled
-                    ? const Color(0xFFE5E7EB)
-                    : (widget.gradient == null ? backgroundColor : null),
-                borderRadius:
-                    widget.borderRadius ?? MinqTokens.cornerMedium(),
-                boxShadow: isEnabled
-                    ? [
-                        BoxShadow(
-                          color: Colors.black.withAlpha((51 * _shadowAnimation.value).round()),
-                          blurRadius: 10 * _shadowAnimation.value,
-                          offset: const Offset(0, 5),
-                        ),
-                      ]
-                    : null,
+                color:
+                    widget.gradient == null && !isEnabled
+                        ? const Color(0xFFE5E7EB)
+                        : (widget.gradient == null ? backgroundColor : null),
+                borderRadius: widget.borderRadius ?? MinqTokens.cornerMedium(),
+                boxShadow:
+                    isEnabled
+                        ? [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(
+                              (51 * _shadowAnimation.value).round(),
+                            ),
+                            blurRadius: 10 * _shadowAnimation.value,
+                            offset: const Offset(0, 5),
+                          ),
+                        ]
+                        : null,
               ),
               child: Material(
                 color: Colors.transparent,
                 child: Padding(
-                  padding: widget.padding ??
+                  padding:
+                      widget.padding ??
                       EdgeInsets.symmetric(
                         horizontal: MinqTokens.spacing(6),
                         vertical: MinqTokens.spacing(4),
@@ -637,11 +615,7 @@ class _PolishedElevatedButtonState extends State<PolishedElevatedButton>
                           ),
                         )
                       else if (widget.icon != null) ...[
-                        Icon(
-                          widget.icon,
-                          color: foregroundColor,
-                          size: 18,
-                        ),
+                        Icon(widget.icon, color: foregroundColor, size: 18),
                         const SizedBox(width: 8),
                       ],
                       if (!widget.isLoading)
@@ -713,10 +687,7 @@ class _PolishedOutlinedButtonState extends State<PolishedOutlinedButton>
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.98,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -751,10 +722,8 @@ class _PolishedOutlinedButtonState extends State<PolishedOutlinedButton>
   @override
   Widget build(BuildContext context) {
     final isEnabled = widget.onPressed != null && !widget.isLoading;
-    final borderColor =
-        widget.borderColor ?? const Color(0xFFE5E7EB);
-    final foregroundColor =
-        widget.foregroundColor ?? MinqTokens.brandPrimary;
+    final borderColor = widget.borderColor ?? const Color(0xFFE5E7EB);
+    final foregroundColor = widget.foregroundColor ?? MinqTokens.brandPrimary;
 
     _backgroundAnimation = ColorTween(
       begin: Colors.transparent,
@@ -774,14 +743,10 @@ class _PolishedOutlinedButtonState extends State<PolishedOutlinedButton>
             child: Container(
               width: widget.width,
               height: widget.height ?? 48,
-              constraints: const BoxConstraints(
-                minWidth: 48,
-                minHeight: 48,
-              ),
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
               decoration: BoxDecoration(
                 color: _backgroundAnimation.value,
-                borderRadius:
-                    widget.borderRadius ?? MinqTokens.cornerMedium(),
+                borderRadius: widget.borderRadius ?? MinqTokens.cornerMedium(),
                 border: Border.all(
                   color: isEnabled ? borderColor : const Color(0xFFD1D5DB),
                   width: 1.5,
@@ -790,7 +755,8 @@ class _PolishedOutlinedButtonState extends State<PolishedOutlinedButton>
               child: Material(
                 color: Colors.transparent,
                 child: Padding(
-                  padding: widget.padding ??
+                  padding:
+                      widget.padding ??
                       EdgeInsets.symmetric(
                         horizontal: MinqTokens.spacing(6),
                         vertical: MinqTokens.spacing(4),
@@ -809,11 +775,7 @@ class _PolishedOutlinedButtonState extends State<PolishedOutlinedButton>
                           ),
                         )
                       else if (widget.icon != null) ...[
-                        Icon(
-                          widget.icon,
-                          color: foregroundColor,
-                          size: 18,
-                        ),
+                        Icon(widget.icon, color: foregroundColor, size: 18),
                         const SizedBox(width: 8),
                       ],
                       if (!widget.isLoading)
@@ -877,10 +839,7 @@ class _PolishedTextButtonState extends State<PolishedTextButton>
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.98,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -914,8 +873,7 @@ class _PolishedTextButtonState extends State<PolishedTextButton>
 
   @override
   Widget build(BuildContext context) {
-    final foregroundColor =
-        widget.foregroundColor ?? MinqTokens.brandPrimary;
+    final foregroundColor = widget.foregroundColor ?? MinqTokens.brandPrimary;
 
     _backgroundAnimation = ColorTween(
       begin: Colors.transparent,
@@ -933,15 +891,13 @@ class _PolishedTextButtonState extends State<PolishedTextButton>
           return Transform.scale(
             scale: _scaleAnimation.value,
             child: Container(
-              constraints: const BoxConstraints(
-                minWidth: 48,
-                minHeight: 48,
-              ),
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
               decoration: BoxDecoration(
                 color: _backgroundAnimation.value,
                 borderRadius: MinqTokens.cornerSmall(),
               ),
-              padding: widget.padding ??
+              padding:
+                  widget.padding ??
                   EdgeInsets.symmetric(
                     horizontal: MinqTokens.spacing(4),
                     vertical: MinqTokens.spacing(2),
@@ -960,11 +916,7 @@ class _PolishedTextButtonState extends State<PolishedTextButton>
                       ),
                     )
                   else if (widget.icon != null) ...[
-                    Icon(
-                      widget.icon,
-                      color: foregroundColor,
-                      size: 18,
-                    ),
+                    Icon(widget.icon, color: foregroundColor, size: 18),
                     const SizedBox(width: 8),
                   ],
                   if (!widget.isLoading)
@@ -1090,18 +1042,12 @@ class _PolishedCardState extends State<PolishedCard>
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.98,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _elevationAnimation = Tween<double>(
       begin: 1.0,
       end: 1.5,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -1148,10 +1094,8 @@ class _PolishedCardState extends State<PolishedCard>
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor =
-        widget.backgroundColor ?? MinqTokens.surface;
-    final borderRadius =
-        widget.borderRadius ?? MinqTokens.cornerLarge();
+    final backgroundColor = widget.backgroundColor ?? MinqTokens.surface;
+    final borderRadius = widget.borderRadius ?? MinqTokens.cornerLarge();
 
     return Container(
       margin: widget.margin,
@@ -1178,17 +1122,18 @@ class _PolishedCardState extends State<PolishedCard>
                     color: backgroundColor,
                     borderRadius: borderRadius,
                     border: widget.border,
-                    boxShadow: currentElevation > 0
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withAlpha(
-                                (25 * currentElevation).round().clamp(0, 255),
+                    boxShadow:
+                        currentElevation > 0
+                            ? [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(
+                                  (25 * currentElevation).round().clamp(0, 255),
+                                ),
+                                blurRadius: currentElevation * 4,
+                                offset: Offset(0, currentElevation * 2),
                               ),
-                              blurRadius: currentElevation * 4,
-                              offset: Offset(0, currentElevation * 2),
-                            ),
-                          ]
-                        : null,
+                            ]
+                            : null,
                   ),
                   child: widget.child,
                 ),
@@ -1245,10 +1190,7 @@ class _PolishedChipState extends State<PolishedChip>
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.95,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -1282,12 +1224,14 @@ class _PolishedChipState extends State<PolishedChip>
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = widget.isSelected
-        ? (widget.backgroundColor ?? MinqTokens.brandPrimary)
-        : (widget.backgroundColor ?? MinqTokens.surface);
-    final foregroundColor = widget.isSelected
-        ? (widget.foregroundColor ?? MinqTokens.surface)
-        : (widget.foregroundColor ?? MinqTokens.textPrimary);
+    final backgroundColor =
+        widget.isSelected
+            ? (widget.backgroundColor ?? MinqTokens.brandPrimary)
+            : (widget.backgroundColor ?? MinqTokens.surface);
+    final foregroundColor =
+        widget.isSelected
+            ? (widget.foregroundColor ?? MinqTokens.surface)
+            : (widget.foregroundColor ?? MinqTokens.textPrimary);
 
     return GestureDetector(
       onTapDown: _onTapDown,
@@ -1300,7 +1244,8 @@ class _PolishedChipState extends State<PolishedChip>
           return Transform.scale(
             scale: _scaleAnimation.value,
             child: Container(
-              padding: widget.padding ??
+              padding:
+                  widget.padding ??
                   EdgeInsets.symmetric(
                     horizontal: MinqTokens.spacing(4),
                     vertical: MinqTokens.spacing(2),
@@ -1308,22 +1253,16 @@ class _PolishedChipState extends State<PolishedChip>
               decoration: BoxDecoration(
                 color: backgroundColor,
                 borderRadius: BorderRadius.circular(20),
-                border: widget.isSelected
-                    ? null
-                    : Border.all(
-                        color: const Color(0xFFE5E7EB),
-                        width: 1,
-                      ),
+                border:
+                    widget.isSelected
+                        ? null
+                        : Border.all(color: const Color(0xFFE5E7EB), width: 1),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (widget.icon != null) ...[
-                    Icon(
-                      widget.icon,
-                      color: foregroundColor,
-                      size: 16,
-                    ),
+                    Icon(widget.icon, color: foregroundColor, size: 16),
                     SizedBox(width: MinqTokens.spacing(1)),
                   ],
                   Text(
@@ -1392,10 +1331,7 @@ class _PolishedSwitchState extends State<PolishedSwitch>
     _thumbAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     if (widget.value) {
       _controller.value = 1.0;
@@ -1429,10 +1365,8 @@ class _PolishedSwitchState extends State<PolishedSwitch>
 
   @override
   Widget build(BuildContext context) {
-    final activeColor =
-        widget.activeColor ?? MinqTokens.brandPrimary;
-    final inactiveColor =
-        widget.inactiveColor ?? const Color(0xFFE5E7EB);
+    final activeColor = widget.activeColor ?? MinqTokens.brandPrimary;
+    final inactiveColor = widget.inactiveColor ?? const Color(0xFFE5E7EB);
     final thumbColor = widget.thumbColor ?? MinqTokens.surface;
 
     _trackAnimation = ColorTween(
@@ -1445,10 +1379,7 @@ class _PolishedSwitchState extends State<PolishedSwitch>
       child: Container(
         width: 52,
         height: 32,
-        constraints: const BoxConstraints(
-          minWidth: 48,
-          minHeight: 48,
-        ),
+        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
         child: AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
@@ -1524,10 +1455,8 @@ class PolishedSlider extends StatefulWidget {
 class _PolishedSliderState extends State<PolishedSlider> {
   @override
   Widget build(BuildContext context) {
-    final activeColor =
-        widget.activeColor ?? MinqTokens.brandPrimary;
-    final inactiveColor =
-        widget.inactiveColor ?? const Color(0xFFE5E7EB);
+    final activeColor = widget.activeColor ?? MinqTokens.brandPrimary;
+    final inactiveColor = widget.inactiveColor ?? const Color(0xFFE5E7EB);
     final thumbColor = widget.thumbColor ?? MinqTokens.brandPrimary;
 
     return SliderTheme(
@@ -1541,9 +1470,7 @@ class _PolishedSliderState extends State<PolishedSlider> {
           enabledThumbRadius: 12.0,
           pressedElevation: 8.0,
         ),
-        overlayShape: const RoundSliderOverlayShape(
-          overlayRadius: 24.0,
-        ),
+        overlayShape: const RoundSliderOverlayShape(overlayRadius: 24.0),
         trackShape: const RoundedRectSliderTrackShape(),
         valueIndicatorShape: const PaddleSliderValueIndicatorShape(),
         valueIndicatorColor: activeColor,

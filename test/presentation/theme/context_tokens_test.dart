@@ -25,10 +25,7 @@ class TestContextTokensWidget extends StatelessWidget {
                   borderRadius: MinqTokens.cornerMedium(),
                 ),
                 child: const Center(
-                  child: Text(
-                    'Primary',
-                    style: MinqTokens.bodyMedium,
-                  ),
+                  child: Text('Primary', style: MinqTokens.bodyMedium),
                 ),
               ),
 
@@ -100,7 +97,9 @@ class TestContextTokensWidget extends StatelessWidget {
 }
 
 void main() {
-  testWidgets('MinqTokens can be used without context extension', (WidgetTester tester) async {
+  testWidgets('MinqTokens can be used without context extension', (
+    WidgetTester tester,
+  ) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const TestContextTokensWidget());
 

@@ -57,26 +57,30 @@ class AccessibleTextField extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final accessibilitySettings = ref.watch(accessibilityServiceProvider);
-    
+
     // Calculate effective text size
     final effectiveTextSize = 16.0 * accessibilitySettings.textScale;
-    
+
     // Get accessible colors
-    final backgroundColor = accessibilitySettings.highContrast
-        ? tokens.highContrastBackground
-        : tokens.surfaceAlt;
-    
-    final borderColor = accessibilitySettings.highContrast
-        ? tokens.highContrastText
-        : tokens.border;
-    
-    final focusColor = accessibilitySettings.highContrast
-        ? tokens.highContrastPrimary
-        : tokens.brandPrimary;
-    
-    final textColor = accessibilitySettings.highContrast
-        ? tokens.highContrastText
-        : tokens.textPrimary;
+    final backgroundColor =
+        accessibilitySettings.highContrast
+            ? tokens.highContrastBackground
+            : tokens.surfaceAlt;
+
+    final borderColor =
+        accessibilitySettings.highContrast
+            ? tokens.highContrastText
+            : tokens.border;
+
+    final focusColor =
+        accessibilitySettings.highContrast
+            ? tokens.highContrastPrimary
+            : tokens.brandPrimary;
+
+    final textColor =
+        accessibilitySettings.highContrast
+            ? tokens.highContrastText
+            : tokens.textPrimary;
 
     // Create input decoration with accessibility considerations
     final decoration = InputDecoration(
@@ -88,7 +92,7 @@ class AccessibleTextField extends ConsumerWidget {
       suffixIcon: suffixIcon,
       filled: true,
       fillColor: backgroundColor,
-      
+
       // Enhanced border for high contrast mode
       border: OutlineInputBorder(
         borderRadius: tokens.cornerMedium(),
@@ -113,47 +117,44 @@ class AccessibleTextField extends ConsumerWidget {
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: tokens.cornerMedium(),
-        borderSide: BorderSide(
-          color: tokens.accentError,
-          width: 2,
-        ),
+        borderSide: BorderSide(color: tokens.accentError, width: 2),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: tokens.cornerMedium(),
-        borderSide: BorderSide(
-          color: tokens.accentError,
-          width: 3,
-        ),
+        borderSide: BorderSide(color: tokens.accentError, width: 3),
       ),
-      
+
       // Accessible text styles
       labelStyle: TextStyle(
         fontSize: effectiveTextSize * 0.9,
         color: textColor,
-        fontWeight: accessibilitySettings.boldText 
-            ? FontWeight.bold 
-            : FontWeight.normal,
+        fontWeight:
+            accessibilitySettings.boldText
+                ? FontWeight.bold
+                : FontWeight.normal,
       ),
       hintStyle: TextStyle(
         fontSize: effectiveTextSize * 0.9,
         color: tokens.textMuted,
-        fontWeight: accessibilitySettings.boldText 
-            ? FontWeight.w600 
-            : FontWeight.normal,
+        fontWeight:
+            accessibilitySettings.boldText
+                ? FontWeight.w600
+                : FontWeight.normal,
       ),
       helperStyle: TextStyle(
         fontSize: effectiveTextSize * 0.8,
         color: tokens.textSecondary,
-        fontWeight: accessibilitySettings.boldText 
-            ? FontWeight.w600 
-            : FontWeight.normal,
+        fontWeight:
+            accessibilitySettings.boldText
+                ? FontWeight.w600
+                : FontWeight.normal,
       ),
       errorStyle: TextStyle(
         fontSize: effectiveTextSize * 0.8,
         color: tokens.accentError,
         fontWeight: FontWeight.w600,
       ),
-      
+
       // Enhanced padding for larger touch targets
       contentPadding: EdgeInsets.symmetric(
         horizontal: tokens.spacing.md * accessibilitySettings.buttonScale,
@@ -177,14 +178,17 @@ class AccessibleTextField extends ConsumerWidget {
       style: TextStyle(
         fontSize: effectiveTextSize,
         color: textColor,
-        fontWeight: accessibilitySettings.boldText 
-            ? FontWeight.w600 
-            : FontWeight.normal,
+        fontWeight:
+            accessibilitySettings.boldText
+                ? FontWeight.w600
+                : FontWeight.normal,
       ),
       onChanged: (value) {
         // Provide haptic feedback on text change if enabled
         if (accessibilitySettings.hapticFeedback && value.isNotEmpty) {
-          ref.read(accessibilityServiceProvider.notifier).provideHapticFeedback();
+          ref
+              .read(accessibilityServiceProvider.notifier)
+              .provideHapticFeedback();
         }
         onChanged?.call(value);
       },
@@ -199,18 +203,19 @@ class AccessibleTextField extends ConsumerWidget {
             final hasFocus = Focus.of(context).hasFocus;
             return AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              decoration: hasFocus
-                  ? BoxDecoration(
-                      borderRadius: tokens.cornerMedium(),
-                      boxShadow: [
-                        BoxShadow(
-                          color: focusColor.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    )
-                  : null,
+              decoration:
+                  hasFocus
+                      ? BoxDecoration(
+                        borderRadius: tokens.cornerMedium(),
+                        boxShadow: [
+                          BoxShadow(
+                            color: focusColor.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      )
+                      : null,
               child: textField,
             );
           },
@@ -260,7 +265,7 @@ class AccessibleSearchField extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final accessibilitySettings = ref.watch(accessibilityServiceProvider);
-    
+
     return AccessibleTextField(
       controller: controller,
       semanticLabel: semanticLabel,
@@ -274,27 +279,31 @@ class AccessibleSearchField extends ConsumerWidget {
       onSubmitted: onSubmitted,
       prefixIcon: Icon(
         Icons.search,
-        color: accessibilitySettings.highContrast
-            ? tokens.highContrastText
-            : tokens.textSecondary,
+        color:
+            accessibilitySettings.highContrast
+                ? tokens.highContrastText
+                : tokens.textSecondary,
       ),
-      suffixIcon: controller?.text.isNotEmpty == true
-          ? IconButton(
-              icon: Icon(
-                Icons.clear,
-                color: accessibilitySettings.highContrast
-                    ? tokens.highContrastText
-                    : tokens.textSecondary,
-              ),
-              onPressed: () {
-                controller?.clear();
-                onClear?.call();
-                ref.read(accessibilityServiceProvider.notifier)
-                    .provideHapticFeedback();
-              },
-              tooltip: 'Clear search',
-            )
-          : null,
+      suffixIcon:
+          controller?.text.isNotEmpty == true
+              ? IconButton(
+                icon: Icon(
+                  Icons.clear,
+                  color:
+                      accessibilitySettings.highContrast
+                          ? tokens.highContrastText
+                          : tokens.textSecondary,
+                ),
+                onPressed: () {
+                  controller?.clear();
+                  onClear?.call();
+                  ref
+                      .read(accessibilityServiceProvider.notifier)
+                      .provideHapticFeedback();
+                },
+                tooltip: 'Clear search',
+              )
+              : null,
     );
   }
 }
@@ -331,17 +340,19 @@ class AccessiblePasswordField extends ConsumerStatefulWidget {
   final String? Function(String?)? validator;
 
   @override
-  ConsumerState<AccessiblePasswordField> createState() => _AccessiblePasswordFieldState();
+  ConsumerState<AccessiblePasswordField> createState() =>
+      _AccessiblePasswordFieldState();
 }
 
-class _AccessiblePasswordFieldState extends ConsumerState<AccessiblePasswordField> {
+class _AccessiblePasswordFieldState
+    extends ConsumerState<AccessiblePasswordField> {
   bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final accessibilitySettings = ref.watch(accessibilityServiceProvider);
-    
+
     return AccessibleTextField(
       controller: widget.controller,
       semanticLabel: widget.semanticLabel,
@@ -361,15 +372,17 @@ class _AccessiblePasswordFieldState extends ConsumerState<AccessiblePasswordFiel
       suffixIcon: IconButton(
         icon: Icon(
           _obscureText ? Icons.visibility : Icons.visibility_off,
-          color: accessibilitySettings.highContrast
-              ? tokens.highContrastText
-              : tokens.textSecondary,
+          color:
+              accessibilitySettings.highContrast
+                  ? tokens.highContrastText
+                  : tokens.textSecondary,
         ),
         onPressed: () {
           setState(() {
             _obscureText = !_obscureText;
           });
-          ref.read(accessibilityServiceProvider.notifier)
+          ref
+              .read(accessibilityServiceProvider.notifier)
               .provideHapticFeedback();
         },
         tooltip: _obscureText ? 'Show password' : 'Hide password',

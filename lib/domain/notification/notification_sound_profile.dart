@@ -17,12 +17,12 @@ class NotificationSoundProfile {
 
   static const NotificationSoundProfile defaultProfile =
       NotificationSoundProfile(
-    id: 'default',
-    label: '標準',
-    description: 'デバイスの標準通知音とバイブレーションを使用します。',
-    playSound: true,
-    enableVibration: true,
-  );
+        id: 'default',
+        label: '標準',
+        description: 'デバイスの標準通知音とバイブレーションを使用します。',
+        playSound: true,
+        enableVibration: true,
+      );
 
   static const NotificationSoundProfile focusProfile = NotificationSoundProfile(
     id: 'focus',
@@ -41,15 +41,17 @@ class NotificationSoundProfile {
     enableVibration: false,
   );
 
-  static const NotificationSoundProfile silentProfile = NotificationSoundProfile(
-    id: 'silent',
-    label: 'サイレント',
-    description: '音もバイブレーションも発生しません。',
-    playSound: false,
-    enableVibration: false,
-  );
+  static const NotificationSoundProfile silentProfile =
+      NotificationSoundProfile(
+        id: 'silent',
+        label: 'サイレント',
+        description: '音もバイブレーションも発生しません。',
+        playSound: false,
+        enableVibration: false,
+      );
 
-  static List<NotificationSoundProfile> get presets => <NotificationSoundProfile>[
+  static List<NotificationSoundProfile> get presets =>
+      <NotificationSoundProfile>[
         defaultProfile,
         chimeProfile,
         focusProfile,

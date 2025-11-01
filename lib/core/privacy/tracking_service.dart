@@ -20,9 +20,7 @@ class TrackingService {
     // Firebase Analyticsの設定
     await _analytics.setAnalyticsCollectionEnabled(enabled);
 
-    MinqLogger.info(
-      'Tracking ${enabled ? 'enabled' : 'disabled'}',
-    );
+    MinqLogger.info('Tracking ${enabled ? 'enabled' : 'disabled'}');
   }
 
   /// トラッキングが有効かチェック
@@ -39,9 +37,7 @@ class TrackingService {
     // Firebase Crashlyticsの設定
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(enabled);
 
-    MinqLogger.info(
-      'Crashlytics ${enabled ? 'enabled' : 'disabled'}',
-    );
+    MinqLogger.info('Crashlytics ${enabled ? 'enabled' : 'disabled'}');
   }
 
   /// Crashlyticsが有効かチェック
@@ -69,9 +65,7 @@ class TrackingService {
     //   );
     // }
 
-    MinqLogger.info(
-      'Personalized ads ${enabled ? 'enabled' : 'disabled'}',
-    );
+    MinqLogger.info('Personalized ads ${enabled ? 'enabled' : 'disabled'}');
   }
 
   /// パーソナライズド広告が有効かチェック

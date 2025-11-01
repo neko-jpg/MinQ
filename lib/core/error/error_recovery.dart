@@ -5,26 +5,23 @@ import 'package:minq/core/logging/app_logger.dart';
 
 /// Generic MinqException for error recovery
 class _GenericMinqException extends MinqException {
-  const _GenericMinqException(
-    super.message, {
-    super.code,
-  });
+  const _GenericMinqException(super.message, {super.code});
 }
 
 /// Error recovery strategy
 enum RecoveryStrategy {
   /// Retry the operation
   retry,
-  
+
   /// Use fallback/alternative approach
   fallback,
-  
+
   /// Fail gracefully with user notification
   failGracefully,
-  
+
   /// Ignore the error and continue
   ignore,
-  
+
   /// Escalate to higher level handler
   escalate,
 }
@@ -45,7 +42,11 @@ class RecoveryResult<T> {
     this.message,
   });
 
-  factory RecoveryResult.success(T data, RecoveryStrategy strategy, [String? message]) {
+  factory RecoveryResult.success(
+    T data,
+    RecoveryStrategy strategy, [
+    String? message,
+  ]) {
     return RecoveryResult(
       success: true,
       data: data,
@@ -54,7 +55,11 @@ class RecoveryResult<T> {
     );
   }
 
-  factory RecoveryResult.failure(MinqException error, RecoveryStrategy strategy, [String? message]) {
+  factory RecoveryResult.failure(
+    MinqException error,
+    RecoveryStrategy strategy, [
+    String? message,
+  ]) {
     return RecoveryResult(
       success: false,
       error: error,
@@ -115,11 +120,13 @@ class RetryConfig {
 
 /// Error recovery manager
 class ErrorRecoveryManager {
-  static final ErrorRecoveryManager _instance = ErrorRecoveryManager._internal();
+  static final ErrorRecoveryManager _instance =
+      ErrorRecoveryManager._internal();
   factory ErrorRecoveryManager() => _instance;
   ErrorRecoveryManager._internal();
 
-  final Map<String, RecoveryStrategy Function(MinqException)> _recoveryStrategies = {};
+  final Map<String, RecoveryStrategy Function(MinqException)>
+  _recoveryStrategies = {};
   final Map<String, Future<dynamic> Function()> _fallbackActions = {};
 
   /// Register a recovery strategy for a specific error code
@@ -152,21 +159,27 @@ class ErrorRecoveryManager {
 
     while (attempt < config.maxAttempts) {
       attempt++;
-      
+
       try {
         if (logErrors && attempt > 1) {
-          logger.info('Retrying operation: $operationName (attempt $attempt/${config.maxAttempts})');
+          logger.info(
+            'Retrying operation: $operationName (attempt $attempt/${config.maxAttempts})',
+          );
         }
 
         final result = await operation();
-        
+
         if (logErrors && attempt > 1) {
-          logger.info('Operation succeeded after $attempt attempts: $operationName');
+          logger.info(
+            'Operation succeeded after $attempt attempts: $operationName',
+          );
         }
-        
-        return RecoveryResult.success(result, RecoveryStrategy.retry, 
-          attempt > 1 ? 'Succeeded after $attempt attempts' : null);
-        
+
+        return RecoveryResult.success(
+          result,
+          RecoveryStrategy.retry,
+          attempt > 1 ? 'Succeeded after $attempt attempts' : null,
+        );
       } catch (error, stackTrace) {
         final minqError = ExceptionUtils.fromError(error, stackTrace);
         lastError = minqError;
@@ -187,11 +200,11 @@ class ErrorRecoveryManager {
 
         // Calculate delay with exponential backoff and jitter
         final delay = _calculateDelay(attempt, config);
-        
+
         if (logErrors) {
           logger.debug('Waiting ${delay.inMilliseconds}ms before retry');
         }
-        
+
         await Future.delayed(delay);
       }
     }
@@ -207,7 +220,9 @@ class ErrorRecoveryManager {
     }
 
     return RecoveryResult.failure(
-      _GenericMinqException('Operation failed without specific error: $operationName'),
+      _GenericMinqException(
+        'Operation failed without specific error: $operationName',
+      ),
       RecoveryStrategy.failGracefully,
     );
   }
@@ -220,36 +235,53 @@ class ErrorRecoveryManager {
     bool logErrors,
   ) async {
     final errorCode = error.code;
-    
+
     if (errorCode != null && _recoveryStrategies.containsKey(errorCode)) {
       final strategy = _recoveryStrategies[errorCode]!(error);
-      
+
       if (logErrors) {
-        logger.info('Attempting recovery strategy: $strategy for error: $errorCode');
+        logger.info(
+          'Attempting recovery strategy: $strategy for error: $errorCode',
+        );
       }
-      
+
       switch (strategy) {
         case RecoveryStrategy.fallback:
-          return await _executeFallback<T>(errorCode, fallbackOperation, logErrors);
-          
+          return await _executeFallback<T>(
+            errorCode,
+            fallbackOperation,
+            logErrors,
+          );
+
         case RecoveryStrategy.failGracefully:
-          return RecoveryResult.failure(error, RecoveryStrategy.failGracefully,
-            'Operation failed gracefully: $operationName');
-            
+          return RecoveryResult.failure(
+            error,
+            RecoveryStrategy.failGracefully,
+            'Operation failed gracefully: $operationName',
+          );
+
         case RecoveryStrategy.ignore:
           if (logErrors) {
-            logger.warning('Ignoring error as per recovery strategy: $errorCode');
+            logger.warning(
+              'Ignoring error as per recovery strategy: $errorCode',
+            );
           }
-          return RecoveryResult.failure(error, RecoveryStrategy.ignore,
-            'Error ignored as per recovery strategy');
-            
+          return RecoveryResult.failure(
+            error,
+            RecoveryStrategy.ignore,
+            'Error ignored as per recovery strategy',
+          );
+
         case RecoveryStrategy.escalate:
           if (logErrors) {
             logger.error('Escalating error: $errorCode', data: error.toMap());
           }
-          return RecoveryResult.failure(error, RecoveryStrategy.escalate,
-            'Error escalated to higher level handler');
-            
+          return RecoveryResult.failure(
+            error,
+            RecoveryStrategy.escalate,
+            'Error escalated to higher level handler',
+          );
+
         default:
           break;
       }
@@ -260,8 +292,11 @@ class ErrorRecoveryManager {
       return await _executeFallback<T>(errorCode, fallbackOperation, logErrors);
     }
 
-    return RecoveryResult.failure(error, RecoveryStrategy.failGracefully,
-      'No recovery strategy available for: $operationName');
+    return RecoveryResult.failure(
+      error,
+      RecoveryStrategy.failGracefully,
+      'No recovery strategy available for: $operationName',
+    );
   }
 
   /// Execute fallback operation
@@ -276,41 +311,50 @@ class ErrorRecoveryManager {
         if (logErrors) {
           logger.info('Executing registered fallback action for: $errorCode');
         }
-        
+
         final result = await _fallbackActions[errorCode]!() as T;
-        return RecoveryResult.success(result, RecoveryStrategy.fallback,
-          'Recovered using registered fallback action');
+        return RecoveryResult.success(
+          result,
+          RecoveryStrategy.fallback,
+          'Recovered using registered fallback action',
+        );
       }
-      
+
       // Try provided fallback operation
       if (fallbackOperation != null) {
         if (logErrors) {
           logger.info('Executing provided fallback operation');
         }
-        
+
         final result = await fallbackOperation();
-        return RecoveryResult.success(result, RecoveryStrategy.fallback,
-          'Recovered using fallback operation');
+        return RecoveryResult.success(
+          result,
+          RecoveryStrategy.fallback,
+          'Recovered using fallback operation',
+        );
       }
-      
+
       return RecoveryResult.failure(
         const _GenericMinqException('No fallback operation available'),
         RecoveryStrategy.failGracefully,
       );
-      
     } catch (fallbackError, stackTrace) {
       final minqError = ExceptionUtils.fromError(fallbackError, stackTrace);
-      
+
       if (logErrors) {
-        logger.error('Fallback operation failed', 
+        logger.error(
+          'Fallback operation failed',
           data: minqError.toMap(),
           error: fallbackError,
           stackTrace: stackTrace,
         );
       }
-      
-      return RecoveryResult.failure(minqError, RecoveryStrategy.failGracefully,
-        'Fallback operation also failed');
+
+      return RecoveryResult.failure(
+        minqError,
+        RecoveryStrategy.failGracefully,
+        'Fallback operation also failed',
+      );
     }
   }
 
@@ -320,7 +364,7 @@ class ErrorRecoveryManager {
     if (config.shouldRetry != null) {
       return config.shouldRetry!(error);
     }
-    
+
     // Default retry logic
     return ExceptionUtils.isRetryable(error);
   }
@@ -328,14 +372,15 @@ class ErrorRecoveryManager {
   /// Calculate delay with exponential backoff and jitter
   Duration _calculateDelay(int attempt, RetryConfig config) {
     final baseDelay = config.initialDelay.inMilliseconds;
-    final exponentialDelay = baseDelay * pow(config.backoffMultiplier, attempt - 1);
-    
+    final exponentialDelay =
+        baseDelay * pow(config.backoffMultiplier, attempt - 1);
+
     // Add jitter to prevent thundering herd
     final jitter = Random().nextDouble() * config.jitterFactor;
     final delayWithJitter = exponentialDelay * (1 + jitter);
-    
+
     final finalDelay = Duration(milliseconds: delayWithJitter.round());
-    
+
     // Ensure delay doesn't exceed maximum
     return finalDelay > config.maxDelay ? config.maxDelay : finalDelay;
   }
@@ -343,32 +388,86 @@ class ErrorRecoveryManager {
   /// Initialize default recovery strategies
   void initializeDefaultStrategies() {
     // Network error strategies
-    registerRecoveryStrategy('NETWORK_NO_CONNECTION', (error) => RecoveryStrategy.failGracefully);
-    registerRecoveryStrategy('NETWORK_TIMEOUT', (error) => RecoveryStrategy.retry);
-    registerRecoveryStrategy('NETWORK_SERVER_ERROR', (error) => RecoveryStrategy.retry);
-    registerRecoveryStrategy('NETWORK_RATE_LIMIT', (error) => RecoveryStrategy.retry);
-    
+    registerRecoveryStrategy(
+      'NETWORK_NO_CONNECTION',
+      (error) => RecoveryStrategy.failGracefully,
+    );
+    registerRecoveryStrategy(
+      'NETWORK_TIMEOUT',
+      (error) => RecoveryStrategy.retry,
+    );
+    registerRecoveryStrategy(
+      'NETWORK_SERVER_ERROR',
+      (error) => RecoveryStrategy.retry,
+    );
+    registerRecoveryStrategy(
+      'NETWORK_RATE_LIMIT',
+      (error) => RecoveryStrategy.retry,
+    );
+
     // Database error strategies
-    registerRecoveryStrategy('DB_CONNECTION_FAILED', (error) => RecoveryStrategy.retry);
-    registerRecoveryStrategy('DB_OPERATION_FAILED', (error) => RecoveryStrategy.retry);
-    registerRecoveryStrategy('DB_NOT_FOUND', (error) => RecoveryStrategy.fallback);
-    registerRecoveryStrategy('DB_VALIDATION_FAILED', (error) => RecoveryStrategy.failGracefully);
-    
+    registerRecoveryStrategy(
+      'DB_CONNECTION_FAILED',
+      (error) => RecoveryStrategy.retry,
+    );
+    registerRecoveryStrategy(
+      'DB_OPERATION_FAILED',
+      (error) => RecoveryStrategy.retry,
+    );
+    registerRecoveryStrategy(
+      'DB_NOT_FOUND',
+      (error) => RecoveryStrategy.fallback,
+    );
+    registerRecoveryStrategy(
+      'DB_VALIDATION_FAILED',
+      (error) => RecoveryStrategy.failGracefully,
+    );
+
     // AI service error strategies
-    registerRecoveryStrategy('AI_SERVICE_UNAVAILABLE', (error) => RecoveryStrategy.fallback);
-    registerRecoveryStrategy('AI_MODEL_LOAD_FAILED', (error) => RecoveryStrategy.retry);
-    registerRecoveryStrategy('AI_INFERENCE_FAILED', (error) => RecoveryStrategy.fallback);
-    registerRecoveryStrategy('AI_INVALID_INPUT', (error) => RecoveryStrategy.failGracefully);
-    
+    registerRecoveryStrategy(
+      'AI_SERVICE_UNAVAILABLE',
+      (error) => RecoveryStrategy.fallback,
+    );
+    registerRecoveryStrategy(
+      'AI_MODEL_LOAD_FAILED',
+      (error) => RecoveryStrategy.retry,
+    );
+    registerRecoveryStrategy(
+      'AI_INFERENCE_FAILED',
+      (error) => RecoveryStrategy.fallback,
+    );
+    registerRecoveryStrategy(
+      'AI_INVALID_INPUT',
+      (error) => RecoveryStrategy.failGracefully,
+    );
+
     // Auth error strategies
-    registerRecoveryStrategy('AUTH_NOT_AUTHENTICATED', (error) => RecoveryStrategy.escalate);
-    registerRecoveryStrategy('AUTH_TOKEN_EXPIRED', (error) => RecoveryStrategy.retry);
-    registerRecoveryStrategy('AUTH_INSUFFICIENT_PERMISSIONS', (error) => RecoveryStrategy.failGracefully);
-    
+    registerRecoveryStrategy(
+      'AUTH_NOT_AUTHENTICATED',
+      (error) => RecoveryStrategy.escalate,
+    );
+    registerRecoveryStrategy(
+      'AUTH_TOKEN_EXPIRED',
+      (error) => RecoveryStrategy.retry,
+    );
+    registerRecoveryStrategy(
+      'AUTH_INSUFFICIENT_PERMISSIONS',
+      (error) => RecoveryStrategy.failGracefully,
+    );
+
     // Storage error strategies
-    registerRecoveryStrategy('STORAGE_FILE_NOT_FOUND', (error) => RecoveryStrategy.fallback);
-    registerRecoveryStrategy('STORAGE_UPLOAD_FAILED', (error) => RecoveryStrategy.retry);
-    registerRecoveryStrategy('STORAGE_INSUFFICIENT_SPACE', (error) => RecoveryStrategy.failGracefully);
+    registerRecoveryStrategy(
+      'STORAGE_FILE_NOT_FOUND',
+      (error) => RecoveryStrategy.fallback,
+    );
+    registerRecoveryStrategy(
+      'STORAGE_UPLOAD_FAILED',
+      (error) => RecoveryStrategy.retry,
+    );
+    registerRecoveryStrategy(
+      'STORAGE_INSUFFICIENT_SPACE',
+      (error) => RecoveryStrategy.failGracefully,
+    );
   }
 }
 
@@ -398,7 +497,7 @@ class CircuitBreaker {
   final int failureThreshold;
   final Duration timeout;
   final Duration resetTimeout;
-  
+
   int _failureCount = 0;
   DateTime? _lastFailureTime;
   bool _isOpen = false;
@@ -443,10 +542,12 @@ class CircuitBreaker {
   void _onFailure() {
     _failureCount++;
     _lastFailureTime = DateTime.now();
-    
+
     if (_failureCount >= failureThreshold) {
       _isOpen = true;
-      logger.warning('Circuit breaker opened due to failures: $name (failures: $_failureCount)');
+      logger.warning(
+        'Circuit breaker opened due to failures: $name (failures: $_failureCount)',
+      );
     }
   }
 

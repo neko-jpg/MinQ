@@ -68,7 +68,9 @@ class ReverseAccountabilityService {
       final bool user2Completed = await _hasCompletedDailyGoal(user2Id);
 
       if (user1Completed && user2Completed) {
-        logger.info('Both users completed daily goals! Awarding Resonance Bonus.');
+        logger.info(
+          'Both users completed daily goals! Awarding Resonance Bonus.',
+        );
         await _gamificationEngine.awardPoints(
           userId: user1Id,
           basePoints: 50,

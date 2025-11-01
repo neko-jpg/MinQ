@@ -9,11 +9,18 @@ import 'package:minq/core/notifications/notification_analytics_service.dart';
 import 'package:minq/core/notifications/behavior_learning_service.dart';
 import 'package:minq/domain/notification/notification_settings.dart';
 
-class MockFlutterLocalNotificationsPlugin extends Mock implements FlutterLocalNotificationsPlugin {}
+class MockFlutterLocalNotificationsPlugin extends Mock
+    implements FlutterLocalNotificationsPlugin {}
+
 class MockFirebaseMessaging extends Mock implements FirebaseMessaging {}
+
 class MockSharedPreferences extends Mock implements SharedPreferences {}
-class MockNotificationAnalyticsService extends Mock implements NotificationAnalyticsService {}
-class MockBehaviorLearningService extends Mock implements BehaviorLearningService {}
+
+class MockNotificationAnalyticsService extends Mock
+    implements NotificationAnalyticsService {}
+
+class MockBehaviorLearningService extends Mock
+    implements BehaviorLearningService {}
 
 void main() {
   group('AdvancedNotificationService', () {
@@ -33,28 +40,42 @@ void main() {
 
       // Setup default mocks
       when(() => mockSharedPreferences.getString(any())).thenReturn(null);
-      when(() => mockSharedPreferences.setString(any(), any())).thenAnswer((_) async => true);
-      when(() => mockLocalNotifications.initialize(any(), onDidReceiveNotificationResponse: any(named: 'onDidReceiveNotificationResponse')))
-          .thenAnswer((_) async => true);
-      when(() => mockFirebaseMessaging.requestPermission(
-        alert: any(named: 'alert'),
-        badge: any(named: 'badge'),
-        sound: any(named: 'sound'),
-        provisional: any(named: 'provisional'),
-      )).thenAnswer((_) async => const NotificationSettings(
-        authorizationStatus: AuthorizationStatus.authorized,
-        alert: AppleNotificationSetting.enabled,
-        badge: AppleNotificationSetting.enabled,
-        sound: AppleNotificationSetting.enabled,
-        announcement: AppleNotificationSetting.notSupported,
-        carPlay: AppleNotificationSetting.notSupported,
-        lockScreen: AppleNotificationSetting.enabled,
-        notificationCenter: AppleNotificationSetting.enabled,
-        showPreviews: AppleShowPreviewSetting.always,
-        criticalAlert: AppleNotificationSetting.notSupported,
-        providesAppNotificationSettings: false,
-      ));
-      when(() => mockFirebaseMessaging.getToken()).thenAnswer((_) async => 'test_token');
+      when(
+        () => mockSharedPreferences.setString(any(), any()),
+      ).thenAnswer((_) async => true);
+      when(
+        () => mockLocalNotifications.initialize(
+          any(),
+          onDidReceiveNotificationResponse: any(
+            named: 'onDidReceiveNotificationResponse',
+          ),
+        ),
+      ).thenAnswer((_) async => true);
+      when(
+        () => mockFirebaseMessaging.requestPermission(
+          alert: any(named: 'alert'),
+          badge: any(named: 'badge'),
+          sound: any(named: 'sound'),
+          provisional: any(named: 'provisional'),
+        ),
+      ).thenAnswer(
+        (_) async => const NotificationSettings(
+          authorizationStatus: AuthorizationStatus.authorized,
+          alert: AppleNotificationSetting.enabled,
+          badge: AppleNotificationSetting.enabled,
+          sound: AppleNotificationSetting.enabled,
+          announcement: AppleNotificationSetting.notSupported,
+          carPlay: AppleNotificationSetting.notSupported,
+          lockScreen: AppleNotificationSetting.enabled,
+          notificationCenter: AppleNotificationSetting.enabled,
+          showPreviews: AppleShowPreviewSetting.always,
+          criticalAlert: AppleNotificationSetting.notSupported,
+          providesAppNotificationSettings: false,
+        ),
+      );
+      when(
+        () => mockFirebaseMessaging.getToken(),
+      ).thenAnswer((_) async => 'test_token');
       when(() => mockAnalyticsService.initialize()).thenAnswer((_) async {});
       when(() => mockBehaviorService.initialize()).thenAnswer((_) async {});
 
@@ -71,27 +92,39 @@ void main() {
       test('should initialize successfully', () async {
         await service.initialize();
 
-        verify(() => mockLocalNotifications.initialize(any(), onDidReceiveNotificationResponse: any(named: 'onDidReceiveNotificationResponse'))).called(1);
-        verify(() => mockFirebaseMessaging.requestPermission(
-          alert: true,
-          badge: true,
-          sound: true,
-          provisional: false,
-        )).called(1);
+        verify(
+          () => mockLocalNotifications.initialize(
+            any(),
+            onDidReceiveNotificationResponse: any(
+              named: 'onDidReceiveNotificationResponse',
+            ),
+          ),
+        ).called(1);
+        verify(
+          () => mockFirebaseMessaging.requestPermission(
+            alert: true,
+            badge: true,
+            sound: true,
+            provisional: false,
+          ),
+        ).called(1);
         verify(() => mockAnalyticsService.initialize()).called(1);
         verify(() => mockBehaviorService.initialize()).called(1);
       });
 
-      test('should load default settings when no saved settings exist', () async {
-        await service.initialize();
+      test(
+        'should load default settings when no saved settings exist',
+        () async {
+          await service.initialize();
 
-        final settings = service.currentSettings;
-        expect(settings.globalEnabled, isTrue);
-        expect(settings.categorySettings, isNotEmpty);
-        expect(settings.timeSettings.enabled, isTrue);
-        expect(settings.smartSettings.enabled, isTrue);
-        expect(settings.analyticsSettings.enabled, isTrue);
-      });
+          final settings = service.currentSettings;
+          expect(settings.globalEnabled, isTrue);
+          expect(settings.categorySettings, isNotEmpty);
+          expect(settings.timeSettings.enabled, isTrue);
+          expect(settings.smartSettings.enabled, isTrue);
+          expect(settings.analyticsSettings.enabled, isTrue);
+        },
+      );
     });
 
     group('settings management', () {
@@ -103,7 +136,9 @@ void main() {
         );
 
         expect(service.currentSettings.globalEnabled, isFalse);
-        verify(() => mockSharedPreferences.setString(any(), any())).called(greaterThan(0));
+        verify(
+          () => mockSharedPreferences.setString(any(), any()),
+        ).called(greaterThan(0));
       });
 
       test('should update category settings', () async {
@@ -120,7 +155,9 @@ void main() {
           newCategorySettings,
         );
 
-        final updatedSettings = service.currentSettings.categorySettings[NotificationCategory.quest];
+        final updatedSettings =
+            service.currentSettings.categorySettings[NotificationCategory
+                .quest];
         expect(updatedSettings?.enabled, isFalse);
         expect(updatedSettings?.frequency, NotificationFrequency.hourly);
       });
@@ -172,17 +209,25 @@ void main() {
         );
 
         expect(result, isFalse);
-        verifyNever(() => mockLocalNotifications.show(any(), any(), any(), any(), payload: any(named: 'payload')));
+        verifyNever(
+          () => mockLocalNotifications.show(
+            any(),
+            any(),
+            any(),
+            any(),
+            payload: any(named: 'payload'),
+          ),
+        );
       });
 
       test('should not schedule notification when category disabled', () async {
         await service.initialize();
-        
+
         const disabledCategorySettings = CategoryNotificationSettings(
           category: NotificationCategory.quest,
           enabled: false,
         );
-        
+
         await service.updateCategorySettings(
           NotificationCategory.quest,
           disabledCategorySettings,
@@ -197,16 +242,35 @@ void main() {
         );
 
         expect(result, isFalse);
-        verifyNever(() => mockLocalNotifications.show(any(), any(), any(), any(), payload: any(named: 'payload')));
+        verifyNever(
+          () => mockLocalNotifications.show(
+            any(),
+            any(),
+            any(),
+            any(),
+            payload: any(named: 'payload'),
+          ),
+        );
       });
 
       test('should schedule notification when enabled', () async {
         await service.initialize();
-        
-        when(() => mockLocalNotifications.show(any(), any(), any(), any(), payload: any(named: 'payload')))
-            .thenAnswer((_) async {});
-        when(() => mockAnalyticsService.recordEvent(any())).thenAnswer((_) async {});
-        when(() => mockBehaviorService.recordNotificationSent(any())).thenAnswer((_) async {});
+
+        when(
+          () => mockLocalNotifications.show(
+            any(),
+            any(),
+            any(),
+            any(),
+            payload: any(named: 'payload'),
+          ),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockAnalyticsService.recordEvent(any()),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockBehaviorService.recordNotificationSent(any()),
+        ).thenAnswer((_) async {});
 
         final result = await service.scheduleNotification(
           id: 'test_notification',
@@ -217,7 +281,15 @@ void main() {
         );
 
         expect(result, isTrue);
-        verify(() => mockLocalNotifications.show(any(), any(), any(), any(), payload: any(named: 'payload'))).called(1);
+        verify(
+          () => mockLocalNotifications.show(
+            any(),
+            any(),
+            any(),
+            any(),
+            payload: any(named: 'payload'),
+          ),
+        ).called(1);
         verify(() => mockAnalyticsService.recordEvent(any())).called(1);
       });
     });
@@ -225,7 +297,7 @@ void main() {
     group('time-based control', () {
       test('should respect sleep time settings', () async {
         await service.initialize();
-        
+
         const timeSettings = TimeBasedNotificationSettings(
           enabled: true,
           sleepTime: TimeSlot(
@@ -235,20 +307,32 @@ void main() {
             endMinute: 0,
           ),
         );
-        
+
         await service.updateTimeSettings(timeSettings);
 
         // Test during sleep time (23:00)
         final sleepTime = DateTime(2024, 1, 1, 23, 0);
-        
-        when(() => mockLocalNotifications.zonedSchedule(
-          any(), any(), any(), any(), any(),
-          payload: any(named: 'payload'),
-          androidScheduleMode: any(named: 'androidScheduleMode'),
-          uiLocalNotificationDateInterpretation: any(named: 'uiLocalNotificationDateInterpretation'),
-        )).thenAnswer((_) async {});
-        when(() => mockAnalyticsService.recordEvent(any())).thenAnswer((_) async {});
-        when(() => mockBehaviorService.recordNotificationSent(any())).thenAnswer((_) async {});
+
+        when(
+          () => mockLocalNotifications.zonedSchedule(
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            payload: any(named: 'payload'),
+            androidScheduleMode: any(named: 'androidScheduleMode'),
+            uiLocalNotificationDateInterpretation: any(
+              named: 'uiLocalNotificationDateInterpretation',
+            ),
+          ),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockAnalyticsService.recordEvent(any()),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockBehaviorService.recordNotificationSent(any()),
+        ).thenAnswer((_) async {});
 
         final result = await service.scheduleNotification(
           id: 'test_notification',
@@ -261,12 +345,20 @@ void main() {
 
         expect(result, isTrue);
         // Should be rescheduled to a later time, not immediate
-        verify(() => mockLocalNotifications.zonedSchedule(
-          any(), any(), any(), any(), any(),
-          payload: any(named: 'payload'),
-          androidScheduleMode: any(named: 'androidScheduleMode'),
-          uiLocalNotificationDateInterpretation: any(named: 'uiLocalNotificationDateInterpretation'),
-        )).called(1);
+        verify(
+          () => mockLocalNotifications.zonedSchedule(
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            payload: any(named: 'payload'),
+            androidScheduleMode: any(named: 'androidScheduleMode'),
+            uiLocalNotificationDateInterpretation: any(
+              named: 'uiLocalNotificationDateInterpretation',
+            ),
+          ),
+        ).called(1);
       });
     });
   });

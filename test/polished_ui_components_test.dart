@@ -6,12 +6,12 @@ import 'package:minq/presentation/theme/design_tokens.dart';
 
 void main() {
   group('Polished UI Components Tests', () {
-    testWidgets('PolishedProgressIndicator renders correctly', (WidgetTester tester) async {
+    testWidgets('PolishedProgressIndicator renders correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [MinqDesignTokens.light()],
-          ),
+          theme: ThemeData(extensions: [MinqDesignTokens.light()]),
           home: const Scaffold(
             body: Center(
               child: PolishedProgressIndicator(
@@ -24,20 +24,20 @@ void main() {
       );
 
       expect(find.byType(PolishedProgressIndicator), findsOneWidget);
-      
+
       // Wait for animation to complete
       await tester.pumpAndSettle();
       expect(find.text('50%'), findsOneWidget);
     });
 
-    testWidgets('PolishedElevatedButton responds to tap', (WidgetTester tester) async {
+    testWidgets('PolishedElevatedButton responds to tap', (
+      WidgetTester tester,
+    ) async {
       bool tapped = false;
 
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [MinqDesignTokens.light()],
-          ),
+          theme: ThemeData(extensions: [MinqDesignTokens.light()]),
           home: Scaffold(
             body: Center(
               child: PolishedElevatedButton(
@@ -56,17 +56,15 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('PolishedFloatingActionButton renders with correct size', (WidgetTester tester) async {
+    testWidgets('PolishedFloatingActionButton renders with correct size', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [MinqDesignTokens.light()],
-          ),
+          theme: ThemeData(extensions: [MinqDesignTokens.light()]),
           home: const Scaffold(
             body: Center(
-              child: PolishedFloatingActionButton(
-                child: Icon(Icons.add),
-              ),
+              child: PolishedFloatingActionButton(child: Icon(Icons.add)),
             ),
           ),
         ),
@@ -76,12 +74,12 @@ void main() {
       expect(find.byIcon(Icons.add), findsOneWidget);
     });
 
-    testWidgets('PolishedLinearProgressIndicator shows progress', (WidgetTester tester) async {
+    testWidgets('PolishedLinearProgressIndicator shows progress', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [MinqDesignTokens.light()],
-          ),
+          theme: ThemeData(extensions: [MinqDesignTokens.light()]),
           home: const Scaffold(
             body: Center(
               child: PolishedLinearProgressIndicator(
@@ -98,14 +96,14 @@ void main() {
       expect(find.text('Progress'), findsOneWidget);
     });
 
-    testWidgets('PolishedCard responds to interactions', (WidgetTester tester) async {
+    testWidgets('PolishedCard responds to interactions', (
+      WidgetTester tester,
+    ) async {
       bool tapped = false;
 
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [MinqDesignTokens.light()],
-          ),
+          theme: ThemeData(extensions: [MinqDesignTokens.light()]),
           home: Scaffold(
             body: Center(
               child: PolishedCard(
@@ -129,9 +127,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [MinqDesignTokens.light()],
-          ),
+          theme: ThemeData(extensions: [MinqDesignTokens.light()]),
           home: Scaffold(
             body: Center(
               child: PolishedChip(
@@ -153,14 +149,14 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('PolishedSwitch toggles correctly', (WidgetTester tester) async {
+    testWidgets('PolishedSwitch toggles correctly', (
+      WidgetTester tester,
+    ) async {
       bool value = false;
 
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [MinqDesignTokens.light()],
-          ),
+          theme: ThemeData(extensions: [MinqDesignTokens.light()]),
           home: Scaffold(
             body: Center(
               child: StatefulBuilder(
@@ -190,9 +186,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [MinqDesignTokens.light()],
-          ),
+          theme: ThemeData(extensions: [MinqDesignTokens.light()]),
           home: Scaffold(
             body: Center(
               child: StatefulBuilder(
@@ -214,12 +208,12 @@ void main() {
       expect(find.byType(Slider), findsOneWidget);
     });
 
-    testWidgets('InteractiveButton renders with different styles', (WidgetTester tester) async {
+    testWidgets('InteractiveButton renders with different styles', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [MinqDesignTokens.light()],
-          ),
+          theme: ThemeData(extensions: [MinqDesignTokens.light()]),
           home: const Scaffold(
             body: Column(
               children: [
@@ -247,7 +241,9 @@ void main() {
       expect(find.text('Ghost'), findsOneWidget);
     });
 
-    testWidgets('LoadingAnimation renders different styles', (WidgetTester tester) async {
+    testWidgets('LoadingAnimation renders different styles', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -266,7 +262,9 @@ void main() {
       expect(find.byType(LoadingAnimation), findsNWidgets(4));
     });
 
-    testWidgets('EnhancedPressAnimation responds to gestures', (WidgetTester tester) async {
+    testWidgets('EnhancedPressAnimation responds to gestures', (
+      WidgetTester tester,
+    ) async {
       bool tapped = false;
 
       await tester.pumpWidget(
@@ -289,7 +287,9 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('MorphingIcon toggles between icons', (WidgetTester tester) async {
+    testWidgets('MorphingIcon toggles between icons', (
+      WidgetTester tester,
+    ) async {
       bool isToggled = false;
 
       await tester.pumpWidget(
@@ -320,7 +320,9 @@ void main() {
       expect(isToggled, isTrue);
     });
 
-    testWidgets('PolishedLoadingOverlay shows and hides correctly', (WidgetTester tester) async {
+    testWidgets('PolishedLoadingOverlay shows and hides correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -338,14 +340,12 @@ void main() {
     });
 
     group('Animation Tests', () {
-      testWidgets('FloatingAnimation creates movement', (WidgetTester tester) async {
+      testWidgets('FloatingAnimation creates movement', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           const MaterialApp(
-            home: Scaffold(
-              body: FloatingAnimation(
-                child: Icon(Icons.star),
-              ),
-            ),
+            home: Scaffold(body: FloatingAnimation(child: Icon(Icons.star))),
           ),
         );
 
@@ -357,13 +357,13 @@ void main() {
         await tester.pump(const Duration(milliseconds: 1000));
       });
 
-      testWidgets('BreathingAnimation scales widget', (WidgetTester tester) async {
+      testWidgets('BreathingAnimation scales widget', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           const MaterialApp(
             home: Scaffold(
-              body: BreathingAnimation(
-                child: Icon(Icons.favorite),
-              ),
+              body: BreathingAnimation(child: Icon(Icons.favorite)),
             ),
           ),
         );
@@ -376,41 +376,36 @@ void main() {
         await tester.pump(const Duration(milliseconds: 1000));
       });
 
-      testWidgets('TypewriterAnimation displays text progressively', (WidgetTester tester) async {
+      testWidgets('TypewriterAnimation displays text progressively', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           const MaterialApp(
             home: Scaffold(
-              body: TypewriterAnimation(
-                text: 'Hello World',
-                autoStart: false,
-              ),
+              body: TypewriterAnimation(text: 'Hello World', autoStart: false),
             ),
           ),
         );
 
         expect(find.byType(TypewriterAnimation), findsOneWidget);
-        
+
         // Initially should show empty or partial text
         await tester.pump();
       });
     });
 
     group('Accessibility Tests', () {
-      testWidgets('Components have proper semantic labels', (WidgetTester tester) async {
+      testWidgets('Components have proper semantic labels', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           MaterialApp(
-            theme: ThemeData(
-              extensions: [MinqDesignTokens.light()],
-            ),
+            theme: ThemeData(extensions: [MinqDesignTokens.light()]),
             home: const Scaffold(
               body: Column(
                 children: [
-                  PolishedElevatedButton(
-                    child: Text('Action'),
-                  ),
-                  PolishedFloatingActionButton(
-                    child: Icon(Icons.add),
-                  ),
+                  PolishedElevatedButton(child: Text('Action')),
+                  PolishedFloatingActionButton(child: Icon(Icons.add)),
                 ],
               ),
             ),
@@ -421,18 +416,16 @@ void main() {
         expect(find.byIcon(Icons.add), findsOneWidget);
       });
 
-      testWidgets('Interactive elements meet minimum touch target size', (WidgetTester tester) async {
+      testWidgets('Interactive elements meet minimum touch target size', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           MaterialApp(
-            theme: ThemeData(
-              extensions: [MinqDesignTokens.light()],
-            ),
+            theme: ThemeData(extensions: [MinqDesignTokens.light()]),
             home: const Scaffold(
               body: Column(
                 children: [
-                  PolishedElevatedButton(
-                    child: Text('Button'),
-                  ),
+                  PolishedElevatedButton(child: Text('Button')),
                   PolishedSwitch(value: false),
                 ],
               ),
@@ -443,14 +436,16 @@ void main() {
         // Verify minimum touch target constraints are applied
         final buttonFinder = find.byType(PolishedElevatedButton);
         final switchFinder = find.byType(PolishedSwitch);
-        
+
         expect(buttonFinder, findsOneWidget);
         expect(switchFinder, findsOneWidget);
 
         // Check that widgets have minimum size constraints
-        final buttonWidget = tester.widget<PolishedElevatedButton>(buttonFinder);
+        final buttonWidget = tester.widget<PolishedElevatedButton>(
+          buttonFinder,
+        );
         final switchWidget = tester.widget<PolishedSwitch>(switchFinder);
-        
+
         expect(buttonWidget, isNotNull);
         expect(switchWidget, isNotNull);
       });

@@ -94,8 +94,11 @@ class MoodTrackingService {
           ts.toDate().month,
           ts.toDate().day,
         );
-        questsByDate.update(date, (currentCount) => currentCount + 1,
-            ifAbsent: () => 1);
+        questsByDate.update(
+          date,
+          (currentCount) => currentCount + 1,
+          ifAbsent: () => 1,
+        );
       }
 
       // 3. Calculate correlation

@@ -15,7 +15,7 @@ class ColorTokens {
     required this.onSecondary,
     required this.tertiary,
     required this.onTertiary,
-    
+
     // Surfaces
     required this.background,
     required this.onBackground,
@@ -23,12 +23,12 @@ class ColorTokens {
     required this.onSurface,
     required this.surfaceAlt,
     required this.surfaceVariant,
-    
+
     // Text Colors
     required this.textPrimary,
     required this.textSecondary,
     required this.textMuted,
-    
+
     // Semantic Colors
     required this.success,
     required this.onSuccess,
@@ -38,13 +38,13 @@ class ColorTokens {
     required this.onError,
     required this.info,
     required this.onInfo,
-    
+
     // Interactive
     required this.focusRing,
     required this.border,
     required this.divider,
     required this.overlay,
-    
+
     // Accessibility
     required this.highContrastPrimary,
     required this.highContrastOnPrimary,
@@ -60,7 +60,7 @@ class ColorTokens {
   final Color onSecondary;
   final Color tertiary;
   final Color onTertiary;
-  
+
   // Surfaces
   final Color background;
   final Color onBackground;
@@ -68,12 +68,12 @@ class ColorTokens {
   final Color onSurface;
   final Color surfaceAlt;
   final Color surfaceVariant;
-  
+
   // Text Colors
   final Color textPrimary;
   final Color textSecondary;
   final Color textMuted;
-  
+
   // Semantic Colors
   final Color success;
   final Color onSuccess;
@@ -83,13 +83,13 @@ class ColorTokens {
   final Color onError;
   final Color info;
   final Color onInfo;
-  
+
   // Interactive
   final Color focusRing;
   final Color border;
   final Color divider;
   final Color overlay;
-  
+
   // Accessibility
   final Color highContrastPrimary;
   final Color highContrastOnPrimary;
@@ -106,7 +106,6 @@ class ColorTokens {
     onSecondary: Color(0xFF000000), // Black for better contrast
     tertiary: Color(0xFF14B8A6), // Horizon Teal
     onTertiary: Color(0xFF000000), // Black for better contrast
-    
     // Surfaces
     background: Color(0xFFF5F7FB),
     onBackground: Color(0xFF0F172A),
@@ -114,12 +113,12 @@ class ColorTokens {
     onSurface: Color(0xFF0F172A),
     surfaceAlt: Color(0xFFF8FAFC),
     surfaceVariant: Color(0xFFE2E8F0),
-    
+
     // Text Colors
     textPrimary: Color(0xFF0F172A),
     textSecondary: Color(0xFF475569),
     textMuted: Color(0xFF94A3B8),
-    
+
     // Semantic Colors
     success: Color(0xFF10B981),
     onSuccess: Color(0xFF000000), // Black for better contrast
@@ -129,13 +128,13 @@ class ColorTokens {
     onError: Color(0xFFFFFFFF),
     info: Color(0xFF0369A1), // Darker blue for better contrast
     onInfo: Color(0xFFFFFFFF),
-    
+
     // Interactive
     focusRing: Color(0xFF93C5FD),
     border: Color(0xFFE2E8F0),
     divider: Color(0xFFE2E8F0),
     overlay: Color(0x990F172A),
-    
+
     // Accessibility
     highContrastPrimary: Color(0xFF1E1B4B),
     highContrastOnPrimary: Color(0xFFFFFFFF),
@@ -153,7 +152,7 @@ class ColorTokens {
     onSecondary: Color(0xFF0B1120),
     tertiary: Color(0xFF2DD4BF), // Lighter Horizon Teal for dark
     onTertiary: Color(0xFF0B1120),
-    
+
     // Surfaces
     background: Color(0xFF0B1120),
     onBackground: Color(0xFFE5E7EB),
@@ -161,12 +160,12 @@ class ColorTokens {
     onSurface: Color(0xFFE5E7EB),
     surfaceAlt: Color(0xFF111827),
     surfaceVariant: Color(0xFF334155),
-    
+
     // Text Colors
     textPrimary: Color(0xFFE5E7EB),
     textSecondary: Color(0xFF9CA3AF),
     textMuted: Color(0xFF64748B),
-    
+
     // Semantic Colors
     success: Color(0xFF34D399),
     onSuccess: Color(0xFF0B1120),
@@ -176,13 +175,13 @@ class ColorTokens {
     onError: Color(0xFF0B1120),
     info: Color(0xFF38BDF8),
     onInfo: Color(0xFF0B1120),
-    
+
     // Interactive
     focusRing: Color(0xFF60A5FA),
     border: Color(0xFF334155),
     divider: Color(0xFF334155),
     overlay: Color(0x99000000),
-    
+
     // Accessibility
     highContrastPrimary: Color(0xFFC4B5FD),
     highContrastOnPrimary: Color(0xFF000000),
@@ -237,11 +236,11 @@ class ColorTokens {
     if (meetsWCAGAA(color, background)) {
       return color;
     }
-    
+
     // Try to adjust the color to meet accessibility standards
     final isBackgroundLight = background.computeLuminance() >= 0.5;
     final targetColor = isBackgroundLight ? textPrimary : onSurface;
-    
+
     // Gradually blend towards accessible color
     for (double t = 0.1; t <= 1.0; t += 0.1) {
       final candidate = Color.lerp(color, targetColor, t)!;
@@ -249,7 +248,126 @@ class ColorTokens {
         return candidate;
       }
     }
-    
+
     return targetColor;
   }
+}
+
+/// Material Design 3 compatible color tokens for MinQ theme system
+class MinqColorTokens {
+  const MinqColorTokens({
+    required this.primary,
+    required this.primaryHover,
+    required this.primaryContainer,
+    required this.onPrimary,
+    required this.onPrimaryContainer,
+    required this.secondary,
+    required this.secondaryContainer,
+    required this.onSecondary,
+    required this.onSecondaryContainer,
+    required this.tertiary,
+    required this.tertiaryContainer,
+    required this.onTertiary,
+    required this.onTertiaryContainer,
+    required this.error,
+    required this.errorContainer,
+    required this.onError,
+    required this.onErrorContainer,
+    required this.warning,
+    required this.warningContainer,
+    required this.onWarning,
+    required this.onWarningContainer,
+    required this.success,
+    required this.successContainer,
+    required this.onSuccess,
+    required this.onSuccessContainer,
+    required this.background,
+    required this.onBackground,
+    required this.surface,
+    required this.onSurface,
+    required this.surfaceVariant,
+    required this.onSurfaceVariant,
+    required this.surfaceContainer,
+    required this.surfaceContainerHigh,
+    required this.outline,
+    required this.outlineVariant,
+    required this.shadow,
+    required this.scrim,
+    required this.inverseSurface,
+    required this.onInverseSurface,
+    required this.inversePrimary,
+  });
+
+  // Primary colors
+  final Color primary;
+  final Color primaryHover;
+  final Color primaryContainer;
+  final Color onPrimary;
+  final Color onPrimaryContainer;
+
+  // Secondary colors
+  final Color secondary;
+  final Color secondaryContainer;
+  final Color onSecondary;
+  final Color onSecondaryContainer;
+
+  // Tertiary colors
+  final Color tertiary;
+  final Color tertiaryContainer;
+  final Color onTertiary;
+  final Color onTertiaryContainer;
+
+  // Error colors
+  final Color error;
+  final Color errorContainer;
+  final Color onError;
+  final Color onErrorContainer;
+
+  // Warning colors
+  final Color warning;
+  final Color warningContainer;
+  final Color onWarning;
+  final Color onWarningContainer;
+
+  // Success colors
+  final Color success;
+  final Color successContainer;
+  final Color onSuccess;
+  final Color onSuccessContainer;
+
+  // Surface colors
+  final Color background;
+  final Color onBackground;
+  final Color surface;
+  final Color onSurface;
+  final Color surfaceVariant;
+  final Color onSurfaceVariant;
+  final Color surfaceContainer;
+  final Color surfaceContainerHigh;
+
+  // Outline colors
+  final Color outline;
+  final Color outlineVariant;
+
+  // Other colors
+  final Color shadow;
+  final Color scrim;
+  final Color inverseSurface;
+  final Color onInverseSurface;
+  final Color inversePrimary;
+}
+
+/// Legacy accessors to maintain compatibility with older widget code.
+extension MinqColorTokensLegacyGetters on MinqColorTokens {
+  Color get border => outline;
+  Color get divider => outlineVariant;
+  Color get surfaceAlt => surfaceVariant;
+  Color get primaryForeground => onPrimary;
+  Color get secondaryForeground => onSecondary;
+  Color get surfaceForeground => onSurface;
+  Color get textPrimary => onSurface;
+  Color get textSecondary => onSurfaceVariant;
+  Color get textMuted =>
+      Color.lerp(onSurfaceVariant, onBackground, 0.5) ?? onSurfaceVariant;
+  Color get info => secondary;
 }

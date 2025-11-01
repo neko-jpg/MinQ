@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/gamification/league_system.dart';
 import 'package:minq/data/local/models/local_user.dart';
 import 'package:minq/domain/gamification/league.dart';
+import 'package:minq/presentation/theme/theme_extensions.dart';
 
 /// League ranking widget with podium and list display
 class LeagueRankingWidget extends ConsumerWidget {
@@ -41,9 +42,7 @@ class LeagueRankingWidget extends ConsumerWidget {
     return CustomScrollView(
       slivers: [
         // League Header
-        SliverToBoxAdapter(
-          child: LeagueHeaderCard(config: leagueConfig),
-        ),
+        SliverToBoxAdapter(child: LeagueHeaderCard(config: leagueConfig)),
 
         // Top 3 Podium (if we have at least 1 user)
         if (rankings.isNotEmpty)
@@ -59,35 +58,28 @@ class LeagueRankingWidget extends ConsumerWidget {
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final ranking = rankings[index + 3]; // Skip top 3
-                  final isCurrentUser = ranking.userId == currentUserId;
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final ranking = rankings[index + 3]; // Skip top 3
+                final isCurrentUser = ranking.userId == currentUserId;
 
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: const EdgeInsets.only(bottom: 8),
-                    child: RankingListTile(
-                      ranking: ranking,
-                      isCurrentUser: isCurrentUser,
-                    ),
-                  );
-                },
-                childCount: math.max(0, rankings.length - 3),
-              ),
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: RankingListTile(
+                    ranking: ranking,
+                    isCurrentUser: isCurrentUser,
+                  ),
+                );
+              }, childCount: math.max(0, rankings.length - 3)),
             ),
           ),
 
         // Empty state if no rankings
         if (rankings.isEmpty)
-          SliverFillRemaining(
-            child: _buildEmptyState(context),
-          ),
+          SliverFillRemaining(child: _buildEmptyState(context)),
 
         // Bottom padding
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 100),
-        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 100)),
       ],
     );
   }
@@ -97,9 +89,7 @@ class LeagueRankingWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(
-            color: context.colorTokens.primary,
-          ),
+          CircularProgressIndicator(color: context.colorTokens.primary),
           const SizedBox(height: 16),
           Text(
             'ランキングを読み込み中...',
@@ -117,11 +107,7 @@ class LeagueRankingWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: context.colorTokens.error,
-          ),
+          Icon(Icons.error_outline, size: 64, color: context.colorTokens.error),
           const SizedBox(height: 16),
           Text(
             'ランキングの読み込みに失敗しました',
@@ -176,10 +162,7 @@ class LeagueRankingWidget extends ConsumerWidget {
 class LeagueHeaderCard extends StatelessWidget {
   final LeagueConfig config;
 
-  const LeagueHeaderCard({
-    super.key,
-    required this.config,
-  });
+  const LeagueHeaderCard({super.key, required this.config});
 
   @override
   Widget build(BuildContext context) {
@@ -211,11 +194,7 @@ class LeagueHeaderCard extends StatelessWidget {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  config.icon,
-                  color: Colors.white,
-                  size: 32,
-                ),
+                child: Icon(config.icon, color: Colors.white, size: 32),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -277,11 +256,7 @@ class LeagueHeaderCard extends StatelessWidget {
   ) {
     return Column(
       children: [
-        Icon(
-          icon,
-          color: Colors.white.withOpacity(0.8),
-          size: 20,
-        ),
+        Icon(icon, color: Colors.white.withOpacity(0.8), size: 20),
         const SizedBox(height: 4),
         Text(
           value,
@@ -306,11 +281,7 @@ class PodiumWidget extends StatelessWidget {
   final List<LeagueRanking> topThree;
   final String? currentUserId;
 
-  const PodiumWidget({
-    super.key,
-    required this.topThree,
-    this.currentUserId,
-  });
+  const PodiumWidget({super.key, required this.topThree, this.currentUserId});
 
   @override
   Widget build(BuildContext context) {
@@ -322,16 +293,13 @@ class PodiumWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           // 2nd place
-          if (topThree.length > 1)
-            _buildPodiumPlace(context, topThree[1], 2),
-          
+          if (topThree.length > 1) _buildPodiumPlace(context, topThree[1], 2),
+
           // 1st place
-          if (topThree.isNotEmpty)
-            _buildPodiumPlace(context, topThree[0], 1),
-          
+          if (topThree.isNotEmpty) _buildPodiumPlace(context, topThree[0], 1),
+
           // 3rd place
-          if (topThree.length > 2)
-            _buildPodiumPlace(context, topThree[2], 3),
+          if (topThree.length > 2) _buildPodiumPlace(context, topThree[2], 3),
         ],
       ),
     );
@@ -342,9 +310,14 @@ class PodiumWidget extends StatelessWidget {
     LeagueRanking ranking,
     int place,
   ) {
-    final height = place == 1 ? 120.0 : place == 2 ? 100.0 : 80.0;
+    final height =
+        place == 1
+            ? 120.0
+            : place == 2
+            ? 100.0
+            : 80.0;
     final isCurrentUser = ranking.userId == currentUserId;
-    
+
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -362,18 +335,19 @@ class PodiumWidget extends StatelessWidget {
 
           // Avatar with glow effect for current user
           Container(
-            decoration: isCurrentUser
-                ? BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: context.colorTokens.primary.withOpacity(0.5),
-                        blurRadius: 12,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  )
-                : null,
+            decoration:
+                isCurrentUser
+                    ? BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.colorTokens.primary.withOpacity(0.5),
+                          blurRadius: 12,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    )
+                    : null,
             child: CircleAvatar(
               radius: place == 1 ? 28 : 24,
               backgroundImage: NetworkImage(ranking.avatarUrl),
@@ -390,9 +364,10 @@ class PodiumWidget extends StatelessWidget {
               ranking.displayName,
               style: context.textTheme.bodySmall?.copyWith(
                 fontWeight: isCurrentUser ? FontWeight.bold : FontWeight.normal,
-                color: isCurrentUser 
-                    ? context.colorTokens.primary 
-                    : context.colorTokens.textPrimary,
+                color:
+                    isCurrentUser
+                        ? context.colorTokens.primary
+                        : context.colorTokens.textPrimary,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -421,18 +396,15 @@ class PodiumWidget extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  ranking.rankColor,
-                  ranking.rankColor.withOpacity(0.7),
-                ],
+                colors: [ranking.rankColor, ranking.rankColor.withOpacity(0.7)],
               ),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-              border: isCurrentUser
-                  ? Border.all(
-                      color: context.colorTokens.primary,
-                      width: 2,
-                    )
-                  : null,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(8),
+              ),
+              border:
+                  isCurrentUser
+                      ? Border.all(color: context.colorTokens.primary, width: 2)
+                      : null,
             ),
             child: Center(
               child: Text(
@@ -467,13 +439,15 @@ class RankingListTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isCurrentUser
-            ? context.colorTokens.primary.withOpacity(0.1)
-            : context.colorTokens.surface,
+        color:
+            isCurrentUser
+                ? context.colorTokens.primary.withOpacity(0.1)
+                : context.colorTokens.surface,
         borderRadius: BorderRadius.circular(12),
-        border: isCurrentUser
-            ? Border.all(color: context.colorTokens.primary, width: 2)
-            : Border.all(color: context.colorTokens.border),
+        border:
+            isCurrentUser
+                ? Border.all(color: context.colorTokens.primary, width: 2)
+                : Border.all(color: context.colorTokens.border),
         boxShadow: [
           BoxShadow(
             color: context.colorTokens.textPrimary.withOpacity(0.05),
@@ -489,18 +463,20 @@ class RankingListTile extends StatelessWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: isCurrentUser
-                  ? context.colorTokens.primary
-                  : context.colorTokens.surfaceVariant,
+              color:
+                  isCurrentUser
+                      ? context.colorTokens.primary
+                      : context.colorTokens.surfaceVariant,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Center(
               child: Text(
                 '${ranking.rank}',
                 style: context.textTheme.titleSmall?.copyWith(
-                  color: isCurrentUser
-                      ? Colors.white
-                      : context.colorTokens.textPrimary,
+                  color:
+                      isCurrentUser
+                          ? Colors.white
+                          : context.colorTokens.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -526,10 +502,12 @@ class RankingListTile extends StatelessWidget {
                 Text(
                   ranking.displayName,
                   style: context.textTheme.titleSmall?.copyWith(
-                    fontWeight: isCurrentUser ? FontWeight.bold : FontWeight.w500,
-                    color: isCurrentUser
-                        ? context.colorTokens.primary
-                        : context.colorTokens.textPrimary,
+                    fontWeight:
+                        isCurrentUser ? FontWeight.bold : FontWeight.w500,
+                    color:
+                        isCurrentUser
+                            ? context.colorTokens.primary
+                            : context.colorTokens.textPrimary,
                   ),
                 ),
                 Row(
@@ -560,9 +538,10 @@ class RankingListTile extends StatelessWidget {
                 '${ranking.weeklyXP}',
                 style: context.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: isCurrentUser
-                      ? context.colorTokens.primary
-                      : context.colorTokens.textPrimary,
+                  color:
+                      isCurrentUser
+                          ? context.colorTokens.primary
+                          : context.colorTokens.textPrimary,
                 ),
               ),
               Text(

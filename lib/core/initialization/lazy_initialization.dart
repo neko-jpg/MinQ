@@ -286,10 +286,15 @@ class FastStartupManager {
     final results = _timer.getResults();
     final totalTime = _timer.getTotalTime();
 
-    MinqLogger.debug('Startup Metrics', metadata: {
-      'totalTimeMs': totalTime?.inMilliseconds,
-      'milestones': results.map((key, value) => MapEntry(key, value.inMilliseconds)),
-    });
+    MinqLogger.debug(
+      'Startup Metrics',
+      metadata: {
+        'totalTimeMs': totalTime?.inMilliseconds,
+        'milestones': results.map(
+          (key, value) => MapEntry(key, value.inMilliseconds),
+        ),
+      },
+    );
   }
 
   // 初期化メソッド群

@@ -402,5 +402,4 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
       ),
     );
   }
-
 }

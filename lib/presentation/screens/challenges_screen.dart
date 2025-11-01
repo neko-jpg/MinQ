@@ -65,18 +65,12 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
           labelColor: MinqTokens.textPrimary,
           unselectedLabelColor: MinqTokens.textSecondary,
           indicatorColor: MinqTokens.brandPrimary,
-          tabs: const [
-            Tab(text: 'アクティブ'),
-            Tab(text: '完了済み'),
-          ],
+          tabs: const [Tab(text: 'アクティブ'), Tab(text: '完了済み')],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          _ActiveChallengesTab(),
-          _CompletedChallengesTab(),
-        ],
+        children: const [_ActiveChallengesTab(), _CompletedChallengesTab()],
       ),
     );
   }
@@ -110,10 +104,11 @@ class _ActiveChallengesTab extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => _ErrorWidget(
-        message: 'チャレンジの読み込みに失敗しました',
-        onRetry: () => ref.refresh(activeChallengesProvider),
-      ),
+      error:
+          (error, stack) => _ErrorWidget(
+            message: 'チャレンジの読み込みに失敗しました',
+            onRetry: () => ref.refresh(activeChallengesProvider),
+          ),
     );
   }
 }
@@ -149,20 +144,18 @@ class _CompletedChallengesTab extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => _ErrorWidget(
-        message: '完了済みチャレンジの読み込みに失敗しました',
-        onRetry: () => ref.refresh(completedChallengesProvider),
-      ),
+      error:
+          (error, stack) => _ErrorWidget(
+            message: '完了済みチャレンジの読み込みに失敗しました',
+            onRetry: () => ref.refresh(completedChallengesProvider),
+          ),
     );
   }
 }
 
 /// チャレンジカード
 class _ChallengeCard extends ConsumerWidget {
-  const _ChallengeCard({
-    required this.challenge,
-    this.isCompleted = false,
-  });
+  const _ChallengeCard({required this.challenge, this.isCompleted = false});
 
   final Challenge challenge;
   final bool isCompleted;
@@ -242,16 +235,18 @@ class _ChallengeCard extends ConsumerWidget {
               ),
               SizedBox(height: MinqTokens.spacing(3)),
               progressState.when(
-                data: (progress) => _buildProgressSection(
-                  context,
-                  progress,
-                ),
-                loading: () =>
-                    const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white))),
-                error: (e, s) => Text(
-                  '進捗の読み込み失敗',
-                  style: MinqTokens.bodySmall.copyWith(color: Colors.white),
-                ),
+                data: (progress) => _buildProgressSection(context, progress),
+                loading:
+                    () => const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                      ),
+                    ),
+                error:
+                    (e, s) => Text(
+                      '進捗の読み込み失敗',
+                      style: MinqTokens.bodySmall.copyWith(color: Colors.white),
+                    ),
               ),
               SizedBox(height: MinqTokens.spacing(3)),
               Row(
@@ -289,7 +284,8 @@ class _ChallengeCard extends ConsumerWidget {
                   width: double.infinity,
                   child: ResponsiveLayout.ensureTouchTarget(
                     child: ElevatedButton(
-                      onPressed: () => _showChallengeDetails(context, challenge),
+                      onPressed:
+                          () => _showChallengeDetails(context, challenge),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: MinqTokens.brandPrimary,
@@ -359,10 +355,7 @@ class _ChallengeCard extends ConsumerWidget {
   LinearGradient _getGradient() {
     if (isCompleted) {
       return LinearGradient(
-        colors: [
-          Colors.green,
-          Colors.green.withAlpha((255 * 0.8).round()),
-        ],
+        colors: [Colors.green, Colors.green.withAlpha((255 * 0.8).round())],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
@@ -462,7 +455,9 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
           SizedBox(height: MinqTokens.spacing(1)),
           Text(
             challenge.description,
-            style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
+            style: MinqTokens.bodyMedium.copyWith(
+              color: MinqTokens.textSecondary,
+            ),
           ),
           SizedBox(height: MinqTokens.spacing(4)),
           progressState.when(
@@ -481,8 +476,9 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
                   children: [
                     Text(
                       '進捗状況',
-                      style:
-                          MinqTokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+                      style: MinqTokens.titleMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     SizedBox(height: MinqTokens.spacing(1)),
                     Row(
@@ -509,18 +505,19 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
                       child: LinearProgressIndicator(
                         value: percentage,
                         minHeight: 8,
-                        backgroundColor:
-                            MinqTokens.brandPrimary.withAlpha((255 * 0.2).round()),
-                        valueColor:
-                            const AlwaysStoppedAnimation(MinqTokens.brandPrimary),
+                        backgroundColor: MinqTokens.brandPrimary.withAlpha(
+                          (255 * 0.2).round(),
+                        ),
+                        valueColor: AlwaysStoppedAnimation(
+                          MinqTokens.brandPrimary,
+                        ),
                       ),
                     ),
                   ],
                 ),
               );
             },
-            loading: () =>
-                const Center(child: CircularProgressIndicator()),
+            loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, s) => const Text('進捗の読み込みに失敗しました'),
           ),
           SizedBox(height: MinqTokens.spacing(4)),
@@ -594,7 +591,7 @@ class _ErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
               color: MinqTokens.textSecondary,
@@ -602,7 +599,9 @@ class _ErrorWidget extends StatelessWidget {
             SizedBox(height: MinqTokens.spacing(4)),
             Text(
               message,
-              style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
+              style: MinqTokens.bodyMedium.copyWith(
+                color: MinqTokens.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: MinqTokens.spacing(4)),
@@ -642,13 +641,17 @@ class _EmptyStateWidget extends StatelessWidget {
             SizedBox(height: MinqTokens.spacing(4)),
             Text(
               title,
-              style: MinqTokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
+              style: MinqTokens.titleLarge.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: MinqTokens.spacing(1)),
             Text(
               message,
-              style: MinqTokens.bodyMedium.copyWith(color: MinqTokens.textSecondary),
+              style: MinqTokens.bodyMedium.copyWith(
+                color: MinqTokens.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

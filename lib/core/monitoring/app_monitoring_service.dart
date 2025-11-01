@@ -10,39 +10,40 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 /// Comprehensive app monitoring service for tracking app health and performance
 class AppMonitoringService {
-  static final AppMonitoringService _instance = AppMonitoringService._internal();
+  static final AppMonitoringService _instance =
+      AppMonitoringService._internal();
   factory AppMonitoringService() => _instance;
   AppMonitoringService._internal();
 
   final AnalyticsService _analytics = AnalyticsService();
   final LocalStorageService _storage = LocalStorageService();
-  
+
   Timer? _healthCheckTimer;
   Timer? _memoryMonitorTimer;
   DateTime? _appStartTime;
   int _frameDropCount = 0;
   int _totalFrames = 0;
-  
+
   // App health metrics
   final Map<String, dynamic> _healthMetrics = {};
   final List<AppHealthEvent> _healthEvents = [];
-  
+
   /// Initialize monitoring system
   Future<void> initialize() async {
     _appStartTime = DateTime.now();
-    
+
     // Start periodic health checks
     _startHealthMonitoring();
-    
+
     // Monitor memory usage
     _startMemoryMonitoring();
-    
+
     // Track app lifecycle
     _trackAppLifecycle();
-    
+
     // Monitor frame performance
     _monitorFramePerformance();
-    
+
     debugPrint('AppMonitoringService initialized');
   }
 
@@ -67,13 +68,13 @@ class AppMonitoringService {
     try {
       final healthData = await _collectHealthData();
       _healthMetrics.addAll(healthData);
-      
+
       // Check for critical issues
       await _checkCriticalIssues(healthData);
-      
+
       // Store health snapshot
       await _storeHealthSnapshot(healthData);
-      
+
       // Send to analytics if needed
       if (_shouldReportHealth(healthData)) {
         await _analytics.trackEvent('app_health_check', healthData);
@@ -88,7 +89,7 @@ class AppMonitoringService {
   Future<Map<String, dynamic>> _collectHealthData() async {
     final deviceInfo = DeviceInfoPlugin();
     final packageInfo = await PackageInfo.fromPlatform();
-    
+
     final data = <String, dynamic>{
       'timestamp': DateTime.now().toIso8601String(),
       'app_version': packageInfo.version,
@@ -158,7 +159,7 @@ class AppMonitoringService {
         issues: issues,
         metrics: Map<String, dynamic>.from(healthData),
       );
-      
+
       _healthEvents.add(event);
       await _analytics.trackEvent('app_health_warning', {
         'issues': issues,
@@ -171,7 +172,7 @@ class AppMonitoringService {
   void _monitorFramePerformance() {
     WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
       _totalFrames++;
-      
+
       // Check if frame took too long (>16.67ms for 60fps)
       final frameDuration = timeStamp.inMicroseconds / 1000;
       if (frameDuration > 16.67) {
@@ -182,11 +183,15 @@ class AppMonitoringService {
 
   /// Track app lifecycle events
   void _trackAppLifecycle() {
-    WidgetsBinding.instance.didChangeAppLifecycleState(AppLifecycleState.resumed);
+    WidgetsBinding.instance.didChangeAppLifecycleState(
+      AppLifecycleState.resumed,
+    );
   }
 
   /// Record application error with context
-  Future<void> recordError(String errorType, dynamic error, {
+  Future<void> recordError(
+    String errorType,
+    dynamic error, {
     StackTrace? stackTrace,
     Map<String, dynamic>? context,
   }) async {
@@ -213,7 +218,9 @@ class AppMonitoringService {
   }
 
   /// Record performance metric
-  Future<void> recordPerformanceMetric(String metricName, double value, {
+  Future<void> recordPerformanceMetric(
+    String metricName,
+    double value, {
     Map<String, dynamic>? context,
   }) async {
     final metricData = {
@@ -227,7 +234,8 @@ class AppMonitoringService {
   }
 
   /// Record user action for behavior analysis
-  Future<void> recordUserAction(String action, {
+  Future<void> recordUserAction(
+    String action, {
     Map<String, dynamic>? properties,
   }) async {
     final actionData = {
@@ -294,13 +302,13 @@ class AppMonitoringService {
     try {
       final directory = Directory.systemTemp;
       int totalSize = 0;
-      
+
       await for (final entity in directory.list(recursive: true)) {
         if (entity is File) {
           totalSize += await entity.length();
         }
       }
-      
+
       return totalSize / (1024 * 1024); // Convert to MB
     } catch (e) {
       return 0;
@@ -339,7 +347,7 @@ class AppMonitoringService {
   bool _shouldReportHealth(Map<String, dynamic> healthData) {
     // Report health data every 30 minutes or if critical issues detected
     final lastReport = _healthMetrics['last_report_time'] as DateTime?;
-    if (lastReport == null || 
+    if (lastReport == null ||
         DateTime.now().difference(lastReport).inMinutes > 30) {
       _healthMetrics['last_report_time'] = DateTime.now();
       return true;
@@ -350,7 +358,7 @@ class AppMonitoringService {
   Future<void> _checkMemoryUsage() async {
     final memoryUsage = await _getCurrentMemoryUsage();
     _healthMetrics['memory_usage_mb'] = memoryUsage;
-    
+
     if (memoryUsage > 400) {
       await recordError('high_memory_usage', 'Memory usage: ${memoryUsage}MB');
     }
@@ -364,11 +372,7 @@ class AppMonitoringService {
 }
 
 /// App health status levels
-enum AppHealthStatus {
-  healthy,
-  warning,
-  critical,
-}
+enum AppHealthStatus { healthy, warning, critical }
 
 /// App health event for tracking issues
 class AppHealthEvent {
@@ -385,9 +389,4 @@ class AppHealthEvent {
   });
 }
 
-enum AppHealthEventType {
-  info,
-  warning,
-  error,
-  critical,
-}
+enum AppHealthEventType { info, warning, error, critical }

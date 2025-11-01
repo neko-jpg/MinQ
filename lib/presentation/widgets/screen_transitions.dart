@@ -21,20 +21,20 @@ class PolishedPageRoute<T> extends PageRouteBuilder<T> {
     this.reverseCurve = Curves.easeInCubic,
     super.settings,
   }) : super(
-          pageBuilder: (context, animation, secondaryAnimation) => page,
-          transitionDuration: duration,
-          reverseTransitionDuration: reverseDuration,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return _buildTransition(
-              child: child,
-              animation: animation,
-              secondaryAnimation: secondaryAnimation,
-              type: transitionType,
-              curve: curve,
-              reverseCurve: reverseCurve,
-            );
-          },
-        );
+         pageBuilder: (context, animation, secondaryAnimation) => page,
+         transitionDuration: duration,
+         reverseTransitionDuration: reverseDuration,
+         transitionsBuilder: (context, animation, secondaryAnimation, child) {
+           return _buildTransition(
+             child: child,
+             animation: animation,
+             secondaryAnimation: secondaryAnimation,
+             type: transitionType,
+             curve: curve,
+             reverseCurve: reverseCurve,
+           );
+         },
+       );
 
   static Widget _buildTransition({
     required Widget child,
@@ -52,10 +52,7 @@ class PolishedPageRoute<T> extends PageRouteBuilder<T> {
 
     switch (type) {
       case TransitionType.fade:
-        return FadeTransition(
-          opacity: curvedAnimation,
-          child: child,
-        );
+        return FadeTransition(opacity: curvedAnimation, child: child);
 
       case TransitionType.slideFromRight:
         return SlideTransition(
@@ -95,28 +92,16 @@ class PolishedPageRoute<T> extends PageRouteBuilder<T> {
 
       case TransitionType.scale:
         return ScaleTransition(
-          scale: Tween<double>(
-            begin: 0.8,
-            end: 1.0,
-          ).animate(curvedAnimation),
-          child: FadeTransition(
-            opacity: curvedAnimation,
-            child: child,
-          ),
+          scale: Tween<double>(begin: 0.8, end: 1.0).animate(curvedAnimation),
+          child: FadeTransition(opacity: curvedAnimation, child: child),
         );
 
       case TransitionType.scaleFromCenter:
-        return ScaleTransition(
-          scale: curvedAnimation,
-          child: child,
-        );
+        return ScaleTransition(scale: curvedAnimation, child: child);
 
       case TransitionType.rotation:
         return RotationTransition(
-          turns: Tween<double>(
-            begin: 0.0,
-            end: 1.0,
-          ).animate(curvedAnimation),
+          turns: Tween<double>(begin: 0.0, end: 1.0).animate(curvedAnimation),
           child: child,
         );
 
@@ -126,10 +111,7 @@ class PolishedPageRoute<T> extends PageRouteBuilder<T> {
             begin: const Offset(0.3, 0.0),
             end: Offset.zero,
           ).animate(curvedAnimation),
-          child: FadeTransition(
-            opacity: curvedAnimation,
-            child: child,
-          ),
+          child: FadeTransition(opacity: curvedAnimation, child: child),
         );
 
       case TransitionType.scaleAndRotate:
@@ -145,10 +127,7 @@ class PolishedPageRoute<T> extends PageRouteBuilder<T> {
         );
 
       case TransitionType.morphing:
-        return _MorphingTransition(
-          animation: curvedAnimation,
-          child: child,
-        );
+        return _MorphingTransition(animation: curvedAnimation, child: child);
     }
   }
 }
@@ -158,10 +137,7 @@ class _MorphingTransition extends StatelessWidget {
   final Animation<double> animation;
   final Widget child;
 
-  const _MorphingTransition({
-    required this.animation,
-    required this.child,
-  });
+  const _MorphingTransition({required this.animation, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -169,18 +145,16 @@ class _MorphingTransition extends StatelessWidget {
       animation: animation,
       builder: (context, child) {
         final progress = animation.value;
-        
+
         return Transform(
           alignment: Alignment.center,
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.001)
-            ..rotateY(progress * 0.5)
-            // ignore: deprecated_member_use
-            ..scale(0.8 + (0.2 * progress)),
-          child: Opacity(
-            opacity: progress,
-            child: this.child,
-          ),
+          transform:
+              Matrix4.identity()
+                ..setEntry(3, 2, 0.001)
+                ..rotateY(progress * 0.5)
+                // ignore: deprecated_member_use
+                ..scale(0.8 + (0.2 * progress)),
+          child: Opacity(opacity: progress, child: this.child),
         );
       },
     );
@@ -217,13 +191,15 @@ class SharedElementTransition extends StatelessWidget {
           builder: (context, child) {
             return Transform(
               // ignore: deprecated_member_use
-              transform: Matrix4.identity()..scale(1.0 + (animation.value * 0.1)),
+              transform:
+                  Matrix4.identity()..scale(1.0 + (animation.value * 0.1)),
               alignment: Alignment.center,
               child: Material(
                 color: Colors.transparent,
-                child: direction == HeroFlightDirection.push
-                    ? toContext.widget
-                    : fromContext.widget,
+                child:
+                    direction == HeroFlightDirection.push
+                        ? toContext.widget
+                        : fromContext.widget,
               ),
             );
           },
@@ -251,20 +227,11 @@ class ModalTransition extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (type) {
       case ModalType.bottomSheet:
-        return _BottomSheetTransition(
-          duration: duration,
-          child: child,
-        );
+        return _BottomSheetTransition(duration: duration, child: child);
       case ModalType.dialog:
-        return _DialogTransition(
-          duration: duration,
-          child: child,
-        );
+        return _DialogTransition(duration: duration, child: child);
       case ModalType.fullScreen:
-        return _FullScreenTransition(
-          duration: duration,
-          child: child,
-        );
+        return _FullScreenTransition(duration: duration, child: child);
     }
   }
 }
@@ -273,10 +240,7 @@ class _BottomSheetTransition extends StatefulWidget {
   final Widget child;
   final Duration duration;
 
-  const _BottomSheetTransition({
-    required this.child,
-    required this.duration,
-  });
+  const _BottomSheetTransition({required this.child, required this.duration});
 
   @override
   State<_BottomSheetTransition> createState() => _BottomSheetTransitionState();
@@ -291,26 +255,17 @@ class _BottomSheetTransitionState extends State<_BottomSheetTransition>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0.0, 1.0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
   }
@@ -331,15 +286,10 @@ class _BottomSheetTransitionState extends State<_BottomSheetTransition>
             // Background overlay
             FadeTransition(
               opacity: _fadeAnimation,
-              child: Container(
-                color: Colors.black54,
-              ),
+              child: Container(color: Colors.black54),
             ),
             // Bottom sheet content
-            SlideTransition(
-              position: _slideAnimation,
-              child: widget.child,
-            ),
+            SlideTransition(position: _slideAnimation, child: widget.child),
           ],
         );
       },
@@ -351,10 +301,7 @@ class _DialogTransition extends StatefulWidget {
   final Widget child;
   final Duration duration;
 
-  const _DialogTransition({
-    required this.child,
-    required this.duration,
-  });
+  const _DialogTransition({required this.child, required this.duration});
 
   @override
   State<_DialogTransition> createState() => _DialogTransitionState();
@@ -369,26 +316,17 @@ class _DialogTransitionState extends State<_DialogTransition>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _scaleAnimation = Tween<double>(
       begin: 0.8,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
   }
@@ -409,9 +347,7 @@ class _DialogTransitionState extends State<_DialogTransition>
             // Background overlay
             FadeTransition(
               opacity: _fadeAnimation,
-              child: Container(
-                color: Colors.black54,
-              ),
+              child: Container(color: Colors.black54),
             ),
             // Dialog content
             Center(
@@ -434,10 +370,7 @@ class _FullScreenTransition extends StatefulWidget {
   final Widget child;
   final Duration duration;
 
-  const _FullScreenTransition({
-    required this.child,
-    required this.duration,
-  });
+  const _FullScreenTransition({required this.child, required this.duration});
 
   @override
   State<_FullScreenTransition> createState() => _FullScreenTransitionState();
@@ -452,26 +385,17 @@ class _FullScreenTransitionState extends State<_FullScreenTransition>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _scaleAnimation = Tween<double>(
       begin: 0.9,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
   }
@@ -489,10 +413,7 @@ class _FullScreenTransitionState extends State<_FullScreenTransition>
       builder: (context, child) {
         return ScaleTransition(
           scale: _scaleAnimation,
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: widget.child,
-          ),
+          child: FadeTransition(opacity: _fadeAnimation, child: widget.child),
         );
       },
     );
@@ -553,11 +474,7 @@ enum TransitionType {
 }
 
 /// Modal types enum
-enum ModalType {
-  bottomSheet,
-  dialog,
-  fullScreen,
-}
+enum ModalType { bottomSheet, dialog, fullScreen }
 
 /// Navigation extensions for easy usage
 extension NavigatorTransitions on NavigatorState {
@@ -579,7 +496,8 @@ extension NavigatorTransitions on NavigatorState {
   }
 
   /// Push replacement with custom transition
-  Future<T?> pushReplacementWithTransition<T extends Object?, TO extends Object?>(
+  Future<T?>
+  pushReplacementWithTransition<T extends Object?, TO extends Object?>(
     Widget page, {
     TransitionType type = TransitionType.slideFromRight,
     Duration duration = const Duration(milliseconds: 300),

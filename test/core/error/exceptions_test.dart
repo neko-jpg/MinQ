@@ -4,14 +4,14 @@ import 'package:minq/core/error/exceptions.dart';
 void main() {
   group('MinqException', () {
     test('should create exception with message and code', () {
-      const exception = AIServiceException(
-        'Test message',
-        code: 'TEST_CODE',
-      );
+      const exception = AIServiceException('Test message', code: 'TEST_CODE');
 
       expect(exception.message, equals('Test message'));
       expect(exception.code, equals('TEST_CODE'));
-      expect(exception.toString(), contains('AIServiceException: Test message'));
+      expect(
+        exception.toString(),
+        contains('AIServiceException: Test message'),
+      );
       expect(exception.toString(), contains('(code: TEST_CODE)'));
     });
 
@@ -66,14 +66,20 @@ void main() {
     test('should create service unavailable exception', () {
       final exception = AIServiceException.serviceUnavailable('Maintenance');
 
-      expect(exception.message, equals('AI service is currently unavailable: Maintenance'));
+      expect(
+        exception.message,
+        equals('AI service is currently unavailable: Maintenance'),
+      );
       expect(exception.code, equals('AI_SERVICE_UNAVAILABLE'));
     });
 
     test('should create invalid input exception', () {
       final exception = AIServiceException.invalidInput('Empty prompt');
 
-      expect(exception.message, equals('Invalid input provided to AI service: Empty prompt'));
+      expect(
+        exception.message,
+        equals('Invalid input provided to AI service: Empty prompt'),
+      );
       expect(exception.code, equals('AI_INVALID_INPUT'));
     });
   });
@@ -88,7 +94,10 @@ void main() {
     });
 
     test('should create operation failed exception', () {
-      final exception = DatabaseException.operationFailed('INSERT', 'Constraint violation');
+      final exception = DatabaseException.operationFailed(
+        'INSERT',
+        'Constraint violation',
+      );
 
       expect(exception.message, equals('Database operation failed: INSERT'));
       expect(exception.code, equals('DB_OPERATION_FAILED'));
@@ -99,16 +108,24 @@ void main() {
     test('should create not found exception', () {
       final exception = DatabaseException.notFound('User', 'user123');
 
-      expect(exception.message, equals('Resource not found: User (id: user123)'));
+      expect(
+        exception.message,
+        equals('Resource not found: User (id: user123)'),
+      );
       expect(exception.code, equals('DB_NOT_FOUND'));
       expect(exception.context!['resource'], equals('User'));
       expect(exception.context!['id'], equals('user123'));
     });
 
     test('should create validation failed exception', () {
-      final exception = DatabaseException.validationFailed('Email format invalid');
+      final exception = DatabaseException.validationFailed(
+        'Email format invalid',
+      );
 
-      expect(exception.message, equals('Data validation failed: Email format invalid'));
+      expect(
+        exception.message,
+        equals('Data validation failed: Email format invalid'),
+      );
       expect(exception.code, equals('DB_VALIDATION_FAILED'));
       expect(exception.context!['details'], equals('Email format invalid'));
     });
@@ -131,7 +148,10 @@ void main() {
     });
 
     test('should create server error exception', () {
-      final exception = NetworkException.serverError(500, 'Internal Server Error');
+      final exception = NetworkException.serverError(
+        500,
+        'Internal Server Error',
+      );
 
       expect(exception.message, equals('Server error: Internal Server Error'));
       expect(exception.code, equals('NETWORK_SERVER_ERROR'));
@@ -140,9 +160,15 @@ void main() {
     });
 
     test('should create request failed exception', () {
-      final exception = NetworkException.requestFailed('https://api.example.com', 'Connection refused');
+      final exception = NetworkException.requestFailed(
+        'https://api.example.com',
+        'Connection refused',
+      );
 
-      expect(exception.message, equals('Network request failed: https://api.example.com'));
+      expect(
+        exception.message,
+        equals('Network request failed: https://api.example.com'),
+      );
       expect(exception.code, equals('NETWORK_REQUEST_FAILED'));
       expect(exception.originalError, equals('Connection refused'));
       expect(exception.context!['url'], equals('https://api.example.com'));
@@ -151,13 +177,40 @@ void main() {
 
   group('ExceptionUtils', () {
     test('should identify retryable exceptions', () {
-      expect(ExceptionUtils.isRetryable(NetworkException.timeout(const Duration(seconds: 30))), isTrue);
-      expect(ExceptionUtils.isRetryable(NetworkException.serverError(500)), isTrue);
-      expect(ExceptionUtils.isRetryable(NetworkException.noConnection()), isFalse);
-      expect(ExceptionUtils.isRetryable(DatabaseException.connectionFailed('timeout')), isTrue);
-      expect(ExceptionUtils.isRetryable(DatabaseException.validationFailed('invalid')), isFalse);
-      expect(ExceptionUtils.isRetryable(AIServiceException.serviceUnavailable()), isTrue);
-      expect(ExceptionUtils.isRetryable(AIServiceException.invalidInput('empty')), isFalse);
+      expect(
+        ExceptionUtils.isRetryable(
+          NetworkException.timeout(const Duration(seconds: 30)),
+        ),
+        isTrue,
+      );
+      expect(
+        ExceptionUtils.isRetryable(NetworkException.serverError(500)),
+        isTrue,
+      );
+      expect(
+        ExceptionUtils.isRetryable(NetworkException.noConnection()),
+        isFalse,
+      );
+      expect(
+        ExceptionUtils.isRetryable(
+          DatabaseException.connectionFailed('timeout'),
+        ),
+        isTrue,
+      );
+      expect(
+        ExceptionUtils.isRetryable(
+          DatabaseException.validationFailed('invalid'),
+        ),
+        isFalse,
+      );
+      expect(
+        ExceptionUtils.isRetryable(AIServiceException.serviceUnavailable()),
+        isTrue,
+      );
+      expect(
+        ExceptionUtils.isRetryable(AIServiceException.invalidInput('empty')),
+        isFalse,
+      );
     });
 
     test('should get user-friendly messages', () {
@@ -166,7 +219,9 @@ void main() {
         equals('インターネット接続を確認してください'),
       );
       expect(
-        ExceptionUtils.getUserFriendlyMessage(NetworkException.timeout(const Duration(seconds: 30))),
+        ExceptionUtils.getUserFriendlyMessage(
+          NetworkException.timeout(const Duration(seconds: 30)),
+        ),
         equals('リクエストがタイムアウトしました。もう一度お試しください'),
       );
       expect(
@@ -174,7 +229,9 @@ void main() {
         equals('ログインが必要です'),
       );
       expect(
-        ExceptionUtils.getUserFriendlyMessage(DatabaseException.notFound('User')),
+        ExceptionUtils.getUserFriendlyMessage(
+          DatabaseException.notFound('User'),
+        ),
         equals('データが見つかりませんでした'),
       );
     });
@@ -188,10 +245,7 @@ void main() {
         ExceptionUtils.getErrorCode(DatabaseException.notFound('User')),
         equals('DB_NOT_FOUND'),
       );
-      expect(
-        ExceptionUtils.getErrorCode(Exception('Generic error')),
-        isNull,
-      );
+      expect(ExceptionUtils.getErrorCode(Exception('Generic error')), isNull);
     });
 
     test('should create MinqException from any error', () {
@@ -224,9 +278,15 @@ void main() {
 
   group('ValidationException', () {
     test('should create field validation exception', () {
-      final exception = ValidationException.fieldValidation('email', 'Invalid format');
+      final exception = ValidationException.fieldValidation(
+        'email',
+        'Invalid format',
+      );
 
-      expect(exception.message, equals('Validation failed for field "email": Invalid format'));
+      expect(
+        exception.message,
+        equals('Validation failed for field "email": Invalid format'),
+      );
       expect(exception.code, equals('VALIDATION_FIELD_FAILED'));
       expect(exception.context!['field'], equals('email'));
       expect(exception.context!['reason'], equals('Invalid format'));
@@ -241,9 +301,15 @@ void main() {
     });
 
     test('should create invalid format exception', () {
-      final exception = ValidationException.invalidFormat('phone', 'E.164 format');
+      final exception = ValidationException.invalidFormat(
+        'phone',
+        'E.164 format',
+      );
 
-      expect(exception.message, equals('Invalid format for field "phone", expected: E.164 format'));
+      expect(
+        exception.message,
+        equals('Invalid format for field "phone", expected: E.164 format'),
+      );
       expect(exception.code, equals('VALIDATION_INVALID_FORMAT'));
       expect(exception.context!['field'], equals('phone'));
       expect(exception.context!['expectedFormat'], equals('E.164 format'));
@@ -252,18 +318,36 @@ void main() {
 
   group('BusinessLogicException', () {
     test('should create operation not allowed exception', () {
-      final exception = BusinessLogicException.operationNotAllowed('delete', 'User has active subscriptions');
+      final exception = BusinessLogicException.operationNotAllowed(
+        'delete',
+        'User has active subscriptions',
+      );
 
-      expect(exception.message, equals('Operation not allowed: delete. Reason: User has active subscriptions'));
+      expect(
+        exception.message,
+        equals(
+          'Operation not allowed: delete. Reason: User has active subscriptions',
+        ),
+      );
       expect(exception.code, equals('BUSINESS_OPERATION_NOT_ALLOWED'));
       expect(exception.context!['operation'], equals('delete'));
-      expect(exception.context!['reason'], equals('User has active subscriptions'));
+      expect(
+        exception.context!['reason'],
+        equals('User has active subscriptions'),
+      );
     });
 
     test('should create quota exceeded exception', () {
-      final exception = BusinessLogicException.quotaExceeded('API calls', 1000, 1500);
+      final exception = BusinessLogicException.quotaExceeded(
+        'API calls',
+        1000,
+        1500,
+      );
 
-      expect(exception.message, equals('Quota exceeded for API calls. Limit: 1000, Current: 1500'));
+      expect(
+        exception.message,
+        equals('Quota exceeded for API calls. Limit: 1000, Current: 1500'),
+      );
       expect(exception.code, equals('BUSINESS_QUOTA_EXCEEDED'));
       expect(exception.context!['resource'], equals('API calls'));
       expect(exception.context!['limit'], equals(1000));

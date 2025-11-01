@@ -119,10 +119,7 @@ class _AchievementCard extends StatelessWidget {
   final Achievement achievement;
   final bool isUnlocked;
 
-  const _AchievementCard({
-    required this.achievement,
-    required this.isUnlocked,
-  });
+  const _AchievementCard({required this.achievement, required this.isUnlocked});
 
   @override
   Widget build(BuildContext context) {

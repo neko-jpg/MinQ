@@ -95,13 +95,14 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
                         width: isSelected ? 3 : 1,
                       ),
                     ),
-                    child: isSelected
-                        ? Icon(
-                            Icons.check,
-                            color: _getContrastColor(color),
-                            size: 20,
-                          )
-                        : null,
+                    child:
+                        isSelected
+                            ? Icon(
+                              Icons.check,
+                              color: _getContrastColor(color),
+                              size: 20,
+                            )
+                            : null,
                   ),
                 );
               },
@@ -114,9 +115,7 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(
             'キャンセル',
-            style: theme.typography.button.copyWith(
-              color: theme.textSecondary,
-            ),
+            style: theme.typography.button.copyWith(color: theme.textSecondary),
           ),
         ),
         TextButton(

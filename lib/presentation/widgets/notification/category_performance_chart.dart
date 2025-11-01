@@ -3,18 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:minq/domain/notification/notification_analytics.dart';
 import 'package:minq/domain/notification/notification_settings.dart';
 import 'package:minq/l10n/l10n.dart';
+import 'package:minq/l10n/app_localizations.dart';
 
 /// カテゴリパフォーマンスチャート
 class CategoryPerformanceChart extends StatefulWidget {
   final Map<NotificationCategory, NotificationMetrics> metrics;
 
-  const CategoryPerformanceChart({
-    super.key,
-    required this.metrics,
-  });
+  const CategoryPerformanceChart({super.key, required this.metrics});
 
   @override
-  State<CategoryPerformanceChart> createState() => _CategoryPerformanceChartState();
+  State<CategoryPerformanceChart> createState() =>
+      _CategoryPerformanceChartState();
 }
 
 class _CategoryPerformanceChartState extends State<CategoryPerformanceChart> {
@@ -65,9 +64,9 @@ class _CategoryPerformanceChartState extends State<CategoryPerformanceChart> {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             SizedBox(
               height: 300,
               child: BarChart(
@@ -76,14 +75,15 @@ class _CategoryPerformanceChartState extends State<CategoryPerformanceChart> {
                   maxY: _getMaxY(),
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
-                      tooltipBgColor: theme.colorScheme.surface,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        final category = NotificationCategory.values[group.x.toInt()];
+                        final category =
+                            NotificationCategory.values[group.x.toInt()];
                         final value = rod.toY;
-                        final displayValue = _selectedMetric == 'totalSent'
-                            ? value.toInt().toString()
-                            : '${(value * 100).toStringAsFixed(1)}%';
-                        
+                        final displayValue =
+                            _selectedMetric == 'totalSent'
+                                ? value.toInt().toString()
+                                : '${(value * 100).toStringAsFixed(1)}%';
+
                         return BarTooltipItem(
                           '${_getCategoryDisplayName(category, l10n)}\n$displayValue',
                           theme.textTheme.bodySmall!,
@@ -98,8 +98,11 @@ class _CategoryPerformanceChartState extends State<CategoryPerformanceChart> {
                         showTitles: true,
                         getTitlesWidget: (value, meta) {
                           final categoryIndex = value.toInt();
-                          if (categoryIndex >= 0 && categoryIndex < NotificationCategory.values.length) {
-                            final category = NotificationCategory.values[categoryIndex];
+                          if (categoryIndex >= 0 &&
+                              categoryIndex <
+                                  NotificationCategory.values.length) {
+                            final category =
+                                NotificationCategory.values[categoryIndex];
                             return Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: _getCategoryIcon(category),
@@ -128,17 +131,21 @@ class _CategoryPerformanceChartState extends State<CategoryPerformanceChart> {
                         },
                       ),
                     ),
-                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
                   ),
                   borderData: FlBorderData(show: false),
                   barGroups: _buildBarGroups(theme),
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             _buildLegend(context, l10n),
           ],
         ),
@@ -151,7 +158,7 @@ class _CategoryPerformanceChartState extends State<CategoryPerformanceChart> {
       final index = entry.key;
       final category = entry.value;
       final metrics = widget.metrics[category];
-      
+
       if (metrics == null) {
         return BarChartGroupData(
           x: index,
@@ -160,15 +167,17 @@ class _CategoryPerformanceChartState extends State<CategoryPerformanceChart> {
               toY: 0,
               color: theme.colorScheme.surfaceContainerHighest,
               width: 20,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(4),
+              ),
             ),
           ],
         );
       }
-      
+
       final value = _getMetricValue(metrics);
       final color = _getCategoryColor(category, theme);
-      
+
       return BarChartGroupData(
         x: index,
         barRods: [
@@ -211,28 +220,29 @@ class _CategoryPerformanceChartState extends State<CategoryPerformanceChart> {
     return Wrap(
       spacing: 16,
       runSpacing: 8,
-      children: NotificationCategory.values.map((category) {
-        final color = _getCategoryColor(category, Theme.of(context));
-        
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              _getCategoryShortName(category),
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
-        );
-      }).toList(),
+      children:
+          NotificationCategory.values.map((category) {
+            final color = _getCategoryColor(category, Theme.of(context));
+
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  _getCategoryShortName(category),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            );
+          }).toList(),
     );
   }
 
@@ -247,7 +257,7 @@ class _CategoryPerformanceChartState extends State<CategoryPerformanceChart> {
       Colors.teal,
       Colors.indigo,
     ];
-    
+
     return colors[category.index % colors.length];
   }
 
@@ -272,7 +282,10 @@ class _CategoryPerformanceChartState extends State<CategoryPerformanceChart> {
     }
   }
 
-  String _getCategoryDisplayName(NotificationCategory category, AppLocalizations l10n) {
+  String _getCategoryDisplayName(
+    NotificationCategory category,
+    AppLocalizations l10n,
+  ) {
     switch (category) {
       case NotificationCategory.quest:
         return l10n.questNotifications;

@@ -52,11 +52,7 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.access_time,
-                  color: theme.brandPrimary,
-                  size: 24,
-                ),
+                Icon(Icons.access_time, color: theme.brandPrimary, size: 24),
                 SizedBox(width: theme.spacing.md),
                 Text(
                   _selectedTime.format(context),
@@ -133,12 +129,36 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
             spacing: theme.spacing.sm,
             runSpacing: theme.spacing.sm,
             children: [
-              _buildQuickTimeChip(theme, const TimeOfDay(hour: 7, minute: 0), '7:00'),
-              _buildQuickTimeChip(theme, const TimeOfDay(hour: 8, minute: 0), '8:00'),
-              _buildQuickTimeChip(theme, const TimeOfDay(hour: 9, minute: 0), '9:00'),
-              _buildQuickTimeChip(theme, const TimeOfDay(hour: 18, minute: 0), '18:00'),
-              _buildQuickTimeChip(theme, const TimeOfDay(hour: 19, minute: 0), '19:00'),
-              _buildQuickTimeChip(theme, const TimeOfDay(hour: 20, minute: 0), '20:00'),
+              _buildQuickTimeChip(
+                theme,
+                const TimeOfDay(hour: 7, minute: 0),
+                '7:00',
+              ),
+              _buildQuickTimeChip(
+                theme,
+                const TimeOfDay(hour: 8, minute: 0),
+                '8:00',
+              ),
+              _buildQuickTimeChip(
+                theme,
+                const TimeOfDay(hour: 9, minute: 0),
+                '9:00',
+              ),
+              _buildQuickTimeChip(
+                theme,
+                const TimeOfDay(hour: 18, minute: 0),
+                '18:00',
+              ),
+              _buildQuickTimeChip(
+                theme,
+                const TimeOfDay(hour: 19, minute: 0),
+                '19:00',
+              ),
+              _buildQuickTimeChip(
+                theme,
+                const TimeOfDay(hour: 20, minute: 0),
+                '20:00',
+              ),
             ],
           ),
         ],
@@ -148,9 +168,7 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(
             'キャンセル',
-            style: theme.typography.button.copyWith(
-              color: theme.textSecondary,
-            ),
+            style: theme.typography.button.copyWith(color: theme.textSecondary),
           ),
         ),
         TextButton(
@@ -171,7 +189,8 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
   }
 
   Widget _buildQuickTimeChip(MinqTheme theme, TimeOfDay time, String label) {
-    final isSelected = time.hour == _selectedTime.hour && time.minute == _selectedTime.minute;
+    final isSelected =
+        time.hour == _selectedTime.hour && time.minute == _selectedTime.minute;
 
     return GestureDetector(
       onTap: () {

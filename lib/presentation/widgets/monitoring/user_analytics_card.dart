@@ -4,10 +4,7 @@ import 'package:minq/core/monitoring/user_behavior_analytics.dart';
 class UserAnalyticsCard extends StatelessWidget {
   final UserBehaviorInsights insights;
 
-  const UserAnalyticsCard({
-    super.key,
-    required this.insights,
-  });
+  const UserAnalyticsCard({super.key, required this.insights});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +35,7 @@ class UserAnalyticsCard extends StatelessWidget {
   Widget _buildEngagementScore(BuildContext context) {
     final score = insights.engagementScore;
     final color = _getEngagementColor(score);
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -71,10 +68,7 @@ class UserAnalyticsCard extends StatelessWidget {
                 ),
                 Text(
                   _getEngagementLabel(score),
-                  style: TextStyle(
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: color, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 LinearProgressIndicator(
@@ -123,7 +117,12 @@ class UserAnalyticsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricTile(String title, String value, IconData icon, Color color) {
+  Widget _buildMetricTile(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -170,7 +169,7 @@ class UserAnalyticsCard extends StatelessWidget {
               final feature = insights.mostUsedFeatures[index];
               final maxUsage = insights.mostUsedFeatures.first.totalUsage;
               final percentage = (feature.totalUsage / maxUsage);
-              
+
               return Container(
                 width: 80,
                 margin: const EdgeInsets.only(right: 8),
@@ -255,7 +254,10 @@ class UserAnalyticsCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.blue,
                     borderRadius: BorderRadius.circular(10),

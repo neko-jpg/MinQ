@@ -5,10 +5,7 @@ import 'package:minq/domain/analytics/dashboard_config.dart';
 class StreakCounterWidget extends ConsumerWidget {
   final DashboardWidgetConfig config;
 
-  const StreakCounterWidget({
-    super.key,
-    required this.config,
-  });
+  const StreakCounterWidget({super.key, required this.config});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,9 +38,9 @@ class StreakCounterWidget extends ConsumerWidget {
         const SizedBox(height: 4),
         Text(
           '日連続',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.grey,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
         ),
         const SizedBox(height: 8),
         _buildStreakMessage(context, streakCount),

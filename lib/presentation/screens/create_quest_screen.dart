@@ -482,7 +482,9 @@ class _StepIndicator extends StatelessWidget {
           children: List<Widget>.generate(totalSteps, (int index) {
             final bool isActive = index <= currentStep;
             final Color indicatorColor =
-                isActive ? tokens.brandPrimary : tokens.border.withAlpha((255 * 0.6).round());
+                isActive
+                    ? tokens.brandPrimary
+                    : tokens.border.withAlpha((255 * 0.6).round());
             final bool reduceMotion =
                 MediaQuery.maybeOf(context)?.disableAnimations ?? false;
             return Expanded(
@@ -823,14 +825,19 @@ class _GoalSetter extends StatelessWidget {
           },
         ),
         SizedBox(height: tokens.spacing.md),
-        Text('目標値', style: tokens.typography.body.copyWith(color: tokens.textMuted)),
+        Text(
+          '目標値',
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
+        ),
         SizedBox(height: tokens.spacing.sm),
         TextFormField(
           controller: goalValueController,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             suffixText: isTimeGoal ? '分' : '回',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(tokens.radius.xl)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(tokens.radius.xl),
+            ),
           ),
         ),
       ],
@@ -855,11 +862,16 @@ class _FrequencyPicker extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('頻度', style: tokens.typography.body.copyWith(color: tokens.textMuted)),
+        Text(
+          '頻度',
+          style: tokens.typography.body.copyWith(color: tokens.textMuted),
+        ),
         SizedBox(height: tokens.spacing.sm),
         Card(
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(tokens.radius.xl)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(tokens.radius.xl),
+          ),
           child: Padding(
             padding: EdgeInsets.all(tokens.spacing.md),
             child: Wrap(
@@ -919,7 +931,9 @@ class _ReminderSetter extends StatelessWidget {
         SizedBox(height: tokens.spacing.sm),
         Card(
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(tokens.radius.xl)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(tokens.radius.xl),
+          ),
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: tokens.spacing.lg,

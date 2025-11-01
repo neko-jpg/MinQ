@@ -75,13 +75,15 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
             ),
             Consumer(
               builder: (context, ref, child) {
-                final controller =
-                    ref.read(aiConciergeChatControllerProvider.notifier);
+                final controller = ref.read(
+                  aiConciergeChatControllerProvider.notifier,
+                );
                 final mode = controller.getCurrentAIMode();
                 return Text(
                   mode,
-                  style: MinqTokens.bodySmall
-                      .copyWith(color: MinqTokens.textSecondary),
+                  style: MinqTokens.bodySmall.copyWith(
+                    color: MinqTokens.textSecondary,
+                  ),
                 );
               },
             ),
@@ -89,26 +91,26 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
         ),
         actions: <Widget>[
           PopupMenuButton<_ConciergeMenuOption>(
-            icon: const Icon(Icons.more_horiz, color: MinqTokens.textSecondary),
-            itemBuilder: (context) =>
-                const <PopupMenuEntry<_ConciergeMenuOption>>[
-              PopupMenuItem<_ConciergeMenuOption>(
-                value: _ConciergeMenuOption.insights,
-                child: Text('AIからのインサイト'),
-              ),
-              PopupMenuItem<_ConciergeMenuOption>(
-                value: _ConciergeMenuOption.clearHistory,
-                child: Text('チャット履歴を削除'),
-              ),
-              PopupMenuItem<_ConciergeMenuOption>(
-                value: _ConciergeMenuOption.diagnostics,
-                child: Text('AI診断情報'),
-              ),
-              PopupMenuItem<_ConciergeMenuOption>(
-                value: _ConciergeMenuOption.toggleAI,
-                child: Text('AIモード切り替え'),
-              ),
-            ],
+            icon: Icon(Icons.more_horiz, color: MinqTokens.textSecondary),
+            itemBuilder:
+                (context) => const <PopupMenuEntry<_ConciergeMenuOption>>[
+                  PopupMenuItem<_ConciergeMenuOption>(
+                    value: _ConciergeMenuOption.insights,
+                    child: Text('AIからのインサイト'),
+                  ),
+                  PopupMenuItem<_ConciergeMenuOption>(
+                    value: _ConciergeMenuOption.clearHistory,
+                    child: Text('チャット履歴を削除'),
+                  ),
+                  PopupMenuItem<_ConciergeMenuOption>(
+                    value: _ConciergeMenuOption.diagnostics,
+                    child: Text('AI診断情報'),
+                  ),
+                  PopupMenuItem<_ConciergeMenuOption>(
+                    value: _ConciergeMenuOption.toggleAI,
+                    child: Text('AIモード切り替え'),
+                  ),
+                ],
             onSelected: (option) async {
               await _handleMenuSelection(option);
             },
@@ -116,49 +118,55 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
         ],
       ),
       body: chatState.when(
-        data: (List<AiConciergeMessage> messages) => Column(
-          children: <Widget>[
-            Expanded(
-              child: ListView(
-                controller: _scrollController,
-                padding: EdgeInsets.symmetric(
-                  horizontal: MinqTokens.spacing(4),
-                  vertical: MinqTokens.spacing(4),
-                ),
-                children: <Widget>[
-                  ..._buildMessageList(messages),
-                  if (_isSending) _buildTypingIndicator(),
-                ],
-              ),
-            ),
-            _buildInputArea(),
-          ],
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(
-          child: Padding(
-            padding: EdgeInsets.all(MinqTokens.spacing(4)),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+        data:
+            (List<AiConciergeMessage> messages) => Column(
               children: <Widget>[
-                Text(
-                  'AIコンシェルジュを読み込めませんでした。',
-                  style: MinqTokens.bodyMedium.copyWith(
-                    color: MinqTokens.textSecondary,
+                Expanded(
+                  child: ListView(
+                    controller: _scrollController,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MinqTokens.spacing(4),
+                      vertical: MinqTokens.spacing(4),
+                    ),
+                    children: <Widget>[
+                      ..._buildMessageList(messages),
+                      if (_isSending) _buildTypingIndicator(),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: MinqTokens.spacing(2)),
-                FilledButton(
-                  onPressed: () => ref
-                      .read(aiConciergeChatControllerProvider.notifier)
-                      .resetConversation(),
-                  child: const Text('再読み込み'),
-                ),
+                _buildInputArea(),
               ],
             ),
-          ),
-        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error:
+            (error, _) => Center(
+              child: Padding(
+                padding: EdgeInsets.all(MinqTokens.spacing(4)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      'AIコンシェルジュを読み込めませんでした。',
+                      style: MinqTokens.bodyMedium.copyWith(
+                        color: MinqTokens.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: MinqTokens.spacing(2)),
+                    FilledButton(
+                      onPressed:
+                          () =>
+                              ref
+                                  .read(
+                                    aiConciergeChatControllerProvider.notifier,
+                                  )
+                                  .resetConversation(),
+                      child: const Text('再読み込み'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
       ),
     );
   }
@@ -173,22 +181,22 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
       case _ConciergeMenuOption.clearHistory:
         final confirmed = await showDialog<bool>(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('チャット履歴を削除'),
-            content:
-                const Text('すべてのチャット履歴を削除しますか？この操作は取り消せません。'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('キャンセル'),
+          builder:
+              (context) => AlertDialog(
+                title: const Text('チャット履歴を削除'),
+                content: const Text('すべてのチャット履歴を削除しますか？この操作は取り消せません。'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text('キャンセル'),
+                  ),
+                  FilledButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    style: FilledButton.styleFrom(backgroundColor: Colors.red),
+                    child: const Text('削除'),
+                  ),
+                ],
               ),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                style: FilledButton.styleFrom(backgroundColor: Colors.red),
-                child: const Text('削除'),
-              ),
-            ],
-          ),
         );
         if (confirmed == true) {
           await notifier.resetConversation();
@@ -214,9 +222,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
     }
   }
 
-  List<Widget> _buildMessageList(
-    List<AiConciergeMessage> messages,
-  ) {
+  List<Widget> _buildMessageList(List<AiConciergeMessage> messages) {
     final List<Widget> children = <Widget>[];
     DateTime? previousDate;
 
@@ -250,8 +256,9 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
           ),
           child: Text(
             formatter.format(timestamp),
-            style: MinqTokens.bodySmall
-                .copyWith(color: MinqTokens.textSecondary),
+            style: MinqTokens.bodySmall.copyWith(
+              color: MinqTokens.textSecondary,
+            ),
           ),
         ),
       ),
@@ -267,18 +274,6 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
       isOffline: message.isOffline,
       timestamp: message.timestamp,
     );
-              ),
-              SizedBox(height: MinqTokens.spacing(1)),
-              Text(
-                DateFormat.Hm().format(message.timestamp),
-                style: MinqTokens.bodySmall
-                    .copyWith(color: MinqTokens.textSecondary),
-              ),
-            ],
-          ),
-        ),
-      ],
-    )
   }
 
   Widget _buildTypingIndicator() {
@@ -294,7 +289,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
               color: MinqTokens.brandPrimary.withAlpha(30),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.psychology, color: MinqTokens.brandPrimary),
+            child: Icon(Icons.psychology, color: MinqTokens.brandPrimary),
           ),
           SizedBox(width: MinqTokens.spacing(1)),
           Container(
@@ -309,15 +304,14 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
                 const SizedBox(
                   width: 16,
                   height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                  ),
+                  child: CircularProgressIndicator(strokeWidth: 2),
                 ),
                 SizedBox(width: MinqTokens.spacing(1)),
                 Text(
                   '考え中...',
-                  style: MinqTokens.bodySmall
-                      .copyWith(color: MinqTokens.textSecondary),
+                  style: MinqTokens.bodySmall.copyWith(
+                    color: MinqTokens.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -363,7 +357,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
             Container(
               width: 44,
               height: 44,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: MinqTokens.brandPrimary,
                 shape: BoxShape.circle,
               ),
@@ -422,31 +416,30 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
 
     await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('AI診断情報'),
-        content: const SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(diagnostics),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('AI診断情報'),
+            content: const SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [Text(diagnostics)],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('閉じる'),
+              ),
+              FilledButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  await _forceResetAI();
+                },
+                child: const Text('AIをリセット'),
+              ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('閉じる'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await _forceResetAI();
-            },
-            child: const Text('AIをリセット'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -486,20 +479,21 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('AIモード切り替え'),
-        content: Text('現在のモード: $currentMode\n\nAIモードを切り替えますか？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('キャンセル'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('AIモード切り替え'),
+            content: Text('現在のモード: $currentMode\n\nAIモードを切り替えますか？'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('キャンセル'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('切り替え'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('切り替え'),
-          ),
-        ],
-      ),
     );
 
     if (confirmed == true) {

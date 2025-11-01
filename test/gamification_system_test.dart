@@ -31,9 +31,9 @@ void main() {
 
     test('should return correct level info structure', () async {
       const userId = 'test_user';
-      
+
       final levelInfo = await gamificationEngine.getUserLevelInfo(userId);
-      
+
       expect(levelInfo.currentLevel, greaterThan(0));
       expect(levelInfo.currentLevelName, isNotEmpty);
       expect(levelInfo.progress, greaterThanOrEqualTo(0.0));
@@ -42,64 +42,64 @@ void main() {
 
     test('should handle offline mode gracefully', () async {
       const userId = 'test_user';
-      
+
       // Test awarding points in offline mode
       await gamificationEngine.awardPoints(
         userId: userId,
         basePoints: 10,
         reason: 'Test quest completion',
       );
-      
+
       // Should complete without errors
       expect(true, isTrue);
     });
 
     test('should calculate habit action points correctly', () async {
       const userId = 'test_user';
-      
+
       // Test different habit actions
       await gamificationEngine.awardHabitPoints(
         userId: userId,
         action: HabitAction.questComplete,
       );
-      
+
       await gamificationEngine.awardHabitPoints(
         userId: userId,
         action: HabitAction.earlyCompletion,
       );
-      
+
       // Should complete without errors
       expect(true, isTrue);
     });
 
     test('should handle streak multipliers correctly', () async {
       const userId = 'test_user';
-      
+
       // Test with streak metadata
       await gamificationEngine.awardHabitPoints(
         userId: userId,
         action: HabitAction.streakMaintained,
         metadata: {'streakDays': 7},
       );
-      
+
       // Should complete without errors
       expect(true, isTrue);
     });
 
     test('should check and award badges without errors', () async {
       const userId = 'test_user';
-      
+
       final badges = await gamificationEngine.checkAndAwardBadges(userId);
-      
+
       // Should return a list (empty in offline mode)
       expect(badges, isA<List>());
     });
 
     test('should calculate current streak without errors', () async {
       const userId = 'test_user';
-      
+
       final streak = await gamificationEngine.calculateCurrentStreak(userId);
-      
+
       // Should return a non-negative number
       expect(streak, greaterThanOrEqualTo(0));
     });

@@ -16,16 +16,16 @@ class ABTestingService {
   final AnalyticsService _analytics = AnalyticsService();
   final LocalStorageService _storage = LocalStorageService();
   final NetworkService _network = NetworkService();
-  
+
   // Test management
   final Map<String, ABTest> _activeTests = {};
   final Map<String, String> _userAssignments = {};
   final Map<String, ABTestResult> _testResults = {};
-  
+
   // User segmentation
   String? _userId;
   Map<String, dynamic> _userAttributes = {};
-  
+
   // Configuration
   bool _isEnabled = true;
   Timer? _syncTimer;
@@ -33,16 +33,16 @@ class ABTestingService {
   /// Initialize A/B testing service
   Future<void> initialize({String? userId}) async {
     _userId = userId;
-    
+
     // Load stored assignments and results
     await _loadStoredData();
-    
+
     // Fetch active tests from server
     await _fetchActiveTests();
-    
+
     // Start periodic sync
     _startPeriodicSync();
-    
+
     debugPrint('ABTestingService initialized');
   }
 
@@ -54,33 +54,33 @@ class ABTestingService {
   /// Get variant for a test
   String getVariant(String testName, {String defaultVariant = 'control'}) {
     if (!_isEnabled) return defaultVariant;
-    
+
     // Check if user is already assigned
     if (_userAssignments.containsKey(testName)) {
       return _userAssignments[testName]!;
     }
-    
+
     // Get test configuration
     final test = _activeTests[testName];
     if (test == null || !test.isActive) {
       return defaultVariant;
     }
-    
+
     // Check if user meets targeting criteria
     if (!_meetsTargetingCriteria(test)) {
       return defaultVariant;
     }
-    
+
     // Assign user to variant
     final variant = _assignUserToVariant(test);
     _userAssignments[testName] = variant;
-    
+
     // Track assignment
     _trackAssignment(testName, variant);
-    
+
     // Store assignment
     _storeAssignment(testName, variant);
-    
+
     return variant;
   }
 
@@ -90,13 +90,15 @@ class ABTestingService {
   }
 
   /// Track conversion event for A/B test
-  Future<void> trackConversion(String testName, String eventName, {
+  Future<void> trackConversion(
+    String testName,
+    String eventName, {
     double? value,
     Map<String, dynamic>? properties,
   }) async {
     final variant = _userAssignments[testName];
     if (variant == null) return;
-    
+
     final conversion = ABConversion(
       testName: testName,
       variant: variant,
@@ -106,10 +108,10 @@ class ABTestingService {
       timestamp: DateTime.now(),
       userId: _userId,
     );
-    
+
     // Store conversion
     await _storage.storeABConversion(conversion);
-    
+
     // Track in analytics
     await _analytics.trackEvent('ab_conversion', {
       'test_name': testName,
@@ -119,17 +121,20 @@ class ABTestingService {
       'properties': properties,
       'user_id': _userId,
     });
-    
+
     debugPrint('AB conversion tracked: $testName/$variant -> $eventName');
   }
 
   /// Track custom metric for A/B test
-  Future<void> trackMetric(String testName, String metricName, double value, {
+  Future<void> trackMetric(
+    String testName,
+    String metricName,
+    double value, {
     Map<String, dynamic>? properties,
   }) async {
     final variant = _userAssignments[testName];
     if (variant == null) return;
-    
+
     await _analytics.trackEvent('ab_metric', {
       'test_name': testName,
       'variant': variant,
@@ -145,7 +150,7 @@ class ABTestingService {
     if (_testResults.containsKey(testName)) {
       return _testResults[testName];
     }
-    
+
     // Fetch results from server
     try {
       final response = await _network.get('/api/ab-tests/$testName/results');
@@ -161,7 +166,7 @@ class ABTestingService {
   /// Create a new A/B test (for admin/testing purposes)
   Future<void> createTest(ABTest test) async {
     _activeTests[test.name] = test;
-    
+
     try {
       await _network.post('/api/ab-tests', test.toJson());
     } catch (e) {
@@ -173,7 +178,7 @@ class ABTestingService {
   void forceVariant(String testName, String variant) {
     _userAssignments[testName] = variant;
     _storeAssignment(testName, variant);
-    
+
     _trackAssignment(testName, variant, forced: true);
   }
 
@@ -197,7 +202,7 @@ class ABTestingService {
     // Use consistent hashing for stable assignments
     final hash = _hashUserId(test.name);
     final bucket = hash % 100;
-    
+
     double cumulativeWeight = 0;
     for (final variant in test.variants) {
       cumulativeWeight += variant.trafficAllocation;
@@ -205,7 +210,7 @@ class ABTestingService {
         return variant.name;
       }
     }
-    
+
     // Fallback to control
     return test.variants.first.name;
   }
@@ -213,16 +218,16 @@ class ABTestingService {
   /// Check if user meets targeting criteria
   bool _meetsTargetingCriteria(ABTest test) {
     if (test.targeting == null) return true;
-    
+
     final targeting = test.targeting!;
-    
+
     // Check user attributes
     for (final condition in targeting.conditions) {
       if (!_evaluateCondition(condition)) {
         return false;
       }
     }
-    
+
     // Check percentage rollout
     if (targeting.percentage < 100) {
       final hash = _hashUserId('${test.name}_rollout');
@@ -230,7 +235,7 @@ class ABTestingService {
         return false;
       }
     }
-    
+
     return true;
   }
 
@@ -238,7 +243,7 @@ class ABTestingService {
   bool _evaluateCondition(TargetingCondition condition) {
     final userValue = _userAttributes[condition.attribute];
     if (userValue == null) return false;
-    
+
     switch (condition.operator) {
       case 'equals':
         return userValue == condition.value;
@@ -262,7 +267,7 @@ class ABTestingService {
   /// Generate consistent hash for user ID
   int _hashUserId(String salt) {
     if (_userId == null) return Random().nextInt(100);
-    
+
     final combined = '$_userId$salt';
     var hash = 0;
     for (int i = 0; i < combined.length; i++) {
@@ -272,7 +277,11 @@ class ABTestingService {
   }
 
   /// Track test assignment
-  void _trackAssignment(String testName, String variant, {bool forced = false}) {
+  void _trackAssignment(
+    String testName,
+    String variant, {
+    bool forced = false,
+  }) {
     _analytics.trackEvent('ab_assignment', {
       'test_name': testName,
       'variant': variant,
@@ -292,12 +301,12 @@ class ABTestingService {
     try {
       final response = await _network.get('/api/ab-tests/active');
       final testsData = response['tests'] as List;
-      
+
       for (final testData in testsData) {
         final test = ABTest.fromJson(testData);
         _activeTests[test.name] = test;
       }
-      
+
       debugPrint('Fetched ${_activeTests.length} active A/B tests');
     } catch (e) {
       debugPrint('Failed to fetch active tests: $e');
@@ -349,17 +358,16 @@ class ABTest {
     return ABTest(
       name: json['name'],
       description: json['description'],
-      variants: (json['variants'] as List)
-          .map((v) => ABVariant.fromJson(v))
-          .toList(),
-      targeting: json['targeting'] != null 
-          ? ABTargeting.fromJson(json['targeting'])
-          : null,
+      variants:
+          (json['variants'] as List).map((v) => ABVariant.fromJson(v)).toList(),
+      targeting:
+          json['targeting'] != null
+              ? ABTargeting.fromJson(json['targeting'])
+              : null,
       isActive: json['is_active'],
       startDate: DateTime.parse(json['start_date']),
-      endDate: json['end_date'] != null 
-          ? DateTime.parse(json['end_date'])
-          : null,
+      endDate:
+          json['end_date'] != null ? DateTime.parse(json['end_date']) : null,
       metadata: json['metadata'] ?? {},
     );
   }
@@ -416,16 +424,14 @@ class ABTargeting {
   final List<TargetingCondition> conditions;
   final int percentage; // Rollout percentage (0-100)
 
-  ABTargeting({
-    required this.conditions,
-    required this.percentage,
-  });
+  ABTargeting({required this.conditions, required this.percentage});
 
   factory ABTargeting.fromJson(Map<String, dynamic> json) {
     return ABTargeting(
-      conditions: (json['conditions'] as List)
-          .map((c) => TargetingCondition.fromJson(c))
-          .toList(),
+      conditions:
+          (json['conditions'] as List)
+              .map((c) => TargetingCondition.fromJson(c))
+              .toList(),
       percentage: json['percentage'],
     );
   }
@@ -459,11 +465,7 @@ class TargetingCondition {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'attribute': attribute,
-      'operator': operator,
-      'value': value,
-    };
+    return {'attribute': attribute, 'operator': operator, 'value': value};
   }
 }
 

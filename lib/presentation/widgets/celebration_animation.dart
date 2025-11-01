@@ -122,8 +122,10 @@ class ConfettiPainter extends CustomPainter {
   final BuildContext context;
 
   ConfettiPainter({required this.progress, required this.context})
-      : particles = List.generate(
-            30, (index) => ConfettiParticle(index, context));
+    : particles = List.generate(
+        30,
+        (index) => ConfettiParticle(index, context),
+      );
 
   @override
   void paint(Canvas canvas, Size size) {

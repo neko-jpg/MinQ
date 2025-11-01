@@ -25,7 +25,8 @@ class SubscriptionBenefits extends StatelessWidget {
                   icon: Icons.trending_up,
                   title: '3x Faster',
                   subtitle: 'Habit Formation',
-                  description: 'Premium users build habits 3x faster with advanced features',
+                  description:
+                      'Premium users build habits 3x faster with advanced features',
                   color: context.colorTokens.success,
                 ),
               ),
@@ -36,7 +37,8 @@ class SubscriptionBenefits extends StatelessWidget {
                   icon: Icons.psychology,
                   title: 'AI Powered',
                   subtitle: 'Insights',
-                  description: 'Get personalized recommendations and predictions',
+                  description:
+                      'Get personalized recommendations and predictions',
                   color: context.colorTokens.primary,
                 ),
               ),
@@ -51,7 +53,8 @@ class SubscriptionBenefits extends StatelessWidget {
                   icon: Icons.security,
                   title: 'Secure',
                   subtitle: 'Cloud Backup',
-                  description: 'Never lose your progress with automatic backups',
+                  description:
+                      'Never lose your progress with automatic backups',
                   color: context.colorTokens.info,
                 ),
               ),
@@ -62,7 +65,8 @@ class SubscriptionBenefits extends StatelessWidget {
                   icon: Icons.support_agent,
                   title: 'Priority',
                   subtitle: 'Support',
-                  description: 'Get help when you need it with priority support',
+                  description:
+                      'Get help when you need it with priority support',
                   color: context.colorTokens.warning,
                 ),
               ),
@@ -97,11 +101,7 @@ class SubscriptionBenefits extends StatelessWidget {
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 24,
-            ),
+            child: Icon(icon, color: color, size: 24),
           ),
           const SizedBox(height: 12),
           Text(

@@ -23,20 +23,18 @@ void main() {
 
     switch (layer) {
       case 'domain':
-        _checkForbiddenImports(
-          content,
-          relativePath,
-          <String>['package:minq/data/', '../data/', 'package:minq/presentation/', '../presentation/'],
-          violations,
-        );
+        _checkForbiddenImports(content, relativePath, <String>[
+          'package:minq/data/',
+          '../data/',
+          'package:minq/presentation/',
+          '../presentation/',
+        ], violations);
         break;
       case 'data':
-        _checkForbiddenImports(
-          content,
-          relativePath,
-          <String>['package:minq/presentation/', '../presentation/'],
-          violations,
-        );
+        _checkForbiddenImports(content, relativePath, <String>[
+          'package:minq/presentation/',
+          '../presentation/',
+        ], violations);
         break;
       default:
         break;
@@ -62,7 +60,8 @@ void _checkForbiddenImports(
   List<String> violations,
 ) {
   for (final pattern in forbidden) {
-    if (content.contains("import '$pattern") || content.contains('import "$pattern')) {
+    if (content.contains("import '$pattern") ||
+        content.contains('import "$pattern')) {
       violations.add('$relativePath imports $pattern');
     }
   }

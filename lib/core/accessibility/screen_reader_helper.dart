@@ -66,15 +66,8 @@ class ScreenReaderHelper {
   }
 
   /// 画像のセマンティクス
-  static Semantics image({
-    required Widget child,
-    required String description,
-  }) {
-    return Semantics(
-      image: true,
-      label: description,
-      child: child,
-    );
+  static Semantics image({required Widget child, required String description}) {
+    return Semantics(image: true, label: description, child: child);
   }
 
   /// ヘッダーのセマンティクス
@@ -83,11 +76,7 @@ class ScreenReaderHelper {
     required String text,
     int level = 1,
   }) {
-    return Semantics(
-      header: true,
-      label: 'レベル$level見出し、$text',
-      child: child,
-    );
+    return Semantics(header: true, label: 'レベル$level見出し、$text', child: child);
   }
 
   /// リンクのセマンティクス
@@ -167,8 +156,14 @@ class ScreenReaderHelper {
       value: value.toStringAsFixed(1),
       increasedValue: (value + 1).clamp(min, max).toStringAsFixed(1),
       decreasedValue: (value - 1).clamp(min, max).toStringAsFixed(1),
-      onIncrease: onChanged != null ? () => onChanged((value + 1).clamp(min, max)) : null,
-      onDecrease: onChanged != null ? () => onChanged((value - 1).clamp(min, max)) : null,
+      onIncrease:
+          onChanged != null
+              ? () => onChanged((value + 1).clamp(min, max))
+              : null,
+      onDecrease:
+          onChanged != null
+              ? () => onChanged((value - 1).clamp(min, max))
+              : null,
       child: child,
     );
   }
@@ -191,10 +186,7 @@ class ScreenReaderHelper {
   }
 
   /// ダイアログのセマンティクス
-  static Semantics dialog({
-    required Widget child,
-    required String title,
-  }) {
+  static Semantics dialog({required Widget child, required String title}) {
     return Semantics(
       label: '$title、ダイアログ',
       scopesRoute: true,
@@ -217,15 +209,8 @@ class ScreenReaderHelper {
   }
 
   /// ローディングのセマンティクス
-  static Semantics loading({
-    required Widget child,
-    String? message,
-  }) {
-    return Semantics(
-      label: message ?? '読み込み中',
-      liveRegion: true,
-      child: child,
-    );
+  static Semantics loading({required Widget child, String? message}) {
+    return Semantics(label: message ?? '読み込み中', liveRegion: true, child: child);
   }
 
   /// カードのセマンティクス
@@ -251,21 +236,12 @@ class ScreenReaderHelper {
     int? count,
   }) {
     final badgeLabel = count != null ? '$label、$count件' : label;
-    return Semantics(
-      label: badgeLabel,
-      child: child,
-    );
+    return Semantics(label: badgeLabel, child: child);
   }
 
   /// ツールチップのセマンティクス
-  static Semantics tooltip({
-    required Widget child,
-    required String message,
-  }) {
-    return Semantics(
-      tooltip: message,
-      child: child,
-    );
+  static Semantics tooltip({required Widget child, required String message}) {
+    return Semantics(tooltip: message, child: child);
   }
 }
 
@@ -303,8 +279,10 @@ class AccessibilitySettings {
       textScaler: mediaQuery.textScaler,
       boldText: platformDispatcher.accessibilityFeatures.boldText,
       invertColors: platformDispatcher.accessibilityFeatures.invertColors,
-      onOffSwitchLabels: platformDispatcher.accessibilityFeatures.onOffSwitchLabels,
-      accessibleNavigation: platformDispatcher.accessibilityFeatures.accessibleNavigation,
+      onOffSwitchLabels:
+          platformDispatcher.accessibilityFeatures.onOffSwitchLabels,
+      accessibleNavigation:
+          platformDispatcher.accessibilityFeatures.accessibleNavigation,
     );
   }
 
@@ -316,30 +294,34 @@ class AccessibilitySettings {
   /// Adjust text style for accessibility
   TextStyle adjustTextStyle(TextStyle style) {
     var adjustedStyle = style;
-    
-    if (boldText && (style.fontWeight == null || style.fontWeight!.index < FontWeight.w600.index)) {
+
+    if (boldText &&
+        (style.fontWeight == null ||
+            style.fontWeight!.index < FontWeight.w600.index)) {
       adjustedStyle = adjustedStyle.copyWith(fontWeight: FontWeight.w600);
     }
-    
+
     // Ensure minimum font size for accessibility
     final fontSize = adjustedStyle.fontSize ?? 14.0;
     if (largeText && fontSize < 16.0) {
       adjustedStyle = adjustedStyle.copyWith(fontSize: 16.0);
     }
-    
+
     return adjustedStyle;
   }
 
   /// Get accessible color based on contrast requirements
   Color getAccessibleColor(Color original, Color background) {
     if (!highContrast) return original;
-    
+
     final contrastRatio = _calculateContrastRatio(original, background);
     if (contrastRatio >= 4.5) return original;
-    
+
     // Adjust color to meet WCAG AA standards
     final isBackgroundLight = background.computeLuminance() > 0.5;
-    return isBackgroundLight ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
+    return isBackgroundLight
+        ? const Color(0xFF000000)
+        : const Color(0xFFFFFFFF);
   }
 
   /// Calculate contrast ratio between two colors
@@ -367,9 +349,10 @@ class ReadingOrderGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       sortKey: const OrdinalSortKey(0),
-      child: direction == Axis.vertical
-          ? Column(children: children)
-          : Row(children: children),
+      child:
+          direction == Axis.vertical
+              ? Column(children: children)
+              : Row(children: children),
     );
   }
 }
@@ -412,17 +395,16 @@ class AccessibleButton extends StatelessWidget {
             minWidth: 44.0, // WCAG AA minimum touch target
             minHeight: 44.0,
           ),
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding:
+              padding ??
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Center(child: child),
         ),
       ),
     );
 
     if (tooltip != null) {
-      button = Tooltip(
-        message: tooltip!,
-        child: button,
-      );
+      button = Tooltip(message: tooltip!, child: button);
     }
 
     return Semantics(
@@ -468,10 +450,7 @@ class FocusHelper {
     String? debugLabel,
     bool canRequestFocus = true,
   }) {
-    return FocusNode(
-      debugLabel: debugLabel,
-      canRequestFocus: canRequestFocus,
-    );
+    return FocusNode(debugLabel: debugLabel, canRequestFocus: canRequestFocus);
   }
 }
 
@@ -497,13 +476,16 @@ class ContrastValidator {
   }
 
   /// Get accessible text color for given background
-  static Color getAccessibleTextColor(Color background, {bool preferDark = true}) {
+  static Color getAccessibleTextColor(
+    Color background, {
+    bool preferDark = true,
+  }) {
     const lightText = Color(0xFFFFFFFF);
     const darkText = Color(0xFF000000);
-    
+
     final lightContrast = calculateContrastRatio(lightText, background);
     final darkContrast = calculateContrastRatio(darkText, background);
-    
+
     if (preferDark && darkContrast >= 4.5) {
       return darkText;
     } else if (lightContrast >= 4.5) {
@@ -525,27 +507,28 @@ class ContrastValidator {
 
     final isBackgroundLight = background.computeLuminance() > 0.5;
     final targetLuminance = isBackgroundLight ? 0.0 : 1.0;
-    
+
     // Gradually adjust towards target luminance
     Color adjusted = original;
     for (double factor = 0.1; factor <= 1.0; factor += 0.1) {
-      adjusted = Color.lerp(
-        original,
-        Color.fromARGB(
-          // ignore: deprecated_member_use
-          original.alpha,
-          (targetLuminance * 255).round(),
-          (targetLuminance * 255).round(),
-          (targetLuminance * 255).round(),
-        ),
-        factor,
-      )!;
-      
+      adjusted =
+          Color.lerp(
+            original,
+            Color.fromARGB(
+              // ignore: deprecated_member_use
+              original.alpha,
+              (targetLuminance * 255).round(),
+              (targetLuminance * 255).round(),
+              (targetLuminance * 255).round(),
+            ),
+            factor,
+          )!;
+
       if (calculateContrastRatio(adjusted, background) >= minContrast) {
         return adjusted;
       }
     }
-    
+
     return adjusted;
   }
 }

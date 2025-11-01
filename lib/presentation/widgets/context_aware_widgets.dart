@@ -134,9 +134,9 @@ class _ContextAwareCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: appContext
-                    .getPrimaryColor()
-                    .withAlpha((255 * 0.1).round()),
+                color: appContext.getPrimaryColor().withAlpha(
+                  (255 * 0.1).round(),
+                ),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -251,8 +251,9 @@ class _ContextAwareButton extends StatelessWidget {
               backgroundColor: appContext.getPrimaryColor(),
               foregroundColor: Colors.white,
               elevation: _getElevation(appContext),
-              shadowColor:
-                  appContext.getPrimaryColor().withAlpha((255 * 0.3).round()),
+              shadowColor: appContext.getPrimaryColor().withAlpha(
+                (255 * 0.3).round(),
+              ),
             ),
             child: Text(text),
           ),

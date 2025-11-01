@@ -27,7 +27,8 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ??
+      padding:
+          padding ??
           EdgeInsets.symmetric(
             horizontal: MinqTokens.spacing(6),
             vertical: MinqTokens.spacing(4),
@@ -38,11 +39,7 @@ class SectionHeader extends StatelessWidget {
           Row(
             children: [
               if (icon != null) ...[
-                Icon(
-                  icon,
-                  color: MinqTokens.brandPrimary,
-                  size: 20,
-                ),
+                Icon(icon, color: MinqTokens.brandPrimary, size: 20),
                 SizedBox(width: MinqTokens.spacing(2)),
               ],
               Expanded(
@@ -73,10 +70,7 @@ class SectionHeader extends StatelessWidget {
           ),
           if (showDivider) ...[
             SizedBox(height: MinqTokens.spacing(4)),
-            const Divider(
-              color: Color(0xFFE5E7EB),
-              height: 1,
-            ),
+            const Divider(color: Color(0xFFE5E7EB), height: 1),
           ],
         ],
       ),
@@ -113,12 +107,10 @@ class ContentSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: borderRadius ?? MinqTokens.cornerLarge(),
-        border: showBorder
-            ? Border.all(
-                color: const Color(0xFFE5E7EB),
-                width: 1,
-              )
-            : null,
+        border:
+            showBorder
+                ? Border.all(color: const Color(0xFFE5E7EB), width: 1)
+                : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,11 +255,7 @@ class MetricDisplay extends StatelessWidget {
                 color: accent.withAlpha(25),
                 borderRadius: MinqTokens.cornerSmall(),
               ),
-              child: Icon(
-                icon,
-                color: accent,
-                size: 18,
-              ),
+              child: Icon(icon, color: accent, size: 18),
             ),
             SizedBox(height: MinqTokens.spacing(4)),
           ],
@@ -312,9 +300,10 @@ class MetricDisplay extends StatelessWidget {
                     vertical: MinqTokens.spacing(1),
                   ),
                   decoration: BoxDecoration(
-                    color: isPositive
-                        ? const Color(0xFF10B981).withAlpha(25)
-                        : const Color(0xFFEF4444).withAlpha(25),
+                    color:
+                        isPositive
+                            ? const Color(0xFF10B981).withAlpha(25)
+                            : const Color(0xFFEF4444).withAlpha(25),
                     borderRadius: MinqTokens.cornerSmall(),
                   ),
                   child: Row(
@@ -322,18 +311,20 @@ class MetricDisplay extends StatelessWidget {
                     children: [
                       Icon(
                         isPositive ? Icons.trending_up : Icons.trending_down,
-                        color: isPositive
-                            ? const Color(0xFF10B981)
-                            : const Color(0xFFEF4444),
+                        color:
+                            isPositive
+                                ? const Color(0xFF10B981)
+                                : const Color(0xFFEF4444),
                         size: 14,
                       ),
                       SizedBox(width: MinqTokens.spacing(1)),
                       Text(
                         changeText!,
                         style: MinqTokens.bodySmall.copyWith(
-                          color: isPositive
-                              ? const Color(0xFF10B981)
-                              : const Color(0xFFEF4444),
+                          color:
+                              isPositive
+                                  ? const Color(0xFF10B981)
+                                  : const Color(0xFFEF4444),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -401,7 +392,8 @@ class StatusIndicator extends StatelessWidget {
     }
 
     return Container(
-      padding: padding ??
+      padding:
+          padding ??
           EdgeInsets.symmetric(
             horizontal: MinqTokens.spacing(4),
             vertical: MinqTokens.spacing(2),
@@ -414,11 +406,7 @@ class StatusIndicator extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (showIcon) ...[
-            Icon(
-              icon ?? defaultIcon,
-              color: textColor,
-              size: 16,
-            ),
+            Icon(icon ?? defaultIcon, color: textColor, size: 16),
             SizedBox(width: MinqTokens.spacing(2)),
           ],
           Text(
@@ -450,7 +438,7 @@ class PriorityIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     Color color;
     String defaultText;
     IconData icon;
@@ -481,19 +469,12 @@ class PriorityIndicator extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withAlpha(25),
         borderRadius: MinqTokens.cornerSmall(),
-        border: Border.all(
-          color: color.withAlpha(76),
-          width: 1,
-        ),
+        border: Border.all(color: color.withAlpha(76), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            color: color,
-            size: 14,
-          ),
+          Icon(icon, color: color, size: 14),
           if (showText) ...[
             SizedBox(width: MinqTokens.spacing(1)),
             Text(
@@ -570,19 +551,12 @@ class CalloutBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: MinqTokens.cornerMedium(),
-        border: Border.all(
-          color: borderColor,
-          width: 1,
-        ),
+        border: Border.all(color: borderColor, width: 1),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon ?? defaultIcon,
-            color: iconColor,
-            size: 20,
-          ),
+          Icon(icon ?? defaultIcon, color: iconColor, size: 20),
           SizedBox(width: MinqTokens.spacing(4)),
           Expanded(
             child: Column(
@@ -614,7 +588,7 @@ class CalloutBox extends StatelessWidget {
             SizedBox(width: MinqTokens.spacing(2)),
             GestureDetector(
               onTap: onDismiss,
-              child: const Icon(
+              child: Icon(
                 Icons.close,
                 color: MinqTokens.textSecondary,
                 size: 18,
@@ -628,23 +602,8 @@ class CalloutBox extends StatelessWidget {
 }
 
 /// Enums for component variants
-enum StatusType {
-  success,
-  warning,
-  error,
-  info,
-  neutral,
-}
+enum StatusType { success, warning, error, info, neutral }
 
-enum PriorityLevel {
-  high,
-  medium,
-  low,
-}
+enum PriorityLevel { high, medium, low }
 
-enum CalloutType {
-  info,
-  success,
-  warning,
-  error,
-}
+enum CalloutType { info, success, warning, error }

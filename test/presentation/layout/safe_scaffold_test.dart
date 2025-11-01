@@ -83,9 +83,7 @@ void main() {
           home: Scaffold(
             body: SafeScrollView(
               enableResponsiveLayout: true,
-              children: [
-                Container(height: 100, child: const Text('Item 1')),
-              ],
+              children: [Container(height: 100, child: const Text('Item 1'))],
             ),
           ),
         ),
@@ -117,7 +115,9 @@ void main() {
       expect(find.text('Item 2'), findsOneWidget);
     });
 
-    testWidgets('preserves existing Flexible and Expanded widgets', (tester) async {
+    testWidgets('preserves existing Flexible and Expanded widgets', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -133,7 +133,10 @@ void main() {
       );
 
       expect(find.byType(Expanded), findsOneWidget);
-      expect(find.byType(Flexible), findsNWidgets(2)); // Original + wrapped regular
+      expect(
+        find.byType(Flexible),
+        findsNWidgets(2),
+      ); // Original + wrapped regular
       expect(find.text('Expanded'), findsOneWidget);
       expect(find.text('Flexible'), findsOneWidget);
       expect(find.text('Regular'), findsOneWidget);

@@ -18,24 +18,31 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context)!;
     final accessibilitySettings = ref.watch(accessibilityServiceProvider);
-    final accessibilityService = ref.read(accessibilityServiceProvider.notifier);
+    final accessibilityService = ref.read(
+      accessibilityServiceProvider.notifier,
+    );
 
     return Scaffold(
-      backgroundColor: accessibilitySettings.highContrast 
-          ? tokens.highContrastBackground 
-          : tokens.background,
+      backgroundColor:
+          accessibilitySettings.highContrast
+              ? tokens.highContrastBackground
+              : tokens.background,
       appBar: AppBar(
         title: SemanticHelpers.accessibleHeader(
           child: Text(
             l10n.accessibilitySettings,
             style: tokens.typography.h3.copyWith(
-              color: accessibilitySettings.highContrast 
-                  ? tokens.highContrastText 
-                  : tokens.textPrimary,
-              fontWeight: accessibilitySettings.boldText 
-                  ? FontWeight.bold 
-                  : FontWeight.w700,
-              fontSize: tokens.typography.h3.fontSize! * accessibilitySettings.textScale,
+              color:
+                  accessibilitySettings.highContrast
+                      ? tokens.highContrastText
+                      : tokens.textPrimary,
+              fontWeight:
+                  accessibilitySettings.boldText
+                      ? FontWeight.bold
+                      : FontWeight.w700,
+              fontSize:
+                  tokens.typography.h3.fontSize! *
+                  accessibilitySettings.textScale,
             ),
           ),
           semanticLabel: l10n.accessibilitySettings,
@@ -46,9 +53,10 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
           onPressed: () => context.pop(),
           tooltip: 'Go back',
         ),
-        backgroundColor: accessibilitySettings.highContrast 
-            ? tokens.highContrastBackground 
-            : tokens.background.withAlpha((255 * 0.9).round()),
+        backgroundColor:
+            accessibilitySettings.highContrast
+                ? tokens.highContrastBackground
+                : tokens.background.withAlpha((255 * 0.9).round()),
         elevation: 0,
       ),
       body: ListView(
@@ -73,7 +81,8 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 max: 2.0,
                 divisions: 12,
                 onChanged: (value) => accessibilityService.setTextScale(value),
-                valueLabel: '${(accessibilitySettings.textScale * 100).toInt()}%',
+                valueLabel:
+                    '${(accessibilitySettings.textScale * 100).toInt()}%',
                 semanticLabel: 'テキストサイズ調整スライダー',
               ),
               _buildSwitchTile(
@@ -93,7 +102,8 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 title: l10n.highContrast,
                 subtitle: '色のコントラストを強調',
                 value: accessibilitySettings.highContrast,
-                onChanged: (value) => accessibilityService.setHighContrast(value),
+                onChanged:
+                    (value) => accessibilityService.setHighContrast(value),
                 semanticLabel: '高コントラスト設定',
               ),
               _buildSwitchTile(
@@ -109,7 +119,7 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
             ],
           ),
           SizedBox(height: tokens.spacing.xl),
-          
+
           // モーション設定
           _buildSection(
             context: context,
@@ -125,13 +135,14 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 title: 'アニメーションを減らす',
                 subtitle: '画面の動きを最小限に',
                 value: accessibilitySettings.reduceMotion,
-                onChanged: (value) => accessibilityService.setReduceMotion(value),
+                onChanged:
+                    (value) => accessibilityService.setReduceMotion(value),
                 semanticLabel: 'アニメーション軽減設定',
               ),
             ],
           ),
           SizedBox(height: tokens.spacing.xl),
-          
+
           // UI設定
           _buildSection(
             context: context,
@@ -150,8 +161,10 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 min: 0.8,
                 max: 1.5,
                 divisions: 7,
-                onChanged: (value) => accessibilityService.setButtonScale(value),
-                valueLabel: '${(accessibilitySettings.buttonScale * 100).toInt()}%',
+                onChanged:
+                    (value) => accessibilityService.setButtonScale(value),
+                valueLabel:
+                    '${(accessibilitySettings.buttonScale * 100).toInt()}%',
                 semanticLabel: 'ボタンサイズ調整スライダー',
               ),
               _buildSwitchTile(
@@ -161,7 +174,9 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 title: 'キーボードナビゲーション',
                 subtitle: 'キーボードでの操作を有効化',
                 value: accessibilitySettings.keyboardNavigation,
-                onChanged: (value) => accessibilityService.setKeyboardNavigation(value),
+                onChanged:
+                    (value) =>
+                        accessibilityService.setKeyboardNavigation(value),
                 semanticLabel: 'キーボードナビゲーション設定',
               ),
               _buildSwitchTile(
@@ -171,13 +186,14 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 title: 'フォーカスインジケーター',
                 subtitle: 'フォーカス状態を視覚的に表示',
                 value: accessibilitySettings.focusIndicator,
-                onChanged: (value) => accessibilityService.setFocusIndicator(value),
+                onChanged:
+                    (value) => accessibilityService.setFocusIndicator(value),
                 semanticLabel: 'フォーカスインジケーター設定',
               ),
             ],
           ),
           SizedBox(height: tokens.spacing.xl),
-          
+
           // スクリーンリーダー設定
           _buildSection(
             context: context,
@@ -193,13 +209,15 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 title: 'スクリーンリーダー最適化',
                 subtitle: '読み上げに最適化された表示',
                 value: accessibilitySettings.screenReaderOptimized,
-                onChanged: (value) => accessibilityService.setScreenReaderOptimized(value),
+                onChanged:
+                    (value) =>
+                        accessibilityService.setScreenReaderOptimized(value),
                 semanticLabel: 'スクリーンリーダー最適化設定',
               ),
             ],
           ),
           SizedBox(height: tokens.spacing.xl),
-          
+
           // フィードバック設定
           _buildSection(
             context: context,
@@ -215,7 +233,8 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 title: '触覚フィードバック',
                 subtitle: 'ボタンタップ時の振動',
                 value: accessibilitySettings.hapticFeedback,
-                onChanged: (value) => accessibilityService.setHapticFeedback(value),
+                onChanged:
+                    (value) => accessibilityService.setHapticFeedback(value),
                 semanticLabel: '触覚フィードバック設定',
               ),
               _buildSwitchTile(
@@ -225,13 +244,14 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 title: '音声フィードバック',
                 subtitle: '操作時の効果音',
                 value: accessibilitySettings.soundFeedback,
-                onChanged: (value) => accessibilityService.setSoundFeedback(value),
+                onChanged:
+                    (value) => accessibilityService.setSoundFeedback(value),
                 semanticLabel: '音声フィードバック設定',
               ),
             ],
           ),
           SizedBox(height: tokens.spacing.xl),
-          
+
           // 色覚多様性設定
           _buildSection(
             context: context,
@@ -244,16 +264,17 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 context: context,
                 tokens: tokens,
                 accessibilitySettings: accessibilitySettings,
-                onChanged: (mode) => accessibilityService.setColorBlindnessMode(mode),
+                onChanged:
+                    (mode) => accessibilityService.setColorBlindnessMode(mode),
               ),
             ],
           ),
           SizedBox(height: tokens.spacing.xl),
-          
+
           // プレビュー
           _buildPreview(context, tokens, accessibilitySettings),
           SizedBox(height: tokens.spacing.xl),
-          
+
           // 保存ボタン
           AccessibleButton(
             onPressed: () => _saveSettings(context),
@@ -285,22 +306,27 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
           Row(
             children: [
               Icon(
-                icon, 
-                color: accessibilitySettings.highContrast 
-                    ? tokens.highContrastPrimary 
-                    : tokens.brandPrimary,
+                icon,
+                color:
+                    accessibilitySettings.highContrast
+                        ? tokens.highContrastPrimary
+                        : tokens.brandPrimary,
               ),
               SizedBox(width: tokens.spacing.sm),
               Text(
                 title,
                 style: tokens.typography.h4.copyWith(
-                  color: accessibilitySettings.highContrast 
-                      ? tokens.highContrastText 
-                      : tokens.textPrimary,
-                  fontWeight: accessibilitySettings.boldText 
-                      ? FontWeight.bold 
-                      : FontWeight.w700,
-                  fontSize: tokens.typography.h4.fontSize! * accessibilitySettings.textScale,
+                  color:
+                      accessibilitySettings.highContrast
+                          ? tokens.highContrastText
+                          : tokens.textPrimary,
+                  fontWeight:
+                      accessibilitySettings.boldText
+                          ? FontWeight.bold
+                          : FontWeight.w700,
+                  fontSize:
+                      tokens.typography.h4.fontSize! *
+                      accessibilitySettings.textScale,
                 ),
               ),
             ],
@@ -327,15 +353,17 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
       child: Card(
         margin: EdgeInsets.only(bottom: tokens.spacing.sm),
         elevation: accessibilitySettings.highContrast ? 0 : 1,
-        color: accessibilitySettings.highContrast 
-            ? tokens.highContrastBackground 
-            : tokens.surface,
+        color:
+            accessibilitySettings.highContrast
+                ? tokens.highContrastBackground
+                : tokens.surface,
         shape: RoundedRectangleBorder(
           borderRadius: tokens.cornerLarge(),
           side: BorderSide(
-            color: accessibilitySettings.highContrast 
-                ? tokens.highContrastText 
-                : tokens.border,
+            color:
+                accessibilitySettings.highContrast
+                    ? tokens.highContrastText
+                    : tokens.border,
             width: accessibilitySettings.highContrast ? 2 : 1,
           ),
         ),
@@ -343,32 +371,41 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
           title: Text(
             title,
             style: tokens.typography.body.copyWith(
-              fontWeight: accessibilitySettings.boldText 
-                  ? FontWeight.bold 
-                  : FontWeight.w600,
-              fontSize: tokens.typography.body.fontSize! * accessibilitySettings.textScale,
-              color: accessibilitySettings.highContrast 
-                  ? tokens.highContrastText 
-                  : tokens.textPrimary,
+              fontWeight:
+                  accessibilitySettings.boldText
+                      ? FontWeight.bold
+                      : FontWeight.w600,
+              fontSize:
+                  tokens.typography.body.fontSize! *
+                  accessibilitySettings.textScale,
+              color:
+                  accessibilitySettings.highContrast
+                      ? tokens.highContrastText
+                      : tokens.textPrimary,
             ),
           ),
           subtitle: Text(
             subtitle,
             style: tokens.typography.caption.copyWith(
-              color: accessibilitySettings.highContrast 
-                  ? tokens.highContrastText.withOpacity(0.7) 
-                  : tokens.textSecondary,
-              fontSize: tokens.typography.caption.fontSize! * accessibilitySettings.textScale,
-              fontWeight: accessibilitySettings.boldText 
-                  ? FontWeight.w600 
-                  : FontWeight.normal,
+              color:
+                  accessibilitySettings.highContrast
+                      ? tokens.highContrastText.withOpacity(0.7)
+                      : tokens.textSecondary,
+              fontSize:
+                  tokens.typography.caption.fontSize! *
+                  accessibilitySettings.textScale,
+              fontWeight:
+                  accessibilitySettings.boldText
+                      ? FontWeight.w600
+                      : FontWeight.normal,
             ),
           ),
           value: value,
           onChanged: onChanged,
-          activeThumbColor: accessibilitySettings.highContrast 
-              ? tokens.highContrastPrimary 
-              : tokens.brandPrimary,
+          activeThumbColor:
+              accessibilitySettings.highContrast
+                  ? tokens.highContrastPrimary
+                  : tokens.brandPrimary,
         ),
       ),
       semanticLabel: semanticLabel,
@@ -396,15 +433,17 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
       child: Card(
         margin: EdgeInsets.only(bottom: tokens.spacing.sm),
         elevation: accessibilitySettings.highContrast ? 0 : 1,
-        color: accessibilitySettings.highContrast 
-            ? tokens.highContrastBackground 
-            : tokens.surface,
+        color:
+            accessibilitySettings.highContrast
+                ? tokens.highContrastBackground
+                : tokens.surface,
         shape: RoundedRectangleBorder(
           borderRadius: tokens.cornerLarge(),
           side: BorderSide(
-            color: accessibilitySettings.highContrast 
-                ? tokens.highContrastText 
-                : tokens.border,
+            color:
+                accessibilitySettings.highContrast
+                    ? tokens.highContrastText
+                    : tokens.border,
             width: accessibilitySettings.highContrast ? 2 : 1,
           ),
         ),
@@ -423,25 +462,33 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                         Text(
                           title,
                           style: tokens.typography.body.copyWith(
-                            fontWeight: accessibilitySettings.boldText 
-                                ? FontWeight.bold 
-                                : FontWeight.w600,
-                            fontSize: tokens.typography.body.fontSize! * accessibilitySettings.textScale,
-                            color: accessibilitySettings.highContrast 
-                                ? tokens.highContrastText 
-                                : tokens.textPrimary,
+                            fontWeight:
+                                accessibilitySettings.boldText
+                                    ? FontWeight.bold
+                                    : FontWeight.w600,
+                            fontSize:
+                                tokens.typography.body.fontSize! *
+                                accessibilitySettings.textScale,
+                            color:
+                                accessibilitySettings.highContrast
+                                    ? tokens.highContrastText
+                                    : tokens.textPrimary,
                           ),
                         ),
                         Text(
                           subtitle,
                           style: tokens.typography.caption.copyWith(
-                            color: accessibilitySettings.highContrast 
-                                ? tokens.highContrastText.withOpacity(0.7) 
-                                : tokens.textSecondary,
-                            fontSize: tokens.typography.caption.fontSize! * accessibilitySettings.textScale,
-                            fontWeight: accessibilitySettings.boldText 
-                                ? FontWeight.w600 
-                                : FontWeight.normal,
+                            color:
+                                accessibilitySettings.highContrast
+                                    ? tokens.highContrastText.withOpacity(0.7)
+                                    : tokens.textSecondary,
+                            fontSize:
+                                tokens.typography.caption.fontSize! *
+                                accessibilitySettings.textScale,
+                            fontWeight:
+                                accessibilitySettings.boldText
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
                           ),
                         ),
                       ],
@@ -453,22 +500,30 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                       vertical: tokens.spacing.xs,
                     ),
                     decoration: BoxDecoration(
-                      color: (accessibilitySettings.highContrast 
-                          ? tokens.highContrastPrimary 
-                          : tokens.brandPrimary).withAlpha((255 * 0.1).round()),
+                      color: (accessibilitySettings.highContrast
+                              ? tokens.highContrastPrimary
+                              : tokens.brandPrimary)
+                          .withAlpha((255 * 0.1).round()),
                       borderRadius: tokens.cornerMedium(),
-                      border: accessibilitySettings.highContrast 
-                          ? Border.all(color: tokens.highContrastText, width: 1)
-                          : null,
+                      border:
+                          accessibilitySettings.highContrast
+                              ? Border.all(
+                                color: tokens.highContrastText,
+                                width: 1,
+                              )
+                              : null,
                     ),
                     child: Text(
                       valueLabel,
                       style: tokens.typography.body.copyWith(
-                        color: accessibilitySettings.highContrast 
-                            ? tokens.highContrastPrimary 
-                            : tokens.brandPrimary,
+                        color:
+                            accessibilitySettings.highContrast
+                                ? tokens.highContrastPrimary
+                                : tokens.brandPrimary,
                         fontWeight: FontWeight.bold,
-                        fontSize: tokens.typography.body.fontSize! * accessibilitySettings.textScale,
+                        fontSize:
+                            tokens.typography.body.fontSize! *
+                            accessibilitySettings.textScale,
                       ),
                     ),
                   ),
@@ -481,12 +536,14 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 max: max,
                 divisions: divisions,
                 onChanged: onChanged,
-                activeColor: accessibilitySettings.highContrast 
-                    ? tokens.highContrastPrimary 
-                    : tokens.brandPrimary,
-                inactiveColor: (accessibilitySettings.highContrast 
-                    ? tokens.highContrastText 
-                    : tokens.textMuted).withOpacity(0.3),
+                activeColor:
+                    accessibilitySettings.highContrast
+                        ? tokens.highContrastPrimary
+                        : tokens.brandPrimary,
+                inactiveColor: (accessibilitySettings.highContrast
+                        ? tokens.highContrastText
+                        : tokens.textMuted)
+                    .withOpacity(0.3),
               ),
             ],
           ),
@@ -510,15 +567,17 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
     return Card(
       margin: EdgeInsets.only(bottom: tokens.spacing.sm),
       elevation: accessibilitySettings.highContrast ? 0 : 1,
-      color: accessibilitySettings.highContrast 
-          ? tokens.highContrastBackground 
-          : tokens.surface,
+      color:
+          accessibilitySettings.highContrast
+              ? tokens.highContrastBackground
+              : tokens.surface,
       shape: RoundedRectangleBorder(
         borderRadius: tokens.cornerLarge(),
         side: BorderSide(
-          color: accessibilitySettings.highContrast 
-              ? tokens.highContrastText 
-              : tokens.border,
+          color:
+              accessibilitySettings.highContrast
+                  ? tokens.highContrastText
+                  : tokens.border,
           width: accessibilitySettings.highContrast ? 2 : 1,
         ),
       ),
@@ -530,33 +589,36 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
             Text(
               '色覚多様性サポート',
               style: tokens.typography.body.copyWith(
-                fontWeight: accessibilitySettings.boldText 
-                    ? FontWeight.bold 
-                    : FontWeight.w600,
-                fontSize: tokens.typography.body.fontSize! * accessibilitySettings.textScale,
-                color: accessibilitySettings.highContrast 
-                    ? tokens.highContrastText 
-                    : tokens.textPrimary,
+                fontWeight:
+                    accessibilitySettings.boldText
+                        ? FontWeight.bold
+                        : FontWeight.w600,
+                fontSize:
+                    tokens.typography.body.fontSize! *
+                    accessibilitySettings.textScale,
+                color:
+                    accessibilitySettings.highContrast
+                        ? tokens.highContrastText
+                        : tokens.textPrimary,
               ),
             ),
             SizedBox(height: tokens.spacing.sm),
             DropdownButtonFormField<ColorBlindnessMode>(
               initialValue: accessibilitySettings.colorBlindnessMode,
               decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: tokens.cornerMedium(),
-                ),
+                border: OutlineInputBorder(borderRadius: tokens.cornerMedium()),
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: tokens.spacing.sm,
                   vertical: tokens.spacing.xs,
                 ),
               ),
-              items: ColorBlindnessMode.values.map((mode) {
-                return DropdownMenuItem(
-                  value: mode,
-                  child: Text(_getColorBlindnessModeLabel(mode)),
-                );
-              }).toList(),
+              items:
+                  ColorBlindnessMode.values.map((mode) {
+                    return DropdownMenuItem(
+                      value: mode,
+                      child: Text(_getColorBlindnessModeLabel(mode)),
+                    );
+                  }).toList(),
               onChanged: (mode) {
                 if (mode != null) {
                   onChanged(mode);
@@ -593,14 +655,16 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
       child: Container(
         padding: EdgeInsets.all(tokens.spacing.lg),
         decoration: BoxDecoration(
-          color: accessibilitySettings.highContrast 
-              ? tokens.highContrastBackground 
-              : tokens.surface,
+          color:
+              accessibilitySettings.highContrast
+                  ? tokens.highContrastBackground
+                  : tokens.surface,
           borderRadius: tokens.cornerLarge(),
           border: Border.all(
-            color: accessibilitySettings.highContrast 
-                ? tokens.highContrastText 
-                : tokens.border,
+            color:
+                accessibilitySettings.highContrast
+                    ? tokens.highContrastText
+                    : tokens.border,
             width: accessibilitySettings.highContrast ? 2 : 1,
           ),
         ),
@@ -610,26 +674,34 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
             Text(
               'プレビュー',
               style: tokens.typography.h4.copyWith(
-                color: accessibilitySettings.highContrast 
-                    ? tokens.highContrastText 
-                    : tokens.textPrimary,
-                fontWeight: accessibilitySettings.boldText 
-                    ? FontWeight.bold 
-                    : FontWeight.w600,
-                fontSize: tokens.typography.h4.fontSize! * accessibilitySettings.textScale,
+                color:
+                    accessibilitySettings.highContrast
+                        ? tokens.highContrastText
+                        : tokens.textPrimary,
+                fontWeight:
+                    accessibilitySettings.boldText
+                        ? FontWeight.bold
+                        : FontWeight.w600,
+                fontSize:
+                    tokens.typography.h4.fontSize! *
+                    accessibilitySettings.textScale,
               ),
             ),
             SizedBox(height: tokens.spacing.md),
             Text(
               'これは設定のプレビューです。実際の表示を確認できます。',
               style: tokens.typography.body.copyWith(
-                color: accessibilitySettings.highContrast 
-                    ? tokens.highContrastText 
-                    : tokens.textPrimary,
-                fontWeight: accessibilitySettings.boldText 
-                    ? FontWeight.w600 
-                    : FontWeight.normal,
-                fontSize: tokens.typography.body.fontSize! * accessibilitySettings.textScale,
+                color:
+                    accessibilitySettings.highContrast
+                        ? tokens.highContrastText
+                        : tokens.textPrimary,
+                fontWeight:
+                    accessibilitySettings.boldText
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                fontSize:
+                    tokens.typography.body.fontSize! *
+                    accessibilitySettings.textScale,
               ),
             ),
             SizedBox(height: tokens.spacing.md),
@@ -640,9 +712,10 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 'サンプルボタン',
                 style: TextStyle(
                   fontSize: 16 * accessibilitySettings.textScale,
-                  fontWeight: accessibilitySettings.boldText 
-                      ? FontWeight.bold 
-                      : FontWeight.w600,
+                  fontWeight:
+                      accessibilitySettings.boldText
+                          ? FontWeight.bold
+                          : FontWeight.w600,
                 ),
               ),
             ),
@@ -656,11 +729,8 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
 
   void _saveSettings(BuildContext context) {
     // Settings are automatically saved when changed
-    SemanticHelpers.announceToScreenReader(
-      context,
-      '設定を保存しました',
-    );
-    
+    SemanticHelpers.announceToScreenReader(context, '設定を保存しました');
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text('設定を保存しました'),

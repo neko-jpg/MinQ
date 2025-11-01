@@ -7,10 +7,7 @@ import 'package:minq/presentation/providers/analytics_providers.dart';
 class InsightsWidget extends ConsumerWidget {
   final DashboardWidgetConfig config;
 
-  const InsightsWidget({
-    super.key,
-    required this.config,
-  });
+  const InsightsWidget({super.key, required this.config});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +20,10 @@ class InsightsWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildInsightsList(BuildContext context, List<AnalyticsInsight> insights) {
+  Widget _buildInsightsList(
+    BuildContext context,
+    List<AnalyticsInsight> insights,
+  ) {
     if (insights.isEmpty) {
       return _buildEmptyState(context);
     }
@@ -134,23 +134,19 @@ class InsightsWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.lightbulb_outline,
-            size: 32,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.lightbulb_outline, size: 32, color: Colors.grey),
           const SizedBox(height: 8),
           Text(
             'インサイトなし',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
           ),
           Text(
             'データが蓄積されると\n分析結果が表示されます',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
             textAlign: TextAlign.center,
           ),
         ],
@@ -169,10 +165,7 @@ class InsightsWidget extends ConsumerWidget {
             child: CircularProgressIndicator(strokeWidth: 2),
           ),
           SizedBox(height: 8),
-          Text(
-            '分析中...',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
-          ),
+          Text('分析中...', style: TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
     );
@@ -183,23 +176,19 @@ class InsightsWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.error_outline,
-            size: 32,
-            color: Colors.red,
-          ),
+          const Icon(Icons.error_outline, size: 32, color: Colors.red),
           const SizedBox(height: 8),
           Text(
             'エラー',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.red,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.red),
           ),
           Text(
             '分析に失敗しました',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
           ),
         ],
       ),
@@ -270,9 +259,9 @@ class InsightsWidget extends ConsumerWidget {
         break;
       case ActionType.shareProgress:
         // TODO: 進捗共有機能を実装
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('進捗共有機能は準備中です')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('進捗共有機能は準備中です')));
         break;
       case ActionType.adjustGoals:
         Navigator.of(context).pushNamed('/goals');

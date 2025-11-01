@@ -9,7 +9,7 @@ import 'package:minq/core/performance/startup_optimization_service.dart';
 /// Performance monitoring dashboard widget
 class PerformanceDashboard extends StatefulWidget {
   const PerformanceDashboard({super.key});
-  
+
   @override
   State<PerformanceDashboard> createState() => _PerformanceDashboardState();
 }
@@ -17,30 +17,30 @@ class PerformanceDashboard extends StatefulWidget {
 class _PerformanceDashboardState extends State<PerformanceDashboard>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  
+
   final _performanceService = PerformanceMonitoringService();
   final _memoryService = MemoryManagementService();
   final _batteryService = BatteryOptimizationService();
   final _startupService = StartupOptimizationService();
   final _networkService = NetworkOptimizationService();
   final _settingsService = PerformanceSettingsService();
-  
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    
+
     // Start monitoring services
     _performanceService.startMonitoring();
     _memoryService.startMonitoring();
   }
-  
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +69,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildPerformanceTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -87,7 +87,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildMemoryTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -103,7 +103,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildBatteryTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -119,7 +119,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildCurrentMetricsCard() {
     return FutureBuilder<PerformanceSnapshot>(
       future: Future.value(_performanceService.getCurrentMetrics()),
@@ -127,9 +127,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         if (!snapshot.hasData) {
           return _buildLoadingCard('Current Metrics');
         }
-        
+
         final metrics = snapshot.data!;
-        
+
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -189,7 +189,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       },
     );
   }
-  
+
   Widget _buildPerformanceChart() {
     return Card(
       child: Padding(
@@ -202,16 +202,13 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            SizedBox(
-              height: 200,
-              child: _buildSimpleChart(),
-            ),
+            SizedBox(height: 200, child: _buildSimpleChart()),
           ],
         ),
       ),
     );
   }
-  
+
   Widget _buildPerformanceIssuesCard() {
     return FutureBuilder<PerformanceStatistics>(
       future: Future.value(_performanceService.getPerformanceStatistics()),
@@ -219,9 +216,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         if (!snapshot.hasData) {
           return _buildLoadingCard('Performance Issues');
         }
-        
+
         final stats = snapshot.data!;
-        
+
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -236,7 +233,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
                 if (stats.performanceIssues.isEmpty)
                   _buildNoIssuesWidget()
                 else
-                  ...stats.performanceIssues.map((issue) => _buildIssueItem(issue)),
+                  ...stats.performanceIssues.map(
+                    (issue) => _buildIssueItem(issue),
+                  ),
               ],
             ),
           ),
@@ -244,7 +243,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       },
     );
   }
-  
+
   Widget _buildRecommendationsCard() {
     return FutureBuilder<PerformanceStatistics>(
       future: Future.value(_performanceService.getPerformanceStatistics()),
@@ -252,9 +251,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         if (!snapshot.hasData) {
           return _buildLoadingCard('Recommendations');
         }
-        
+
         final stats = snapshot.data!;
-        
+
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -266,7 +265,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 16),
-                ...stats.recommendations.map((rec) => _buildRecommendationItem(rec)),
+                ...stats.recommendations.map(
+                  (rec) => _buildRecommendationItem(rec),
+                ),
               ],
             ),
           ),
@@ -274,7 +275,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       },
     );
   }
-  
+
   Widget _buildMemoryUsageCard() {
     return FutureBuilder<MemoryInfo>(
       future: _memoryService.getCurrentMemoryUsage(),
@@ -282,9 +283,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         if (!snapshot.hasData) {
           return _buildLoadingCard('Memory Usage');
         }
-        
+
         final memory = snapshot.data!;
-        
+
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -322,7 +323,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       },
     );
   }
-  
+
   Widget _buildMemoryHistoryChart() {
     return Card(
       child: Padding(
@@ -335,16 +336,13 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            SizedBox(
-              height: 150,
-              child: _buildMemoryChart(),
-            ),
+            SizedBox(height: 150, child: _buildMemoryChart()),
           ],
         ),
       ),
     );
   }
-  
+
   Widget _buildMemoryActionsCard() {
     return Card(
       child: Padding(
@@ -381,7 +379,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildBatteryStatusCard() {
     return Card(
       child: Padding(
@@ -400,9 +398,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
                 if (!snapshot.hasData) {
                   return const CircularProgressIndicator();
                 }
-                
+
                 final battery = snapshot.data!;
-                
+
                 return Column(
                   children: [
                     _buildBatteryLevelIndicator(battery.level),
@@ -433,7 +431,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildBatteryOptimizationCard() {
     return Card(
       child: Padding(
@@ -464,7 +462,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildBatteryRecommendationsCard() {
     return FutureBuilder<BatteryUsageStats>(
       future: Future.value(_batteryService.getBatteryUsageStats()),
@@ -472,9 +470,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         if (!snapshot.hasData) {
           return _buildLoadingCard('Battery Recommendations');
         }
-        
+
         final stats = snapshot.data!;
-        
+
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -486,7 +484,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 16),
-                ...stats.recommendations.map((rec) => _buildRecommendationItem(rec)),
+                ...stats.recommendations.map(
+                  (rec) => _buildRecommendationItem(rec),
+                ),
               ],
             ),
           ),
@@ -494,7 +494,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       },
     );
   }
-  
+
   Widget _buildStartupTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -510,7 +510,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildSettingsTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -524,7 +524,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildStartupMetricsCard() {
     return FutureBuilder<StartupMetrics>(
       future: Future.value(_startupService.getStartupMetrics()),
@@ -532,9 +532,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         if (!snapshot.hasData) {
           return _buildLoadingCard('Startup Metrics');
         }
-        
+
         final metrics = snapshot.data!;
-        
+
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -553,7 +553,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
                         'Startup Time',
                         '${metrics.startupDuration.inMilliseconds}ms',
                         Icons.timer,
-                        _getStartupTimeColor(metrics.startupDuration.inMilliseconds),
+                        _getStartupTimeColor(
+                          metrics.startupDuration.inMilliseconds,
+                        ),
                       ),
                     ),
                     Expanded(
@@ -561,7 +563,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
                         'First Frame',
                         '${metrics.timeToFirstFrame.inMilliseconds}ms',
                         Icons.visibility,
-                        _getFirstFrameColor(metrics.timeToFirstFrame.inMilliseconds),
+                        _getFirstFrameColor(
+                          metrics.timeToFirstFrame.inMilliseconds,
+                        ),
                       ),
                     ),
                   ],
@@ -594,7 +598,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       },
     );
   }
-  
+
   Widget _buildStartupOptimizationCard() {
     return Card(
       child: Padding(
@@ -631,7 +635,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildNetworkOptimizationCard() {
     return FutureBuilder<NetworkCacheStats>(
       future: Future.value(_networkService.getCacheStats()),
@@ -639,9 +643,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         if (!snapshot.hasData) {
           return _buildLoadingCard('Network Optimization');
         }
-        
+
         final stats = snapshot.data!;
-        
+
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -697,7 +701,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       },
     );
   }
-  
+
   Widget _buildPerformanceSettingsCard() {
     return FutureBuilder<PerformanceSettings>(
       future: _settingsService.getSettings(),
@@ -705,9 +709,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         if (!snapshot.hasData) {
           return _buildLoadingCard('Performance Settings');
         }
-        
+
         final settings = snapshot.data!;
-        
+
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -729,7 +733,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
                 ),
                 SwitchListTile(
                   title: const Text('Heavy Animations'),
-                  subtitle: const Text('Enable particle effects and complex animations'),
+                  subtitle: const Text(
+                    'Enable particle effects and complex animations',
+                  ),
                   value: settings.heavyAnimationsEnabled,
                   onChanged: (value) {
                     _settingsService.setHeavyAnimationsEnabled(value);
@@ -737,7 +743,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
                 ),
                 ListTile(
                   title: const Text('Performance Mode'),
-                  subtitle: Text(_getPerformanceModeText(settings.performanceMode)),
+                  subtitle: Text(
+                    _getPerformanceModeText(settings.performanceMode),
+                  ),
                   trailing: DropdownButton<PerformanceMode>(
                     value: settings.performanceMode,
                     onChanged: (mode) {
@@ -745,12 +753,13 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
                         _settingsService.setPerformanceMode(mode);
                       }
                     },
-                    items: PerformanceMode.values.map((mode) {
-                      return DropdownMenuItem(
-                        value: mode,
-                        child: Text(_getPerformanceModeText(mode)),
-                      );
-                    }).toList(),
+                    items:
+                        PerformanceMode.values.map((mode) {
+                          return DropdownMenuItem(
+                            value: mode,
+                            child: Text(_getPerformanceModeText(mode)),
+                          );
+                        }).toList(),
                   ),
                 ),
               ],
@@ -760,7 +769,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       },
     );
   }
-  
+
   Widget _buildOptimizationActionsCard() {
     return Card(
       child: Padding(
@@ -797,9 +806,9 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   // Helper widgets
-  
+
   Widget _buildLoadingCard(String title) {
     return Card(
       child: Padding(
@@ -815,8 +824,13 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
-  Widget _buildMetricItem(String label, String value, IconData icon, Color color) {
+
+  Widget _buildMetricItem(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Column(
       children: [
         Icon(icon, color: color, size: 32),
@@ -829,17 +843,11 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
             color: color,
           ),
         ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[600],
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
       ],
     );
   }
-  
+
   Widget _buildSimpleChart() {
     return Container(
       decoration: BoxDecoration(
@@ -855,7 +863,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildMemoryChart() {
     return Container(
       decoration: BoxDecoration(
@@ -871,7 +879,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildNoIssuesWidget() {
     return const Row(
       children: [
@@ -881,7 +889,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ],
     );
   }
-  
+
   Widget _buildIssueItem(String issue) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -894,7 +902,7 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildRecommendationItem(String recommendation) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -907,11 +915,11 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       ),
     );
   }
-  
+
   Widget _buildMemoryProgressBar(int heapUsage) {
     const maxMemory = 500 * 1024 * 1024; // 500MB max
     final progress = (heapUsage / maxMemory).clamp(0.0, 1.0);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -920,35 +928,24 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         LinearProgressIndicator(
           value: progress,
           backgroundColor: Colors.grey[300],
-          valueColor: AlwaysStoppedAnimation<Color>(
-            _getMemoryColor(heapUsage),
-          ),
+          valueColor: AlwaysStoppedAnimation<Color>(_getMemoryColor(heapUsage)),
         ),
       ],
     );
   }
-  
+
   Widget _buildMemoryStatItem(String label, String value) {
     return Column(
       children: [
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[600],
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
       ],
     );
   }
-  
+
   Widget _buildBatteryLevelIndicator(double level) {
     return Column(
       children: [
@@ -957,62 +954,51 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         LinearProgressIndicator(
           value: level,
           backgroundColor: Colors.grey[300],
-          valueColor: AlwaysStoppedAnimation<Color>(
-            _getBatteryColor(level),
-          ),
+          valueColor: AlwaysStoppedAnimation<Color>(_getBatteryColor(level)),
         ),
       ],
     );
   }
-  
+
   Widget _buildBatteryStatItem(String label, String value) {
     return Column(
       children: [
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[600],
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
       ],
     );
   }
-  
+
   // Helper methods
-  
+
   Color _getFrameRateColor(double frameRate) {
     if (frameRate >= 50) return Colors.green;
     if (frameRate >= 30) return Colors.orange;
     return Colors.red;
   }
-  
+
   Color _getMemoryColor(int memoryUsage) {
     final mb = memoryUsage / 1024 / 1024;
     if (mb < 100) return Colors.green;
     if (mb < 200) return Colors.orange;
     return Colors.red;
   }
-  
+
   Color _getCPUColor(double cpuUsage) {
     if (cpuUsage < 50) return Colors.green;
     if (cpuUsage < 80) return Colors.orange;
     return Colors.red;
   }
-  
+
   Color _getBatteryColor(double level) {
     if (level > 0.5) return Colors.green;
     if (level > 0.2) return Colors.orange;
     return Colors.red;
   }
-  
+
   String _getBatteryStateText(BatteryState state) {
     switch (state) {
       case BatteryState.charging:
@@ -1026,40 +1012,31 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
         return 'Unknown';
     }
   }
-  
+
   Color _getStartupTimeColor(int milliseconds) {
     if (milliseconds < 1000) return Colors.green;
     if (milliseconds < 3000) return Colors.orange;
     return Colors.red;
   }
-  
+
   Color _getFirstFrameColor(int milliseconds) {
     if (milliseconds < 500) return Colors.green;
     if (milliseconds < 1000) return Colors.orange;
     return Colors.red;
   }
-  
+
   Widget _buildNetworkStatItem(String label, String value) {
     return Column(
       children: [
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[600],
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
       ],
     );
   }
-  
+
   String _getPerformanceModeText(PerformanceMode mode) {
     switch (mode) {
       case PerformanceMode.performance:

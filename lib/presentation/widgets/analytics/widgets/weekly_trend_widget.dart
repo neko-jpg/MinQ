@@ -6,20 +6,20 @@ import 'package:minq/domain/analytics/dashboard_config.dart';
 class WeeklyTrendWidget extends ConsumerWidget {
   final DashboardWidgetConfig config;
 
-  const WeeklyTrendWidget({
-    super.key,
-    required this.config,
-  });
+  const WeeklyTrendWidget({super.key, required this.config});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: 実際の週間データプロバイダーを実装
     final weeklyData = _getMockWeeklyData();
-    
+
     return _buildLineChart(context, weeklyData);
   }
 
-  Widget _buildLineChart(BuildContext context, List<WeeklyDataPoint> weeklyData) {
+  Widget _buildLineChart(
+    BuildContext context,
+    List<WeeklyDataPoint> weeklyData,
+  ) {
     if (weeklyData.isEmpty) {
       return _buildEmptyState(context);
     }
@@ -65,15 +65,23 @@ class WeeklyTrendWidget extends ConsumerWidget {
                     },
                   ),
                 ),
-                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
               ),
               borderData: FlBorderData(show: false),
               lineBarsData: [
                 LineChartBarData(
-                  spots: weeklyData.asMap().entries.map((entry) {
-                    return FlSpot(entry.key.toDouble(), entry.value.completionCount.toDouble());
-                  }).toList(),
+                  spots:
+                      weeklyData.asMap().entries.map((entry) {
+                        return FlSpot(
+                          entry.key.toDouble(),
+                          entry.value.completionCount.toDouble(),
+                        );
+                      }).toList(),
                   isCurved: true,
                   color: Theme.of(context).primaryColor,
                   barWidth: 3,
@@ -126,7 +134,10 @@ class WeeklyTrendWidget extends ConsumerWidget {
   }
 
   Widget _buildSummary(BuildContext context, List<WeeklyDataPoint> weeklyData) {
-    final totalCompletions = weeklyData.fold<int>(0, (sum, data) => sum + data.completionCount);
+    final totalCompletions = weeklyData.fold<int>(
+      0,
+      (sum, data) => sum + data.completionCount,
+    );
     final averageCompletions = totalCompletions / weeklyData.length;
     final trend = _calculateTrend(weeklyData);
 
@@ -139,12 +150,7 @@ class WeeklyTrendWidget extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildSummaryItem(
-            context,
-            '合計',
-            '$totalCompletions',
-            Icons.add,
-          ),
+          _buildSummaryItem(context, '合計', '$totalCompletions', Icons.add),
           _buildSummaryItem(
             context,
             '平均',
@@ -154,7 +160,9 @@ class WeeklyTrendWidget extends ConsumerWidget {
           _buildSummaryItem(
             context,
             'トレンド',
-            trend > 0 ? '+${trend.toStringAsFixed(1)}' : trend.toStringAsFixed(1),
+            trend > 0
+                ? '+${trend.toStringAsFixed(1)}'
+                : trend.toStringAsFixed(1),
             trend > 0 ? Icons.trending_up : Icons.trending_down,
             color: trend > 0 ? Colors.green : Colors.red,
           ),
@@ -173,11 +181,7 @@ class WeeklyTrendWidget extends ConsumerWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          icon,
-          size: 16,
-          color: color ?? Colors.grey,
-        ),
+        Icon(icon, size: 16, color: color ?? Colors.grey),
         const SizedBox(height: 2),
         Text(
           value,
@@ -188,10 +192,9 @@ class WeeklyTrendWidget extends ConsumerWidget {
         ),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.grey,
-            fontSize: 10,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 10),
         ),
       ],
     );
@@ -202,17 +205,13 @@ class WeeklyTrendWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.trending_up,
-            size: 32,
-            color: Colors.grey,
-          ),
+          const Icon(Icons.trending_up, size: 32, color: Colors.grey),
           const SizedBox(height: 8),
           Text(
             'データなし',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
           ),
         ],
       ),
@@ -221,13 +220,17 @@ class WeeklyTrendWidget extends ConsumerWidget {
 
   double _calculateTrend(List<WeeklyDataPoint> weeklyData) {
     if (weeklyData.length < 2) return 0.0;
-    
+
     final firstHalf = weeklyData.take(weeklyData.length ~/ 2).toList();
     final secondHalf = weeklyData.skip(weeklyData.length ~/ 2).toList();
-    
-    final firstAverage = firstHalf.fold<int>(0, (sum, data) => sum + data.completionCount) / firstHalf.length;
-    final secondAverage = secondHalf.fold<int>(0, (sum, data) => sum + data.completionCount) / secondHalf.length;
-    
+
+    final firstAverage =
+        firstHalf.fold<int>(0, (sum, data) => sum + data.completionCount) /
+        firstHalf.length;
+    final secondAverage =
+        secondHalf.fold<int>(0, (sum, data) => sum + data.completionCount) /
+        secondHalf.length;
+
     return secondAverage - firstAverage;
   }
 
@@ -249,8 +252,5 @@ class WeeklyDataPoint {
   final String dayLabel;
   final int completionCount;
 
-  WeeklyDataPoint({
-    required this.dayLabel,
-    required this.completionCount,
-  });
+  WeeklyDataPoint({required this.dayLabel, required this.completionCount});
 }

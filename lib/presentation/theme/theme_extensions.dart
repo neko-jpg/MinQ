@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/color_tokens.dart';
+
+export 'package:minq/presentation/theme/color_tokens.dart';
 
 /// Extension to provide convenient access to theme properties
 extension BuildContextThemeExtensions on BuildContext {
   /// Get the MinqTheme extension
-  MinqTheme get minqTheme => Theme.of(this).extension<MinqTheme>() ?? MinqTheme.light();
-  
+  MinqTheme get minqTheme =>
+      Theme.of(this).extension<MinqTheme>() ?? MinqTheme.light();
+
   /// Get the text theme
   TextTheme get textTheme => Theme.of(this).textTheme;
-  
+
   /// Get color tokens with semantic names
   MinqColorTokens get colorTokens => minqTheme.tokens;
 }
@@ -17,16 +21,16 @@ extension BuildContextThemeExtensions on BuildContext {
 extension MinqThemeSemanticColors on MinqTheme {
   /// Primary color
   Color get primary => brandPrimary;
-  
+
   /// Success color
   Color get success => accentSuccess;
-  
-  /// Error color  
+
+  /// Error color
   Color get error => accentError;
-  
+
   /// Warning color
   Color get warning => accentWarning;
-  
+
   /// Info color (using secondary)
   Color get info => accentSecondary;
 }

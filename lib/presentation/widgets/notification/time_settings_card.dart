@@ -34,17 +34,14 @@ class TimeSettingsCard extends StatelessWidget {
               },
               contentPadding: EdgeInsets.zero,
             ),
-            
+
             if (settings.enabled) ...[
               const Divider(),
-              
+
               // 就寝時間設定
-              Text(
-                l10n.sleepTime,
-                style: theme.textTheme.titleSmall,
-              ),
+              Text(l10n.sleepTime, style: theme.textTheme.titleSmall),
               const SizedBox(height: 8),
-              
+
               Row(
                 children: [
                   Expanded(
@@ -52,22 +49,21 @@ class TimeSettingsCard extends StatelessWidget {
                       label: l10n.sleepTimeRange,
                       timeSlot: settings.sleepTime,
                       onChanged: (timeSlot) {
-                        onSettingsChanged(settings.copyWith(sleepTime: timeSlot));
+                        onSettingsChanged(
+                          settings.copyWith(sleepTime: timeSlot),
+                        );
                       },
                     ),
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // 勤務時間設定
-              Text(
-                l10n.workTime,
-                style: theme.textTheme.titleSmall,
-              ),
+              Text(l10n.workTime, style: theme.textTheme.titleSmall),
               const SizedBox(height: 8),
-              
+
               Row(
                 children: [
                   Expanded(
@@ -75,15 +71,17 @@ class TimeSettingsCard extends StatelessWidget {
                       label: l10n.workTimeRange,
                       timeSlot: settings.workTime,
                       onChanged: (timeSlot) {
-                        onSettingsChanged(settings.copyWith(workTime: timeSlot));
+                        onSettingsChanged(
+                          settings.copyWith(workTime: timeSlot),
+                        );
                       },
                     ),
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // その他のオプション
               CheckboxListTile(
                 title: Text(l10n.respectSystemDnd),
@@ -91,13 +89,15 @@ class TimeSettingsCard extends StatelessWidget {
                 value: settings.respectSystemDnd,
                 onChanged: (value) {
                   if (value != null) {
-                    onSettingsChanged(settings.copyWith(respectSystemDnd: value));
+                    onSettingsChanged(
+                      settings.copyWith(respectSystemDnd: value),
+                    );
                   }
                 },
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               CheckboxListTile(
                 title: Text(l10n.weekendMode),
                 subtitle: Text(l10n.weekendModeDescription),
@@ -110,39 +110,37 @@ class TimeSettingsCard extends StatelessWidget {
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               if (settings.weekendMode) ...[
                 const SizedBox(height: 8),
-                
+
                 // 週末就寝時間
-                Text(
-                  l10n.weekendSleepTime,
-                  style: theme.textTheme.titleSmall,
-                ),
+                Text(l10n.weekendSleepTime, style: theme.textTheme.titleSmall),
                 const SizedBox(height: 8),
-                
+
                 _TimeSlotSelector(
                   label: l10n.weekendSleepTimeRange,
                   timeSlot: settings.weekendSleepTime,
                   onChanged: (timeSlot) {
-                    onSettingsChanged(settings.copyWith(weekendSleepTime: timeSlot));
+                    onSettingsChanged(
+                      settings.copyWith(weekendSleepTime: timeSlot),
+                    );
                   },
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // 週末勤務時間
-                Text(
-                  l10n.weekendWorkTime,
-                  style: theme.textTheme.titleSmall,
-                ),
+                Text(l10n.weekendWorkTime, style: theme.textTheme.titleSmall),
                 const SizedBox(height: 8),
-                
+
                 _TimeSlotSelector(
                   label: l10n.weekendWorkTimeRange,
                   timeSlot: settings.weekendWorkTime,
                   onChanged: (timeSlot) {
-                    onSettingsChanged(settings.copyWith(weekendWorkTime: timeSlot));
+                    onSettingsChanged(
+                      settings.copyWith(weekendWorkTime: timeSlot),
+                    );
                   },
                 ),
               ],
@@ -176,22 +174,19 @@ class _TimeSlotSelector extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(
-              child: Text(
-                label,
-                style: theme.textTheme.bodyMedium,
-              ),
-            ),
+            Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
             Switch(
               value: timeSlot != null,
               onChanged: (enabled) {
                 if (enabled) {
-                  onChanged(const TimeSlot(
-                    startHour: 22,
-                    startMinute: 0,
-                    endHour: 7,
-                    endMinute: 0,
-                  ));
+                  onChanged(
+                    const TimeSlot(
+                      startHour: 22,
+                      startMinute: 0,
+                      endHour: 7,
+                      endMinute: 0,
+                    ),
+                  );
                 } else {
                   onChanged(null);
                 }
@@ -199,10 +194,10 @@ class _TimeSlotSelector extends StatelessWidget {
             ),
           ],
         ),
-        
+
         if (timeSlot != null) ...[
           const SizedBox(height: 8),
-          
+
           Row(
             children: [
               Expanded(
@@ -213,16 +208,18 @@ class _TimeSlotSelector extends StatelessWidget {
                     minute: timeSlot!.startMinute,
                   ),
                   onChanged: (time) {
-                    onChanged(timeSlot!.copyWith(
-                      startHour: time.hour,
-                      startMinute: time.minute,
-                    ));
+                    onChanged(
+                      timeSlot!.copyWith(
+                        startHour: time.hour,
+                        startMinute: time.minute,
+                      ),
+                    );
                   },
                 ),
               ),
-              
+
               const SizedBox(width: 16),
-              
+
               Expanded(
                 child: _TimePickerButton(
                   label: l10n.endTime,
@@ -231,10 +228,12 @@ class _TimeSlotSelector extends StatelessWidget {
                     minute: timeSlot!.endMinute,
                   ),
                   onChanged: (time) {
-                    onChanged(timeSlot!.copyWith(
-                      endHour: time.hour,
-                      endMinute: time.minute,
-                    ));
+                    onChanged(
+                      timeSlot!.copyWith(
+                        endHour: time.hour,
+                        endMinute: time.minute,
+                      ),
+                    );
                   },
                 ),
               ),
@@ -263,19 +262,16 @@ class _TimePickerButton extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: 4),
-        
+
         OutlinedButton(
           onPressed: () async {
             final selectedTime = await showTimePicker(
               context: context,
               initialTime: time,
             );
-            
+
             if (selectedTime != null) {
               onChanged(selectedTime);
             }

@@ -67,7 +67,7 @@ class NavigationUseCase {
   void goToAICoachSettings() => _router.push(AppRoutes.aiCoachSettings);
   void goToLiveActivitySettings() =>
       _router.push(AppRoutes.liveActivitySettings);
-  
+
   // タブ画面への遷移 - context.goを使用
   void goToChallenges() => _router.go(AppRoutes.challenges);
   void goHome() => _router.go(AppRoutes.home);

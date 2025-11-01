@@ -9,10 +9,12 @@ class PremiumFeaturesOverviewScreen extends ConsumerStatefulWidget {
   const PremiumFeaturesOverviewScreen({super.key});
 
   @override
-  ConsumerState<PremiumFeaturesOverviewScreen> createState() => _PremiumFeaturesOverviewScreenState();
+  ConsumerState<PremiumFeaturesOverviewScreen> createState() =>
+      _PremiumFeaturesOverviewScreenState();
 }
 
-class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesOverviewScreen>
+class _PremiumFeaturesOverviewScreenState
+    extends ConsumerState<PremiumFeaturesOverviewScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   bool _isLoading = false;
@@ -61,13 +63,20 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
                   _buildFeaturesTab(context),
                   activeBenefitsAsync.when(
                     data: (benefits) => _buildBenefitsTab(context, benefits),
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (error, stack) => const Center(child: Text('Error loading benefits')),
+                    loading:
+                        () => const Center(child: CircularProgressIndicator()),
+                    error:
+                        (error, stack) =>
+                            const Center(child: Text('Error loading benefits')),
                   ),
                   usageStatsAsync.when(
                     data: (stats) => _buildUsageTab(context, stats),
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (error, stack) => const Center(child: Text('Error loading usage stats')),
+                    loading:
+                        () => const Center(child: CircularProgressIndicator()),
+                    error:
+                        (error, stack) => const Center(
+                          child: Text('Error loading usage stats'),
+                        ),
                   ),
                   _buildManageTab(context),
                 ],
@@ -109,20 +118,13 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            context.colorTokens.primary,
-            context.colorTokens.secondary,
-          ],
+          colors: [context.colorTokens.primary, context.colorTokens.secondary],
         ),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         children: [
-          Icon(
-            _getTierIcon(tier),
-            size: 48,
-            color: Colors.white,
-          ),
+          Icon(_getTierIcon(tier), size: 48, color: Colors.white),
           const SizedBox(height: 16),
           Text(
             'Current Plan: ${tier.displayName}',
@@ -146,7 +148,10 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: context.colorTokens.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 12,
+                ),
               ),
               child: const Text('Upgrade Now'),
             ),
@@ -296,9 +301,10 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
         color: context.colorTokens.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: feature.isPremium 
-              ? context.colorTokens.primary.withOpacity(0.3)
-              : context.colorTokens.border,
+          color:
+              feature.isPremium
+                  ? context.colorTokens.primary.withOpacity(0.3)
+                  : context.colorTokens.border,
         ),
       ),
       child: Row(
@@ -307,16 +313,18 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: feature.isPremium 
-                  ? context.colorTokens.primary.withOpacity(0.1)
-                  : context.colorTokens.surfaceAlt,
+              color:
+                  feature.isPremium
+                      ? context.colorTokens.primary.withOpacity(0.1)
+                      : context.colorTokens.surfaceAlt,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               feature.icon,
-              color: feature.isPremium 
-                  ? context.colorTokens.primary
-                  : context.colorTokens.textSecondary,
+              color:
+                  feature.isPremium
+                      ? context.colorTokens.primary
+                      : context.colorTokens.textSecondary,
             ),
           ),
           const SizedBox(width: 16),
@@ -336,7 +344,10 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
                     ),
                     if (feature.isPremium)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: context.colorTokens.primary,
                           borderRadius: BorderRadius.circular(8),
@@ -367,7 +378,10 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
     );
   }
 
-  Widget _buildBenefitsTab(BuildContext context, List<PremiumBenefit> benefits) {
+  Widget _buildBenefitsTab(
+    BuildContext context,
+    List<PremiumBenefit> benefits,
+  ) {
     if (benefits.isEmpty) {
       return Center(
         child: Column(
@@ -468,7 +482,10 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
                 if (benefit.badgeText != null) ...[
                   const SizedBox(height: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: context.colorTokens.warning.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
@@ -510,7 +527,9 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
             '${stats.questsCreated}',
             stats.questLimit == -1 ? 'Unlimited' : '/ ${stats.questLimit}',
             Icons.task_alt,
-            stats.questLimit == -1 ? 1.0 : stats.questsCreated / stats.questLimit,
+            stats.questLimit == -1
+                ? 1.0
+                : stats.questsCreated / stats.questLimit,
           ),
           const SizedBox(height: 16),
           _buildUsageCard(
@@ -625,7 +644,9 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
               value: progress.clamp(0.0, 1.0),
               backgroundColor: context.colorTokens.surfaceAlt,
               valueColor: AlwaysStoppedAnimation<Color>(
-                progress > 0.8 ? context.colorTokens.warning : context.colorTokens.primary,
+                progress > 0.8
+                    ? context.colorTokens.warning
+                    : context.colorTokens.primary,
               ),
             ),
           ],
@@ -731,9 +752,7 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
         subtitle: Text(description),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         tileColor: context.colorTokens.surface,
       ),
     );
@@ -853,39 +872,42 @@ class _PremiumFeaturesOverviewScreenState extends ConsumerState<PremiumFeaturesO
   void _showCancelSubscriptionDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Cancel Subscription'),
-        content: const Text(
-          'Are you sure you want to cancel your premium subscription? '
-          'You will lose access to all premium features at the end of your current billing period.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Keep Subscription'),
-          ),
-          TextButton(
-            onPressed: () => _cancelSubscription(),
-            style: TextButton.styleFrom(
-              foregroundColor: context.colorTokens.error,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Cancel Subscription'),
+            content: const Text(
+              'Are you sure you want to cancel your premium subscription? '
+              'You will lose access to all premium features at the end of your current billing period.',
             ),
-            child: const Text('Cancel Subscription'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Keep Subscription'),
+              ),
+              TextButton(
+                onPressed: () => _cancelSubscription(),
+                style: TextButton.styleFrom(
+                  foregroundColor: context.colorTokens.error,
+                ),
+                child: const Text('Cancel Subscription'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   Future<void> _cancelSubscription() async {
     Navigator.of(context).pop();
-    
+
     setState(() {
       _isLoading = true;
     });
 
     try {
-      await ref.read(premiumServiceProvider).cancelSubscription('User requested cancellation');
-      
+      await ref
+          .read(premiumServiceProvider)
+          .cancelSubscription('User requested cancellation');
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

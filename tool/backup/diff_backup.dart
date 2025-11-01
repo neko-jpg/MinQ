@@ -20,13 +20,15 @@ import 'package:path/path.dart' as p;
 Future<void> main(List<String> arguments) async {
   final args = _Arguments.parse(arguments);
   final sourceSnapshot = await _Snapshot.fromDirectory(args.source);
-  final previousSnapshot = args.previous != null
-      ? await _Snapshot.fromDirectory(args.previous!)
-      : _Snapshot.empty();
+  final previousSnapshot =
+      args.previous != null
+          ? await _Snapshot.fromDirectory(args.previous!)
+          : _Snapshot.empty();
 
   final diff = sourceSnapshot.diff(previousSnapshot);
-  final archive = Archive()
-    ..addFile(ArchiveFile.string('diff.json', jsonEncode(diff.toJson())));
+  final archive =
+      Archive()
+        ..addFile(ArchiveFile.string('diff.json', jsonEncode(diff.toJson())));
 
   for (final entry in diff.changedEntries) {
     final file = File(p.join(args.source, entry.relativePath));
@@ -74,7 +76,8 @@ class _Arguments {
       throw ArgumentError('--source and --output are required');
     }
 
-    final password = map['--password'] ??
+    final password =
+        map['--password'] ??
         Platform.environment['MINQ_BACKUP_PASSWORD'] ??
         (throw ArgumentError('Missing --password or MINQ_BACKUP_PASSWORD env'));
 
@@ -144,18 +147,12 @@ class _Snapshot {
 }
 
 class _SnapshotEntry {
-  _SnapshotEntry({
-    required this.relativePath,
-    required this.hash,
-  });
+  _SnapshotEntry({required this.relativePath, required this.hash});
 
   final String relativePath;
   final String hash;
 
-  Map<String, Object?> toJson() => {
-        'relativePath': relativePath,
-        'hash': hash,
-      };
+  Map<String, Object?> toJson() => {'relativePath': relativePath, 'hash': hash};
 }
 
 class _SnapshotDiff {
@@ -169,21 +166,25 @@ class _SnapshotDiff {
   final List<_SnapshotEntry> modifiedEntries;
   final List<_SnapshotEntry> removedEntries;
 
-  Iterable<_SnapshotEntry> get changedEntries =>
-      [...addedEntries, ...modifiedEntries];
+  Iterable<_SnapshotEntry> get changedEntries => [
+    ...addedEntries,
+    ...modifiedEntries,
+  ];
 
   Map<String, Object?> toJson() => {
-        'added': addedEntries.map((e) => e.toJson()).toList(),
-        'modified': modifiedEntries.map((e) => e.toJson()).toList(),
-        'removed': removedEntries.map((e) => e.toJson()).toList(),
-      };
+    'added': addedEntries.map((e) => e.toJson()).toList(),
+    'modified': modifiedEntries.map((e) => e.toJson()).toList(),
+    'removed': removedEntries.map((e) => e.toJson()).toList(),
+  };
 }
 
 List<int> _encrypt(List<int> data, String password) {
   final digest = sha256.convert(utf8.encode(password)).bytes;
   final key = encrypt.Key(Uint8List.fromList(digest));
   final iv = encrypt.IV.fromSecureRandom(16);
-  final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
+  final encrypter = encrypt.Encrypter(
+    encrypt.AES(key, mode: encrypt.AESMode.cbc),
+  );
   final encrypted = encrypter.encryptBytes(data, iv: iv);
 
   return <int>[...iv.bytes, ...encrypted.bytes];

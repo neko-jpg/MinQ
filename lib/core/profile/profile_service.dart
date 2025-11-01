@@ -12,7 +12,8 @@ class ProfileService {
   ProfileService({
     required Isar isar,
     required SyncQueueManager syncQueueManager,
-  }) : _isar = isar, _syncQueueManager = syncQueueManager;
+  }) : _isar = isar,
+       _syncQueueManager = syncQueueManager;
 
   final Isar _isar;
   final SyncQueueManager _syncQueueManager;
@@ -21,7 +22,7 @@ class ProfileService {
   Future<UserProfile?> getProfile(String uid) async {
     final user = await _isar.users.filter().uidEqualTo(uid).findFirst();
     if (user == null) return null;
-    
+
     return _userToProfile(user);
   }
 
@@ -67,11 +68,12 @@ class ProfileService {
           user.avatarSeed = request.avatarSeed!;
         }
         if (request.focusTags != null) {
-          user.focusTags = request.focusTags!
-              .map((tag) => tag.trim())
-              .where((tag) => tag.isNotEmpty)
-              .take(5)
-              .toList();
+          user.focusTags =
+              request.focusTags!
+                  .map((tag) => tag.trim())
+                  .where((tag) => tag.isNotEmpty)
+                  .take(5)
+                  .toList();
         }
         if (request.notificationTimes != null) {
           user.notificationTimes = List.from(request.notificationTimes!);
@@ -86,16 +88,20 @@ class ProfileService {
         await _enqueueSyncJob(user);
       });
 
-      MinqLogger.info('Profile updated successfully', metadata: {
-        'uid': uid,
-        'fields': request.toJson().keys.toList(),
-      });
+      MinqLogger.info(
+        'Profile updated successfully',
+        metadata: {'uid': uid, 'fields': request.toJson().keys.toList()},
+      );
 
       return ProfileValidationResult.valid();
     } catch (e, stackTrace) {
-      MinqLogger.error('Failed to update profile', 
-          error: e, stackTrace: stackTrace, metadata: {'uid': uid});
-      
+      MinqLogger.error(
+        'Failed to update profile',
+        error: e,
+        stackTrace: stackTrace,
+        metadata: {'uid': uid},
+      );
+
       return ProfileValidationResult.invalid({
         'general': 'Failed to update profile. Please try again.',
       });
@@ -119,7 +125,7 @@ class ProfileService {
   List<String> getAvailableAvatarSeeds() {
     return [
       'seed-01',
-      'seed-02', 
+      'seed-02',
       'seed-03',
       'seed-04',
       'seed-05',
@@ -178,7 +184,8 @@ class ProfileService {
       final handle = request.handle!.trim();
       final handlePattern = RegExp(r'^[a-zA-Z0-9_]{3,20}$');
       if (!handlePattern.hasMatch(handle)) {
-        errors['handle'] = 'Handle must be 3-20 characters (letters, numbers, underscore only)';
+        errors['handle'] =
+            'Handle must be 3-20 characters (letters, numbers, underscore only)';
       }
     }
 
@@ -235,32 +242,34 @@ class ProfileService {
 
   /// Enqueue sync job for profile update
   Future<void> _enqueueSyncJob(User user) async {
-    final syncJob = SyncJob()
-      ..entityType = 'user'
-      ..entityId = user.uid
-      ..operation = 'update'
-      ..data = {
-        'uid': user.uid,
-        'displayName': user.displayName,
-        'handle': user.handle,
-        'bio': user.bio,
-        'avatarSeed': user.avatarSeed,
-        'focusTags': user.focusTags,
-        'notificationTimes': user.notificationTimes,
-        'privacy': user.privacy,
-        'longestStreak': user.longestStreak,
-        'currentStreak': user.currentStreak,
-        'longestStreakReachedAt': user.longestStreakReachedAt?.toIso8601String(),
-        'pairId': user.pairId,
-        'onboardingCompleted': user.onboardingCompleted,
-        'onboardingLevel': user.onboardingLevel,
-        'currentLevel': user.currentLevel,
-        'totalPoints': user.totalPoints,
-        'createdAt': user.createdAt.toIso8601String(),
-        'updatedAt': DateTime.now().toIso8601String(),
-      }
-      ..createdAt = DateTime.now()
-      ..priority = 2; // High priority for user updates
+    final syncJob =
+        SyncJob()
+          ..entityType = 'user'
+          ..entityId = user.uid
+          ..operation = 'update'
+          ..data = {
+            'uid': user.uid,
+            'displayName': user.displayName,
+            'handle': user.handle,
+            'bio': user.bio,
+            'avatarSeed': user.avatarSeed,
+            'focusTags': user.focusTags,
+            'notificationTimes': user.notificationTimes,
+            'privacy': user.privacy,
+            'longestStreak': user.longestStreak,
+            'currentStreak': user.currentStreak,
+            'longestStreakReachedAt':
+                user.longestStreakReachedAt?.toIso8601String(),
+            'pairId': user.pairId,
+            'onboardingCompleted': user.onboardingCompleted,
+            'onboardingLevel': user.onboardingLevel,
+            'currentLevel': user.currentLevel,
+            'totalPoints': user.totalPoints,
+            'createdAt': user.createdAt.toIso8601String(),
+            'updatedAt': DateTime.now().toIso8601String(),
+          }
+          ..createdAt = DateTime.now()
+          ..priority = 2; // High priority for user updates
 
     await _syncQueueManager.enqueueSyncJob(syncJob);
   }

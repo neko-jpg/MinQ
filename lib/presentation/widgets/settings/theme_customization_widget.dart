@@ -8,10 +8,12 @@ class ThemeCustomizationWidget extends ConsumerStatefulWidget {
   const ThemeCustomizationWidget({super.key});
 
   @override
-  ConsumerState<ThemeCustomizationWidget> createState() => _ThemeCustomizationWidgetState();
+  ConsumerState<ThemeCustomizationWidget> createState() =>
+      _ThemeCustomizationWidgetState();
 }
 
-class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWidget> {
+class _ThemeCustomizationWidgetState
+    extends ConsumerState<ThemeCustomizationWidget> {
   ThemeMode _selectedThemeMode = ThemeMode.system;
   Color _selectedAccentColor = ThemeCustomizationService.accentColors.first;
   bool _showPreview = false;
@@ -127,9 +129,7 @@ class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWid
                   'アクセントカラー',
                   'アプリのメインカラーを選択',
                   Icons.color_lens_outlined,
-                  [
-                    _buildColorGrid(theme),
-                  ],
+                  [_buildColorGrid(theme)],
                 ),
 
                 SizedBox(height: theme.spacing.lg),
@@ -172,11 +172,7 @@ class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWid
                     color: theme.brandPrimary.withOpacity(0.1),
                     borderRadius: theme.cornerSmall(),
                   ),
-                  child: Icon(
-                    icon,
-                    size: 20,
-                    color: theme.brandPrimary,
-                  ),
+                  child: Icon(icon, size: 20, color: theme.brandPrimary),
                 ),
                 SizedBox(width: theme.spacing.md),
                 Expanded(
@@ -233,9 +229,10 @@ class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWid
         padding: EdgeInsets.all(theme.spacing.md),
         margin: EdgeInsets.only(bottom: theme.spacing.sm),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? theme.brandPrimary.withOpacity(0.1)
-              : theme.surfaceAlt,
+          color:
+              isSelected
+                  ? theme.brandPrimary.withOpacity(0.1)
+                  : theme.surfaceAlt,
           borderRadius: theme.cornerMedium(),
           border: Border.all(
             color: isSelected ? theme.brandPrimary : theme.border,
@@ -256,8 +253,10 @@ class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWid
                   Text(
                     title,
                     style: theme.typography.bodyLarge.copyWith(
-                      color: isSelected ? theme.brandPrimary : theme.textPrimary,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                      color:
+                          isSelected ? theme.brandPrimary : theme.textPrimary,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.w600,
                     ),
                   ),
                   SizedBox(height: theme.spacing.xs),
@@ -270,11 +269,7 @@ class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWid
                 ],
               ),
             ),
-            if (isSelected)
-              Icon(
-                Icons.check_circle,
-                color: theme.brandPrimary,
-              ),
+            if (isSelected) Icon(Icons.check_circle, color: theme.brandPrimary),
           ],
         ),
       ),
@@ -311,13 +306,14 @@ class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWid
               ),
               boxShadow: isSelected ? theme.shadow.soft : null,
             ),
-            child: isSelected
-                ? Icon(
-                    Icons.check,
-                    color: _getContrastColor(color),
-                    size: 24,
-                  )
-                : null,
+            child:
+                isSelected
+                    ? Icon(
+                      Icons.check,
+                      color: _getContrastColor(color),
+                      size: 24,
+                    )
+                    : null,
           ),
         );
       },
@@ -341,9 +337,7 @@ class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWid
                 horizontal: theme.spacing.lg,
                 vertical: theme.spacing.md,
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: theme.cornerMedium(),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: theme.cornerMedium()),
             ),
           ),
         ),
@@ -364,9 +358,7 @@ class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWid
                 horizontal: theme.spacing.lg,
                 vertical: theme.spacing.md,
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: theme.cornerMedium(),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: theme.cornerMedium()),
             ),
           ),
         ),
@@ -392,7 +384,7 @@ class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWid
 
   Future<void> _applyChanges() async {
     final service = ref.read(themeCustomizationServiceProvider);
-    
+
     await service.setThemeMode(_selectedThemeMode);
     await service.setAccentColor(_selectedAccentColor);
 
@@ -409,20 +401,18 @@ class _ThemeCustomizationWidgetState extends ConsumerState<ThemeCustomizationWid
 
   Future<void> _resetToDefault() async {
     final service = ref.read(themeCustomizationServiceProvider);
-    
+
     await service.resetTheme();
-    
+
     setState(() {
       _selectedThemeMode = ThemeMode.system;
       _selectedAccentColor = ThemeCustomizationService.accentColors.first;
     });
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('テーマ設定をリセットしました'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('テーマ設定をリセットしました')));
     }
   }
 }

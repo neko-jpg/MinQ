@@ -405,7 +405,9 @@ class FormFieldWrapper extends StatelessWidget {
                     color:
                         errorMessage != null
                             ? colorScheme.error
-                            : colorScheme.onSurface.withAlpha((255 * 0.6).round()),
+                            : colorScheme.onSurface.withAlpha(
+                              (255 * 0.6).round(),
+                            ),
                   ),
                 ),
               ),

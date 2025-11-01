@@ -10,33 +10,33 @@ class PrivacyService {
   static const String _privacySettingsKey = 'privacy_settings';
   static const String _dataUsageConsentKey = 'data_usage_consent';
   static const String _anonymizationLevelKey = 'anonymization_level';
-  
+
   final EncryptionService _encryptionService = EncryptionService.instance;
-  
+
   static PrivacyService? _instance;
   static PrivacyService get instance => _instance ??= PrivacyService._();
-  
+
   PrivacyService._();
-  
+
   /// Get current privacy settings
   Future<PrivacySettings> getPrivacySettings() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final settingsJson = prefs.getString(_privacySettingsKey);
-      
+
       if (settingsJson != null) {
         final decryptedJson = _encryptionService.decryptData(settingsJson);
         final settingsMap = jsonDecode(decryptedJson) as Map<String, dynamic>;
         return PrivacySettings.fromJson(settingsMap);
       }
-      
+
       return PrivacySettings.defaultSettings();
     } catch (e) {
       debugPrint('Error getting privacy settings: $e');
       return PrivacySettings.defaultSettings();
     }
   }
-  
+
   /// Update privacy settings
   Future<void> updatePrivacySettings(PrivacySettings settings) async {
     try {
@@ -49,7 +49,7 @@ class PrivacyService {
       throw const PrivacyException('Failed to update privacy settings');
     }
   }
-  
+
   /// Set data usage consent
   Future<void> setDataUsageConsent(DataUsageConsent consent) async {
     try {
@@ -62,26 +62,26 @@ class PrivacyService {
       throw const PrivacyException('Failed to set data usage consent');
     }
   }
-  
+
   /// Get data usage consent
   Future<DataUsageConsent?> getDataUsageConsent() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final consentJson = prefs.getString(_dataUsageConsentKey);
-      
+
       if (consentJson != null) {
         final decryptedJson = _encryptionService.decryptData(consentJson);
         final consentMap = jsonDecode(decryptedJson) as Map<String, dynamic>;
         return DataUsageConsent.fromJson(consentMap);
       }
-      
+
       return null;
     } catch (e) {
       debugPrint('Error getting data usage consent: $e');
       return null;
     }
   }
-  
+
   /// Set anonymization level
   Future<void> setAnonymizationLevel(AnonymizationLevel level) async {
     try {
@@ -92,83 +92,87 @@ class PrivacyService {
       throw const PrivacyException('Failed to set anonymization level');
     }
   }
-  
+
   /// Get anonymization level
   Future<AnonymizationLevel> getAnonymizationLevel() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final levelName = prefs.getString(_anonymizationLevelKey);
-      
+
       if (levelName != null) {
         return AnonymizationLevel.values.firstWhere(
           (level) => level.name == levelName,
           orElse: () => AnonymizationLevel.standard,
         );
       }
-      
+
       return AnonymizationLevel.standard;
     } catch (e) {
       debugPrint('Error getting anonymization level: $e');
       return AnonymizationLevel.standard;
     }
   }
-  
+
   /// Export user data
   Future<String> exportUserData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final exportData = <String, dynamic>{};
-      
+
       // Get all user data keys
-      final keys = prefs.getKeys().where((key) => 
-        !key.startsWith('encryption_') && 
-        !key.startsWith('auth_') &&
-        !key.startsWith('biometric_')
+      final keys = prefs.getKeys().where(
+        (key) =>
+            !key.startsWith('encryption_') &&
+            !key.startsWith('auth_') &&
+            !key.startsWith('biometric_'),
       );
-      
+
       for (final key in keys) {
         final value = prefs.get(key);
         if (value != null) {
           exportData[key] = value;
         }
       }
-      
+
       // Add metadata
       exportData['export_timestamp'] = DateTime.now().toIso8601String();
       exportData['export_version'] = '1.0';
-      
+
       return jsonEncode(exportData);
     } catch (e) {
       debugPrint('Error exporting user data: $e');
       throw const PrivacyException('Failed to export user data');
     }
   }
-  
+
   /// Delete all user data
   Future<void> deleteAllUserData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Get all keys except system keys
-      final keysToDelete = prefs.getKeys().where((key) => 
-        !key.startsWith('flutter.') && 
-        !key.startsWith('system_')
-      ).toList();
-      
+      final keysToDelete =
+          prefs
+              .getKeys()
+              .where(
+                (key) =>
+                    !key.startsWith('flutter.') && !key.startsWith('system_'),
+              )
+              .toList();
+
       // Delete all user data
       for (final key in keysToDelete) {
         await prefs.remove(key);
       }
-      
+
       // Clear app data directory
       await _clearAppDataDirectory();
-      
     } catch (e) {
       debugPrint('Error deleting user data: $e');
       throw const PrivacyException('Failed to delete user data');
     }
   }
-  
+
   /// Clear app data directory
   Future<void> _clearAppDataDirectory() async {
     try {
@@ -176,7 +180,7 @@ class PrivacyService {
       if (await appDir.exists()) {
         await appDir.delete(recursive: true);
       }
-      
+
       final cacheDir = await getTemporaryDirectory();
       if (await cacheDir.exists()) {
         await cacheDir.delete(recursive: true);
@@ -185,77 +189,78 @@ class PrivacyService {
       debugPrint('Error clearing app data directory: $e');
     }
   }
-  
+
   /// Anonymize data based on current settings
   Map<String, dynamic> anonymizeData(Map<String, dynamic> data) {
     final anonymizedData = Map<String, dynamic>.from(data);
     final level = getAnonymizationLevel();
-    
+
     return level.then((level) {
-      switch (level) {
-        case AnonymizationLevel.none:
-          return anonymizedData;
-        
-        case AnonymizationLevel.standard:
-          // Remove personally identifiable information
-          anonymizedData.remove('email');
-          anonymizedData.remove('displayName');
-          anonymizedData.remove('phoneNumber');
-          
-          // Hash user ID
-          if (anonymizedData.containsKey('userId')) {
-            anonymizedData['userId'] = _encryptionService.hashData(
-              anonymizedData['userId'].toString()
-            );
+          switch (level) {
+            case AnonymizationLevel.none:
+              return anonymizedData;
+
+            case AnonymizationLevel.standard:
+              // Remove personally identifiable information
+              anonymizedData.remove('email');
+              anonymizedData.remove('displayName');
+              anonymizedData.remove('phoneNumber');
+
+              // Hash user ID
+              if (anonymizedData.containsKey('userId')) {
+                anonymizedData['userId'] = _encryptionService.hashData(
+                  anonymizedData['userId'].toString(),
+                );
+              }
+
+              return anonymizedData;
+
+            case AnonymizationLevel.high:
+              // Remove all identifiable information
+              final allowedKeys = {
+                'questCount',
+                'completionRate',
+                'streakDays',
+                'xpTotal',
+                'level',
+                'createdAt',
+              };
+
+              return Map<String, dynamic>.fromEntries(
+                anonymizedData.entries.where(
+                  (entry) => allowedKeys.contains(entry.key),
+                ),
+              );
           }
-          
-          return anonymizedData;
-        
-        case AnonymizationLevel.high:
-          // Remove all identifiable information
-          final allowedKeys = {
-            'questCount',
-            'completionRate',
-            'streakDays',
-            'xpTotal',
-            'level',
-            'createdAt',
-          };
-          
-          return Map<String, dynamic>.fromEntries(
-            anonymizedData.entries.where((entry) => 
-              allowedKeys.contains(entry.key)
-            ),
-          );
-      }
-    }) as Map<String, dynamic>;
+        })
+        as Map<String, dynamic>;
   }
-  
+
   /// Get data usage summary
   Future<DataUsageSummary> getDataUsageSummary() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final keys = prefs.getKeys();
-      
+
       var totalDataSize = 0;
       var encryptedDataCount = 0;
       var personalDataCount = 0;
-      
+
       for (final key in keys) {
         final value = prefs.get(key);
         if (value != null) {
           totalDataSize += value.toString().length;
-          
+
           if (key.contains('encrypted') || value.toString().contains(':')) {
             encryptedDataCount++;
           }
-          
+
           if (_isPersonalData(key)) {
             personalDataCount++;
           }
         }
       }
-      
+
       return DataUsageSummary(
         totalDataSize: totalDataSize,
         encryptedDataCount: encryptedDataCount,
@@ -267,7 +272,7 @@ class PrivacyService {
       throw const PrivacyException('Failed to get data usage summary');
     }
   }
-  
+
   /// Check if data key contains personal information
   bool _isPersonalData(String key) {
     final personalDataKeys = {
@@ -278,9 +283,9 @@ class PrivacyService {
       'profile',
       'user',
     };
-    
-    return personalDataKeys.any((personalKey) => 
-      key.toLowerCase().contains(personalKey)
+
+    return personalDataKeys.any(
+      (personalKey) => key.toLowerCase().contains(personalKey),
     );
   }
 }
@@ -294,7 +299,7 @@ class PrivacySettings {
   final bool crashReporting;
   final bool performanceMonitoring;
   final AnonymizationLevel anonymizationLevel;
-  
+
   const PrivacySettings({
     required this.shareAnalytics,
     required this.shareUsageData,
@@ -304,7 +309,7 @@ class PrivacySettings {
     required this.performanceMonitoring,
     required this.anonymizationLevel,
   });
-  
+
   factory PrivacySettings.defaultSettings() => const PrivacySettings(
     shareAnalytics: false,
     shareUsageData: false,
@@ -314,20 +319,21 @@ class PrivacySettings {
     performanceMonitoring: true,
     anonymizationLevel: AnonymizationLevel.standard,
   );
-  
-  factory PrivacySettings.fromJson(Map<String, dynamic> json) => PrivacySettings(
-    shareAnalytics: json['shareAnalytics'] as bool? ?? false,
-    shareUsageData: json['shareUsageData'] as bool? ?? false,
-    personalizedAds: json['personalizedAds'] as bool? ?? false,
-    dataCollection: json['dataCollection'] as bool? ?? true,
-    crashReporting: json['crashReporting'] as bool? ?? true,
-    performanceMonitoring: json['performanceMonitoring'] as bool? ?? true,
-    anonymizationLevel: AnonymizationLevel.values.firstWhere(
-      (level) => level.name == json['anonymizationLevel'],
-      orElse: () => AnonymizationLevel.standard,
-    ),
-  );
-  
+
+  factory PrivacySettings.fromJson(Map<String, dynamic> json) =>
+      PrivacySettings(
+        shareAnalytics: json['shareAnalytics'] as bool? ?? false,
+        shareUsageData: json['shareUsageData'] as bool? ?? false,
+        personalizedAds: json['personalizedAds'] as bool? ?? false,
+        dataCollection: json['dataCollection'] as bool? ?? true,
+        crashReporting: json['crashReporting'] as bool? ?? true,
+        performanceMonitoring: json['performanceMonitoring'] as bool? ?? true,
+        anonymizationLevel: AnonymizationLevel.values.firstWhere(
+          (level) => level.name == json['anonymizationLevel'],
+          orElse: () => AnonymizationLevel.standard,
+        ),
+      );
+
   Map<String, dynamic> toJson() => {
     'shareAnalytics': shareAnalytics,
     'shareUsageData': shareUsageData,
@@ -337,7 +343,7 @@ class PrivacySettings {
     'performanceMonitoring': performanceMonitoring,
     'anonymizationLevel': anonymizationLevel.name,
   };
-  
+
   PrivacySettings copyWith({
     bool? shareAnalytics,
     bool? shareUsageData,
@@ -364,7 +370,7 @@ class DataUsageConsent {
   final bool researchConsent;
   final DateTime consentDate;
   final String consentVersion;
-  
+
   const DataUsageConsent({
     required this.analyticsConsent,
     required this.marketingConsent,
@@ -372,15 +378,16 @@ class DataUsageConsent {
     required this.consentDate,
     required this.consentVersion,
   });
-  
-  factory DataUsageConsent.fromJson(Map<String, dynamic> json) => DataUsageConsent(
-    analyticsConsent: json['analyticsConsent'] as bool,
-    marketingConsent: json['marketingConsent'] as bool,
-    researchConsent: json['researchConsent'] as bool,
-    consentDate: DateTime.parse(json['consentDate'] as String),
-    consentVersion: json['consentVersion'] as String,
-  );
-  
+
+  factory DataUsageConsent.fromJson(Map<String, dynamic> json) =>
+      DataUsageConsent(
+        analyticsConsent: json['analyticsConsent'] as bool,
+        marketingConsent: json['marketingConsent'] as bool,
+        researchConsent: json['researchConsent'] as bool,
+        consentDate: DateTime.parse(json['consentDate'] as String),
+        consentVersion: json['consentVersion'] as String,
+      );
+
   Map<String, dynamic> toJson() => {
     'analyticsConsent': analyticsConsent,
     'marketingConsent': marketingConsent,
@@ -396,7 +403,7 @@ class DataUsageSummary {
   final int encryptedDataCount;
   final int personalDataCount;
   final DateTime lastUpdated;
-  
+
   const DataUsageSummary({
     required this.totalDataSize,
     required this.encryptedDataCount,
@@ -406,18 +413,14 @@ class DataUsageSummary {
 }
 
 /// Anonymization levels
-enum AnonymizationLevel {
-  none,
-  standard,
-  high,
-}
+enum AnonymizationLevel { none, standard, high }
 
 /// Custom exception for privacy errors
 class PrivacyException implements Exception {
   final String message;
-  
+
   const PrivacyException(this.message);
-  
+
   @override
   String toString() => 'PrivacyException: $message';
 }

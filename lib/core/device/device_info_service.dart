@@ -68,7 +68,7 @@ class DeviceInfoService {
       final androidInfo = await _deviceInfo.androidInfo;
       final systemFeatures = androidInfo.systemFeatures;
       return systemFeatures.contains('android.hardware.ram.low');
-        }
+    }
     return false;
   }
 
@@ -101,19 +101,10 @@ class DeviceInfo {
 }
 
 /// デバイスプラットフォーム
-enum DevicePlatform {
-  android,
-  ios,
-  unknown,
-}
+enum DevicePlatform { android, ios, unknown }
 
 /// デバイスサイズカテゴリー
-enum DeviceSizeCategory {
-  small,
-  medium,
-  large,
-  tablet,
-}
+enum DeviceSizeCategory { small, medium, large, tablet }
 
 /// セーフエリアヘルパー
 class SafeAreaHelper {
@@ -171,10 +162,7 @@ class PerformanceConfig {
   static const high = PerformanceConfig();
 
   /// 中性能デバイス用
-  static const medium = PerformanceConfig(
-    enableBlur: false,
-    imageQuality: 85,
-  );
+  static const medium = PerformanceConfig(enableBlur: false, imageQuality: 85);
 
   /// 低性能デバイス用
   static const low = PerformanceConfig(

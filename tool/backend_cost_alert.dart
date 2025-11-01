@@ -59,25 +59,28 @@ Future<void> main(List<String> args) async {
   final List<dynamic> recordsRaw = payload['records'] as List<dynamic>;
   final Map<String, ServiceThreshold> thresholds = _loadThresholds();
 
-  final List<CostRecord> records = recordsRaw
-      .map((dynamic item) => item as Map<String, dynamic>)
-      .map(
-        (Map<String, dynamic> item) => CostRecord(
-          service: item['service'] as String,
-          monthlyCost: (item['monthlyCost'] as num).toDouble(),
-          dailyCost: (item['dailyCost'] as num).toDouble(),
-          dailyAverageLastWeek:
-              (item['dailyAverageLastWeek'] as num).toDouble(),
-          monthlyForecast: (item['monthlyForecast'] as num).toDouble(),
-          dailyInvocations: item['dailyInvocations'] == null
-              ? null
-              : (item['dailyInvocations'] as num).toDouble(),
-          cpuSecondsHourly: item['cpuSecondsHourly'] == null
-              ? null
-              : (item['cpuSecondsHourly'] as num).toDouble(),
-        ),
-      )
-      .toList();
+  final List<CostRecord> records =
+      recordsRaw
+          .map((dynamic item) => item as Map<String, dynamic>)
+          .map(
+            (Map<String, dynamic> item) => CostRecord(
+              service: item['service'] as String,
+              monthlyCost: (item['monthlyCost'] as num).toDouble(),
+              dailyCost: (item['dailyCost'] as num).toDouble(),
+              dailyAverageLastWeek:
+                  (item['dailyAverageLastWeek'] as num).toDouble(),
+              monthlyForecast: (item['monthlyForecast'] as num).toDouble(),
+              dailyInvocations:
+                  item['dailyInvocations'] == null
+                      ? null
+                      : (item['dailyInvocations'] as num).toDouble(),
+              cpuSecondsHourly:
+                  item['cpuSecondsHourly'] == null
+                      ? null
+                      : (item['cpuSecondsHourly'] as num).toDouble(),
+            ),
+          )
+          .toList();
 
   final List<AlertFinding> findings = <AlertFinding>[];
 
@@ -89,21 +92,19 @@ Future<void> main(List<String> args) async {
 
     final double warningBudget = threshold.monthlyBudget * 0.8;
     final bool exceedsBudgetWarning = record.monthlyCost >= warningBudget;
-    final bool spikesVsBaseline = record.dailyAverageLastWeek > 0 &&
+    final bool spikesVsBaseline =
+        record.dailyAverageLastWeek > 0 &&
         record.dailyCost / record.dailyAverageLastWeek >=
             threshold.dailyGrowthWarningRatio;
 
     if (exceedsBudgetWarning && spikesVsBaseline) {
-      final String reason = 'コスト高騰: 月次 '
+      final String reason =
+          'コスト高騰: 月次 '
           '${record.monthlyCost.toStringAsFixed(0)} USD '
           '(予算 ${threshold.monthlyBudget.toStringAsFixed(0)} USD, '
           '予測 ${record.monthlyForecast.toStringAsFixed(0)} USD)';
       findings.add(
-        AlertFinding(
-          service: record.service,
-          reason: reason,
-          record: record,
-        ),
+        AlertFinding(service: record.service, reason: reason, record: record),
       );
     }
 
@@ -112,7 +113,8 @@ Future<void> main(List<String> args) async {
       findings.add(
         AlertFinding(
           service: record.service,
-          reason: '実行回数が閾値超過: '
+          reason:
+              '実行回数が閾値超過: '
               '${record.dailyInvocations?.toStringAsFixed(0)} > '
               '${threshold.maxDailyInvocations!.toStringAsFixed(0)}',
           record: record,
@@ -121,12 +123,12 @@ Future<void> main(List<String> args) async {
     }
 
     if (threshold.cpuSecondsHourlyThreshold != null &&
-        (record.cpuSecondsHourly ?? 0) >
-            threshold.cpuSecondsHourlyThreshold!) {
+        (record.cpuSecondsHourly ?? 0) > threshold.cpuSecondsHourlyThreshold!) {
       findings.add(
         AlertFinding(
           service: record.service,
-          reason: 'CPU秒が閾値超過: '
+          reason:
+              'CPU秒が閾値超過: '
               '${record.cpuSecondsHourly?.toStringAsFixed(0)} > '
               '${threshold.cpuSecondsHourlyThreshold!.toStringAsFixed(0)}',
           record: record,
@@ -188,9 +190,10 @@ Map<String, ServiceThreshold> _loadThresholds() {
       monthlyBudget: (value['monthly_budget_usd'] as num).toDouble(),
       dailyGrowthWarningRatio:
           (value['daily_growth_warning_ratio'] as num).toDouble(),
-      maxDailyInvocations: value.containsKey('max_daily_invocations')
-          ? (value['max_daily_invocations'] as num).toDouble()
-          : null,
+      maxDailyInvocations:
+          value.containsKey('max_daily_invocations')
+              ? (value['max_daily_invocations'] as num).toDouble()
+              : null,
       cpuSecondsHourlyThreshold:
           value.containsKey('cpu_seconds_hourly_threshold')
               ? (value['cpu_seconds_hourly_threshold'] as num).toDouble()
@@ -201,8 +204,9 @@ Map<String, ServiceThreshold> _loadThresholds() {
 }
 
 String _buildSlackMessage(DateTime generatedAt, List<AlertFinding> findings) {
-  final StringBuffer buffer = StringBuffer()
-    ..writeln('*MinQ Backend Cost Alert - ${generatedAt.toLocal()}*');
+  final StringBuffer buffer =
+      StringBuffer()
+        ..writeln('*MinQ Backend Cost Alert - ${generatedAt.toLocal()}*');
   for (final AlertFinding finding in findings) {
     buffer.writeln('- `${finding.service}`: ${finding.reason}');
   }
@@ -219,8 +223,9 @@ Future<void> _sendSlack(String message) async {
 
   final HttpClient client = HttpClient();
   try {
-    final HttpClientRequest request =
-        await client.postUrl(Uri.parse(webhookUrl));
+    final HttpClientRequest request = await client.postUrl(
+      Uri.parse(webhookUrl),
+    );
     request.headers.contentType = ContentType.json;
     request.write(jsonEncode({'text': message}));
     final HttpClientResponse response = await request.close();
@@ -246,8 +251,9 @@ Future<void> _sendOpsgenie(
 
   final HttpClient client = HttpClient();
   try {
-    final HttpClientRequest request = await client
-        .postUrl(Uri.parse('https://api.opsgenie.com/v2/alerts'));
+    final HttpClientRequest request = await client.postUrl(
+      Uri.parse('https://api.opsgenie.com/v2/alerts'),
+    );
     request.headers
       ..contentType = ContentType.json
       ..set('Authorization', 'GenieKey $apiKey');
@@ -256,8 +262,9 @@ Future<void> _sendOpsgenie(
       'message': 'MinQ backend cost alert',
       'alias': 'minq-backend-cost-${generatedAt.toIso8601String()}',
       'description': findings
-          .map((AlertFinding finding) =>
-              '${finding.service}: ${finding.reason}')
+          .map(
+            (AlertFinding finding) => '${finding.service}: ${finding.reason}',
+          )
           .join('\n'),
       'priority': 'P2',
       'source': 'github-actions',
@@ -268,8 +275,9 @@ Future<void> _sendOpsgenie(
     final HttpClientResponse response = await request.close();
     if (response.statusCode < 200 || response.statusCode >= 300) {
       final String body = await response.transform(utf8.decoder).join();
-      stderr
-          .writeln('Opsgenie notification failed: ${response.statusCode} $body');
+      stderr.writeln(
+        'Opsgenie notification failed: ${response.statusCode} $body',
+      );
       exitCode = 1;
     }
   } finally {

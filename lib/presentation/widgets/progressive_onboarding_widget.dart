@@ -19,7 +19,7 @@ class ProgressiveOnboardingWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final onboardingState = ref.watch(progressiveOnboardingControllerProvider);
-    
+
     return onboardingState.when(
       data: (onboarding) => _buildWithOnboarding(context, ref, onboarding),
       loading: () => child,
@@ -50,8 +50,10 @@ class ProgressiveOnboardingWidget extends ConsumerWidget {
 
   /// ヒントをチェックして表示
   void _checkAndShowHints(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(progressiveOnboardingControllerProvider.notifier);
-    
+    final controller = ref.read(
+      progressiveOnboardingControllerProvider.notifier,
+    );
+
     // 画面固有のヒントを表示
     if (screenId != null) {
       switch (screenId) {
@@ -72,7 +74,7 @@ class ProgressiveOnboardingWidget extends ConsumerWidget {
   /// レベルアップ通知を構築
   Widget _buildLevelUpNotification(BuildContext context, WidgetRef ref) {
     final levelUpEvent = ref.watch(levelUpEventProvider);
-    
+
     if (levelUpEvent == null) {
       return const SizedBox.shrink();
     }
@@ -94,7 +96,7 @@ class ProgressiveOnboardingWidget extends ConsumerWidget {
     ProgressiveOnboarding onboarding,
   ) {
     final progress = ref.watch(onboardingProgressProvider);
-    
+
     if (progress == null || progress.isMaxLevel) {
       return const SizedBox.shrink();
     }
@@ -180,7 +182,9 @@ class OnboardingProgressIndicator extends StatelessWidget {
               height: 4,
               child: LinearProgressIndicator(
                 value: progress.progress,
-                backgroundColor: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.outline.withOpacity(0.2),
                 valueColor: AlwaysStoppedAnimation<Color>(
                   Theme.of(context).colorScheme.primary,
                 ),
@@ -197,10 +201,7 @@ class OnboardingProgressIndicator extends StatelessWidget {
 class LevelUpDialog extends StatefulWidget {
   final LevelUpEvent event;
 
-  const LevelUpDialog({
-    super.key,
-    required this.event,
-  });
+  const LevelUpDialog({super.key, required this.event});
 
   @override
   State<LevelUpDialog> createState() => _LevelUpDialogState();
@@ -220,21 +221,13 @@ class _LevelUpDialogState extends State<LevelUpDialog>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
+    );
 
-    _rotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
     _animationController.forward();
   }
@@ -277,7 +270,9 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -288,7 +283,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // レベルアップテキスト
                   Text(
                     'レベルアップ！',
@@ -298,27 +293,27 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   Text(
                     'レベル ${widget.event.oldLevel} → ${widget.event.newLevel}',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // レベル情報
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                      color:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
                       children: [
                         Text(
                           widget.event.levelInfo.title,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -327,14 +322,17 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 12),
-                        
+
                         // 解放された機能
-                        if (widget.event.levelInfo.unlockedFeatures.isNotEmpty) ...[
+                        if (widget
+                            .event
+                            .levelInfo
+                            .unlockedFeatures
+                            .isNotEmpty) ...[
                           Text(
                             '解放された機能:',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           ...widget.event.levelInfo.unlockedFeatures.map(
@@ -348,7 +346,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                     ),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // 閉じるボタン
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
@@ -386,10 +384,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
 class OnboardingProgressDialog extends StatelessWidget {
   final OnboardingProgress progress;
 
-  const OnboardingProgressDialog({
-    super.key,
-    required this.progress,
-  });
+  const OnboardingProgressDialog({super.key, required this.progress});
 
   @override
   Widget build(BuildContext context) {
@@ -406,7 +401,9 @@ class OnboardingProgressDialog extends StatelessWidget {
             const SizedBox(height: 16),
             LinearProgressIndicator(
               value: progress.progress,
-              backgroundColor: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.outline.withOpacity(0.2),
             ),
             const SizedBox(height: 8),
             Text('進捗: ${(progress.progress * 100).toInt()}%'),

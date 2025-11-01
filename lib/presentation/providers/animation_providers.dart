@@ -2,9 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/animations/animation_system.dart';
 
 /// アニメーション設定プロバイダー
-final animationSettingsProvider = ChangeNotifierProvider<AnimationSettingsProvider>(
-  (ref) => AnimationSettingsProvider(),
-);
+final animationSettingsProvider =
+    ChangeNotifierProvider<AnimationSettingsProvider>(
+      (ref) => AnimationSettingsProvider(),
+    );
 
 /// アニメーション有効状態プロバイダー
 final animationsEnabledProvider = Provider<bool>((ref) {

@@ -109,7 +109,9 @@ class RetryUtil {
 
         // Use secure logging instead of print
         if (kDebugMode) {
-          debugPrint('⚠️ Retry attempt $attempt after ${delay.inMilliseconds}ms: $error');
+          debugPrint(
+            '⚠️ Retry attempt $attempt after ${delay.inMilliseconds}ms: $error',
+          );
         }
 
         // 待機
@@ -183,7 +185,8 @@ class RetryExhaustedException implements Exception {
   RetryExhaustedException(this.message, this.originalError);
 
   @override
-  String toString() => 'RetryExhaustedException: $message (Original: $originalError)';
+  String toString() =>
+      'RetryExhaustedException: $message (Original: $originalError)';
 }
 
 /// 競合解決ポリシー
@@ -212,21 +215,21 @@ class ConflictResolver {
   }) async {
     return RetryUtil.execute(
       action: () async {
-        return await FirebaseFirestore.instance.runTransaction<T>(
-          (transaction) async {
-            final snapshot = await transaction.get(docRef);
+        return await FirebaseFirestore.instance.runTransaction<T>((
+          transaction,
+        ) async {
+          final snapshot = await transaction.get(docRef);
 
-            if (!snapshot.exists) {
-              throw Exception('Document does not exist');
-            }
+          if (!snapshot.exists) {
+            throw Exception('Document does not exist');
+          }
 
-            final newData = updateFunction(snapshot);
+          final newData = updateFunction(snapshot);
 
-            transaction.update(docRef, newData as Map<String, dynamic>);
+          transaction.update(docRef, newData as Map<String, dynamic>);
 
-            return newData;
-          },
-        );
+          return newData;
+        });
       },
       config: retryConfig,
     );
@@ -254,10 +257,7 @@ class ConflictResolver {
         newData['updatedAt'] = FieldValue.serverTimestamp();
 
         // バージョンが一致する場合のみ更新
-        await docRef.update({
-          ...newData,
-          'version': version + 1,
-        });
+        await docRef.update({...newData, 'version': version + 1});
       },
       config: retryConfig,
     );
@@ -270,25 +270,26 @@ class ConflictResolver {
     required Map<String, dynamic> Function(
       Map<String, dynamic> server,
       Map<String, dynamic> local,
-    ) mergeFunction,
+    )
+    mergeFunction,
     RetryConfig retryConfig = RetryConfig.conflictConfig,
   }) async {
     return RetryUtil.execute(
       action: () async {
-        return await FirebaseFirestore.instance.runTransaction(
-          (transaction) async {
-            final snapshot = await transaction.get(docRef);
+        return await FirebaseFirestore.instance.runTransaction((
+          transaction,
+        ) async {
+          final snapshot = await transaction.get(docRef);
 
-            if (!snapshot.exists) {
-              throw Exception('Document does not exist');
-            }
+          if (!snapshot.exists) {
+            throw Exception('Document does not exist');
+          }
 
-            final serverData = snapshot.data() as Map<String, dynamic>;
-            final mergedData = mergeFunction(serverData, localChanges);
+          final serverData = snapshot.data() as Map<String, dynamic>;
+          final mergedData = mergeFunction(serverData, localChanges);
 
-            transaction.update(docRef, mergedData);
-          },
-        );
+          transaction.update(docRef, mergedData);
+        });
       },
       config: retryConfig,
     );
@@ -303,13 +304,11 @@ class BatchWriteWithRetry {
   BatchWriteWithRetry({
     FirebaseFirestore? firestore,
     RetryConfig retryConfig = RetryConfig.defaultConfig,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _retryConfig = retryConfig;
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _retryConfig = retryConfig;
 
   /// バッチ書き込みを実行
-  Future<void> execute(
-    void Function(WriteBatch batch) operations,
-  ) async {
+  Future<void> execute(void Function(WriteBatch batch) operations) async {
     return RetryUtil.execute(
       action: () async {
         final batch = _firestore.batch();
@@ -326,9 +325,10 @@ class BatchWriteWithRetry {
     int batchSize = 500, // Firestoreの制限は500
   }) async {
     for (int i = 0; i < operations.length; i += batchSize) {
-      final end = (i + batchSize < operations.length)
-          ? i + batchSize
-          : operations.length;
+      final end =
+          (i + batchSize < operations.length)
+              ? i + batchSize
+              : operations.length;
       final chunk = operations.sublist(i, end);
 
       await execute((batch) {
@@ -351,7 +351,7 @@ class RateLimiter {
   final List<DateTime> _requestTimestamps = [];
 
   RateLimiter({int maxRequestsPerSecond = 10})
-      : _maxRequestsPerSecond = maxRequestsPerSecond;
+    : _maxRequestsPerSecond = maxRequestsPerSecond;
 
   /// リクエストを実行（レート制限付き）
   Future<T> execute<T>(Future<T> Function() action) async {
@@ -366,11 +366,14 @@ class RateLimiter {
     final oneSecondAgo = now.subtract(const Duration(seconds: 1));
 
     // 1秒以内のリクエストをカウント
-    _requestTimestamps.removeWhere((timestamp) => timestamp.isBefore(oneSecondAgo));
+    _requestTimestamps.removeWhere(
+      (timestamp) => timestamp.isBefore(oneSecondAgo),
+    );
 
     if (_requestTimestamps.length >= _maxRequestsPerSecond) {
       final oldestRequest = _requestTimestamps.first;
-      final waitTime = const Duration(seconds: 1) - now.difference(oldestRequest);
+      final waitTime =
+          const Duration(seconds: 1) - now.difference(oldestRequest);
 
       if (waitTime.inMilliseconds > 0) {
         await Future.delayed(waitTime);
@@ -390,10 +393,7 @@ extension FirestoreRetryExtension on DocumentReference {
   Future<DocumentSnapshot> getWithRetry({
     RetryConfig config = RetryConfig.defaultConfig,
   }) {
-    return RetryUtil.execute(
-      action: () => get(),
-      config: config,
-    );
+    return RetryUtil.execute(action: () => get(), config: config);
   }
 
   /// リトライ付きで更新
@@ -401,10 +401,7 @@ extension FirestoreRetryExtension on DocumentReference {
     Map<String, dynamic> data, {
     RetryConfig config = RetryConfig.defaultConfig,
   }) {
-    return RetryUtil.execute(
-      action: () => update(data),
-      config: config,
-    );
+    return RetryUtil.execute(action: () => update(data), config: config);
   }
 
   /// リトライ付きで設定
@@ -413,20 +410,14 @@ extension FirestoreRetryExtension on DocumentReference {
     SetOptions? options,
     RetryConfig config = RetryConfig.defaultConfig,
   }) {
-    return RetryUtil.execute(
-      action: () => set(data, options),
-      config: config,
-    );
+    return RetryUtil.execute(action: () => set(data, options), config: config);
   }
 
   /// リトライ付きで削除
   Future<void> deleteWithRetry({
     RetryConfig config = RetryConfig.defaultConfig,
   }) {
-    return RetryUtil.execute(
-      action: () => delete(),
-      config: config,
-    );
+    return RetryUtil.execute(action: () => delete(), config: config);
   }
 }
 
@@ -435,9 +426,6 @@ extension QueryRetryExtension on Query {
   Future<QuerySnapshot> getWithRetry({
     RetryConfig config = RetryConfig.defaultConfig,
   }) {
-    return RetryUtil.execute(
-      action: () => get(),
-      config: config,
-    );
+    return RetryUtil.execute(action: () => get(), config: config);
   }
 }

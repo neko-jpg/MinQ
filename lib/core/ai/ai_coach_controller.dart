@@ -12,23 +12,23 @@ final tfliteAIServiceProvider = Provider<TFLiteUnifiedAIService>((ref) {
 // Provider for the controller
 final aiCoachControllerProvider =
     StateNotifierProvider<AICoachController, AICoachState>((ref) {
-  final aiService = ref.watch(tfliteAIServiceProvider);
-  return AICoachController(aiService);
-});
+      final aiService = ref.watch(tfliteAIServiceProvider);
+      return AICoachController(aiService);
+    });
 
 class AICoachController extends StateNotifier<AICoachState> {
   final TFLiteUnifiedAIService _tfliteService;
   final Uuid _uuid = const Uuid();
 
   AICoachController(this._tfliteService)
-      : super(
-          AICoachState(
-            userId: '', // This should be initialized with the actual user ID
-            conversationHistory: [],
-            isTyping: false,
-            lastInteraction: DateTime.now(),
-          ),
-        );
+    : super(
+        AICoachState(
+          userId: '', // This should be initialized with the actual user ID
+          conversationHistory: [],
+          isTyping: false,
+          lastInteraction: DateTime.now(),
+        ),
+      );
 
   /// Handles a new message sent by the user.
   Future<void> sendMessage(String text) async {
@@ -76,8 +76,10 @@ class AICoachController extends StateNotifier<AICoachState> {
 
   List<String> _buildHistory() {
     return state.conversationHistory
-        .map((message) =>
-            '${message.sender == 'user' ? 'User' : 'AI'}: ${message.text}')
+        .map(
+          (message) =>
+              '${message.sender == 'user' ? 'User' : 'AI'}: ${message.text}',
+        )
         .toList();
   }
 }
