@@ -22,7 +22,6 @@ class SearchHistoryWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
 
     return DefaultTabController(
@@ -151,7 +150,7 @@ class SearchHistoryWidget extends ConsumerWidget {
               const Spacer(),
               IconButton(
                 icon: const Icon(Icons.add),
-                onPressed: () => _showSaveSearchDialog(context, ref),
+                onPressed: () => _showSaveSearchDialog(context),
               ),
             ],
           ),
@@ -217,10 +216,10 @@ class SearchHistoryWidget extends ConsumerWidget {
     WidgetRef ref,
     SavedSearch search,
   ) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
 
     return ListTile(
-      leading: Icon(Icons.bookmark, color: tokens.primary),
+      leading: Icon(Icons.bookmark, color: tokens.brandPrimary),
       title: Text(
         search.name,
         style: context.textTheme.bodyMedium?.copyWith(
@@ -309,7 +308,7 @@ class SearchHistoryWidget extends ConsumerWidget {
   }
 
   Widget _buildEmptySavedSearchesState(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
 
     return Center(
       child: Column(
@@ -333,7 +332,7 @@ class SearchHistoryWidget extends ConsumerWidget {
           ),
           SizedBox(height: tokens.spacing.md),
           ElevatedButton.icon(
-            onPressed: () => _showSaveSearchDialog(context, ref),
+            onPressed: () => _showSaveSearchDialog(context),
             icon: const Icon(Icons.add),
             label: Text(AppLocalizations.of(context).saveSearch),
           ),
@@ -450,7 +449,7 @@ class SearchHistoryWidget extends ConsumerWidget {
     );
   }
 
-  void _showSaveSearchDialog(BuildContext context, WidgetRef ref) {
+  void _showSaveSearchDialog(BuildContext context) {
     // TODO: 検索保存ダイアログの実装
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

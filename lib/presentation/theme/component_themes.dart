@@ -51,7 +51,7 @@ class MinqComponentThemes {
           backgroundColor: colors.primary,
           foregroundColor: colors.onPrimary,
           elevation: 2,
-          shadowColor: colors.primary.withOpacity(0.3),
+          shadowColor: colors.primary.withAlpha((255 * 0.3).round()),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -137,7 +137,7 @@ class MinqComponentThemes {
   /// Card theme with proper elevation and colors
   static CardThemeData cardTheme(ColorTokens colors) => CardThemeData(
     color: colors.surface,
-    shadowColor: colors.textPrimary.withOpacity(0.1),
+    shadowColor: colors.textPrimary.withAlpha((255 * 0.1).round()),
     elevation: 2,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     margin: const EdgeInsets.all(8),
@@ -200,7 +200,7 @@ class MinqComponentThemes {
     activeTrackColor: colors.primary,
     inactiveTrackColor: colors.surfaceVariant,
     thumbColor: colors.primary,
-    overlayColor: colors.primary.withOpacity(0.12),
+    overlayColor: colors.primary.withAlpha((255 * 0.12).round()),
     valueIndicatorColor: colors.primary,
     valueIndicatorTextStyle: TextStyle(
       color: colors.onPrimary,
@@ -277,7 +277,7 @@ class MinqComponentThemes {
   static ListTileThemeData listTileTheme(ColorTokens colors) =>
       ListTileThemeData(
         tileColor: colors.surface,
-        selectedTileColor: colors.primary.withOpacity(0.08),
+        selectedTileColor: colors.primary.withAlpha((255 * 0.08).round()),
         iconColor: colors.textSecondary,
         selectedColor: colors.primary,
         textColor: colors.textPrimary,
@@ -293,7 +293,7 @@ class MinqComponentThemes {
   /// Chip theme
   static ChipThemeData chipTheme(ColorTokens colors) => ChipThemeData(
     backgroundColor: colors.surfaceAlt,
-    selectedColor: colors.primary.withOpacity(0.12),
+    selectedColor: colors.primary.withAlpha((255 * 0.12).round()),
     disabledColor: colors.surfaceVariant,
     labelStyle: TextStyle(
       color: colors.textPrimary,

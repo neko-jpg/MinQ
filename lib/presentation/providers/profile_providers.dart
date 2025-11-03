@@ -1,13 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/profile/profile_service.dart';
 import 'package:minq/core/sync/sync_queue_manager.dart';
+import 'package:minq/core/sync/sync_providers.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/user/user_profile.dart';
 
 /// Provider for ProfileService
 final profileServiceProvider = Provider<ProfileService>((ref) {
   return ProfileService(
-    isar: ref.watch(isarProvider),
+    isar: ref.watch(isarProvider).asData!.value,
     syncQueueManager: ref.watch(syncQueueManagerProvider),
   );
 });

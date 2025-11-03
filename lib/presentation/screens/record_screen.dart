@@ -20,6 +20,7 @@ import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/controllers/quest_log_controller.dart';
+import 'package:minq/presentation/providers/providers.dart';
 import 'package:minq/presentation/theme/minq_tokens.dart';
 
 enum RecordErrorType { none, offline, permissionDenied, cameraFailure }

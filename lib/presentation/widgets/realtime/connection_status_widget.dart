@@ -68,7 +68,6 @@ class ConnectionStatusWidget extends ConsumerWidget {
         break;
 
       case WebSocketStatus.disconnected:
-      default:
         backgroundColor = Colors.grey.shade100;
         textColor = Colors.grey.shade800;
         icon = Icons.wifi_off;
@@ -124,8 +123,8 @@ class ConnectionStatusIndicator extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    Color color;
-    IconData icon;
+    Color color = Colors.grey;
+    IconData icon = Icons.wifi_off;
 
     switch (connectionState.status) {
       case WebSocketStatus.connecting:
@@ -140,9 +139,10 @@ class ConnectionStatusIndicator extends ConsumerWidget {
         break;
 
       case WebSocketStatus.disconnected:
-      default:
         color = Colors.grey;
         icon = Icons.wifi_off;
+        break;
+      case WebSocketStatus.connected:
         break;
     }
 

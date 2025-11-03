@@ -37,7 +37,7 @@ class SupabaseSyncQueue {
   Future<int> pendingCount({String? uid}) async {
     return _isar.pendingSyncJobs
         .filter()
-        .optional(uid != null, (q) => q.uidEqualTo(uid))
+        .optional(uid != null, (q) => q.uidEqualTo(uid!))
         .count();
   }
 
@@ -45,7 +45,7 @@ class SupabaseSyncQueue {
     final jobs =
         await _isar.pendingSyncJobs
             .filter()
-            .optional(uid != null, (q) => q.uidEqualTo(uid))
+            .optional(uid != null, (q) => q.uidEqualTo(uid!))
             .sortByCreatedAt()
             .findAll();
 
@@ -65,7 +65,7 @@ class SupabaseSyncQueue {
         failed++;
         MinqLogger.error(
           'Supabase sync job failed',
-          error: error,
+          error,
           stackTrace: stackTrace,
           metadata: {'jobId': job.id, 'type': job.type},
         );

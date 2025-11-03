@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:isar/isar.dart';
-import 'package:minq/core/sync/sync_queue_manager.dart';
+import 'package:minq/core/sync/sync_queue_manager.dart' hide SyncStatus;
 import 'package:minq/data/local/models/local_quest.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:uuid/uuid.dart';
@@ -69,7 +70,7 @@ class OfflineOperationsService {
         ..entityType = 'quest'
         ..entityId = questId
         ..operation = 'create'
-        ..data = _questToMap(quest)
+        ..data = jsonEncode(_questToMap(quest))
         ..createdAt = now
         ..priority = 1,
     );
@@ -133,7 +134,7 @@ class OfflineOperationsService {
         ..entityType = 'quest'
         ..entityId = questId
         ..operation = 'update'
-        ..data = _questToMap(quest)
+        ..data = jsonEncode(_questToMap(quest))
         ..createdAt = now
         ..priority = 1,
     );
@@ -168,7 +169,7 @@ class OfflineOperationsService {
         ..entityType = 'quest'
         ..entityId = questId
         ..operation = 'delete'
-        ..data = {'questId': questId}
+        ..data = jsonEncode({'questId': questId})
         ..createdAt = now
         ..priority = 1,
     );
@@ -220,7 +221,7 @@ class OfflineOperationsService {
         ..entityType = 'user'
         ..entityId = uid
         ..operation = 'update'
-        ..data = _userToMap(user)
+        ..data = jsonEncode(_userToMap(user))
         ..createdAt = now
         ..priority = 2,
     ); // Higher priority for user updates
@@ -269,7 +270,7 @@ class OfflineOperationsService {
         ..entityType = 'user'
         ..entityId = uid
         ..operation = 'update'
-        ..data = _userToMap(user)
+        ..data = jsonEncode(_userToMap(user))
         ..createdAt = now
         ..priority = 1,
     );
@@ -327,7 +328,7 @@ class OfflineOperationsService {
         ..entityType = 'questLog'
         ..entityId = logId
         ..operation = 'create'
-        ..data = _questLogToMap(questLog)
+        ..data = jsonEncode(_questLogToMap(questLog))
         ..createdAt = now
         ..priority = 1,
     );
@@ -375,7 +376,7 @@ class OfflineOperationsService {
         ..entityType = 'challenge'
         ..entityId = challengeId
         ..operation = 'update'
-        ..data = _challengeToMap(challenge)
+        ..data = jsonEncode(_challengeToMap(challenge))
         ..createdAt = now
         ..priority = 1,
     );
@@ -473,7 +474,7 @@ class OfflineOperationsService {
 
   int _calculateLevel(int totalXP) {
     // Simple level calculation: level = sqrt(totalXP / 100) + 1
-    return (totalXP / 100).sqrt().floor() + 1;
+    return sqrt(totalXP / 100).floor() + 1;
   }
 
   // Query methods

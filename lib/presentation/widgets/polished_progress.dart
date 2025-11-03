@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/design_tokens.dart';
+import 'package:minq/presentation/theme/semantic_color_scheme.dart';
 
 /// Polished progress indicators with enhanced visuals and animations
 /// Provides professional-looking progress feedback components
@@ -103,7 +104,7 @@ class _PolishedCircularProgressState extends State<PolishedCircularProgress>
                         '${(_animation.value * 100).round()}%',
                         style:
                             widget.percentageStyle ??
-                            tokens.typography.labelMedium.copyWith(
+                            tokens.typography.labelMedium?.copyWith(
                               fontWeight: FontWeight.w600,
                               color: tokens.colors.onSurface,
                             ),
@@ -289,7 +290,7 @@ class _PolishedLinearProgressState extends State<PolishedLinearProgress>
                 '${(_animation.value * 100).round()}%',
                 style:
                     widget.percentageStyle ??
-                    tokens.typography.bodySmall.copyWith(
+                    tokens.typography.bodySmall?.copyWith(
                       color: tokens.colors.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
                     ),
@@ -387,9 +388,10 @@ class _PolishedStepProgressState extends State<PolishedStepProgress>
   @override
   Widget build(BuildContext context) {
     final tokens = MinqDesignTokens.of(context);
+    final semanticColors = Theme.of(context).extension<SemanticColorScheme>()!;
     final activeColor = widget.activeColor ?? tokens.colors.primary;
     final inactiveColor = widget.inactiveColor ?? tokens.colors.outline;
-    final completedColor = widget.completedColor ?? tokens.colors.success;
+    final completedColor = widget.completedColor ?? semanticColors.success;
 
     return Column(
       children: [
@@ -401,7 +403,7 @@ class _PolishedStepProgressState extends State<PolishedStepProgress>
 
             Color stepColor;
             if (isCompleted) {
-              stepColor = completedColor;
+              stepColor = completedColor ?? tokens.colors.primary;
             } else if (isActive) {
               stepColor = activeColor;
             } else {
@@ -444,7 +446,7 @@ class _PolishedStepProgressState extends State<PolishedStepProgress>
                                     : Text(
                                       '${index + 1}',
                                       style: tokens.typography.labelMedium
-                                          .copyWith(
+                                          ?.copyWith(
                                             color:
                                                 isInactive
                                                     ? tokens
@@ -485,7 +487,7 @@ class _PolishedStepProgressState extends State<PolishedStepProgress>
                 child: Text(
                   widget.stepLabels![index],
                   textAlign: TextAlign.center,
-                  style: tokens.typography.bodySmall.copyWith(
+                  style: tokens.typography.bodySmall?.copyWith(
                     color:
                         isCompleted || isActive
                             ? tokens.colors.onSurface

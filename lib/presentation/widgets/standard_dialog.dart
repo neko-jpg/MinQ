@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/design_tokens.dart';
+import 'package:minq/presentation/theme/semantic_color_scheme.dart';
 import 'package:minq/presentation/theme/elevation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
 
@@ -173,13 +174,14 @@ class StandardDialog extends StatelessWidget {
     if (icon != null) return icon!;
 
     final colors = context.tokens.colors;
+    final semanticColors = Theme.of(context).extension<SemanticColorScheme>()!;
     IconData iconData;
     Color iconColor;
 
     switch (type) {
       case DialogType.success:
         iconData = Icons.check_circle;
-        iconColor = colors.success;
+        iconColor = semanticColors.success ?? colors.primary;
         break;
       case DialogType.error:
         iconData = Icons.error;
@@ -187,7 +189,7 @@ class StandardDialog extends StatelessWidget {
         break;
       case DialogType.warning:
         iconData = Icons.warning;
-        iconColor = colors.warning;
+        iconColor = semanticColors.warning ?? colors.primary;
         break;
       case DialogType.destructive:
         iconData = Icons.warning;

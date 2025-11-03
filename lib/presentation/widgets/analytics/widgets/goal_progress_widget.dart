@@ -36,7 +36,7 @@ class GoalProgressWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+        border: Border.all(color: Colors.grey.withAlpha((255 * 0.3).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +62,7 @@ class GoalProgressWidget extends ConsumerWidget {
           const SizedBox(height: 8),
           LinearProgressIndicator(
             value: goal.progress,
-            backgroundColor: Colors.grey.withOpacity(0.3),
+            backgroundColor: Colors.grey.withAlpha((255 * 0.3).round()),
             valueColor: AlwaysStoppedAnimation<Color>(
               _getProgressColor(goal.progress),
             ),

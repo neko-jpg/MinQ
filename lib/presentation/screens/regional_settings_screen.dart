@@ -138,7 +138,7 @@ class _RegionalSettingsScreenState
                           ),
                           SizedBox(width: MinqTokens.spacing(1)),
                           Text(
-                            '${RegionalService.formatDate(holiday.date, locale)} - ${holiday.name}',
+                            '${RegionalService.formatDate(holiday.getDateForYear(DateTime.now().year), locale)} - ${holiday.name}',
                             style: MinqTokens.bodySmall.copyWith(
                               color: MinqTokens.textSecondary,
                             ),

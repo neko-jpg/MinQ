@@ -376,7 +376,8 @@ class _ColorSwatch extends StatelessWidget {
             ),
             Text(
               '#${color.value.toRadixString(16).substring(2).toUpperCase()}',
-              style: TextStyle(color: onColor.withOpacity(0.8), fontSize: 12),
+              style:
+                  TextStyle(color: onColor.withAlpha((255 * 0.8).round()), fontSize: 12),
             ),
           ],
         ),

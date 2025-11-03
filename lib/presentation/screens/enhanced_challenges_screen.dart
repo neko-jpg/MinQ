@@ -211,7 +211,7 @@ class _ActiveChallengesTab extends ConsumerWidget {
         final now = DateTime.now();
         return challenges.where((c) {
           final timeLeft = c.endDate.difference(now);
-          return timeLeft.inHours < 24 && timeLeft.isPositive;
+          return timeLeft.inHours < 24 && timeLeft > Duration.zero;
         }).toList();
 
       case 'high_reward':
@@ -362,14 +362,19 @@ class _CompletedChallengesTab extends ConsumerWidget {
 }
 
 /// Challenge statistics tab
-class _ChallengeStatsTab extends ConsumerWidget {
+class _ChallengeStatsTab extends ConsumerStatefulWidget {
   const _ChallengeStatsTab({required this.userId});
 
   final String userId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final service = ref.watch(offlineChallengeServiceProvider(userId));
+  ConsumerState<_ChallengeStatsTab> createState() => _ChallengeStatsTabState();
+}
+
+class _ChallengeStatsTabState extends ConsumerState<_ChallengeStatsTab> {
+  @override
+  Widget build(BuildContext context) {
+    final service = ref.watch(offlineChallengeServiceProvider(widget.userId));
 
     if (service == null) {
       return const Center(child: CircularProgressIndicator());
@@ -691,7 +696,7 @@ class _ErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
               color: MinqTokens.textSecondary,

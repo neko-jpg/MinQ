@@ -4,9 +4,6 @@ import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// Extension to provide easy access to theme tokens from BuildContext
 extension ThemeExtensions on BuildContext {
-  /// Get the current MinqTheme
-  MinqTheme get tokens => MinqTheme.of(this);
-  
   /// Get color tokens (legacy support)
   ColorTokens get colorTokens {
     final theme = MinqTheme.of(this);

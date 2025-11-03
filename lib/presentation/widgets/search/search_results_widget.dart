@@ -4,7 +4,6 @@ import 'package:minq/core/search/search_engine.dart';
 import 'package:minq/core/search/search_service.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/theme/theme_extensions.dart';
 import 'package:minq/presentation/widgets/empty_state_widget.dart';
 import 'package:minq/presentation/widgets/search/search_highlight_text.dart';
 
@@ -62,7 +61,7 @@ class SearchResultsWidget extends ConsumerWidget {
   }
 
   Widget _buildSortOptions(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context);
 
     return Container(
@@ -74,34 +73,35 @@ class SearchResultsWidget extends ConsumerWidget {
         children: [
           Text(
             l10n.sortBy,
-            style: context.textTheme.bodySmall?.copyWith(
-              color: tokens.textSecondary,
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: tokens.textSecondary),
           ),
           SizedBox(width: tokens.spacing.sm),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children:
-                    SearchSortOrder.values.map((order) {
-                      final isSelected = order == sortOrder;
-                      return Padding(
-                        padding: EdgeInsets.only(right: tokens.spacing.sm),
-                        child: FilterChip(
-                          label: Text(_getSortOrderLabel(context, order)),
-                          selected: isSelected,
-                          onSelected: (selected) {
-                            if (selected) {
-                              // TODO: ソート順変更の実装
-                            }
-                          },
-                          backgroundColor: tokens.surface,
-                          selectedColor: tokens.primary.withOpacity(0.2),
-                          checkmarkColor: tokens.primary,
-                        ),
-                      );
-                    }).toList(),
+                children: SearchSortOrder.values.map((order) {
+                  final isSelected = order == sortOrder;
+                  return Padding(
+                    padding: EdgeInsets.only(right: tokens.spacing.sm),
+                    child: FilterChip(
+                      label: Text(_getSortOrderLabel(context, order)),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        if (selected) {
+                          // TODO: ソート順変更の実装
+                        }
+                      },
+                      backgroundColor: tokens.surface,
+                      selectedColor:
+                          tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+                      checkmarkColor: tokens.brandPrimary,
+                    ),
+                  );
+                }).toList(),
               ),
             ),
           ),
@@ -111,7 +111,7 @@ class SearchResultsWidget extends ConsumerWidget {
   }
 
   Widget _buildResultsHeader(BuildContext context, int count) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context);
 
     return Container(
@@ -123,9 +123,10 @@ class SearchResultsWidget extends ConsumerWidget {
         children: [
           Text(
             l10n.searchResultsCount(count),
-            style: context.textTheme.bodySmall?.copyWith(
-              color: tokens.textSecondary,
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: tokens.textSecondary),
           ),
           const Spacer(),
           // 結果をエクスポート
@@ -139,7 +140,7 @@ class SearchResultsWidget extends ConsumerWidget {
   }
 
   Widget _buildResultItem(BuildContext context, SearchResult result) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final item = result.item;
 
     return Card(
@@ -162,7 +163,7 @@ class SearchResultsWidget extends ConsumerWidget {
                   Container(
                     padding: EdgeInsets.all(tokens.spacing.xs),
                     decoration: BoxDecoration(
-                      color: _getItemTypeColor(item).withOpacity(0.1),
+                      color: _getItemTypeColor(item).withAlpha((255 * 0.1).round()),
                       borderRadius: BorderRadius.circular(tokens.radius.sm),
                     ),
                     child: Icon(
@@ -179,9 +180,10 @@ class SearchResultsWidget extends ConsumerWidget {
                     child: SearchHighlightText(
                       text: item.title,
                       query: searchQuery.query,
-                      style: context.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
 
@@ -193,15 +195,15 @@ class SearchResultsWidget extends ConsumerWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: tokens.primary.withOpacity(0.1),
+                        color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
                         borderRadius: BorderRadius.circular(tokens.radius.sm),
                       ),
                       child: Text(
                         '${(result.relevanceScore * 10).round() / 10}',
-                        style: context.textTheme.bodySmall?.copyWith(
-                          color: tokens.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: tokens.brandPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                     ),
                 ],
@@ -214,9 +216,10 @@ class SearchResultsWidget extends ConsumerWidget {
                 SearchHighlightText(
                   text: item.description,
                   query: searchQuery.query,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: tokens.textSecondary,
-                  ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: tokens.textSecondary),
                   maxLines: 2,
                 ),
 
@@ -237,9 +240,10 @@ class SearchResultsWidget extends ConsumerWidget {
                     ),
                     child: Text(
                       item.category,
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: tokens.textSecondary,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: tokens.textSecondary),
                     ),
                   ),
 
@@ -249,36 +253,38 @@ class SearchResultsWidget extends ConsumerWidget {
                   Expanded(
                     child: Wrap(
                       spacing: tokens.spacing.xs,
-                      children:
-                          item.tags.take(3).map((tag) {
-                            return Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: tokens.spacing.xs,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: tokens.primary.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(
-                                  tokens.radius.xs,
-                                ),
-                              ),
-                              child: Text(
-                                tag,
-                                style: context.textTheme.bodySmall?.copyWith(
-                                  color: tokens.primary,
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                      children: item.tags.take(3).map((tag) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: tokens.spacing.xs,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+                            borderRadius: BorderRadius.circular(
+                              tokens.radius.sm,
+                            ),
+                          ),
+                          child: Text(
+                            tag,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: tokens.brandPrimary),
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ),
 
                   // 作成日
                   Text(
                     _formatDate(context, item.createdAt),
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: tokens.textMuted,
-                    ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: tokens.textMuted),
                   ),
                 ],
               ),
@@ -287,13 +293,12 @@ class SearchResultsWidget extends ConsumerWidget {
               if (result.matchedKeywords.isNotEmpty) ...[
                 SizedBox(height: tokens.spacing.sm),
                 Text(
-                  AppLocalizations.of(
-                    context,
-                  ).matchedKeywords(result.matchedKeywords.join(', ')),
-                  style: context.textTheme.bodySmall?.copyWith(
-                    color: tokens.textMuted,
-                    fontStyle: FontStyle.italic,
-                  ),
+                  AppLocalizations.of(context)
+                      .matchedKeywords(result.matchedKeywords.join(', ')),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: tokens.textMuted,
+                        fontStyle: FontStyle.italic,
+                      ),
                 ),
               ],
             ],
@@ -312,18 +317,20 @@ class SearchResultsWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 64, color: context.tokens.error),
-          SizedBox(height: context.tokens.spacing.md),
+          Icon(Icons.error_outline,
+              size: 64, color: MinqTheme.of(context).error),
+          SizedBox(height: MinqTheme.of(context).spacing.md),
           Text(
             AppLocalizations.of(context).searchError,
-            style: context.textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-          SizedBox(height: context.tokens.spacing.sm),
+          SizedBox(height: MinqTheme.of(context).spacing.sm),
           Text(
             error.toString(),
-            style: context.textTheme.bodySmall?.copyWith(
-              color: context.tokens.textSecondary,
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: MinqTheme.of(context).textSecondary),
             textAlign: TextAlign.center,
           ),
         ],

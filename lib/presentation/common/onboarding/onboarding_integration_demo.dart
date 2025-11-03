@@ -64,7 +64,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
       currentStreak: _currentStreak,
       bestStreak: _currentStreak,
     );
-    OnboardingEngine.showProgressiveHint(progress);
+    OnboardingEngine.showProgressiveHint(progress, context);
   }
 
   @override

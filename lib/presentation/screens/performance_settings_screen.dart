@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/performance/performance_settings_service.dart';
+import 'package:minq/core/performance/performance_settings_service.dart' as core;
 import 'package:minq/presentation/providers/performance_providers.dart';
 
 class PerformanceSettingsScreen extends ConsumerStatefulWidget {
@@ -76,7 +77,7 @@ class _PerformanceSettingsScreenState
   }
 
   Widget _buildSettingsContent(
-    PerformanceSettings settings,
+    core.PerformanceSettings settings,
     AsyncValue<List<PerformanceRecommendation>> recommendationsAsync,
   ) {
     return SingleChildScrollView(
@@ -115,7 +116,7 @@ class _PerformanceSettingsScreenState
     );
   }
 
-  Widget _buildPerformanceModeSection(PerformanceSettings settings) {
+  Widget _buildPerformanceModeSection(core.PerformanceSettings settings) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -134,13 +135,17 @@ class _PerformanceSettingsScreenState
               ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
             ),
             const SizedBox(height: 16),
-            ...PerformanceMode.values.map(
-              (mode) => RadioListTile<PerformanceMode>(
-                title: Text(_getPerformanceModeTitle(mode)),
-                subtitle: Text(_getPerformanceModeDescription(mode)),
-                value: mode,
-                groupValue: settings.performanceMode,
-                onChanged: (value) => _updatePerformanceMode(value!),
+            RadioGroup<core.PerformanceMode>(
+              groupValue: settings.performanceMode,
+              onChanged: (value) => _updatePerformanceMode(value!),
+              child: Column(
+                children: core.PerformanceMode.values.map(
+                  (mode) => RadioListTile<core.PerformanceMode>(
+                    title: Text(_getPerformanceModeTitle(mode)),
+                    subtitle: Text(_getPerformanceModeDescription(mode)),
+                    value: mode,
+                  ),
+                ).toList(),
               ),
             ),
           ],
@@ -321,8 +326,8 @@ class _PerformanceSettingsScreenState
         trailing: ElevatedButton(
           onPressed: () {
             recommendation.action();
-            ref.refresh(performanceSettingsProvider);
-            ref.refresh(performanceRecommendationsProvider);
+            ref.invalidate(performanceSettingsProvider);
+            ref.invalidate(performanceRecommendationsProvider);
           },
           child: const Text('Apply'),
         ),
@@ -362,31 +367,31 @@ class _PerformanceSettingsScreenState
 
   // Event handlers
 
-  void _updatePerformanceMode(PerformanceMode mode) async {
+  void _updatePerformanceMode(core.PerformanceMode mode) async {
     final service = ref.read(performanceSettingsServiceProvider);
     await service.applyPerformanceModePreset(mode);
-    ref.refresh(performanceSettingsProvider);
+    ref.invalidate(performanceSettingsProvider);
   }
 
   void _updateAnimationsEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
     await service.setAnimationsEnabled(value);
-    ref.refresh(performanceSettingsProvider);
+    ref.invalidate(performanceSettingsProvider);
   }
 
   void _updateParticleEffectsEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
     await service.setParticleEffectsEnabled(value);
-    ref.refresh(performanceSettingsProvider);
+    ref.invalidate(performanceSettingsProvider);
   }
 
   void _updateHeavyAnimationsEnabled(bool? value) async {
     if (value == null) return;
     final service = ref.read(performanceSettingsServiceProvider);
     await service.setHeavyAnimationsEnabled(value);
-    ref.refresh(performanceSettingsProvider);
+    ref.invalidate(performanceSettingsProvider);
   }
 
   void _updateImageOptimizationEnabled(bool? value) async {
@@ -396,7 +401,7 @@ class _PerformanceSettingsScreenState
     await service.updateSettings(
       settings.copyWith(imageOptimizationEnabled: value),
     );
-    ref.refresh(performanceSettingsProvider);
+    ref.invalidate(performanceSettingsProvider);
   }
 
   void _updateLazyLoadingEnabled(bool? value) async {
@@ -404,7 +409,7 @@ class _PerformanceSettingsScreenState
     final service = ref.read(performanceSettingsServiceProvider);
     final settings = await service.getSettings();
     await service.updateSettings(settings.copyWith(lazyLoadingEnabled: value));
-    ref.refresh(performanceSettingsProvider);
+    ref.invalidate(performanceSettingsProvider);
   }
 
   void _updateMemoryOptimizationEnabled(bool? value) async {
@@ -414,7 +419,7 @@ class _PerformanceSettingsScreenState
     await service.updateSettings(
       settings.copyWith(memoryOptimizationEnabled: value),
     );
-    ref.refresh(performanceSettingsProvider);
+    ref.invalidate(performanceSettingsProvider);
   }
 
   void _updateBatteryOptimizationEnabled(bool? value) async {
@@ -424,7 +429,7 @@ class _PerformanceSettingsScreenState
     await service.updateSettings(
       settings.copyWith(batteryOptimizationEnabled: value),
     );
-    ref.refresh(performanceSettingsProvider);
+    ref.invalidate(performanceSettingsProvider);
   }
 
   void _updateNetworkOptimizationEnabled(bool? value) async {
@@ -434,15 +439,16 @@ class _PerformanceSettingsScreenState
     await service.updateSettings(
       settings.copyWith(networkOptimizationEnabled: value),
     );
-    ref.refresh(performanceSettingsProvider);
+    ref.invalidate(performanceSettingsProvider);
   }
 
   void _autoOptimize() async {
     final service = ref.read(performanceSettingsServiceProvider);
     await service.autoOptimize();
-    ref.refresh(performanceSettingsProvider);
-    ref.refresh(performanceRecommendationsProvider);
+    ref.invalidate(performanceSettingsProvider);
+    ref.invalidate(performanceRecommendationsProvider);
 
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Settings auto-optimized for your device')),
     );
@@ -456,18 +462,18 @@ class _PerformanceSettingsScreenState
         await service.resetToDefaults();
         break;
       case 'performance':
-        await service.applyPerformanceModePreset(PerformanceMode.performance);
+        await service.applyPerformanceModePreset(core.PerformanceMode.performance);
         break;
       case 'balanced':
-        await service.applyPerformanceModePreset(PerformanceMode.balanced);
+        await service.applyPerformanceModePreset(core.PerformanceMode.balanced);
         break;
       case 'battery':
-        await service.applyPerformanceModePreset(PerformanceMode.battery);
+        await service.applyPerformanceModePreset(core.PerformanceMode.battery);
         break;
     }
 
-    ref.refresh(performanceSettingsProvider);
-    ref.refresh(performanceRecommendationsProvider);
+    ref.invalidate(performanceSettingsProvider);
+    ref.invalidate(performanceRecommendationsProvider);
   }
 
   void _showFrameRateDialog(int currentFrameRate) {
@@ -481,17 +487,21 @@ class _PerformanceSettingsScreenState
               children: [
                 const Text('Select maximum frame rate:'),
                 const SizedBox(height: 16),
-                ...([30, 60, 90, 120].map(
-                  (fps) => RadioListTile<int>(
-                    title: Text('$fps FPS'),
-                    value: fps,
-                    groupValue: currentFrameRate,
-                    onChanged: (value) {
-                      Navigator.pop(context);
-                      _updateFrameRate(value!);
-                    },
+                RadioGroup<int>(
+                  groupValue: currentFrameRate,
+                  onChanged: (value) {
+                    Navigator.pop(context);
+                    _updateFrameRate(value!);
+                  },
+                  child: Column(
+                    children: [30, 60, 90, 120].map(
+                      (fps) => RadioListTile<int>(
+                        title: Text('$fps FPS'),
+                        value: fps,
+                      ),
+                    ).toList(),
                   ),
-                )),
+                ),
               ],
             ),
             actions: [
@@ -508,57 +518,57 @@ class _PerformanceSettingsScreenState
     final service = ref.read(performanceSettingsServiceProvider);
     final settings = await service.getSettings();
     await service.updateSettings(settings.copyWith(frameRateLimit: frameRate));
-    ref.refresh(performanceSettingsProvider);
+    ref.invalidate(performanceSettingsProvider);
   }
 
   // Helper methods
 
-  String _getPerformanceModeTitle(PerformanceMode mode) {
+  String _getPerformanceModeTitle(core.PerformanceMode mode) {
     switch (mode) {
-      case PerformanceMode.performance:
+      case core.PerformanceMode.performance:
         return 'Performance';
-      case PerformanceMode.balanced:
+      case core.PerformanceMode.balanced:
         return 'Balanced';
-      case PerformanceMode.battery:
+      case core.PerformanceMode.battery:
         return 'Battery Saver';
     }
   }
 
-  String _getPerformanceModeDescription(PerformanceMode mode) {
+  String _getPerformanceModeDescription(core.PerformanceMode mode) {
     switch (mode) {
-      case PerformanceMode.performance:
+      case core.PerformanceMode.performance:
         return 'Maximum performance, higher battery usage';
-      case PerformanceMode.balanced:
+      case core.PerformanceMode.balanced:
         return 'Good balance of performance and battery life';
-      case PerformanceMode.battery:
+      case core.PerformanceMode.battery:
         return 'Optimized for battery life, reduced performance';
     }
   }
 
-  IconData _getRecommendationIcon(RecommendationType type) {
+  IconData _getRecommendationIcon(core.RecommendationType type) {
     switch (type) {
-      case RecommendationType.memory:
+      case core.RecommendationType.memory:
         return Icons.memory;
-      case RecommendationType.animation:
+      case core.RecommendationType.animation:
         return Icons.animation;
-      case RecommendationType.battery:
+      case core.RecommendationType.battery:
         return Icons.battery_saver;
-      case RecommendationType.network:
+      case core.RecommendationType.network:
         return Icons.network_check;
-      case RecommendationType.display:
+      case core.RecommendationType.display:
         return Icons.display_settings;
     }
   }
 
-  Color _getRecommendationColor(RecommendationPriority priority) {
+  Color _getRecommendationColor(core.RecommendationPriority priority) {
     switch (priority) {
-      case RecommendationPriority.low:
+      case core.RecommendationPriority.low:
         return Colors.blue;
-      case RecommendationPriority.medium:
+      case core.RecommendationPriority.medium:
         return Colors.orange;
-      case RecommendationPriority.high:
+      case core.RecommendationPriority.high:
         return Colors.red;
-      case RecommendationPriority.critical:
+      case core.RecommendationPriority.critical:
         return Colors.red[900]!;
     }
   }

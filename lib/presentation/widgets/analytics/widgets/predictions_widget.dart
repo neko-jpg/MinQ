@@ -61,14 +61,14 @@ class PredictionsWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         color:
             prediction.isOnTrack
-                ? Colors.green.withOpacity(0.1)
-                : Colors.orange.withOpacity(0.1),
+                ? Colors.green.withAlpha((255 * 0.1).round())
+                : Colors.orange.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color:
               prediction.isOnTrack
-                  ? Colors.green.withOpacity(0.3)
-                  : Colors.orange.withOpacity(0.3),
+                  ? Colors.green.withAlpha((255 * 0.3).round())
+                  : Colors.orange.withAlpha((255 * 0.3).round()),
         ),
       ),
       child: Column(
@@ -101,7 +101,7 @@ class PredictionsWidget extends ConsumerWidget {
           const SizedBox(height: 4),
           LinearProgressIndicator(
             value: prediction.progressPercentage,
-            backgroundColor: Colors.grey.withOpacity(0.3),
+            backgroundColor: Colors.grey.withAlpha((255 * 0.3).round()),
             valueColor: AlwaysStoppedAnimation<Color>(
               prediction.isOnTrack ? Colors.green : Colors.orange,
             ),
@@ -141,10 +141,10 @@ class PredictionsWidget extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _getPriorityColor(warning.priority).withOpacity(0.1),
+        color: _getPriorityColor(warning.priority).withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: _getPriorityColor(warning.priority).withOpacity(0.3),
+          color: _getPriorityColor(warning.priority).withAlpha((255 * 0.3).round()),
         ),
       ),
       child: Column(

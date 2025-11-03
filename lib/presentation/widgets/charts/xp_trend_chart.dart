@@ -19,9 +19,8 @@ class XPTrendChart extends ConsumerWidget {
 
     return FutureBuilder<List<XPTransaction>>(
       future: xpSystem.getXPHistory(
-        userId: userId,
+        userId,
         limit: 1000,
-        startDate: DateTime.now().subtract(Duration(days: days)),
       ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -128,7 +127,7 @@ class XPTrendChart extends ConsumerWidget {
                 gradient: LinearGradient(
                   colors: [
                     tokens.brandPrimary,
-                    tokens.brandPrimary.withOpacity(0.3),
+                    tokens.brandPrimary.withAlpha((255 * 0.3).round()),
                   ],
                 ),
                 barWidth: 3,
@@ -148,8 +147,8 @@ class XPTrendChart extends ConsumerWidget {
                   show: true,
                   gradient: LinearGradient(
                     colors: [
-                      tokens.brandPrimary.withOpacity(0.3),
-                      tokens.brandPrimary.withOpacity(0.1),
+                      tokens.brandPrimary.withAlpha((255 * 0.3).round()),
+                      tokens.brandPrimary.withAlpha((255 * 0.1).round()),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -236,9 +235,8 @@ class CumulativeXPChart extends ConsumerWidget {
 
     return FutureBuilder<List<XPTransaction>>(
       future: xpSystem.getXPHistory(
-        userId: userId,
+        userId,
         limit: 1000,
-        startDate: DateTime.now().subtract(Duration(days: days)),
       ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -329,8 +327,8 @@ class CumulativeXPChart extends ConsumerWidget {
                   show: true,
                   gradient: LinearGradient(
                     colors: [
-                      tokens.success.withOpacity(0.3),
-                      tokens.success.withOpacity(0.1),
+                      tokens.success.withAlpha((255 * 0.3).round()),
+                      tokens.success.withAlpha((255 * 0.1).round()),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,

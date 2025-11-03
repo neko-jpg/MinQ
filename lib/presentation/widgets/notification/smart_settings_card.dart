@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:minq/domain/notification/notification_settings.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/l10n/l10n.dart';
 
 /// スマート通知設定カード

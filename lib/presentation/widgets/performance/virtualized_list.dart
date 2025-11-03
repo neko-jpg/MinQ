@@ -184,7 +184,7 @@ class _VirtualizedListState<T> extends State<VirtualizedList<T>> {
     if (renderBox == null) return;
 
     try {
-      final viewport = RenderAbstractViewport.of(renderBox);
+      RenderAbstractViewport.of(renderBox);
     } catch (e) {
       // Viewport not available in test environment
       return;

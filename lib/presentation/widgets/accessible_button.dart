@@ -130,7 +130,7 @@ class AccessibleTextButton extends StatelessWidget {
     }
 
     return accessibilityService.wrapWithSemantics(
-      child: button,
+      button,
       label: semanticLabel,
       button: true,
       focusable: true,
@@ -211,7 +211,7 @@ class AccessibleIconButton extends StatelessWidget {
     }
 
     return accessibilityService.wrapWithSemantics(
-      child: button,
+      button,
       label: semanticLabel ?? tooltip,
       button: true,
       focusable: true,
@@ -279,7 +279,7 @@ class AccessibleFloatingActionButton extends StatelessWidget {
     );
 
     return accessibilityService.wrapWithSemantics(
-      child: button,
+      button,
       label: semanticLabel ?? tooltip,
       button: true,
       focusable: true,
@@ -340,7 +340,7 @@ class AccessibleSwitch extends StatelessWidget {
             : 'スイッチ、$statusText';
 
     return accessibilityService.wrapWithSemantics(
-      child: switchWidget,
+      switchWidget,
       label: fullLabel,
       focusable: true,
       onTap: onChanged != null ? () => onChanged!(!value) : null,
@@ -408,7 +408,7 @@ class AccessibleCheckbox extends StatelessWidget {
             : 'チェックボックス、$statusText';
 
     return accessibilityService.wrapWithSemantics(
-      child: checkbox,
+      checkbox,
       label: fullLabel,
       focusable: true,
       onTap: onChanged != null ? () => onChanged!(!value!) : null,

@@ -39,9 +39,9 @@ class UserAnalyticsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withAlpha((255 * 0.3).round())),
       ),
       child: Row(
         children: [
@@ -73,7 +73,7 @@ class UserAnalyticsCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 LinearProgressIndicator(
                   value: score / 100,
-                  backgroundColor: Colors.grey.withOpacity(0.3),
+                  backgroundColor: Colors.grey.withAlpha((255 * 0.3).round()),
                   valueColor: AlwaysStoppedAnimation<Color>(color),
                 ),
               ],
@@ -126,7 +126,7 @@ class UserAnalyticsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -179,7 +179,7 @@ class UserAnalyticsCard extends StatelessWidget {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
+                          color: Colors.blue.withAlpha((255 * 0.1).round()),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
@@ -240,7 +240,7 @@ class UserAnalyticsCard extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 4),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withAlpha((255 * 0.1).round()),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Row(

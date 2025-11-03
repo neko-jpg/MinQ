@@ -152,8 +152,7 @@ class _MorphingTransition extends StatelessWidget {
               Matrix4.identity()
                 ..setEntry(3, 2, 0.001)
                 ..rotateY(progress * 0.5)
-                // ignore: deprecated_member_use
-                ..scale(0.8 + (0.2 * progress)),
+                ..scaleByDouble(0.8 + (0.2 * progress), 0.8 + (0.2 * progress), 1.0, 1.0),
           child: Opacity(opacity: progress, child: this.child),
         );
       },
@@ -190,9 +189,8 @@ class SharedElementTransition extends StatelessWidget {
           animation: animation,
           builder: (context, child) {
             return Transform(
-              // ignore: deprecated_member_use
               transform:
-                  Matrix4.identity()..scale(1.0 + (animation.value * 0.1)),
+                Matrix4.identity()..scaleByDouble(1.0 + (animation.value * 0.1), 1.0 + (animation.value * 0.1), 1.0, 1.0),
               alignment: Alignment.center,
               child: Material(
                 color: Colors.transparent,

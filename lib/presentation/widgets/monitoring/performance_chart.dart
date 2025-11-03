@@ -35,7 +35,7 @@ class PerformanceChart extends StatelessWidget {
             margin: const EdgeInsets.only(right: 8),
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: _getTrendColor(trend.direction).withOpacity(0.1),
+              color: _getTrendColor(trend.direction).withAlpha((255 * 0.1).round()),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: _getTrendColor(trend.direction),
@@ -178,7 +178,7 @@ class PerformanceChart extends StatelessWidget {
           dotData: const FlDotData(show: false),
           belowBarData: BarAreaData(
             show: true,
-            color: colors[colorIndex % colors.length].withOpacity(0.1),
+            color: colors[colorIndex % colors.length].withAlpha((255 * 0.1).round()),
           ),
         ),
       );

@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/core/social/pair_system.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/pair/pair_invitation.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/polished_buttons.dart';
@@ -54,7 +53,7 @@ class _PairInvitationScreenState extends ConsumerState<PairInvitationScreen> {
       setState(() => _invitation = invitation);
 
       if (mounted) {
-        FeedbackMessenger.showSuccessSnackBar(context, '招待リンクを作成しました！');
+        FeedbackMessenger.showSuccessToast(context, '招待リンクを作成しました！');
       }
     } catch (e) {
       if (mounted) {
@@ -68,7 +67,6 @@ class _PairInvitationScreenState extends ConsumerState<PairInvitationScreen> {
   Future<void> _shareInvitation() async {
     if (_invitation == null) return;
 
-    final l10n = AppLocalizations.of(context);
     final message = '''
 ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
 
@@ -78,7 +76,12 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
 #MinQ #習慣化 #ペア機能
 ''';
 
-    await Share.share(message, subject: 'MinQ ペア招待');
+    await SharePlus.instance.share(
+      ShareParams(
+        text: message,
+        subject: 'MinQ ペア招待',
+      ),
+    );
   }
 
   Future<void> _copyInviteCode() async {
@@ -87,7 +90,7 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
     await Clipboard.setData(ClipboardData(text: _invitation!.inviteCode));
 
     if (mounted) {
-      FeedbackMessenger.showSuccessSnackBar(context, '招待コードをコピーしました');
+      FeedbackMessenger.showSuccessToast(context, '招待コードをコピーしました');
     }
   }
 
@@ -97,14 +100,13 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
     await Clipboard.setData(ClipboardData(text: _invitation!.webLink));
 
     if (mounted) {
-      FeedbackMessenger.showSuccessSnackBar(context, '招待リンクをコピーしました');
+      FeedbackMessenger.showSuccessToast(context, '招待リンクをコピーしました');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -125,12 +127,12 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
       ),
       body:
           _invitation == null
-              ? _buildInvitationForm(tokens, l10n)
-              : _buildInvitationResult(tokens, l10n),
+              ? _buildInvitationForm(tokens)
+              : _buildInvitationResult(tokens),
     );
   }
 
-  Widget _buildInvitationForm(MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildInvitationForm(MinqTheme tokens) {
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing.lg),
       child: Column(
@@ -146,7 +148,7 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
             ),
             child: Column(
               children: [
-                Icon(Icons.group_add, size: 48, color: tokens.primary),
+                Icon(Icons.group_add, size: 48, color: tokens.brandPrimary),
                 SizedBox(height: tokens.spacing.md),
                 Text(
                   'ペア招待を作成',
@@ -258,7 +260,7 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
     );
   }
 
-  Widget _buildInvitationResult(MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildInvitationResult(MinqTheme tokens) {
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing.lg),
       child: Column(
@@ -268,9 +270,9 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
           Container(
             padding: EdgeInsets.all(tokens.spacing.lg),
             decoration: BoxDecoration(
-              color: tokens.success.withOpacity(0.1),
+              color: tokens.success.withAlpha((255 * 0.1).round()),
               borderRadius: BorderRadius.circular(tokens.radius.lg),
-              border: Border.all(color: tokens.success.withOpacity(0.3)),
+              border: Border.all(color: tokens.success.withAlpha((255 * 0.3).round())),
             ),
             child: Row(
               children: [
@@ -378,9 +380,9 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
                     SizedBox(width: tokens.spacing.sm),
                     IconButton(
                       onPressed: _copyInviteCode,
-                      icon: Icon(Icons.copy, color: tokens.primary),
+                      icon: Icon(Icons.copy, color: tokens.brandPrimary),
                       style: IconButton.styleFrom(
-                        backgroundColor: tokens.primary.withOpacity(0.1),
+                        backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
                       ),
                     ),
                   ],
@@ -433,9 +435,9 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
                     SizedBox(width: tokens.spacing.sm),
                     IconButton(
                       onPressed: _copyInviteLink,
-                      icon: Icon(Icons.copy, color: tokens.primary),
+                      icon: Icon(Icons.copy, color: tokens.brandPrimary),
                       style: IconButton.styleFrom(
-                        backgroundColor: tokens.primary.withOpacity(0.1),
+                        backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
                       ),
                     ),
                   ],
@@ -465,9 +467,9 @@ ${_invitation!.customMessage ?? 'MinQで一緒に習慣化しませんか？'}
           Container(
             padding: EdgeInsets.all(tokens.spacing.md),
             decoration: BoxDecoration(
-              color: tokens.warning.withOpacity(0.1),
+              color: tokens.warning.withAlpha((255 * 0.1).round()),
               borderRadius: BorderRadius.circular(tokens.radius.md),
-              border: Border.all(color: tokens.warning.withOpacity(0.3)),
+              border: Border.all(color: tokens.warning.withAlpha((255 * 0.3).round())),
             ),
             child: Row(
               children: [

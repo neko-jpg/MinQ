@@ -138,7 +138,7 @@ class _PremiumFeaturesOverviewScreenState
           Text(
             _getTierDescription(tier),
             style: context.textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withAlpha((255 * 0.9).round()),
             ),
             textAlign: TextAlign.center,
           ),
@@ -179,7 +179,7 @@ class _PremiumFeaturesOverviewScreenState
       margin: const EdgeInsets.all(24),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: context.colorTokens.error.withOpacity(0.1),
+        color: context.colorTokens.error.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: context.colorTokens.error),
       ),
@@ -304,7 +304,7 @@ class _PremiumFeaturesOverviewScreenState
         border: Border.all(
           color:
               feature.isPremium
-                  ? context.colorTokens.primary.withOpacity(0.3)
+                  ? context.colorTokens.primary.withAlpha((255 * 0.3).round())
                   : context.colorTokens.border,
         ),
       ),
@@ -316,7 +316,7 @@ class _PremiumFeaturesOverviewScreenState
             decoration: BoxDecoration(
               color:
                   feature.isPremium
-                      ? context.colorTokens.primary.withOpacity(0.1)
+                      ? context.colorTokens.primary.withAlpha((255 * 0.1).round())
                       : context.colorTokens.surfaceAlt,
               borderRadius: BorderRadius.circular(12),
             ),
@@ -435,7 +435,7 @@ class _PremiumFeaturesOverviewScreenState
       decoration: BoxDecoration(
         color: context.colorTokens.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.colorTokens.success.withOpacity(0.3)),
+        border: Border.all(color: context.colorTokens.success.withAlpha((255 * 0.3).round())),
       ),
       child: Row(
         children: [
@@ -443,7 +443,7 @@ class _PremiumFeaturesOverviewScreenState
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: context.colorTokens.success.withOpacity(0.1),
+              color: context.colorTokens.success.withAlpha((255 * 0.1).round()),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -488,7 +488,7 @@ class _PremiumFeaturesOverviewScreenState
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: context.colorTokens.warning.withOpacity(0.1),
+                      color: context.colorTokens.warning.withAlpha((255 * 0.1).round()),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -739,7 +739,7 @@ class _PremiumFeaturesOverviewScreenState
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: context.colorTokens.primary.withOpacity(0.1),
+            color: context.colorTokens.primary.withAlpha((255 * 0.1).round()),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: context.colorTokens.primary),
@@ -763,9 +763,9 @@ class _PremiumFeaturesOverviewScreenState
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: context.colorTokens.error.withOpacity(0.05),
+        color: context.colorTokens.error.withAlpha((255 * 0.05).round()),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.colorTokens.error.withOpacity(0.3)),
+        border: Border.all(color: context.colorTokens.error.withAlpha((255 * 0.3).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

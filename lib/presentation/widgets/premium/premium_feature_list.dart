@@ -112,7 +112,7 @@ class PremiumFeatureList extends ConsumerWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: feature.color.withOpacity(0.1),
+            color: feature.color.withAlpha((255 * 0.1).round()),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(feature.icon, color: feature.color, size: 24),

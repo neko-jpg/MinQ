@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/core/social/pair_system.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/pair/pair_message.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -89,7 +88,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
       );
 
       if (mounted) {
-        FeedbackMessenger.showSuccessSnackBar(context, '励ましメッセージを送信しました！');
+        FeedbackMessenger.showSuccessToast(context, '励ましメッセージを送信しました！');
       }
     } catch (e) {
       if (mounted) {
@@ -120,7 +119,6 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
     final userId = ref.watch(uidProvider);
 
     return Scaffold(
@@ -183,12 +181,12 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
                 label: Text(
                   message,
                   style: tokens.typography.bodySmall.copyWith(
-                    color: tokens.primary,
+                    color: tokens.brandPrimary,
                   ),
                 ),
                 onPressed: () => _sendEncouragement(message),
-                backgroundColor: tokens.primary.withOpacity(0.1),
-                side: BorderSide(color: tokens.primary.withOpacity(0.3)),
+                backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+                side: BorderSide(color: tokens.brandPrimary.withAlpha((255 * 0.3).round())),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(tokens.radius.lg),
                 ),
@@ -281,7 +279,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
             vertical: tokens.spacing.xs,
           ),
           decoration: BoxDecoration(
-            color: tokens.textMuted.withOpacity(0.1),
+            color: tokens.textMuted.withAlpha((255 * 0.1).round()),
             borderRadius: BorderRadius.circular(tokens.radius.lg),
           ),
           child: Text(
@@ -310,8 +308,8 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
           if (!isMyMessage) ...[
             CircleAvatar(
               radius: 16,
-              backgroundColor: tokens.primary.withOpacity(0.2),
-              child: Icon(Icons.person, size: 16, color: tokens.primary),
+              backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+              child: Icon(Icons.person, size: 16, color: tokens.brandPrimary),
             ),
             SizedBox(width: tokens.spacing.xs),
           ],
@@ -330,7 +328,7 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
                       vertical: tokens.spacing.sm,
                     ),
                     decoration: BoxDecoration(
-                      color: isMyMessage ? tokens.primary : tokens.surface,
+                      color: isMyMessage ? tokens.brandPrimary : tokens.surface,
                       borderRadius: BorderRadius.circular(
                         tokens.radius.lg,
                       ).copyWith(
@@ -453,8 +451,8 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
             SizedBox(width: tokens.spacing.xs),
             CircleAvatar(
               radius: 16,
-              backgroundColor: tokens.primary.withOpacity(0.2),
-              child: Icon(Icons.person, size: 16, color: tokens.primary),
+              backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+              child: Icon(Icons.person, size: 16, color: tokens.brandPrimary),
             ),
           ],
         ],
@@ -502,12 +500,12 @@ class _PairChatScreenState extends ConsumerState<PairChatScreen> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(tokens.primary),
+                        valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
                       ),
                     )
-                    : Icon(Icons.send, color: tokens.primary),
+                    : Icon(Icons.send, color: tokens.brandPrimary),
             style: IconButton.styleFrom(
-              backgroundColor: tokens.primary.withOpacity(0.1),
+              backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(tokens.radius.lg),
               ),

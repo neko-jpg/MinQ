@@ -42,7 +42,7 @@ class PremiumPlanCard extends StatelessWidget {
         boxShadow: [
           if (plan.isPopular)
             BoxShadow(
-              color: context.colorTokens.primary.withOpacity(0.1),
+              color: context.colorTokens.primary.withAlpha((255 * 0.1).round()),
               blurRadius: 20,
               spreadRadius: 0,
               offset: const Offset(0, 8),
@@ -100,7 +100,7 @@ class PremiumPlanCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: context.colorTokens.secondary.withOpacity(0.1),
+              color: context.colorTokens.secondary.withAlpha((255 * 0.1).round()),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -127,7 +127,7 @@ class PremiumPlanCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: context.colorTokens.info.withOpacity(0.1),
+              color: context.colorTokens.info.withAlpha((255 * 0.1).round()),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -239,7 +239,7 @@ class PremiumPlanCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: context.colorTokens.success.withOpacity(0.1),
+          color: context.colorTokens.success.withAlpha((255 * 0.1).round()),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: context.colorTokens.success),
         ),

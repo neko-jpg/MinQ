@@ -2,7 +2,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:minq/domain/notification/notification_analytics.dart';
 import 'package:minq/domain/notification/notification_settings.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/l10n/l10n.dart';
 
 /// 最適タイミングチャート
@@ -45,7 +44,7 @@ class OptimalTimingChart extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: _getConfidenceColor(
                       analysis.confidence,
-                    ).withOpacity(0.1),
+                    ).withAlpha((255 * 0.1).round()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -208,7 +207,7 @@ class OptimalTimingChart extends StatelessWidget {
             color:
                 isOptimal
                     ? theme.colorScheme.primary
-                    : theme.colorScheme.primary.withOpacity(0.3),
+                    : theme.colorScheme.primary.withAlpha((255 * 0.3).round()),
             width: 12,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
           ),

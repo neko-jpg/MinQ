@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/theme/theme_extensions.dart';
 
 /// 検索クエリをハイライト表示するテキストウィジェット
 class SearchHighlightText extends StatelessWidget {
@@ -37,13 +36,12 @@ class SearchHighlightText extends StatelessWidget {
       );
     }
 
-    final tokens = context.tokens;
-    final defaultHighlightStyle =
-        highlightStyle ??
+    final tokens = MinqTheme.of(context);
+    final defaultHighlightStyle = highlightStyle ??
         TextStyle(
-          backgroundColor: tokens.primary.withOpacity(0.3),
+          backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.3).round()),
           fontWeight: FontWeight.bold,
-          color: tokens.primary,
+          color: tokens.brandPrimary,
         );
 
     final spans = _buildTextSpans(

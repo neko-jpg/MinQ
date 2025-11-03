@@ -566,13 +566,13 @@ class _PolishedElevatedButtonState extends State<PolishedElevatedButton>
                     widget.gradient ??
                     (isEnabled
                         ? LinearGradient(
-                          colors: [
-                            backgroundColor,
-                            Color.lerp(backgroundColor, Colors.black, 0.1)!,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        )
+                            colors: [
+                              backgroundColor,
+                              Color.lerp(backgroundColor, Colors.black, 0.1)!,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
                         : null),
                 color:
                     widget.gradient == null && !isEnabled
@@ -582,14 +582,14 @@ class _PolishedElevatedButtonState extends State<PolishedElevatedButton>
                 boxShadow:
                     isEnabled
                         ? [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(
-                              (51 * _shadowAnimation.value).round(),
+                            BoxShadow(
+                              color: Colors.black.withAlpha(
+                                (51 * _shadowAnimation.value).round(),
+                              ),
+                              blurRadius: 10 * _shadowAnimation.value,
+                              offset: const Offset(0, 5),
                             ),
-                            blurRadius: 10 * _shadowAnimation.value,
-                            offset: const Offset(0, 5),
-                          ),
-                        ]
+                          ]
                         : null,
               ),
               child: Material(
@@ -1125,14 +1125,16 @@ class _PolishedCardState extends State<PolishedCard>
                     boxShadow:
                         currentElevation > 0
                             ? [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(
-                                  (25 * currentElevation).round().clamp(0, 255),
+                                BoxShadow(
+                                  color: Colors.black.withAlpha(
+                                    (25 * currentElevation)
+                                        .round()
+                                        .clamp(0, 255),
+                                  ),
+                                  blurRadius: currentElevation * 4,
+                                  offset: Offset(0, currentElevation * 2),
                                 ),
-                                blurRadius: currentElevation * 4,
-                                offset: Offset(0, currentElevation * 2),
-                              ),
-                            ]
+                              ]
                             : null,
                   ),
                   child: widget.child,

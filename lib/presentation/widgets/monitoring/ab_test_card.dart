@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:minq/core/monitoring/ab_testing_service.dart';
+import 'package:minq/core/notifications/notification_ab_testing_service.dart';
 
 class ABTestCard extends StatelessWidget {
   final ABTest test;
-  final ABTestResult? result;
+  final ABTestAnalysis? result;
   final String? userVariant;
 
   const ABTestCard({
@@ -22,8 +22,6 @@ class ABTestCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(context),
-            const SizedBox(height: 12),
-            _buildDescription(context),
             const SizedBox(height: 12),
             _buildVariants(context),
             if (result != null) ...[
@@ -54,7 +52,7 @@ class ABTestCard extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.2),
+                    color: Colors.blue.withAlpha((255 * 0.2).round()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -78,22 +76,22 @@ class ABTestCard extends StatelessWidget {
     IconData icon;
     Color color;
 
-    if (test.isActive) {
-      icon = Icons.play_circle;
-      color = Colors.green;
-    } else {
-      icon = Icons.pause_circle;
-      color = Colors.grey;
+    switch (test.status) {
+      case ABTestStatus.active:
+        icon = Icons.play_circle;
+        color = Colors.green;
+        break;
+      case ABTestStatus.stopped:
+        icon = Icons.pause_circle;
+        color = Colors.orange;
+        break;
+      case ABTestStatus.completed:
+        icon = Icons.check_circle;
+        color = Colors.grey;
+        break;
     }
 
     return Icon(icon, color: color, size: 24);
-  }
-
-  Widget _buildDescription(BuildContext context) {
-    return Text(
-      test.description,
-      style: Theme.of(context).textTheme.bodyMedium,
-    );
   }
 
   Widget _buildVariants(BuildContext context) {
@@ -107,7 +105,7 @@ class ABTestCard extends StatelessWidget {
     );
   }
 
-  Widget _buildVariantTile(ABVariant variant) {
+  Widget _buildVariantTile(ABTestVariant variant) {
     final isUserVariant = userVariant == variant.name;
 
     return Container(
@@ -116,8 +114,8 @@ class ABTestCard extends StatelessWidget {
       decoration: BoxDecoration(
         color:
             isUserVariant
-                ? Colors.blue.withOpacity(0.1)
-                : Colors.grey.withOpacity(0.05),
+                ? Colors.blue.withAlpha((255 * 0.1).round())
+                : Colors.grey.withAlpha((255 * 0.05).round()),
         borderRadius: BorderRadius.circular(8),
         border: isUserVariant ? Border.all(color: Colors.blue, width: 2) : null,
       ),
@@ -134,7 +132,8 @@ class ABTestCard extends StatelessWidget {
                     color: isUserVariant ? Colors.blue : null,
                   ),
                 ),
-                Text(variant.description, style: const TextStyle(fontSize: 12)),
+                Text(variant.title, style: const TextStyle(fontSize: 12)),
+                Text(variant.body, style: const TextStyle(fontSize: 12)),
               ],
             ),
           ),
@@ -145,7 +144,7 @@ class ABTestCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              '${variant.trafficAllocation.toStringAsFixed(0)}%',
+              '${(variant.weight * 100).toStringAsFixed(0)}%',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 10,
@@ -170,12 +169,12 @@ class ABTestCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color:
-                result!.isSignificant
-                    ? Colors.green.withOpacity(0.1)
-                    : Colors.orange.withOpacity(0.1),
+                (result!.statisticalSignificance > 0.95)
+                    ? Colors.green.withAlpha((255 * 0.1).round())
+                    : Colors.orange.withAlpha((255 * 0.1).round()),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: result!.isSignificant ? Colors.green : Colors.orange,
+              color: (result!.statisticalSignificance > 0.95) ? Colors.green : Colors.orange,
             ),
           ),
           child: Column(
@@ -188,12 +187,12 @@ class ABTestCard extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Icon(
-                    result!.isSignificant ? Icons.check_circle : Icons.warning,
-                    color: result!.isSignificant ? Colors.green : Colors.orange,
+                    (result!.statisticalSignificance > 0.95) ? Icons.check_circle : Icons.warning,
+                    color: (result!.statisticalSignificance > 0.95) ? Colors.green : Colors.orange,
                   ),
                 ],
               ),
-              if (result!.winningVariant != null) ...[
+              if (result!.winner != null) ...[
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -209,7 +208,7 @@ class ABTestCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        result!.winningVariant!,
+                        result!.winner!,
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -231,6 +230,11 @@ class ABTestCard extends StatelessWidget {
   Widget _buildResultsGrid() {
     if (result == null) return const SizedBox();
 
+    final totalParticipants = result!.variantStats.values
+        .fold(0, (sum, stat) => sum + stat.impressions);
+    final totalConversions = result!.variantStats.values
+        .fold(0, (sum, stat) => sum + stat.conversions);
+
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -241,22 +245,22 @@ class ABTestCard extends StatelessWidget {
       children: [
         _buildResultMetric(
           'Participants',
-          result!.statistics.totalParticipants.toString(),
+          totalParticipants.toString(),
           Icons.people,
         ),
         _buildResultMetric(
           'Conversions',
-          result!.statistics.totalConversions.toString(),
+          totalConversions.toString(),
           Icons.trending_up,
         ),
         _buildResultMetric(
-          'P-Value',
-          result!.statistics.pValue.toStringAsFixed(3),
+          'Significance',
+          '${(result!.statisticalSignificance * 100).toStringAsFixed(1)}%',
           Icons.analytics,
         ),
         _buildResultMetric(
           'Confidence',
-          '${result!.statistics.confidenceLevel.toStringAsFixed(1)}%',
+          '${(result!.confidence * 100).toStringAsFixed(1)}%',
           Icons.verified,
         ),
       ],
@@ -296,29 +300,12 @@ class ABTestCard extends StatelessWidget {
               'Started: ${_formatDate(test.startDate)}',
               style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
-            if (test.endDate != null)
-              Text(
-                'Ends: ${_formatDate(test.endDate!)}',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
+            Text(
+              'Ends: ${_formatDate(test.endDate)}',
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
           ],
         ),
-        if (test.targeting != null)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.purple.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              'Targeted ${test.targeting!.percentage}%',
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.purple,
-              ),
-            ),
-          ),
       ],
     );
   }

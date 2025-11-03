@@ -37,8 +37,8 @@ class SettingsItemWidget extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color:
                       item.isDangerous
-                          ? theme.accentError.withOpacity(0.1)
-                          : theme.brandPrimary.withOpacity(0.1),
+                          ? theme.accentError.withAlpha((255 * 0.1).round())
+                          : theme.brandPrimary.withAlpha((255 * 0.1).round()),
                   borderRadius: theme.cornerSmall(),
                 ),
                 child: Icon(
@@ -82,7 +82,7 @@ class SettingsItemWidget extends ConsumerWidget {
           color: item.isDangerous ? theme.accentError : theme.textPrimary,
           fontWeight: FontWeight.w600,
         ),
-        theme.brandPrimary.withOpacity(0.3),
+        theme.brandPrimary.withAlpha((255 * 0.3).round()),
       );
     }
 
@@ -101,7 +101,7 @@ class SettingsItemWidget extends ConsumerWidget {
         item.subtitle!,
         searchQuery!,
         theme.typography.bodyMedium.copyWith(color: theme.textSecondary),
-        theme.brandPrimary.withOpacity(0.2),
+        theme.brandPrimary.withAlpha((255 * 0.2).round()),
       );
     }
 

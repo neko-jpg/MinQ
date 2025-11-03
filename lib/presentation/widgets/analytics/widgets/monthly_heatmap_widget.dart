@@ -227,10 +227,10 @@ class MonthlyHeatmapWidget extends ConsumerWidget {
     const baseColor = Colors.blue; // TODO: Use theme color
 
     if (intensity == 0.0) {
-      return Colors.grey.withOpacity(0.1);
+      return Colors.grey.withAlpha((255 * 0.1).round());
     }
 
-    return baseColor.withOpacity(0.2 + (intensity * 0.8));
+    return baseColor.withAlpha((255 * (0.2 + (intensity * 0.8))).round());
   }
 
   Map<DateTime, int> _getMockHeatmapData() {

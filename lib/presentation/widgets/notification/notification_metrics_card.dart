@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minq/domain/notification/notification_analytics.dart';
 import 'package:minq/domain/notification/notification_settings.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/l10n/l10n.dart';
 
 /// 通知メトリクスカード
@@ -47,7 +46,7 @@ class NotificationMetricsCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: _getPerformanceColor(
                         metrics.openRate,
-                      ).withOpacity(0.1),
+                      ).withAlpha((255 * 0.1).round()),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(

@@ -36,7 +36,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
     final xpSystem = ref.watch(xpSystemProvider);
 
     return FutureBuilder<UserLevelProgress>(
-      future: xpSystem.getUserLevelProgress(uid),
+      future: xpSystem.getUserProgress(uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildLoadingWidget(tokens);
@@ -70,12 +70,12 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              tokens.brandPrimary.withOpacity(0.1),
-              tokens.brandSecondary.withOpacity(0.1),
+              tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+              tokens.brandSecondary.withAlpha((255 * 0.1).round()),
             ],
           ),
           borderRadius: BorderRadius.circular(tokens.radius.lg),
-          border: Border.all(color: tokens.brandPrimary.withOpacity(0.3)),
+          border: Border.all(color: tokens.brandPrimary.withAlpha((255 * 0.3).round())),
         ),
         child: Row(
           children: [
@@ -157,14 +157,14 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            tokens.brandPrimary.withOpacity(0.1),
-            tokens.brandSecondary.withOpacity(0.1),
+            tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+            tokens.brandSecondary.withAlpha((255 * 0.1).round()),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(tokens.radius.xl),
-        border: Border.all(color: tokens.brandPrimary.withOpacity(0.3)),
+        border: Border.all(color: tokens.brandPrimary.withAlpha((255 * 0.3).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,7 +261,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: tokens.brandPrimary.withOpacity(0.3),
+            color: tokens.brandPrimary.withAlpha((255 * 0.3).round()),
             blurRadius: 8,
             spreadRadius: 2,
           ),
@@ -313,7 +313,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
         vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withOpacity(0.1),
+        color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(tokens.radius.md),
       ),
       child: Row(
@@ -396,9 +396,9 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
     return Container(
       padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
-        color: tokens.success.withOpacity(0.1),
+        color: tokens.success.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(tokens.radius.md),
-        border: Border.all(color: tokens.success.withOpacity(0.3)),
+        border: Border.all(color: tokens.success.withAlpha((255 * 0.3).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -443,7 +443,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
         vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.success.withOpacity(0.2),
+        color: tokens.success.withAlpha((255 * 0.2).round()),
         borderRadius: BorderRadius.circular(tokens.radius.sm),
       ),
       child: Text(
@@ -469,7 +469,7 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
         vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.info.withOpacity(0.2),
+        color: tokens.info.withAlpha((255 * 0.2).round()),
         borderRadius: BorderRadius.circular(tokens.radius.sm),
       ),
       child: Text(
@@ -492,8 +492,8 @@ class EnhancedLevelProgressWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.amber.withOpacity(0.2),
-            Colors.orange.withOpacity(0.2),
+            Colors.amber.withAlpha((255 * 0.2).round()),
+            Colors.orange.withAlpha((255 * 0.2).round()),
           ],
         ),
         borderRadius: BorderRadius.circular(tokens.radius.md),

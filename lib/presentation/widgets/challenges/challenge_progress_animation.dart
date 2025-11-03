@@ -106,7 +106,7 @@ class _ChallengeProgressAnimationState extends State<ChallengeProgressAnimation>
   @override
   Widget build(BuildContext context) {
     final backgroundColor =
-        widget.backgroundColor ?? Colors.white.withOpacity(0.3);
+        widget.backgroundColor ?? Colors.white.withAlpha((255 * 0.3).round());
     final progressColor = widget.progressColor ?? Colors.white;
     final completedColor = widget.completedColor ?? Colors.green.shade200;
 
@@ -134,11 +134,11 @@ class _ChallengeProgressAnimationState extends State<ChallengeProgressAnimation>
                             widget.isCompleted
                                 ? [
                                   completedColor,
-                                  completedColor.withOpacity(0.8),
+                                  completedColor.withAlpha((255 * 0.8).round()),
                                 ]
                                 : [
                                   progressColor,
-                                  progressColor.withOpacity(0.8),
+                                  progressColor.withAlpha((255 * 0.8).round()),
                                 ],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
@@ -173,7 +173,7 @@ class _ChallengeProgressAnimationState extends State<ChallengeProgressAnimation>
             gradient: LinearGradient(
               colors: [
                 Colors.transparent,
-                baseColor.withOpacity(0.4),
+                baseColor.withAlpha((255 * 0.4).round()),
                 Colors.transparent,
               ],
               stops: const [0.0, 0.5, 1.0],
@@ -191,7 +191,7 @@ class _ChallengeProgressAnimationState extends State<ChallengeProgressAnimation>
           borderRadius: BorderRadius.circular(widget.height / 2),
           boxShadow: [
             BoxShadow(
-              color: glowColor.withOpacity(0.6),
+              color: glowColor.withAlpha((255 * 0.6).round()),
               blurRadius: 8,
               spreadRadius: 2,
             ),
@@ -278,7 +278,7 @@ class _ChallengeCircularProgressState extends State<ChallengeCircularProgress>
   @override
   Widget build(BuildContext context) {
     final backgroundColor =
-        widget.backgroundColor ?? Colors.grey.withOpacity(0.3);
+        widget.backgroundColor ?? Colors.grey.withAlpha((255 * 0.3).round());
     final progressColor =
         widget.progressColor ?? Theme.of(context).primaryColor;
     final completedColor = widget.completedColor ?? Colors.green;

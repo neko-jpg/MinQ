@@ -236,7 +236,7 @@ class _PreviewCard extends StatelessWidget {
             height: 56,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: accentColor.withOpacity(0.15),
+              color: accentColor.withAlpha((255 * 0.15).round()),
             ),
             child: Icon(icon.icon, color: accentColor),
           ),
@@ -330,7 +330,7 @@ class _IconSelector extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     isSelected
-                        ? tokens.brandPrimary.withOpacity(0.15)
+                        ? tokens.brandPrimary.withAlpha((255 * 0.15).round())
                         : tokens.surface,
                 borderRadius: BorderRadius.circular(tokens.radius.lg),
                 border: Border.all(
@@ -379,7 +379,7 @@ class _ColorSelector extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: color.withOpacity(0.35),
+                      color: color.withAlpha((255 * 0.35).round()),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -402,9 +402,9 @@ class _OfflineHint extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(tokens.spacing.md),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.12),
+        color: Colors.orange.withAlpha((255 * 0.12).round()),
         borderRadius: BorderRadius.circular(tokens.radius.lg),
-        border: Border.all(color: Colors.orange.withOpacity(0.4)),
+        border: Border.all(color: Colors.orange.withAlpha((255 * 0.4).round())),
       ),
       child: Row(
         children: [

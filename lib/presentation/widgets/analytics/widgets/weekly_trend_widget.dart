@@ -98,7 +98,7 @@ class WeeklyTrendWidget extends ConsumerWidget {
                   ),
                   belowBarData: BarAreaData(
                     show: true,
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    color: Theme.of(context).primaryColor.withAlpha((255 * 0.1).round()),
                   ),
                 ),
               ],

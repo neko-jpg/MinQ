@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/core/premium/data_export_service.dart';
 import 'package:minq/core/premium/premium_service.dart';
 import 'package:minq/domain/premium/premium_plan.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/common/loading_overlay.dart';
 
 class DataExportScreen extends ConsumerStatefulWidget {
@@ -28,8 +29,8 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Data Export'),
-        backgroundColor: context.colorTokens.surface,
-        foregroundColor: context.colorTokens.textPrimary,
+        backgroundColor: context.tokens.surface,
+        foregroundColor: context.tokens.textPrimary,
         elevation: 0,
       ),
       body: LoadingOverlay(
@@ -78,15 +79,15 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
       children: [
         Text(
           'Export Your Data',
-          style: context.textTheme.headlineMedium?.copyWith(
+          style: context.tokens.typography.h3.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           'Download your MinQ data in various formats for backup or analysis',
-          style: context.textTheme.bodyLarge?.copyWith(
-            color: context.colorTokens.textSecondary,
+          style: context.tokens.typography.body.copyWith(
+            color: context.tokens.textSecondary,
           ),
         ),
       ],
@@ -99,27 +100,33 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
       children: [
         Text(
           'What to Export',
-          style: context.textTheme.titleLarge?.copyWith(
+          style: context.tokens.typography.h4.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 16),
-        ...ExportType.values.map(
-          (type) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: RadioListTile<ExportType>(
-              value: type,
-              groupValue: _selectedType,
-              onChanged: (value) {
-                setState(() {
-                  _selectedType = value!;
-                });
-              },
-              title: Text(type.displayName),
-              subtitle: Text(_getTypeDescription(type)),
-              contentPadding: EdgeInsets.zero,
-              activeColor: context.colorTokens.primary,
-            ),
+        RadioGroup<ExportType>(
+          groupValue: _selectedType,
+          onChanged: (value) {
+            setState(() {
+              _selectedType = value!;
+            });
+          },
+          child: Column(
+            children: [
+              ...ExportType.values.map(
+                (type) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: RadioListTile<ExportType>(
+                    value: type,
+                    title: Text(type.displayName),
+                    subtitle: Text(_getTypeDescription(type)),
+                    contentPadding: EdgeInsets.zero,
+                    activeColor: context.tokens.brandPrimary,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -132,7 +139,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
       children: [
         Text(
           'Export Format',
-          style: context.textTheme.titleLarge?.copyWith(
+          style: context.tokens.typography.h4.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -170,14 +177,14 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? context.colorTokens.primary.withOpacity(0.1)
-                  : context.colorTokens.surface,
+                  ? context.tokens.brandPrimary.withAlpha((255 * 0.1).round())
+                  : context.tokens.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color:
                 isSelected
-                    ? context.colorTokens.primary
-                    : context.colorTokens.border,
+                    ? context.tokens.brandPrimary
+                    : context.tokens.border,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -188,25 +195,25 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
               size: 32,
               color:
                   isSelected
-                      ? context.colorTokens.primary
-                      : context.colorTokens.textSecondary,
+                      ? context.tokens.brandPrimary
+                      : context.tokens.textSecondary,
             ),
             const SizedBox(height: 8),
             Text(
               format.name.toUpperCase(),
-              style: context.textTheme.titleSmall?.copyWith(
+              style: context.tokens.typography.body.copyWith(
                 fontWeight: FontWeight.bold,
                 color:
                     isSelected
-                        ? context.colorTokens.primary
-                        : context.colorTokens.textPrimary,
+                        ? context.tokens.brandPrimary
+                        : context.tokens.textPrimary,
               ),
             ),
             const SizedBox(height: 4),
             Text(
               _getFormatDescription(format),
-              style: context.textTheme.bodySmall?.copyWith(
-                color: context.colorTokens.textSecondary,
+              style: context.tokens.typography.bodySmall.copyWith(
+                color: context.tokens.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -222,7 +229,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
       children: [
         Text(
           'Date Range (Optional)',
-          style: context.textTheme.titleLarge?.copyWith(
+          style: context.tokens.typography.h4.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -263,17 +270,17 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: context.colorTokens.surfaceAlt,
+          color: context.tokens.surfaceAlt,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: context.colorTokens.border),
+          border: Border.all(color: context.tokens.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               label,
-              style: context.textTheme.bodySmall?.copyWith(
-                color: context.colorTokens.textSecondary,
+              style: context.tokens.typography.bodySmall.copyWith(
+                color: context.tokens.textSecondary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -282,11 +289,11 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
               date != null
                   ? '${date.day}/${date.month}/${date.year}'
                   : 'Select date',
-              style: context.textTheme.bodyLarge?.copyWith(
+              style: context.tokens.typography.body.copyWith(
                 color:
                     date != null
-                        ? context.colorTokens.textPrimary
-                        : context.colorTokens.textMuted,
+                        ? context.tokens.textPrimary
+                        : context.tokens.textMuted,
               ),
             ),
           ],
@@ -301,7 +308,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
       children: [
         Text(
           'Options',
-          style: context.textTheme.titleLarge?.copyWith(
+          style: context.tokens.typography.h4.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -318,7 +325,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
             'Replace personal identifiers with generic placeholders',
           ),
           contentPadding: EdgeInsets.zero,
-          activeThumbColor: context.colorTokens.primary,
+          activeThumbColor: context.tokens.brandPrimary,
         ),
       ],
     );
@@ -330,7 +337,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
       child: ElevatedButton(
         onPressed: _handleExport,
         style: ElevatedButton.styleFrom(
-          backgroundColor: context.colorTokens.primary,
+          backgroundColor: context.tokens.brandPrimary,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
@@ -359,19 +366,19 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.lock, size: 64, color: context.colorTokens.textMuted),
+            Icon(Icons.lock, size: 64, color: context.tokens.textMuted),
             const SizedBox(height: 24),
             Text(
               'Premium Feature',
-              style: context.textTheme.headlineMedium?.copyWith(
+              style: context.tokens.typography.h3.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 16),
             Text(
               'Data export is available for Premium subscribers only. Upgrade to access this feature.',
-              style: context.textTheme.bodyLarge?.copyWith(
-                color: context.colorTokens.textSecondary,
+              style: context.tokens.typography.body.copyWith(
+                color: context.tokens.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -379,7 +386,7 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
             ElevatedButton(
               onPressed: () => context.push('/premium'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: context.colorTokens.primary,
+                backgroundColor: context.tokens.brandPrimary,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32,
@@ -467,11 +474,13 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
           break;
       }
 
+      if (!mounted) return;
+
       if (result.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Export completed: ${result.fileName}'),
-            backgroundColor: context.colorTokens.success,
+            backgroundColor: context.tokens.success,
             action: SnackBarAction(
               label: 'Share',
               textColor: Colors.white,
@@ -483,15 +492,16 @@ class _DataExportScreenState extends ConsumerState<DataExportScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result.errorMessage ?? 'Export failed'),
-            backgroundColor: context.colorTokens.error,
+            backgroundColor: context.tokens.error,
           ),
         );
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Export failed: $e'),
-          backgroundColor: context.colorTokens.error,
+          backgroundColor: context.tokens.error,
         ),
       );
     } finally {

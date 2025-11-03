@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 変更履歴・お知らせセンター画面
@@ -12,7 +11,7 @@ class ChangelogScreen extends ConsumerWidget {
     final tokens = context.tokens;
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).newsAndChangelog),
+        title: const Text('News and Changelog'),
       ),
       body: ListView(
         padding: EdgeInsets.all(tokens.spacing.md),

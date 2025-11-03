@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:minq/l10n/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/core/accessibility/accessibility_service.dart';
+import 'package:minq/core/accessibility/accessibility_service.dart' hide accessibilityServiceProvider;
 import 'package:minq/core/accessibility/semantic_helpers.dart';
 import 'package:minq/presentation/providers/accessibility_providers.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -16,7 +16,7 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
     final accessibilitySettings = ref.watch(accessibilityServiceProvider);
     final accessibilityService = ref.read(
       accessibilityServiceProvider.notifier,
@@ -389,7 +389,7 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
             style: tokens.typography.caption.copyWith(
               color:
                   accessibilitySettings.highContrast
-                      ? tokens.highContrastText.withOpacity(0.7)
+                      ? tokens.highContrastText.withAlpha((255 * 0.7).round())
                       : tokens.textSecondary,
               fontSize:
                   tokens.typography.caption.fontSize! *
@@ -480,7 +480,7 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                           style: tokens.typography.caption.copyWith(
                             color:
                                 accessibilitySettings.highContrast
-                                    ? tokens.highContrastText.withOpacity(0.7)
+                                    ? tokens.highContrastText.withAlpha((255 * 0.7).round())
                                     : tokens.textSecondary,
                             fontSize:
                                 tokens.typography.caption.fontSize! *
@@ -543,7 +543,7 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 inactiveColor: (accessibilitySettings.highContrast
                         ? tokens.highContrastText
                         : tokens.textMuted)
-                    .withOpacity(0.3),
+                    .withAlpha((255 * 0.3).round()),
               ),
             ],
           ),

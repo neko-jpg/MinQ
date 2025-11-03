@@ -229,6 +229,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
 
   // Additional color getters for backward compatibility
   Color get success => accentSuccess;
+  Color get overlay => background.withAlpha((255 * 0.5).round());
   Color get error => accentError;
   Color get warning => accentWarning;
   Color get info => accentSecondary;

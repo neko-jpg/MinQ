@@ -78,6 +78,7 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
               itemCount: ThemeCustomizationService.accentColors.length,
               itemBuilder: (context, index) {
                 final color = ThemeCustomizationService.accentColors[index];
+                // ignore: deprecated_member_use
                 final isSelected = color.value == _selectedColor.value;
 
                 return GestureDetector(

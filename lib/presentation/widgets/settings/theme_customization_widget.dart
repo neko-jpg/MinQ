@@ -169,7 +169,7 @@ class _ThemeCustomizationWidgetState
                 Container(
                   padding: EdgeInsets.all(theme.spacing.sm),
                   decoration: BoxDecoration(
-                    color: theme.brandPrimary.withOpacity(0.1),
+                    color: theme.brandPrimary.withAlpha((255 * 0.1).round()),
                     borderRadius: theme.cornerSmall(),
                   ),
                   child: Icon(icon, size: 20, color: theme.brandPrimary),
@@ -231,7 +231,7 @@ class _ThemeCustomizationWidgetState
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? theme.brandPrimary.withOpacity(0.1)
+                  ? theme.brandPrimary.withAlpha((255 * 0.1).round())
                   : theme.surfaceAlt,
           borderRadius: theme.cornerMedium(),
           border: Border.all(
@@ -288,6 +288,7 @@ class _ThemeCustomizationWidgetState
       itemCount: ThemeCustomizationService.accentColors.length,
       itemBuilder: (context, index) {
         final color = ThemeCustomizationService.accentColors[index];
+        // ignore: deprecated_member_use
         final isSelected = color.value == _selectedAccentColor.value;
 
         return GestureDetector(
@@ -373,7 +374,7 @@ class _ThemeCustomizationWidgetState
       case ThemeMode.dark:
         return Brightness.dark;
       case ThemeMode.system:
-        return MediaQuery.of(context).platformBrightness;
+        return View.of(context).platformDispatcher.platformBrightness;
     }
   }
 

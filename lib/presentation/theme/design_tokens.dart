@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/color_tokens.dart';
+import 'package:minq/presentation/theme/semantic_color_scheme.dart';
 
 class MinqSpacingTokens {
   const MinqSpacingTokens({
@@ -150,6 +151,7 @@ class MinqDesignTokens extends ThemeExtension<MinqDesignTokens> {
     required this.radius,
     required this.elevation,
     required this.animation,
+    required this.semanticColorScheme,
   });
 
   final ColorScheme colorScheme;
@@ -158,6 +160,10 @@ class MinqDesignTokens extends ThemeExtension<MinqDesignTokens> {
   final MinqRadiusTokens radius;
   final MinqElevationTokens elevation;
   final MinqAnimationTokens animation;
+  final SemanticColorScheme semanticColorScheme;
+
+  ColorScheme get colors => colorScheme;
+  TextTheme get typography => textTheme;
 
   factory MinqDesignTokens.light() => MinqDesignTokens(
         colorScheme: _colorSchemeFromTokens(ColorTokens.light, Brightness.light),
@@ -166,6 +172,7 @@ class MinqDesignTokens extends ThemeExtension<MinqDesignTokens> {
         radius: const MinqRadiusTokens.base(),
         elevation: MinqElevationTokens.light(),
         animation: const MinqAnimationTokens(),
+        semanticColorScheme: _semanticColorSchemeFromTokens(ColorTokens.light),
       );
 
   factory MinqDesignTokens.dark() => MinqDesignTokens(
@@ -175,6 +182,7 @@ class MinqDesignTokens extends ThemeExtension<MinqDesignTokens> {
         radius: const MinqRadiusTokens.base(),
         elevation: MinqElevationTokens.dark(),
         animation: const MinqAnimationTokens(),
+        semanticColorScheme: _semanticColorSchemeFromTokens(ColorTokens.dark),
       );
 
   static MinqDesignTokens of(BuildContext context) {
@@ -196,6 +204,7 @@ class MinqDesignTokens extends ThemeExtension<MinqDesignTokens> {
     MinqRadiusTokens? radius,
     MinqElevationTokens? elevation,
     MinqAnimationTokens? animation,
+    SemanticColorScheme? semanticColorScheme,
   }) {
     return MinqDesignTokens(
       colorScheme: colorScheme ?? this.colorScheme,
@@ -204,6 +213,7 @@ class MinqDesignTokens extends ThemeExtension<MinqDesignTokens> {
       radius: radius ?? this.radius,
       elevation: elevation ?? this.elevation,
       animation: animation ?? this.animation,
+      semanticColorScheme: semanticColorScheme ?? this.semanticColorScheme,
     );
   }
 
@@ -220,6 +230,8 @@ class MinqDesignTokens extends ThemeExtension<MinqDesignTokens> {
       radius: radius,
       elevation: elevation.lerp(other.elevation, t),
       animation: animation,
+      semanticColorScheme:
+          semanticColorScheme.lerp(other.semanticColorScheme, t),
     );
   }
 }
@@ -232,6 +244,7 @@ extension MinqDesignTokensExtension on BuildContext {
   MinqRadiusTokens get radius => tokens.radius;
   MinqElevationTokens get elevations => tokens.elevation;
   MinqAnimationTokens get animations => tokens.animation;
+  SemanticColorScheme get semanticColors => tokens.semanticColorScheme;
 }
 
 ColorScheme _colorSchemeFromTokens(
@@ -261,8 +274,6 @@ ColorScheme _colorSchemeFromTokens(
     onErrorContainer: tokens.onSurface,
     surface: tokens.surface,
     onSurface: tokens.onSurface,
-    // ignore: deprecated_member_use
-    surfaceVariant: tokens.surfaceVariant,
     onSurfaceVariant: tokens.textSecondary,
     surfaceTint: tokens.primary,
     surfaceContainerHighest: tokens.surfaceAlt,
@@ -282,4 +293,15 @@ TextTheme _textTheme(Brightness brightness) {
   final base =
       brightness == Brightness.dark ? Typography.whiteMountainView : Typography.blackMountainView;
   return base.apply(fontFamily: 'PlusJakartaSans');
+}
+
+SemanticColorScheme _semanticColorSchemeFromTokens(ColorTokens tokens) {
+  return SemanticColorScheme(
+    success: tokens.success,
+    onSuccess: tokens.onSuccess,
+    warning: tokens.warning,
+    onWarning: tokens.onWarning,
+    info: tokens.info,
+    onInfo: tokens.onInfo,
+  );
 }

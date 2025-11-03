@@ -150,11 +150,14 @@ class OnboardingProgressIndicator extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+            color: Theme.of(context)
+                .colorScheme
+                .outline
+                .withAlpha((255 * 0.3).round()),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withAlpha((255 * 0.1).round()),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -172,9 +175,9 @@ class OnboardingProgressIndicator extends StatelessWidget {
             Text(
               'Lv.${progress.currentLevel}',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
             ),
             const SizedBox(width: 8),
             SizedBox(
@@ -182,9 +185,8 @@ class OnboardingProgressIndicator extends StatelessWidget {
               height: 4,
               child: LinearProgressIndicator(
                 value: progress.progress,
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.outline.withOpacity(0.2),
+                backgroundColor:
+                    Theme.of(context).colorScheme.outline.withAlpha((255 * 0.2).round()),
                 valueColor: AlwaysStoppedAnimation<Color>(
                   Theme.of(context).colorScheme.primary,
                 ),
@@ -254,7 +256,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withAlpha((255 * 0.2).round()),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -270,9 +272,10 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withOpacity(0.1),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withAlpha((255 * 0.1).round()),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -288,9 +291,9 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                   Text(
                     'レベルアップ！',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                   ),
                   const SizedBox(height: 8),
 
@@ -312,7 +315,9 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       children: [
                         Text(
                           widget.event.levelInfo.title,
-                          style: Theme.of(context).textTheme.titleMedium
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
@@ -331,7 +336,9 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                             .isNotEmpty) ...[
                           Text(
                             '解放された機能:',
-                            style: Theme.of(context).textTheme.bodySmall
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
@@ -401,9 +408,8 @@ class OnboardingProgressDialog extends StatelessWidget {
             const SizedBox(height: 16),
             LinearProgressIndicator(
               value: progress.progress,
-              backgroundColor: Theme.of(
-                context,
-              ).colorScheme.outline.withOpacity(0.2),
+              backgroundColor:
+                  Theme.of(context).colorScheme.outline.withAlpha((255 * 0.2).round()),
             ),
             const SizedBox(height: 8),
             Text('進捗: ${(progress.progress * 100).toInt()}%'),

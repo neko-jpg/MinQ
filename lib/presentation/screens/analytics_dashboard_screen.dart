@@ -171,7 +171,7 @@ class _AnalyticsDashboardScreenState
                     color:
                         isSelected
                             ? Theme.of(context).primaryColor
-                            : Colors.grey.withOpacity(0.3),
+                            : Colors.grey.withAlpha((255 * 0.3).round()),
                   ),
                 ),
                 child: Column(

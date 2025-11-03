@@ -162,15 +162,21 @@ class ConfettiParticle {
     size = 4 + random.nextDouble() * 6;
 
     // カラフルな色
-    final colors = [
+    final semanticColors = context.tokens.semanticColorScheme;
+    final List<Color> colors = [
       themeColors.primary,
       themeColors.secondary,
       themeColors.tertiary,
-      themeColors.success,
-      themeColors.warning,
+      semanticColors.success,
+      semanticColors.warning,
       themeColors.error,
-    ];
-    color = colors[random.nextInt(colors.length)];
+    ].where((c) => c != null).cast<Color>().toList();
+
+    if (colors.isNotEmpty) {
+      color = colors[random.nextInt(colors.length)];
+    } else {
+      color = Colors.blue;
+    }
   }
 
   void paint(Canvas canvas, Size size, double progress) {

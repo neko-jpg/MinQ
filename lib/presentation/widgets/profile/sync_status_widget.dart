@@ -10,7 +10,7 @@ class SyncStatusWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final syncStatusAsync = ref.watch(profileSyncStatusProvider);
 
     return syncStatusAsync.when(
@@ -55,9 +55,9 @@ class SyncStatusWidget extends ConsumerWidget {
         vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.success.withOpacity(0.1),
+        color: tokens.success.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(tokens.radius.sm),
-        border: Border.all(color: tokens.success.withOpacity(0.3)),
+        border: Border.all(color: tokens.success.withAlpha((255 * 0.3).round())),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -83,9 +83,9 @@ class SyncStatusWidget extends ConsumerWidget {
         vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.info.withOpacity(0.1),
+        color: tokens.info.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(tokens.radius.sm),
-        border: Border.all(color: tokens.info.withOpacity(0.3)),
+        border: Border.all(color: tokens.info.withAlpha((255 * 0.3).round())),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -118,9 +118,9 @@ class SyncStatusWidget extends ConsumerWidget {
         vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.warning.withOpacity(0.1),
+        color: tokens.warning.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(tokens.radius.sm),
-        border: Border.all(color: tokens.warning.withOpacity(0.3)),
+        border: Border.all(color: tokens.warning.withAlpha((255 * 0.3).round())),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -152,9 +152,9 @@ class SyncStatusWidget extends ConsumerWidget {
           vertical: tokens.spacing.xs,
         ),
         decoration: BoxDecoration(
-          color: tokens.error.withOpacity(0.1),
+          color: tokens.error.withAlpha((255 * 0.1).round()),
           borderRadius: BorderRadius.circular(tokens.radius.sm),
-          border: Border.all(color: tokens.error.withOpacity(0.3)),
+          border: Border.all(color: tokens.error.withAlpha((255 * 0.3).round())),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -181,9 +181,9 @@ class SyncStatusWidget extends ConsumerWidget {
         vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.textMuted.withOpacity(0.1),
+        color: tokens.textMuted.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(tokens.radius.sm),
-        border: Border.all(color: tokens.textMuted.withOpacity(0.3)),
+        border: Border.all(color: tokens.textMuted.withAlpha((255 * 0.3).round())),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -243,9 +243,9 @@ class SyncStatusWidget extends ConsumerWidget {
         vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.error.withOpacity(0.1),
+        color: tokens.error.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(tokens.radius.sm),
-        border: Border.all(color: tokens.error.withOpacity(0.3)),
+        border: Border.all(color: tokens.error.withAlpha((255 * 0.3).round())),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -304,7 +304,7 @@ class CompactSyncStatusWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final syncStatusAsync = ref.watch(profileSyncStatusProvider);
 
     return syncStatusAsync.when(

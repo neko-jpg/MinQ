@@ -1008,7 +1008,6 @@ class _PerformanceDashboardState extends State<PerformanceDashboard>
       case BatteryState.full:
         return 'Full';
       case BatteryState.unknown:
-      default:
         return 'Unknown';
     }
   }

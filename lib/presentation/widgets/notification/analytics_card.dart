@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:minq/domain/notification/notification_settings.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/l10n/l10n.dart';
 
 /// 通知分析設定カード
@@ -149,8 +148,8 @@ class AnalyticsCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest.withOpacity(
-                    0.3,
+                  color: theme.colorScheme.surfaceContainerHighest.withAlpha(
+                    (255 * 0.3).round(),
                   ),
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -202,61 +201,74 @@ class AnalyticsCard extends StatelessWidget {
   }
 
   void _showDataExportDialog(BuildContext context, AppLocalizations l10n) {
+    String selectedFormat = 'csv';
     showDialog<void>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(l10n.exportAnalyticsData),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.exportAnalyticsDataDescription),
-                const SizedBox(height: 16),
-
-                // エクスポート形式選択
-                Text(
-                  l10n.exportFormat,
-                  style: Theme.of(context).textTheme.titleSmall,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(l10n.exportAnalyticsData),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.exportAnalyticsDataDescription),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.exportFormat,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  RadioGroup<String>(
+                    groupValue: selectedFormat,
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedFormat = value;
+                        });
+                      }
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        RadioListTile<String>(
+                          title: Text(l10n.csvFormat),
+                          subtitle: Text(l10n.csvFormatDescription),
+                          value: 'csv',
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        RadioListTile<String>(
+                          title: Text(l10n.jsonFormat),
+                          subtitle: Text(l10n.jsonFormatDescription),
+                          value: 'json',
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.cancel),
                 ),
-                const SizedBox(height: 8),
-
-                RadioListTile<String>(
-                  title: Text(l10n.csvFormat),
-                  subtitle: Text(l10n.csvFormatDescription),
-                  value: 'csv',
-                  groupValue: 'csv', // デフォルト選択
-                  onChanged: (value) {},
-                  contentPadding: EdgeInsets.zero,
-                ),
-
-                RadioListTile<String>(
-                  title: Text(l10n.jsonFormat),
-                  subtitle: Text(l10n.jsonFormatDescription),
-                  value: 'json',
-                  groupValue: 'csv',
-                  onChanged: (value) {},
-                  contentPadding: EdgeInsets.zero,
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // 実際の実装ではデータエクスポートを実行
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(l10n.dataExported)));
+                  },
+                  child: Text(l10n.export),
                 ),
               ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(l10n.cancel),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  // 実際の実装ではデータエクスポートを実行
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(l10n.dataExported)));
-                },
-                child: Text(l10n.export),
-              ),
-            ],
-          ),
+            );
+          },
+        );
+      },
     );
   }
 

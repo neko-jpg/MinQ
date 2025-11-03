@@ -97,14 +97,15 @@ class _ProgressShareNotificationState
           margin: const EdgeInsets.only(bottom: 8),
           child: Card(
             elevation: 8,
-            shadowColor: theme.colorScheme.primary.withOpacity(0.3),
+            shadowColor: theme.colorScheme.primary.withAlpha((255 * 0.3).round()),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 gradient: LinearGradient(
                   colors: [
                     theme.colorScheme.primaryContainer,
-                    theme.colorScheme.primaryContainer.withOpacity(0.8),
+                    theme.colorScheme.primaryContainer
+                        .withAlpha((255 * 0.8).round()),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -139,7 +140,7 @@ class _ProgressShareNotificationState
                                 'ペアが進捗を共有',
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: theme.colorScheme.onPrimaryContainer
-                                      .withOpacity(0.8),
+                                      .withAlpha((255 * 0.8).round()),
                                 ),
                               ),
                               Text(
@@ -160,7 +161,7 @@ class _ProgressShareNotificationState
                             Icons.close,
                             size: 18,
                             color: theme.colorScheme.onPrimaryContainer
-                                .withOpacity(0.6),
+                                .withAlpha((255 * 0.6).round()),
                           ),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(

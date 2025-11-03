@@ -32,8 +32,6 @@ class LanguageSelectorWidget extends ConsumerWidget {
   }
 
   String _getLanguageChangeInfo(BuildContext context, Locale? currentLocale) {
-    final l10n = AppLocalizations.of(context);
-
     switch (currentLocale?.languageCode) {
       case 'ja':
         return '言語を変更すると、アプリ全体の表示言語、日付形式、通貨表示が即座に切り替わります。';
@@ -51,7 +49,6 @@ class LanguageSelectorWidget extends ConsumerWidget {
   }
 
   Widget _buildRegionalPreview(Locale locale) {
-    final config = RegionalService.getRegionalConfig(locale);
     final now = DateTime.now();
     const sampleAmount = 1234.56;
 
@@ -151,8 +148,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
                 Icon(Icons.language, color: MinqTokens.brandPrimary, size: 24),
                 SizedBox(width: MinqTokens.spacing(2)),
                 Text(
-                  AppLocalizations.of(context).languageSettings ??
-                      'Language Settings',
+                  AppLocalizations.of(context).languageSettings,
                   style: MinqTokens.titleMedium,
                 ),
               ],

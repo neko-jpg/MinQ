@@ -19,7 +19,7 @@ class OfflineBanner extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context);
 
     return Semantics(
@@ -59,7 +59,7 @@ class OfflineBanner extends ConsumerWidget {
   }
 
   void _showOfflineInfo(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context);
 
     showDialog<void>(
@@ -94,7 +94,7 @@ class OfflineEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context);
 
     return Center(
@@ -133,7 +133,7 @@ class ReadOnlyModeIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context);
 
     return Container(
@@ -142,9 +142,10 @@ class ReadOnlyModeIndicator extends StatelessWidget {
         vertical: tokens.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: tokens.accentWarning.withOpacity(0.12),
+        color: tokens.accentWarning.withAlpha((255 * 0.12).round()),
         borderRadius: BorderRadius.circular(tokens.radius.md),
-        border: Border.all(color: tokens.accentWarning.withOpacity(0.4)),
+        border: Border.all(
+            color: tokens.accentWarning.withAlpha((255 * 0.4).round())),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -194,7 +195,7 @@ class NetworkDependentWidget extends ConsumerWidget {
 
 /// オフライン時�E機�E制限ダイアログ
 void showOfflineDialog(BuildContext context) {
-  final tokens = context.tokens;
+  final tokens = MinqTheme.of(context);
   final l10n = AppLocalizations.of(context);
 
   showDialog<void>(
@@ -228,7 +229,7 @@ void showOfflineDialog(BuildContext context) {
 
 /// オフライン時�Eスナックバ�E
 void showOfflineSnackBar(BuildContext context) {
-  final tokens = context.tokens;
+  final tokens = MinqTheme.of(context);
   final l10n = AppLocalizations.of(context);
 
   ScaffoldMessenger.of(context).showSnackBar(
@@ -260,7 +261,7 @@ class SyncStatusWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final networkStatus = ref.watch(networkStatusProvider);
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context);
 
     return StreamBuilder<SyncStatus>(
@@ -268,7 +269,7 @@ class SyncStatusWidget extends ConsumerWidget {
       builder: (context, snapshot) {
         final syncStatus = snapshot.data ?? SyncStatus.synced;
 
-        if (networkStatus == NetworkStatus.offline) {
+        if (networkStatus.isOffline) {
           return _buildOfflineIndicator(context, tokens, l10n);
         }
 
@@ -282,7 +283,6 @@ class SyncStatusWidget extends ConsumerWidget {
           case SyncStatus.conflict:
             return _buildConflictIndicator(context, tokens, l10n);
           case SyncStatus.synced:
-          default:
             return const SizedBox.shrink();
         }
       },

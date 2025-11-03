@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:minq/presentation/theme/color_tokens.dart';
 import 'package:minq/presentation/theme/component_themes.dart';
+import 'package:minq/presentation/theme/design_tokens.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// MinQ Theme System v2.0
@@ -36,22 +37,22 @@ class MinqThemeV2 {
       colorScheme: ColorScheme.light(
         primary: colors.primary,
         onPrimary: colors.onPrimary,
-        primaryContainer: colors.primary.withOpacity(0.12),
+        primaryContainer: colors.primary.withAlpha((255 * 0.12).round()),
         onPrimaryContainer: colors.primary,
 
         secondary: colors.secondary,
         onSecondary: colors.onSecondary,
-        secondaryContainer: colors.secondary.withOpacity(0.12),
+        secondaryContainer: colors.secondary.withAlpha((255 * 0.12).round()),
         onSecondaryContainer: colors.secondary,
 
         tertiary: colors.tertiary,
         onTertiary: colors.onTertiary,
-        tertiaryContainer: colors.tertiary.withOpacity(0.12),
+        tertiaryContainer: colors.tertiary.withAlpha((255 * 0.12).round()),
         onTertiaryContainer: colors.tertiary,
 
         error: colors.error,
         onError: colors.onError,
-        errorContainer: colors.error.withOpacity(0.12),
+        errorContainer: colors.error.withAlpha((255 * 0.12).round()),
         onErrorContainer: colors.error,
 
         surface: colors.surface,
@@ -67,7 +68,7 @@ class MinqThemeV2 {
 
         inverseSurface: colors.textPrimary,
         onInverseSurface: colors.surface,
-        inversePrimary: colors.primary.withOpacity(0.8),
+        inversePrimary: colors.primary.withAlpha((255 * 0.8).round()),
       ),
 
       // Typography
@@ -134,22 +135,22 @@ class MinqThemeV2 {
       colorScheme: ColorScheme.dark(
         primary: colors.primary,
         onPrimary: colors.onPrimary,
-        primaryContainer: colors.primary.withOpacity(0.12),
+        primaryContainer: colors.primary.withAlpha((255 * 0.12).round()),
         onPrimaryContainer: colors.primary,
 
         secondary: colors.secondary,
         onSecondary: colors.onSecondary,
-        secondaryContainer: colors.secondary.withOpacity(0.12),
+        secondaryContainer: colors.secondary.withAlpha((255 * 0.12).round()),
         onSecondaryContainer: colors.secondary,
 
         tertiary: colors.tertiary,
         onTertiary: colors.onTertiary,
-        tertiaryContainer: colors.tertiary.withOpacity(0.12),
+        tertiaryContainer: colors.tertiary.withAlpha((255 * 0.12).round()),
         onTertiaryContainer: colors.tertiary,
 
         error: colors.error,
         onError: colors.onError,
-        errorContainer: colors.error.withOpacity(0.12),
+        errorContainer: colors.error.withAlpha((255 * 0.12).round()),
         onErrorContainer: colors.error,
 
         surface: colors.surface,
@@ -165,7 +166,7 @@ class MinqThemeV2 {
 
         inverseSurface: colors.textPrimary,
         onInverseSurface: colors.surface,
-        inversePrimary: colors.primary.withOpacity(0.8),
+        inversePrimary: colors.primary.withAlpha((255 * 0.8).round()),
       ),
 
       // Typography

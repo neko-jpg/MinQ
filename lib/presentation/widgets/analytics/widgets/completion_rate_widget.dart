@@ -34,7 +34,7 @@ class CompletionRateWidget extends ConsumerWidget {
               child: CircularProgressIndicator(
                 value: rate,
                 strokeWidth: 8,
-                backgroundColor: Colors.grey.withOpacity(0.3),
+                backgroundColor: Colors.grey.withAlpha((255 * 0.3).round()),
                 valueColor: AlwaysStoppedAnimation<Color>(_getRateColor(rate)),
               ),
             ),
@@ -85,7 +85,7 @@ class CompletionRateWidget extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(

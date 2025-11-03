@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:minq/core/realtime/realtime_message.dart';
+import 'package:minq/core/realtime/realtime_message.dart' as realtime;
 import 'package:minq/domain/pair/pair_message.dart';
 import 'package:minq/presentation/providers/realtime_providers.dart';
 
@@ -48,12 +48,12 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
   @override
   Widget build(BuildContext context) {
     // リアルタイムメッセージを監視
-    ref.listen<AsyncValue<RealtimeMessage>>(pairMessageStreamProvider, (
+    ref.listen<AsyncValue<realtime.RealtimeMessage>>(pairMessageStreamProvider, (
       previous,
       next,
     ) {
       next.whenData((realtimeMessage) {
-        if (realtimeMessage.type == MessageType.pairMessage &&
+        if (realtimeMessage.type == realtime.MessageType.pairMessage &&
             (realtimeMessage.senderId == widget.partnerId ||
                 realtimeMessage.recipientId == widget.currentUserId)) {
           _handleRealtimeMessage(realtimeMessage);
@@ -164,10 +164,10 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
                       fontSize: 10,
                       color:
                           isCurrentUser
-                              ? theme.colorScheme.onPrimary.withOpacity(0.7)
-                              : theme.colorScheme.onSurfaceVariant.withOpacity(
-                                0.7,
-                              ),
+                              ? theme.colorScheme.onPrimary.withAlpha((255 * 0.7).round())
+                              : theme.colorScheme.onSurfaceVariant.withAlpha(
+                                  (255 * 0.7).round(),
+                                ),
                     ),
                   ),
                 ],
@@ -202,7 +202,8 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         border: Border(
-          top: BorderSide(color: theme.colorScheme.outline.withOpacity(0.2)),
+          top: BorderSide(
+              color: theme.colorScheme.outline.withAlpha((255 * 0.2).round())),
         ),
       ),
       child: Row(
@@ -278,7 +279,7 @@ class _RealtimeChatWidgetState extends ConsumerState<RealtimeChatWidget> {
     _scrollToBottom();
   }
 
-  void _handleRealtimeMessage(RealtimeMessage realtimeMessage) {
+  void _handleRealtimeMessage(realtime.RealtimeMessage realtimeMessage) {
     if (realtimeMessage.senderId == widget.currentUserId) {
       // 自分が送信したメッセージは既にローカルに追加済み
       return;

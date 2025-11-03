@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:minq/data/providers.dart';
 import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
+import 'package:minq/presentation/providers/providers.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/controllers/quest_log_controller.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -110,7 +111,8 @@ class _LogCard extends ConsumerWidget {
                 title: const Text('クエストが見つかりません'),
                 subtitle: _buildDebugSubtitle(log.questId),
               ),
-          data: (quest) {
+          data: (questObject) {
+            final quest = questObject as Quest?;
             if (quest == null) {
               return ListTile(
                 leading: const Icon(Icons.error_outline),

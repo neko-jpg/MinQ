@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:minq/core/challenges/offline_challenge_service.dart';
 import 'package:minq/data/local/models/local_quest.dart';
 import 'package:minq/presentation/theme/minq_tokens.dart';
 import 'package:minq/presentation/widgets/challenges/challenge_progress_animation.dart';
-import 'package:minq/presentation/widgets/common/offline_indicator.dart';
-import 'package:minq/presentation/widgets/common/shimmer_loading.dart';
+import 'package:minq/presentation/widgets/common/offline_indicator.dart'
+    hide SyncStatus;
 
 /// Enhanced challenge card with modern design and offline support
 class EnhancedChallengeCard extends ConsumerStatefulWidget {
@@ -91,13 +89,13 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
                     color: _getGlowColor(
                       isCompleted,
                       isExpiringSoon,
-                    ).withOpacity(0.3 * _glowAnimation.value),
+                    ).withAlpha((255 * 0.3 * _glowAnimation.value).round()),
                     blurRadius: 12 + (8 * _glowAnimation.value),
                     spreadRadius: 2 + (2 * _glowAnimation.value),
                     offset: const Offset(0, 4),
                   ),
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withAlpha((255 * 0.1).round()),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -156,7 +154,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
     return Positioned.fill(
       child: CustomPaint(
         painter: _ChallengeCardPatternPainter(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withAlpha((255 * 0.1).round()),
         ),
       ),
     );
@@ -170,7 +168,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withAlpha((255 * 0.2).round()),
             borderRadius: MinqTokens.cornerMedium(),
           ),
           child: Icon(_getChallengeIcon(), color: Colors.white, size: 24),
@@ -204,7 +202,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
               Text(
                 _getSubtitle(isExpiringSoon),
                 style: MinqTokens.bodySmall.copyWith(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withAlpha((255 * 0.9).round()),
                 ),
               ),
             ],
@@ -221,7 +219,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
     return Text(
       widget.challenge.description,
       style: MinqTokens.bodyMedium.copyWith(
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withAlpha((255 * 0.9).round()),
       ),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
@@ -237,7 +235,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
             Text(
               '進捗',
               style: MinqTokens.bodySmall.copyWith(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withAlpha((255 * 0.9).round()),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -268,7 +266,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
           child: Text(
             '${(progressPercentage * 100).toInt()}%',
             style: MinqTokens.bodySmall.copyWith(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withAlpha((255 * 0.8).round()),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -287,7 +285,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
             vertical: MinqTokens.spacing(1),
           ),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withAlpha((255 * 0.2).round()),
             borderRadius: MinqTokens.cornerSmall(),
           ),
           child: Row(
@@ -317,7 +315,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
               color:
                   isExpiringSoon
                       ? Colors.orange.shade200
-                      : Colors.white.withOpacity(0.8),
+                      : Colors.white.withAlpha((255 * 0.8).round()),
               size: 16,
             ),
             SizedBox(width: MinqTokens.spacing(1)),
@@ -327,7 +325,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
                 color:
                     isExpiringSoon
                         ? Colors.orange.shade200
-                        : Colors.white.withOpacity(0.8),
+                        : Colors.white.withAlpha((255 * 0.8).round()),
                 fontWeight:
                     isExpiringSoon ? FontWeight.bold : FontWeight.normal,
               ),
@@ -346,7 +344,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
           vertical: MinqTokens.spacing(1),
         ),
         decoration: BoxDecoration(
-          color: Colors.green.withOpacity(0.3),
+          color: Colors.green.withAlpha((255 * 0.3).round()),
           borderRadius: MinqTokens.cornerSmall(),
           border: Border.all(color: Colors.green.shade200),
         ),
@@ -374,7 +372,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
           vertical: MinqTokens.spacing(1),
         ),
         decoration: BoxDecoration(
-          color: Colors.orange.withOpacity(0.3),
+          color: Colors.orange.withAlpha((255 * 0.3).round()),
           borderRadius: MinqTokens.cornerSmall(),
           border: Border.all(color: Colors.orange.shade200),
         ),
@@ -401,7 +399,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
         vertical: MinqTokens.spacing(1),
       ),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.3),
+        color: Colors.blue.withAlpha((255 * 0.3).round()),
         borderRadius: MinqTokens.cornerSmall(),
         border: Border.all(color: Colors.blue.shade200),
       ),
@@ -422,8 +420,8 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
           borderRadius: MinqTokens.cornerLarge(),
           gradient: LinearGradient(
             colors: [
-              Colors.green.withOpacity(0.1),
-              Colors.green.withOpacity(0.05),
+              Colors.green.withAlpha((255 * 0.1).round()),
+              Colors.green.withAlpha((255 * 0.05).round()),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -460,7 +458,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
     return LinearGradient(
       colors: [
         MinqTokens.brandPrimary,
-        MinqTokens.brandPrimary.withOpacity(0.8),
+        MinqTokens.brandPrimary.withAlpha((255 * 0.8).round()),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -524,7 +522,7 @@ class _EnhancedChallengeCardState extends ConsumerState<EnhancedChallengeCard>
     final difference = endDate.difference(now);
 
     // Consider "expiring soon" if less than 24 hours remain
-    return difference.inHours < 24 && difference.isPositive;
+    return difference.inHours < 24 && !difference.isNegative;
   }
 }
 

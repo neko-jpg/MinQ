@@ -97,7 +97,7 @@ class ErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     return Scaffold(
       backgroundColor: tokens.background,
       body: SafeArea(
@@ -212,7 +212,7 @@ class ErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     return Container(
       color: tokens.accentError.withAlpha(31),
       padding: EdgeInsets.all(tokens.spacing.lg),

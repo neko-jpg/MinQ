@@ -201,7 +201,7 @@ class _AnimationSettingsScreenState
     return Card(
       margin: EdgeInsets.only(bottom: tokens.spacing.sm),
       child: ListTile(
-        leading: Icon(icon, color: tokens.primary),
+        leading: Icon(icon, color: tokens.brandPrimary),
         title: Text(
           title,
           style: tokens.typography.bodyLarge.copyWith(
@@ -218,7 +218,7 @@ class _AnimationSettingsScreenState
         trailing: Switch(
           value: value,
           onChanged: onChanged,
-          activeThumbColor: tokens.primary,
+          activeThumbColor: tokens.brandPrimary,
         ),
         onTap: () => onChanged(!value),
       ),
@@ -252,13 +252,13 @@ class _AnimationSettingsScreenState
                 _buildTestButton(
                   context,
                   l10n.testFadeIn,
-                  Icons.fade_in,
+                  Icons.visibility,
                   () => _testFadeInAnimation(),
                 ),
                 _buildTestButton(
                   context,
                   l10n.testSlideIn,
-                  Icons.slide_in,
+                  Icons.arrow_forward,
                   () => _testSlideInAnimation(),
                 ),
                 _buildTestButton(
@@ -294,7 +294,7 @@ class _AnimationSettingsScreenState
       icon: Icon(icon, size: 16),
       label: Text(label),
       style: ElevatedButton.styleFrom(
-        backgroundColor: tokens.primary,
+        backgroundColor: tokens.brandPrimary,
         foregroundColor: tokens.onPrimary,
         padding: EdgeInsets.symmetric(
           horizontal: tokens.spacing.sm,
@@ -309,7 +309,7 @@ class _AnimationSettingsScreenState
     final l10n = context.l10n;
 
     return Card(
-      color: tokens.info.withOpacity(0.1),
+      color: tokens.info.withAlpha((255 * 0.1).round()),
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing.md),
         child: Row(
@@ -387,8 +387,6 @@ class _AnimationTestDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-
     return AlertDialog(
       title: Text(title),
       content: SizedBox(width: 200, height: 200, child: Center(child: child)),
@@ -451,7 +449,7 @@ class _FadeInTestWidgetState extends State<_FadeInTestWidget>
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              color: context.tokens.primary,
+              color: context.tokens.brandPrimary,
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.star, color: Colors.white, size: 50),
@@ -511,7 +509,7 @@ class _SlideInTestWidgetState extends State<_SlideInTestWidget>
         width: 100,
         height: 100,
         decoration: BoxDecoration(
-          color: context.tokens.secondary,
+          color: context.tokens.accentSecondary,
           borderRadius: BorderRadius.circular(12),
         ),
         child: const Icon(Icons.arrow_upward, color: Colors.white, size: 50),
@@ -569,7 +567,7 @@ class _ScaleTestWidgetState extends State<_ScaleTestWidget>
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              color: context.tokens.tertiary,
+              color: context.tokens.joyAccent,
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.zoom_in, color: Colors.white, size: 50),

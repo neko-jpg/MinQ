@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/core/social/pair_system.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/pair/pair_connection.dart';
+import 'package:minq/domain/ai/ai_insights.dart';
 import 'package:minq/domain/pair/progress_share.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/charts/completion_trend_chart.dart';
 import 'package:minq/presentation/widgets/polished_buttons.dart';
@@ -70,7 +70,6 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -90,7 +89,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.chat, color: tokens.primary),
+            icon: Icon(Icons.chat, color: tokens.brandPrimary),
             onPressed: () => context.push('/pair/${widget.pairId}/chat'),
           ),
           IconButton(
@@ -100,9 +99,9 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
         ],
         bottom: TabBar(
           controller: _tabController,
-          labelColor: tokens.primary,
+          labelColor: tokens.brandPrimary,
           unselectedLabelColor: tokens.textSecondary,
-          indicatorColor: tokens.primary,
+          indicatorColor: tokens.brandPrimary,
           tabs: const [Tab(text: '概要'), Tab(text: '比較'), Tab(text: '進捗')],
         ),
       ),
@@ -147,10 +146,10 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                     Container(
                       padding: EdgeInsets.all(tokens.spacing.sm),
                       decoration: BoxDecoration(
-                        color: tokens.primary.withOpacity(0.1),
+                        color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
                         borderRadius: BorderRadius.circular(tokens.radius.md),
                       ),
-                      child: Icon(Icons.group, color: tokens.primary, size: 24),
+                      child: Icon(Icons.group, color: tokens.brandPrimary, size: 24),
                     ),
                     SizedBox(width: tokens.spacing.md),
                     Expanded(
@@ -179,7 +178,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                         vertical: tokens.spacing.xs,
                       ),
                       decoration: BoxDecoration(
-                        color: tokens.success.withOpacity(0.1),
+                        color: tokens.success.withAlpha((255 * 0.1).round()),
                         borderRadius: BorderRadius.circular(tokens.radius.sm),
                       ),
                       child: Text(
@@ -222,7 +221,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                   '総メッセージ',
                   '${statistics.totalMessages}',
                   Icons.chat,
-                  tokens.primary,
+                  tokens.brandPrimary,
                 ),
               ),
               SizedBox(width: tokens.spacing.md),
@@ -341,7 +340,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
             userProgress.completedQuests,
             partnerProgress.completedQuests,
             Icons.task_alt,
-            tokens.primary,
+            tokens.brandPrimary,
           ),
 
           SizedBox(height: tokens.spacing.md),
@@ -391,7 +390,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                 SizedBox(height: tokens.spacing.md),
                 SizedBox(
                   height: 200,
-                  child: CompletionTrendChart(data: _generateChartData()),
+                  child: CompletionTrendChart(trends: _generateChartData()),
                 ),
               ],
             ),
@@ -554,7 +553,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                     Text(
                       '$userValue',
                       style: tokens.typography.h3.copyWith(
-                        color: tokens.primary,
+                        color: tokens.brandPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -574,7 +573,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                     Text(
                       '$partnerValue',
                       style: tokens.typography.h3.copyWith(
-                        color: tokens.secondary,
+                        color: tokens.accentSecondary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -598,7 +597,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                     flex: (userPercentage * 100).round(),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: tokens.primary,
+                        color: tokens.brandPrimary,
                         borderRadius: BorderRadius.horizontal(
                           left: const Radius.circular(4),
                           right:
@@ -614,7 +613,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                     flex: (partnerPercentage * 100).round(),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: tokens.secondary,
+                        color: tokens.accentSecondary,
                         borderRadius: BorderRadius.horizontal(
                           left:
                               userPercentage == 0
@@ -683,7 +682,7 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
                 vertical: tokens.spacing.xs,
               ),
               decoration: BoxDecoration(
-                color: tokens.success.withOpacity(0.1),
+                color: tokens.success.withAlpha((255 * 0.1).round()),
                 borderRadius: BorderRadius.circular(tokens.radius.sm),
               ),
               child: Text(
@@ -711,9 +710,9 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
           size: 20,
         );
       case ProgressShareType.challengeCompleted:
-        return Icon(Icons.emoji_events, color: tokens.primary, size: 20);
+        return Icon(Icons.emoji_events, color: tokens.brandPrimary, size: 20);
       case ProgressShareType.milestoneReached:
-        return Icon(Icons.flag, color: tokens.secondary, size: 20);
+        return Icon(Icons.flag, color: tokens.accentSecondary, size: 20);
       case ProgressShareType.encouragement:
         return Icon(Icons.favorite, color: tokens.error, size: 20);
     }
@@ -748,8 +747,31 @@ class _PairDashboardScreenState extends ConsumerState<PairDashboardScreen>
     return '${date.month}/${date.day}';
   }
 
-  List<Map<String, dynamic>> _generateChartData() {
-    // TODO: 実際のデータを生成
-    return [];
+  HabitCompletionTrends _generateChartData() {
+    // TODO: Hook up to actual AI service
+    return const HabitCompletionTrends(
+      weeklyTrends: <String, double>{
+        'W1': 0.7,
+        'W2': 0.8,
+        'W3': 0.6,
+        'W4': 0.9,
+      },
+      dailyTrends: <String, double>{
+        'Mon': 0.75,
+        'Tue': 0.8,
+        'Wed': 0.65,
+        'Thu': 0.85,
+        'Fri': 0.9,
+        'Sat': 0.95,
+        'Sun': 0.7,
+      },
+      categoryDistribution: <String, int>{
+        'Fitness': 4,
+        'Learning': 3,
+        'Wellbeing': 3,
+      },
+      overallTrend: 0.15,
+      trendDescription: 'Your completion rate is trending upwards. Keep it up!',
+    );
   }
 }

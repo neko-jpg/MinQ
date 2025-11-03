@@ -35,43 +35,43 @@ class CelebrationSystem {
 
   /// 利用可能な祝福演出のリストを生成（デザイントークンを使用）
   static List<CelebrationConfig> _getCelebrations(MinqTheme theme) => [
-    CelebrationConfig(
-      type: CelebrationType.confetti,
-      message: '素晴らしい！🎉',
-      primaryColor: theme.tokens.warning, // Golden color
-      secondaryColor: theme.tokens.error,
-    ),
-    CelebrationConfig(
-      type: CelebrationType.fireworks,
-      message: 'やったね！🎆',
-      primaryColor: theme.tokens.secondary,
-      secondaryColor: theme.tokens.warning,
-    ),
-    CelebrationConfig(
-      type: CelebrationType.sparkles,
-      message: 'キラキラ✨',
-      primaryColor: theme.tokens.warning,
-      secondaryColor: theme.tokens.tertiary,
-    ),
-    CelebrationConfig(
-      type: CelebrationType.trophy,
-      message: 'チャンピオン！🏆',
-      primaryColor: theme.tokens.warning,
-      secondaryColor: theme.tokens.success,
-    ),
-    CelebrationConfig(
-      type: CelebrationType.mascot,
-      message: 'がんばったね！🐱',
-      primaryColor: theme.tokens.error,
-      secondaryColor: theme.tokens.warning,
-    ),
-    CelebrationConfig(
-      type: CelebrationType.golden,
-      message: 'ゴールド達成！⭐',
-      primaryColor: theme.tokens.warning,
-      secondaryColor: theme.tokens.primary,
-    ),
-  ];
+        CelebrationConfig(
+          type: CelebrationType.confetti,
+          message: '素晴らしい！🎉',
+          primaryColor: theme.tokens.warning, // Golden color
+          secondaryColor: theme.tokens.error,
+        ),
+        CelebrationConfig(
+          type: CelebrationType.fireworks,
+          message: 'やったね！🎆',
+          primaryColor: theme.tokens.secondary,
+          secondaryColor: theme.tokens.warning,
+        ),
+        CelebrationConfig(
+          type: CelebrationType.sparkles,
+          message: 'キラキラ✨',
+          primaryColor: theme.tokens.warning,
+          secondaryColor: theme.tokens.tertiary,
+        ),
+        CelebrationConfig(
+          type: CelebrationType.trophy,
+          message: 'チャンピオン！🏆',
+          primaryColor: theme.tokens.warning,
+          secondaryColor: theme.tokens.success,
+        ),
+        CelebrationConfig(
+          type: CelebrationType.mascot,
+          message: 'がんばったね！🐱',
+          primaryColor: theme.tokens.error,
+          secondaryColor: theme.tokens.warning,
+        ),
+        CelebrationConfig(
+          type: CelebrationType.golden,
+          message: 'ゴールド達成！⭐',
+          primaryColor: theme.tokens.warning,
+          secondaryColor: theme.tokens.primary,
+        ),
+      ];
 
   /// ランダムな祝福演出を取得（デザイントークンを使用）
   static CelebrationConfig getRandomCelebration(MinqTheme theme) {
@@ -97,7 +97,7 @@ class CelebrationSystem {
     CelebrationConfig? config,
     VoidCallback? onComplete,
   }) {
-    final theme = Theme.of(context).extension<MinqTheme>()!;
+    final theme = MinqTheme.of(context);
     final celebrationConfig = config ?? getRandomCelebration(theme);
 
     // ハプティックフィードバック
@@ -115,14 +115,13 @@ class CelebrationSystem {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
-      builder:
-          (context) => CelebrationOverlay(
-            config: celebrationConfig,
-            onComplete: () {
-              Navigator.of(context).pop();
-              onComplete?.call();
-            },
-          ),
+      builder: (context) => CelebrationOverlay(
+        config: celebrationConfig,
+        onComplete: () {
+          Navigator.of(context).pop();
+          onComplete?.call();
+        },
+      ),
     );
   }
 
@@ -339,7 +338,7 @@ class ParticleEffectPainter extends CustomPainter {
   final List<Particle> particles;
 
   ParticleEffectPainter({required this.animation, required this.config})
-    : particles = _generateParticles(config) {
+      : particles = _generateParticles(config) {
     animation.addListener(() {
       // アニメーションの更新時にパーティクルを更新
     });
@@ -370,10 +369,9 @@ class ParticleEffectPainter extends CustomPainter {
     final progress = animation.value;
 
     for (final particle in particles) {
-      final paint =
-          Paint()
-            ..color = particle.color.withAlpha(((1 - progress) * 204).round())
-            ..style = PaintingStyle.fill;
+      final paint = Paint()
+        ..color = particle.color.withAlpha(((1 - progress) * 204).round())
+        ..style = PaintingStyle.fill;
 
       final x = (particle.x + particle.vx * progress) * size.width;
       final y = (particle.y + particle.vy * progress) * size.height;

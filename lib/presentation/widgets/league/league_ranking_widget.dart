@@ -84,14 +84,14 @@ class _RankingTile extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color:
-            isCurrentUser ? tokens.primary.withOpacity(0.12) : tokens.surface,
+            isCurrentUser ? tokens.primary.withAlpha((255 * 0.12).round()) : tokens.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isCurrentUser ? tokens.primary : tokens.border,
         ),
         boxShadow: [
           BoxShadow(
-            color: tokens.textPrimary.withOpacity(0.04),
+            color: tokens.textPrimary.withAlpha((255 * 0.04).round()),
             blurRadius: 10,
             offset: const Offset(0, 6),
           ),
@@ -178,7 +178,7 @@ class _RankBadge extends StatelessWidget {
     final tokens = context.colorTokens;
     final background = isCurrentUser
         ? tokens.primary
-        : ranking.rankColor.withOpacity(0.18);
+        : ranking.rankColor.withAlpha((255 * 0.18).round());
     final foreground = isCurrentUser ? Colors.white : ranking.rankColor;
 
     return Container(

@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/monitoring/ab_testing_service.dart';
+// import 'package:minq/core/monitoring/ab_testing_service.dart';
 import 'package:minq/core/monitoring/app_monitoring_service.dart';
 import 'package:minq/core/monitoring/crash_reporting_service.dart';
 import 'package:minq/core/monitoring/performance_monitoring_service.dart';
@@ -29,12 +29,12 @@ class _MonitoringDashboardScreenState
   final PerformanceMonitoringService _performance =
       PerformanceMonitoringService();
   final UserBehaviorAnalytics _userAnalytics = UserBehaviorAnalytics();
-  final ABTestingService _abTesting = ABTestingService();
+  // final ABTestingService _abTesting = ABTestingService();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -56,7 +56,7 @@ class _MonitoringDashboardScreenState
             Tab(icon: Icon(Icons.speed), text: 'Performance'),
             Tab(icon: Icon(Icons.bug_report), text: 'Crashes'),
             Tab(icon: Icon(Icons.analytics), text: 'Analytics'),
-            Tab(icon: Icon(Icons.science), text: 'A/B Tests'),
+            // Tab(icon: Icon(Icons.science), text: 'A/B Tests'),
           ],
         ),
       ),
@@ -67,7 +67,7 @@ class _MonitoringDashboardScreenState
           _buildPerformanceTab(),
           _buildCrashesTab(),
           _buildAnalyticsTab(),
-          _buildABTestsTab(),
+          // _buildABTestsTab(),
         ],
       ),
     );
@@ -408,58 +408,58 @@ class _MonitoringDashboardScreenState
     );
   }
 
-  Widget _buildABTestsTab() {
-    return RefreshIndicator(
-      onRefresh: () async {
-        setState(() {});
-      },
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Active A/B Tests
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Active A/B Tests',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildActiveABTests(),
-                  ],
-                ),
-              ),
-            ),
+  // Widget _buildABTestsTab() {
+  //   return RefreshIndicator(
+  //     onRefresh: () async {
+  //       setState(() {});
+  //     },
+  //     child: SingleChildScrollView(
+  //       padding: const EdgeInsets.all(16),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           // Active A/B Tests
+  //           Card(
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(16),
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     'Active A/B Tests',
+  //                     style: Theme.of(context).textTheme.titleMedium,
+  //                   ),
+  //                   const SizedBox(height: 12),
+  //                   _buildActiveABTests(),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
 
-            const SizedBox(height: 16),
+  //           const SizedBox(height: 16),
 
-            // User Assignments
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Current User Assignments',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildUserAssignments(),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  //           // User Assignments
+  //           Card(
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(16),
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     'Current User Assignments',
+  //                     style: Theme.of(context).textTheme.titleMedium,
+  //                   ),
+  //                   const SizedBox(height: 12),
+  //                   _buildUserAssignments(),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildHealthEventTile(AppHealthEvent event) {
     IconData icon;
@@ -616,7 +616,7 @@ class _MonitoringDashboardScreenState
       subtitle: Text(_formatDateTime(crash.timestamp)),
       trailing: Chip(
         label: Text(crash.type.name),
-        backgroundColor: severityColor.withOpacity(0.2),
+        backgroundColor: severityColor.withAlpha((255 * 0.2).round()),
       ),
       onTap: () => _showCrashDetails(crash),
     );
@@ -645,7 +645,7 @@ class _MonitoringDashboardScreenState
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.2),
+                      color: Colors.blue.withAlpha((255 * 0.2).round()),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
@@ -749,45 +749,45 @@ class _MonitoringDashboardScreenState
     );
   }
 
-  Widget _buildActiveABTests() {
-    final assignments = _abTesting.getActiveAssignments();
+  // Widget _buildActiveABTests() {
+  //   final assignments = _abTesting.getActiveAssignments();
 
-    if (assignments.isEmpty) {
-      return const Text('No active A/B tests');
-    }
+  //   if (assignments.isEmpty) {
+  //     return const Text('No active A/B tests');
+  //   }
 
-    return Column(
-      children:
-          assignments.entries.map((entry) {
-            return ListTile(
-              title: Text(entry.key),
-              subtitle: Text('Variant: ${entry.value}'),
-              trailing: const Icon(Icons.science),
-            );
-          }).toList(),
-    );
-  }
+  //   return Column(
+  //     children:
+  //         assignments.entries.map((entry) {
+  //           return ListTile(
+  //             title: Text(entry.key),
+  //             subtitle: Text('Variant: ${entry.value}'),
+  //             trailing: const Icon(Icons.science),
+  //           );
+  //         }).toList(),
+  //   );
+  // }
 
-  Widget _buildUserAssignments() {
-    final assignments = _abTesting.getActiveAssignments();
+  // Widget _buildUserAssignments() {
+  //   final assignments = _abTesting.getActiveAssignments();
 
-    if (assignments.isEmpty) {
-      return const Text('No current assignments');
-    }
+  //   if (assignments.isEmpty) {
+  //     return const Text('No current assignments');
+  //   }
 
-    return Column(
-      children:
-          assignments.entries.map((entry) {
-            return Card(
-              child: ListTile(
-                title: Text(entry.key),
-                subtitle: Text('Assigned to: ${entry.value}'),
-                leading: const Icon(Icons.person),
-              ),
-            );
-          }).toList(),
-    );
-  }
+  //   return Column(
+  //     children:
+  //         assignments.entries.map((entry) {
+  //           return Card(
+  //             child: ListTile(
+  //               title: Text(entry.key),
+  //               subtitle: Text('Assigned to: ${entry.value}'),
+  //               leading: const Icon(Icons.person),
+  //             ),
+  //           );
+  //         }).toList(),
+  //   );
+  // }
 
   void _showCrashDetails(CrashReport crash) {
     showDialog(

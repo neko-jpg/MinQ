@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/network/network_status_service.dart';
+import 'package:minq/core/network/network_status_provider.dart';
 import 'package:minq/core/notifications/advanced_notification_service.dart';
 import 'package:minq/core/realtime/realtime_message.dart';
 import 'package:minq/core/realtime/realtime_service.dart';
 import 'package:minq/core/realtime/websocket_manager.dart';
+
+import 'package:minq/data/providers.dart';
 
 /// WebSocketマネージャープロバイダー
 final webSocketManagerProvider = Provider<WebSocketManager>((ref) {
@@ -16,7 +18,8 @@ final realtimeServiceProvider = Provider<RealtimeService>((ref) {
   final webSocketManager = ref.watch(webSocketManagerProvider);
   final notificationService = ref.watch(advancedNotificationServiceProvider);
 
-  final service = RealtimeService(webSocketManager, notificationService);
+  final service =
+      RealtimeService(webSocketManager, notificationService);
 
   ref.onDispose(() {
     service.dispose();

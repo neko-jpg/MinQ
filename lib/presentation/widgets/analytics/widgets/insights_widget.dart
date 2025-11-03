@@ -45,10 +45,10 @@ class InsightsWidget extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _getPriorityColor(insight.priority).withOpacity(0.1),
+        color: _getPriorityColor(insight.priority).withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: _getPriorityColor(insight.priority).withOpacity(0.3),
+          color: _getPriorityColor(insight.priority).withAlpha((255 * 0.3).round()),
         ),
       ),
       child: Column(

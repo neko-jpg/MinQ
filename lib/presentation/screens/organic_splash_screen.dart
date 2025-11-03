@@ -151,8 +151,8 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
             shape: BoxShape.circle,
             gradient: RadialGradient(
               colors: [
-                colorScheme.primary.withOpacity(0.45 * opacity),
-                colorScheme.primary.withOpacity(0.0),
+                colorScheme.primary.withAlpha((255 * 0.45 * opacity).round()),
+                colorScheme.primary.withAlpha(0),
               ],
               stops: const [0.0, 1.0],
             ),
@@ -182,7 +182,7 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
             ),
             boxShadow: [
               BoxShadow(
-                color: colorScheme.primary.withOpacity(0.45),
+                color: colorScheme.primary.withAlpha((255 * 0.45).round()),
                 blurRadius: 32,
                 offset: const Offset(0, 12),
               ),
@@ -222,7 +222,7 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
               child: Text(
                 '習慣をクエストに。毎日を冒険に。',
                 style: tokens.typography.bodyMedium.copyWith(
-                  color: tokens.surfaceForeground.withOpacity(0.84),
+                  color: tokens.surfaceForeground.withAlpha((255 * 0.84).round()),
                 ),
               ),
             ),
@@ -258,7 +258,7 @@ class _OrganicSplashScreenState extends ConsumerState<OrganicSplashScreen>
             Text(
               '初期設定を準備中…',
               style: tokens.typography.bodySmall.copyWith(
-                color: tokens.surfaceForeground.withOpacity(0.75),
+                color: tokens.surfaceForeground.withAlpha((255 * 0.75).round()),
               ),
             ),
           ],

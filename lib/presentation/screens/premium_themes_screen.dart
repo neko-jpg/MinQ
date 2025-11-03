@@ -287,7 +287,7 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
           boxShadow: [
             if (isSelected)
               BoxShadow(
-                color: context.colorTokens.primary.withOpacity(0.2),
+                color: context.colorTokens.primary.withAlpha((255 * 0.2).round()),
                 blurRadius: 8,
                 spreadRadius: 0,
                 offset: const Offset(0, 4),
@@ -325,7 +325,7 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
                           child: Container(
                             height: 20,
                             decoration: BoxDecoration(
-                              color: theme.colorTokens.surface.withOpacity(0.9),
+                              color: theme.colorTokens.surface.withAlpha((255 * 0.9).round()),
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
@@ -337,7 +337,7 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
                           child: Container(
                             height: 30,
                             decoration: BoxDecoration(
-                              color: theme.colorTokens.surface.withOpacity(0.9),
+                              color: theme.colorTokens.surface.withAlpha((255 * 0.9).round()),
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
@@ -404,7 +404,7 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withAlpha((255 * 0.5).round()),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Center(
@@ -465,7 +465,7 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: context.colorTokens.primary.withOpacity(0.1),
+                color: context.colorTokens.primary.withAlpha((255 * 0.1).round()),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -496,7 +496,7 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: context.colorTokens.warning.withOpacity(0.1),
+                            color: context.colorTokens.warning.withAlpha((255 * 0.1).round()),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -538,6 +538,7 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
         .read(premiumThemesServiceProvider)
         .setTheme(theme.id);
 
+    if (!mounted) return;
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -565,6 +566,7 @@ class _PremiumThemesScreenState extends ConsumerState<PremiumThemesScreen>
         .read(premiumThemesServiceProvider)
         .setAnimation(animation.id, enabled);
 
+    if (!mounted) return;
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

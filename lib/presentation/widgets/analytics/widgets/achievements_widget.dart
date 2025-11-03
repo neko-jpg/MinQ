@@ -39,14 +39,14 @@ class AchievementsWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         color:
             achievement.isUnlocked
-                ? _getRarityColor(achievement.rarity).withOpacity(0.1)
-                : Colors.grey.withOpacity(0.1),
+                ? _getRarityColor(achievement.rarity).withAlpha((255 * 0.1).round())
+                : Colors.grey.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color:
               achievement.isUnlocked
-                  ? _getRarityColor(achievement.rarity).withOpacity(0.3)
-                  : Colors.grey.withOpacity(0.3),
+                  ? _getRarityColor(achievement.rarity).withAlpha((255 * 0.3).round())
+                  : Colors.grey.withAlpha((255 * 0.3).round()),
         ),
       ),
       child: Row(
@@ -98,7 +98,7 @@ class AchievementsWidget extends ConsumerWidget {
                   const SizedBox(height: 6),
                   LinearProgressIndicator(
                     value: achievement.progress,
-                    backgroundColor: Colors.grey.withOpacity(0.3),
+                    backgroundColor: Colors.grey.withAlpha((255 * 0.3).round()),
                     valueColor: AlwaysStoppedAnimation<Color>(
                       Theme.of(context).primaryColor,
                     ),

@@ -253,7 +253,7 @@ class DashboardLayout {
 
 /// デフォルトダッシュボード設定
 class DefaultDashboardConfigs {
-  static const overview = CustomDashboardConfig(
+  static final overview = CustomDashboardConfig(
     id: 'overview',
     name: '概要',
     description: '全体的な進捗と主要な指標を表示',
@@ -309,7 +309,7 @@ class DefaultDashboardConfigs {
     updatedAt: _defaultDate,
   );
 
-  static const detailed = CustomDashboardConfig(
+  static final detailed = CustomDashboardConfig(
     id: 'detailed',
     name: '詳細分析',
     description: '詳細な分析とパターンを表示',

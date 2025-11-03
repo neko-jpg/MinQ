@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/core/network/network_status_provider.dart';
 import 'package:minq/core/profile/avatar_service.dart';
 import 'package:minq/core/profile/profile_service.dart';
 import 'package:minq/core/sync/sync_providers.dart';
@@ -78,7 +77,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
     return PopScope(
       canPop: !_hasUnsavedChanges,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (!didPop && _hasUnsavedChanges) {
           _showUnsavedChangesDialog();
         }
@@ -115,7 +114,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                         style: TextStyle(
                           color:
                               _hasUnsavedChanges
-                                  ? tokens.primary
+                                  ? tokens.brandPrimary
                                   : tokens.textMuted,
                           fontWeight: FontWeight.w600,
                         ),
@@ -126,8 +125,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
         body: Column(
           children: [
             // Offline indicator
-            if (networkStatus == NetworkStatus.offline)
-              const OfflineIndicator(),
+            if (networkStatus.isOffline) const OfflineIndicator(),
 
             Expanded(
               child: Form(
@@ -220,7 +218,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isSelected ? tokens.primary : tokens.border,
+                      color: isSelected ? tokens.brandPrimary : tokens.border,
                       width: isSelected ? 3 : 1,
                     ),
                   ),
@@ -405,10 +403,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                             }
                             : null,
                     backgroundColor: tokens.surface,
-                    selectedColor: tokens.primary.withOpacity(0.2),
-                    checkmarkColor: tokens.primary,
+                    selectedColor: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+                    checkmarkColor: tokens.brandPrimary,
                     labelStyle: TextStyle(
-                      color: isSelected ? tokens.primary : tokens.textPrimary,
+                      color: isSelected ? tokens.brandPrimary : tokens.textPrimary,
                     ),
                   );
                 }).toList(),
@@ -422,45 +420,33 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     return _SectionCard(
       title: 'プライバシー設定',
       subtitle: 'プロフィールの公開範囲を選択してください',
-      child: Column(
-        children: [
-          RadioListTile<String>(
-            title: const Text('公開'),
-            subtitle: const Text('すべてのユーザーに公開'),
-            value: 'public',
-            groupValue: _selectedPrivacy,
-            onChanged: (value) {
-              setState(() {
-                _selectedPrivacy = value!;
-                _hasUnsavedChanges = true;
-              });
-            },
-          ),
-          RadioListTile<String>(
-            title: const Text('フレンドのみ'),
-            subtitle: const Text('ペアとフレンドにのみ公開'),
-            value: 'friends',
-            groupValue: _selectedPrivacy,
-            onChanged: (value) {
-              setState(() {
-                _selectedPrivacy = value!;
-                _hasUnsavedChanges = true;
-              });
-            },
-          ),
-          RadioListTile<String>(
-            title: const Text('非公開'),
-            subtitle: const Text('自分のみ表示'),
-            value: 'private',
-            groupValue: _selectedPrivacy,
-            onChanged: (value) {
-              setState(() {
-                _selectedPrivacy = value!;
-                _hasUnsavedChanges = true;
-              });
-            },
-          ),
-        ],
+      child: RadioGroup<String>(
+        groupValue: _selectedPrivacy,
+        onChanged: (String? value) {
+          setState(() {
+            _selectedPrivacy = value!;
+            _hasUnsavedChanges = true;
+          });
+        },
+        child: Column(
+          children: const [
+            RadioListTile<String>(
+              title: Text('公開'),
+              subtitle: Text('すべてのユーザーに公開'),
+              value: 'public',
+            ),
+            RadioListTile<String>(
+              title: Text('フレンドのみ'),
+              subtitle: Text('ペアとフレンドにのみ公開'),
+              value: 'friends',
+            ),
+            RadioListTile<String>(
+              title: Text('非公開'),
+              subtitle: Text('自分のみ表示'),
+              value: 'private',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -633,7 +619,7 @@ class _SectionCard extends StatelessWidget {
         color: tokens.surface,
         borderRadius: BorderRadius.circular(tokens.radius.lg),
         boxShadow: tokens.shadow.soft,
-        border: Border.all(color: tokens.border.withOpacity(0.1)),
+        border: Border.all(color: tokens.border.withAlpha((255 * 0.1).round())),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

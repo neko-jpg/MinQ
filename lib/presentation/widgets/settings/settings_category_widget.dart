@@ -33,7 +33,7 @@ class SettingsCategoryWidget extends StatelessWidget {
             decoration: BoxDecoration(
               color:
                   category.isAdvanced
-                      ? theme.accentWarning.withOpacity(0.1)
+                      ? theme.accentWarning.withAlpha((255 * 0.1).round())
                       : theme.surfaceAlt,
               borderRadius: BorderRadius.vertical(
                 top: theme.cornerMedium().topLeft,
@@ -46,8 +46,8 @@ class SettingsCategoryWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color:
                         category.isAdvanced
-                            ? theme.accentWarning.withOpacity(0.2)
-                            : theme.brandPrimary.withOpacity(0.1),
+                            ? theme.accentWarning.withAlpha((255 * 0.2).round())
+                            : theme.brandPrimary.withAlpha((255 * 0.1).round()),
                     borderRadius: theme.cornerSmall(),
                   ),
                   child: Icon(
@@ -81,7 +81,7 @@ class SettingsCategoryWidget extends StatelessWidget {
                                 vertical: theme.spacing.xs,
                               ),
                               decoration: BoxDecoration(
-                                color: theme.accentWarning.withOpacity(0.2),
+                                color: theme.accentWarning.withAlpha((255 * 0.2).round()),
                                 borderRadius: theme.cornerSmall(),
                               ),
                               child: Text(

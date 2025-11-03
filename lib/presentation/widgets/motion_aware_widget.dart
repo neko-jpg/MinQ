@@ -19,7 +19,7 @@ class MotionAwareWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
-    final settings = accessibilityService.getCurrentSettings(context);
+    final settings = accessibilityService.getCurrentSettings();
 
     if (settings.reduceMotion) {
       return reducedMotionChild ?? _buildReducedMotionAlternative();
@@ -75,7 +75,6 @@ class AccessibleAnimatedContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
     final adjustedDuration = accessibilityService.getAccessibleDuration(
-      context,
       duration,
     );
 
@@ -122,7 +121,6 @@ class AccessibleAnimatedOpacity extends StatelessWidget {
   Widget build(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
     final adjustedDuration = accessibilityService.getAccessibleDuration(
-      context,
       duration,
     );
 
@@ -152,7 +150,7 @@ class AccessibleScaleTransition extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = AccessibilityService.instance.getCurrentSettings(context);
+    final settings = AccessibilityService.instance.getCurrentSettings();
 
     if (settings.reduceMotion) {
       // Show final state without animation
@@ -184,7 +182,7 @@ class AccessibleSlideTransition extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = AccessibilityService.instance.getCurrentSettings(context);
+    final settings = AccessibilityService.instance.getCurrentSettings();
 
     if (settings.reduceMotion) {
       // Show final position without animation
@@ -219,7 +217,7 @@ class AccessibleFadeTransition extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = AccessibilityService.instance.getCurrentSettings(context);
+    final settings = AccessibilityService.instance.getCurrentSettings();
 
     if (settings.reduceMotion) {
       // Show final opacity without animation
@@ -256,7 +254,7 @@ class AccessiblePageTransition extends PageRouteBuilder {
          transitionsBuilder: (context, animation, secondaryAnimation, child) {
            final accessibilityService = AccessibilityService.instance;
            final accessibilitySettings = accessibilityService
-               .getCurrentSettings(context);
+               .getCurrentSettings();
 
            if (accessibilitySettings.reduceMotion) {
              // No transition animation
@@ -298,7 +296,7 @@ class AccessibleHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = AccessibilityService.instance.getCurrentSettings(context);
+    final settings = AccessibilityService.instance.getCurrentSettings();
 
     if (settings.reduceMotion) {
       // Skip hero animation
@@ -345,7 +343,7 @@ class AccessibleAnimatedList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = AccessibilityService.instance.getCurrentSettings(context);
+    final settings = AccessibilityService.instance.getCurrentSettings();
 
     if (settings.reduceMotion) {
       // Use regular ListView without animations

@@ -28,7 +28,7 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: MinqTokens.textPrimary.withOpacity(0.1),
+            color: MinqTokens.textPrimary.withAlpha((255 * 0.1).round()),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -62,7 +62,7 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: MinqTokens.brandPrimary.withOpacity(0.1),
+        color: MinqTokens.brandPrimary.withAlpha((255 * 0.1).round()),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Row(
@@ -136,7 +136,7 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
               color: MinqTokens.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: MinqTokens.textSecondary.withOpacity(0.2),
+                color: MinqTokens.textSecondary.withAlpha((255 * 0.2).round()),
                 width: 1,
               ),
             ),
@@ -146,7 +146,7 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: MinqTokens.brandPrimary.withOpacity(0.1),
+                    color: MinqTokens.brandPrimary.withAlpha((255 * 0.1).round()),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
@@ -222,10 +222,10 @@ class EnhancedAICoachOverlay extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: MinqTokens.brandPrimary.withOpacity(0.1),
+        color: MinqTokens.brandPrimary.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: MinqTokens.brandPrimary.withOpacity(0.2),
+          color: MinqTokens.brandPrimary.withAlpha((255 * 0.2).round()),
           width: 1,
         ),
       ),
@@ -339,8 +339,8 @@ class AICoachMessageBubble extends ConsumerWidget {
       decoration: BoxDecoration(
         color:
             isOffline
-                ? Colors.orange.withOpacity(0.2)
-                : MinqTokens.brandPrimary.withOpacity(0.2),
+                ? Colors.orange.withAlpha((255 * 0.2).round())
+                : MinqTokens.brandPrimary.withAlpha((255 * 0.2).round()),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Icon(
@@ -356,7 +356,7 @@ class AICoachMessageBubble extends ConsumerWidget {
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-        color: MinqTokens.brandPrimary.withOpacity(0.2),
+        color: MinqTokens.brandPrimary.withAlpha((255 * 0.2).round()),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Icon(Icons.person, color: MinqTokens.brandPrimary, size: 16),
@@ -378,7 +378,7 @@ class AICoachMessageBubble extends ConsumerWidget {
             isUser
                 ? null
                 : Border.all(
-                  color: MinqTokens.textSecondary.withOpacity(0.2),
+                  color: MinqTokens.textSecondary.withAlpha((255 * 0.2).round()),
                   width: 1,
                 ),
       ),
@@ -427,10 +427,10 @@ class AICoachMessageBubble extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: MinqTokens.brandPrimary.withOpacity(0.1),
+            color: MinqTokens.brandPrimary.withAlpha((255 * 0.1).round()),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: MinqTokens.brandPrimary.withOpacity(0.3),
+              color: MinqTokens.brandPrimary.withAlpha((255 * 0.3).round()),
               width: 1,
             ),
           ),
@@ -474,7 +474,7 @@ class AICoachMessageBubble extends ConsumerWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: MinqTokens.brandPrimary.withOpacity(0.1),
+                      color: MinqTokens.brandPrimary.withAlpha((255 * 0.1).round()),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(

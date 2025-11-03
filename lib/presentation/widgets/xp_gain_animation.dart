@@ -116,7 +116,7 @@ class _XPGainAnimationState extends State<XPGainAnimation>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
 
     return AnimatedBuilder(
       animation: _controller,
@@ -147,13 +147,13 @@ class _XPGainAnimationState extends State<XPGainAnimation>
                       gradient: LinearGradient(
                         colors: [
                           tokens.success,
-                          tokens.success.withOpacity(0.8),
+                          tokens.success.withAlpha((255 * 0.8).round()),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(tokens.radius.lg),
                       boxShadow: [
                         BoxShadow(
-                          color: tokens.success.withOpacity(0.3),
+                          color: tokens.success.withAlpha((255 * 0.3).round()),
                           blurRadius: 8,
                           spreadRadius: 2,
                         ),
@@ -187,7 +187,7 @@ class _XPGainAnimationState extends State<XPGainAnimation>
                             Text(
                               widget.reason,
                               style: tokens.typography.bodySmall.copyWith(
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withAlpha((255 * 0.9).round()),
                               ),
                             ),
                           ],
@@ -323,7 +323,7 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
 
     return AnimatedBuilder(
       animation: _controller,
@@ -331,7 +331,7 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
         return Container(
           width: double.infinity,
           height: double.infinity,
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.black.withAlpha((255 * 0.8).round()),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -351,8 +351,8 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.amber.withOpacity(
-                              _glowAnimation.value * 0.8,
+                            color: Colors.amber.withAlpha(
+                              (255 * _glowAnimation.value * 0.8).round(),
                             ),
                             blurRadius: 30 * _glowAnimation.value,
                             spreadRadius: 10 * _glowAnimation.value,
@@ -395,7 +395,7 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
                       Text(
                         widget.levelName,
                         style: tokens.typography.h3.copyWith(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withAlpha((255 * 0.9).round()),
                         ),
                       ),
                       if (widget.rewards.isNotEmpty) ...[
@@ -403,7 +403,7 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
                         Text(
                           '新しい報酬',
                           style: tokens.typography.h4.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withAlpha((255 * 0.9).round()),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -428,8 +428,8 @@ class _LevelUpAnimationState extends State<LevelUpAnimation>
                                       reward,
                                       style: tokens.typography.bodySmall
                                           .copyWith(
-                                            color: Colors.white.withOpacity(
-                                              0.8,
+                                            color: Colors.white.withAlpha(
+                                              (255 * 0.8).round(),
                                             ),
                                           ),
                                     ),

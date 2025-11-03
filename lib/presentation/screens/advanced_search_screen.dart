@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/search/search_engine.dart';
+import 'package:minq/core/search/search_history_service.dart';
 import 'package:minq/core/search/search_service.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
@@ -161,7 +162,6 @@ class _AdvancedSearchScreenState extends ConsumerState<AdvancedSearchScreen>
 
   Widget _buildInitialState() {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing.md),
@@ -199,7 +199,7 @@ class _AdvancedSearchScreenState extends ConsumerState<AdvancedSearchScreen>
           children: [
             Text(
               l10n.popularKeywords,
-              style: context.textTheme.titleMedium?.copyWith(
+              style: tokens.typography.titleMedium.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -236,7 +236,7 @@ class _AdvancedSearchScreenState extends ConsumerState<AdvancedSearchScreen>
           children: [
             Text(
               l10n.recentSearches,
-              style: context.textTheme.titleMedium?.copyWith(
+              style: tokens.typography.titleMedium.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -274,7 +274,7 @@ class _AdvancedSearchScreenState extends ConsumerState<AdvancedSearchScreen>
       children: [
         Text(
           l10n.searchTips,
-          style: context.textTheme.titleMedium?.copyWith(
+          style: tokens.typography.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -323,10 +323,10 @@ class _AdvancedSearchScreenState extends ConsumerState<AdvancedSearchScreen>
         Container(
           padding: EdgeInsets.all(tokens.spacing.xs),
           decoration: BoxDecoration(
-            color: tokens.primary.withOpacity(0.1),
+            color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
             borderRadius: BorderRadius.circular(tokens.radius.sm),
           ),
-          child: Icon(icon, size: 16, color: tokens.primary),
+          child: Icon(icon, size: 16, color: tokens.brandPrimary),
         ),
         SizedBox(width: tokens.spacing.sm),
         Expanded(
@@ -335,14 +335,14 @@ class _AdvancedSearchScreenState extends ConsumerState<AdvancedSearchScreen>
             children: [
               Text(
                 title,
-                style: context.textTheme.bodyMedium?.copyWith(
+                style: tokens.typography.bodyMedium.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(height: tokens.spacing.xs),
               Text(
                 description,
-                style: context.textTheme.bodySmall?.copyWith(
+                style: tokens.typography.bodySmall.copyWith(
                   color: tokens.textSecondary,
                 ),
               ),
@@ -353,10 +353,10 @@ class _AdvancedSearchScreenState extends ConsumerState<AdvancedSearchScreen>
     );
   }
 
-  void _performSearch(String query, SearchFilter filter) {
+  void _performSearch(String query, SearchFilter? filter) {
     setState(() {
       _currentQuery = query;
-      _currentFilter = filter;
+      _currentFilter = filter ?? const SearchFilter();
       _hasSearched = true;
     });
 
@@ -454,6 +454,7 @@ class _AdvancedSearchScreenState extends ConsumerState<AdvancedSearchScreen>
                 onPressed: () async {
                   final name = nameController.text.trim();
                   if (name.isNotEmpty) {
+                    if (!mounted) return;
                     Navigator.of(context).pop();
 
                     final searchService = ref.read(searchServiceProvider);
@@ -465,6 +466,7 @@ class _AdvancedSearchScreenState extends ConsumerState<AdvancedSearchScreen>
 
                     ref.invalidate(savedSearchesProvider);
 
+                    if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(AppLocalizations.of(context).searchSaved),

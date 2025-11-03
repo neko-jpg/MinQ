@@ -26,7 +26,7 @@ class OfflineIndicator extends ConsumerWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: indicatorColor.withOpacity(0.2),
+            color: indicatorColor.withAlpha((255 * 0.2).round()),
             borderRadius: BorderRadius.circular(size / 2),
             border: Border.all(color: indicatorColor, width: 1.5),
           ),
@@ -72,7 +72,7 @@ class OfflineBanner extends ConsumerWidget {
         color: MinqTokens.accentWarning,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withAlpha((255 * 0.1).round()),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -141,7 +141,7 @@ class SyncStatusIndicator extends ConsumerWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: config.color.withOpacity(0.2),
+            color: config.color.withAlpha((255 * 0.2).round()),
             borderRadius: BorderRadius.circular(size / 2),
           ),
           child:

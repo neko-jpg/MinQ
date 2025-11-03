@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/core/settings/settings_search_service.dart';
-import 'package:minq/core/settings/settings_service.dart';
-import 'package:minq/core/settings/theme_customization_service.dart';
 import 'package:minq/domain/settings/settings_category.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/settings/settings_category_widget.dart';
@@ -220,9 +218,6 @@ class _EnhancedSettingsScreenState
 
 /// Provider for settings categories
 final settingsCategoriesProvider = Provider<List<SettingsCategory>>((ref) {
-  final settingsService = ref.watch(settingsServiceProvider);
-  final themeService = ref.watch(themeCustomizationServiceProvider);
-
   return [
     // Appearance & Theme
     const SettingsCategory(

@@ -221,7 +221,7 @@ class _LeagueStatisticsCard extends StatelessWidget {
         border: Border.all(color: tokens.border),
         boxShadow: [
           BoxShadow(
-            color: tokens.textPrimary.withOpacity(0.05),
+            color: tokens.textPrimary.withAlpha((255 * 0.05).round()),
             blurRadius: 12,
             offset: const Offset(0, 8),
           ),

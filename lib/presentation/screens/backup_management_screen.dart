@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minq/core/premium/backup_service.dart';
 import 'package:minq/core/premium/premium_service.dart';
 import 'package:minq/domain/premium/premium_plan.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/common/loading_overlay.dart';
 
 class BackupManagementScreen extends ConsumerStatefulWidget {
@@ -38,8 +39,8 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Backup & Restore'),
-        backgroundColor: context.colorTokens.surface,
-        foregroundColor: context.colorTokens.textPrimary,
+        backgroundColor: context.tokens.surface,
+        foregroundColor: context.tokens.textPrimary,
         elevation: 0,
         bottom: currentTierAsync.when(
           data:
@@ -47,9 +48,9 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
                   tier.hasFeature(FeatureType.backup)
                       ? TabBar(
                         controller: _tabController,
-                        labelColor: context.colorTokens.primary,
-                        unselectedLabelColor: context.colorTokens.textSecondary,
-                        indicatorColor: context.colorTokens.primary,
+                        labelColor: context.tokens.brandPrimary,
+                        unselectedLabelColor: context.tokens.textSecondary,
+                        indicatorColor: context.tokens.brandPrimary,
                         tabs: const [
                           Tab(text: 'Local Backups'),
                           Tab(text: 'Cloud Backups'),
@@ -81,7 +82,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
                 tier.hasFeature(FeatureType.backup)
                     ? FloatingActionButton.extended(
                       onPressed: _createBackup,
-                      backgroundColor: context.colorTokens.primary,
+                      backgroundColor: context.tokens.brandPrimary,
                       foregroundColor: Colors.white,
                       icon: const Icon(Icons.backup),
                       label: const Text('Create Backup'),
@@ -119,18 +120,18 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
                 Icon(
                   Icons.error_outline,
                   size: 64,
-                  color: context.colorTokens.error,
+                  color: context.tokens.error,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'Error loading backups',
-                  style: context.textTheme.titleLarge,
+                  style: context.tokens.typography.h4,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   snapshot.error.toString(),
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: context.colorTokens.textSecondary,
+                  style: context.tokens.typography.body.copyWith(
+                    color: context.tokens.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -202,10 +203,10 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
   Widget _buildLocalBackupCard(BuildContext context, LocalBackup backup) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      color: context.colorTokens.surface,
+      color: context.tokens.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: context.colorTokens.border),
+        side: BorderSide(color: context.tokens.border),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -216,7 +217,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
               children: [
                 Icon(
                   Icons.folder,
-                  color: context.colorTokens.primary,
+                  color: context.tokens.brandPrimary,
                   size: 24,
                 ),
                 const SizedBox(width: 12),
@@ -226,15 +227,15 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
                     children: [
                       Text(
                         backup.name,
-                        style: context.textTheme.titleMedium?.copyWith(
+                        style: context.tokens.typography.body.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Created: ${_formatDate(backup.createdAt)}',
-                        style: context.textTheme.bodySmall?.copyWith(
-                          color: context.colorTokens.textSecondary,
+                        style: context.tokens.typography.bodySmall.copyWith(
+                          color: context.tokens.textSecondary,
                         ),
                       ),
                     ],
@@ -262,13 +263,13 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
                               Icon(
                                 Icons.delete,
                                 size: 20,
-                                color: context.colorTokens.error,
+                                color: context.tokens.error,
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 'Delete',
                                 style: TextStyle(
-                                  color: context.colorTokens.error,
+                                  color: context.tokens.error,
                                 ),
                               ),
                             ],
@@ -303,10 +304,10 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
   Widget _buildCloudBackupCard(BuildContext context, CloudBackup backup) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      color: context.colorTokens.surface,
+      color: context.tokens.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: context.colorTokens.border),
+        side: BorderSide(color: context.tokens.border),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -315,7 +316,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
           children: [
             Row(
               children: [
-                Icon(Icons.cloud, color: context.colorTokens.info, size: 24),
+                Icon(Icons.cloud, color: context.tokens.info, size: 24),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -323,15 +324,15 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
                     children: [
                       Text(
                         backup.name,
-                        style: context.textTheme.titleMedium?.copyWith(
+                        style: context.tokens.typography.body.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Synced: ${_formatDate(backup.createdAt)}',
-                        style: context.textTheme.bodySmall?.copyWith(
-                          color: context.colorTokens.textSecondary,
+                        style: context.tokens.typography.bodySmall.copyWith(
+                          color: context.tokens.textSecondary,
                         ),
                       ),
                     ],
@@ -388,18 +389,18 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: context.colorTokens.surfaceAlt,
+        color: context.tokens.surfaceAlt,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: context.colorTokens.textSecondary),
+          Icon(icon, size: 14, color: context.tokens.textSecondary),
           const SizedBox(width: 4),
           Text(
             label,
-            style: context.textTheme.bodySmall?.copyWith(
-              color: context.colorTokens.textSecondary,
+            style: context.tokens.typography.bodySmall.copyWith(
+              color: context.tokens.textSecondary,
             ),
           ),
         ],
@@ -413,19 +414,19 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
 
     switch (status) {
       case CloudSyncStatus.synced:
-        color = context.colorTokens.success;
+        color = context.tokens.success;
         icon = Icons.check_circle;
         break;
       case CloudSyncStatus.syncing:
-        color = context.colorTokens.warning;
+        color = context.tokens.warning;
         icon = Icons.sync;
         break;
       case CloudSyncStatus.pending:
-        color = context.colorTokens.info;
+        color = context.tokens.info;
         icon = Icons.schedule;
         break;
       case CloudSyncStatus.failed:
-        color = context.colorTokens.error;
+        color = context.tokens.error;
         icon = Icons.error;
         break;
     }
@@ -433,7 +434,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -466,19 +467,19 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 64, color: context.colorTokens.textMuted),
+            Icon(icon, size: 64, color: context.tokens.textMuted),
             const SizedBox(height: 24),
             Text(
               title,
-              style: context.textTheme.headlineSmall?.copyWith(
+              style: context.tokens.typography.h4.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               subtitle,
-              style: context.textTheme.bodyLarge?.copyWith(
-                color: context.colorTokens.textSecondary,
+              style: context.tokens.typography.body.copyWith(
+                color: context.tokens.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -495,19 +496,19 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.lock, size: 64, color: context.colorTokens.textMuted),
+            Icon(Icons.lock, size: 64, color: context.tokens.textMuted),
             const SizedBox(height: 24),
             Text(
               'Premium Feature',
-              style: context.textTheme.headlineMedium?.copyWith(
+              style: context.tokens.typography.h3.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 16),
             Text(
               'Backup and restore features are available for Premium subscribers only. Upgrade to secure your data.',
-              style: context.textTheme.bodyLarge?.copyWith(
-                color: context.colorTokens.textSecondary,
+              style: context.tokens.typography.body.copyWith(
+                color: context.tokens.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -515,7 +516,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
             ElevatedButton(
               onPressed: () => context.push('/premium'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: context.colorTokens.primary,
+                backgroundColor: context.tokens.brandPrimary,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32,
@@ -557,11 +558,12 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
           customName: result['name'],
         );
 
+        if (!mounted) return;
         if (backupResult.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: const Text('Backup created successfully'),
-              backgroundColor: context.colorTokens.success,
+              backgroundColor: context.tokens.success,
             ),
           );
           setState(() {}); // Refresh the list
@@ -569,15 +571,16 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(backupResult.errorMessage ?? 'Backup failed'),
-              backgroundColor: context.colorTokens.error,
+              backgroundColor: context.tokens.error,
             ),
           );
         }
       } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Backup failed: $e'),
-            backgroundColor: context.colorTokens.error,
+            backgroundColor: context.tokens.error,
           ),
         );
       } finally {
@@ -615,7 +618,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
                   const SizedBox(height: 16),
                   Text(
                     'Include:',
-                    style: context.textTheme.titleSmall?.copyWith(
+                    style: context.tokens.typography.body.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -716,7 +719,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: context.colorTokens.warning,
+                  backgroundColor: context.tokens.accentWarning,
                 ),
                 child: const Text('Restore'),
               ),
@@ -733,26 +736,28 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
         final backupService = ref.read(backupServiceProvider);
         final result = await backupService.restoreFromBackup(backupId);
 
+        if (!mounted) return;
         if (result.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: const Text('Backup restored successfully'),
-              backgroundColor: context.colorTokens.success,
+              backgroundColor: context.tokens.success,
             ),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result.errorMessage ?? 'Restore failed'),
-              backgroundColor: context.colorTokens.error,
+              backgroundColor: context.tokens.error,
             ),
           );
         }
       } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Restore failed: $e'),
-            backgroundColor: context.colorTokens.error,
+            backgroundColor: context.tokens.error,
           ),
         );
       } finally {
@@ -787,7 +792,7 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: context.colorTokens.error,
+                  backgroundColor: context.tokens.error,
                 ),
                 child: const Text('Delete'),
               ),
@@ -800,19 +805,21 @@ class _BackupManagementScreenState extends ConsumerState<BackupManagementScreen>
         final backupService = ref.read(backupServiceProvider);
         await backupService.deleteBackup(backupId);
 
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Backup deleted'),
-            backgroundColor: context.colorTokens.success,
+            backgroundColor: context.tokens.success,
           ),
         );
 
         setState(() {}); // Refresh the list
       } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Delete failed: $e'),
-            backgroundColor: context.colorTokens.error,
+            backgroundColor: context.tokens.error,
           ),
         );
       }

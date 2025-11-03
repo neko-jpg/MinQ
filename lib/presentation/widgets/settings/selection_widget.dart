@@ -63,7 +63,7 @@ class _SelectionWidgetState extends State<SelectionWidget> {
                     decoration: BoxDecoration(
                       color:
                           isSelected
-                              ? theme.brandPrimary.withOpacity(0.1)
+                              ? theme.brandPrimary.withAlpha((255 * 0.1).round())
                               : theme.surfaceAlt,
                       borderRadius: theme.cornerMedium(),
                       border: Border.all(
@@ -80,7 +80,7 @@ class _SelectionWidgetState extends State<SelectionWidget> {
                             decoration: BoxDecoration(
                               color:
                                   isSelected
-                                      ? theme.brandPrimary.withOpacity(0.2)
+                                      ? theme.brandPrimary.withAlpha((255 * 0.2).round())
                                       : theme.surface,
                               borderRadius: theme.cornerSmall(),
                             ),

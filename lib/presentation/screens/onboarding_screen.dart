@@ -143,7 +143,7 @@ class _OnboardingBackground extends StatelessWidget {
           height: 220,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(180),
-            color: tokens.accentSecondary.withOpacity(0.08),
+            color: tokens.accentSecondary.withAlpha((255 * 0.08).round()),
           ),
         ),
       ),
@@ -182,7 +182,7 @@ class _FeatureCard extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: tokens.brandPrimary.withOpacity(0.12),
+              color: tokens.brandPrimary.withAlpha((255 * 0.12).round()),
             ),
             child: Icon(icon, color: tokens.brandPrimary),
           ),

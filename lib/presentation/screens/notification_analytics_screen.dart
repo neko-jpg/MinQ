@@ -1,13 +1,9 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/domain/notification/notification_analytics.dart';
-import 'package:minq/domain/notification/notification_settings.dart';
 import 'package:minq/l10n/l10n.dart';
 import 'package:minq/presentation/providers/notification_providers.dart';
 import 'package:minq/presentation/widgets/notification/category_performance_chart.dart';
-import 'package:minq/presentation/widgets/notification/engagement_trends_chart.dart';
 import 'package:minq/presentation/widgets/notification/notification_metrics_card.dart';
 import 'package:minq/presentation/widgets/notification/optimal_timing_chart.dart';
 
@@ -43,7 +39,6 @@ class _NotificationAnalyticsScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -304,7 +299,7 @@ class _NotificationAnalyticsScreenState
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -548,7 +543,7 @@ class _NotificationAnalyticsScreenState
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.primary.withAlpha((255 * 0.1).round()),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, color: Theme.of(context).colorScheme.primary),
@@ -616,7 +611,7 @@ class _NotificationAnalyticsScreenState
             return Card(
               color: Theme.of(
                 context,
-              ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+              ).colorScheme.surfaceContainerHighest.withAlpha((255 * 0.3).round()),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
@@ -681,7 +676,7 @@ class _NotificationAnalyticsScreenState
   void _refreshData() {
     ref.invalidate(allCategoryMetricsProvider);
     ref.invalidate(behaviorPatternAnalysisProvider);
-    for (final category in NotificationCategory.values) {
+    for (final _ in NotificationCategory.values) {
       ref.invalidate(optimalTimingAnalysisProvider);
     }
   }

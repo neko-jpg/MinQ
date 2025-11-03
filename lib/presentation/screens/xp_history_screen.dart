@@ -67,7 +67,7 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     final xpSystem = ref.watch(xpSystemProvider);
 
     return FutureBuilder<List<XPTransaction>>(
-      future: xpSystem.getXPHistory(userId: uid, limit: 100),
+      future: xpSystem.getXPHistory(uid, limit: 100),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -139,7 +139,7 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: _getSourceColor(transaction.source).withOpacity(0.1),
+                color: _getSourceColor(transaction.source).withAlpha((255 * 0.1).round()),
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
               child: Icon(
@@ -206,7 +206,7 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: tokens.warning.withOpacity(0.1),
+                      color: tokens.warning.withAlpha((255 * 0.1).round()),
                       borderRadius: BorderRadius.circular(tokens.radius.sm),
                     ),
                     child: Text(
@@ -234,7 +234,7 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     final xpSystem = ref.watch(xpSystemProvider);
 
     return FutureBuilder<XPAnalytics>(
-      future: xpSystem.getDetailedXPAnalytics(uid),
+      future: xpSystem.getXPAnalytics(uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -500,7 +500,7 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
                 Container(
                   padding: EdgeInsets.all(tokens.spacing.sm),
                   decoration: BoxDecoration(
-                    color: trendColor.withOpacity(0.1),
+                    color: trendColor.withAlpha((255 * 0.1).round()),
                     borderRadius: BorderRadius.circular(tokens.radius.md),
                   ),
                   child: Icon(trendIcon, color: trendColor, size: 32),
@@ -711,7 +711,7 @@ class _XPHistoryScreenState extends ConsumerState<XPHistoryScreen>
     return Container(
       padding: EdgeInsets.all(tokens.spacing.sm),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha((255 * 0.1).round()),
         borderRadius: BorderRadius.circular(tokens.radius.md),
       ),
       child: Column(

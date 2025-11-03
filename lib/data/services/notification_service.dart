@@ -185,7 +185,8 @@ class NotificationService {
         scheduledDate,
         notificationDetails,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
         payload: _recordRoutePayload,
         matchDateTimeComponents: DateTimeComponents.time,
       );
@@ -238,6 +239,8 @@ class NotificationService {
         android: _androidDetailsForChannel(_reminderChannelId),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       payload: _recordRoutePayload,
       matchDateTimeComponents: DateTimeComponents.time,
     );
@@ -281,6 +284,8 @@ class NotificationService {
         android: _androidDetailsForChannel(_reminderChannelId),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       payload: payload ?? _recordRoutePayload,
     );
   }

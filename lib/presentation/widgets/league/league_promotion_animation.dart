@@ -90,11 +90,11 @@ class _LeaguePromotionAnimationState extends State<LeaguePromotionAnimation>
               padding: const EdgeInsets.all(32),
               margin: const EdgeInsets.symmetric(horizontal: 24),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.92),
+                color: Colors.white.withAlpha((255 * 0.92).round()),
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: Colors.black.withAlpha((255 * 0.15).round()),
                     blurRadius: 30,
                     spreadRadius: 4,
                   ),

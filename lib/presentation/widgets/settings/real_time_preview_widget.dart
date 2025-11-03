@@ -112,7 +112,7 @@ class RealTimePreviewWidget extends ConsumerWidget {
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: previewTheme.brandPrimary
-                                        .withOpacity(0.1),
+                                        .withAlpha((255 * 0.1).round()),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
@@ -154,7 +154,7 @@ class RealTimePreviewWidget extends ConsumerWidget {
                                   ),
                                   decoration: BoxDecoration(
                                     color: previewTheme.accentSuccess
-                                        .withOpacity(0.1),
+                                        .withAlpha((255 * 0.1).round()),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(

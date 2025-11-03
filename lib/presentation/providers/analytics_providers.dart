@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/analytics/services/behavior_analysis_service.dart';
 import 'package:minq/core/analytics/dashboard_service.dart';
-import 'package:minq/core/analytics/database_service.dart';
+import 'package:minq/core/database/database_service.dart';
 import 'package:minq/core/analytics/insights_engine.dart';
 import 'package:minq/domain/analytics/analytics_insight.dart';
 import 'package:minq/domain/analytics/behavior_pattern.dart';
