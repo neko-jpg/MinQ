@@ -17,34 +17,44 @@ const QuestLogSchema = CollectionSchema(
   name: r'QuestLog',
   id: 8640584853765076008,
   properties: {
-    r'proofType': PropertySchema(
+    r'completedAt': PropertySchema(
       id: 0,
+      name: r'completedAt',
+      type: IsarType.dateTime,
+    ),
+    r'isCompleted': PropertySchema(
+      id: 1,
+      name: r'isCompleted',
+      type: IsarType.bool,
+    ),
+    r'proofType': PropertySchema(
+      id: 2,
       name: r'proofType',
       type: IsarType.string,
       enumMap: _QuestLogproofTypeEnumValueMap,
     ),
     r'proofValue': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'proofValue',
       type: IsarType.string,
     ),
     r'questId': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'questId',
       type: IsarType.long,
     ),
     r'synced': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'synced',
       type: IsarType.bool,
     ),
     r'ts': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'ts',
       type: IsarType.dateTime,
     ),
     r'uid': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'uid',
       type: IsarType.string,
     )
@@ -86,12 +96,14 @@ void _questLogSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.proofType.name);
-  writer.writeString(offsets[1], object.proofValue);
-  writer.writeLong(offsets[2], object.questId);
-  writer.writeBool(offsets[3], object.synced);
-  writer.writeDateTime(offsets[4], object.ts);
-  writer.writeString(offsets[5], object.uid);
+  writer.writeDateTime(offsets[0], object.completedAt);
+  writer.writeBool(offsets[1], object.isCompleted);
+  writer.writeString(offsets[2], object.proofType.name);
+  writer.writeString(offsets[3], object.proofValue);
+  writer.writeLong(offsets[4], object.questId);
+  writer.writeBool(offsets[5], object.synced);
+  writer.writeDateTime(offsets[6], object.ts);
+  writer.writeString(offsets[7], object.uid);
 }
 
 QuestLog _questLogDeserialize(
@@ -103,13 +115,13 @@ QuestLog _questLogDeserialize(
   final object = QuestLog();
   object.id = id;
   object.proofType =
-      _QuestLogproofTypeValueEnumMap[reader.readStringOrNull(offsets[0])] ??
+      _QuestLogproofTypeValueEnumMap[reader.readStringOrNull(offsets[2])] ??
           ProofType.photo;
-  object.proofValue = reader.readStringOrNull(offsets[1]);
-  object.questId = reader.readLong(offsets[2]);
-  object.synced = reader.readBool(offsets[3]);
-  object.ts = reader.readDateTime(offsets[4]);
-  object.uid = reader.readString(offsets[5]);
+  object.proofValue = reader.readStringOrNull(offsets[3]);
+  object.questId = reader.readLong(offsets[4]);
+  object.synced = reader.readBool(offsets[5]);
+  object.ts = reader.readDateTime(offsets[6]);
+  object.uid = reader.readString(offsets[7]);
   return object;
 }
 
@@ -121,17 +133,21 @@ P _questLogDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readDateTime(offset)) as P;
+    case 1:
+      return (reader.readBool(offset)) as P;
+    case 2:
       return (_QuestLogproofTypeValueEnumMap[reader.readStringOrNull(offset)] ??
           ProofType.photo) as P;
-    case 1:
-      return (reader.readStringOrNull(offset)) as P;
-    case 2:
-      return (reader.readLong(offset)) as P;
     case 3:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 5:
+      return (reader.readBool(offset)) as P;
+    case 6:
+      return (reader.readDateTime(offset)) as P;
+    case 7:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -236,6 +252,60 @@ extension QuestLogQueryWhere on QueryBuilder<QuestLog, QuestLog, QWhereClause> {
 
 extension QuestLogQueryFilter
     on QueryBuilder<QuestLog, QuestLog, QFilterCondition> {
+  QueryBuilder<QuestLog, QuestLog, QAfterFilterCondition> completedAtEqualTo(
+      DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'completedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QAfterFilterCondition>
+      completedAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'completedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QAfterFilterCondition> completedAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'completedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QAfterFilterCondition> completedAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'completedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<QuestLog, QuestLog, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -284,6 +354,16 @@ extension QuestLogQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QAfterFilterCondition> isCompletedEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isCompleted',
+        value: value,
       ));
     });
   }
@@ -821,6 +901,30 @@ extension QuestLogQueryLinks
     on QueryBuilder<QuestLog, QuestLog, QFilterCondition> {}
 
 extension QuestLogQuerySortBy on QueryBuilder<QuestLog, QuestLog, QSortBy> {
+  QueryBuilder<QuestLog, QuestLog, QAfterSortBy> sortByCompletedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QAfterSortBy> sortByCompletedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QAfterSortBy> sortByIsCompleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isCompleted', Sort.asc);
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QAfterSortBy> sortByIsCompletedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isCompleted', Sort.desc);
+    });
+  }
+
   QueryBuilder<QuestLog, QuestLog, QAfterSortBy> sortByProofType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'proofType', Sort.asc);
@@ -896,6 +1000,18 @@ extension QuestLogQuerySortBy on QueryBuilder<QuestLog, QuestLog, QSortBy> {
 
 extension QuestLogQuerySortThenBy
     on QueryBuilder<QuestLog, QuestLog, QSortThenBy> {
+  QueryBuilder<QuestLog, QuestLog, QAfterSortBy> thenByCompletedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QAfterSortBy> thenByCompletedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completedAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<QuestLog, QuestLog, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -905,6 +1021,18 @@ extension QuestLogQuerySortThenBy
   QueryBuilder<QuestLog, QuestLog, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QAfterSortBy> thenByIsCompleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isCompleted', Sort.asc);
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QAfterSortBy> thenByIsCompletedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isCompleted', Sort.desc);
     });
   }
 
@@ -983,6 +1111,18 @@ extension QuestLogQuerySortThenBy
 
 extension QuestLogQueryWhereDistinct
     on QueryBuilder<QuestLog, QuestLog, QDistinct> {
+  QueryBuilder<QuestLog, QuestLog, QDistinct> distinctByCompletedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'completedAt');
+    });
+  }
+
+  QueryBuilder<QuestLog, QuestLog, QDistinct> distinctByIsCompleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isCompleted');
+    });
+  }
+
   QueryBuilder<QuestLog, QuestLog, QDistinct> distinctByProofType(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1028,6 +1168,18 @@ extension QuestLogQueryProperty
   QueryBuilder<QuestLog, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<QuestLog, DateTime, QQueryOperations> completedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'completedAt');
+    });
+  }
+
+  QueryBuilder<QuestLog, bool, QQueryOperations> isCompletedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isCompleted');
     });
   }
 

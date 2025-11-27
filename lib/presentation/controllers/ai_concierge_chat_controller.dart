@@ -186,19 +186,6 @@ class AiConciergeChatController
   }
 }
 
-  /// AIモードの切り替え
-  void toggleAIMode() {
-    // TODO: AIモードの切り替え実装
-    log('AIモードを切り替えました');
-  }
-
-  /// 現在のAIモードを取得
-  String getCurrentAIMode() {
-    // TODO: 実際のAIモード取得実装
-    return 'Standard';
-  }
-}
-
 const String _fallbackGreeting =
     'こんにちは！MinQのAIコンシェルジュです。今日も習慣づくりを頑張りましょう！';
 
