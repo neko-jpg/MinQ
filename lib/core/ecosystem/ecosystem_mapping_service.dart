@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 
 // Provider for the service
 final ecosystemMappingServiceProvider = Provider<EcosystemMappingService>((
@@ -15,7 +16,7 @@ class EcosystemMappingService {
 
   /// Analyzes the correlations and interdependencies between a user's habits.
   Future<Map<String, dynamic>> analyzeEcosystem(String userId) async {
-    print('Analyzing habit ecosystem for user $userId.');
+    debugPrint('Analyzing habit ecosystem for user $userId.');
     final questLogsSnapshot =
         await _firestore
             .collection('users')
@@ -26,7 +27,7 @@ class EcosystemMappingService {
             .get();
 
     if (questLogsSnapshot.docs.length < 20) {
-      print('Not enough data to analyze ecosystem.');
+      debugPrint('Not enough data to analyze ecosystem.');
       return {};
     }
 
@@ -67,13 +68,13 @@ class EcosystemMappingService {
       'habitEcosystem': ecosystemData,
     });
 
-    print('Ecosystem analysis complete for user $userId.');
+    debugPrint('Ecosystem analysis complete for user $userId.');
     return ecosystemData;
   }
 
   /// Identifies the "keystone" habit that has the most positive impact on other habits.
   Future<String?> identifyKeystoneHabit(String userId) async {
-    print('Identifying keystone habit for user $userId.');
+    debugPrint('Identifying keystone habit for user $userId.');
     final userDoc = await _firestore.collection('users').doc(userId).get();
     final ecosystem =
         userDoc.data()?['habitEcosystem'] as Map<String, dynamic>?;
@@ -102,7 +103,7 @@ class EcosystemMappingService {
     coOccurrenceMatrix.forEach((habit, connections) {
       double currentScore = (connections as Map<String, dynamic>).values.fold(
         0,
-        (sum, val) => sum + (val as int),
+        (total, val) => total + (val as int),
       );
       if (currentScore > maxInfluenceScore) {
         maxInfluenceScore = currentScore;
@@ -130,9 +131,9 @@ class EcosystemMappingService {
     final suggestions = <String>[];
 
     coOccurrenceMatrix.forEach((habitA, connections) {
-      (connections as Map<String, dynamic>).forEach((habitB, count) {
+      (connections as Map<String, dynamic>).forEach((habitB, cnt) {
         final totalA = occurrenceCount[habitA] ?? 1;
-        final probability = (count as int) / totalA;
+        final probability = (cnt as int) / totalA;
         if (probability > 0.6) {
           // High correlation
           suggestions.add(

@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:minq/core/logging/app_logger.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// OGP画像生成サービス
 /// クエスト達成バナーをSNSシェア用の画像として生成
@@ -131,7 +132,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -152,7 +153,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                       Shadow(
                         offset: const Offset(0, 2),
                         blurRadius: 4,
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                       ),
                     ],
                   ),
@@ -171,7 +172,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                         Shadow(
                           offset: const Offset(0, 1),
                           blurRadius: 2,
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                         ),
                       ],
                     ),
@@ -204,7 +205,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                   'MinQ - 3分で続く習慣化アプリ',
                   style: TextStyle(
                     fontSize: 24,
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -234,7 +235,7 @@ class _StatBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -270,7 +271,7 @@ class _BackgroundPatternPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = Colors.white.withOpacity(0.05)
+          ..color = Colors.white.withValues(alpha: 0.05)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2;
 

@@ -832,7 +832,7 @@ class _IconChoice extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final backgroundColor =
-        isSelected ? tokens.brandPrimary.withOpacity(0.12) : tokens.surface;
+        isSelected ? tokens.brandPrimary.withValues(alpha: 0.12) : tokens.surface;
     final borderColor = isSelected ? tokens.brandPrimary : tokens.border;
     final iconColor = isSelected ? tokens.brandPrimary : tokens.textPrimary;
     final textColor = isSelected ? tokens.brandPrimary : tokens.textMuted;
@@ -866,7 +866,7 @@ class _IconChoice extends StatelessWidget {
                   isSelected
                       ? [
                         BoxShadow(
-                          color: tokens.brandPrimary.withOpacity(0.2),
+                          color: tokens.brandPrimary.withValues(alpha: 0.2),
                           blurRadius: 14,
                           offset: const Offset(0, 6),
                         ),
@@ -1030,10 +1030,10 @@ class _ReminderSettings extends StatelessWidget {
         SizedBox(height: tokens.spacing(3)),
         if (hasError)
           Card(
-            color: tokens.accentError.withOpacity(0.08),
+            color: tokens.accentError.withValues(alpha: 0.08),
             shape: RoundedRectangleBorder(
               borderRadius: tokens.cornerLarge(),
-              side: BorderSide(color: tokens.accentError.withOpacity(0.4)),
+              side: BorderSide(color: tokens.accentError.withValues(alpha: 0.4)),
             ),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing(4)),

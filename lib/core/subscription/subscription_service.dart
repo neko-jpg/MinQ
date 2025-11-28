@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
-
 import 'package:minq/core/logging/app_logger.dart';
+import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
 
 /// サブスクリプション管理サービス
 ///
@@ -25,11 +24,11 @@ class SubscriptionService {
   Future<void> initialize() async {
     try {
       await _loadSubscriptionStatus();
-      AppLogger.info('Subscription service initialized', {
+      AppLogger().info('Subscription service initialized', {
         'plan': _currentPlan.name,
       });
     } catch (e, stack) {
-      AppLogger.error('Failed to initialize subscription service', e, stack);
+      AppLogger().error('Failed to initialize subscription service', e, stack);
     }
   }
 
@@ -55,7 +54,7 @@ class SubscriptionService {
         _currentPlan = SubscriptionPlan.free;
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to load subscription status', e, stack);
+      AppLogger().error('Failed to load subscription status', e, stack);
       _currentPlan = SubscriptionPlan.free;
     }
   }
@@ -64,7 +63,7 @@ class SubscriptionService {
   Future<bool> purchase(SubscriptionPlan plan) async {
     if (plan == SubscriptionPlan.free) return false;
     try {
-      AppLogger.info('Attempting to purchase subscription', {
+      AppLogger().info('Attempting to purchase subscription', {
         'plan': plan.name,
       });
 
@@ -83,12 +82,12 @@ class SubscriptionService {
       });
 
       _currentPlan = plan;
-      AppLogger.info('Subscription purchased successfully', {
+      AppLogger().info('Subscription purchased successfully', {
         'plan': plan.name,
       });
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to purchase subscription', e, stack);
+      AppLogger().error('Failed to purchase subscription', e, stack);
       return false;
     }
   }
@@ -96,14 +95,14 @@ class SubscriptionService {
   /// サブスクリプションを復元
   Future<bool> restore() async {
     try {
-      AppLogger.info('Attempting to restore subscription');
+      AppLogger().info('Attempting to restore subscription');
       await _loadSubscriptionStatus();
-      AppLogger.info('Subscription restored successfully', {
+      AppLogger().info('Subscription restored successfully', {
         'plan': _currentPlan.name,
       });
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to restore subscription', e, stack);
+      AppLogger().error('Failed to restore subscription', e, stack);
       return false;
     }
   }
@@ -111,16 +110,16 @@ class SubscriptionService {
   /// サブスクリプションをキャンセル
   Future<bool> cancel() async {
     try {
-      AppLogger.info('Attempting to cancel subscription');
+      AppLogger().info('Attempting to cancel subscription');
 
       // TODO: 実際のキャンセル処理
       // 注: iOS/Androidではアプリ内でキャンセルできないため、
       // ストアの設定画面に誘導する
 
-      AppLogger.info('Subscription cancellation initiated');
+      AppLogger().info('Subscription cancellation initiated');
       return true;
     } catch (e, stack) {
-      AppLogger.error('Failed to cancel subscription', e, stack);
+      AppLogger().error('Failed to cancel subscription', e, stack);
       return false;
     }
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:minq/core/version/version_check_service.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// バージョン更新画面
 class VersionUpdateScreen extends ConsumerWidget {
@@ -78,7 +78,7 @@ class VersionUpdateScreen extends ConsumerWidget {
         'このバージョン（$currentVersion）はサポートが終了しました。\n'
             '最新バージョン（$minVersion以上）にアップデートしてください。',
       VersionUpdateAvailable(
-        :final currentVersion,
+        :final currentVersion, // ignore: unused_local_variable
         :final recommendedVersion,
       ) =>
         '新しいバージョン（$recommendedVersion）が利用可能です。\n'

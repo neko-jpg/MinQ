@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 /// データモデルのバージョン
 class ModelVersion {
@@ -33,7 +34,7 @@ class MigrationV1ToV2 implements Migration {
 
   @override
   Future<void> migrate(FirebaseFirestore firestore) async {
-    print('🔄 Migrating from v$fromVersion to v$toVersion: $description');
+    debugPrint('🔄 Migrating from v$fromVersion to v$toVersion: $description');
 
     final questsSnapshot = await firestore.collection('quests').get();
 
@@ -55,9 +56,9 @@ class MigrationV1ToV2 implements Migration {
 
     if (count > 0) {
       await batch.commit();
-      print('✅ Migrated $count quests');
+      debugPrint('✅ Migrated $count quests');
     } else {
-      print('ℹ️ No quests to migrate');
+      debugPrint('ℹ️ No quests to migrate');
     }
   }
 }
@@ -75,7 +76,7 @@ class MigrationV2ToV3 implements Migration {
 
   @override
   Future<void> migrate(FirebaseFirestore firestore) async {
-    print('🔄 Migrating from v$fromVersion to v$toVersion: $description');
+    debugPrint('🔄 Migrating from v$fromVersion to v$toVersion: $description');
 
     final usersSnapshot = await firestore.collection('users').get();
 
@@ -101,9 +102,9 @@ class MigrationV2ToV3 implements Migration {
 
     if (count > 0) {
       await batch.commit();
-      print('✅ Migrated $count users');
+      debugPrint('✅ Migrated $count users');
     } else {
-      print('ℹ️ No users to migrate');
+      debugPrint('ℹ️ No users to migrate');
     }
   }
 }
@@ -123,13 +124,13 @@ class MigrationManager {
     required int targetVersion,
   }) async {
     if (currentVersion >= targetVersion) {
-      print(
+      debugPrint(
         'ℹ️ No migrations needed (current: $currentVersion, target: $targetVersion)',
       );
       return;
     }
 
-    print('🚀 Starting migrations from v$currentVersion to v$targetVersion');
+    debugPrint('🚀 Starting migrations from v$currentVersion to v$targetVersion');
 
     // 必要なマイグレーションを抽出
     final requiredMigrations =
@@ -146,8 +147,8 @@ class MigrationManager {
       try {
         await migration.migrate(_firestore);
       } catch (e) {
-        print('❌ Migration failed: ${migration.description}');
-        print('Error: $e');
+        debugPrint('❌ Migration failed: ${migration.description}');
+        debugPrint('Error: $e');
         rethrow;
       }
     }
@@ -155,7 +156,7 @@ class MigrationManager {
     // マイグレーション情報を記録
     await _recordMigration(currentVersion, targetVersion);
 
-    print('✅ All migrations completed successfully');
+    debugPrint('✅ All migrations completed successfully');
   }
 
   /// マイグレーション情報を記録
@@ -184,7 +185,7 @@ class MigrationManager {
 
       return snapshot.docs.first.data()['toVersion'] as int;
     } catch (e) {
-      print('⚠️ Failed to get database version: $e');
+      debugPrint('⚠️ Failed to get database version: $e');
       return 1;
     }
   }
@@ -200,7 +201,7 @@ class MigrationManager {
 
       return doc.data()?['modelVersion'] as int? ?? 1;
     } catch (e) {
-      print('⚠️ Failed to get user data version: $e');
+      debugPrint('⚠️ Failed to get user data version: $e');
       return 1;
     }
   }
@@ -211,7 +212,7 @@ class MigrationManager {
     const targetVersion = ModelVersion.current;
 
     if (currentVersion < targetVersion) {
-      print('🔄 Migrating user data from v$currentVersion to v$targetVersion');
+      debugPrint('🔄 Migrating user data from v$currentVersion to v$targetVersion');
       await runMigrations(
         currentVersion: currentVersion,
         targetVersion: targetVersion,
@@ -221,7 +222,7 @@ class MigrationManager {
 
   /// 全ユーザーデータをマイグレート（管理者用）
   Future<void> migrateAllUserData() async {
-    print('🚀 Starting migration for all users');
+    debugPrint('🚀 Starting migration for all users');
 
     final usersSnapshot = await _firestore.collection('users').get();
 
@@ -229,11 +230,11 @@ class MigrationManager {
       try {
         await migrateUserData(doc.id);
       } catch (e) {
-        print('❌ Failed to migrate user ${doc.id}: $e');
+        debugPrint('❌ Failed to migrate user ${doc.id}: $e');
       }
     }
 
-    print('✅ All user data migrated');
+    debugPrint('✅ All user data migrated');
   }
 
   /// マイグレーション履歴を取得
@@ -249,8 +250,8 @@ class MigrationManager {
 
   /// ロールバック（注意: データ損失の可能性あり）
   Future<void> rollback(int targetVersion) async {
-    print('⚠️ Rolling back to version $targetVersion');
-    print('⚠️ This operation may cause data loss!');
+    debugPrint('⚠️ Rolling back to version $targetVersion');
+    debugPrint('⚠️ This operation may cause data loss!');
 
     // ロールバックロジックは慎重に実装する必要がある
     // 通常は手動でのデータ復元を推奨

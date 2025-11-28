@@ -105,7 +105,7 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
     final buttonStyle = ButtonStyle(
       backgroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return baseColor.withOpacity(0.4);
+          return baseColor.withValues(alpha: 0.4);
         }
         if (states.contains(WidgetState.pressed)) {
           return _darken(baseColor, 0.15);
@@ -120,17 +120,17 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return tokens.surface.withOpacity(0.7);
+          return tokens.surface.withValues(alpha: 0.7);
         }
         return tokens.surface;
       }),
       overlayColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.pressed) ||
             states.contains(WidgetState.focused)) {
-          return Colors.white.withOpacity(0.12);
+          return Colors.white.withValues(alpha: 0.12);
         }
         if (states.contains(WidgetState.hovered)) {
-          return Colors.white.withOpacity(0.08);
+          return Colors.white.withValues(alpha: 0.08);
         }
         return null;
       }),
@@ -259,10 +259,10 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
       overlayColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.pressed) ||
             states.contains(WidgetState.hovered)) {
-          return tokens.brandPrimary.withOpacity(0.08);
+          return tokens.brandPrimary.withValues(alpha: 0.08);
         }
         if (states.contains(WidgetState.focused)) {
-          return tokens.brandPrimary.withOpacity(0.12);
+          return tokens.brandPrimary.withValues(alpha: 0.12);
         }
         return null;
       }),
@@ -378,17 +378,17 @@ class _MinqTextButtonState extends State<MinqTextButton>
     final buttonStyle = ButtonStyle(
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return baseColor.withOpacity(0.5);
+          return baseColor.withValues(alpha: 0.5);
         }
         return baseColor;
       }),
       overlayColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.pressed)) {
-          return baseColor.withOpacity(0.14);
+          return baseColor.withValues(alpha: 0.14);
         }
         if (states.contains(WidgetState.hovered) ||
             states.contains(WidgetState.focused)) {
-          return baseColor.withOpacity(0.08);
+          return baseColor.withValues(alpha: 0.08);
         }
         return null;
       }),

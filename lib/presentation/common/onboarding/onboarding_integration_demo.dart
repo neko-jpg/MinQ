@@ -149,7 +149,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
             Text(
               'クエスト数: $_questCount, 完了数: $_completedQuests, 連続記録: $_currentStreak',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -175,7 +175,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
             Text(
               '画面に応じた適切なガイドを表示',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 16),
@@ -236,7 +236,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
             Text(
               '一度だけ表示されるユーザー固有のツールチップ',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 16),
@@ -299,7 +299,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
             Text(
               'ユーザーの進捗に応じたヒント表示',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 16),
@@ -331,7 +331,7 @@ class _OnboardingIntegrationDemoState extends State<OnboardingIntegrationDemo> {
             Text(
               'ステップバイステップのガイドツアー',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 16),

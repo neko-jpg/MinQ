@@ -33,7 +33,7 @@ class ReferralCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildSkeletonCard(MinqTokens tokens) {
+  Widget _buildSkeletonCard(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -46,7 +46,7 @@ class ReferralCard extends ConsumerWidget {
             width: tokens.spacing(12),
             height: tokens.spacing(12),
             decoration: BoxDecoration(
-              color: tokens.textMuted.withOpacity(0.3),
+              color: tokens.textMuted.withValues(alpha: 0.3),
               shape: BoxShape.circle,
             ),
           ),
@@ -59,7 +59,7 @@ class ReferralCard extends ConsumerWidget {
                   width: tokens.spacing(20),
                   height: tokens.spacing(4),
                   decoration: BoxDecoration(
-                    color: tokens.textMuted.withOpacity(0.3),
+                    color: tokens.textMuted.withValues(alpha: 0.3),
                     borderRadius: tokens.cornerSmall(),
                   ),
                 ),
@@ -68,7 +68,7 @@ class ReferralCard extends ConsumerWidget {
                   width: tokens.spacing(32),
                   height: tokens.spacing(3),
                   decoration: BoxDecoration(
-                    color: tokens.textMuted.withOpacity(0.3),
+                    color: tokens.textMuted.withValues(alpha: 0.3),
                     borderRadius: tokens.cornerSmall(),
                   ),
                 ),
@@ -82,7 +82,7 @@ class ReferralCard extends ConsumerWidget {
 
   Widget _buildReferralCard(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     WidgetRef ref,
     ReferralStats stats,
   ) {
@@ -102,7 +102,7 @@ class ReferralCard extends ConsumerWidget {
           borderRadius: tokens.cornerLarge(),
           boxShadow: [
             BoxShadow(
-              color: Colors.purple.withOpacity(0.3),
+              color: Colors.purple.withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -114,7 +114,7 @@ class ReferralCard extends ConsumerWidget {
               width: tokens.spacing(12),
               height: tokens.spacing(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -140,14 +140,14 @@ class ReferralCard extends ConsumerWidget {
                     Text(
                       '${stats.totalReferrals}人招待済み・成功率${(stats.conversionRate * 100).toStringAsFixed(0)}%',
                       style: tokens.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                     )
                   else
                     Text(
                       '友達を招待してボーナスポイントをゲット！',
                       style: tokens.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                     ),
                 ],
@@ -155,7 +155,7 @@ class ReferralCard extends ConsumerWidget {
             ),
             Icon(
               Icons.arrow_forward_ios,
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               size: tokens.spacing(4),
             ),
           ],
@@ -245,7 +245,7 @@ class ReferralPromotionBanner extends ConsumerWidget {
         borderRadius: tokens.cornerLarge(),
         boxShadow: [
           BoxShadow(
-            color: Colors.purple.withOpacity(0.3),
+            color: Colors.purple.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -275,7 +275,7 @@ class ReferralPromotionBanner extends ConsumerWidget {
           Text(
             '友達を招待すると、あなたも友達も\n最大3500ポイントがもらえます！',
             style: tokens.bodyMedium.copyWith(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
           SizedBox(height: tokens.spacing(3)),

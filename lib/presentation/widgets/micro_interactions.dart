@@ -207,7 +207,7 @@ class _RipplePainter extends CustomPainter {
 
     final paint =
         Paint()
-          ..color = color.withOpacity(opacityAnimation.value)
+          ..color = color.withValues(alpha: opacityAnimation.value)
           ..style = PaintingStyle.fill;
 
     final maxRadius = math.sqrt(
@@ -376,7 +376,7 @@ class ConfettiPainter extends CustomPainter {
         continue;
       }
 
-      paint.color = particle.color.withOpacity(1.0 - progress);
+      paint.color = particle.color.withValues(alpha: 1.0 - progress);
 
       canvas.save();
       canvas.translate(x, y);
@@ -599,7 +599,7 @@ class SparklePainter extends CustomPainter {
 
       if (opacity <= 0) continue;
 
-      paint.color = Colors.white.withOpacity(opacity * 0.8);
+      paint.color = Colors.white.withValues(alpha: opacity * 0.8);
 
       final x = size.width * sparkle.x;
       final y = size.height * sparkle.y;

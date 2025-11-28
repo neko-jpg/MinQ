@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 /// アプリ内更新サービス
 /// Android: In-App Update API
@@ -39,7 +40,7 @@ class InAppUpdateService {
         updateType: UpdateType.none,
       );
     } catch (e) {
-      print('❌ Failed to check Android update: $e');
+      debugPrint('❌ Failed to check Android update: $e');
       return const UpdateInfo(
         isUpdateAvailable: false,
         updateType: UpdateType.none,
@@ -76,7 +77,7 @@ class InAppUpdateService {
         updateType: UpdateType.none,
       );
     } catch (e) {
-      print('❌ Failed to check iOS update: $e');
+      debugPrint('❌ Failed to check iOS update: $e');
       return const UpdateInfo(
         isUpdateAvailable: false,
         updateType: UpdateType.none,
@@ -93,7 +94,7 @@ class InAppUpdateService {
       // await InAppUpdate.startFlexibleUpdate();
       return true;
     } catch (e) {
-      print('❌ Failed to start flexible update: $e');
+      debugPrint('❌ Failed to start flexible update: $e');
       return false;
     }
   }
@@ -107,7 +108,7 @@ class InAppUpdateService {
       // await InAppUpdate.performImmediateUpdate();
       return true;
     } catch (e) {
-      print('❌ Failed to start immediate update: $e');
+      debugPrint('❌ Failed to start immediate update: $e');
       return false;
     }
   }
@@ -120,7 +121,7 @@ class InAppUpdateService {
       // TODO: in_app_update パッケージを使用
       // await InAppUpdate.completeFlexibleUpdate();
     } catch (e) {
-      print('❌ Failed to complete flexible update: $e');
+      debugPrint('❌ Failed to complete flexible update: $e');
     }
   }
 
@@ -135,7 +136,7 @@ class InAppUpdateService {
       //   await launchUrl(Uri.parse(url));
       // }
     } catch (e) {
-      print('❌ Failed to open App Store: $e');
+      debugPrint('❌ Failed to open App Store: $e');
     }
   }
 

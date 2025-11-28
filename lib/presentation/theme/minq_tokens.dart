@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 /// MinQ デザイントークン
 /// アプリ全体で使用される基本的なデザイン要素を定義
-class MinqTokens {
-  const MinqTokens._();
+class MinqTheme {
+  const MinqTheme._();
 
   // カラートークン
   static const Color brandPrimary = Color(0xFF6366F1);
@@ -53,7 +53,7 @@ class MinqTokens {
   );
 }
 
-/// BuildContextの拡張でMinqTokensにアクセス
-extension MinqTokensExtension on BuildContext {
-  MinqTokens get tokens => const MinqTokens._();
+/// BuildContextの拡張でMinqThemeにアクセス
+extension MinqThemeExtension on BuildContext {
+  MinqTheme get tokens => const MinqTheme._();
 }

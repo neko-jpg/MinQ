@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 
 /// FCMトピックサービス
 /// プッシュ通知のトピック管理
@@ -30,16 +31,16 @@ class TopicService {
   Future<void> subscribeToDefaultTopics() async {
     await subscribeToTopic(topicAllUsers);
     await subscribeToTopic(topicNews);
-    print('✅ Subscribed to default topics');
+    debugPrint('✅ Subscribed to default topics');
   }
 
   /// トピックに登録
   Future<void> subscribeToTopic(String topic) async {
     try {
       await _messaging.subscribeToTopic(topic);
-      print('✅ Subscribed to topic: $topic');
+      debugPrint('✅ Subscribed to topic: $topic');
     } catch (e) {
-      print('❌ Failed to subscribe to topic $topic: $e');
+      debugPrint('❌ Failed to subscribe to topic $topic: $e');
     }
   }
 
@@ -47,9 +48,9 @@ class TopicService {
   Future<void> unsubscribeFromTopic(String topic) async {
     try {
       await _messaging.unsubscribeFromTopic(topic);
-      print('✅ Unsubscribed from topic: $topic');
+      debugPrint('✅ Unsubscribed from topic: $topic');
     } catch (e) {
-      print('❌ Failed to unsubscribe from topic $topic: $e');
+      debugPrint('❌ Failed to unsubscribe from topic $topic: $e');
     }
   }
 
@@ -171,7 +172,7 @@ class TopicService {
       await disableEvents();
     }
 
-    print('✅ Topic subscriptions updated');
+    debugPrint('✅ Topic subscriptions updated');
   }
 
   /// すべてのトピックから登録解除
@@ -184,7 +185,7 @@ class TopicService {
     await unsubscribeFromTopic(topicEvents);
     await unsubscribeFromTopic(topicPremium);
 
-    print('✅ Unsubscribed from all topics');
+    debugPrint('✅ Unsubscribed from all topics');
   }
 
   /// カスタムトピックに登録（管理者用）

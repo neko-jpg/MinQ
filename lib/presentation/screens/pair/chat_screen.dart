@@ -721,7 +721,7 @@ class _QuickReplyBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: tokens.background,
                       borderRadius: tokens.cornerFull(),
-                      border: Border.all(color: tokens.border.withOpacity(0.6)),
+                      border: Border.all(color: tokens.border.withValues(alpha: 0.6)),
                     ),
                     child: Text(stamp, style: tokens.titleLarge),
                   ),

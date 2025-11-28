@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:flutter/foundation.dart';
 
 /// バグ報告サービス
 class BugReportService {
@@ -49,10 +50,10 @@ class BugReportService {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      print('✅ Bug report submitted: ${docRef.id}');
+      debugPrint('✅ Bug report submitted: ${docRef.id}');
       return docRef.id;
     } catch (e) {
-      print('❌ Failed to submit bug report: $e');
+      debugPrint('❌ Failed to submit bug report: $e');
       rethrow;
     }
   }
@@ -123,7 +124,7 @@ class BugReportService {
     final snapshot =
         await _firestore
             .collection('bugReports')
-            .where('userId', '==', userId)
+            .where('userId', isEqualTo: userId)
             .orderBy('createdAt', descending: true)
             .limit(limit)
             .get();
@@ -160,7 +161,7 @@ class BugReportService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    print('✅ Comment added to bug report: $reportId');
+    debugPrint('✅ Comment added to bug report: $reportId');
   }
 
   /// バグレポートのステータスを更新
@@ -173,7 +174,7 @@ class BugReportService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    print('✅ Bug report status updated: $reportId -> ${status.name}');
+    debugPrint('✅ Bug report status updated: $reportId -> ${status.name}');
   }
 
   /// フィードバックを送信（バグではない一般的なフィードバック）
@@ -189,7 +190,7 @@ class BugReportService {
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    print('✅ Feedback submitted: ${docRef.id}');
+    debugPrint('✅ Feedback submitted: ${docRef.id}');
     return docRef.id;
   }
 }

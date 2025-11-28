@@ -15,7 +15,7 @@ class ProfileSettingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!; // ignore: unused_local_variable
     final userAsync = ref.watch(localUserProvider);
     final isDummyMode = ref.watch(dummyDataModeProvider);
 
@@ -34,7 +34,7 @@ class ProfileSettingScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.8),
+        backgroundColor: tokens.background.withValues(alpha: 0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         actions: [
@@ -171,7 +171,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       width: radius * 2,
       height: radius * 2,
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withOpacity(0.1),
+        color: tokens.brandPrimary.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(Icons.person, size: radius, color: tokens.brandPrimary),
@@ -179,7 +179,7 @@ class ProfileSettingScreen extends ConsumerWidget {
   }
 
   void _showDummyModeWarning(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = context.tokens; // ignore: unused_local_variable
     showDialog(
       context: context,
       builder:
@@ -200,7 +200,7 @@ class ProfileSettingScreen extends ConsumerWidget {
   }
 
   void _editProfile(BuildContext context, WidgetRef ref, user) {
-    final tokens = context.tokens;
+    final tokens = context.tokens; // ignore: unused_local_variable
     final nameController = TextEditingController(text: user?.displayName ?? '');
     final bioController = TextEditingController(text: user?.bio ?? '');
 
@@ -411,7 +411,7 @@ class ProfileSettingScreen extends ConsumerWidget {
                   .map(
                     (tag) => Chip(
                       label: Text(tag),
-                      backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+                      backgroundColor: tokens.brandPrimary.withValues(alpha: 0.1),
                       labelStyle: tokens.bodySmall.copyWith(
                         color: tokens.brandPrimary,
                       ),
@@ -683,7 +683,7 @@ class ProfileSettingScreen extends ConsumerWidget {
     final tokens = context.tokens;
     return Chip(
       label: Text(label),
-      backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+      backgroundColor: tokens.brandPrimary.withValues(alpha: 0.1),
       labelStyle: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
       side: BorderSide.none,
     );

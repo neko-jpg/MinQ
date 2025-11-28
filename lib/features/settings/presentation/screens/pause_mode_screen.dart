@@ -27,7 +27,7 @@ class PauseModeNotifier extends StateNotifier<bool> {
           .doc(_userId) // Using dummy user ID
           .update({'isPaused': isEnabled});
     } catch (e) {
-      print('Error updating backend pause state: $e');
+      debugPrint('Error updating backend pause state: $e');
       // Optionally, revert the local state if backend fails
       await prefs.setBool(_pauseModeKey, !isEnabled);
       state = !isEnabled;

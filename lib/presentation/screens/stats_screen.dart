@@ -114,7 +114,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
           icon: Icons.arrow_back,
           onTap: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -255,7 +255,7 @@ Widget _buildGoalCard(BuildContext context, MinqTheme tokens) {
         width: tokens.spacing(10),
         height: tokens.spacing(10),
         decoration: BoxDecoration(
-          color: tokens.brandPrimary.withOpacity(0.12),
+          color: tokens.brandPrimary.withValues(alpha: 0.12),
           borderRadius: tokens.cornerLarge(),
         ),
         child: Icon(
@@ -647,7 +647,7 @@ Widget _buildProgressBar(
   bool isPrimary = false,
   double? delta,
 }) {
-  final progressColor = isPrimary ? entry.color : entry.color.withOpacity(0.7);
+  final progressColor = isPrimary ? entry.color : entry.color.withValues(alpha: 0.7);
   final deltaLabel = delta != null ? _formatDelta(delta, entry.unit) : null;
   final valueText =
       '${entry.value.toStringAsFixed(entry.value % 1 == 0 ? 0 : 1)}${entry.unit}';
@@ -704,7 +704,7 @@ Widget _buildProgressBar(
             child: LinearProgressIndicator(
               value: entry.progress.clamp(0.0, 1.0),
               minHeight: 10,
-              backgroundColor: tokens.border.withOpacity(0.3),
+              backgroundColor: tokens.border.withValues(alpha: 0.3),
               valueColor: AlwaysStoppedAnimation<Color>(progressColor),
             ),
           ),
@@ -733,7 +733,7 @@ class _LegendBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: tokens.cornerMedium(),
-        border: Border.all(color: tokens.border.withOpacity(0.4)),
+        border: Border.all(color: tokens.border.withValues(alpha: 0.4)),
       ),
       alignment: Alignment.center,
       child: Icon(icon, color: iconColor, size: tokens.spacing(3.5)),
@@ -771,7 +771,7 @@ Widget _buildProgressRing(MinqTheme tokens, _RingMetric metric) {
                 value: 1,
                 strokeWidth: 8,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  tokens.border.withOpacity(0.3),
+                  tokens.border.withValues(alpha: 0.3),
                 ),
                 backgroundColor: Colors.transparent,
               ),
@@ -918,7 +918,7 @@ Widget _buildCalendarCard(
                 decoration: BoxDecoration(
                   color:
                       value > 0
-                          ? tokens.brandPrimary.withOpacity(value / 5.0)
+                          ? tokens.brandPrimary.withValues(alpha: value / 5.0)
                           : Colors.transparent,
                   shape: BoxShape.circle,
                   border:
@@ -1126,7 +1126,7 @@ Widget _buildWeeklyStatsCard(
                   value: 1,
                   strokeWidth: 12,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    tokens.border.withOpacity(0.3),
+                    tokens.border.withValues(alpha: 0.3),
                   ),
                   backgroundColor: Colors.transparent,
                 ),
@@ -1373,7 +1373,7 @@ Future<void> _exportStatsData(BuildContext context, WidgetRef ref) async {
     final statsData = await ref.read(statsDataProvider.future);
 
     // CSV形式でエクスポート（簡易実装）
-    final csvData = _generateCSVData(statsData);
+    final csvData = _generateCSVData(statsData); // ignore: unused_local_variable
 
     if (context.mounted) {
       ScaffoldMessenger.of(

@@ -40,8 +40,10 @@ class DeviceInfoService {
 
   /// デバイスサイズカテゴリーを取得
   DeviceSizeCategory getDeviceSizeCategory(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final diagonal = _calculateDiagonal(size.width, size.height);
+    final mediaQuery = MediaQuery.of(context);
+    final size = mediaQuery.size;
+    final pixelRatio = mediaQuery.devicePixelRatio;
+    final diagonal = _calculateDiagonal(size.width, size.height, pixelRatio);
 
     if (diagonal < 6.0) {
       return DeviceSizeCategory.small;
@@ -55,8 +57,7 @@ class DeviceInfoService {
   }
 
   /// 対角線の長さを計算（インチ）
-  double _calculateDiagonal(double width, double height) {
-    final pixelRatio = WidgetsBinding.instance.window.devicePixelRatio;
+  double _calculateDiagonal(double width, double height, double pixelRatio) {
     final widthInches = width / (pixelRatio * 160);
     final heightInches = height / (pixelRatio * 160);
     return sqrt(widthInches * widthInches + heightInches * heightInches);
@@ -64,11 +65,11 @@ class DeviceInfoService {
 
   /// 低メモリデバイスかチェック
   Future<bool> isLowMemoryDevice() async {
-    if (Platform.isAndroid) {
-      final androidInfo = await _deviceInfo.androidInfo;
-      // 2GB以下を低メモリとみなす
-      return (androidInfo.totalMemory ?? 0) < 2 * 1024 * 1024 * 1024;
-    }
+    // if (Platform.isAndroid) {
+    //   final androidInfo = await _deviceInfo.androidInfo;
+    //   // 2GB以下を低メモリとみなす
+    //   return (androidInfo.totalMemory ?? 0) < 2 * 1024 * 1024 * 1024;
+    // }
     return false;
   }
 

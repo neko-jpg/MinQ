@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// アクセシビリティ設定画面
 /// 高齢者向けの特大UI・音声読み上げ速度などの設定
@@ -42,7 +43,7 @@ class _AccessibilitySettingsScreenState
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: ListView(
@@ -280,7 +281,7 @@ class _AccessibilitySettingsScreenState
                     vertical: tokens.spacing.xs,
                   ),
                   decoration: BoxDecoration(
-                    color: tokens.primary.withOpacity(0.1),
+                    color: tokens.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(tokens.radius.md),
                   ),
                   child: Text(

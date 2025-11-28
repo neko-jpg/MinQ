@@ -313,7 +313,7 @@ class _RecoveryTabState extends ConsumerState<_RecoveryTab> {
           // 注意事項
           Card(
             elevation: 0,
-            color: tokens.joyAccent.withOpacity(0.1),
+            color: tokens.joyAccent.withValues(alpha: 0.1),
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing(4)),
@@ -405,7 +405,7 @@ class _ProtectionTab extends ConsumerWidget {
           // 保護のヒント
           Card(
             elevation: 0,
-            color: tokens.serenity.withOpacity(0.1),
+            color: tokens.serenity.withValues(alpha: 0.1),
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing(4)),
@@ -496,7 +496,7 @@ class _StreakStatusCard extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: tokens.encouragement.withOpacity(0.1),
+      color: tokens.encouragement.withValues(alpha: 0.1),
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing(4)),
@@ -554,7 +554,7 @@ class _RecoveryTicketCard extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(tokens.spacing(3)),
               decoration: BoxDecoration(
-                color: tokens.joyAccent.withOpacity(0.1),
+                color: tokens.joyAccent.withValues(alpha: 0.1),
                 borderRadius: tokens.cornerLarge(),
               ),
               child: Icon(
@@ -626,7 +626,7 @@ class _PurchaseOption extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(tokens.spacing(2)),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: tokens.cornerMedium(),
             ),
             child: Icon(icon, color: color),

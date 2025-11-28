@@ -5,10 +5,9 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-
-import 'package:minq/core/ai/tflite_unified_ai_service.dart';
 
 /// ハビットストーリー自動生成サービス
 /// Instagram Stories風の美しいビジュアルストーリーを自動生成
@@ -334,8 +333,10 @@ ${story.visualElements.hashtags.join(' ')}
 ''';
 
       if (files.isNotEmpty) {
+      // ignore: deprecated_member_use
         await Share.shareXFiles(files, text: shareText, subject: story.title);
       } else {
+      // ignore: deprecated_member_use
         await Share.share(shareText, subject: story.title);
       }
 
@@ -354,7 +355,7 @@ ${story.visualElements.hashtags.join(' ')}
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -708,7 +709,7 @@ ${story.visualElements.hashtags.join(' ')}
       height: 8,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        color: Colors.white.withOpacity(0.3),
+        color: Colors.white.withValues(alpha: 0.3),
       ),
       child: FractionallySizedBox(
         widthFactor: data.weeklyCompletionRate,
@@ -888,7 +889,7 @@ class StoryPainter extends CustomPainter {
     Size size,
     DecorativeElement element,
   ) {
-    final paint = Paint()..color = Colors.white.withOpacity(0.8);
+    final paint = Paint()..color = Colors.white.withValues(alpha: 0.8);
     final position = Offset(
       size.width * element.position.dx,
       size.height * element.position.dy,
@@ -942,7 +943,7 @@ class StoryPainter extends CustomPainter {
       8,
     );
 
-    final backgroundPaint = Paint()..color = Colors.white.withOpacity(0.3);
+    final backgroundPaint = Paint()..color = Colors.white.withValues(alpha: 0.3);
     canvas.drawRRect(
       RRect.fromRectAndRadius(progressRect, const Radius.circular(4)),
       backgroundPaint,

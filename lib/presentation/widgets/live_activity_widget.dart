@@ -191,8 +191,8 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  tokens.brandPrimary.withOpacity(0.8),
-                  tokens.brandPrimary.withOpacity(0.6),
+                  tokens.brandPrimary.withValues(alpha: 0.8),
+                  tokens.brandPrimary.withValues(alpha: 0.6),
                 ],
               ),
               borderRadius: tokens.cornerMedium(),
@@ -218,7 +218,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
                       vertical: tokens.spacing(0.5),
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: tokens.cornerSmall(),
                     ),
                     child: Text(
@@ -254,7 +254,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
                   gradient: LinearGradient(
                     colors: [
                       tokens.brandPrimary,
-                      tokens.brandPrimary.withOpacity(0.8),
+                      tokens.brandPrimary.withValues(alpha: 0.8),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -271,7 +271,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
                         Text(
                           'ライブアクティビティ',
                           style: tokens.bodyMedium.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                           ),
                         ),
                         const Spacer(),
@@ -291,7 +291,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
                         Container(
                           width: 1,
                           height: 40,
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha: 0.3),
                         ),
                         Expanded(
                           child: _buildStatItem(
@@ -303,7 +303,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
                         Container(
                           width: 1,
                           height: 40,
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha: 0.3),
                         ),
                         Expanded(
                           child: _buildStatItem(
@@ -353,7 +353,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.8 + 0.2 * _pulseController.value),
+            color: Colors.white.withValues(alpha: 0.8 + 0.2 * _pulseController.value),
             shape: BoxShape.circle,
           ),
         );
@@ -378,7 +378,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
         Text(
           label,
           style: tokens.bodySmall.copyWith(
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha: 0.8),
           ),
         ),
       ],
@@ -394,7 +394,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
       },
       icon: Icon(
         _isVisible ? Icons.visibility : Icons.visibility_off,
-        color: Colors.white.withOpacity(0.8),
+        color: Colors.white.withValues(alpha: 0.8),
         size: 20,
       ),
     );
@@ -440,7 +440,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
         vertical: tokens.spacing(1),
       ),
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withOpacity(0.1),
+        color: tokens.brandPrimary.withValues(alpha: 0.1),
         borderRadius: tokens.cornerSmall(),
       ),
       child: Row(
@@ -551,7 +551,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
       child: Container(
         padding: EdgeInsets.all(tokens.spacing(1)),
         decoration: BoxDecoration(
-          color: tokens.encouragement.withOpacity(0.1),
+          color: tokens.encouragement.withValues(alpha: 0.1),
           borderRadius: tokens.cornerSmall(),
         ),
         child: Icon(Icons.favorite, size: 12, color: tokens.encouragement),
@@ -566,7 +566,7 @@ class _LiveActivityWidgetState extends ConsumerState<LiveActivityWidget>
     return Container(
       padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
-        color: tokens.encouragement.withOpacity(0.1),
+        color: tokens.encouragement.withValues(alpha: 0.1),
         borderRadius: tokens.cornerMedium(),
       ),
       child: Column(
@@ -744,7 +744,7 @@ class _LiveActivitySettingsScreenState
             // 説明
             Card(
               elevation: 0,
-              color: tokens.brandPrimary.withOpacity(0.1),
+              color: tokens.brandPrimary.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
               child: Padding(
                 padding: EdgeInsets.all(tokens.spacing(4)),

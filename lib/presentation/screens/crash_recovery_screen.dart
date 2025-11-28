@@ -80,7 +80,7 @@ class _CrashRecoveryScreenState extends ConsumerState<CrashRecoveryScreen> {
                               ? CrossFadeState.showSecond
                               : CrossFadeState.showFirst,
                       firstChild: const SizedBox.shrink(),
-                      secondChild: _CrashDetailCard(report: report!),
+                      secondChild: _CrashDetailCard(report: report),
                     ),
                   ],
                   SizedBox(height: tokens.spacing(6)),

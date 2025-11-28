@@ -235,7 +235,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onPressed: () => context.pop(),
           ),
         ),
-        backgroundColor: tokens.background.withOpacity(0.8),
+        backgroundColor: tokens.background.withValues(alpha: 0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -546,7 +546,7 @@ class _SettingsTileState extends State<_SettingsTile> {
 
     return Card(
       elevation: 0,
-      shadowColor: tokens.background.withOpacity(0.1),
+      shadowColor: tokens.background.withValues(alpha: 0.1),
       color: tokens.surface,
       margin: EdgeInsets.symmetric(vertical: tokens.spacing(2)),
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 
 /// ネットワークステータスサービス
 class NetworkStatusService {
@@ -51,7 +52,7 @@ class NetworkStatusService {
     if (newStatus != _currentStatus) {
       _currentStatus = newStatus;
       _statusController.add(newStatus);
-      print('📡 Network status changed: ${newStatus.name}');
+      debugPrint('📡 Network status changed: ${newStatus.name}');
     }
   }
 

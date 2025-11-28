@@ -27,7 +27,7 @@ class LevelProgressWidget extends ConsumerWidget {
 
   Widget _buildProgressWidget(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     ProgressiveOnboarding service,
   ) {
     // TODO: 実際のユーザーデータを取得
@@ -58,7 +58,7 @@ class LevelProgressWidget extends ConsumerWidget {
 
   Widget _buildCompactWidget(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
     OnboardingLevel? currentLevelInfo,
   ) {
@@ -69,12 +69,12 @@ class LevelProgressWidget extends ConsumerWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              tokens.brandPrimary.withOpacity(0.1),
-              Colors.purple.withOpacity(0.1),
+              tokens.brandPrimary.withValues(alpha: 0.1),
+              Colors.purple.withValues(alpha: 0.1),
             ],
           ),
           borderRadius: tokens.cornerMedium(),
-          border: Border.all(color: tokens.brandPrimary.withOpacity(0.3)),
+          border: Border.all(color: tokens.brandPrimary.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [
@@ -152,7 +152,7 @@ class LevelProgressWidget extends ConsumerWidget {
 
   Widget _buildFullWidget(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
     OnboardingLevel? currentLevelInfo,
     OnboardingLevel? nextLevelInfo,
@@ -162,14 +162,14 @@ class LevelProgressWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            tokens.brandPrimary.withOpacity(0.1),
-            Colors.purple.withOpacity(0.1),
+            tokens.brandPrimary.withValues(alpha: 0.1),
+            Colors.purple.withValues(alpha: 0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: tokens.cornerLarge(),
-        border: Border.all(color: tokens.brandPrimary.withOpacity(0.3)),
+        border: Border.all(color: tokens.brandPrimary.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,7 +215,7 @@ class LevelProgressWidget extends ConsumerWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: tokens.brandPrimary.withOpacity(0.3),
+                      color: tokens.brandPrimary.withValues(alpha: 0.3),
                       blurRadius: 8,
                       spreadRadius: 2,
                     ),
@@ -272,7 +272,7 @@ class LevelProgressWidget extends ConsumerWidget {
   }
 
   Widget _buildNextLevelSection(
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
     OnboardingLevel nextLevelInfo,
   ) {
@@ -336,7 +336,7 @@ class LevelProgressWidget extends ConsumerWidget {
   }
 
   Widget _buildDetailedProgress(
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
   ) {
     return Row(
@@ -379,7 +379,7 @@ class LevelProgressWidget extends ConsumerWidget {
   }
 
   Widget _buildProgressItem(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String label,
     double progress,
     IconData icon,
@@ -413,13 +413,13 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildUnlockPreview(MinqTokens tokens, OnboardingLevel nextLevelInfo) {
+  Widget _buildUnlockPreview(MinqTheme tokens, OnboardingLevel nextLevelInfo) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.1),
+        color: Colors.green.withValues(alpha: 0.1),
         borderRadius: tokens.cornerMedium(),
-        border: Border.all(color: Colors.green.withOpacity(0.3)),
+        border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -456,7 +456,7 @@ class LevelProgressWidget extends ConsumerWidget {
                       vertical: tokens.spacing(1),
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.2),
+                      color: Colors.green.withValues(alpha: 0.2),
                       borderRadius: tokens.cornerSmall(),
                     ),
                     child: Text(
@@ -474,14 +474,14 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildMaxLevelSection(MinqTokens tokens) {
+  Widget _buildMaxLevelSection(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.amber.withOpacity(0.2),
-            Colors.orange.withOpacity(0.2),
+            Colors.amber.withValues(alpha: 0.2),
+            Colors.orange.withValues(alpha: 0.2),
           ],
         ),
         borderRadius: tokens.cornerMedium(),
@@ -520,7 +520,7 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoadingWidget(MinqTokens tokens) {
+  Widget _buildLoadingWidget(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -531,7 +531,7 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildErrorWidget(MinqTokens tokens) {
+  Widget _buildErrorWidget(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(

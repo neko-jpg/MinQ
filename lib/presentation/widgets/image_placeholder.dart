@@ -309,10 +309,10 @@ class OptimizedImage extends StatelessWidget {
   Widget build(BuildContext context) {
     // デバイスピクセル比を考慮したキャッシュサイズを計算
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final calculatedCacheWidth =
+    final calculatedCacheWidth = // ignore: unused_local_variable
         cacheWidth ??
         (width != null ? (width! * devicePixelRatio).round() : null);
-    final calculatedCacheHeight =
+    final calculatedCacheHeight = // ignore: unused_local_variable
         cacheHeight ??
         (height != null ? (height! * devicePixelRatio).round() : null);
 

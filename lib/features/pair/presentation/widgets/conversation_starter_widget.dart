@@ -21,7 +21,7 @@ class ChatService {
     required String text,
   }) async {
     // This is a placeholder for the actual chat sending logic.
-    print("Sending message to pair '$pairId': $text");
+    debugPrint("Sending message to pair '$pairId': $text");
     // In a real implementation, this would interact with Firestore or another chat backend.
   }
 }

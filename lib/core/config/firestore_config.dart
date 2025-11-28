@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 /// Firestore設定クラス
 class FirestoreConfig {
@@ -27,9 +28,9 @@ class FirestoreConfig {
         persistenceEnabled: true,
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
       );
-      print('✅ Firestore persistence enabled');
+      debugPrint('✅ Firestore persistence enabled');
     } catch (e) {
-      print('⚠️ Firestore persistence already enabled or not supported: $e');
+      debugPrint('⚠️ Firestore persistence already enabled or not supported: $e');
     }
   }
 
@@ -56,9 +57,9 @@ class FirestoreConfig {
   static Future<void> clearCache() async {
     try {
       await FirebaseFirestore.instance.clearPersistence();
-      print('✅ Firestore cache cleared');
+      debugPrint('✅ Firestore cache cleared');
     } catch (e) {
-      print('❌ Failed to clear Firestore cache: $e');
+      debugPrint('❌ Failed to clear Firestore cache: $e');
     }
   }
 
@@ -66,9 +67,9 @@ class FirestoreConfig {
   static Future<void> waitForPendingWrites() async {
     try {
       await FirebaseFirestore.instance.waitForPendingWrites();
-      print('✅ All pending writes completed');
+      debugPrint('✅ All pending writes completed');
     } catch (e) {
-      print('❌ Failed to wait for pending writes: $e');
+      debugPrint('❌ Failed to wait for pending writes: $e');
     }
   }
 
@@ -76,9 +77,9 @@ class FirestoreConfig {
   static Future<void> disableNetwork() async {
     try {
       await FirebaseFirestore.instance.disableNetwork();
-      print('✅ Firestore network disabled');
+      debugPrint('✅ Firestore network disabled');
     } catch (e) {
-      print('❌ Failed to disable network: $e');
+      debugPrint('❌ Failed to disable network: $e');
     }
   }
 
@@ -86,9 +87,9 @@ class FirestoreConfig {
   static Future<void> enableNetwork() async {
     try {
       await FirebaseFirestore.instance.enableNetwork();
-      print('✅ Firestore network enabled');
+      debugPrint('✅ Firestore network enabled');
     } catch (e) {
-      print('❌ Failed to enable network: $e');
+      debugPrint('❌ Failed to enable network: $e');
     }
   }
 }
@@ -183,7 +184,7 @@ mixin OfflineCapableMixin {
         return await onlineAction();
       } catch (e) {
         // オンラインアクションが失敗した場合、オフラインアクションを試行
-        print('⚠️ Online action failed, falling back to offline: $e');
+        debugPrint('⚠️ Online action failed, falling back to offline: $e');
         return await offlineAction();
       }
     } else {
@@ -201,7 +202,7 @@ mixin OfflineCapableMixin {
       final cached = await getCached();
       yield cached;
     } catch (e) {
-      print('⚠️ Failed to get cached data: $e');
+      debugPrint('⚠️ Failed to get cached data: $e');
     }
 
     // サーバーからの更新を監視
@@ -232,7 +233,7 @@ class CacheManagementService {
   }) async {
     // Firestoreは自動的に古いキャッシュを削除するため、
     // 手動での実装は不要
-    print('ℹ️ Firestore automatically manages old cache');
+    debugPrint('ℹ️ Firestore automatically manages old cache');
   }
 
   /// キャッシュ統計を取得

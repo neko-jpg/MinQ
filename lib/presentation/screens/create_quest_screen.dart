@@ -472,7 +472,7 @@ class _StepIndicator extends StatelessWidget {
           children: List<Widget>.generate(totalSteps, (int index) {
             final bool isActive = index <= currentStep;
             final Color indicatorColor =
-                isActive ? tokens.brandPrimary : tokens.border.withOpacity(0.6);
+                isActive ? tokens.brandPrimary : tokens.border.withValues(alpha: 0.6);
             final bool reduceMotion =
                 MediaQuery.maybeOf(context)?.disableAnimations ?? false;
             return Expanded(

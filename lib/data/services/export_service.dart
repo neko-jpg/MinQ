@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
-
 import 'package:minq/data/models/mini_quest.dart';
 import 'package:minq/data/models/quest_log.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// データエクスポートサービス
 /// CSV、JSON形式でのデータ出力
@@ -166,6 +165,7 @@ class ExportService {
 
   /// ファイルをシェア
   Future<void> shareFile(File file) async {
+      // ignore: deprecated_member_use
     await Share.shareXFiles([XFile(file.path)], subject: 'MiniQuest Export');
   }
 

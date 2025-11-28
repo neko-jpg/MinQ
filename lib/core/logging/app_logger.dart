@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:logger/logger.dart';
+import 'package:flutter/foundation.dart';
 
 /// アプリケーションロガー
 /// JSON構造ログとレベル別ログ出力
@@ -227,7 +228,7 @@ class FileLogOutput extends LogOutput {
   void output(OutputEvent event) {
     for (final line in event.lines) {
       // ファイルに書き込む処理
-      print(line);
+      debugPrint(line);
     }
   }
 }
@@ -239,7 +240,7 @@ class RemoteLogOutput extends LogOutput {
     // リモートサービスに送信する処理
     for (final line in event.lines) {
       // Crashlytics.log(line);
-      print(line);
+      debugPrint(line);
     }
   }
 }

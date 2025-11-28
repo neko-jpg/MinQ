@@ -14,6 +14,7 @@ import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/firebase_options_dev.dart' as dev;
 import 'package:minq/firebase_options_prod.dart' as prod;
 import 'package:minq/firebase_options_stg.dart' as stg;
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/controllers/crash_recovery_controller.dart';
 import 'package:minq/presentation/controllers/progressive_onboarding_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
@@ -23,8 +24,6 @@ import 'package:minq/presentation/theme/app_theme.dart';
 import 'package:minq/presentation/widgets/version_check_widget.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:minq/l10n/app_localizations.dart';
 
 Future<void> main() async {
   const sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');

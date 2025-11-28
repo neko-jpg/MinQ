@@ -97,7 +97,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildErrorState(MinqTokens tokens) {
+  Widget _buildErrorState(MinqTheme tokens) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -119,7 +119,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildPredictionTab(MinqTokens tokens) {
+  Widget _buildPredictionTab(MinqTheme tokens) {
     final result = _predictionResult!;
 
     return SingleChildScrollView(
@@ -149,7 +149,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildAnalysisTab(MinqTokens tokens) {
+  Widget _buildAnalysisTab(MinqTheme tokens) {
     final analysis = _predictionResult!.analysis;
 
     return SingleChildScrollView(
@@ -174,7 +174,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildSuggestionsTab(MinqTokens tokens) {
+  Widget _buildSuggestionsTab(MinqTheme tokens) {
     final suggestions = _predictionResult!.suggestions;
 
     return SingleChildScrollView(
@@ -201,7 +201,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
   }
 
   Widget _buildRiskLevelCard(
-    MinqTokens tokens,
+    MinqTheme tokens,
     FailurePredictionResult result,
   ) {
     final riskLevel = result.riskLevel;
@@ -236,12 +236,12 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
       padding: EdgeInsets.all(tokens.spacing(6)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [riskColor.withOpacity(0.1), riskColor.withOpacity(0.05)],
+          colors: [riskColor.withValues(alpha: 0.1), riskColor.withValues(alpha: 0.05)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: tokens.cornerLarge(),
-        border: Border.all(color: riskColor.withOpacity(0.3), width: 2),
+        border: Border.all(color: riskColor.withValues(alpha: 0.3), width: 2),
       ),
       child: Column(
         children: [
@@ -261,7 +261,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
 
           Text(
             riskDescription,
-            style: tokens.bodyLarge.copyWith(color: riskColor.withOpacity(0.8)),
+            style: tokens.bodyLarge.copyWith(color: riskColor.withValues(alpha: 0.8)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -270,7 +270,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
   }
 
   Widget _buildPredictionScoreCard(
-    MinqTokens tokens,
+    MinqTheme tokens,
     FailurePredictionResult result,
   ) {
     final score = result.prediction.predictionScore;
@@ -344,7 +344,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildSuccessRateCard(MinqTokens tokens, analysis) {
+  Widget _buildSuccessRateCard(MinqTheme tokens, analysis) {
     final successRate = (analysis.successRate * 100).toInt();
 
     return Container(
@@ -394,7 +394,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
   }
 
   Widget _buildNextPredictionCard(
-    MinqTokens tokens,
+    MinqTheme tokens,
     FailurePredictionResult result,
   ) {
     final tomorrow = DateTime.now().add(const Duration(days: 1));
@@ -449,7 +449,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildDayAnalysisCard(MinqTokens tokens, analysis) {
+  Widget _buildDayAnalysisCard(MinqTheme tokens, analysis) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -516,7 +516,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildTimeAnalysisCard(MinqTokens tokens, analysis) {
+  Widget _buildTimeAnalysisCard(MinqTheme tokens, analysis) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -581,7 +581,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildStatsSummaryCard(MinqTokens tokens, analysis) {
+  Widget _buildStatsSummaryCard(MinqTheme tokens, analysis) {
     final bestDay = analysis.successByDay.entries.reduce(
       (a, b) => a.value > b.value ? a : b,
     );
@@ -635,7 +635,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
   }
 
   Widget _buildStatItem(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String label,
     String value,
     String suffix,
@@ -667,7 +667,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildSuggestionCard(MinqTokens tokens, FailureSuggestion suggestion) {
+  Widget _buildSuggestionCard(MinqTheme tokens, FailureSuggestion suggestion) {
     Color priorityColor;
     IconData priorityIcon;
 
@@ -692,7 +692,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
       decoration: BoxDecoration(
         color: tokens.surface,
         borderRadius: tokens.cornerLarge(),
-        border: Border.all(color: priorityColor.withOpacity(0.3)),
+        border: Border.all(color: priorityColor.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -738,7 +738,7 @@ class _HabitAnalysisScreenState extends ConsumerState<HabitAnalysisScreen>
     );
   }
 
-  Widget _buildNoSuggestionsState(MinqTokens tokens) {
+  Widget _buildNoSuggestionsState(MinqTheme tokens) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(tokens.spacing(8)),

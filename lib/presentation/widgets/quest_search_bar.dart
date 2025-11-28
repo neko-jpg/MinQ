@@ -124,7 +124,7 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                             widget.onTagsChanged?.call(_selectedTags.toList());
                           },
                           backgroundColor: tokens.surface,
-                          selectedColor: tokens.primary.withOpacity(0.2),
+                          selectedColor: tokens.primary.withValues(alpha: 0.2),
                           checkmarkColor: tokens.primary,
                         );
                       }).toList(),
@@ -306,7 +306,7 @@ class SearchHighlight extends StatelessWidget {
     final defaultHighlightStyle =
         highlightStyle ??
         TextStyle(
-          backgroundColor: tokens.primary.withOpacity(0.3),
+          backgroundColor: tokens.primary.withValues(alpha: 0.3),
           fontWeight: FontWeight.bold,
         );
 

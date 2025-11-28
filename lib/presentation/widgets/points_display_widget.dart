@@ -48,7 +48,7 @@ class PointsDisplayWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildSkeleton(MinqTokens tokens, bool compact) {
+  Widget _buildSkeleton(MinqTheme tokens, bool compact) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: tokens.spacing(3),
@@ -65,7 +65,7 @@ class PointsDisplayWidget extends ConsumerWidget {
             width: tokens.spacing(6),
             height: tokens.spacing(6),
             decoration: BoxDecoration(
-              color: tokens.textMuted.withOpacity(0.3),
+              color: tokens.textMuted.withValues(alpha: 0.3),
               shape: BoxShape.circle,
             ),
           ),
@@ -74,7 +74,7 @@ class PointsDisplayWidget extends ConsumerWidget {
             width: compact ? tokens.spacing(12) : tokens.spacing(20),
             height: tokens.spacing(4),
             decoration: BoxDecoration(
-              color: tokens.textMuted.withOpacity(0.3),
+              color: tokens.textMuted.withValues(alpha: 0.3),
               borderRadius: tokens.cornerSmall(),
             ),
           ),
@@ -84,7 +84,7 @@ class PointsDisplayWidget extends ConsumerWidget {
   }
 
   Widget _buildCompactView(
-    MinqTokens tokens,
+    MinqTheme tokens,
     int points,
     String rank,
     IconData rankIcon,
@@ -96,14 +96,14 @@ class PointsDisplayWidget extends ConsumerWidget {
       ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withValues(alpha: 0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: tokens.cornerMedium(),
         boxShadow: [
           BoxShadow(
-            color: tokens.brandPrimary.withOpacity(0.3),
+            color: tokens.brandPrimary.withValues(alpha: 0.3),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -127,7 +127,7 @@ class PointsDisplayWidget extends ConsumerWidget {
   }
 
   Widget _buildFullView(
-    MinqTokens tokens,
+    MinqTheme tokens,
     int points,
     String rank,
     IconData rankIcon,
@@ -136,14 +136,14 @@ class PointsDisplayWidget extends ConsumerWidget {
       padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withValues(alpha: 0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: tokens.cornerLarge(),
         boxShadow: [
           BoxShadow(
-            color: tokens.brandPrimary.withOpacity(0.3),
+            color: tokens.brandPrimary.withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -156,7 +156,7 @@ class PointsDisplayWidget extends ConsumerWidget {
             width: tokens.spacing(10),
             height: tokens.spacing(10),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(rankIcon, color: Colors.white, size: tokens.spacing(6)),
@@ -170,7 +170,7 @@ class PointsDisplayWidget extends ConsumerWidget {
                 Text(
                   rank,
                   style: tokens.bodySmall.copyWith(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -374,7 +374,7 @@ class RankProgressWidget extends ConsumerWidget {
                   child: LinearProgressIndicator(
                     value: progress,
                     minHeight: tokens.spacing(2),
-                    backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+                    backgroundColor: tokens.brandPrimary.withValues(alpha: 0.1),
                     valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
                   ),
                 ),

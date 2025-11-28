@@ -53,8 +53,8 @@ class _SubscriptionPremiumScreenState
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final subscriptionManager = ref.watch(subscriptionManagerProvider);
-    final currentStatus = ref.watch(subscriptionStatusProvider);
+    final subscriptionManager = ref.watch(subscriptionManagerProvider); // ignore: unused_local_variable
+    final currentStatus = ref.watch(subscriptionStatusProvider); // ignore: unused_local_variable
 
     // プレミアムプランのみを表示
     final premiumPlans =
@@ -83,7 +83,7 @@ class _SubscriptionPremiumScreenState
                     end: Alignment.bottomRight,
                     colors: [
                       tokens.brandPrimary,
-                      tokens.brandPrimary.withOpacity(0.8),
+                      tokens.brandPrimary.withValues(alpha: 0.8),
                     ],
                   ),
                 ),
@@ -113,7 +113,7 @@ class _SubscriptionPremiumScreenState
                           Text(
                             '習慣形成を次のレベルへ',
                             style: tokens.typeScale.h4.copyWith(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                             ),
                           ),
                         ],
@@ -241,7 +241,7 @@ class _SubscriptionPremiumScreenState
             width: tokens.spacing(6),
             height: tokens.spacing(6),
             decoration: BoxDecoration(
-              color: tokens.accentSuccess.withOpacity(0.1),
+              color: tokens.accentSuccess.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -276,7 +276,7 @@ class _SubscriptionPremiumScreenState
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? tokens.brandPrimary.withOpacity(0.1)
+                  ? tokens.brandPrimary.withValues(alpha: 0.1)
                   : tokens.surface,
           border: Border.all(
             color: isSelected ? tokens.brandPrimary : tokens.border,

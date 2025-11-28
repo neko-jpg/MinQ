@@ -49,8 +49,8 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
     widget.onError?.call(error, stackTrace);
 
     // ログに記録
-    print('❌ Error caught by ErrorBoundary: $error');
-    print('Stack trace: $stackTrace');
+    debugPrint('❌ Error caught by ErrorBoundary: $error');
+    debugPrint('Stack trace: $stackTrace');
   }
 
   void _reset() {
@@ -187,8 +187,8 @@ class GlobalErrorHandler {
   }
 
   static void _logError(Object error, StackTrace? stackTrace) {
-    print('❌ Global error: $error');
-    print('Stack trace: $stackTrace');
+    debugPrint('❌ Global error: $error');
+    debugPrint('Stack trace: $stackTrace');
 
     // TODO: Crashlytics や Sentry に送信
     // FirebaseCrashlytics.instance.recordError(error, stackTrace);
@@ -205,7 +205,7 @@ class ErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Container(
-      color: tokens.accentError.withOpacity(0.12),
+      color: tokens.accentError.withValues(alpha: 0.12),
       padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         mainAxisSize: MainAxisSize.min,

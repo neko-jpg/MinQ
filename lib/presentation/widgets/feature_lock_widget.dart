@@ -42,7 +42,7 @@ class FeatureLockWidget extends ConsumerWidget {
 
   Widget _buildLockedFeature(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     ProgressiveOnboarding service,
   ) {
     final requiredLevel = _getRequiredLevel(featureId);
@@ -59,10 +59,10 @@ class FeatureLockWidget extends ConsumerWidget {
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
+                color: Colors.black.withValues(alpha: 0.7),
                 borderRadius: tokens.cornerMedium(),
                 border: Border.all(
-                  color: Colors.orange.withOpacity(0.5),
+                  color: Colors.orange.withValues(alpha: 0.5),
                   width: 2,
                 ),
               ),
@@ -75,7 +75,7 @@ class FeatureLockWidget extends ConsumerWidget {
   }
 
   Widget _buildLockContent(
-    MinqTokens tokens,
+    MinqTheme tokens,
     int requiredLevel,
     int currentLevel,
   ) {
@@ -88,7 +88,7 @@ class FeatureLockWidget extends ConsumerWidget {
             width: tokens.spacing(12),
             height: tokens.spacing(12),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.2),
+              color: Colors.orange.withValues(alpha: 0.2),
               shape: BoxShape.circle,
               border: Border.all(color: Colors.orange, width: 2),
             ),
@@ -116,7 +116,7 @@ class FeatureLockWidget extends ConsumerWidget {
           Text(
             '現在: レベル$currentLevel',
             style: tokens.bodySmall.copyWith(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
             ),
           ),
 
@@ -129,7 +129,7 @@ class FeatureLockWidget extends ConsumerWidget {
               vertical: tokens.spacing(1),
             ),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.2),
+              color: Colors.orange.withValues(alpha: 0.2),
               borderRadius: tokens.cornerSmall(),
             ),
             child: Text(
@@ -145,14 +145,14 @@ class FeatureLockWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoadingState(MinqTokens tokens) {
+  Widget _buildLoadingState(MinqTheme tokens) {
     return Stack(
       children: [
         Opacity(opacity: 0.5, child: child),
         Positioned.fill(
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               borderRadius: tokens.cornerMedium(),
             ),
             child: const Center(child: CircularProgressIndicator()),
@@ -164,7 +164,7 @@ class FeatureLockWidget extends ConsumerWidget {
 
   void _showUnlockDialog(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     int requiredLevel,
   ) {
     showDialog(
@@ -220,7 +220,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
 
   Widget _buildDialog(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     ProgressiveOnboarding service,
   ) {
     final levelInfo = service.getLevel(requiredLevel);
@@ -310,7 +310,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeatureInfo(MinqTokens tokens) {
+  Widget _buildFeatureInfo(MinqTheme tokens) {
     final featureInfo = _getFeatureInfo(featureId);
 
     return Container(
@@ -325,7 +325,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
             width: tokens.spacing(12),
             height: tokens.spacing(12),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.1),
+              color: Colors.orange.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -360,13 +360,13 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildLevelRequirement(MinqTokens tokens, OnboardingLevel levelInfo) {
+  Widget _buildLevelRequirement(MinqTheme tokens, OnboardingLevel levelInfo) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.1),
+        color: Colors.orange.withValues(alpha: 0.1),
         borderRadius: tokens.cornerMedium(),
-        border: Border.all(color: Colors.orange.withOpacity(0.3)),
+        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -421,7 +421,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildRequirementItem(MinqTokens tokens, IconData icon, String text) {
+  Widget _buildRequirementItem(MinqTheme tokens, IconData icon, String text) {
     return Padding(
       padding: EdgeInsets.only(bottom: tokens.spacing(1)),
       child: Row(
@@ -434,7 +434,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildProgressSection(MinqTokens tokens, OnboardingProgress progress) {
+  Widget _buildProgressSection(MinqTheme tokens, OnboardingProgress progress) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -480,7 +480,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
   }
 
   Widget _buildProgressBar(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String label,
     double progress,
     IconData icon,
@@ -520,7 +520,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildErrorDialog(BuildContext context, MinqTokens tokens) {
+  Widget _buildErrorDialog(BuildContext context, MinqTheme tokens) {
     return Dialog(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing(6)),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// アプリ内アンケートウィジェット
 class SurveyWidget extends StatefulWidget {
@@ -199,7 +200,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                   decoration: BoxDecoration(
                     color:
                         isSelected
-                            ? tokens.primary.withOpacity(0.1)
+                            ? tokens.primary.withValues(alpha: 0.1)
                             : tokens.background,
                     borderRadius: BorderRadius.circular(tokens.radius.md),
                     border: Border.all(

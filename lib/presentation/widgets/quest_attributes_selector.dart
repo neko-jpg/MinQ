@@ -125,7 +125,7 @@ class _DifficultySelector extends StatelessWidget {
                 onChanged(selected ? difficulty['value'] : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor: tokens.primary.withOpacity(0.2),
+              selectedColor: tokens.primary.withValues(alpha: 0.2),
             );
           }).toList(),
     );
@@ -167,7 +167,7 @@ class _DurationSelector extends StatelessWidget {
                 onChanged(selected ? value : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor: tokens.primary.withOpacity(0.2),
+              selectedColor: tokens.primary.withValues(alpha: 0.2),
             );
           }).toList(),
     );
@@ -216,7 +216,7 @@ class _LocationSelector extends StatelessWidget {
                 onChanged(selected ? location['value'] : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor: tokens.primary.withOpacity(0.2),
+              selectedColor: tokens.primary.withValues(alpha: 0.2),
             );
           }).toList(),
     );

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/core/achievements/achievement_system.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// アチーブメント一覧画面
 class AchievementsScreen extends ConsumerWidget {
@@ -30,7 +31,7 @@ class AchievementsScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: Column(
@@ -70,7 +71,7 @@ class AchievementsScreen extends ConsumerWidget {
       padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [tokens.primary, tokens.primary.withOpacity(0.7)],
+          colors: [tokens.primary, tokens.primary.withValues(alpha: 0.7)],
         ),
         borderRadius: BorderRadius.circular(tokens.radius.lg),
       ),
@@ -88,7 +89,7 @@ class AchievementsScreen extends ConsumerWidget {
           Text(
             'アチーブメント達成',
             style: tokens.typography.body.copyWith(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
           SizedBox(height: tokens.spacing.md),
@@ -97,7 +98,7 @@ class AchievementsScreen extends ConsumerWidget {
             child: LinearProgressIndicator(
               value: percentage / 100,
               minHeight: 8,
-              backgroundColor: Colors.white.withOpacity(0.3),
+              backgroundColor: Colors.white.withValues(alpha: 0.3),
               valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
             ),
           ),
@@ -105,7 +106,7 @@ class AchievementsScreen extends ConsumerWidget {
           Text(
             '$percentage% 完了',
             style: tokens.typography.caption.copyWith(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
         ],
@@ -150,7 +151,7 @@ class _AchievementCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     isUnlocked
-                        ? tokens.primary.withOpacity(0.2)
+                        ? tokens.primary.withValues(alpha: 0.2)
                         : tokens.background,
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
@@ -262,7 +263,7 @@ class BadgeWidget extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: tokens.primary.withOpacity(0.1),
+        color: tokens.primary.withValues(alpha: 0.1),
         shape: BoxShape.circle,
         border: Border.all(color: tokens.primary, width: 2),
       ),

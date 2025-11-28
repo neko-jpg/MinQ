@@ -257,7 +257,7 @@ class _SocialLoginButton extends StatelessWidget {
           side: BorderSide(color: tokens.border), // border-slate-300
         ),
         elevation: 1,
-        shadowColor: tokens.border.withOpacity(0.5),
+        shadowColor: tokens.border.withValues(alpha: 0.5),
       ),
       onPressed: isLoading ? null : onPressed,
       child: Row(

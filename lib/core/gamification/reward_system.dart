@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/gamification/reward.dart';
+import 'package:flutter/foundation.dart';
 
 // Provider for the system
 final rewardSystemProvider = Provider<RewardSystem>((ref) {
@@ -18,15 +19,15 @@ class RewardSystem {
   Future<List<Reward>> getAvailableRewards() async {
     // Firestoreが利用できない場合は空のリストを返す
     if (_firestore == null) {
-      print('Rewards unavailable (offline mode)');
+      debugPrint('Rewards unavailable (offline mode)');
       return [];
     }
 
     try {
-      final snapshot = await _firestore!.collection('rewards').get();
+      final snapshot = await _firestore.collection('rewards').get();
       return snapshot.docs.map((doc) => Reward.fromJson(doc.data())).toList();
     } catch (e) {
-      print('Error fetching rewards: $e');
+      debugPrint('Error fetching rewards: $e');
       return [];
     }
   }
@@ -38,15 +39,15 @@ class RewardSystem {
   }) async {
     // Firestoreが利用できない場合は失敗
     if (_firestore == null) {
-      print('Reward redemption unavailable (offline mode)');
+      debugPrint('Reward redemption unavailable (offline mode)');
       return false;
     }
 
-    final userRef = _firestore!.collection('users').doc(userId);
-    final rewardRef = _firestore!.collection('rewards').doc(rewardId);
+    final userRef = _firestore.collection('users').doc(userId);
+    final rewardRef = _firestore.collection('rewards').doc(rewardId);
 
     try {
-      return await _firestore!.runTransaction((transaction) async {
+      return await _firestore.runTransaction((transaction) async {
         // 1. Get current user points and the reward details
         final rewardSnapshot = await transaction.get(rewardRef);
         if (!rewardSnapshot.exists) {
@@ -82,7 +83,7 @@ class RewardSystem {
         return true;
       });
     } catch (e) {
-      print('Error redeeming reward: $e');
+      debugPrint('Error redeeming reward: $e');
       return false;
     }
   }
@@ -131,7 +132,7 @@ class RewardSystem {
     try {
       // Firestoreが利用できない場合はローカルログのみ
       if (_firestore == null) {
-        print(
+        debugPrint(
           'Surprise reward generated (offline mode): ${selectedReward.name}',
         );
         return selectedReward;
@@ -140,7 +141,7 @@ class RewardSystem {
       // For consumable point pouches, directly award points instead of adding to inventory
       if (selectedReward.type == 'consumable') {
         final points = selectedReward.name.contains('Small') ? 25 : 50;
-        await _firestore!
+        await _firestore
             .collection('users')
             .doc(userId)
             .collection('points_transactions')
@@ -150,19 +151,19 @@ class RewardSystem {
               'createdAt': FieldValue.serverTimestamp(),
               'userId': userId,
             });
-        print('Awarded $points surprise points to user $userId');
+        debugPrint('Awarded $points surprise points to user $userId');
       } else {
-        await _firestore!
+        await _firestore
             .collection('users')
             .doc(userId)
             .collection('user_rewards')
             .doc(selectedReward.id)
             .set(selectedReward.toJson());
-        print('Awarded surprise reward ${selectedReward.name} to user $userId');
+        debugPrint('Awarded surprise reward ${selectedReward.name} to user $userId');
       }
       return selectedReward;
     } catch (e) {
-      print('Error generating variable reward: $e');
+      debugPrint('Error generating variable reward: $e');
       return null;
     }
   }

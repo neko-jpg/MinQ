@@ -45,8 +45,8 @@ class TimeCapsuleCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color:
                           isDelivered
-                              ? tokens.encouragement.withOpacity(0.1)
-                              : tokens.brandPrimary.withOpacity(0.1),
+                              ? tokens.encouragement.withValues(alpha: 0.1)
+                              : tokens.brandPrimary.withValues(alpha: 0.1),
                       borderRadius: tokens.cornerMedium(),
                     ),
                     child: Icon(
@@ -226,8 +226,8 @@ class _OpeningAnimationState extends State<_OpeningAnimation>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    tokens.encouragement.withOpacity(0.8),
-                    tokens.joyAccent.withOpacity(0.8),
+                    tokens.encouragement.withValues(alpha: 0.8),
+                    tokens.joyAccent.withValues(alpha: 0.8),
                   ],
                 ),
                 borderRadius: tokens.cornerSmall(),

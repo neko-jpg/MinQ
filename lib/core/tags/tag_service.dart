@@ -25,10 +25,10 @@ class TagService {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      AppLogger.info('Tag created', data: {'tagId': tagRef.id, 'name': name});
+      AppLogger().info('Tag created', data: {'tagId': tagRef.id, 'name': name});
       return tagRef.id;
     } catch (e, stack) {
-      AppLogger.error('Failed to create tag', error: e, stackTrace: stack);
+      AppLogger().error('Failed to create tag', e, stack);
       return null;
     }
   }
@@ -63,9 +63,9 @@ class TagService {
           .doc(tagId)
           .delete();
 
-      AppLogger.info('Tag deleted', data: {'tagId': tagId});
+      AppLogger().info('Tag deleted', data: {'tagId': tagId});
     } catch (e, stack) {
-      AppLogger.error('Failed to delete tag', error: e, stackTrace: stack);
+      AppLogger().error('Failed to delete tag', e, stack);
     }
   }
 }

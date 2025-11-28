@@ -228,7 +228,7 @@ class _TimePickerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      shadowColor: tokens.background.withOpacity(0.1),
+      shadowColor: tokens.background.withValues(alpha: 0.1),
       color: tokens.surface,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
       clipBehavior: Clip.antiAlias,

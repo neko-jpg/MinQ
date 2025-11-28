@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:minq/data/services/analytics_service.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// 招待/リファラルサービス
 /// 招待リンク生成、トラッキング、報酬管理
@@ -74,6 +74,7 @@ class ReferralService {
       final link = await generateInviteLink(userId: userId);
       final message = customMessage ?? 'MiniQuestで一緒に習慣を作りませんか？\n$link';
 
+      // ignore: deprecated_member_use
       await Share.share(message, subject: 'MiniQuestへの招待');
 
       await _analytics.logEvent(

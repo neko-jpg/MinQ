@@ -36,9 +36,9 @@ class UserBehaviorHeatmap extends StatelessWidget {
         showText: false,
         scrollable: true,
         colorsets: {
-          1: focusColor.withOpacity(0.25),
-          3: focusColor.withOpacity(0.5),
-          5: focusColor.withOpacity(0.7),
+          1: focusColor.withValues(alpha: 0.25),
+          3: focusColor.withValues(alpha: 0.5),
+          5: focusColor.withValues(alpha: 0.7),
           7: focusColor,
         },
       ),

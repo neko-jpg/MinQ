@@ -114,7 +114,7 @@ class _PulseLoadingState extends State<_PulseLoading>
                   height: widget.size,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: color.withOpacity(_opacityAnimation.value * 0.6),
+                    color: color.withValues(alpha: _opacityAnimation.value * 0.6),
                   ),
                 ),
               ),
@@ -203,7 +203,7 @@ class _RipplePainter extends CustomPainter {
 
       final paint =
           Paint()
-            ..color = color.withOpacity(opacity * 0.6)
+            ..color = color.withValues(alpha: opacity * 0.6)
             ..style = PaintingStyle.stroke
             ..strokeWidth = 2.0;
 
@@ -288,7 +288,7 @@ class _SpinPainter extends CustomPainter {
       final angle = (i * math.pi * 2) / 8;
       final opacity = (i + 1) / 8;
 
-      paint.color = color.withOpacity(opacity);
+      paint.color = color.withValues(alpha: opacity);
 
       final startX = center.dx + math.cos(angle) * radius * 0.7;
       final startY = center.dy + math.sin(angle) * radius * 0.7;
@@ -356,7 +356,7 @@ class _DotsLoadingState extends State<_DotsLoading>
                   height: widget.size * 0.15,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: color.withOpacity(0.5 + scale * 0.5),
+                    color: color.withValues(alpha: 0.5 + scale * 0.5),
                   ),
                 ),
               );
@@ -476,7 +476,7 @@ class PremiumLoadingOverlay extends StatelessWidget {
         child,
         if (isLoading)
           Container(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             child: Center(
               child: Container(
                 padding: const EdgeInsets.all(24),
@@ -485,7 +485,7 @@ class PremiumLoadingOverlay extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 10,
                       spreadRadius: 2,
                     ),

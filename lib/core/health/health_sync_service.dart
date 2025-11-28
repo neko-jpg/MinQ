@@ -1,7 +1,9 @@
+import 'package:health/health.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health/health.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
+import 'package:flutter/foundation.dart';
 
 // Provider for the service
 final healthSyncServiceProvider = Provider<HealthSyncService>((ref) {
@@ -37,7 +39,7 @@ class HealthSyncService {
       );
       return requested;
     } catch (e) {
-      print('Error requesting health permissions: $e');
+      debugPrint('Error requesting health permissions: $e');
       return false;
     }
   }
@@ -63,7 +65,7 @@ class HealthSyncService {
       healthData = HealthFactory.removeDuplicates(healthData);
       return healthData;
     } catch (e) {
-      print('Error fetching health data: $e');
+      debugPrint('Error fetching health data: $e');
       return [];
     }
   }
@@ -74,7 +76,7 @@ class HealthSyncService {
     List<HealthDataPoint> healthData,
   ) async {
     if (healthData.isEmpty) {
-      print('No new health data to process.');
+      debugPrint('No new health data to process.');
       return;
     }
 
@@ -88,7 +90,7 @@ class HealthSyncService {
         ifAbsent: () => value,
       );
     }
-    print('Aggregated health data: $aggregatedData');
+    debugPrint('Aggregated health data: $aggregatedData');
 
     // 2. Fetch user's active, uncompleted, health-related quests
     final questSnapshot =
@@ -101,7 +103,7 @@ class HealthSyncService {
             .get();
 
     if (questSnapshot.docs.isEmpty) {
-      print('No relevant health quests to update.');
+      debugPrint('No relevant health quests to update.');
       return;
     }
 
@@ -129,7 +131,7 @@ class HealthSyncService {
       if (healthType != null && (aggregatedData[healthType] ?? 0) >= goal) {
         // Mark quest as complete
         await questDoc.reference.update({'completed': true});
-        print("Auto-completed quest: ${quest['name']}");
+        debugPrint("Auto-completed quest: ${quest['name']}");
         completedQuestsCount++;
 
         // Also log the completion

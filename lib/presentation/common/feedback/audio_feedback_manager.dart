@@ -26,7 +26,7 @@ class AudioFeedbackManager {
       _isInitialized = true;
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Failed to initialize preferences: $e');
+        debugPrint('AudioFeedbackManager: Failed to initialize preferences: $e');
       }
       _isEnabled = true;
       _isInitialized = true;
@@ -44,7 +44,7 @@ class AudioFeedbackManager {
       await prefs.setBool(_audioEnabledKey, enabled);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Failed to save preference: $e');
+        debugPrint('AudioFeedbackManager: Failed to save preference: $e');
       }
     }
   }
@@ -61,7 +61,7 @@ class AudioFeedbackManager {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Success sound failed: $e');
+        debugPrint('AudioFeedbackManager: Success sound failed: $e');
       }
     }
   }
@@ -77,7 +77,7 @@ class AudioFeedbackManager {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Encouragement sound failed: $e');
+        debugPrint('AudioFeedbackManager: Encouragement sound failed: $e');
       }
     }
   }
@@ -91,7 +91,7 @@ class AudioFeedbackManager {
       await SystemSound.play(SystemSoundType.alert);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Notification sound failed: $e');
+        debugPrint('AudioFeedbackManager: Notification sound failed: $e');
       }
     }
   }
@@ -105,7 +105,7 @@ class AudioFeedbackManager {
       await SystemSound.play(SystemSoundType.alert);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Error sound failed: $e');
+        debugPrint('AudioFeedbackManager: Error sound failed: $e');
       }
     }
   }
@@ -119,7 +119,7 @@ class AudioFeedbackManager {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Button tap sound failed: $e');
+        debugPrint('AudioFeedbackManager: Button tap sound failed: $e');
       }
     }
   }
@@ -138,7 +138,7 @@ class AudioFeedbackManager {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Achievement sound failed: $e');
+        debugPrint('AudioFeedbackManager: Achievement sound failed: $e');
       }
     }
   }
@@ -154,7 +154,7 @@ class AudioFeedbackManager {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Streak sound failed: $e');
+        debugPrint('AudioFeedbackManager: Streak sound failed: $e');
       }
     }
   }
@@ -173,7 +173,7 @@ class AudioFeedbackManager {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Level up sound failed: $e');
+        debugPrint('AudioFeedbackManager: Level up sound failed: $e');
       }
     }
   }
@@ -187,7 +187,7 @@ class AudioFeedbackManager {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Toggle sound failed: $e');
+        debugPrint('AudioFeedbackManager: Toggle sound failed: $e');
       }
     }
   }
@@ -201,7 +201,7 @@ class AudioFeedbackManager {
       await SystemSound.play(SystemSoundType.click);
     } catch (e) {
       if (kDebugMode) {
-        print('AudioFeedbackManager: Swipe sound failed: $e');
+        debugPrint('AudioFeedbackManager: Swipe sound failed: $e');
       }
     }
   }

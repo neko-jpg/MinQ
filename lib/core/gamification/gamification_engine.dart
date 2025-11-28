@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/gamification/badge.dart';
 import 'package:minq/domain/gamification/points.dart';
+import 'package:flutter/foundation.dart';
 
 // Provider for the engine
 final gamificationEngineProvider = Provider<GamificationEngine>((ref) {
@@ -27,7 +28,7 @@ class GamificationEngine {
     if (_firestore == null) {
       final totalPoints =
           (basePoints * difficultyMultiplier * consistencyMultiplier).round();
-      print(
+      debugPrint(
         'Awarded $totalPoints points to user $userId for $reason (offline mode).',
       );
       return;
@@ -44,15 +45,15 @@ class GamificationEngine {
     );
 
     try {
-      await _firestore!
+      await _firestore
           .collection('users')
           .doc(userId)
           .collection('points_transactions')
           .add(pointsTransaction.toJson());
 
-      print('Awarded $totalPoints points to user $userId for $reason.');
+      debugPrint('Awarded $totalPoints points to user $userId for $reason.');
     } catch (e) {
-      print('Failed to award points (offline): $e');
+      debugPrint('Failed to award points (offline): $e');
     }
   }
 
@@ -60,16 +61,16 @@ class GamificationEngine {
   Future<List<Badge>> checkAndAwardBadges(String userId) async {
     // Firestoreが利用できない場合は空のリストを返す
     if (_firestore == null) {
-      print('Badge check skipped (offline mode).');
+      debugPrint('Badge check skipped (offline mode).');
       return [];
     }
 
     try {
-      final userBadgesRef = _firestore!
+      final userBadgesRef = _firestore
           .collection('users')
           .doc(userId)
           .collection('badges');
-      final questLogsRef = _firestore!
+      final questLogsRef = _firestore
           .collection('users')
           .doc(userId)
           .collection('quest_logs');
@@ -97,12 +98,12 @@ class GamificationEngine {
       }
 
       if (awardedBadges.isNotEmpty) {
-        print('Awarded ${awardedBadges.length} new badges to user $userId.');
+        debugPrint('Awarded ${awardedBadges.length} new badges to user $userId.');
       }
 
       return awardedBadges;
     } catch (e) {
-      print('Failed to check badges (offline): $e');
+      debugPrint('Failed to check badges (offline): $e');
       return [];
     }
   }
@@ -144,20 +145,20 @@ class GamificationEngine {
   /// Calculates the user's current rank based on their total points.
   Future<void> calculateRank(String userId) async {
     if (_firestore == null) {
-      print('Rank calculation skipped (offline mode).');
+      debugPrint('Rank calculation skipped (offline mode).');
       return;
     }
 
     try {
       final pointsSnapshot =
-          await _firestore!
+          await _firestore
               .collection('users')
               .doc(userId)
               .collection('points_transactions')
               .get();
 
       if (pointsSnapshot.docs.isEmpty) {
-        print('User $userId has no points yet.');
+        debugPrint('User $userId has no points yet.');
         return;
       }
 
@@ -167,10 +168,10 @@ class GamificationEngine {
 
       final rank = _getRankForPoints(totalPoints);
 
-      await _firestore!.collection('users').doc(userId).update({'rank': rank});
-      print('User $userId rank updated to $rank.');
+      await _firestore.collection('users').doc(userId).update({'rank': rank});
+      debugPrint('User $userId rank updated to $rank.');
     } catch (e) {
-      print('Failed to calculate rank (offline): $e');
+      debugPrint('Failed to calculate rank (offline): $e');
     }
   }
 
@@ -190,7 +191,7 @@ class GamificationEngine {
 
     try {
       final pointsSnapshot =
-          await _firestore!
+          await _firestore
               .collection('users')
               .doc(userId)
               .collection('points_transactions')
@@ -204,7 +205,7 @@ class GamificationEngine {
           .map((doc) => Points.fromJson(doc.data()).value)
           .fold<int>(0, (prev, current) => prev + current);
     } catch (e) {
-      print('Failed to get user points (offline): $e');
+      debugPrint('Failed to get user points (offline): $e');
       return 0;
     }
   }

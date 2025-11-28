@@ -30,9 +30,9 @@ class AppMonitoringService {
   Future<void> trackAppLaunch() async {
     try {
       await _analytics.logAppOpen();
-      AppLogger.info('App launched');
+      AppLogger().info('App launched');
     } catch (e, stack) {
-      AppLogger.error('Failed to track app launch', e, stack);
+      AppLogger().error('Failed to track app launch', e, stack);
     }
   }
 
@@ -40,9 +40,9 @@ class AppMonitoringService {
   Future<void> trackScreenView(String screenName) async {
     try {
       await _analytics.logScreenView(screenName: screenName);
-      AppLogger.debug('Screen view: $screenName');
+      AppLogger().debug('Screen view: $screenName');
     } catch (e, stack) {
-      AppLogger.error('Failed to track screen view', e, stack);
+      AppLogger().error('Failed to track screen view', e, stack);
     }
   }
 
@@ -53,9 +53,9 @@ class AppMonitoringService {
   }) async {
     try {
       await _analytics.logEvent(name: action, parameters: parameters);
-      AppLogger.debug('User action: $action', parameters);
+      AppLogger().debug('User action: $action', parameters);
     } catch (e, stack) {
-      AppLogger.error('Failed to track user action', e, stack);
+      AppLogger().error('Failed to track user action', e, stack);
     }
   }
 
@@ -75,13 +75,13 @@ class AppMonitoringService {
       );
 
       if (fatal) {
-        AppLogger.fatal('Fatal error recorded', error, stackTrace);
+        AppLogger().fatal('Fatal error recorded', error, stackTrace);
         await _notifyCriticalEvent('Fatal Error', error.toString());
       } else {
-        AppLogger.error('Error recorded', error, stackTrace);
+        AppLogger().error('Error recorded', error, stackTrace);
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to record error', e, stack);
+      AppLogger().error('Failed to record error', e, stack);
     }
   }
 
@@ -118,7 +118,7 @@ class AppMonitoringService {
 
       // レスポンスタイムが閾値を超えた場合
       if (duration.inMilliseconds > _criticalResponseTime) {
-        AppLogger.warning('Slow API response detected', {
+        AppLogger().warning('Slow API response detected', {
           'url': url,
           'duration': duration.inMilliseconds,
         });
@@ -128,7 +128,7 @@ class AppMonitoringService {
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to record HTTP metric', e, stack);
+      AppLogger().error('Failed to record HTTP metric', e, stack);
     }
   }
 
@@ -147,16 +147,16 @@ class AppMonitoringService {
           ...?attributes,
         },
       );
-      AppLogger.debug('Custom metric: $name = $value', attributes);
+      AppLogger().debug('Custom metric: $name = $value', attributes);
     } catch (e, stack) {
-      AppLogger.error('Failed to record custom metric', e, stack);
+      AppLogger().error('Failed to record custom metric', e, stack);
     }
   }
 
   /// クラッシュ率を監視
   Future<void> monitorCrashRate(double crashRate) async {
     if (crashRate > _criticalCrashRate) {
-      AppLogger.critical('Critical crash rate detected', {
+      AppLogger().critical('Critical crash rate detected', {
         'crash_rate': crashRate,
       });
       await _notifyCriticalEvent(
@@ -169,7 +169,7 @@ class AppMonitoringService {
   /// エラー率を監視
   Future<void> monitorErrorRate(double errorRate) async {
     if (errorRate > _criticalErrorRate) {
-      AppLogger.warning('High error rate detected', {'error_rate': errorRate});
+      AppLogger().warning('High error rate detected', {'error_rate': errorRate});
       await _notifyCriticalEvent(
         'High Error Rate',
         'Current error rate: ${(errorRate * 100).toStringAsFixed(2)}%',
@@ -192,13 +192,13 @@ class AppMonitoringService {
           'user_actions': userActions,
         },
       );
-      AppLogger.info('Session recorded', {
+      AppLogger().info('Session recorded', {
         'duration': duration.inSeconds,
         'screens': screenViews,
         'actions': userActions,
       });
     } catch (e, stack) {
-      AppLogger.error('Failed to record session', e, stack);
+      AppLogger().error('Failed to record session', e, stack);
     }
   }
 
@@ -221,7 +221,7 @@ class AppMonitoringService {
         timestamp: DateTime.now(),
       );
     } catch (e, stack) {
-      AppLogger.error('Health check failed', e, stack);
+      AppLogger().error('Health check failed', e, stack);
       return HealthStatus(
         isHealthy: false,
         analyticsHealthy: false,
@@ -276,7 +276,7 @@ class AppMonitoringService {
       await _crashlytics.setCustomKey('critical_event', title);
       await _crashlytics.setCustomKey('critical_message', message);
 
-      AppLogger.critical('Critical event notification', {
+      AppLogger().critical('Critical event notification', {
         'title': title,
         'message': message,
       });
@@ -285,7 +285,7 @@ class AppMonitoringService {
       // await _sendSlackNotification(title, message);
       // await _sendEmailNotification(title, message);
     } catch (e, stack) {
-      AppLogger.error('Failed to notify critical event', e, stack);
+      AppLogger().error('Failed to notify critical event', e, stack);
     }
   }
 
@@ -295,7 +295,7 @@ class AppMonitoringService {
       await _analytics.setUserProperty(name: name, value: value);
       await _crashlytics.setCustomKey(name, value);
     } catch (e, stack) {
-      AppLogger.error('Failed to set user property', e, stack);
+      AppLogger().error('Failed to set user property', e, stack);
     }
   }
 
@@ -305,7 +305,7 @@ class AppMonitoringService {
       await _analytics.setUserId(id: userId);
       await _crashlytics.setUserIdentifier(userId);
     } catch (e, stack) {
-      AppLogger.error('Failed to set user ID', e, stack);
+      AppLogger().error('Failed to set user ID', e, stack);
     }
   }
 }

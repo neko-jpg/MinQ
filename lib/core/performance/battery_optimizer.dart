@@ -50,7 +50,7 @@ class BatteryOptimizer {
       _updateOptimizationLevel(batteryLevel, isLowPowerMode);
     } catch (e) {
       if (kDebugMode) {
-        print('Battery level check failed: $e');
+        debugPrint('Battery level check failed: $e');
       }
     }
   }
@@ -115,7 +115,7 @@ class BatteryOptimizer {
     }
 
     if (kDebugMode) {
-      print('Battery optimization applied: $optimizationLevel');
+      debugPrint('Battery optimization applied: $optimizationLevel');
     }
   }
 
@@ -200,14 +200,14 @@ class AnimationOptimizationStrategy implements BatteryOptimizationStrategy {
   void _reduceAnimationDuration(double factor) {
     // アニメーション時間を短縮する実装
     if (kDebugMode) {
-      print('Animation duration reduced by ${(1 - factor) * 100}%');
+      debugPrint('Animation duration reduced by ${(1 - factor) * 100}%');
     }
   }
 
   void _disableAnimations() {
     // アニメーションを無効化する実装
     if (kDebugMode) {
-      print('Animations disabled for battery saving');
+      debugPrint('Animations disabled for battery saving');
     }
   }
 }
@@ -233,13 +233,13 @@ class NetworkOptimizationStrategy implements BatteryOptimizationStrategy {
 
   void _reduceBackgroundSync() {
     if (kDebugMode) {
-      print('Background sync reduced');
+      debugPrint('Background sync reduced');
     }
   }
 
   void _minimizeNetworkUsage() {
     if (kDebugMode) {
-      print('Network usage minimized');
+      debugPrint('Network usage minimized');
     }
   }
 }
@@ -266,13 +266,13 @@ class BackgroundTaskOptimizationStrategy
 
   void _deferNonCriticalTasks() {
     if (kDebugMode) {
-      print('Non-critical background tasks deferred');
+      debugPrint('Non-critical background tasks deferred');
     }
   }
 
   void _suspendBackgroundTasks() {
     if (kDebugMode) {
-      print('Background tasks suspended');
+      debugPrint('Background tasks suspended');
     }
   }
 }
@@ -298,13 +298,13 @@ class UIOptimizationStrategy implements BatteryOptimizationStrategy {
 
   void _reduceUIUpdates() {
     if (kDebugMode) {
-      print('UI update frequency reduced');
+      debugPrint('UI update frequency reduced');
     }
   }
 
   void _minimizeUIUpdates() {
     if (kDebugMode) {
-      print('UI updates minimized');
+      debugPrint('UI updates minimized');
     }
   }
 }
@@ -330,13 +330,13 @@ class LocationOptimizationStrategy implements BatteryOptimizationStrategy {
 
   void _reduceLocationUpdates() {
     if (kDebugMode) {
-      print('Location update frequency reduced');
+      debugPrint('Location update frequency reduced');
     }
   }
 
   void _disableLocationServices() {
     if (kDebugMode) {
-      print('Location services disabled');
+      debugPrint('Location services disabled');
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 /// トラッキングサービス
 /// ユーザーのプライバシー設定を管理
@@ -19,7 +20,7 @@ class TrackingService {
     // Firebase Analyticsの設定
     await _analytics.setAnalyticsCollectionEnabled(enabled);
 
-    print('✅ Tracking ${enabled ? 'enabled' : 'disabled'}');
+    debugPrint('✅ Tracking ${enabled ? 'enabled' : 'disabled'}');
   }
 
   /// トラッキングが有効かチェック
@@ -36,7 +37,7 @@ class TrackingService {
     // Firebase Crashlyticsの設定
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(enabled);
 
-    print('✅ Crashlytics ${enabled ? 'enabled' : 'disabled'}');
+    debugPrint('✅ Crashlytics ${enabled ? 'enabled' : 'disabled'}');
   }
 
   /// Crashlyticsが有効かチェック
@@ -64,7 +65,7 @@ class TrackingService {
     //   );
     // }
 
-    print('✅ Personalized ads ${enabled ? 'enabled' : 'disabled'}');
+    debugPrint('✅ Personalized ads ${enabled ? 'enabled' : 'disabled'}');
   }
 
   /// パーソナライズド広告が有効かチェック
@@ -79,7 +80,7 @@ class TrackingService {
     await setCrashlyticsEnabled(false);
     await setPersonalizedAdsEnabled(false);
 
-    print('✅ Do Not Track enabled');
+    debugPrint('✅ Do Not Track enabled');
   }
 
   /// すべてのトラッキングを有効化
@@ -88,7 +89,7 @@ class TrackingService {
     await setCrashlyticsEnabled(true);
     await setPersonalizedAdsEnabled(true);
 
-    print('✅ Do Not Track disabled');
+    debugPrint('✅ Do Not Track disabled');
   }
 
   /// プライバシー設定を取得
@@ -106,13 +107,13 @@ class TrackingService {
     await setCrashlyticsEnabled(settings.crashlyticsEnabled);
     await setPersonalizedAdsEnabled(settings.personalizedAdsEnabled);
 
-    print('✅ Privacy settings updated');
+    debugPrint('✅ Privacy settings updated');
   }
 
   /// ユーザーIDの匿名化
   Future<void> anonymizeUserId() async {
     await _analytics.setUserId(id: null);
-    print('✅ User ID anonymized');
+    debugPrint('✅ User ID anonymized');
   }
 
   /// ユーザープロパティをクリア
@@ -121,7 +122,7 @@ class TrackingService {
     await _analytics.setUserProperty(name: 'user_type', value: null);
     await _analytics.setUserProperty(name: 'subscription_status', value: null);
 
-    print('✅ User properties cleared');
+    debugPrint('✅ User properties cleared');
   }
 
   /// データ収集の同意を記録
@@ -144,7 +145,7 @@ class TrackingService {
     await setCrashlyticsEnabled(crashlyticsConsent);
     await setPersonalizedAdsEnabled(adsConsent);
 
-    print('✅ Consent recorded');
+    debugPrint('✅ Consent recorded');
   }
 
   /// 同意が記録されているかチェック
@@ -186,7 +187,7 @@ class TrackingService {
     await prefs.remove('consent_crashlytics');
     await prefs.remove('consent_ads');
 
-    print('✅ Consent revoked');
+    debugPrint('✅ Consent revoked');
   }
 }
 

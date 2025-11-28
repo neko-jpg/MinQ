@@ -180,7 +180,7 @@ class _ConversationPreview extends StatelessWidget {
               width: tokens.spacing(10),
               height: tokens.spacing(10),
               decoration: BoxDecoration(
-                color: tokens.brandPrimary.withOpacity(0.12),
+                color: tokens.brandPrimary.withValues(alpha: 0.12),
                 borderRadius: tokens.cornerLarge(),
               ),
               child: Icon(
@@ -223,7 +223,7 @@ class _ConversationPreview extends StatelessWidget {
                       vertical: tokens.spacing(2),
                     ),
                     decoration: BoxDecoration(
-                      color: tokens.brandPrimary.withOpacity(0.12),
+                      color: tokens.brandPrimary.withValues(alpha: 0.12),
                       borderRadius: tokens.cornerLarge(),
                     ),
                     child: Text(

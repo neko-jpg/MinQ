@@ -370,7 +370,7 @@ class _PersonalityDiagnosisScreenState
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
+                      color: Colors.blue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
@@ -537,7 +537,7 @@ class _PersonalityDiagnosisScreenState
         ),
         // ロックオーバーレイ
         Container(
-          color: tokens.background.withOpacity(0.6),
+          color: tokens.background.withValues(alpha: 0.6),
           alignment: Alignment.center,
           padding: EdgeInsets.all(tokens.spacing(6)),
           child: Column(

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 /// コンテンツモデレーションサービス
 class ContentModerationService {
   final NGWordFilter _ngWordFilter;
@@ -423,7 +424,7 @@ class ReportSystem {
   /// コンテンツを自動非表示
   Future<void> _autoHideContent(String contentId) async {
     // TODO: Firestoreでコンテンツを非表示にする
-    print('⚠️ Content auto-hidden: $contentId');
+    debugPrint('⚠️ Content auto-hidden: $contentId');
   }
 
   /// 通報を取得

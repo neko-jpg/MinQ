@@ -105,7 +105,7 @@ class SubscriptionManager {
     try {
       // In-App Purchase実装（将来）
       if (kDebugMode) {
-        print('Starting subscription: $planId');
+        debugPrint('Starting subscription: $planId');
       }
 
       // 仮実装: デバッグモードでは即座に有効化
@@ -124,7 +124,7 @@ class SubscriptionManager {
       return false;
     } catch (e) {
       if (kDebugMode) {
-        print('Subscription error: $e');
+        debugPrint('Subscription error: $e');
       }
       return false;
     }
@@ -135,14 +135,14 @@ class SubscriptionManager {
     try {
       // In-App Purchase実装（将来）
       if (kDebugMode) {
-        print('Canceling subscription');
+        debugPrint('Canceling subscription');
       }
 
       _currentStatus = const SubscriptionStatus.free();
       return true;
     } catch (e) {
       if (kDebugMode) {
-        print('Cancel subscription error: $e');
+        debugPrint('Cancel subscription error: $e');
       }
       return false;
     }
@@ -153,11 +153,11 @@ class SubscriptionManager {
     try {
       // In-App Purchase実装（将来）
       if (kDebugMode) {
-        print('Restoring subscriptions');
+        debugPrint('Restoring subscriptions');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Restore subscriptions error: $e');
+        debugPrint('Restore subscriptions error: $e');
       }
     }
   }

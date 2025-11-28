@@ -35,7 +35,7 @@ class FailurePredictionWidget extends ConsumerWidget {
 
   Widget _buildPredictionCard(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     WidgetRef ref,
     List<String> highRiskHabits,
   ) {
@@ -46,14 +46,14 @@ class FailurePredictionWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.red.shade400.withOpacity(0.1),
-            Colors.orange.shade400.withOpacity(0.1),
+            Colors.red.shade400.withValues(alpha: 0.1),
+            Colors.orange.shade400.withValues(alpha: 0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: tokens.cornerLarge(),
-        border: Border.all(color: Colors.red.withOpacity(0.3), width: 2),
+        border: Border.all(color: Colors.red.withValues(alpha: 0.3), width: 2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,7 @@ class FailurePredictionWidget extends ConsumerWidget {
                 width: tokens.spacing(12),
                 height: tokens.spacing(12),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.2),
+                  color: Colors.red.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -172,7 +172,7 @@ class FailurePredictionWidget extends ConsumerWidget {
   }
 
   Widget _buildRiskHabitItem(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String habitId,
     NavigationUseCase navigation,
   ) {
@@ -185,9 +185,9 @@ class FailurePredictionWidget extends ConsumerWidget {
         margin: EdgeInsets.only(bottom: tokens.spacing(2)),
         padding: EdgeInsets.all(tokens.spacing(3)),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withValues(alpha: 0.7),
           borderRadius: tokens.cornerMedium(),
-          border: Border.all(color: Colors.red.withOpacity(0.2)),
+          border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
         ),
         child: Row(
           children: [
@@ -229,7 +229,7 @@ class FailurePredictionWidget extends ConsumerWidget {
     );
   }
 
-  void _showImprovementSuggestions(BuildContext context, MinqTokens tokens) {
+  void _showImprovementSuggestions(BuildContext context, MinqTheme tokens) {
     showDialog(
       context: context,
       builder:
@@ -293,7 +293,7 @@ class FailurePredictionWidget extends ConsumerWidget {
   }
 
   Widget _buildSuggestionItem(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String title,
     String description,
     IconData icon,

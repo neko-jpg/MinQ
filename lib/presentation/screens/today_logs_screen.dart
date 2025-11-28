@@ -32,7 +32,7 @@ class TodayLogsScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -126,7 +126,7 @@ class _LogCard extends ConsumerWidget {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withOpacity(0.1),
+                        color: tokens.brandPrimary.withValues(alpha: 0.1),
                         borderRadius: tokens.cornerMedium(),
                       ),
                       child: Icon(
@@ -173,7 +173,7 @@ class _LogCard extends ConsumerWidget {
                       errorBuilder:
                           (context, error, stackTrace) => Container(
                             height: 120,
-                            color: tokens.border.withOpacity(0.3),
+                            color: tokens.border.withValues(alpha: 0.3),
                             child: const Center(
                               child: Icon(Icons.broken_image_outlined),
                             ),
@@ -295,9 +295,9 @@ class _ProofTypeChip extends StatelessWidget {
         vertical: tokens.spacing(1),
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: tokens.cornerSmall(),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

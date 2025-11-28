@@ -184,7 +184,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                     decoration: BoxDecoration(
                       color: _getCategoryColor(
                         battle.category,
-                      ).withOpacity(0.1),
+                      ).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -221,7 +221,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withOpacity(0.1),
+                      color: Colors.orange.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -655,7 +655,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.1),
+                  color: Colors.amber.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

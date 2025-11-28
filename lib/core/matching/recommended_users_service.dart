@@ -74,10 +74,8 @@ class RecommendedUsersService {
 
       return recommendations.take(limit).toList();
     } catch (e, stack) {
-      AppLogger.error(
-        'Failed to get recommended users',
-        error: e,
-        stackTrace: stack,
+      AppLogger().error(
+        'Failed to get recommended users', e, stack,
       );
       return [];
     }
@@ -168,10 +166,8 @@ class RecommendedUsersService {
         'lastLoginAt': DateTime.now().toIso8601String(),
       });
     } catch (e, stack) {
-      AppLogger.error(
-        'Failed to update activity score',
-        error: e,
-        stackTrace: stack,
+      AppLogger().error(
+        'Failed to update activity score', e, stack,
       );
     }
   }

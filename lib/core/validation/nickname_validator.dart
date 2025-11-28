@@ -43,10 +43,8 @@ class NicknameValidator {
 
       return NicknameValidationResult.success();
     } catch (e, stack) {
-      AppLogger.error(
-        'Failed to validate nickname',
-        error: e,
-        stackTrace: stack,
+      AppLogger().error(
+        'Failed to validate nickname', e, stack,
       );
       return NicknameValidationResult.error('検証中にエラーが発生しました');
     }

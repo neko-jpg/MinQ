@@ -26,7 +26,7 @@ class NotificationService {
   }) async {
     final webhookUrl = _env.slackWebhookUrl;
     if (webhookUrl == null || webhookUrl.isEmpty) {
-      AppLogger.warning('Slack webhook URL not configured');
+      AppLogger().warning('Slack webhook URL not configured');
       return;
     }
 
@@ -68,15 +68,15 @@ class NotificationService {
       );
 
       if (response.statusCode == 200) {
-        AppLogger.info('Slack notification sent successfully');
+        AppLogger().info('Slack notification sent successfully');
       } else {
-        AppLogger.error(
+        AppLogger().error(
           'Failed to send Slack notification',
           'Status: ${response.statusCode}, Body: ${response.body}',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error sending Slack notification', e, stack);
+      AppLogger().error('Error sending Slack notification', e, stack);
     }
   }
 
@@ -90,7 +90,7 @@ class NotificationService {
     // Cloud Functionsのメール送信エンドポイントを呼び出す
     final emailEndpoint = _env.emailNotificationEndpoint;
     if (emailEndpoint == null || emailEndpoint.isEmpty) {
-      AppLogger.warning('Email notification endpoint not configured');
+      AppLogger().warning('Email notification endpoint not configured');
       return;
     }
 
@@ -109,15 +109,15 @@ class NotificationService {
       );
 
       if (response.statusCode == 200) {
-        AppLogger.info('Email notification sent successfully');
+        AppLogger().info('Email notification sent successfully');
       } else {
-        AppLogger.error(
+        AppLogger().error(
           'Failed to send email notification',
           'Status: ${response.statusCode}, Body: ${response.body}',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error sending email notification', e, stack);
+      AppLogger().error('Error sending email notification', e, stack);
     }
   }
 
@@ -129,7 +129,7 @@ class NotificationService {
   }) async {
     final integrationKey = _env.pagerDutyIntegrationKey;
     if (integrationKey == null || integrationKey.isEmpty) {
-      AppLogger.warning('PagerDuty integration key not configured');
+      AppLogger().warning('PagerDuty integration key not configured');
       return;
     }
 
@@ -156,15 +156,15 @@ class NotificationService {
       );
 
       if (response.statusCode == 202) {
-        AppLogger.info('PagerDuty alert sent successfully');
+        AppLogger().info('PagerDuty alert sent successfully');
       } else {
-        AppLogger.error(
+        AppLogger().error(
           'Failed to send PagerDuty alert',
           'Status: ${response.statusCode}, Body: ${response.body}',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error sending PagerDuty alert', e, stack);
+      AppLogger().error('Error sending PagerDuty alert', e, stack);
     }
   }
 

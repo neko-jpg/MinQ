@@ -35,7 +35,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: ListView(
@@ -45,7 +45,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
           Container(
             padding: EdgeInsets.all(tokens.spacing.md),
             decoration: BoxDecoration(
-              color: tokens.primary.withOpacity(0.1),
+              color: tokens.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(tokens.radius.md),
             ),
             child: Row(
@@ -163,7 +163,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: _getStatusColor(result?.status, tokens).withOpacity(0.1),
+                color: _getStatusColor(result?.status, tokens).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
               child: Icon(icon, color: _getStatusColor(result?.status, tokens)),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:go_router/go_router.dart';
+import 'package:flutter/foundation.dart';
 
 /// ディープリンクの種類
 enum DeepLinkType {
@@ -78,11 +79,11 @@ class DeepLinkHandler {
       final deepLink = _parseUri(uri);
 
       if (deepLink.type == DeepLinkType.unknown) {
-        print('⚠️ Unknown deep link: $url');
+        debugPrint('⚠️ Unknown deep link: $url');
         return false;
       }
 
-      print('✅ Handling deep link: ${deepLink.type} - $url');
+      debugPrint('✅ Handling deep link: ${deepLink.type} - $url');
 
       // ディープリンクイベントを発行
       _deepLinkController.add(deepLink);
@@ -92,7 +93,7 @@ class DeepLinkHandler {
 
       return true;
     } catch (e) {
-      print('❌ Failed to handle deep link: $url - $e');
+      debugPrint('❌ Failed to handle deep link: $url - $e');
       return false;
     }
   }

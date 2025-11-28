@@ -45,7 +45,7 @@ class ImageOptimizer {
       return optimized;
     } catch (e) {
       if (kDebugMode) {
-        print('Image optimization failed: $e');
+        debugPrint('Image optimization failed: $e');
       }
       return imageData; // フォールバック
     }
@@ -233,7 +233,7 @@ class _OptimizedImageState extends State<OptimizedImage> {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Image optimization error: $e');
+        debugPrint('Image optimization error: $e');
       }
 
       if (mounted) {
@@ -309,7 +309,7 @@ class ImagePreloader {
         _preloadedImages.add(imagePath);
       } catch (e) {
         if (kDebugMode) {
-          print('Failed to preload image: $imagePath');
+          debugPrint('Failed to preload image: $imagePath');
         }
       }
     }
@@ -375,7 +375,7 @@ class ImageCacheManager {
       imageCache.clear();
 
       if (kDebugMode) {
-        print('Image cache cleared due to low memory');
+        debugPrint('Image cache cleared due to low memory');
       }
     }
   }

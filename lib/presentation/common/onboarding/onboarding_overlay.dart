@@ -102,7 +102,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
                   child: Container(
                     width: double.infinity,
                     height: double.infinity,
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withValues(alpha: 0.7),
                   ),
                 ),
               ),
@@ -143,7 +143,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
         borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -170,7 +170,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
                 onPressed: _dismiss,
                 icon: Icon(
                   Icons.close,
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
@@ -184,7 +184,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
           Text(
             widget.description,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.8),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
               height: 1.5,
             ),
           ),
@@ -229,7 +229,7 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
       child: CustomPaint(
         painter: SpotlightPainter(
           spotlightRect: const Rect.fromLTWH(100, 200, 200, 100),
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.black.withValues(alpha: 0.8),
         ),
       ),
     );
@@ -268,7 +268,7 @@ class SpotlightPainter extends CustomPainter {
     // スポットライト周りのグロー効果
     final glowPaint =
         Paint()
-          ..color = Colors.white.withOpacity(0.1)
+          ..color = Colors.white.withValues(alpha: 0.1)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2
           ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius);
@@ -348,7 +348,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(
                             context,
-                          ).colorScheme.outline.withOpacity(0.3),
+                          ).colorScheme.outline.withValues(alpha: 0.3),
                 ),
               ),
             ),
@@ -374,7 +374,7 @@ class _StepByStepOverlayState extends State<StepByStepOverlay> {
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurface.withOpacity(0.7),
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
 

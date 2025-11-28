@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/domain/mood/mood_state.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter/foundation.dart';
 
 // Provider for the service
 final moodTrackingServiceProvider = Provider<MoodTrackingService>((ref) {
@@ -34,9 +35,9 @@ class MoodTrackingService {
           .collection('mood_logs')
           .doc(moodState.id)
           .set(moodState.toJson());
-      print('Recorded mood for user $userId: $mood ($rating/5)');
+      debugPrint('Recorded mood for user $userId: $mood ($rating/5)');
     } catch (e) {
-      print('Error recording mood: $e');
+      debugPrint('Error recording mood: $e');
     }
   }
 
@@ -62,7 +63,7 @@ class MoodTrackingService {
               .get();
 
       if (moodLogsSnapshot.docs.isEmpty || questLogsSnapshot.docs.isEmpty) {
-        print('Not enough data to analyze correlation.');
+        debugPrint('Not enough data to analyze correlation.');
         return;
       }
 
@@ -127,11 +128,11 @@ class MoodTrackingService {
         'lastCorrelationAnalysis': FieldValue.serverTimestamp(),
       });
 
-      print(
+      debugPrint(
         'Successfully analyzed and saved mood-habit correlation for user $userId.',
       );
     } catch (e) {
-      print('Error analyzing mood-habit correlation: $e');
+      debugPrint('Error analyzing mood-habit correlation: $e');
     }
   }
 }

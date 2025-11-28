@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
+import 'package:flutter/foundation.dart';
 
 // Provider for the service
 final reverseAccountabilityServiceProvider =
@@ -48,11 +49,11 @@ class ReverseAccountabilityService {
         'body': notification['body'],
       });
 
-      print(
+      debugPrint(
         "Queued push notification for pair $pairId for user $userId's success.",
       );
     } catch (e) {
-      print('Error notifying pair: $e');
+      debugPrint('Error notifying pair: $e');
     }
   }
 
@@ -67,7 +68,7 @@ class ReverseAccountabilityService {
       final bool user2Completed = await _hasCompletedDailyGoal(user2Id);
 
       if (user1Completed && user2Completed) {
-        print('Both users completed daily goals! Awarding Resonance Bonus.');
+        debugPrint('Both users completed daily goals! Awarding Resonance Bonus.');
         await _gamificationEngine.awardPoints(
           userId: user1Id,
           basePoints: 50,
@@ -81,10 +82,10 @@ class ReverseAccountabilityService {
 
         // Maybe create a special notification for this
       } else {
-        print('Resonance bonus conditions not met.');
+        debugPrint('Resonance bonus conditions not met.');
       }
     } catch (e) {
-      print('Error creating resonance bonus: $e');
+      debugPrint('Error creating resonance bonus: $e');
     }
   }
 
@@ -111,10 +112,10 @@ class ReverseAccountabilityService {
   }) {
     // This would trigger a UI prompt with pre-written supportive message templates.
     // The logic to determine "struggling" would be more complex, e.g., based on broken streaks.
-    print(
+    debugPrint(
       'UI TRIGGER: Prompting user $activeUserId to support struggling pair $strugglingPairId.',
     );
-    print(
+    debugPrint(
       "Suggestion: 'Your pair might be having a tough time. Send them a message of support?'",
     );
   }

@@ -131,7 +131,7 @@ class ImagePrefetcher {
         await precacheImage(NetworkImage(url), context);
         _prefetchedImages.add(url);
       } catch (e) {
-        print('Failed to prefetch image: $url');
+        debugPrint('Failed to prefetch image: $url');
       }
     }
   }
@@ -283,13 +283,13 @@ class FastStartupManager {
     final results = _timer.getResults();
     final totalTime = _timer.getTotalTime();
 
-    print('=== Startup Metrics ===');
-    print('Total startup time: ${totalTime?.inMilliseconds}ms');
+    debugPrint('=== Startup Metrics ===');
+    debugPrint('Total startup time: ${totalTime?.inMilliseconds}ms');
 
     for (final entry in results.entries) {
-      print('${entry.key}: ${entry.value.inMilliseconds}ms');
+      debugPrint('${entry.key}: ${entry.value.inMilliseconds}ms');
     }
-    print('=====================');
+    debugPrint('=====================');
   }
 
   // 初期化メソッド群
@@ -358,7 +358,7 @@ class MemoryOptimizer {
 
     // ガベージコレクション促進
     if (kDebugMode) {
-      print('Performing memory cleanup');
+      debugPrint('Performing memory cleanup');
     }
   }
 
@@ -409,11 +409,11 @@ class PerformanceGuard {
     final fps = 1000000 / avgFrameTime; // マイクロ秒からFPSに変換
 
     if (fps < 55) {
-      print('Warning: Low FPS detected: ${fps.toStringAsFixed(1)}');
+      debugPrint('Warning: Low FPS detected: ${fps.toStringAsFixed(1)}');
     }
 
     if (kDebugMode) {
-      print('Average FPS: ${fps.toStringAsFixed(1)}');
+      debugPrint('Average FPS: ${fps.toStringAsFixed(1)}');
     }
   }
 

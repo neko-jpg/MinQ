@@ -198,7 +198,7 @@ class EmptyStateWidget extends StatelessWidget {
               Text(
                 message!,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -220,7 +220,7 @@ class EmptyStateWidget extends StatelessWidget {
       width: 96,
       height: 96,
       decoration: BoxDecoration(
-        color: iconColor.withOpacity(0.1),
+        color: iconColor.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(icon, size: 48, color: iconColor),
@@ -238,7 +238,7 @@ class EmptyStateWidget extends StatelessWidget {
       case EmptyStateType.pairs:
         return colorScheme.primary;
       default:
-        return colorScheme.onSurface.withOpacity(0.4);
+        return colorScheme.onSurface.withValues(alpha: 0.4);
     }
   }
 
@@ -357,7 +357,7 @@ class EmptyStateCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: colorScheme.primary.withOpacity(0.1),
+                  color: colorScheme.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: colorScheme.primary, size: 24),
@@ -372,7 +372,7 @@ class EmptyStateCard extends StatelessWidget {
                     Text(
                       message,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface.withOpacity(0.6),
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   ],
@@ -382,7 +382,7 @@ class EmptyStateCard extends StatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 16,
-                  color: colorScheme.onSurface.withOpacity(0.4),
+                  color: colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
             ],
           ),

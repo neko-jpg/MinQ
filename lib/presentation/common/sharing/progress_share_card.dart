@@ -130,7 +130,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
         Container(
           padding: EdgeInsets.all(tokens.spacing(2)),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: tokens.cornerMedium(),
           ),
           child: const Icon(Icons.trending_up, color: Colors.white, size: 24),
@@ -151,7 +151,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
               Text(
                 _getStreakMessage(widget.currentStreak),
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                   fontSize: 14,
                 ),
               ),
@@ -239,7 +239,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.white.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -257,7 +257,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
           Text(
             label,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               fontSize: 12,
             ),
           ),
@@ -296,12 +296,12 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.2),
+                backgroundColor: Colors.white.withValues(alpha: 0.2),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.white.withOpacity(0.3)),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
                 ),
               ),
             ),
@@ -329,6 +329,7 @@ class _ProgressShareCardState extends ConsumerState<ProgressShareCard>
       final file = await File('${tempDir.path}/minq_progress.png').create();
       await file.writeAsBytes(pngBytes);
 
+      // ignore: deprecated_member_use
       await Share.shareXFiles([
         XFile(file.path),
       ], text: 'MinQで${widget.currentStreak}日連続で目標達成中！ #MinQ #習慣化アプリ');

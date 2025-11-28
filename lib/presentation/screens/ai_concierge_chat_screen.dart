@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:minq/core/ai/ai_integration_manager.dart';
+import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/controllers/ai_concierge_chat_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/core/ai/ai_integration_manager.dart';
-import 'package:minq/data/providers.dart';
 
 enum _ConciergeMenuOption { insights, clearHistory, diagnostics, toggleAI }
 
@@ -234,7 +234,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
 
     for (final AiConciergeMessage message in messages) {
       final bool showDate =
-          previousDate == null || !_isSameDay(previousDate!, message.timestamp);
+          previousDate == null || !_isSameDay(previousDate, message.timestamp);
       if (showDate) {
         children.add(_buildDateChip(message.timestamp, tokens));
         previousDate = message.timestamp;
@@ -301,7 +301,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
             width: tokens.spacing(10),
             height: tokens.spacing(10),
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withOpacity(0.12),
+              color: tokens.brandPrimary.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: tokens.brandPrimary),
@@ -352,7 +352,7 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
             width: tokens.spacing(10),
             height: tokens.spacing(10),
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withOpacity(0.12),
+              color: tokens.brandPrimary.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
             child: Icon(Icons.psychology, color: tokens.brandPrimary),

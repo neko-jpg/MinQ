@@ -27,7 +27,7 @@ class FeedbackManager {
       _isInitialized = true;
     } catch (e) {
       if (kDebugMode) {
-        print('FeedbackManager: Initialization failed: $e');
+        debugPrint('FeedbackManager: Initialization failed: $e');
       }
     }
   }

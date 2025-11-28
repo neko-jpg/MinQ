@@ -165,7 +165,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
         gradient: LinearGradient(
           colors: [
             _getMessageColor(message.type),
-            _getMessageColor(message.type).withOpacity(0.8),
+            _getMessageColor(message.type).withValues(alpha: 0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -195,7 +195,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
                         Text(
                           'AIコーチ',
                           style: tokens.bodySmall.copyWith(
-                            color: Colors.white.withOpacity(0.8),
+                            color: Colors.white.withValues(alpha: 0.8),
                           ),
                         ),
                         Text(
@@ -226,7 +226,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
                 width: double.infinity,
                 padding: EdgeInsets.all(tokens.spacing(3)),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: tokens.cornerMedium(),
                 ),
                 child: Text(
@@ -305,7 +305,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         shape: BoxShape.circle,
       ),
       child: Icon(_getMessageIcon(type), color: Colors.white, size: size * 0.6),
@@ -324,7 +324,7 @@ class _AICoachOverlayState extends ConsumerState<AICoachOverlay>
       icon: Icon(icon, size: 16),
       label: Text(label, style: tokens.bodySmall),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white.withOpacity(0.2),
+        backgroundColor: Colors.white.withValues(alpha: 0.2),
         foregroundColor: Colors.white,
         padding: EdgeInsets.symmetric(
           horizontal: tokens.spacing(2),

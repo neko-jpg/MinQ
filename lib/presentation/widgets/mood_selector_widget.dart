@@ -46,7 +46,7 @@ class MoodSelectorWidget extends StatelessWidget {
                         decoration: BoxDecoration(
                           color:
                               isSelected
-                                  ? moodData.color.withOpacity(0.2)
+                                  ? moodData.color.withValues(alpha: 0.2)
                                   : Colors.transparent,
                           borderRadius: tokens.cornerLarge(),
                           border:
@@ -95,7 +95,7 @@ class MoodSelectorWidget extends StatelessWidget {
                 key: ValueKey(selectedMood),
                 padding: EdgeInsets.all(tokens.spacing(3)),
                 decoration: BoxDecoration(
-                  color: moodOptions[selectedMood]!.color.withOpacity(0.1),
+                  color: moodOptions[selectedMood]!.color.withValues(alpha: 0.1),
                   borderRadius: tokens.cornerMedium(),
                 ),
                 child: Row(
@@ -173,7 +173,7 @@ class CompactMoodSelector extends StatelessWidget {
                   decoration: BoxDecoration(
                     color:
                         isSelected
-                            ? tokens.brandPrimary.withOpacity(0.2)
+                            ? tokens.brandPrimary.withValues(alpha: 0.2)
                             : Colors.transparent,
                     borderRadius: tokens.cornerMedium(),
                   ),
@@ -244,7 +244,7 @@ class MoodHistoryItem extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(tokens.spacing(2)),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: tokens.cornerMedium(),
                 ),
                 child: Text(emoji, style: const TextStyle(fontSize: 24)),

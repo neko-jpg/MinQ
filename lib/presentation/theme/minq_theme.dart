@@ -298,8 +298,8 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       progressComplete: palette.success,
       progressPending: pending,
       // Interaction colors
-      tapFeedback: palette.primary.withOpacity(0.12),
-      hoverState: palette.primaryHover.withOpacity(0.08),
+      tapFeedback: palette.primary.withValues(alpha: 0.12),
+      hoverState: palette.primaryHover.withValues(alpha: 0.08),
       // Error and warning colors
       accentError: palette.error,
       accentWarning: palette.warning,
@@ -326,14 +326,14 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
 
       shadowSoft: [
         BoxShadow(
-          color: palette.textPrimary.withOpacity(0.08),
+          color: palette.textPrimary.withValues(alpha: 0.08),
           blurRadius: 18,
           offset: const Offset(0, 8),
         ),
       ],
       shadowStrong: [
         BoxShadow(
-          color: palette.textPrimary.withOpacity(0.12),
+          color: palette.textPrimary.withValues(alpha: 0.12),
           blurRadius: 24,
           offset: const Offset(0, 14),
         ),
@@ -455,8 +455,8 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       progressComplete: palette.success,
       progressPending: pending,
       // Interaction colors
-      tapFeedback: palette.primary.withOpacity(0.22),
-      hoverState: palette.primaryHover.withOpacity(0.16),
+      tapFeedback: palette.primary.withValues(alpha: 0.22),
+      hoverState: palette.primaryHover.withValues(alpha: 0.16),
       // Error and warning colors
       accentError: palette.error,
       accentWarning: palette.warning,
@@ -483,14 +483,14 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
 
       shadowSoft: [
         BoxShadow(
-          color: palette.onSurface.withOpacity(0.18),
+          color: palette.onSurface.withValues(alpha: 0.18),
           blurRadius: 20,
           offset: const Offset(0, 6),
         ),
       ],
       shadowStrong: [
         BoxShadow(
-          color: palette.onSurface.withOpacity(0.22),
+          color: palette.onSurface.withValues(alpha: 0.22),
           blurRadius: 28,
           offset: const Offset(0, 16),
         ),

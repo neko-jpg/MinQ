@@ -46,7 +46,7 @@ class WelcomeScreen extends ConsumerWidget {
                       width: 96,
                       height: 96,
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withOpacity(0.1),
+                        color: tokens.brandPrimary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -136,7 +136,7 @@ class _FeatureCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: tokens.brandPrimary.withOpacity(0.1),
+                color: tokens.brandPrimary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: tokens.brandPrimary),

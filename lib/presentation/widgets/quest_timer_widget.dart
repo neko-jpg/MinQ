@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエストタイマーウィジェット
 /// 習慣実行時のタイマー機能
@@ -284,7 +285,7 @@ class QuestTimerScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: Center(
@@ -348,7 +349,7 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
         Container(
           padding: EdgeInsets.all(tokens.spacing.md),
           decoration: BoxDecoration(
-            color: tokens.primary.withOpacity(0.1),
+            color: tokens.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(tokens.radius.md),
           ),
           child: Row(

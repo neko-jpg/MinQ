@@ -1,5 +1,6 @@
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 /// アプリ内レビューサービス
 class InAppReviewService {
@@ -21,7 +22,7 @@ class InAppReviewService {
         await _recordReviewRequest();
       }
     } catch (e) {
-      print('❌ Failed to request review: $e');
+      debugPrint('❌ Failed to request review: $e');
     }
   }
 
@@ -32,7 +33,7 @@ class InAppReviewService {
         appStoreId: '1234567890', // TODO: 実際のApp Store IDに置き換え
       );
     } catch (e) {
-      print('❌ Failed to open store listing: $e');
+      debugPrint('❌ Failed to open store listing: $e');
     }
   }
 

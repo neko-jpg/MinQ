@@ -270,7 +270,7 @@ class _TodayFocusCard extends ConsumerWidget {
                       value: progress,
                       strokeWidth: 8,
                       valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
-                      backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+                      backgroundColor: tokens.brandPrimary.withValues(alpha: 0.1),
                     ),
                   ),
                   Icon(
@@ -374,7 +374,7 @@ class _MiniQuestTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.75)],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withValues(alpha: 0.75)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -390,7 +390,7 @@ class _MiniQuestTile extends StatelessWidget {
                 width: tokens.spacing(7),
                 height: tokens.spacing(7),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: tokens.cornerMedium(),
                 ),
                 child: Icon(
@@ -404,7 +404,7 @@ class _MiniQuestTile extends StatelessWidget {
                 width: tokens.spacing(6),
                 height: tokens.spacing(6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.25),
+                  color: Colors.white.withValues(alpha: 0.25),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.check, color: Colors.white, size: 18),
@@ -612,9 +612,9 @@ class _HomeOfflineNotice extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.1),
+        color: Colors.orange.withValues(alpha: 0.1),
         borderRadius: tokens.cornerLarge(),
-        border: Border.all(color: Colors.orange.withOpacity(0.3)),
+        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [

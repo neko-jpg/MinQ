@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/domain/time_capsule/time_capsule.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter/foundation.dart';
 
 // Provider for the service
 final timeCapsuleServiceProvider = Provider<TimeCapsuleService>((ref) {
@@ -39,11 +40,11 @@ class TimeCapsuleService {
 
       // In a real app, you would schedule a push notification here using a service
       // like Firebase Functions + Cloud Scheduler, or a local notification service.
-      print(
+      debugPrint(
         'Created and saved time capsule ${capsule.id} for user $userId to be delivered on $deliveryDate.',
       );
     } catch (e) {
-      print('Error creating time capsule: $e');
+      debugPrint('Error creating time capsule: $e');
     }
   }
 
@@ -87,9 +88,9 @@ class TimeCapsuleService {
         'data': {'type': 'time_capsule', 'capsuleId': capsuleId},
       });
 
-      print('Queued delivery notification for time capsule $capsuleId.');
+      debugPrint('Queued delivery notification for time capsule $capsuleId.');
     } catch (e) {
-      print('Error delivering time capsule: $e');
+      debugPrint('Error delivering time capsule: $e');
     }
   }
 

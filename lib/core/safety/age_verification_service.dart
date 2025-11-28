@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 /// 年齢確認サービス
 /// COPPA（児童オンラインプライバシー保護法）準拠
@@ -34,7 +35,7 @@ class AgeVerificationService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    print('✅ Parental control enabled for user: $userId');
+    debugPrint('✅ Parental control enabled for user: $userId');
   }
 
   /// ペアレンタルコントロールを無効化
@@ -47,7 +48,7 @@ class AgeVerificationService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    print('✅ Parental control disabled for user: $userId');
+    debugPrint('✅ Parental control disabled for user: $userId');
   }
 
   /// 年少者向けの機能制限を適用
@@ -79,7 +80,7 @@ class AgeVerificationService {
 
     await _firestore.collection('users').doc(userId).update(restrictions);
 
-    print('✅ Minor restrictions applied for user: $userId');
+    debugPrint('✅ Minor restrictions applied for user: $userId');
   }
 
   /// 保護者の同意を記録
@@ -101,7 +102,7 @@ class AgeVerificationService {
       'parentEmail': parentEmail,
     });
 
-    print('✅ Parental consent recorded for user: $userId');
+    debugPrint('✅ Parental consent recorded for user: $userId');
   }
 
   /// 保護者への通知を送信
@@ -122,9 +123,9 @@ class AgeVerificationService {
         'userId': userId,
         'createdAt': FieldValue.serverTimestamp(),
       });
-      print('✅ Queued parental consent email to: $parentEmail');
+      debugPrint('✅ Queued parental consent email to: $parentEmail');
     } catch (e) {
-      print('Error queuing email: $e');
+      debugPrint('Error queuing email: $e');
     }
   }
 
@@ -165,7 +166,7 @@ class AgeVerificationService {
       await applyMinorRestrictions(userId, birthDate);
     }
 
-    print('✅ Age verification completed for user: $userId');
+    debugPrint('✅ Age verification completed for user: $userId');
   }
 
   /// ペア機能の利用可否をチェック

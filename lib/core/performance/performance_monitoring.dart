@@ -212,7 +212,7 @@ class IntegratedPerformanceManager {
     _isInitialized = true;
 
     if (kDebugMode) {
-      print('Integrated Performance Manager initialized');
+      debugPrint('Integrated Performance Manager initialized');
     }
   }
 
@@ -279,7 +279,7 @@ class FrameRateMonitor {
     _droppedFrames += droppedInPeriod;
 
     if (kDebugMode && droppedInPeriod > 0) {
-      print('Dropped frames detected: $droppedInPeriod');
+      debugPrint('Dropped frames detected: $droppedInPeriod');
     }
   }
 
@@ -329,7 +329,7 @@ class MemoryMonitor {
     if (usage > 200 * 1024 * 1024) {
       // 200MB以上
       if (kDebugMode) {
-        print('High memory usage detected: ${usage ~/ (1024 * 1024)}MB');
+        debugPrint('High memory usage detected: ${usage ~/ (1024 * 1024)}MB');
       }
     }
   }
@@ -381,7 +381,7 @@ class NetworkPerformanceMonitor {
       if (avgLatency.inMilliseconds > 2000) {
         // 2秒以上
         if (kDebugMode) {
-          print(
+          debugPrint(
             'High network latency detected: ${avgLatency.inMilliseconds}ms',
           );
         }

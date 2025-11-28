@@ -88,7 +88,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     final tokens = context.tokens;
 
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.9),
+      backgroundColor: Colors.black.withValues(alpha: 0.9),
       body: SafeArea(
         child: Stack(
           children: [
@@ -139,7 +139,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildBackgroundEffects(MinqTokens tokens) {
+  Widget _buildBackgroundEffects(MinqTheme tokens) {
     return Positioned.fill(
       child: AnimatedBuilder(
         animation: _mainController,
@@ -150,8 +150,8 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 center: Alignment.center,
                 radius: 1.5 * _mainController.value,
                 colors: [
-                  tokens.brandPrimary.withOpacity(0.3),
-                  Colors.purple.withOpacity(0.2),
+                  tokens.brandPrimary.withValues(alpha: 0.3),
+                  Colors.purple.withValues(alpha: 0.2),
                   Colors.transparent,
                 ],
               ),
@@ -162,7 +162,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildLevelUpAnimation(MinqTokens tokens) {
+  Widget _buildLevelUpAnimation(MinqTheme tokens) {
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
@@ -181,7 +181,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.yellow.withOpacity(0.5),
+                      color: Colors.yellow.withValues(alpha: 0.5),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -215,15 +215,15 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildLevelInfo(MinqTokens tokens) {
+  Widget _buildLevelInfo(MinqTheme tokens) {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Container(
         padding: EdgeInsets.all(tokens.spacing(6)),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
           borderRadius: tokens.cornerLarge(),
-          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
         ),
         child: Column(
           children: [
@@ -238,7 +238,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: tokens.brandPrimary.withOpacity(0.5),
+                    color: tokens.brandPrimary.withValues(alpha: 0.5),
                     blurRadius: 10,
                     spreadRadius: 2,
                   ),
@@ -272,7 +272,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
             Text(
               widget.levelInfo.description,
               style: tokens.bodyLarge.copyWith(
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
               ),
               textAlign: TextAlign.center,
             ),
@@ -282,7 +282,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildUnlockedFeatures(MinqTokens tokens) {
+  Widget _buildUnlockedFeatures(MinqTheme tokens) {
     return SlideTransition(
       position: _slideAnimation,
       child: FadeTransition(
@@ -290,9 +290,9 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
         child: Container(
           padding: EdgeInsets.all(tokens.spacing(4)),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: tokens.cornerLarge(),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -327,14 +327,14 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildFeatureItem(MinqTokens tokens, String featureId) {
+  Widget _buildFeatureItem(MinqTheme tokens, String featureId) {
     final featureInfo = _getFeatureInfo(featureId);
 
     return Container(
       margin: EdgeInsets.only(bottom: tokens.spacing(3)),
       padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: tokens.cornerMedium(),
       ),
       child: Row(
@@ -343,7 +343,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
             width: tokens.spacing(10),
             height: tokens.spacing(10),
             decoration: BoxDecoration(
-              color: Colors.green.shade400.withOpacity(0.2),
+              color: Colors.green.shade400.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -370,7 +370,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
                 Text(
                   featureInfo.description,
                   style: tokens.bodySmall.copyWith(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -387,7 +387,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildContinueButton(MinqTokens tokens) {
+  Widget _buildContinueButton(MinqTheme tokens) {
     return FadeTransition(
       opacity: _featuresController,
       child: SizedBox(
@@ -403,7 +403,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
             padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             elevation: 8,
-            shadowColor: tokens.brandPrimary.withOpacity(0.5),
+            shadowColor: tokens.brandPrimary.withValues(alpha: 0.5),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

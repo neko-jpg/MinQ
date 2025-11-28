@@ -277,7 +277,7 @@ class _RecordForm extends ConsumerWidget {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withOpacity(0.1),
+        color: tokens.brandPrimary.withValues(alpha: 0.1),
         borderRadius: tokens.cornerLarge(),
       ),
       child: Row(
@@ -286,7 +286,7 @@ class _RecordForm extends ConsumerWidget {
             width: tokens.spacing(14),
             height: tokens.spacing(14),
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withOpacity(0.2),
+              color: tokens.brandPrimary.withValues(alpha: 0.2),
               borderRadius: tokens.cornerLarge(),
             ),
             child: Icon(
@@ -545,9 +545,9 @@ class _FocusMusicTile extends ConsumerWidget {
     final tokens = context.tokens;
     final hasTagging = ref.watch(acrMusicTaggingServiceProvider) != null;
     final Color tileColor =
-        isActive ? tokens.brandPrimary.withOpacity(0.12) : tokens.surface;
+        isActive ? tokens.brandPrimary.withValues(alpha: 0.12) : tokens.surface;
     final borderColor =
-        isActive ? tokens.brandPrimary : tokens.border.withOpacity(0.4);
+        isActive ? tokens.brandPrimary : tokens.border.withValues(alpha: 0.4);
 
     return Material(
       color: Colors.transparent,
@@ -699,7 +699,7 @@ class _ProofButtonState extends State<_ProofButton>
     final Color background =
         widget.isPrimary
             ? tokens.brandPrimary
-            : tokens.brandPrimary.withOpacity(0.1);
+            : tokens.brandPrimary.withValues(alpha: 0.1);
     final Color foreground =
         widget.isPrimary ? Colors.white : tokens.textPrimary;
 

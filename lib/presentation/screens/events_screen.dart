@@ -7,7 +7,6 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/widgets/event_card.dart';
 
 class EventsScreen extends ConsumerStatefulWidget {
   const EventsScreen({super.key});
@@ -248,7 +247,7 @@ class _FeaturedEventCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withValues(alpha: 0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -265,7 +264,7 @@ class _FeaturedEventCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(tokens.spacing(2)),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: tokens.cornerMedium(),
                   ),
                   child: Text(event.icon, style: const TextStyle(fontSize: 24)),
@@ -278,7 +277,7 @@ class _FeaturedEventCard extends StatelessWidget {
                       Text(
                         '注目イベント',
                         style: tokens.bodySmall.copyWith(
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                         ),
                       ),
                       Text(
@@ -297,7 +296,7 @@ class _FeaturedEventCard extends StatelessWidget {
                     vertical: tokens.spacing(1),
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: tokens.cornerSmall(),
                   ),
                   child: Text(
@@ -314,7 +313,7 @@ class _FeaturedEventCard extends StatelessWidget {
             Text(
               event.description,
               style: tokens.bodyMedium.copyWith(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
               ),
             ),
             SizedBox(height: tokens.spacing(4)),
@@ -381,7 +380,7 @@ class _UpcomingEventCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(tokens.spacing(2)),
                   decoration: BoxDecoration(
-                    color: tokens.textMuted.withOpacity(0.1),
+                    color: tokens.textMuted.withValues(alpha: 0.1),
                     borderRadius: tokens.cornerMedium(),
                   ),
                   child: Text(event.icon, style: const TextStyle(fontSize: 24)),
@@ -414,7 +413,7 @@ class _UpcomingEventCard extends StatelessWidget {
                     vertical: tokens.spacing(1),
                   ),
                   decoration: BoxDecoration(
-                    color: tokens.textMuted.withOpacity(0.1),
+                    color: tokens.textMuted.withValues(alpha: 0.1),
                     borderRadius: tokens.cornerSmall(),
                   ),
                   child: Text(
@@ -478,14 +477,14 @@ class _PastEventCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(tokens.spacing(2)),
                   decoration: BoxDecoration(
-                    color: tokens.textMuted.withOpacity(0.1),
+                    color: tokens.textMuted.withValues(alpha: 0.1),
                     borderRadius: tokens.cornerMedium(),
                   ),
                   child: Text(
                     event.icon,
                     style: TextStyle(
                       fontSize: 24,
-                      color: tokens.textMuted.withOpacity(0.6),
+                      color: tokens.textMuted.withValues(alpha: 0.6),
                     ),
                   ),
                 ),
@@ -516,7 +515,7 @@ class _PastEventCard extends StatelessWidget {
                     vertical: tokens.spacing(1),
                   ),
                   decoration: BoxDecoration(
-                    color: tokens.encouragement.withOpacity(0.1),
+                    color: tokens.encouragement.withValues(alpha: 0.1),
                     borderRadius: tokens.cornerSmall(),
                   ),
                   child: Text(
@@ -547,7 +546,7 @@ class _PastEventCard extends StatelessWidget {
                           vertical: tokens.spacing(1),
                         ),
                         decoration: BoxDecoration(
-                          color: tokens.joyAccent.withOpacity(0.1),
+                          color: tokens.joyAccent.withValues(alpha: 0.1),
                           borderRadius: tokens.cornerSmall(),
                         ),
                         child: Row(
@@ -686,7 +685,7 @@ class _EventDetailSheet extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.all(tokens.spacing(3)),
                         decoration: BoxDecoration(
-                          color: tokens.brandPrimary.withOpacity(0.1),
+                          color: tokens.brandPrimary.withValues(alpha: 0.1),
                           borderRadius: tokens.cornerLarge(),
                         ),
                         child: Text(
@@ -781,10 +780,10 @@ class _EventDetailSheet extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.all(tokens.spacing(3)),
                           decoration: BoxDecoration(
-                            color: tokens.joyAccent.withOpacity(0.1),
+                            color: tokens.joyAccent.withValues(alpha: 0.1),
                             borderRadius: tokens.cornerMedium(),
                             border: Border.all(
-                              color: tokens.joyAccent.withOpacity(0.3),
+                              color: tokens.joyAccent.withValues(alpha: 0.3),
                             ),
                           ),
                           child: Row(

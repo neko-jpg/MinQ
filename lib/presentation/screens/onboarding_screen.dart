@@ -59,7 +59,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             width: 120,
                             height: 120,
                             decoration: BoxDecoration(
-                              color: tokens.brandPrimary.withOpacity(0.1),
+                              color: tokens.brandPrimary.withValues(alpha: 0.1),
                               shape: BoxShape.circle,
                               boxShadow: tokens.shadowSoft,
                             ),
@@ -165,7 +165,7 @@ class _FeatureCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: tokens.brandPrimary.withOpacity(0.1),
+                color: tokens.brandPrimary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: tokens.brandPrimary),

@@ -283,7 +283,7 @@ extension TypographyExtension on TextStyle {
 
   /// 不透明度を変更
   TextStyle withOpacity(double opacity) =>
-      copyWith(color: color?.withOpacity(opacity));
+      copyWith(color: color?.withValues(alpha: opacity));
 
   /// 行の高さを変更
   TextStyle withHeight(double height) => copyWith(height: height);

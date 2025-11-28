@@ -2,17 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/habit_dna/habit_dna_service.dart';
+import 'package:minq/data/providers.dart';
 import 'package:uuid/uuid.dart';
 
-// A dummy user ID for now
-const _userId = 'test_user';
 const _uuid = Uuid();
 
 final questRecommendationsProvider = FutureProvider.autoDispose<List<String>>((
   ref,
 ) async {
+  final uid = ref.watch(uidProvider);
+  if (uid == null) {
+    return ['コップ1杯の水を飲む', '1分間、深呼吸する', '今日の感謝を1つ書き出す'];
+  }
+
   final habitDnaService = ref.watch(habitDNAServiceProvider);
-  final archetype = await habitDnaService.determineArchetype(_userId);
+  final archetype = await habitDnaService.determineArchetype(uid);
 
   if (archetype == null) {
     return ['コップ1杯の水を飲む', '1分間、深呼吸する', '今日の感謝を1つ書き出す'];
@@ -35,10 +39,13 @@ final questRecommendationsProvider = FutureProvider.autoDispose<List<String>>((
 
 final addQuestProvider = Provider((ref) {
   return (String questName) async {
+    final uid = ref.read(uidProvider);
+    if (uid == null) return;
+
     final questId = _uuid.v4();
     await FirebaseFirestore.instance
         .collection('users')
-        .doc(_userId)
+        .doc(uid)
         .collection('quests')
         .doc(questId)
         .set({

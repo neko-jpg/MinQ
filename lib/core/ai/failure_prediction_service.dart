@@ -83,7 +83,7 @@ class FailurePredictionService {
         suggestions: suggestions,
         analysis: analysis,
       );
-    } catch (e, stack) {
+    } catch (e) {
       await _analytics.logError('failure_prediction_failed', e.toString());
       rethrow;
     }
@@ -236,7 +236,7 @@ class FailurePredictionService {
   Future<double> _calculateTrendAdjustment(HabitAnalysis analysis) async {
     // 最近7日間のトレンドを分析
     const recentDays = 7;
-    final cutoffDate = DateTime.now().subtract(Duration(days: recentDays));
+    final cutoffDate = DateTime.now().subtract(const Duration(days: recentDays)); // ignore: unused_local_variable
 
     try {
       // 最近のログを取得（簡略化）
@@ -404,7 +404,7 @@ class FailurePredictionService {
           title: 'タイミングの最適化',
           description:
               aiResponse.length > 100
-                  ? aiResponse.substring(0, 100) + '...'
+                  ? '${aiResponse.substring(0, 100)}...'
                   : aiResponse,
           priority: SuggestionPriority.medium,
           actionable: true,
@@ -478,7 +478,7 @@ class FailurePredictionService {
       }
 
       return results;
-    } catch (e, stack) {
+    } catch (e) {
       await _analytics.logError('get_recent_predictions_failed', e.toString());
       return [];
     }

@@ -42,7 +42,7 @@ final voiceQuestCompleterProvider = Provider.autoDispose((ref) {
       await ref.read(questCompletionProvider)(questId, questName);
       return true;
     }
-    print("Quest '$questName' not found or already completed.");
+    debugPrint("Quest '$questName' not found or already completed.");
     return false;
   };
 });
@@ -68,8 +68,8 @@ class _VoiceInputWidgetState extends ConsumerState<VoiceInputWidget> {
     final speech = ref.read(speechToTextProvider);
     if (!_isListening) {
       bool available = await speech.initialize(
-        onStatus: (val) => print('onStatus: $val'),
-        onError: (val) => print('onError: $val'),
+        onStatus: (val) => debugPrint('onStatus: $val'),
+        onError: (val) => debugPrint('onError: $val'),
       );
       if (available) {
         setState(() => _isListening = true);
@@ -77,7 +77,7 @@ class _VoiceInputWidgetState extends ConsumerState<VoiceInputWidget> {
           onResult: (val) => setState(() => _lastWords = val.recognizedWords),
         );
       } else {
-        print('The user has denied the use of speech recognition.');
+        debugPrint('The user has denied the use of speech recognition.');
       }
     } else {
       setState(() => _isListening = false);

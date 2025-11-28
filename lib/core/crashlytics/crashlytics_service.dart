@@ -82,7 +82,7 @@ class CrashlyticsService {
 
   /// テストクラッシュを送信
   Future<void> testCrash() async {
-    await _crashlytics.crash();
+    _crashlytics.crash();
   }
 }
 
@@ -136,9 +136,9 @@ class ErrorHandler {
     Map<String, dynamic>? additionalInfo,
   }) async {
     // ログに記録
-    print('Error: $error');
+    debugPrint('Error: $error');
     if (stackTrace != null) {
-      print('StackTrace: $stackTrace');
+      debugPrint('StackTrace: $stackTrace');
     }
 
     // Crashlyticsに送信

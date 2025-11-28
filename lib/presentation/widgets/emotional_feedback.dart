@@ -149,7 +149,7 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
             animation: _controller,
             builder: (context, child) {
               return Container(
-                color: Colors.black.withOpacity(0.3 * _controller.value),
+                color: Colors.black.withValues(alpha: 0.3 * _controller.value),
               );
             },
           ),
@@ -181,7 +181,7 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 10,
                             spreadRadius: 2,
                           ),
@@ -432,8 +432,8 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.purple.withOpacity(0.8),
-              Colors.blue.withOpacity(0.8),
+              Colors.purple.withValues(alpha: 0.8),
+              Colors.blue.withValues(alpha: 0.8),
             ],
           ),
         ),
@@ -473,7 +473,7 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.amber.withOpacity(0.5),
+                                  color: Colors.amber.withValues(alpha: 0.5),
                                   blurRadius: 20,
                                   spreadRadius: 5,
                                 ),
@@ -553,7 +553,7 @@ class _EpicParticlePainter extends CustomPainter {
       final scale = random.nextDouble() * progress;
       final opacity = (1.0 - progress) * random.nextDouble();
 
-      paint.color = Colors.white.withOpacity(opacity);
+      paint.color = Colors.white.withValues(alpha: opacity);
 
       canvas.drawCircle(Offset(x, y), scale * 3, paint);
     }
@@ -655,7 +655,7 @@ class _EmotionalButtonState extends State<EmotionalButton>
               backgroundColor: _colorAnimation.value,
               foregroundColor: Colors.white,
               elevation: 4 + (_controller.value * 4),
-              shadowColor: _colorAnimation.value?.withOpacity(0.5),
+              shadowColor: _colorAnimation.value?.withValues(alpha: 0.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -741,7 +741,7 @@ class _EmotionalCardState extends State<EmotionalCard>
                       BoxShadow(
                         color: _getStateColor(
                           widget.state,
-                        ).withOpacity(0.3 * _glowAnimation.value),
+                        ).withValues(alpha: 0.3 * _glowAnimation.value),
                         blurRadius: 10 + (10 * _glowAnimation.value),
                         spreadRadius: 2 + (2 * _glowAnimation.value),
                       ),
@@ -755,7 +755,7 @@ class _EmotionalCardState extends State<EmotionalCard>
               side: BorderSide(
                 color: _getStateColor(
                   widget.state,
-                ).withOpacity(0.3 * _glowAnimation.value),
+                ).withValues(alpha: 0.3 * _glowAnimation.value),
                 width: 1 + _glowAnimation.value,
               ),
             ),

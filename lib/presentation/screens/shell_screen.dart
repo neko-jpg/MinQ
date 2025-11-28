@@ -224,7 +224,7 @@ class _UsageLimitOverlay extends ConsumerWidget {
 
     return Positioned.fill(
       child: Material(
-        color: Colors.black.withOpacity(0.55),
+        color: Colors.black.withValues(alpha: 0.55),
         child: Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 360),

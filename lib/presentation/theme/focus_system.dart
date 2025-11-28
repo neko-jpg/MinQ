@@ -66,12 +66,12 @@ class FocusSystem {
 
   /// ライトモードのフォーカステーマ
   static Color lightFocusColor() {
-    return Colors.blue.withOpacity(0.3);
+    return Colors.blue.withValues(alpha: 0.3);
   }
 
   /// ダークモードのフォーカステーマ
   static Color darkFocusColor() {
-    return Colors.blue.withOpacity(0.3);
+    return Colors.blue.withValues(alpha: 0.3);
   }
 
   // ========================================
@@ -90,7 +90,7 @@ class FocusSystem {
       borderRadius: BorderRadius.circular(radius),
       boxShadow: [
         BoxShadow(
-          color: highContrast ? focusColor : focusColor.withOpacity(0.3),
+          color: highContrast ? focusColor : focusColor.withValues(alpha: 0.3),
           blurRadius: 4,
           spreadRadius: 1,
         ),

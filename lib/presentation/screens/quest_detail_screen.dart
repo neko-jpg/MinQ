@@ -91,7 +91,7 @@ class _QuestDetailContent extends ConsumerWidget {
                           width: tokens.spacing(12),
                           height: tokens.spacing(12),
                           decoration: BoxDecoration(
-                            color: tokens.brandPrimary.withOpacity(0.1),
+                            color: tokens.brandPrimary.withValues(alpha: 0.1),
                             borderRadius: tokens.cornerLarge(),
                           ),
                           child: Icon(
@@ -341,7 +341,7 @@ class _QuestInfoChip extends StatelessWidget {
         vertical: tokens.spacing(2),
       ),
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withOpacity(0.1),
+        color: tokens.brandPrimary.withValues(alpha: 0.1),
         borderRadius: tokens.cornerLarge(),
       ),
       child: Row(

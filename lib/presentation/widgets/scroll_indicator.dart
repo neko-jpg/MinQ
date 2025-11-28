@@ -102,7 +102,7 @@ class ScrollIndicatorWrapper extends StatelessWidget {
   }
 
   Widget _buildScrollbar(BuildContext context, ScrollIndicatorConfig config) {
-    final theme = Theme.of(context);
+    final theme = Theme.of(context); // ignore: unused_local_variable
 
     if (controller != null) {
       return Scrollbar(
@@ -229,8 +229,8 @@ class _ScrollEdgeIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = [
-      theme.colorScheme.surface.withOpacity(0.0),
-      theme.colorScheme.surface.withOpacity(0.8),
+      theme.colorScheme.surface.withValues(alpha: 0.0),
+      theme.colorScheme.surface.withValues(alpha: 0.8),
     ];
 
     return IgnorePointer(
@@ -314,7 +314,7 @@ class _ScrollPositionIndicatorState extends State<ScrollPositionIndicator> {
             color:
                 isActive
                     ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(0.3),
+                    : theme.colorScheme.onSurface.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(4),
           ),
         );

@@ -142,7 +142,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                       return CustomPaint(
                         painter: SparklePainter(
                           animation: _sparkleAnimation.value,
-                          color: Colors.white.withOpacity(0.6),
+                          color: Colors.white.withValues(alpha: 0.6),
                         ),
                       );
                     },
@@ -161,10 +161,10 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                           width: 64,
                           height: 64,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                               width: 2,
                             ),
                           ),
@@ -213,7 +213,7 @@ class _BadgeNotificationWidgetState extends State<BadgeNotificationWidget>
                         onPressed: _dismiss,
                         icon: Icon(
                           Icons.close,
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                           size: 20,
                         ),
                       ),
@@ -282,7 +282,7 @@ class SparklePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = color.withOpacity(animation * 0.8)
+          ..color = color.withValues(alpha: animation * 0.8)
           ..style = PaintingStyle.fill;
 
     // スパークルの位置を計算
@@ -449,7 +449,7 @@ class _PointsNotificationWidgetState extends State<PointsNotificationWidget>
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.green.withOpacity(0.3),
+                    color: Colors.green.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),

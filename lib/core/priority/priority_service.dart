@@ -80,12 +80,12 @@ class PriorityService {
             'priorityOrder': priority.sortOrder,
           });
 
-      AppLogger.info(
+      AppLogger().info(
         'Priority set',
         data: {'questId': questId, 'priority': priority.name},
       );
     } catch (e, stack) {
-      AppLogger.error('Failed to set priority', error: e, stackTrace: stack);
+      AppLogger().error('Failed to set priority', e, stack);
       rethrow;
     }
   }

@@ -53,13 +53,13 @@ ThemeData buildTheme(MinqTheme tokens) {
       isLight ? BorderSide.none : BorderSide(color: tokens.divider);
   final cardElevation = isLight ? 2.0 : 0.0;
   final cardShadowColor =
-      isLight ? tokens.onSurface.withOpacity(0.08) : transparent;
+      isLight ? tokens.onSurface.withValues(alpha: 0.08) : transparent;
 
   final overlayPrimary = WidgetStatePropertyAll<Color>(
-    tokens.primaryHover.withOpacity(0.12),
+    tokens.primaryHover.withValues(alpha: 0.12),
   );
   final overlaySecondary = WidgetStatePropertyAll<Color>(
-    tokens.accentSecondary.withOpacity(0.12),
+    tokens.accentSecondary.withValues(alpha: 0.12),
   );
 
   return ThemeData(

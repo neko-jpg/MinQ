@@ -143,7 +143,7 @@ class _BurstPainter extends CustomPainter {
 
     if (rippleOpacity > 0) {
       final ripplePaint = Paint()
-        ..color = rippleColor.withOpacity(rippleOpacity * 0.3)
+        ..color = rippleColor.withValues(alpha: rippleOpacity * 0.3)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 4.0 * (1.0 - rippleProgress);
 
@@ -156,7 +156,7 @@ class _BurstPainter extends CustomPainter {
          final secondaryOpacity = 1.0 - secondaryProgress;
 
          final secondaryPaint = Paint()
-           ..color = rippleColor.withOpacity(secondaryOpacity * 0.2)
+           ..color = rippleColor.withValues(alpha: secondaryOpacity * 0.2)
            ..style = PaintingStyle.stroke
            ..strokeWidth = 2.0;
 
@@ -178,7 +178,7 @@ class _BurstPainter extends CustomPainter {
       if (particleOpacity <= 0) continue;
 
       final paint = Paint()
-        ..color = particle.color.withOpacity(particleOpacity)
+        ..color = particle.color.withValues(alpha: particleOpacity)
         ..style = PaintingStyle.fill;
 
       canvas.save();
@@ -193,7 +193,7 @@ class _BurstPainter extends CustomPainter {
         // Draw Cross
         final crossSize = particle.size;
         final strokePaint = Paint()
-          ..color = particle.color.withOpacity(particleOpacity)
+          ..color = particle.color.withValues(alpha: particleOpacity)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.0
           ..strokeCap = StrokeCap.round;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// チュートリアルステップ
 class TutorialStep {
@@ -137,7 +137,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                   BoxShadow(
                     color: Theme.of(
                       context,
-                    ).colorScheme.primary.withOpacity(0.3),
+                    ).colorScheme.primary.withValues(alpha: 0.3),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -210,7 +210,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -258,7 +258,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                       color:
                           index == _currentStep
                               ? theme.colorScheme.primary
-                              : theme.colorScheme.onSurface.withOpacity(0.3),
+                              : theme.colorScheme.onSurface.withValues(alpha: 0.3),
                     ),
                   ),
                 ),
@@ -410,7 +410,7 @@ class CoachMark extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

@@ -4,6 +4,7 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/domain/challenges/challenge.dart';
 import 'package:minq/domain/challenges/challenge_progress.dart';
+import 'package:flutter/foundation.dart';
 
 // Provider for the service
 final challengeServiceProvider = Provider<ChallengeService>((ref) {
@@ -57,7 +58,7 @@ class ChallengeService {
         .set(challenge.toJson(), SetOptions(merge: true));
     // Create progress tracker for the user
     await _createOrUpdateChallengeProgress(userId, challenge);
-    print('Generated daily challenge for user $userId.');
+    debugPrint('Generated daily challenge for user $userId.');
     return challenge;
   }
 
@@ -81,7 +82,7 @@ class ChallengeService {
         .doc(challenge.id)
         .set(challenge.toJson(), SetOptions(merge: true));
     await _createOrUpdateChallengeProgress(userId, challenge);
-    print('Generated weekly challenge for user $userId.');
+    debugPrint('Generated weekly challenge for user $userId.');
     return challenge;
   }
 
@@ -100,7 +101,7 @@ class ChallengeService {
               .get();
       return doc.exists ? ChallengeProgress.fromJson(doc.data()!) : null;
     } catch (e) {
-      print('Error getting challenge progress: $e');
+      debugPrint('Error getting challenge progress: $e');
       return null;
     }
   }
@@ -141,7 +142,7 @@ class ChallengeService {
         );
       }
     } catch (e) {
-      print('Error updating progress for challenge $challengeId: $e');
+      debugPrint('Error updating progress for challenge $challengeId: $e');
     }
   }
 
@@ -162,7 +163,7 @@ class ChallengeService {
         'completed': true,
         'progress': challenge?.goal ?? FieldValue.increment(0),
       });
-      print('Completing challenge $challengeId for user $userId.');
+      debugPrint('Completing challenge $challengeId for user $userId.');
 
       await _gamificationEngine.awardPoints(
         userId: userId,
@@ -177,11 +178,11 @@ class ChallengeService {
         final InAppReview inAppReview = InAppReview.instance;
         if (await inAppReview.isAvailable()) {
           inAppReview.requestReview();
-          print('Requested in-app review after weekly challenge completion.');
+          debugPrint('Requested in-app review after weekly challenge completion.');
         }
       }
     } catch (e) {
-      print('Error completing challenge $challengeId: $e');
+      debugPrint('Error completing challenge $challengeId: $e');
     }
   }
 }

@@ -156,7 +156,7 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
           // 説明カード
           Card(
             elevation: 0,
-            color: selectedMoodData.color.withOpacity(0.1),
+            color: selectedMoodData.color.withValues(alpha: 0.1),
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing(4)),
@@ -275,7 +275,7 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
                     data: SliderTheme.of(context).copyWith(
                       activeTrackColor: selectedMoodData.color,
                       thumbColor: selectedMoodData.color,
-                      overlayColor: selectedMoodData.color.withOpacity(0.2),
+                      overlayColor: selectedMoodData.color.withValues(alpha: 0.2),
                     ),
                     child: Slider(
                       value: _selectedRating.toDouble(),
@@ -467,7 +467,7 @@ class _MoodAnalysisTab extends ConsumerWidget {
           // AIインサイト
           Card(
             elevation: 0,
-            color: tokens.brandPrimary.withOpacity(0.1),
+            color: tokens.brandPrimary.withValues(alpha: 0.1),
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing(4)),
@@ -498,7 +498,7 @@ class _MoodAnalysisTab extends ConsumerWidget {
           // 改善提案
           Card(
             elevation: 0,
-            color: tokens.encouragement.withOpacity(0.1),
+            color: tokens.encouragement.withValues(alpha: 0.1),
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
               padding: EdgeInsets.all(tokens.spacing(4)),
@@ -745,7 +745,7 @@ class _InsightItem extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(tokens.spacing(2)),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: tokens.cornerMedium(),
           ),
           child: Icon(icon, color: color, size: 20),
@@ -791,7 +791,7 @@ class _SuggestionItem extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(tokens.spacing(2)),
           decoration: BoxDecoration(
-            color: tokens.encouragement.withOpacity(0.1),
+            color: tokens.encouragement.withValues(alpha: 0.1),
             borderRadius: tokens.cornerMedium(),
           ),
           child: Icon(icon, color: tokens.encouragement, size: 20),

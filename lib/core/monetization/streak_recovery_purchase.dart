@@ -16,7 +16,7 @@ class StreakRecoveryPurchase {
     try {
       // 広告表示実装（将来）
       if (kDebugMode) {
-        print('Showing ad for streak recovery: $questId');
+        debugPrint('Showing ad for streak recovery: $questId');
       }
 
       // 仮実装: デバッグモードでは即座に成功
@@ -43,7 +43,7 @@ class StreakRecoveryPurchase {
 
       // In-App Purchase実装（将来）
       if (kDebugMode) {
-        print('Processing streak recovery purchase: $questId');
+        debugPrint('Processing streak recovery purchase: $questId');
       }
 
       // 仮実装: デバッグモードでは即座に成功
@@ -76,7 +76,7 @@ class StreakRecoveryPurchase {
 
       // In-App Purchase実装（将来）
       if (kDebugMode) {
-        print(
+        debugPrint(
           'Purchasing protection ticket: $questId, type: $type, price: $price',
         );
       }

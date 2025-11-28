@@ -82,9 +82,9 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
         margin: const EdgeInsets.all(16.0),
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: tokens.surface.withOpacity(0.8),
+          color: tokens.surface.withValues(alpha: 0.8),
           borderRadius: tokens.cornerXLarge(),
-          border: Border.all(color: tokens.border.withOpacity(0.5)),
+          border: Border.all(color: tokens.border.withValues(alpha: 0.5)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -228,7 +228,7 @@ class _ShareProgressSheetState extends ConsumerState<ShareProgressSheet> {
           selectedColor: Colors.white,
           color: tokens.textPrimary,
           fillColor: tokens.brandPrimary,
-          splashColor: tokens.brandPrimary.withOpacity(0.2),
+          splashColor: tokens.brandPrimary.withValues(alpha: 0.2),
           children: const [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),

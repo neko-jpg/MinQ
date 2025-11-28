@@ -245,7 +245,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
           center: Alignment.center,
           radius: 1.0,
           colors: [
-            widget.config.primaryColor.withOpacity(
+            widget.config.primaryColor.withValues(alpha:
               0.1 * _opacityAnimation.value,
             ),
             Colors.transparent,
@@ -263,7 +263,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: widget.config.primaryColor.withOpacity(0.3),
+            color: widget.config.primaryColor.withValues(alpha: 0.3),
             blurRadius: 20,
             spreadRadius: 5,
           ),
@@ -357,7 +357,7 @@ class ParticleEffectPainter extends CustomPainter {
     for (final particle in particles) {
       final paint =
           Paint()
-            ..color = particle.color.withOpacity((1 - progress) * 0.8)
+            ..color = particle.color.withValues(alpha: (1 - progress) * 0.8)
             ..style = PaintingStyle.fill;
 
       final x = (particle.x + particle.vx * progress) * size.width;

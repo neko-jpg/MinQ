@@ -83,7 +83,7 @@ class GamificationStatusCard extends ConsumerWidget {
                         gradient: LinearGradient(
                           colors: [
                             tokens.brandPrimary,
-                            tokens.brandPrimary.withOpacity(0.6),
+                            tokens.brandPrimary.withValues(alpha: 0.6),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -91,7 +91,7 @@ class GamificationStatusCard extends ConsumerWidget {
                         borderRadius: tokens.cornerLarge(),
                         boxShadow: [
                           BoxShadow(
-                            color: tokens.brandPrimary.withOpacity(0.3),
+                            color: tokens.brandPrimary.withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -161,7 +161,7 @@ class GamificationStatusCard extends ConsumerWidget {
                       child: LinearProgressIndicator(
                         value: progress,
                         minHeight: tokens.spacing(2),
-                        backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+                        backgroundColor: tokens.brandPrimary.withValues(alpha: 0.1),
                         valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
                       ),
                     ),

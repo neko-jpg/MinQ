@@ -1,0 +1,841 @@
+Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 61.0.0 (92.0.0 available)
+  _flutterfire_internals 1.3.59 (1.3.64 available)
+  analyzer 5.13.0 (9.0.0 available)
+  analyzer_plugin 0.11.2 (0.13.11 available)
+  animations 2.0.11 (2.1.1 available)
+  app_links 6.4.1 (7.0.0 available)
+  async 2.12.0 (2.13.0 available)
+  build 2.4.1 (4.0.3 available)
+  build_config 1.1.2 (1.2.0 available)
+  build_daemon 4.0.4 (4.1.1 available)
+  build_resolvers 2.4.2 (3.0.4 available)
+  build_runner 2.4.13 (2.10.4 available)
+  build_runner_core 7.3.2 (9.3.2 available)
+  built_value 8.12.0 (8.12.1 available)
+  characters 1.4.0 (1.4.1 available)
+  checked_yaml 2.0.3 (2.0.4 available)
+  cli_util 0.3.5 (0.4.2 available)
+  cloud_firestore 5.6.12 (6.1.0 available)
+  cloud_firestore_platform_interface 6.6.12 (7.0.4 available)
+  cloud_firestore_web 4.4.12 (5.1.0 available)
+  cross_file 0.3.4+2 (0.3.5+1 available)
+  crypto 3.0.6 (3.0.7 available)
+  dart_style 2.3.2 (3.1.3 available)
+  device_info_plus 12.1.0 (12.3.0 available)
+  file_selector_linux 0.9.3+2 (0.9.4 available)
+  file_selector_macos 0.9.4+4 (0.9.5 available)
+  file_selector_platform_interface 2.6.2 (2.7.0 available)
+  file_selector_windows 0.9.3+4 (0.9.3+5 available)
+  firebase_analytics 11.6.0 (12.0.4 available)
+  firebase_analytics_platform_interface 4.4.3 (5.0.4 available)
+  firebase_analytics_web 0.5.10+16 (0.6.1 available)
+  firebase_auth 5.7.0 (6.1.2 available)
+  firebase_auth_platform_interface 7.7.3 (8.1.4 available)
+  firebase_auth_web 5.15.3 (6.1.0 available)
+  firebase_core 3.15.2 (4.2.1 available)
+  firebase_core_platform_interface 6.0.1 (6.0.2 available)
+  firebase_core_web 2.24.1 (3.3.0 available)
+  firebase_crashlytics 4.3.10 (5.0.5 available)
+  firebase_crashlytics_platform_interface 3.8.10 (3.8.15 available)
+  firebase_dynamic_links 6.1.10 (discontinued)
+  firebase_messaging 15.2.10 (16.0.4 available)
+  firebase_messaging_platform_interface 4.6.10 (4.7.4 available)
+  firebase_messaging_web 3.10.10 (4.1.0 available)
+  firebase_performance 0.10.1+10 (0.11.1+2 available)
+  firebase_performance_platform_interface 0.1.5+10 (0.1.6+2 available)
+  firebase_performance_web 0.1.7+16 (0.1.8 available)
+  firebase_remote_config 5.5.0 (6.1.2 available)
+  firebase_remote_config_platform_interface 2.0.0 (2.0.5 available)
+  firebase_remote_config_web 1.8.9 (1.10.1 available)
+  firebase_storage 12.4.10 (13.0.4 available)
+  firebase_storage_platform_interface 5.2.10 (5.2.15 available)
+  firebase_storage_web 3.10.17 (3.11.0 available)
+  flutter_hooks 0.21.2 (0.21.3+1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_local_notifications 19.4.2 (19.5.0 available)
+  flutter_markdown 0.7.7+1 (discontinued replaced by flutter_markdown_plus)
+  flutter_plugin_android_lifecycle 2.0.30 (2.0.33 available)
+  flutter_riverpod 2.6.1 (3.0.3 available)
+  freezed 2.5.2 (3.2.3 available)
+  freezed_annotation 2.4.4 (3.1.0 available)
+  geolocator 14.0.1 (14.0.2 available)
+  go_router 16.2.4 (17.0.0 available)
+  google_sign_in_android 7.2.0 (7.2.6 available)
+  google_sign_in_ios 6.2.1 (6.2.4 available)
+  hooks_riverpod 2.6.1 (3.0.3 available)
+  http 1.5.0 (1.6.0 available)
+  image_picker 1.2.0 (1.2.1 available)
+  image_picker_android 0.8.13+1 (0.8.13+10 available)
+  image_picker_for_web 3.1.0 (3.1.1 available)
+  image_picker_ios 0.8.13 (0.8.13+2 available)
+  image_picker_macos 0.2.2 (0.2.2+1 available)
+  image_picker_platform_interface 2.11.0 (2.11.1 available)
+! jni 0.14.2 from path packages/vendor/jni (overridden in ./pubspec_overrides.yaml)
+  js 0.6.7 (0.7.2 available)
+  json_serializable 6.8.0 (6.11.3 available)
+  lints 5.1.1 (6.0.0 available)
+  logger 2.6.1 (2.6.2 available)
+  matcher 0.12.17 (0.12.18 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  path_provider_android 2.2.18 (2.2.22 available)
+  path_provider_foundation 2.4.2 (2.5.1 available)
+  petitparser 6.1.0 (7.0.1 available)
+  pointycastle 3.9.1 (4.0.0 available)
+  process 5.0.3 (5.0.5 available)
+  quick_actions_android 1.0.23 (1.0.27 available)
+  quick_actions_ios 1.2.1 (1.2.3 available)
+  riverpod 2.6.1 (3.0.3 available)
+  sentry 9.6.0 (9.8.0 available)
+  sentry_flutter 9.6.0 (9.8.0 available)
+  share_plus 12.0.0 (12.0.1 available)
+  shared_preferences_android 2.4.13 (2.4.17 available)
+  shared_preferences_foundation 2.5.4 (2.5.6 available)
+  shelf_web_socket 2.0.1 (3.0.0 available)
+  source_gen 1.5.0 (4.1.1 available)
+  source_helper 1.3.5 (1.3.9 available)
+  synchronized 3.3.1 (3.4.0 available)
+  test_api 0.7.7 (0.7.8 available)
+  tflite_flutter 0.11.0 (0.12.1 available)
+  url_launcher_android 6.3.20 (6.3.28 available)
+  url_launcher_ios 6.3.4 (6.3.6 available)
+  url_launcher_linux 3.2.1 (3.2.2 available)
+  url_launcher_macos 3.2.3 (3.2.5 available)
+  url_launcher_windows 3.1.4 (3.1.5 available)
+  uuid 4.5.1 (4.5.2 available)
+  very_good_analysis 6.0.0 (10.0.0 available)
+  vm_service 14.3.1 (15.0.2 available)
+  watcher 1.1.3 (1.1.4 available)
+  webdriver 3.0.4 (3.1.0 available)
+  win32 5.13.0 (5.15.0 available)
+  workmanager 0.7.0 (0.9.0+3 available)
+  xml 6.5.0 (6.6.1 available)
+Got dependencies!
+2 packages are discontinued.
+108 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing app...
+
+   info • 'textScaleFactor' is deprecated and shouldn't be used. Use textScaler instead. Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. This feature was deprecated after v3.12.0-2.0.pre • lib/core/accessibility/screen_reader_helper.dart:295:29 • deprecated_member_use
+   info • 'textScaleFactor' is deprecated and shouldn't be used. Use textScaler instead. Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. This feature was deprecated after v3.12.0-2.0.pre • lib/core/accessibility/screen_reader_helper.dart:296:35 • deprecated_member_use
+   info • Sort directive sections alphabetically • lib/core/challenges/challenge_service.dart:7:1 • directives_ordering
+   info • Sort directive sections alphabetically • lib/core/challenges/event_manager.dart:4:1 • directives_ordering
+   info • Sort directive sections alphabetically • lib/core/deeplink/deeplink_handler.dart:4:1 • directives_ordering
+   info • Sort directive sections alphabetically • lib/core/ecosystem/ecosystem_mapping_service.dart:3:1 • directives_ordering
+   info • 'Table.fromTextArray' is deprecated and shouldn't be used. Use TableHelper.fromTextArray() instead • lib/core/export/data_export_service.dart:87:13 • deprecated_member_use
+   info • Sort directive sections alphabetically • lib/core/feature_flags/kill_switch.dart:2:1 • directives_ordering
+  error • The named parameter 'error' isn't defined • lib/core/feature_flags/kill_switch.dart:25:49 • undefined_named_parameter
+  error • The named parameter 'stackTrace' isn't defined • lib/core/feature_flags/kill_switch.dart:25:59 • undefined_named_parameter
+  error • The named parameter 'error' isn't defined • lib/core/feature_flags/kill_switch.dart:59:52 • undefined_named_parameter
+  error • The named parameter 'stackTrace' isn't defined • lib/core/feature_flags/kill_switch.dart:59:62 • undefined_named_parameter
+  error • The named parameter 'error' isn't defined • lib/core/feature_flags/kill_switch.dart:82:9 • undefined_named_parameter
+  error • The named parameter 'stackTrace' isn't defined • lib/core/feature_flags/kill_switch.dart:83:9 • undefined_named_parameter
+   info • Sort directive sections alphabetically • lib/core/gamification/gamification_engine.dart:6:1 • directives_ordering
+   info • Sort directive sections alphabetically • lib/core/gamification/reward_system.dart:5:1 • directives_ordering
+   info • Sort directive sections alphabetically • lib/core/habit_dna/habit_dna_service.dart:4:1 • directives_ordering
+   info • Sort directive sections alphabetically • lib/core/health/health_sync_service.dart:2:1 • directives_ordering
+   info • Sort directive sections alphabetically • lib/core/health/health_sync_service.dart:6:1 • directives_ordering
+  error • Undefined class 'HealthFactory' • lib/core/health/health_sync_service.dart:15:9 • undefined_class
+  error • The method 'HealthFactory' isn't defined for the type 'HealthSyncService' • lib/core/health/health_sync_service.dart:15:33 • undefined_method
+  error • Undefined name 'HealthFactory' • lib/core/health/health_sync_service.dart:65:20 • undefined_identifier
+   info • The parameter name 'sum' matches a visible type name • lib/core/health/health_sync_service.dart:89:10 • avoid_types_as_parameter_names
+  error • The named parameter 'cropStyle' isn't defined • lib/core/image/image_upload_service.dart:61:9 • undefined_named_parameter
+  error • The named parameter 'aspectRatioPresets' isn't defined • lib/core/image/image_upload_service.dart:62:9 • undefined_named_parameter
+warning • The value of the field '_imagePrefetcher' isn't used • lib/core/initialization/lazy_initialization.dart:182:25 • unused_field
+   info • Sort directive sections alphabetically • lib/core/logging/app_logger.dart:4:1 • directives_ordering
+   info • 'printTime' is deprecated and shouldn't be used. Use `dateTimeFormat` with `DateTimeFormat.onlyTimeAndSinceStart` or `DateTimeFormat.none` instead • lib/core/logging/app_logger.dart:34:9 • deprecated_member_use
+   info • Sort directive sections alphabetically • lib/core/micro_commitment/micro_commitment_service.dart:5:1 • directives_ordering
+  error • A nullable expression can't be used as a condition • lib/core/monetization/subscription_manager.dart:183:13 • unchecked_use_of_nullable_value
+  error • The argument type 'Map<String, dynamic>?' can't be assigned to the parameter type 'Map<String, Object>?'.  • lib/core/monitoring/app_monitoring_service.dart:55:59 • argument_type_not_assignable
+  error • The method 'critical' isn't defined for the type 'AppLogger' • lib/core/monitoring/app_monitoring_service.dart:159:19 • undefined_method
+  error • The method 'critical' isn't defined for the type 'AppLogger' • lib/core/monitoring/app_monitoring_service.dart:279:19 • undefined_method
+   info • Sort directive sections alphabetically • lib/core/mood/mood_tracking_service.dart:5:1 • directives_ordering
+   info • The parameter name 'count' matches a visible type name • lib/core/mood/mood_tracking_service.dart:87:36 • avoid_types_as_parameter_names
+  error • The named parameter 'data' isn't defined • lib/core/network/http_cache_service.dart:38:37 • undefined_named_parameter
+  error • The named parameter 'data' isn't defined • lib/core/network/http_cache_service.dart:76:9 • undefined_named_parameter
+  error • The argument type 'List<int>?' can't be assigned to the parameter type 'Int64List?'.  • lib/core/notifications/notification_channels.dart:229:25 • argument_type_not_assignable
+  error • The named parameter 'data' isn't defined • lib/core/notifications/notification_navigation_handler.dart:16:9 • undefined_named_parameter
+warning • The value of the field '_aiService' isn't used • lib/core/notifications/notification_personalization_engine.dart:4:32 • unused_field
+warning • The value of the field '_keyBatchedNotifications' isn't used • lib/core/notifications/notification_throttle_service.dart:10:23 • unused_field
+  error • The named parameter 'data' isn't defined • lib/core/notifications/notification_throttle_service.dart:43:9 • undefined_named_parameter
+  error • The named parameter 'data' isn't defined • lib/core/notifications/notification_throttle_service.dart:81:9 • undefined_named_parameter
+  error • The named parameter 'data' isn't defined • lib/core/notifications/notification_throttle_service.dart:112:7 • undefined_named_parameter
+  error • The named parameter 'data' isn't defined • lib/core/notifications/notification_throttle_service.dart:131:7 • undefined_named_parameter
+  error • The named parameter 'data' isn't defined • lib/core/notifications/pair_reminder_service.dart:99:7 • undefined_named_parameter
+   info • Sort directive sections alphabetically • lib/core/notifications/push_notification_handler.dart:6:1 • directives_ordering
+   info • Sort directive sections alphabetically • lib/core/notifications/push_notification_service.dart:5:1 • directives_ordering
+  error • Undefined name '_userId' • lib/core/notifications/push_notification_service.dart:54:16 • undefined_identifier
+warning • The value of the field '_aiService' isn't used • lib/core/notifications/smart_notification_service.dart:4:32 • unused_field
+warning • The value of the field '_notifications' isn't used • lib/core/notifications/summary_notification_service.dart:341:41 • unused_field
+  error • The named parameter 'uiLocalNotificationDateInterpretation' isn't defined • lib/core/notifications/summary_notification_service.dart:430:9 • undefined_named_parameter
+  error • Undefined name 'UILocalNotificationDateInterpretation' • lib/core/notifications/summary_notification_service.dart:431:13 • undefined_identifier
+  error • The named parameter 'data' isn't defined • lib/core/pair/pair_dissolution_service.dart:43:9 • undefined_named_parameter
+   info • Sort directive sections alphabetically • lib/core/pair/reverse_accountability_service.dart:4:1 • directives_ordering
+   info • The constant name 'Connect' isn't a lowerCamelCase identifier • lib/core/performance/performance_monitoring.dart:129:19 • constant_identifier_names
+   info • The constant name 'Delete' isn't a lowerCamelCase identifier • lib/core/performance/performance_monitoring.dart:129:28 • constant_identifier_names
+   info • The constant name 'Get' isn't a lowerCamelCase identifier • lib/core/performance/performance_monitoring.dart:129:36 • constant_identifier_names
+   info • The constant name 'Head' isn't a lowerCamelCase identifier • lib/core/performance/performance_monitoring.dart:129:41 • constant_identifier_names
+   info • The constant name 'Options' isn't a lowerCamelCase identifier • lib/core/performance/performance_monitoring.dart:129:47 • constant_identifier_names
+   info • The constant name 'Patch' isn't a lowerCamelCase identifier • lib/core/performance/performance_monitoring.dart:129:56 • constant_identifier_names
+   info • The constant name 'Post' isn't a lowerCamelCase identifier • lib/core/performance/performance_monitoring.dart:129:63 • constant_identifier_names
+   info • The constant name 'Put' isn't a lowerCamelCase identifier • lib/core/performance/performance_monitoring.dart:129:69 • constant_identifier_names
+   info • The constant name 'Trace' isn't a lowerCamelCase identifier • lib/core/performance/performance_monitoring.dart:129:74 • constant_identifier_names
+  error • The method 'removePersistentFrameCallback' isn't defined for the type 'SchedulerBinding' • lib/core/performance/performance_monitoring.dart:300:31 • undefined_method
+  error • The named parameter 'data' isn't defined • lib/core/priority/priority_service.dart:85:9 • undefined_named_parameter
+   info • Sort directive sections alphabetically • lib/core/privacy/tracking_service.dart:4:1 • directives_ordering
+   info • Sort directive sections alphabetically • lib/core/progress/progress_visualization_service.dart:3:1 • directives_ordering
+   info • 'printTime' is deprecated and shouldn't be used. Use `dateTimeFormat` with `DateTimeFormat.onlyTimeAndSinceStart` or `DateTimeFormat.none` instead • lib/core/providers/provider_observer.dart:14:7 • deprecated_member_use
+  error • Too many positional arguments: 1 expected, but 3 found • lib/core/providers/provider_observer.dart:84:7 • extra_positional_arguments_could_be_named
+   info • Sort directive sections alphabetically • lib/core/review/in_app_review_service.dart:3:1 • directives_ordering
+  error • The named parameter 'metadata' isn't defined • lib/core/security/fraud_detection_service.dart:33:11 • undefined_named_parameter
+  error • The named parameter 'metadata' isn't defined • lib/core/security/fraud_detection_service.dart:52:11 • undefined_named_parameter
+  error • The named parameter 'metadata' isn't defined • lib/core/security/fraud_detection_service.dart:66:11 • undefined_named_parameter
+  error • The named parameter 'error' isn't defined • lib/core/security/fraud_detection_service.dart:77:47 • undefined_named_parameter
+  error • The named parameter 'stackTrace' isn't defined • lib/core/security/fraud_detection_service.dart:77:57 • undefined_named_parameter
+  error • The named parameter 'error' isn't defined • lib/core/security/fraud_detection_service.dart:127:9 • undefined_named_parameter
+  error • The named parameter 'stackTrace' isn't defined • lib/core/security/fraud_detection_service.dart:128:9 • undefined_named_parameter
+  error • The named parameter 'metadata' isn't defined • lib/core/security/fraud_detection_service.dart:162:11 • undefined_named_parameter
+  error • The named parameter 'error' isn't defined • lib/core/security/fraud_detection_service.dart:173:52 • undefined_named_parameter
+  error • The named parameter 'stackTrace' isn't defined • lib/core/security/fraud_detection_service.dart:173:62 • undefined_named_parameter
+warning • The declaration '_generateNonce' isn't referenced • lib/core/security/play_integrity_service.dart:68:10 • unused_element
+  error • 'maxPauseDays' can't be used as a setter because it's final • lib/core/streak/streak_protection_service.dart:247:5 • assignment_to_final
+  error • Arguments of a constant creation must be constant expressions • lib/core/streak/streak_protection_service.dart:247:5 • const_with_non_constant_argument
+  error • Const variables must be initialized with a constant value • lib/core/streak/streak_protection_service.dart:247:5 • const_initialized_with_non_constant_value
+  error • The instance member 'maxPauseDays' can't be accessed in an initializer • lib/core/streak/streak_protection_service.dart:247:5 • implicit_this_reference_in_initializer
+  error • Too many positional arguments: 0 expected, but 1 found • lib/core/streak/streak_protection_service.dart:247:5 • extra_positional_arguments_could_be_named
+  error • The named parameter 'data' isn't defined • lib/core/streak/streak_recovery_service.dart:51:11 • undefined_named_parameter
+  error • The named parameter 'data' isn't defined • lib/core/streak/streak_recovery_service.dart:82:9 • undefined_named_parameter
+  error • The named parameter 'data' isn't defined • lib/core/streak/streak_recovery_service.dart:108:56 • undefined_named_parameter
+  error • Undefined name '_userId' • lib/core/subscription/subscription_service.dart:38:64 • undefined_identifier
+  error • Undefined name '_userId' • lib/core/subscription/subscription_service.dart:76:48 • undefined_identifier
+   info • Sort directive sections alphabetically • lib/core/support/bug_report_service.dart:7:1 • directives_ordering
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • lib/core/tags/tag_service.dart:24:24 • deprecated_member_use
+  error • The named parameter 'data' isn't defined • lib/core/tags/tag_service.dart:28:39 • undefined_named_parameter
+  error • The named parameter 'data' isn't defined • lib/core/tags/tag_service.dart:66:39 • undefined_named_parameter
+  error • The named parameter 'id' is required, but there's no corresponding argument • lib/core/templates/habit_templates.dart:312:12 • missing_required_argument
+  error • The argument type 'String' can't be assigned to the parameter type 'QuestCategory'.  • lib/core/templates/habit_templates.dart:316:17 • argument_type_not_assignable
+  error • The argument type 'String' can't be assigned to the parameter type 'DifficultyLevel'.  • lib/core/templates/habit_templates.dart:317:19 • argument_type_not_assignable
+  error • The named parameter 'estimatedMinutes' isn't defined • lib/core/templates/habit_templates.dart:318:7 • undefined_named_parameter
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • lib/core/theme/accent_color_controller.dart:47:32 • deprecated_member_use
+  error • Abstract classes can't be instantiated • lib/core/time/time_formatter.dart:8:52 • instantiate_abstract_class
+   info • Sort directive sections alphabetically • lib/core/time_capsule/time_capsule_service.dart:5:1 • directives_ordering
+warning • The declaration '_isNewerVersion' isn't referenced • lib/core/update/in_app_update_service.dart:144:8 • unused_element
+  error • The argument type 'String Function(dynamic)' can't be assigned to the parameter type 'String'.  • lib/core/validation/nickname_validator.dart:69:70 • argument_type_not_assignable
+  error • Target of URI doesn't exist: 'package:minq/data/models/mini_quest.dart' • lib/data/repositories/fake/fake_quest_repository.dart:2:8 • uri_does_not_exist
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/repositories/fake/fake_quest_repository.dart:7:26 • non_type_as_type_argument
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/repositories/fake/fake_quest_repository.dart:8:45 • non_type_as_type_argument
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/repositories/fake/fake_quest_repository.dart:11:40 • non_type_as_type_argument
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/repositories/fake/fake_quest_repository.dart:23:15 • non_type_as_type_argument
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/repositories/fake/fake_quest_repository.dart:28:10 • non_type_as_type_argument
+  error • The property 'id' can't be unconditionally accessed because the receiver can be 'null' • lib/data/repositories/fake/fake_quest_repository.dart:31:18 • unchecked_use_of_nullable_value
+  error • Undefined class 'MiniQuest' • lib/data/repositories/fake/fake_quest_repository.dart:40:28 • undefined_class
+  error • Undefined class 'MiniQuest' • lib/data/repositories/fake/fake_quest_repository.dart:47:28 • undefined_class
+  error • The property 'id' can't be unconditionally accessed because the receiver can be 'null' • lib/data/repositories/fake/fake_quest_repository.dart:50:46 • unchecked_use_of_nullable_value
+  error • The property 'id' can't be unconditionally accessed because the receiver can be 'null' • lib/data/repositories/fake/fake_quest_repository.dart:62:35 • unchecked_use_of_nullable_value
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/repositories/fake/fake_quest_repository.dart:73:26 • non_type_as_type_argument
+  error • The property 'id' can't be unconditionally accessed because the receiver can be 'null' • lib/data/repositories/fake/fake_quest_repository.dart:75:50 • unchecked_use_of_nullable_value
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/repositories/fake/fake_quest_repository.dart:84:15 • non_type_as_type_argument
+  error • The property 'isActive' can't be unconditionally accessed because the receiver can be 'null' • lib/data/repositories/fake/fake_quest_repository.dart:87:45 • unchecked_use_of_nullable_value
+  error • Target of URI doesn't exist: 'package:minq/data/models/quest_log.dart' • lib/data/repositories/interfaces/quest_log_repository_interface.dart:1:8 • uri_does_not_exist
+  error • The name 'QuestLog' isn't a type, so it can't be used as a type argument • lib/data/repositories/interfaces/quest_log_repository_interface.dart:6:15 • non_type_as_type_argument
+  error • The name 'QuestLog' isn't a type, so it can't be used as a type argument • lib/data/repositories/interfaces/quest_log_repository_interface.dart:9:15 • non_type_as_type_argument
+  error • The name 'QuestLog' isn't a type, so it can't be used as a type argument • lib/data/repositories/interfaces/quest_log_repository_interface.dart:12:15 • non_type_as_type_argument
+  error • Undefined class 'QuestLog' • lib/data/repositories/interfaces/quest_log_repository_interface.dart:19:26 • undefined_class
+  error • Undefined class 'QuestLog' • lib/data/repositories/interfaces/quest_log_repository_interface.dart:22:26 • undefined_class
+  error • Target of URI doesn't exist: 'package:minq/data/models/mini_quest.dart' • lib/data/repositories/interfaces/quest_repository_interface.dart:1:8 • uri_does_not_exist
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/repositories/interfaces/quest_repository_interface.dart:7:15 • non_type_as_type_argument
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/repositories/interfaces/quest_repository_interface.dart:10:10 • non_type_as_type_argument
+  error • Undefined class 'MiniQuest' • lib/data/repositories/interfaces/quest_repository_interface.dart:13:28 • undefined_class
+  error • Undefined class 'MiniQuest' • lib/data/repositories/interfaces/quest_repository_interface.dart:16:28 • undefined_class
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/repositories/interfaces/quest_repository_interface.dart:25:15 • non_type_as_type_argument
+  error • Target of URI doesn't exist: 'package:minq/data/models/mini_quest.dart' • lib/data/services/export_service.dart:5:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: 'package:minq/data/models/quest_log.dart' • lib/data/services/export_service.dart:6:8 • uri_does_not_exist
+  error • The name 'QuestLog' isn't a type, so it can't be used as a type argument • lib/data/services/export_service.dart:15:19 • non_type_as_type_argument
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/services/export_service.dart:52:39 • non_type_as_type_argument
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/services/export_service.dart:117:19 • non_type_as_type_argument
+  error • The name 'QuestLog' isn't a type, so it can't be used as a type argument • lib/data/services/export_service.dart:118:19 • non_type_as_type_argument
+  error • The method 'toJson' can't be unconditionally invoked because the receiver can be 'null' • lib/data/services/export_service.dart:125:37 • unchecked_use_of_nullable_value
+  error • The method 'toJson' can't be unconditionally invoked because the receiver can be 'null' • lib/data/services/export_service.dart:126:33 • unchecked_use_of_nullable_value
+  error • Undefined name 'MiniQuest' • lib/data/services/export_service.dart:140:28 • undefined_identifier
+  error • Undefined name 'QuestLog' • lib/data/services/export_service.dart:146:28 • undefined_identifier
+  error • The name 'QuestLog' isn't a type, so it can't be used as a type argument • lib/data/services/export_service.dart:178:19 • non_type_as_type_argument
+  error • The property 'date' can't be unconditionally accessed because the receiver can be 'null' • lib/data/services/export_service.dart:182:22 • unchecked_use_of_nullable_value
+  error • The property 'date' can't be unconditionally accessed because the receiver can be 'null' • lib/data/services/export_service.dart:185:19 • unchecked_use_of_nullable_value
+  error • The property 'date' can't be unconditionally accessed because the receiver can be 'null' • lib/data/services/export_service.dart:190:22 • unchecked_use_of_nullable_value
+  error • The property 'date' can't be unconditionally accessed because the receiver can be 'null' • lib/data/services/export_service.dart:193:19 • unchecked_use_of_nullable_value
+  error • The property 'completed' can't be unconditionally accessed because the receiver can be 'null' • lib/data/services/export_service.dart:210:52 • unchecked_use_of_nullable_value
+  error • The property 'completed' can't be unconditionally accessed because the receiver can be 'null' • lib/data/services/export_service.dart:211:52 • unchecked_use_of_nullable_value
+  error • The property 'completed' can't be unconditionally accessed because the receiver can be 'null' • lib/data/services/export_service.dart:228:42 • unchecked_use_of_nullable_value
+  error • The property 'completed' can't be unconditionally accessed because the receiver can be 'null' • lib/data/services/export_service.dart:232:42 • unchecked_use_of_nullable_value
+  error • The name 'MiniQuest' isn't a type, so it can't be used as a type argument • lib/data/services/export_service.dart:288:14 • non_type_as_type_argument
+  error • The name 'QuestLog' isn't a type, so it can't be used as a type argument • lib/data/services/export_service.dart:289:14 • non_type_as_type_argument
+   info • Use of an async 'dart:io' method • lib/data/services/notification_service.dart:595:17 • avoid_slow_async_io
+   info • 'NAMESPACE_URL' is deprecated and shouldn't be used. Please use the Namespace enum in enums.dart instead • lib/data/services/photo_storage_service.dart:84:12 • deprecated_member_use
+   info • Use of an async 'dart:io' method • lib/data/services/photo_storage_service.dart:103:17 • avoid_slow_async_io
+   info • 'FirebaseDynamicLinks' is deprecated and shouldn't be used. Note: Firebase Dynamic Links is deprecated and the service will shut down on August 25, 2025. Please see our Dynamic Links Deprecation FAQ documentation > for guidance on alternative solutions and migration options: https://firebase.google.com/support/dynamic-links-faq • lib/data/services/referral_service.dart:10:9 • deprecated_member_use
+   info • 'FirebaseDynamicLinks' is deprecated and shouldn't be used. Note: Firebase Dynamic Links is deprecated and the service will shut down on August 25, 2025. Please see our Dynamic Links Deprecation FAQ documentation > for guidance on alternative solutions and migration options: https://firebase.google.com/support/dynamic-links-faq • lib/data/services/referral_service.dart:15:5 • deprecated_member_use
+   info • 'FirebaseDynamicLinks' is deprecated and shouldn't be used. Note: Firebase Dynamic Links is deprecated and the service will shut down on August 25, 2025. Please see our Dynamic Links Deprecation FAQ documentation > for guidance on alternative solutions and migration options: https://firebase.google.com/support/dynamic-links-faq • lib/data/services/referral_service.dart:18:40 • deprecated_member_use
+   info • 'instance' is deprecated and shouldn't be used. Note: Firebase Dynamic Links is deprecated and the service will shut down on August 25, 2025. Please see our Dynamic Links Deprecation FAQ documentation > for guidance on alternative solutions and migration options: https://firebase.google.com/support/dynamic-links-faq • lib/data/services/referral_service.dart:18:61 • deprecated_member_use
+   info • 'buildShortLink' is deprecated and shouldn't be used. Note: Firebase Dynamic Links is deprecated and the service will shut down on August 25, 2025. Please see our Dynamic Links Deprecation FAQ documentation > for guidance on alternative solutions and migration options: https://firebase.google.com/support/dynamic-links-faq • lib/data/services/referral_service.dart:46:45 • deprecated_member_use
+warning • The declaration '_getDouble' isn't referenced • lib/data/services/remote_config_service.dart:166:10 • unused_element
+   info • Use of an async 'dart:io' method • lib/data/services/social_sharing_service.dart:282:16 • avoid_slow_async_io
+   info • Use of an async 'dart:io' method • lib/data/services/social_sharing_service.dart:333:17 • avoid_slow_async_io
+   info • 'partialResults' is deprecated and shouldn't be used. Use SpeechListenOptions.partialResults instead • lib/data/services/speech_input_service.dart:32:7 • deprecated_member_use
+   info • Invalid use of a private type in a public API • lib/data/services/time_consistency_service.dart:15:5 • library_private_types_in_public_api
+   info • Use an initializing formal to assign a parameter to a field • lib/domain/team/team_habit.dart:65:8 • prefer_initializing_formals
+  error • The name 'gamificationEngineProvider' is defined in the libraries 'package:minq/core/gamification/gamification_engine.dart' and 'package:minq/data/providers.dart' • lib/features/home/presentation/screens/home_screen_v2.dart:244:35 • ambiguous_import
+  error • The name 'challengeServiceProvider' is defined in the libraries 'package:minq/core/challenges/challenge_service.dart' and 'package:minq/data/providers.dart' • lib/features/home/presentation/screens/home_screen_v2.dart:245:33 • ambiguous_import
+  error • Undefined name '_userId' • lib/features/home/presentation/widgets/voice_input_widget.dart:27:18 • undefined_identifier
+  error • Undefined name '_userId' • lib/features/settings/presentation/screens/pause_mode_screen.dart:27:16 • undefined_identifier
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • lib/features/settings/presentation/screens/theme_selection_screen.dart:22:46 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • lib/features/settings/presentation/screens/theme_selection_screen.dart:69:39 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • lib/features/settings/presentation/screens/theme_selection_screen.dart:69:54 • deprecated_member_use
+   info • 'textScaleFactor' is deprecated and shouldn't be used. Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. This feature was deprecated after v3.12.0-2.0.pre • lib/main.dart:321:62 • deprecated_member_use
+warning • The member 'reset' can only be used within 'package:minq/presentation/common/feedback/haptic_manager.dart' or a test • lib/presentation/common/feedback/feedback_manager.dart:14:19 • invalid_use_of_visible_for_testing_member
+warning • The member 'reset' can only be used within 'package:minq/presentation/common/feedback/audio_feedback_manager.dart' or a test • lib/presentation/common/feedback/feedback_manager.dart:15:26 • invalid_use_of_visible_for_testing_member
+warning • The value of the field '_viewedTooltips' isn't used • lib/presentation/common/onboarding/onboarding_demo_screen.dart:16:22 • unused_field
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_demo_screen.dart:39:26 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_engine.dart:68:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_engine.dart:71:39 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_engine.dart:74:37 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_engine.dart:77:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_engine.dart:105:24 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_engine.dart:119:7 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_engine.dart:132:7 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_engine.dart:145:7 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_engine.dart:158:7 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/common/onboarding/onboarding_engine.dart:183:28 • use_build_context_synchronously
+warning • The declaration '_getMotivationalMessage' isn't referenced • lib/presentation/common/sharing/progress_share_card.dart:415:10 • unused_element
+  error • The name 'GuildScreen' isn't a class • lib/presentation/routing/app_router.dart:433:26 • creation_with_non_type
+  error • Unused import: 'package:minq/presentation/theme/app_theme.dart' • lib/presentation/screens/accessibility_settings_screen.dart:4:8 • unused_import
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:36:25 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:50:48 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:92:43 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:112:43 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:128:43 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:144:43 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:147:43 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:154:72 • undefined_getter
+  error • The getter 'full' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:156:69 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:161:31 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:183:38 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:184:44 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:187:29 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:194:41 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:208:54 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:212:59 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:218:25 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:222:25 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:244:54 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:248:59 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:252:48 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:265:39 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:271:39 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:280:48 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:281:46 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:284:35 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:285:71 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:289:35 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:290:37 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:312:46 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:315:59 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:326:27 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:329:32 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:332:43 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:335:27 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/accessibility_settings_screen.dart:338:32 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:341:43 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:346:44 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:347:58 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/accessibility_settings_screen.dart:347:78 • undefined_getter
+  error • Unused import: 'package:minq/presentation/theme/app_theme.dart' • lib/presentation/screens/achievements_screen.dart:5:8 • unused_import
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:24:25 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:48:54 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:70:45 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:71:46 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:74:27 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:74:43 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:76:59 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:81:43 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:84:27 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:91:27 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:95:43 • undefined_getter
+  error • The getter 'full' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:97:63 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:105:43 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:108:27 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:133:54 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:137:59 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:139:38 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:144:48 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:154:34 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:156:67 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:168:44 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:179:41 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:191:56 • undefined_getter
+  error • The getter 'xxs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:192:54 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:195:43 • undefined_getter
+  error • The getter 'full' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:197:45 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:202:43 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:211:51 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:214:35 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:218:51 • undefined_getter
+  error • The getter 'full' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:222:73 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:228:34 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:232:53 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:235:37 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:266:23 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:268:42 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/achievements_screen.dart:298:60 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/achievements_screen.dart:314:31 • undefined_getter
+  error • The named parameter 'subtitle' isn't defined • lib/presentation/screens/battle_screen.dart:144:21 • undefined_named_parameter
+  error • The named parameter 'actionText' isn't defined • lib/presentation/screens/battle_screen.dart:145:21 • undefined_named_parameter
+  error • The named parameter 'onAction' isn't defined • lib/presentation/screens/battle_screen.dart:146:21 • undefined_named_parameter
+  error • The named parameter 'subtitle' isn't defined • lib/presentation/screens/battle_screen.dart:596:13 • undefined_named_parameter
+  error • The named parameter 'actionText' isn't defined • lib/presentation/screens/battle_screen.dart:597:13 • undefined_named_parameter
+  error • The named parameter 'onAction' isn't defined • lib/presentation/screens/battle_screen.dart:598:13 • undefined_named_parameter
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/celebration_screen.dart:47:20 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/celebration_screen.dart:50:7 • use_build_context_synchronously
+  error • The method 'getActiveChallenges' isn't defined for the type 'ChallengeService' • lib/presentation/screens/challenges_screen.dart:72:32 • undefined_method
+  error • The method 'setState' isn't defined for the type '_ActiveChallengesTab' • lib/presentation/screens/challenges_screen.dart:81:28 • undefined_method
+  error • The method 'getAvailableChallenges' isn't defined for the type 'ChallengeService' • lib/presentation/screens/challenges_screen.dart:116:32 • undefined_method
+  error • The method 'setState' isn't defined for the type '_AvailableChallengesTab' • lib/presentation/screens/challenges_screen.dart:125:28 • undefined_method
+  error • The method 'getCompletedChallenges' isn't defined for the type 'ChallengeService' • lib/presentation/screens/challenges_screen.dart:163:32 • undefined_method
+  error • The method 'setState' isn't defined for the type '_CompletedChallengesTab' • lib/presentation/screens/challenges_screen.dart:172:28 • undefined_method
+  error • The getter 'title' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:256:37 • undefined_getter
+  error • The getter 'currentProgress' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:297:36 • undefined_getter
+  error • The getter 'targetValue' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:297:65 • undefined_getter
+  error • The getter 'currentProgress' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:309:38 • undefined_getter
+  error • The getter 'targetValue' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:309:66 • undefined_getter
+  error • The getter 'rewardPoints' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:328:38 • undefined_getter
+  error • Undefined name 'ChallengeType' • lib/presentation/screens/challenges_screen.dart:407:12 • undefined_identifier
+  error • Undefined name 'ChallengeType' • lib/presentation/screens/challenges_screen.dart:409:12 • undefined_identifier
+  error • Undefined name 'ChallengeType' • lib/presentation/screens/challenges_screen.dart:411:12 • undefined_identifier
+  error • Undefined name 'ChallengeType' • lib/presentation/screens/challenges_screen.dart:413:12 • undefined_identifier
+  error • Undefined name 'ChallengeType' • lib/presentation/screens/challenges_screen.dart:415:12 • undefined_identifier
+  error • The method 'joinChallenge' isn't defined for the type 'ChallengeService' • lib/presentation/screens/challenges_screen.dart:449:32 • undefined_method
+  error • The getter 'title' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:455:42 • undefined_getter
+  error • The getter 'title' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:517:23 • undefined_getter
+  error • The getter 'currentProgress' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:552:36 • undefined_getter
+  error • The getter 'targetValue' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:552:65 • undefined_getter
+  error • The getter 'currentProgress' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:558:38 • undefined_getter
+  error • The getter 'targetValue' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:558:66 • undefined_getter
+  error • The getter 'currentProgress' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:570:38 • undefined_getter
+  error • The getter 'targetValue' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:570:66 • undefined_getter
+  error • The getter 'rewardPoints' isn't defined for the type 'Challenge' • lib/presentation/screens/challenges_screen.dart:610:38 • undefined_getter
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:15:33 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:18:28 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/changelog_screen.dart:33:28 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:34:26 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:42:39 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:44:33 • undefined_identifier
+  error • The named parameter 'children' isn't defined • lib/presentation/screens/changelog_screen.dart:45:9 • undefined_named_parameter
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:49:31 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/changelog_screen.dart:50:55 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:53:28 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/changelog_screen.dart:56:20 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:59:30 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/changelog_screen.dart:60:44 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:63:30 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:67:25 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/changelog_screen.dart:68:27 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/changelog_screen.dart:73:39 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/changelog_screen.dart:74:57 • undefined_identifier
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/community_board_screen.dart:38:42 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/community_board_screen.dart:40:40 • use_build_context_synchronously
+   info • 'onPopInvoked' is deprecated and shouldn't be used. Use onPopInvokedWithResult instead. This feature was deprecated after v3.22.0-12.0.pre • lib/presentation/screens/create_quest_screen.dart:352:7 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/presentation/screens/create_quest_screen.dart:358:11 • use_build_context_synchronously
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:28:25 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:42:48 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:46:52 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:48:29 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:49:65 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:53:56 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:54:48 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:58:35 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:66:43 • undefined_getter
+  error • The getter 'database_outlined' isn't defined for the type 'Icons' • lib/presentation/screens/diagnostic_screen.dart:95:25 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:108:43 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:124:72 • undefined_getter
+  error • The getter 'full' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:126:69 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:132:45 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:151:54 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:155:59 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:159:48 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:167:67 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:171:44 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:178:35 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:185:35 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:190:53 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:198:56 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:201:41 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:233:46 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:236:59 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:244:27 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/diagnostic_screen.dart:249:43 • undefined_getter
+  error • The getter 'success' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:253:54 • undefined_getter
+  error • The getter 'error' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:254:55 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:273:25 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:280:25 • undefined_getter
+  error • The getter 'success' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:290:41 • undefined_getter
+  error • The getter 'error' isn't defined for the type 'MinqTheme' • lib/presentation/screens/diagnostic_screen.dart:291:41 • undefined_getter
+warning • The value of the field '_setEquality' isn't used • lib/presentation/screens/edit_quest_screen.dart:30:26 • unused_field
+  error • Only static fields can be declared as const • lib/presentation/screens/edit_quest_screen.dart:31:3 • const_instance_field
+warning • The value of the field '_selectedColor' isn't used • lib/presentation/screens/edit_quest_screen.dart:37:15 • unused_field
+   info • 'onPopInvoked' is deprecated and shouldn't be used. Use onPopInvokedWithResult instead. This feature was deprecated after v3.22.0-12.0.pre • lib/presentation/screens/edit_quest_screen.dart:408:7 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/presentation/screens/edit_quest_screen.dart:414:11 • use_build_context_synchronously
+  error • The method 'EventCard' isn't defined for the type '_ActiveEventsTab' • lib/presentation/screens/events_screen.dart:108:22 • undefined_method
+  error • The body might complete normally, causing 'null' to be returned, but the return type, 'Future<void>', is a potentially non-nullable type • lib/presentation/screens/events_screen.dart:829:37 • body_might_complete_normally
+  error • Unused import: 'package:minq/presentation/widgets/achievement_animation.dart' • lib/presentation/screens/habit_analysis_screen.dart:7:8 • unused_import
+warning • The declaration '_getDayDisplayName' isn't referenced • lib/presentation/screens/habit_analysis_screen.dart:815:10 • unused_element
+  error • The name '_getDayDisplayName' is already defined • lib/presentation/screens/habit_analysis_screen.dart:815:10 • duplicate_definition
+warning • The value of the field '_selectedStory' isn't used • lib/presentation/screens/habit_story_screen.dart:22:15 • unused_field
+  error • The named parameter 'subtitle' isn't defined • lib/presentation/screens/habit_story_screen.dart:170:9 • undefined_named_parameter
+  error • The named parameter 'actionText' isn't defined • lib/presentation/screens/habit_story_screen.dart:171:9 • undefined_named_parameter
+  error • The named parameter 'onAction' isn't defined • lib/presentation/screens/habit_story_screen.dart:172:9 • undefined_named_parameter
+  error • Unused import: 'package:minq/presentation/theme/app_theme.dart' • lib/presentation/screens/habit_template_screen.dart:5:8 • unused_import
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:33:25 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:53:54 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:73:62 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:76:66 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:135:54 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:141:44 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:148:31 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:149:32 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:170:54 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:174:59 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:179:59 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:181:50 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:189:33 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:190:69 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:199:46 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:207:37 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:212:53 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:215:37 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:221:53 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:229:56 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:265:36 • undefined_getter
+  error • The getter 'xxs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:266:34 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:270:59 • undefined_getter
+  error • The getter 'xxs' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:276:42 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:279:27 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:305:46 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:308:46 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:325:45 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:330:48 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:337:39 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:344:39 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:353:45 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:357:29 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:359:45 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:379:45 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:382:54 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:384:31 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:385:67 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:389:63 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:390:50 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:394:37 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:402:45 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:409:43 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:410:74 • undefined_getter
+  error • The getter 'full' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:412:71 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:417:33 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:448:55 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/screens/habit_template_screen.dart:452:42 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:455:27 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/screens/habit_template_screen.dart:460:27 • undefined_getter
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/licenses_screen.dart:28:36 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/licenses_screen.dart:29:54 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/licenses_screen.dart:38:37 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/licenses_screen.dart:41:32 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/licenses_screen.dart:53:33 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/licenses_screen.dart:57:59 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/licenses_screen.dart:58:30 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/licenses_screen.dart:61:22 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/licenses_screen.dart:73:32 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/licenses_screen.dart:74:26 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/licenses_screen.dart:82:39 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/licenses_screen.dart:84:55 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/licenses_screen.dart:89:26 • undefined_identifier
+  error • Undefined name 'AppSpacing' • lib/presentation/screens/licenses_screen.dart:112:58 • undefined_identifier
+  error • Undefined name 'AppTypography' • lib/presentation/screens/licenses_screen.dart:115:34 • undefined_identifier
+  error • The named parameter 'isLoading' isn't defined • lib/presentation/screens/mood_tracking_screen.dart:304:13 • undefined_named_parameter
+   info • 'onPopInvoked' is deprecated and shouldn't be used. Use onPopInvokedWithResult instead. This feature was deprecated after v3.22.0-12.0.pre • lib/presentation/screens/notification_settings_screen.dart:90:7 • deprecated_member_use
+  error • Unused import: 'package:lottie/lottie.dart' • lib/presentation/screens/onboarding/level_up_screen.dart:3:8 • unused_import
+  error • Unused import: 'package:minq/presentation/widgets/celebration_animation.dart' • lib/presentation/screens/onboarding/level_up_screen.dart:7:8 • unused_import
+  error • Invalid constant value • lib/presentation/screens/onboarding/level_up_screen.dart:492:15 • invalid_constant
+  error • The getter 'template_outlined' isn't defined for the type 'Icons' • lib/presentation/screens/onboarding/level_up_screen.dart:492:21 • undefined_getter
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/pair/buddy_list_screen.dart:141:37 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/pair/buddy_list_screen.dart:182:37 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/pair/buddy_list_screen.dart:405:41 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/pair/buddy_list_screen.dart:411:38 • use_build_context_synchronously
+warning • The declaration '_buildInfoRow' isn't referenced • lib/presentation/screens/pair/pair_matching_screen.dart:422:10 • unused_element
+warning • The declaration '_findRandomPartner' isn't referenced • lib/presentation/screens/pair_screen.dart:237:16 • unused_element
+  error • The getter 'primaryArchetype' isn't defined for the type 'PersonalityDiagnosis' • lib/presentation/screens/personality_diagnosis_screen.dart:338:42 • undefined_getter
+warning • Dead code • lib/presentation/screens/personality_diagnosis_screen.dart:526:20 • dead_code
+warning • The declaration '_retakeDiagnosis' isn't referenced • lib/presentation/screens/personality_diagnosis_screen.dart:668:8 • unused_element
+warning • The declaration 'emoji' isn't referenced • lib/presentation/screens/personality_diagnosis_screen.dart:693:14 • unused_element
+warning • The declaration 'name' isn't referenced • lib/presentation/screens/personality_diagnosis_screen.dart:706:14 • unused_element
+warning • The declaration 'description' isn't referenced • lib/presentation/screens/personality_diagnosis_screen.dart:708:14 • unused_element
+warning • The declaration 'traits' isn't referenced • lib/presentation/screens/personality_diagnosis_screen.dart:713:20 • unused_element
+warning • The declaration 'recommendedHabits' isn't referenced • lib/presentation/screens/personality_diagnosis_screen.dart:714:20 • unused_element
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/profile_setting_screen.dart:283:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/profile_setting_screen.dart:284:44 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/profile_setting_screen.dart:289:42 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/profile_setting_screen.dart:375:32 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/profile_setting_screen.dart:376:40 • use_build_context_synchronously
+warning • The declaration '_buildTagChip' isn't referenced • lib/presentation/screens/profile_setting_screen.dart:682:10 • unused_element
+warning • The declaration '_buildSocialButton' isn't referenced • lib/presentation/screens/profile_setting_screen.dart:692:10 • unused_element
+  error • Unused import: 'dart:math' • lib/presentation/screens/quest_timer_screen.dart:2:8 • unused_import
+  error • Unused import: 'package:minq/domain/quest/quest.dart' • lib/presentation/screens/quest_timer_screen.dart:10:8 • unused_import
+  error • Unused import: 'package:minq/presentation/common/minq_buttons.dart' • lib/presentation/screens/quest_timer_screen.dart:12:8 • unused_import
+  error • Unused import: 'package:minq/presentation/common/quest_icon_catalog.dart' • lib/presentation/screens/quest_timer_screen.dart:13:8 • unused_import
+  error • Unused import: 'package:minq/presentation/widgets/badge_notification_widget.dart' • lib/presentation/screens/quest_timer_screen.dart:18:8 • unused_import
+warning • The value of the field '_startTime' isn't used • lib/presentation/screens/quest_timer_screen.dart:48:13 • unused_field
+warning • The value of the field '_isLoading' isn't used • lib/presentation/screens/quests_screen.dart:67:8 • unused_field
+   info • 'onPopInvoked' is deprecated and shouldn't be used. Use onPopInvokedWithResult instead. This feature was deprecated after v3.22.0-12.0.pre • lib/presentation/screens/record_screen.dart:110:7 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/record_screen.dart:373:41 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/record_screen.dart:377:54 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/record_screen.dart:427:11 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/record_screen.dart:485:21 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/record_screen.dart:518:43 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/record_screen.dart:531:41 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/record_screen.dart:535:9 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/record_screen.dart:539:43 • use_build_context_synchronously
+   info • Use of an async 'dart:io' method • lib/presentation/screens/record_screen.dart:669:17 • avoid_slow_async_io
+  error • Unused import: 'package:minq/presentation/common/minq_buttons.dart' • lib/presentation/screens/referral_screen.dart:7:8 • unused_import
+  error • Unused import: 'package:minq/presentation/widgets/points_display_widget.dart' • lib/presentation/screens/referral_screen.dart:9:8 • unused_import
+  error • Unused import: 'package:share_plus/share_plus.dart' • lib/presentation/screens/referral_screen.dart:10:8 • unused_import
+   info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre • lib/presentation/screens/settings_screen.dart:52:21 • deprecated_member_use
+   info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre • lib/presentation/screens/settings_screen.dart:55:21 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/presentation/screens/settings_screen.dart:62:27 • use_build_context_synchronously
+   info • Use of 'return' in a 'finally' clause • lib/presentation/screens/settings_screen.dart:190:21 • control_flow_in_finally
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/presentation/screens/settings_screen.dart:191:38 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/presentation/screens/settings_screen.dart:202:11 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/presentation/screens/settings_screen.dart:206:42 • use_build_context_synchronously
+  error • Undefined name 'navigationUseCaseProvider' • lib/presentation/screens/settings_screen.dart:218:33 • undefined_identifier
+  error • Undefined name 'PolicyDocumentId' • lib/presentation/screens/settings_screen.dart:420:52 • undefined_identifier
+  error • Undefined name 'PolicyDocumentId' • lib/presentation/screens/settings_screen.dart:424:52 • undefined_identifier
+  error • The method '_handleVersionTap' isn't defined for the type '_SettingsScreenState' • lib/presentation/screens/settings_screen.dart:430:30 • undefined_method
+  error • Undefined name '_developerOptionsUnlocked' • lib/presentation/screens/settings_screen.dart:434:15 • undefined_identifier
+  error • Undefined class 'NotificationAnalytics' • lib/presentation/screens/smart_notification_settings_screen.dart:23:3 • undefined_class
+  error • Undefined class 'ReEngagementAnalytics' • lib/presentation/screens/smart_notification_settings_screen.dart:24:3 • undefined_class
+  error • The method 'getNotificationAnalytics' isn't defined for the type 'SmartNotificationService' • lib/presentation/screens/smart_notification_settings_screen.dart:48:44 • undefined_method
+  error • The method 'analyzeReEngagementEffectiveness' isn't defined for the type 'ReEngagementService' • lib/presentation/screens/smart_notification_settings_screen.dart:50:37 • undefined_method
+  error • Undefined class 'NotificationAnalytics' • lib/presentation/screens/smart_notification_settings_screen.dart:440:5 • undefined_class
+  error • Undefined class 'NotificationAnalytics' • lib/presentation/screens/smart_notification_settings_screen.dart:561:5 • undefined_class
+  error • Undefined class 'ReEngagementAnalytics' • lib/presentation/screens/smart_notification_settings_screen.dart:636:5 • undefined_class
+  error • All final variables must be initialized, but 'delta' isn't • lib/presentation/screens/stats_screen.dart:373:9 • final_not_initialized_constructor
+  error • The argument type 'num' can't be assigned to the parameter type 'double'.  • lib/presentation/screens/stats_screen.dart:568:14 • argument_type_not_assignable
+warning • The value of the field '_isLoading' isn't used • lib/presentation/screens/streak_recovery_screen.dart:23:14 • unused_field
+  error • The named parameter 'isLoading' isn't defined • lib/presentation/screens/streak_recovery_screen.dart:247:21 • undefined_named_parameter
+  error • The method 'StreakProtectionWidget' isn't defined for the type '_ProtectionTab' • lib/presentation/screens/streak_recovery_screen.dart:392:19 • undefined_method
+   info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre • lib/presentation/screens/subscription_premium_screen.dart:291:15 • deprecated_member_use
+   info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre • lib/presentation/screens/subscription_premium_screen.dart:292:15 • deprecated_member_use
+  error • The getter 'body' isn't defined for the type 'AppTypography' • lib/presentation/screens/subscription_screen.dart:50:59 • undefined_getter
+  error • The getter 'body' isn't defined for the type 'AppTypography' • lib/presentation/screens/subscription_screen.dart:75:32 • undefined_getter
+  error • The getter 'h4' isn't defined for the type 'AppTypography' • lib/presentation/screens/subscription_screen.dart:142:58 • undefined_getter
+  error • The getter 'xxs' isn't defined for the type 'AppSpacing' • lib/presentation/screens/subscription_screen.dart:143:45 • undefined_getter
+  error • The getter 'xxs' isn't defined for the type 'AppSpacing' • lib/presentation/screens/subscription_screen.dart:206:40 • undefined_getter
+  error • The getter 'body' isn't defined for the type 'AppTypography' • lib/presentation/screens/subscription_screen.dart:237:42 • undefined_getter
+   info • 'onPopInvoked' is deprecated and shouldn't be used. Use onPopInvokedWithResult instead. This feature was deprecated after v3.22.0-12.0.pre • lib/presentation/screens/support_screen.dart:85:7 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/presentation/screens/support_screen.dart:258:40 • use_build_context_synchronously
+  error • The named parameter 'isLoading' isn't defined • lib/presentation/screens/time_capsule_screen.dart:311:15 • undefined_named_parameter
+  error • The returned type 'void' isn't returnable from a 'Future<void>' function, as required by the closure's context • lib/presentation/screens/time_capsule_screen.dart:608:40 • return_of_invalid_type_from_closure
+  error • The method 'showInfoSnackBar' isn't defined for the type 'FeedbackMessenger' • lib/presentation/screens/time_capsule_screen.dart:622:23 • undefined_method
+  error • The argument type 'ProofType' can't be assigned to the parameter type 'String'.  • lib/presentation/screens/today_logs_screen.dart:160:47 • argument_type_not_assignable
+   info • The type of the right operand ('String') isn't a subtype or a supertype of the left operand ('ProofType') • lib/presentation/screens/today_logs_screen.dart:163:35 • unrelated_type_equality_checks
+  error • The property 'isNotEmpty' can't be unconditionally accessed because the receiver can be 'null' • lib/presentation/screens/today_logs_screen.dart:164:36 • unchecked_use_of_nullable_value
+  error • The argument type 'String?' can't be assigned to the parameter type 'String'.  • lib/presentation/screens/today_logs_screen.dart:169:23 • argument_type_not_assignable
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/today_logs_screen.dart:241:42 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/presentation/screens/today_logs_screen.dart:249:42 • use_build_context_synchronously
+   info • 'red' is deprecated and shouldn't be used. Use (*.r * 255.0).round().clamp(0, 255) • lib/presentation/theme/contrast_validator.dart:32:32 • deprecated_member_use
+   info • 'green' is deprecated and shouldn't be used. Use (*.g * 255.0).round().clamp(0, 255) • lib/presentation/theme/contrast_validator.dart:33:32 • deprecated_member_use
+   info • 'blue' is deprecated and shouldn't be used. Use (*.b * 255.0).round().clamp(0, 255) • lib/presentation/theme/contrast_validator.dart:34:32 • deprecated_member_use
+warning • This default clause is covered by the previous cases • lib/presentation/theme/focus_system.dart:51:7 • unreachable_switch_default
+   info • 'onKey' is deprecated and shouldn't be used. Use onKeyEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:201:9 • deprecated_member_use
+   info • 'RawKeyDownEvent' is deprecated and shouldn't be used. Use KeyDownEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:202:24 • deprecated_member_use
+   info • 'onKey' is deprecated and shouldn't be used. Use onKeyEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:301:7 • deprecated_member_use
+   info • 'RawKeyDownEvent' is deprecated and shouldn't be used. Use KeyDownEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:302:22 • deprecated_member_use
+   info • 'RawKeyEvent' is deprecated and shouldn't be used. Use KeyEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:396:30 • deprecated_member_use
+   info • 'isControlPressed' is deprecated and shouldn't be used. Use HardwareKeyboard.instance.isControlPressed instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:397:18 • deprecated_member_use
+   info • 'RawKeyEvent' is deprecated and shouldn't be used. Use KeyEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:402:29 • deprecated_member_use
+   info • 'isControlPressed' is deprecated and shouldn't be used. Use HardwareKeyboard.instance.isControlPressed instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:403:18 • deprecated_member_use
+   info • 'RawKeyEvent' is deprecated and shouldn't be used. Use KeyEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:408:32 • deprecated_member_use
+   info • 'isControlPressed' is deprecated and shouldn't be used. Use HardwareKeyboard.instance.isControlPressed instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:409:18 • deprecated_member_use
+   info • 'RawKeyEvent' is deprecated and shouldn't be used. Use KeyEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:414:27 • deprecated_member_use
+   info • 'RawKeyEvent' is deprecated and shouldn't be used. Use KeyEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:419:26 • deprecated_member_use
+   info • 'RawKeyEvent' is deprecated and shouldn't be used. Use KeyEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:424:26 • deprecated_member_use
+   info • 'RawKeyEvent' is deprecated and shouldn't be used. Use KeyEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:429:24 • deprecated_member_use
+   info • 'RawKeyEvent' is deprecated and shouldn't be used. Use KeyEvent instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:434:29 • deprecated_member_use
+   info • 'isShiftPressed' is deprecated and shouldn't be used. Use HardwareKeyboard.instance.isShiftPressed instead. This feature was deprecated after v3.18.0-2.0.pre • lib/presentation/theme/focus_system.dart:435:18 • deprecated_member_use
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:57:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:59:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:60:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:61:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:62:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:70:7 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:72:7 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:84:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:85:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:86:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:87:8 • prefer_initializing_formals
+   info • Use an initializing formal to assign a parameter to a field • lib/presentation/widgets/badge_widget.dart:88:8 • prefer_initializing_formals
+  error • Unused import: 'package:minq/core/ai/failure_prediction_service.dart' • lib/presentation/widgets/failure_prediction_widget.dart:4:8 • unused_import
+  error • Unused import: 'package:minq/presentation/screens/onboarding/level_up_screen.dart' • lib/presentation/widgets/level_progress_widget.dart:4:8 • unused_import
+warning • Dead code • lib/presentation/widgets/offline_banner.dart:18:5 • dead_code
+warning • Dead code • lib/presentation/widgets/offline_banner.dart:163:20 • dead_code
+  error • The getter 'tokens' isn't defined for the type 'BuildContext' • lib/presentation/widgets/offline_mode_indicator.dart:14:28 • undefined_getter
+  error • Conditions must have a static type of 'bool' • lib/presentation/widgets/offline_mode_indicator.dart:19:26 • non_bool_condition
+  error • A negation operand must have a static type of 'bool' • lib/presentation/widgets/offline_mode_indicator.dart:21:14 • non_bool_negation_expression
+  error • A negation operand must have a static type of 'bool' • lib/presentation/widgets/offline_mode_indicator.dart:79:10 • non_bool_negation_expression
+  error • Undefined name 'uidProvider' • lib/presentation/widgets/points_display_widget.dart:22:27 • undefined_identifier
+  error • Undefined name 'uidProvider' • lib/presentation/widgets/points_display_widget.dart:299:27 • undefined_identifier
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_attributes_selector.dart:36:27 • undefined_getter
+  error • The static getter 'textPrimary' can't be accessed through an instance • lib/presentation/widgets/quest_attributes_selector.dart:38:29 • instance_access_to_static_member
+  error • The static method 'spacing' can't be accessed through an instance • lib/presentation/widgets/quest_attributes_selector.dart:41:35 • instance_access_to_static_member
+  error • The getter 'sm' isn't defined for the type 'double Function(int)' • lib/presentation/widgets/quest_attributes_selector.dart:41:43 • undefined_getter
+  error • The static method 'spacing' can't be accessed through an instance • lib/presentation/widgets/quest_attributes_selector.dart:47:35 • instance_access_to_static_member
+  error • The getter 'lg' isn't defined for the type 'double Function(int)' • lib/presentation/widgets/quest_attributes_selector.dart:47:43 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_attributes_selector.dart:54:27 • undefined_getter
+  error • The static getter 'textPrimary' can't be accessed through an instance • lib/presentation/widgets/quest_attributes_selector.dart:56:29 • instance_access_to_static_member
+  error • The static method 'spacing' can't be accessed through an instance • lib/presentation/widgets/quest_attributes_selector.dart:59:35 • instance_access_to_static_member
+  error • The getter 'sm' isn't defined for the type 'double Function(int)' • lib/presentation/widgets/quest_attributes_selector.dart:59:43 • undefined_getter
+  error • The static method 'spacing' can't be accessed through an instance • lib/presentation/widgets/quest_attributes_selector.dart:65:35 • instance_access_to_static_member
+  error • The getter 'lg' isn't defined for the type 'double Function(int)' • lib/presentation/widgets/quest_attributes_selector.dart:65:43 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_attributes_selector.dart:72:27 • undefined_getter
+  error • The static getter 'textPrimary' can't be accessed through an instance • lib/presentation/widgets/quest_attributes_selector.dart:74:29 • instance_access_to_static_member
+  error • The static method 'spacing' can't be accessed through an instance • lib/presentation/widgets/quest_attributes_selector.dart:77:35 • instance_access_to_static_member
+  error • The getter 'sm' isn't defined for the type 'double Function(int)' • lib/presentation/widgets/quest_attributes_selector.dart:77:43 • undefined_getter
+  error • The name 'MinqTheme' is defined in the libraries 'package:minq/presentation/theme/minq_theme_extension.dart' and 'package:minq/presentation/theme/minq_tokens.dart' • lib/presentation/widgets/quest_attributes_selector.dart:93:9 • ambiguous_import
+  error • The name 'MinqTheme' is defined in the libraries 'package:minq/presentation/theme/minq_theme_extension.dart' and 'package:minq/presentation/theme/minq_tokens.dart' • lib/presentation/widgets/quest_attributes_selector.dart:139:9 • ambiguous_import
+  error • The argument type 'Object' can't be assigned to the parameter type 'String'.  • lib/presentation/widgets/quest_attributes_selector.dart:164:27 • argument_type_not_assignable
+  error • The name 'MinqTheme' is defined in the libraries 'package:minq/presentation/theme/minq_theme_extension.dart' and 'package:minq/presentation/theme/minq_tokens.dart' • lib/presentation/widgets/quest_attributes_selector.dart:181:9 • ambiguous_import
+  error • The getter 'tokens' isn't defined for the type 'BuildContext' • lib/presentation/widgets/quest_search_bar.dart:33:28 • undefined_getter
+  error • The getter 'tokens' isn't defined for the type 'BuildContext' • lib/presentation/widgets/quest_search_bar.dart:305:28 • undefined_getter
+  error • Unused import: 'package:minq/presentation/theme/app_theme.dart' • lib/presentation/widgets/quest_timer_widget.dart:3:8 • unused_import
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:102:46 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:105:59 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_timer_widget.dart:121:68 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_timer_widget.dart:129:35 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_timer_widget.dart:137:35 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:145:43 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:168:48 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:184:48 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:197:45 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_timer_widget.dart:247:45 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:250:38 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:251:36 • undefined_getter
+  error • The getter 'full' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:254:61 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_timer_widget.dart:282:25 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:293:50 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:350:50 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_timer_widget.dart:352:27 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:353:63 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_timer_widget.dart:360:31 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:362:46 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_timer_widget.dart:365:31 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:370:46 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/quest_timer_widget.dart:373:31 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/quest_timer_widget.dart:380:41 • undefined_getter
+  error • Undefined name 'Spacing' • lib/presentation/widgets/scroll_indicator.dart:312:52 • undefined_identifier
+warning • This method overrides a method annotated as '@mustCallSuper' in 'State', but doesn't invoke the overridden method • lib/presentation/widgets/smooth_transitions.dart:372:8 • must_call_super
+  error • Unused import: 'package:minq/presentation/theme/app_theme.dart' • lib/presentation/widgets/survey_widget.dart:2:8 • unused_import
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:64:46 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:67:59 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:82:37 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:88:55 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:91:39 • undefined_getter
+  error • The getter 'lg' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:106:43 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:111:62 • undefined_getter
+  error • The getter 'xs' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:113:43 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:116:27 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:121:43 • undefined_getter
+  error • The getter 'xl' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:124:43 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:135:77 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:155:25 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:163:27 • undefined_getter
+  error • The getter 'error' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:163:69 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:165:41 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:190:63 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:197:67 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:199:58 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:203:38 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:205:71 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:207:50 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:218:49 • undefined_getter
+  error • The getter 'sm' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:220:54 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:224:41 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:257:42 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:260:44 • undefined_getter
+  error • The getter 'typography' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:266:31 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:283:61 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:299:40 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:314:46 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:316:64 • undefined_getter
+  error • The getter 'md' isn't defined for the type 'double Function(double)' • lib/presentation/widgets/survey_widget.dart:318:61 • undefined_getter
+  error • The getter 'primary' isn't defined for the type 'MinqTheme' • lib/presentation/widgets/survey_widget.dart:319:55 • undefined_getter
+  error • Undefined name 'Spacing' • lib/presentation/widgets/tutorial_overlay.dart:207:35 • undefined_identifier
+  error • Undefined name 'Spacing' • lib/presentation/widgets/tutorial_overlay.dart:228:37 • undefined_identifier
+  error • Undefined name 'Spacing' • lib/presentation/widgets/tutorial_overlay.dart:241:32 • undefined_identifier
+  error • Undefined name 'Spacing' • lib/presentation/widgets/tutorial_overlay.dart:246:32 • undefined_identifier
+  error • Undefined name 'Spacing' • lib/presentation/widgets/tutorial_overlay.dart:255:52 • undefined_identifier
+  error • Undefined name 'Spacing' • lib/presentation/widgets/tutorial_overlay.dart:267:32 • undefined_identifier
+  error • Undefined name 'Spacing' • lib/presentation/widgets/tutorial_overlay.dart:407:31 • undefined_identifier
+  error • Undefined name 'Spacing' • lib/presentation/widgets/tutorial_overlay.dart:427:27 • undefined_identifier
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_client.dart:14:3 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_client.dart:24:10 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_client.dart:48:27 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_client.dart:147:7 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_client.dart:148:3 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_client.dart:149:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_config.dart:8:9 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_config.dart:14:26 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_config.dart:22:26 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_config.dart:28:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_config.dart:29:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_config.dart:30:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/acr_cloud_config.dart:32:24 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:6:7 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:7:3 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:15:33 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:18:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:19:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:20:22 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:21:22 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:22:13 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:24:24 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:28:7 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:29:3 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:31:26 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:34:31 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:35:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/acr_cloud/models.dart:37:24 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/desktop/menu_bar_channel.dart:3:7 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/desktop/menu_bar_channel.dart:4:3 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/desktop/menu_bar_channel.dart:9:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/desktop/menu_bar_channel.dart:19:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/health/fitness_bridge.dart:7:3 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/health/fitness_bridge.dart:12:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/health/fitness_bridge.dart:17:15 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/health/fitness_bridge.dart:26:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/live_activity/live_activity_channel.dart:7:3 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/live_activity/live_activity_channel.dart:12:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/live_activity/live_activity_channel.dart:26:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/live_activity/live_activity_channel.dart:38:16 • public_member_api_docs
+   info • The line length exceeds the 80-character limit • packages/integrations/lib/share/ai_banner_generator.dart:6:81 • lines_longer_than_80_chars
+   info • Missing documentation for a public member • packages/integrations/lib/share/ai_banner_generator.dart:8:9 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/share/ai_banner_generator.dart:10:21 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/support/generative_support_client.dart:8:3 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/support/generative_support_client.dart:20:18 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/support/generative_support_client.dart:54:7 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/support/generative_support_client.dart:55:9 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/support/generative_support_client.dart:56:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/wearables/wearable_channel.dart:7:3 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/wearables/wearable_channel.dart:12:16 • public_member_api_docs
+   info • Missing documentation for a public member • packages/integrations/lib/wearables/wearable_channel.dart:22:16 • public_member_api_docs
+   info • Dependencies not sorted alphabetically • packages/integrations/pubspec.yaml:14:3 • sort_pub_dependencies
+   info • Dependencies not sorted alphabetically • packages/integrations/pubspec.yaml:26:3 • sort_pub_dependencies
+warning • The asset directory 'assets/sounds/' doesn't exist • pubspec.yaml:157:7 • asset_directory_does_not_exist
+
+720 issues found. (ran in 10.2s)

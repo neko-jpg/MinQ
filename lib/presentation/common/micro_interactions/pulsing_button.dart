@@ -243,7 +243,7 @@ class _PulsingButtonState extends State<PulsingButton>
                     BorderRadius.circular(theme.radiusMedium),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius:
                         _isPressed ? widget.pressedElevation : widget.elevation,
                     offset: Offset(

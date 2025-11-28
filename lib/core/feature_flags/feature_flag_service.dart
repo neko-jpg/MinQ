@@ -1,4 +1,5 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 
 /// 機能フラグサービス
 /// Remote Configを使用した機能の有効/無効切り替え
@@ -49,10 +50,10 @@ class FeatureFlagService {
   Future<bool> fetchAndActivate() async {
     try {
       final activated = await _remoteConfig.fetchAndActivate();
-      print('✅ Remote Config ${activated ? 'activated' : 'not changed'}');
+      debugPrint('✅ Remote Config ${activated ? 'activated' : 'not changed'}');
       return activated;
     } catch (e) {
-      print('❌ Failed to fetch remote config: $e');
+      debugPrint('❌ Failed to fetch remote config: $e');
       return false;
     }
   }

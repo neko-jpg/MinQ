@@ -24,7 +24,7 @@ class ImageUploadService {
       if (image == null) return null;
       return File(image.path);
     } catch (e) {
-      print('❌ Failed to pick image from gallery: $e');
+      debugPrint('❌ Failed to pick image from gallery: $e');
       return null;
     }
   }
@@ -42,7 +42,7 @@ class ImageUploadService {
       if (image == null) return null;
       return File(image.path);
     } catch (e) {
-      print('❌ Failed to pick image from camera: $e');
+      debugPrint('❌ Failed to pick image from camera: $e');
       return null;
     }
   }
@@ -83,7 +83,7 @@ class ImageUploadService {
       if (croppedFile == null) return null;
       return File(croppedFile.path);
     } catch (e) {
-      print('❌ Failed to crop image: $e');
+      debugPrint('❌ Failed to crop image: $e');
       return null;
     }
   }
@@ -111,7 +111,7 @@ class ImageUploadService {
       if (result == null) return null;
       return File(result.path);
     } catch (e) {
-      print('❌ Failed to compress image: $e');
+      debugPrint('❌ Failed to compress image: $e');
       return null;
     }
   }
@@ -122,7 +122,7 @@ class ImageUploadService {
       final image = await decodeImageFromList(await imageFile.readAsBytes());
       return ImageSize(width: image.width, height: image.height);
     } catch (e) {
-      print('❌ Failed to get image size: $e');
+      debugPrint('❌ Failed to get image size: $e');
       return null;
     }
   }
@@ -149,7 +149,7 @@ class ImageUploadService {
       if (result == null) return null;
       return File(result.path);
     } catch (e) {
-      print('❌ Failed to resize image: $e');
+      debugPrint('❌ Failed to resize image: $e');
       return null;
     }
   }

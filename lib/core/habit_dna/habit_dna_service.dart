@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/domain/habit_dna/habit_archetype.dart';
+import 'package:flutter/foundation.dart';
 
 // Predefined Archetypes
 final _archetypes = {
@@ -53,7 +54,7 @@ class HabitDNAService {
 
   /// Determines the user's habit archetype based on their behavior patterns.
   Future<HabitArchetype?> determineArchetype(String userId) async {
-    print('Determining habit archetype for user $userId.');
+    debugPrint('Determining habit archetype for user $userId.');
     try {
       final questLogsSnapshot =
           await _firestore
@@ -64,7 +65,7 @@ class HabitDNAService {
               .get();
 
       if (questLogsSnapshot.docs.length < 10) {
-        print('Not enough data to determine archetype.');
+        debugPrint('Not enough data to determine archetype.');
         return null; // Need at least 10 completed quests
       }
 
@@ -96,7 +97,7 @@ class HabitDNAService {
             : _archetypes['the_marathoner'];
       }
     } catch (e) {
-      print('Error determining archetype: $e');
+      debugPrint('Error determining archetype: $e');
       return null;
     }
   }

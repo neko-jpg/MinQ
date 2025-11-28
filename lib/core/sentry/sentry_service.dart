@@ -14,7 +14,7 @@ class SentryService {
 
     // リリースビルドでのみ有効化
     if (!kReleaseMode) {
-      print('Sentry is disabled in debug mode');
+      debugPrint('Sentry is disabled in debug mode');
       return;
     }
 
@@ -31,7 +31,7 @@ class SentryService {
     if (!_initialized) return;
 
     // TODO: Sentry.captureException()を実装
-    print('Sentry: Captured exception: $exception');
+    debugPrint('Sentry: Captured exception: $exception');
   }
 
   /// メッセージを記録
@@ -42,7 +42,7 @@ class SentryService {
     if (!_initialized) return;
 
     // TODO: Sentry.captureMessage()を実装
-    print('Sentry: Captured message: $message');
+    debugPrint('Sentry: Captured message: $message');
   }
 
   /// ユーザー情報を設定

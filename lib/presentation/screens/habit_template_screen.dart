@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/core/templates/habit_templates.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 習慣テンプレート選択画面
 class HabitTemplateScreen extends ConsumerStatefulWidget {
@@ -39,7 +40,7 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: Column(
@@ -144,7 +145,7 @@ class _CategoryChip extends StatelessWidget {
         selected: isSelected,
         onSelected: (_) => onTap(),
         backgroundColor: tokens.surface,
-        selectedColor: tokens.primary.withOpacity(0.2),
+        selectedColor: tokens.primary.withValues(alpha: 0.2),
         checkmarkColor: tokens.primary,
       ),
     );
@@ -185,7 +186,7 @@ class _TemplateCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: tokens.primary.withOpacity(0.1),
+                  color: tokens.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(tokens.radius.md),
                 ),
                 child: Center(
@@ -380,7 +381,7 @@ class _TemplateDetailSheet extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(tokens.spacing.md),
               decoration: BoxDecoration(
-                color: tokens.primary.withOpacity(0.1),
+                color: tokens.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
               child: Row(

@@ -27,7 +27,7 @@ class HapticManager {
       _isInitialized = true;
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Failed to initialize preferences: $e');
+        debugPrint('HapticManager: Failed to initialize preferences: $e');
       }
       _isEnabled = true;
       _isInitialized = true;
@@ -45,7 +45,7 @@ class HapticManager {
       await prefs.setBool(_hapticEnabledKey, enabled);
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Failed to save preference: $e');
+        debugPrint('HapticManager: Failed to save preference: $e');
       }
     }
   }
@@ -65,7 +65,7 @@ class HapticManager {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Success feedback failed: $e');
+        debugPrint('HapticManager: Success feedback failed: $e');
       }
     }
   }
@@ -85,7 +85,7 @@ class HapticManager {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Warning feedback failed: $e');
+        debugPrint('HapticManager: Warning feedback failed: $e');
       }
     }
   }
@@ -105,7 +105,7 @@ class HapticManager {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Error feedback failed: $e');
+        debugPrint('HapticManager: Error feedback failed: $e');
       }
     }
   }
@@ -125,7 +125,7 @@ class HapticManager {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Selection feedback failed: $e');
+        debugPrint('HapticManager: Selection feedback failed: $e');
       }
     }
   }
@@ -144,7 +144,7 @@ class HapticManager {
       await HapticFeedback.lightImpact();
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Achievement feedback failed: $e');
+        debugPrint('HapticManager: Achievement feedback failed: $e');
       }
     }
   }
@@ -160,7 +160,7 @@ class HapticManager {
       await HapticFeedback.lightImpact();
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Streak feedback failed: $e');
+        debugPrint('HapticManager: Streak feedback failed: $e');
       }
     }
   }
@@ -178,7 +178,7 @@ class HapticManager {
       await HapticFeedback.heavyImpact();
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Level up feedback failed: $e');
+        debugPrint('HapticManager: Level up feedback failed: $e');
       }
     }
   }
@@ -192,7 +192,7 @@ class HapticManager {
       await HapticFeedback.selectionClick();
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Button press feedback failed: $e');
+        debugPrint('HapticManager: Button press feedback failed: $e');
       }
     }
   }
@@ -206,7 +206,7 @@ class HapticManager {
       await HapticFeedback.lightImpact();
     } catch (e) {
       if (kDebugMode) {
-        print('HapticManager: Toggle feedback failed: $e');
+        debugPrint('HapticManager: Toggle feedback failed: $e');
       }
     }
   }

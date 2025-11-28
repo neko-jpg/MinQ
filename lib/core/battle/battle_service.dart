@@ -335,7 +335,7 @@ class BattleService {
       log('BattleService: ランキング取得開始');
 
       // 期間の計算
-      DateTime? startDate;
+      DateTime? startDate; // ignore: unused_local_variable
       switch (period) {
         case RankingPeriod.daily:
           startDate = DateTime.now().subtract(const Duration(days: 1));
@@ -544,7 +544,7 @@ class BattleService {
     for (final participant in battle.participants) {
       final userCompletions =
           completions.where((c) => c.userId == participant).toList();
-      final totalPoints = userCompletions.fold(0, (sum, c) => sum + c.points);
+      final totalPoints = userCompletions.fold(0, (total, c) => total + c.points);
 
       participantStats[participant] = ParticipantStats(
         userId: participant,

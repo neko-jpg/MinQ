@@ -238,7 +238,7 @@ class _ChallengeCard extends ConsumerWidget {
                     width: tokens.spacing(12),
                     height: tokens.spacing(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: tokens.cornerMedium(),
                     ),
                     child: Icon(
@@ -263,7 +263,7 @@ class _ChallengeCard extends ConsumerWidget {
                         Text(
                           challenge.description,
                           style: tokens.bodySmall.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -290,7 +290,7 @@ class _ChallengeCard extends ConsumerWidget {
                     Text(
                       '進捗',
                       style: tokens.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                     ),
                     Text(
@@ -308,7 +308,7 @@ class _ChallengeCard extends ConsumerWidget {
                   child: LinearProgressIndicator(
                     value: challenge.currentProgress / challenge.targetValue,
                     minHeight: tokens.spacing(2),
-                    backgroundColor: Colors.white.withOpacity(0.3),
+                    backgroundColor: Colors.white.withValues(alpha: 0.3),
                     valueColor: const AlwaysStoppedAnimation(Colors.white),
                   ),
                 ),
@@ -320,31 +320,31 @@ class _ChallengeCard extends ConsumerWidget {
                 children: [
                   Icon(
                     Icons.emoji_events,
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     size: tokens.spacing(4),
                   ),
                   SizedBox(width: tokens.spacing(1)),
                   Text(
                     '報酬: ${challenge.rewardPoints}ポイント',
                     style: tokens.bodySmall.copyWith(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                     ),
                   ),
                   const Spacer(),
-                  if (challenge.endDate != null) ...[
-                    Icon(
-                      Icons.schedule,
-                      color: Colors.white.withOpacity(0.9),
-                      size: tokens.spacing(4),
+                  ...[
+                  Icon(
+                    Icons.schedule,
+                    color: Colors.white.withValues(alpha: 0.9),
+                    size: tokens.spacing(4),
+                  ),
+                  SizedBox(width: tokens.spacing(1)),
+                  Text(
+                    _formatEndDate(challenge.endDate),
+                    style: tokens.bodySmall.copyWith(
+                      color: Colors.white.withValues(alpha: 0.9),
                     ),
-                    SizedBox(width: tokens.spacing(1)),
-                    Text(
-                      _formatEndDate(challenge.endDate!),
-                      style: tokens.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-                  ],
+                  ),
+                ],
                 ],
               ),
 
@@ -378,10 +378,10 @@ class _ChallengeCard extends ConsumerWidget {
     );
   }
 
-  LinearGradient _getGradient(MinqTokens tokens) {
+  LinearGradient _getGradient(MinqTheme tokens) {
     if (isCompleted) {
       return LinearGradient(
-        colors: [Colors.green, Colors.green.withOpacity(0.8)],
+        colors: [Colors.green, Colors.green.withValues(alpha: 0.8)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
@@ -389,7 +389,7 @@ class _ChallengeCard extends ConsumerWidget {
 
     if (isActive) {
       return LinearGradient(
-        colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
+        colors: [tokens.brandPrimary, tokens.brandPrimary.withValues(alpha: 0.8)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
@@ -569,7 +569,7 @@ class _ChallengeDetailsSheet extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: challenge.currentProgress / challenge.targetValue,
                     minHeight: tokens.spacing(2),
-                    backgroundColor: tokens.brandPrimary.withOpacity(0.2),
+                    backgroundColor: tokens.brandPrimary.withValues(alpha: 0.2),
                     valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
                   ),
                 ),
@@ -583,9 +583,9 @@ class _ChallengeDetailsSheet extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(tokens.spacing(3)),
             decoration: BoxDecoration(
-              color: Colors.amber.withOpacity(0.1),
+              color: Colors.amber.withValues(alpha: 0.1),
               borderRadius: tokens.cornerMedium(),
-              border: Border.all(color: Colors.amber.withOpacity(0.3)),
+              border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
             ),
             child: Row(
               children: [

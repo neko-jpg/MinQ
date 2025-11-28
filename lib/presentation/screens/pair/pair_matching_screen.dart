@@ -92,8 +92,8 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
 
   Future<void> _cancelPairing() async {
     _pairingTimer?.cancel();
-    final repo = ref.read(pairRepositoryProvider);
-    final uid = ref.read(uidProvider);
+    final repo = ref.read(pairRepositoryProvider); // ignore: unused_local_variable
+    final uid = ref.read(uidProvider); // ignore: unused_local_variable
     // TODO: Implement cancellation on the backend if a request was sent
     // if (uid != null && repo != null) {
     //   repo.cancelPairingRequest(uid);
@@ -196,7 +196,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
                     shape: BoxShape.circle,
                     gradient: SweepGradient(
                       colors: [
-                        tokens.brandPrimary.withOpacity(0.1),
+                        tokens.brandPrimary.withValues(alpha: 0.1),
                         tokens.brandPrimary,
                       ],
                       stops: const [0.5, 1.0],

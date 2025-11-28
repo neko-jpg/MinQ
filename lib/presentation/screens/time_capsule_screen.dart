@@ -184,7 +184,7 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
             // 説明カード
             Card(
               elevation: 0,
-              color: tokens.brandPrimary.withOpacity(0.1),
+              color: tokens.brandPrimary.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
               child: Padding(
                 padding: EdgeInsets.all(tokens.spacing(4)),
@@ -586,10 +586,10 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
                     width: double.infinity,
                     padding: EdgeInsets.all(tokens.spacing(4)),
                     decoration: BoxDecoration(
-                      color: tokens.brandPrimary.withOpacity(0.1),
+                      color: tokens.brandPrimary.withValues(alpha: 0.1),
                       borderRadius: tokens.cornerLarge(),
                       border: Border.all(
-                        color: tokens.brandPrimary.withOpacity(0.3),
+                        color: tokens.brandPrimary.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(

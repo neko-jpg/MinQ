@@ -92,7 +92,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildSettingsTab(MinqTokens tokens) {
+  Widget _buildSettingsTab(MinqTheme tokens) {
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
@@ -120,7 +120,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildAnalyticsTab(MinqTokens tokens) {
+  Widget _buildAnalyticsTab(MinqTheme tokens) {
     if (_analytics == null) {
       return _buildNoDataState(tokens, 'まだ分析データがありません');
     }
@@ -148,7 +148,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildABTestTab(MinqTokens tokens) {
+  Widget _buildABTestTab(MinqTheme tokens) {
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
@@ -178,7 +178,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildAINotificationSettings(MinqTokens tokens) {
+  Widget _buildAINotificationSettings(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -237,7 +237,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildOptimalTimingSettings(MinqTokens tokens) {
+  Widget _buildOptimalTimingSettings(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -308,7 +308,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildPersonalizationSettings(MinqTokens tokens) {
+  Widget _buildPersonalizationSettings(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -371,7 +371,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildReEngagementSettings(MinqTokens tokens) {
+  Widget _buildReEngagementSettings(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -436,7 +436,7 @@ class _SmartNotificationSettingsScreenState
   }
 
   Widget _buildNotificationSummary(
-    MinqTokens tokens,
+    MinqTheme tokens,
     NotificationAnalytics analytics,
   ) {
     return Container(
@@ -521,7 +521,7 @@ class _SmartNotificationSettingsScreenState
   }
 
   Widget _buildSummaryItem(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String label,
     String value,
     IconData icon,
@@ -531,7 +531,7 @@ class _SmartNotificationSettingsScreenState
       padding: EdgeInsets.all(tokens.spacing(3)),
       margin: EdgeInsets.all(tokens.spacing(1)),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: tokens.cornerMedium(),
       ),
       child: Column(
@@ -557,7 +557,7 @@ class _SmartNotificationSettingsScreenState
   }
 
   Widget _buildOpenRateChart(
-    MinqTokens tokens,
+    MinqTheme tokens,
     NotificationAnalytics analytics,
   ) {
     return Container(
@@ -632,7 +632,7 @@ class _SmartNotificationSettingsScreenState
   }
 
   Widget _buildReEngagementAnalysis(
-    MinqTokens tokens,
+    MinqTheme tokens,
     ReEngagementAnalytics analytics,
   ) {
     return Container(
@@ -688,7 +688,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildActiveTests(MinqTokens tokens) {
+  Widget _buildActiveTests(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -727,7 +727,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildTestResults(MinqTokens tokens) {
+  Widget _buildTestResults(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -758,7 +758,7 @@ class _SmartNotificationSettingsScreenState
   }
 
   Widget _buildTestItem(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String title,
     String description,
     String status,
@@ -798,7 +798,7 @@ class _SmartNotificationSettingsScreenState
               vertical: tokens.spacing(1),
             ),
             decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.2),
+              color: statusColor.withValues(alpha: 0.2),
               borderRadius: tokens.cornerSmall(),
             ),
             child: Text(
@@ -814,7 +814,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildCreateTestSection(MinqTokens tokens) {
+  Widget _buildCreateTestSection(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -848,7 +848,7 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildNoDataState(MinqTokens tokens, String message) {
+  Widget _buildNoDataState(MinqTheme tokens, String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
