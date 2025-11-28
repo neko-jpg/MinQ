@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 自己診断モード画面
 /// 設定→テスト通知/ストレージ/ネット
@@ -111,13 +111,14 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: _isRunning ? null : _runAllTests,
-              icon: _isRunning
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.play_arrow),
+              icon:
+                  _isRunning
+                      ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                      : const Icon(Icons.play_arrow),
               label: Text(_isRunning ? '診断中...' : 'すべてテスト'),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
@@ -165,10 +166,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
                 color: _getStatusColor(result?.status, tokens).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
-              child: Icon(
-                icon,
-                color: _getStatusColor(result?.status, tokens),
-              ),
+              child: Icon(icon, color: _getStatusColor(result?.status, tokens)),
             ),
             SizedBox(width: tokens.spacing.md),
             Expanded(
@@ -221,8 +219,14 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   }
 
   Widget _buildSummary(MinqTheme tokens) {
-    final passed = _results.values.where((r) => r.status == DiagnosticStatus.passed).length;
-    final failed = _results.values.where((r) => r.status == DiagnosticStatus.failed).length;
+    final passed =
+        _results.values
+            .where((r) => r.status == DiagnosticStatus.passed)
+            .length;
+    final failed =
+        _results.values
+            .where((r) => r.status == DiagnosticStatus.failed)
+            .length;
     final total = _results.length;
 
     return Container(
@@ -256,7 +260,12 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
     );
   }
 
-  Widget _buildSummaryItem(String label, int count, Color color, MinqTheme tokens) {
+  Widget _buildSummaryItem(
+    String label,
+    int count,
+    Color color,
+    MinqTheme tokens,
+  ) {
     return Column(
       children: [
         Text(
@@ -293,7 +302,10 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
     };
   }
 
-  Future<void> _runTest(String key, Future<DiagnosticResult> Function() test) async {
+  Future<void> _runTest(
+    String key,
+    Future<DiagnosticResult> Function() test,
+  ) async {
     setState(() {
       _isRunning = true;
     });
@@ -337,7 +349,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   Future<DiagnosticResult> _testNotification() async {
     await Future.delayed(const Duration(seconds: 1));
     // TODO: 実際の通知テスト
-    return DiagnosticResult(
+    return const DiagnosticResult(
       status: DiagnosticStatus.passed,
       message: '通知は正常に動作しています',
     );
@@ -346,7 +358,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   Future<DiagnosticResult> _testStorage() async {
     await Future.delayed(const Duration(seconds: 1));
     // TODO: 実際のストレージテスト
-    return DiagnosticResult(
+    return const DiagnosticResult(
       status: DiagnosticStatus.passed,
       message: 'ストレージは正常に動作しています',
     );
@@ -355,7 +367,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   Future<DiagnosticResult> _testNetwork() async {
     await Future.delayed(const Duration(seconds: 1));
     // TODO: 実際のネットワークテスト
-    return DiagnosticResult(
+    return const DiagnosticResult(
       status: DiagnosticStatus.passed,
       message: 'ネットワーク接続は正常です',
     );
@@ -364,7 +376,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   Future<DiagnosticResult> _testDatabase() async {
     await Future.delayed(const Duration(seconds: 1));
     // TODO: 実際のデータベーステスト
-    return DiagnosticResult(
+    return const DiagnosticResult(
       status: DiagnosticStatus.passed,
       message: 'データベースは正常に動作しています',
     );
@@ -373,7 +385,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
   Future<DiagnosticResult> _testPerformance() async {
     await Future.delayed(const Duration(seconds: 2));
     // TODO: 実際のパフォーマンステスト
-    return DiagnosticResult(
+    return const DiagnosticResult(
       status: DiagnosticStatus.passed,
       message: 'パフォーマンスは良好です',
     );
@@ -394,8 +406,4 @@ class DiagnosticResult {
 }
 
 /// 診断ステータス
-enum DiagnosticStatus {
-  passed,
-  failed,
-  warning,
-}
+enum DiagnosticStatus { passed, failed, warning }

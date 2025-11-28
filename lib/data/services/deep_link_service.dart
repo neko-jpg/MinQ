@@ -24,11 +24,14 @@ class DeepLinkService {
     }
 
     // Listen for further links
-    _subscription = _appLinks.uriLinkStream.listen((uri) {
-      _controller.add(uri);
-    }, onError: (Object err, StackTrace stack) {
-      debugPrint('Failed to handle deep link: $err');
-    });
+    _subscription = _appLinks.uriLinkStream.listen(
+      (uri) {
+        _controller.add(uri);
+      },
+      onError: (Object err, StackTrace stack) {
+        debugPrint('Failed to handle deep link: $err');
+      },
+    );
   }
 
   void dispose() {

@@ -7,6 +7,7 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class CreateQuestScreen extends ConsumerStatefulWidget {
@@ -39,7 +40,11 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
   bool _isVoiceListening = false;
 
   bool get _reduceMotion =>
-      WidgetsBinding.instance.platformDispatcher.accessibilityFeatures.disableAnimations;
+      WidgetsBinding
+          .instance
+          .platformDispatcher
+          .accessibilityFeatures
+          .disableAnimations;
 
   bool get _isLastStep => _currentStep == _stepTitles.length - 1;
 
@@ -119,10 +124,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     } catch (_) {
       if (mounted) {
         setState(() => _isVoiceListening = false);
-        FeedbackMessenger.showErrorSnackBar(
-          context,
-          '音声入力の開始に失敗しました。',
-        );
+        FeedbackMessenger.showErrorSnackBar(context, '音声入力の開始に失敗しました。');
       }
     }
   }
@@ -142,7 +144,8 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     });
     await _pageController.animateToPage(
       step,
-      duration: _reduceMotion ? Duration.zero : const Duration(milliseconds: 260),
+      duration:
+          _reduceMotion ? Duration.zero : const Duration(milliseconds: 260),
       curve: Curves.easeInOutCubic,
     );
   }
@@ -195,22 +198,20 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
     final uid = ref.read(uidProvider);
     if (uid == null || uid.isEmpty) {
-      FeedbackMessenger.showErrorSnackBar(
-        context,
-        'ユーザーがサインインしていません。',
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'ユーザーがサインインしていません。');
       return;
     }
 
-    final newQuest = Quest()
-      ..owner = uid
-      ..title = _titleController.text
-      ..category = ''
-      ..estimatedMinutes =
-          _isTimeGoal ? (int.tryParse(_goalValueController.text) ?? 0) : 0
-      ..iconKey = _selectedIconKey
-      ..status = QuestStatus.active
-      ..createdAt = DateTime.now();
+    final newQuest =
+        Quest()
+          ..owner = uid
+          ..title = _titleController.text
+          ..category = ''
+          ..estimatedMinutes =
+              _isTimeGoal ? (int.tryParse(_goalValueController.text) ?? 0) : 0
+          ..iconKey = _selectedIconKey
+          ..status = QuestStatus.active
+          ..createdAt = DateTime.now();
 
     await ref.read(questRepositoryProvider).addQuest(newQuest);
 
@@ -226,8 +227,9 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     if (_isReminderOn) {
       try {
         final notificationService = ref.read(notificationServiceProvider);
-        final timeString = '${_reminderTime.hour.toString().padLeft(2, '0')}:${_reminderTime.minute.toString().padLeft(2, '0')}';
-        
+        final timeString =
+            '${_reminderTime.hour.toString().padLeft(2, '0')}:${_reminderTime.minute.toString().padLeft(2, '0')}';
+
         // Update user's notification times to include this quest's reminder
         final userRepository = ref.read(userRepositoryProvider);
         final user = await userRepository.getUserById(uid);
@@ -237,7 +239,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
             updatedTimes.add(timeString);
             user.notificationTimes = updatedTimes;
             await userRepository.saveLocalUser(user);
-            
+
             // Reschedule all notifications
             await notificationService.scheduleRecurringReminders(updatedTimes);
           }
@@ -249,11 +251,9 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     }
 
     if (mounted) {
-      FeedbackMessenger.showSuccessToast(
-        context,
-        '新しい習慣を作成しました！',
-      );
-      context.pop();
+      FeedbackMessenger.showSuccessToast(context, '新しい習慣を作成しました！');
+      // クエスト詳細画面に遷移
+      ref.read(navigationUseCaseProvider).goToQuestDetail(newQuest.id);
     }
   }
 
@@ -393,7 +393,10 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                     currentStep: _currentStep,
                     totalSteps: _stepTitles.length,
                     canSubmit: _canSubmit,
-                    onBack: _currentStep == 0 ? null : () => _goToStep(_currentStep - 1),
+                    onBack:
+                        _currentStep == 0
+                            ? null
+                            : () => _goToStep(_currentStep - 1),
                     onNext: () async {
                       if (_isLastStep) {
                         await _saveQuest();
@@ -476,9 +479,10 @@ class _StepIndicator extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: tokens.spacing(1)),
                 child: AnimatedContainer(
-                  duration: reduceMotion
-                      ? Duration.zero
-                      : const Duration(milliseconds: 220),
+                  duration:
+                      reduceMotion
+                          ? Duration.zero
+                          : const Duration(milliseconds: 220),
                   height: tokens.spacing(2),
                   decoration: BoxDecoration(
                     color: indicatorColor,
@@ -517,10 +521,7 @@ class _StepperActions extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: OutlinedButton(
-            onPressed: onBack,
-            child: const Text('戻る'),
-          ),
+          child: OutlinedButton(onPressed: onBack, child: const Text('戻る')),
         ),
         SizedBox(width: tokens.spacing(3)),
         Expanded(
@@ -584,8 +585,11 @@ class _HabitNameInput extends StatelessWidget {
         SizedBox(height: tokens.spacing(2)),
         TextFormField(
           controller: controller,
-          validator: (String? value) =>
-              (value == null || value.trim().isEmpty) ? '名前を入力してください' : null,
+          validator:
+              (String? value) =>
+                  (value == null || value.trim().isEmpty)
+                      ? '名前を入力してください'
+                      : null,
           decoration: InputDecoration(
             hintText: '例：毎朝瞑想する',
             prefixIcon: const Icon(Icons.edit),
@@ -594,24 +598,27 @@ class _HabitNameInput extends StatelessWidget {
               borderRadius: tokens.cornerXLarge(),
               borderSide: BorderSide.none,
             ),
-            suffixIcon: onVoiceInputTap == null
-                ? null
-                : Tooltip(
-                    message: isListening ? '音声入力を停止' : '音声入力',
-                    child: Semantics(
-                      button: true,
-                      toggled: isListening,
-                      label: '音声入力',
-                      child: IconButton(
-                        icon: Icon(
-                          isListening ? Icons.mic : Icons.mic_none,
-                          color:
-                              isListening ? tokens.brandPrimary : tokens.textMuted,
+            suffixIcon:
+                onVoiceInputTap == null
+                    ? null
+                    : Tooltip(
+                      message: isListening ? '音声入力を停止' : '音声入力',
+                      child: Semantics(
+                        button: true,
+                        toggled: isListening,
+                        label: '音声入力',
+                        child: IconButton(
+                          icon: Icon(
+                            isListening ? Icons.mic : Icons.mic_none,
+                            color:
+                                isListening
+                                    ? tokens.brandPrimary
+                                    : tokens.textMuted,
+                          ),
+                          onPressed: onVoiceInputTap,
                         ),
-                        onPressed: onVoiceInputTap,
                       ),
                     ),
-                  ),
           ),
         ),
       ],
@@ -715,7 +722,11 @@ class _IconAndColorPicker extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: tokens.shadowSoft,
                 ),
-                child: Icon(iconDataForKey(selectedIcon), color: Colors.white, size: tokens.spacing(8)),
+                child: Icon(
+                  iconDataForKey(selectedIcon),
+                  color: Colors.white,
+                  size: tokens.spacing(8),
+                ),
               ),
             ),
             SizedBox(width: tokens.spacing(4)),
@@ -723,29 +734,35 @@ class _IconAndColorPicker extends StatelessWidget {
               child: Wrap(
                 spacing: tokens.spacing(3),
                 runSpacing: tokens.spacing(2),
-                children: colors
-                    .map(
-                      (Color color) => GestureDetector(
-                        onTap: () => onColorSelected(color),
-                        child: Semantics(
-                          button: true,
-                          selected: selectedColor == color,
-                          label: '色を${color == selectedColor ? '選択済み' : '選択する'}',
-                          child: Container(
-                            width: tokens.spacing(7),
-                            height: tokens.spacing(7),
-                            decoration: BoxDecoration(
-                              color: color,
-                              shape: BoxShape.circle,
-                              border: selectedColor == color
-                                  ? Border.all(color: Colors.white, width: 2)
-                                  : null,
+                children:
+                    colors
+                        .map(
+                          (Color color) => GestureDetector(
+                            onTap: () => onColorSelected(color),
+                            child: Semantics(
+                              button: true,
+                              selected: selectedColor == color,
+                              label:
+                                  '色を${color == selectedColor ? '選択済み' : '選択する'}',
+                              child: Container(
+                                width: tokens.spacing(7),
+                                height: tokens.spacing(7),
+                                decoration: BoxDecoration(
+                                  color: color,
+                                  shape: BoxShape.circle,
+                                  border:
+                                      selectedColor == color
+                                          ? Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          )
+                                          : null,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    )
-                    .toList(),
+                        )
+                        .toList(),
               ),
             ),
           ],
@@ -772,7 +789,10 @@ class _GoalSetter extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('目標タイプ', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text(
+          '目標タイプ',
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
         SizedBox(height: tokens.spacing(2)),
         SegmentedButton<bool>(
           segments: const <ButtonSegment<bool>>[
@@ -803,7 +823,10 @@ class _GoalSetter extends StatelessWidget {
 }
 
 class _FrequencyPicker extends StatelessWidget {
-  const _FrequencyPicker({required this.selectedDays, required this.onDaySelected});
+  const _FrequencyPicker({
+    required this.selectedDays,
+    required this.onDaySelected,
+  });
 
   final Set<int> selectedDays;
   final ValueChanged<int> onDaySelected;
@@ -873,7 +896,10 @@ class _ReminderSetter extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('リマインダー', style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text(
+          'リマインダー',
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+        ),
         SizedBox(height: tokens.spacing(2)),
         Card(
           elevation: 0,
@@ -893,14 +919,13 @@ class _ReminderSetter extends StatelessWidget {
                     onTap: onTimeTap,
                     child: Text(
                       reminderTime.format(context),
-                      style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+                      style: tokens.titleMedium.copyWith(
+                        color: tokens.textPrimary,
+                      ),
                     ),
                   ),
                 ),
-                Switch(
-                  value: isReminderOn,
-                  onChanged: onToggle,
-                ),
+                Switch(value: isReminderOn, onChanged: onToggle),
               ],
             ),
           ),

@@ -4,7 +4,7 @@ import 'package:minq/data/services/local_preferences_service.dart';
 
 class InAppReviewService {
   InAppReviewService(this._preferences, {InAppReview? reviewClient})
-      : _review = reviewClient ?? InAppReview.instance;
+    : _review = reviewClient ?? InAppReview.instance;
 
   final LocalPreferencesService _preferences;
   final InAppReview _review;
@@ -23,7 +23,9 @@ class InAppReviewService {
   }
 
   /// クエスト完了数に基づくレビューリクエスト
-  Future<void> maybeRequestReviewByQuestCount({required int completedCount}) async {
+  Future<void> maybeRequestReviewByQuestCount({
+    required int completedCount,
+  }) async {
     if (completedCount < _minQuestsCompletedForReview) {
       return;
     }

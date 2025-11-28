@@ -1,11 +1,9 @@
 class MinqCopy {
   const MinqCopy._();
 
-  static const String valuePropositionHeadline =
-      '匿名のペアと1日3タップで継続する習慣を。';
+  static const String valuePropositionHeadline = '匿名のペアと1日3タップで継続する習慣を。';
 
-  static const String valuePropositionSubheadline =
-      '3タップ。1人のパートナー。ついに続く習慣を。';
+  static const String valuePropositionSubheadline = '3タップ。1人のパートナー。ついに続く習慣を。';
 
   static const String onboardingFeatureMiniQuest =
       '目標を、今日終えられるやりがいのあるミニクエストに分解します。';
@@ -16,8 +14,7 @@ class MinqCopy {
   static const String onboardingFeatureNotifications =
       '選択した時間にのみ通知するため、リマインダーはしつこくなく、役立ちます。';
 
-  static const String notificationPrePromptTitle =
-      '通知は控えめに使用します';
+  static const String notificationPrePromptTitle = '通知は控えめに使用します';
 
   static const String notificationPrePromptBody =
       'リマインダーを有効にすると、設定した時間に通知が届きます。設定はいつでも変更・無効化できます。';

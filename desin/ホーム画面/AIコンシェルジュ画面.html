@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Concierge Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#007AFF",
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#121212",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#1E1E1E",
+                        "text-light-primary": "#111827",
+                        "text-light-secondary": "#6B7280",
+                        "text-dark-primary": "#FFFFFF",
+                        "text-dark-secondary": "#9CA3AF",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem",
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100dvh;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark dark:bg-background-dark text-text-dark-primary dark:text-text-dark-primary">
+<div class="flex flex-col h-screen">
+<header class="bg-card-dark p-4 flex items-center justify-between shadow-md z-10">
+<button>
+<span class="material-icons">arrow_back_ios</span>
+</button>
+<div class="text-center">
+<h1 class="text-xl font-bold">AI Concierge</h1>
+<p class="text-xs text-text-dark-secondary">Online</p>
+</div>
+<button>
+<span class="material-icons">more_horiz</span>
+</button>
+</header>
+<main class="flex-grow p-6 overflow-y-auto space-y-6">
+<div class="text-center text-xs text-text-dark-secondary">
+<p>2023年10月27日</p>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex-shrink-0 flex items-center justify-center">
+<span class="material-icons text-white">psychology</span>
+</div>
+<div class="space-y-2">
+<div class="bg-gray-700 rounded-lg p-3 max-w-xs inline-block rounded-bl-none">
+<p class="text-sm">こんにちは！何かお困りのことはありますか？目標達成に向けてサポートしますよ。</p>
+</div>
+<div class="bg-gray-700 rounded-lg p-3 max-w-xs inline-block rounded-bl-none">
+<p class="text-sm">どんなことでも気軽に話してくださいね。</p>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-3 justify-end">
+<div class="space-y-2 text-right">
+<div class="bg-primary rounded-lg p-3 max-w-xs inline-block text-white rounded-br-none">
+<p class="text-sm">最近、モチベーションが上がらないんだ...</p>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex-shrink-0 flex items-center justify-center">
+<span class="material-icons text-white">psychology</span>
+</div>
+<div class="space-y-2">
+<div class="bg-gray-700 rounded-lg p-3 max-w-xs inline-block rounded-bl-none">
+<p class="text-sm">そうだったんですね。それは辛いですね。モチベーションが上がらない原因について、もう少し詳しく教えていただけますか？</p>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-3 justify-end">
+<div class="space-y-2 text-right">
+<div class="bg-primary rounded-lg p-3 max-w-xs inline-block text-white rounded-br-none">
+<p class="text-sm">仕事が忙しくて、自分の時間が取れないのが一番大きいかな。疲れちゃって、何もする気が起きない。</p>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex-shrink-0 flex items-center justify-center">
+<span class="material-icons text-white">psychology</span>
+</div>
+<div class="space-y-2">
+<div class="bg-gray-700 rounded-lg p-3 max-w-xs inline-block rounded-bl-none">
+<p class="text-sm">お仕事お疲れ様です。忙しい中で時間を作るのは大変ですよね。まずは5分でもいいので、リラックスできる時間を作ることから始めてみてはいかがでしょうか？例えば、好きな音楽を聴くとか、温かいお茶を飲むとか。</p>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-card-dark p-4 shadow-inner">
+<div class="flex items-center gap-2">
+<button class="text-text-dark-secondary">
+<span class="material-icons">add_circle_outline</span>
+</button>
+<input class="flex-grow bg-gray-700 border-none rounded-full px-4 py-3 text-sm placeholder-text-dark-secondary focus:ring-primary focus:ring-2" placeholder="メッセージを入力..." type="text"/>
+<button class="bg-primary rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+<span class="material-icons text-white">send</span>
+</button>
+</div>
+</footer>
+</div>
+
+</body></html>

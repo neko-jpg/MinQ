@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/templates/habit_templates.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/core/templates/habit_templates.dart';
+import 'package:minq/presentation/theme/app_theme.dart';
 
 /// 習慣テンプレート選択画面
 class HabitTemplateScreen extends ConsumerStatefulWidget {
   const HabitTemplateScreen({super.key});
 
   @override
-  ConsumerState<HabitTemplateScreen> createState() => _HabitTemplateScreenState();
+  ConsumerState<HabitTemplateScreen> createState() =>
+      _HabitTemplateScreenState();
 }
 
 class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
@@ -18,9 +19,10 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final templates = _selectedCategory == null
-        ? HabitTemplates.all
-        : HabitTemplates.getByCategory(_selectedCategory!);
+    final templates =
+        _selectedCategory == null
+            ? HabitTemplates.all
+            : HabitTemplates.getByCategory(_selectedCategory!);
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -98,13 +100,14 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _TemplateDetailSheet(
-        template: template,
-        onUse: () {
-          context.pop(); // シートを閉じる
-          context.pop(template); // テンプレートを返す
-        },
-      ),
+      builder:
+          (context) => _TemplateDetailSheet(
+            template: template,
+            onUse: () {
+              context.pop(); // シートを閉じる
+              context.pop(template); // テンプレートを返す
+            },
+          ),
     );
   }
 }
@@ -233,10 +236,7 @@ class _TemplateCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                Icons.chevron_right,
-                color: tokens.textSecondary,
-              ),
+              Icon(Icons.chevron_right, color: tokens.textSecondary),
             ],
           ),
         ),
@@ -291,10 +291,7 @@ class _TemplateDetailSheet extends StatelessWidget {
   final HabitTemplate template;
   final VoidCallback onUse;
 
-  const _TemplateDetailSheet({
-    required this.template,
-    required this.onUse,
-  });
+  const _TemplateDetailSheet({required this.template, required this.onUse});
 
   @override
   Widget build(BuildContext context) {
@@ -356,9 +353,7 @@ class _TemplateDetailSheet extends StatelessWidget {
             // 説明
             Text(
               template.description,
-              style: tokens.typography.body.copyWith(
-                color: tokens.textPrimary,
-              ),
+              style: tokens.typography.body.copyWith(color: tokens.textPrimary),
             ),
             SizedBox(height: tokens.spacing.lg),
             // 詳細情報
@@ -456,9 +451,7 @@ class _DetailRow extends StatelessWidget {
           SizedBox(width: tokens.spacing.sm),
           Text(
             label,
-            style: tokens.typography.body.copyWith(
-              color: tokens.textSecondary,
-            ),
+            style: tokens.typography.body.copyWith(color: tokens.textSecondary),
           ),
           const Spacer(),
           Text(

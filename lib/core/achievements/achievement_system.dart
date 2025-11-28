@@ -10,7 +10,7 @@ class AchievementSystem {
   void _initializeAchievements() {
     _achievements.addAll([
       // ストリーク系
-      Achievement(
+      const Achievement(
         id: 'streak_3',
         title: '3日連続',
         description: '3日連続でクエストを完了',
@@ -18,7 +18,7 @@ class AchievementSystem {
         category: AchievementCategory.streak,
         requirement: 3,
       ),
-      Achievement(
+      const Achievement(
         id: 'streak_7',
         title: '1週間連続',
         description: '7日連続でクエストを完了',
@@ -26,7 +26,7 @@ class AchievementSystem {
         category: AchievementCategory.streak,
         requirement: 7,
       ),
-      Achievement(
+      const Achievement(
         id: 'streak_30',
         title: '1ヶ月連続',
         description: '30日連続でクエストを完了',
@@ -35,7 +35,7 @@ class AchievementSystem {
         requirement: 30,
       ),
       // 完了数系
-      Achievement(
+      const Achievement(
         id: 'complete_10',
         title: '初心者',
         description: '10個のクエストを完了',
@@ -43,7 +43,7 @@ class AchievementSystem {
         category: AchievementCategory.completion,
         requirement: 10,
       ),
-      Achievement(
+      const Achievement(
         id: 'complete_50',
         title: '中級者',
         description: '50個のクエストを完了',
@@ -51,7 +51,7 @@ class AchievementSystem {
         category: AchievementCategory.completion,
         requirement: 50,
       ),
-      Achievement(
+      const Achievement(
         id: 'complete_100',
         title: '上級者',
         description: '100個のクエストを完了',
@@ -115,12 +115,7 @@ class Achievement {
 }
 
 /// 実績カテゴリー
-enum AchievementCategory {
-  streak,
-  completion,
-  social,
-  special,
-}
+enum AchievementCategory { streak, completion, social, special }
 
 /// 実績進捗
 class AchievementProgress {

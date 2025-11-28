@@ -1,4 +1,4 @@
-import '../templates/quest_templates.dart';
+import 'package:minq/core/templates/quest_templates.dart';
 
 /// 習慣テンプレート集
 /// ユーザーが簡単に習慣を始められるように、よくある習慣のテンプレートを提供
@@ -16,7 +16,7 @@ class HabitTemplates {
 
   /// 健康・運動系テンプレート
   static List<HabitTemplate> get healthTemplates => [
-    HabitTemplate(
+    const HabitTemplate(
       id: 'morning_run',
       title: '朝ラン',
       description: '朝の新鮮な空気を吸いながら軽くランニング',
@@ -27,7 +27,7 @@ class HabitTemplates {
       suggestedTimes: ['06:30', '07:00'],
       tips: '無理せず、自分のペースで走りましょう',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'morning_stretch',
       title: '朝ストレッチ',
       description: '目覚めの体をほぐす軽いストレッチ',
@@ -38,7 +38,7 @@ class HabitTemplates {
       suggestedTimes: ['06:00', '07:00'],
       tips: '呼吸を意識しながらゆっくりと',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'water_intake',
       title: '水を飲む',
       description: '1日2リットルの水分補給',
@@ -49,7 +49,7 @@ class HabitTemplates {
       suggestedTimes: ['08:00', '12:00', '18:00'],
       tips: 'こまめに水分補給することが大切です',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'workout',
       title: '筋トレ',
       description: '自宅やジムでの筋力トレーニング',
@@ -60,7 +60,7 @@ class HabitTemplates {
       suggestedTimes: ['18:00', '19:00'],
       tips: 'フォームを意識して、怪我に注意',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'walk',
       title: '散歩',
       description: '気分転換に外を歩く',
@@ -75,7 +75,7 @@ class HabitTemplates {
 
   /// 学習系テンプレート
   static List<HabitTemplate> get learningTemplates => [
-    HabitTemplate(
+    const HabitTemplate(
       id: 'reading',
       title: '読書',
       description: '本を読んで知識を深める',
@@ -86,7 +86,7 @@ class HabitTemplates {
       suggestedTimes: ['21:00', '22:00'],
       tips: '寝る前の読書は睡眠の質を高めます',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'english_study',
       title: '英語学習',
       description: '英単語や英会話の練習',
@@ -97,7 +97,7 @@ class HabitTemplates {
       suggestedTimes: ['07:00', '20:00'],
       tips: '毎日少しずつ続けることが大切',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'online_course',
       title: 'オンライン講座',
       description: 'UdemyやCourseraで新しいスキルを学ぶ',
@@ -108,7 +108,7 @@ class HabitTemplates {
       suggestedTimes: ['20:00', '21:00'],
       tips: '1つのコースを最後まで完走しましょう',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'podcast',
       title: 'ポッドキャスト',
       description: '通勤中や家事中に学びのポッドキャストを聴く',
@@ -123,7 +123,7 @@ class HabitTemplates {
 
   /// 生産性系テンプレート
   static List<HabitTemplate> get productivityTemplates => [
-    HabitTemplate(
+    const HabitTemplate(
       id: 'morning_planning',
       title: '朝の計画',
       description: '今日のタスクと優先順位を整理',
@@ -134,7 +134,7 @@ class HabitTemplates {
       suggestedTimes: ['07:00', '08:00'],
       tips: '3つの重要タスクに絞りましょう',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'email_check',
       title: 'メール整理',
       description: '受信トレイをゼロにする',
@@ -145,7 +145,7 @@ class HabitTemplates {
       suggestedTimes: ['09:00', '17:00'],
       tips: '2分ルール：2分以内で終わることはすぐやる',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'deep_work',
       title: '集中作業',
       description: '邪魔されない環境で重要な仕事に集中',
@@ -156,7 +156,7 @@ class HabitTemplates {
       suggestedTimes: ['09:00', '14:00'],
       tips: '通知をオフにして完全に集中',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'evening_review',
       title: '夜の振り返り',
       description: '今日の成果と明日の準備',
@@ -171,7 +171,7 @@ class HabitTemplates {
 
   /// マインドフルネス系テンプレート
   static List<HabitTemplate> get mindfulnessTemplates => [
-    HabitTemplate(
+    const HabitTemplate(
       id: 'meditation',
       title: '瞑想',
       description: '心を落ち着けて呼吸に集中',
@@ -182,7 +182,7 @@ class HabitTemplates {
       suggestedTimes: ['06:30', '21:00'],
       tips: '完璧を求めず、ただ呼吸を観察',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'journaling',
       title: '日記',
       description: '今日の出来事や感情を書き出す',
@@ -193,7 +193,7 @@ class HabitTemplates {
       suggestedTimes: ['21:00', '22:00'],
       tips: '思いついたことを自由に書きましょう',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'gratitude',
       title: '感謝の記録',
       description: '今日感謝したことを3つ書く',
@@ -204,7 +204,7 @@ class HabitTemplates {
       suggestedTimes: ['21:00', '22:00'],
       tips: '小さなことにも感謝の気持ちを',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'digital_detox',
       title: 'デジタルデトックス',
       description: 'スマホを見ない時間を作る',
@@ -219,7 +219,7 @@ class HabitTemplates {
 
   /// 社交・コミュニケーション系テンプレート
   static List<HabitTemplate> get socialTemplates => [
-    HabitTemplate(
+    const HabitTemplate(
       id: 'family_time',
       title: '家族との時間',
       description: '家族と会話や食事を楽しむ',
@@ -230,7 +230,7 @@ class HabitTemplates {
       suggestedTimes: ['18:00', '19:00'],
       tips: 'スマホを置いて、顔を見て話しましょう',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'friend_contact',
       title: '友人に連絡',
       description: '大切な人にメッセージや電話',
@@ -241,7 +241,7 @@ class HabitTemplates {
       suggestedTimes: ['12:00', '20:00'],
       tips: '短いメッセージでも気持ちは伝わります',
     ),
-    HabitTemplate(
+    const HabitTemplate(
       id: 'networking',
       title: 'ネットワーキング',
       description: '新しい人と出会い、つながりを作る',
@@ -266,7 +266,9 @@ class HabitTemplates {
 
   /// 推定時間別にテンプレートを取得
   static List<HabitTemplate> getByDuration(int maxMinutes) {
-    return all.where((template) => template.estimatedMinutes <= maxMinutes).toList();
+    return all
+        .where((template) => template.estimatedMinutes <= maxMinutes)
+        .toList();
   }
 
   /// IDからテンプレートを取得
@@ -339,18 +341,18 @@ class HabitTemplate {
 
 /// 習慣カテゴリー
 enum HabitCategory {
-  health,        // 健康・運動
-  learning,      // 学習
-  productivity,  // 生産性
-  mindfulness,   // マインドフルネス
-  social,        // 社交
+  health, // 健康・運動
+  learning, // 学習
+  productivity, // 生産性
+  mindfulness, // マインドフルネス
+  social, // 社交
 }
 
 /// 習慣の難易度
 enum HabitDifficulty {
-  easy,    // 簡単
-  medium,  // 普通
-  hard,    // 難しい
+  easy, // 簡単
+  medium, // 普通
+  hard, // 難しい
 }
 
 /// カテゴリーの表示名

@@ -13,5 +13,6 @@ class FailurePredictionModel with _$FailurePredictionModel {
     required DateTime createdAt,
   }) = _FailurePredictionModel;
 
-  factory FailurePredictionModel.fromJson(Map<String, dynamic> json) => _$FailurePredictionModelFromJson(json);
+  factory FailurePredictionModel.fromJson(Map<String, dynamic> json) =>
+      _$FailurePredictionModelFromJson(json);
 }

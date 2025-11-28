@@ -13,6 +13,7 @@ class ACRCloudClient {
   const ACRCloudClient({required dynamic httpClient, required dynamic config});
   Future<dynamic> identify({required dynamic audio}) async => null;
 }
+
 class ACRCloudConfig {
   static ACRCloudConfig? fromBase64(String encoded) => null;
 }
@@ -21,8 +22,8 @@ class ACRMuiscTaggingService {
   ACRMuiscTaggingService({
     required ACRCloudClient client,
     required http.Client httpClient,
-  })  : _client = client,
-        _httpClient = httpClient;
+  }) : _client = client,
+       _httpClient = httpClient;
 
   final ACRCloudClient _client;
   final http.Client _httpClient;

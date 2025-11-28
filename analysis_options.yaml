@@ -25,9 +25,10 @@ analyzer:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
     - "**/*.mocks.dart"
-    - "lib/**"
-    - "packages/**"
+    - "AI/**"
+    - "flutter_gemma-0.11.5/**"
     - "scripts/**"
+    - "packages/vendor/**"
     - "tool/**"
     - "test/**"
 

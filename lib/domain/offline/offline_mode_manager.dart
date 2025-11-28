@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import '../log/quest_log.dart';
-import '../quest/quest.dart';
+import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/domain/quest/quest.dart';
 
 enum OfflineActionType { createQuest, updateQuest, deleteQuest, logCompletion }
 

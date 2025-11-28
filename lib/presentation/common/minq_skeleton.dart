@@ -5,12 +5,7 @@ import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class MinqSkeleton extends StatefulWidget {
-  const MinqSkeleton({
-    super.key,
-    this.width,
-    this.height,
-    this.borderRadius,
-  });
+  const MinqSkeleton({super.key, this.width, this.height, this.borderRadius});
 
   final double? width;
   final double? height;
@@ -61,12 +56,14 @@ class _MinqSkeletonState extends State<MinqSkeleton>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final baseColor = Theme.of(context).brightness == Brightness.dark
-        ? tokens.surface.withValues(alpha: 0.35)
-        : tokens.surface.withValues(alpha: 0.6);
-    final highlightColor = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white.withValues(alpha: 0.25)
-        : Colors.white.withValues(alpha: 0.6);
+    final baseColor =
+        Theme.of(context).brightness == Brightness.dark
+            ? tokens.surface.withValues(alpha: 0.35)
+            : tokens.surface.withValues(alpha: 0.6);
+    final highlightColor =
+        Theme.of(context).brightness == Brightness.dark
+            ? Colors.white.withValues(alpha: 0.25)
+            : Colors.white.withValues(alpha: 0.6);
     final borderRadius = widget.borderRadius ?? tokens.cornerLarge();
 
     if (_reduceMotion) {
@@ -91,11 +88,7 @@ class _MinqSkeletonState extends State<MinqSkeleton>
               return LinearGradient(
                 begin: Alignment(-1 - shimmerPosition, 0),
                 end: Alignment(1 - shimmerPosition, 0),
-                colors: <Color>[
-                  baseColor,
-                  highlightColor,
-                  baseColor,
-                ],
+                colors: <Color>[baseColor, highlightColor, baseColor],
                 stops: const <double>[0.25, 0.5, 0.75],
               ).createShader(bounds);
             },
@@ -128,19 +121,12 @@ class MinqSkeletonLine extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final radius = borderRadius ?? tokens.cornerMedium();
-    return MinqSkeleton(
-      width: width,
-      height: height,
-      borderRadius: radius,
-    );
+    return MinqSkeleton(width: width, height: height, borderRadius: radius);
   }
 }
 
 class MinqSkeletonAvatar extends StatelessWidget {
-  const MinqSkeletonAvatar({
-    super.key,
-    this.size,
-  });
+  const MinqSkeletonAvatar({super.key, this.size});
 
   final double? size;
 
@@ -157,11 +143,7 @@ class MinqSkeletonAvatar extends StatelessWidget {
 }
 
 class MinqSkeletonList extends StatelessWidget {
-  const MinqSkeletonList({
-    super.key,
-    this.itemCount = 3,
-    this.itemHeight,
-  });
+  const MinqSkeletonList({super.key, this.itemCount = 3, this.itemHeight});
 
   final int itemCount;
   final double? itemHeight;
@@ -173,9 +155,9 @@ class MinqSkeletonList extends StatelessWidget {
     return Column(
       children: List<Widget>.generate(itemCount, (int index) {
         return Padding(
-          padding: EdgeInsets.only(bottom: index == itemCount - 1
-              ? 0
-              : tokens.spacing(3)),
+          padding: EdgeInsets.only(
+            bottom: index == itemCount - 1 ? 0 : tokens.spacing(3),
+          ),
           child: MinqSkeleton(
             height: height,
             borderRadius: tokens.cornerLarge(),
@@ -205,13 +187,17 @@ class MinqSkeletonGrid extends StatelessWidget {
       builder: (context, constraints) {
         final spacing = tokens.spacing(3);
         final totalSpacing = spacing * (crossAxisCount - 1);
-        final itemWidth = (constraints.maxWidth - totalSpacing) / crossAxisCount;
+        final itemWidth =
+            (constraints.maxWidth - totalSpacing) / crossAxisCount;
         final itemHeight = itemWidth * itemAspectRatio;
         return Wrap(
           spacing: spacing,
           runSpacing: spacing,
           children: List<Widget>.generate(
-            math.min(itemCount, crossAxisCount * ((itemCount / crossAxisCount).ceil())),
+            math.min(
+              itemCount,
+              crossAxisCount * ((itemCount / crossAxisCount).ceil()),
+            ),
             (int index) {
               return SizedBox(
                 width: itemWidth,

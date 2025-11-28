@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class QuestIconDefinition {
   const QuestIconDefinition({
@@ -202,7 +202,8 @@ List<QuestIconDefinition> questIconsForCategory(String? category) {
     return questIconCatalog;
   }
   final filtered = questIconCatalog.where(
-    (icon) => icon.suggestedCategories.isEmpty ||
+    (icon) =>
+        icon.suggestedCategories.isEmpty ||
         icon.suggestedCategories.contains(category),
   );
   final result = filtered.toList();

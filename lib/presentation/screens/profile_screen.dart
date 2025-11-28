@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/presentation/common/security/sensitive_content.dart' as custom;
+import 'package:minq/presentation/common/security/sensitive_content.dart'
+    as custom;
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -79,7 +80,8 @@ class ProfileScreen extends ConsumerWidget {
         Text(
           '2ヶ月前に参加',
           style: tokens.bodySmall.copyWith(color: tokens.textMuted),
-        ),      ],
+        ),
+      ],
     );
   }
 
@@ -106,7 +108,7 @@ class ProfileScreen extends ConsumerWidget {
           ),
           SizedBox(height: tokens.spacing(2)),
           Text(
-            "私はソフトウェアエンジニアで、コーディングとものづくりが大好きです。また、生産性向上や習慣化の大ファンでもあり、MinQを使って目標を達成できることを楽しみにしています。",
+            '私はソフトウェアエンジニアで、コーディングとものづくりが大好きです。また、生産性向上や習慣化の大ファンでもあり、MinQを使って目標を達成できることを楽しみにしています。',
             style: tokens.bodySmall.copyWith(
               color: tokens.textMuted,
               height: 1.5,

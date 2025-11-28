@@ -39,7 +39,10 @@ class InAppReviewService {
   /// レビューリクエストを記録
   Future<void> _recordReviewRequest() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_lastReviewRequestKey, DateTime.now().toIso8601String());
+    await prefs.setString(
+      _lastReviewRequestKey,
+      DateTime.now().toIso8601String(),
+    );
 
     final count = prefs.getInt(_reviewRequestCountKey) ?? 0;
     await prefs.setInt(_reviewRequestCountKey, count + 1);
@@ -87,7 +90,8 @@ class InAppReviewService {
     // 最後のリクエストから30日以上経過しているか
     final lastRequest = await getLastReviewRequestDate();
     if (lastRequest != null) {
-      final daysSinceLastRequest = DateTime.now().difference(lastRequest).inDays;
+      final daysSinceLastRequest =
+          DateTime.now().difference(lastRequest).inDays;
       if (daysSinceLastRequest < 30) {
         return false;
       }
@@ -138,9 +142,10 @@ class ReviewTriggerManager {
 
   ReviewTriggerManager({
     required InAppReviewService reviewService,
-    ReviewTriggerConditions conditions = ReviewTriggerConditions.defaultConditions,
-  })  : _reviewService = reviewService,
-        _conditions = conditions;
+    ReviewTriggerConditions conditions =
+        ReviewTriggerConditions.defaultConditions,
+  }) : _reviewService = reviewService,
+       _conditions = conditions;
 
   /// 条件をチェックしてレビューをリクエスト
   Future<bool> checkAndRequestReview({
@@ -189,10 +194,15 @@ class ReviewTriggerManager {
     required int currentStreak,
     required double achievementRate,
   }) {
-    final questProgress = (questsCompleted / _conditions.minQuestsCompleted).clamp(0.0, 1.0);
+    final questProgress = (questsCompleted / _conditions.minQuestsCompleted)
+        .clamp(0.0, 1.0);
     final daysProgress = (daysUsed / _conditions.minDaysUsed).clamp(0.0, 1.0);
-    final streakProgress = (currentStreak / _conditions.minStreak).clamp(0.0, 1.0);
-    final rateProgress = (achievementRate / _conditions.minAchievementRate).clamp(0.0, 1.0);
+    final streakProgress = (currentStreak / _conditions.minStreak).clamp(
+      0.0,
+      1.0,
+    );
+    final rateProgress = (achievementRate / _conditions.minAchievementRate)
+        .clamp(0.0, 1.0);
 
     return (questProgress + daysProgress + streakProgress + rateProgress) / 4;
   }
@@ -327,10 +337,7 @@ class ReviewTimingConfig {
   final ReviewTiming timing;
   final Duration delay;
 
-  const ReviewTimingConfig({
-    required this.timing,
-    this.delay = Duration.zero,
-  });
+  const ReviewTimingConfig({required this.timing, this.delay = Duration.zero});
 
   /// クエスト完了後（3秒後）
   static const afterQuestCompletion = ReviewTimingConfig(

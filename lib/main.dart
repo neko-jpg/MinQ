@@ -1,30 +1,53 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'l10n/app_localizations.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:minq/data/providers.dart';
+import 'package:minq/config/flavor.dart';
 import 'package:minq/data/logging/minq_logger.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/data/providers/gemma_ai_provider.dart';
 import 'package:minq/data/services/crash_recovery_store.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
+import 'package:minq/firebase_options_dev.dart' as dev;
+import 'package:minq/firebase_options_prod.dart' as prod;
+import 'package:minq/firebase_options_stg.dart' as stg;
 import 'package:minq/presentation/controllers/crash_recovery_controller.dart';
+import 'package:minq/presentation/controllers/progressive_onboarding_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/screens/crash_recovery_screen.dart';
+import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
 import 'package:minq/presentation/widgets/version_check_widget.dart';
-import 'package:minq/config/flavor.dart';
-import 'package:minq/firebase_options_dev.dart' as dev;
-import 'package:minq/firebase_options_stg.dart' as stg;
-import 'package:minq/firebase_options_prod.dart' as prod;
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:minq/l10n/app_localizations.dart';
 
 Future<void> main() async {
+  const sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
+  if (sentryDsn.isNotEmpty) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = sentryDsn;
+        options.tracesSampleRate = 1.0;
+      },
+      appRunner: () async {
+        await _bootstrapApplication();
+      },
+    );
+    return;
+  }
+
+  await _bootstrapApplication();
+}
+
+Future<void> _bootstrapApplication() async {
   final binding = WidgetsFlutterBinding.ensureInitialized();
+  // TensorFlow Lite AIサービスは必要に応じて初期化される
   GestureBinding.instance.resamplingEnabled = true;
 
   final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
@@ -139,6 +162,23 @@ class _MinQAppState extends ConsumerState<MinQApp> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() async {
+      try {
+        final gemma = await ref.read(gemmaAIServiceProvider.future);
+        await gemma.initialize();
+      } catch (e) {
+        // Gemma AIの初期化に失敗した場合はログに記録
+        print('Gemma AI initialization failed: $e');
+      }
+    });
+
+    // レベルアップイベントリスナー
+    ref.listen<LevelUpEvent?>(levelUpEventProvider, (previous, next) {
+      if (next != null && mounted) {
+        _showLevelUpScreen(next);
+      }
+    });
+
     // React to notification taps emitted by the native layer.
     _notificationTapSubscription = ref.listenManual<AsyncValue<String>>(
       notificationTapStreamProvider,
@@ -193,6 +233,29 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     }
 
     return null;
+  }
+
+  void _showLevelUpScreen(LevelUpEvent event) {
+    // レベルアップ画面を表示
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context =
+          ref.read(routerProvider).routerDelegate.navigatorKey.currentContext;
+      if (context != null) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder:
+              (context) => LevelUpScreen(
+                newLevel: event.newLevel,
+                levelInfo: event.levelInfo,
+                onContinue: () {
+                  // レベルアップイベントをクリア
+                  ref.read(levelUpEventProvider.notifier).state = null;
+                },
+              ),
+        );
+      }
+    });
   }
 
   @override
@@ -264,30 +327,36 @@ class _MinQAppState extends ConsumerState<MinQApp> {
           const double minScaleFactor = 1.0;
           const double maxScaleFactor = 2.0;
 
-          TextScaler effectiveTextScaler = mediaQuery.textScaler;
-          if (maxScaleFactor > minScaleFactor) {
-            final double approxScale = mediaQuery.textScaler.textScaleFactor;
-            if (!approxScale.isFinite || approxScale <= 0) {
-              assert(() {
-                debugPrint('Falling back to minimum text scale because approxScale was $approxScale');
-                return true;
-              }());
-              effectiveTextScaler = TextScaler.linear(minScaleFactor);
-            } else if (approxScale > maxScaleFactor) {
-              assert(() {
-                debugPrint('Clamping text scale down to $maxScaleFactor (was $approxScale)');
-                return true;
-              }());
-              effectiveTextScaler = TextScaler.linear(maxScaleFactor);
-            } else if (approxScale < minScaleFactor) {
-              assert(() {
-                debugPrint('Clamping text scale up to $minScaleFactor (was $approxScale)');
-                return true;
-              }());
-              effectiveTextScaler = TextScaler.linear(minScaleFactor);
-            }
-          }
-
+          TextScaler effectiveTextScaler = mediaQuery.textScaler;
+          if (maxScaleFactor > minScaleFactor) {
+            final double approxScale = mediaQuery.textScaler.textScaleFactor;
+            if (!approxScale.isFinite || approxScale <= 0) {
+              assert(() {
+                debugPrint(
+                  'Falling back to minimum text scale because approxScale was $approxScale',
+                );
+                return true;
+              }());
+              effectiveTextScaler = const TextScaler.linear(minScaleFactor);
+            } else if (approxScale > maxScaleFactor) {
+              assert(() {
+                debugPrint(
+                  'Clamping text scale down to $maxScaleFactor (was $approxScale)',
+                );
+                return true;
+              }());
+              effectiveTextScaler = const TextScaler.linear(maxScaleFactor);
+            } else if (approxScale < minScaleFactor) {
+              assert(() {
+                debugPrint(
+                  'Clamping text scale up to $minScaleFactor (was $approxScale)',
+                );
+                return true;
+              }());
+              effectiveTextScaler = const TextScaler.linear(minScaleFactor);
+            }
+          }
+
           return MediaQuery(
             data: mediaQuery.copyWith(textScaler: effectiveTextScaler),
             child: VersionCheckWidget(child: child ?? const SizedBox.shrink()),

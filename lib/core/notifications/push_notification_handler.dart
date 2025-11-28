@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../deeplink/deeplink_handler.dart';
-import 'notification_channels.dart';
+import 'package:minq/core/deeplink/deeplink_handler.dart';
+import 'package:minq/core/notifications/notification_channels.dart';
 
 /// プッシュ通知ハンドラー
 class PushNotificationHandler {
@@ -17,9 +17,9 @@ class PushNotificationHandler {
     required FirebaseMessaging messaging,
     required FlutterLocalNotificationsPlugin localNotifications,
     required DeepLinkHandler deepLinkHandler,
-  })  : _messaging = messaging,
-        _localNotifications = localNotifications,
-        _deepLinkHandler = deepLinkHandler;
+  }) : _messaging = messaging,
+       _localNotifications = localNotifications,
+       _deepLinkHandler = deepLinkHandler;
 
   /// メッセージストリーム
   Stream<RemoteMessage> get messageStream => _messageController.stream;
@@ -67,7 +67,8 @@ class PushNotificationHandler {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('✅ Notification permission granted');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
       print('⚠️ Notification permission granted provisionally');
     } else {
       print('❌ Notification permission denied');
@@ -314,11 +315,7 @@ class PushNotificationPayload {
     required String title,
     required String body,
   }) {
-    return PushNotificationPayload(
-      type: 'system',
-      title: title,
-      body: body,
-    );
+    return PushNotificationPayload(type: 'system', title: title, body: body);
   }
 
   /// JSONに変換

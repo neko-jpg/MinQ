@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/l10n/app_localizations.dart';
-
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/pair/pair.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/routing/app_router.dart';
@@ -92,104 +91,110 @@ class _BuddyCard extends ConsumerWidget {
 
     showModalBottomSheet(
       context: context,
-      builder: (ctx) => Wrap(
-        children: <Widget>[
-          ListTile(
-            leading: const Icon(Icons.report, color: Colors.redAccent),
-            title: Text(
-              l10n.reportUser,
-              style: const TextStyle(color: Colors.redAccent),
-            ),
-            onTap: () {
-              Navigator.of(ctx).pop();
-              _showReportDialog(context, ref, otherMemberId);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.block, color: Colors.red),
-            title: const Text(
-              'バディをブロック',
-              style: TextStyle(color: Colors.red),
-            ),
-            onTap: () {
-              Navigator.of(ctx).pop();
-              showDialog(
-                context: context,
-                builder: (dialogCtx) => AlertDialog(
-                  title: const Text('バディをブロック'),
-                  content: const Text(
-                    'ブロックすると、今後このユーザーとマッチングしなくなります。本当によろしいですか？',
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('キャンセル'),
-                      onPressed: () => Navigator.of(dialogCtx).pop(),
-                    ),
-                    TextButton(
-                      child: const Text(
-                        'ブロック',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      onPressed: () async {
-                        if (repo != null && currentUserId != null) {
-                          await repo.blockUser(currentUserId, otherMemberId);
-                          FeedbackMessenger.showSuccessToast(
-                            context,
-                            'バディをブロックしました。',
-                          );
-                        }
-                        if (context.mounted) {
-                          Navigator.of(dialogCtx).pop();
-                        }
-                      },
-                    ),
-                  ],
+      builder:
+          (ctx) => Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.report, color: Colors.redAccent),
+                title: Text(
+                  l10n.reportUser,
+                  style: const TextStyle(color: Colors.redAccent),
                 ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.red),
-            title: const Text('ペアを解消', style: TextStyle(color: Colors.red)),
-            onTap: () {
-              Navigator.of(ctx).pop();
-              showDialog(
-                context: context,
-                builder: (dialogCtx) => AlertDialog(
-                  title: const Text('ペアを解消'),
-                  content: const Text(
-                    '本当にこのバディとのペアを解消しますか？この操作は取り消せません。',
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('キャンセル'),
-                      onPressed: () => Navigator.of(dialogCtx).pop(),
-                    ),
-                    TextButton(
-                      child: const Text(
-                        '解消する',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      onPressed: () async {
-                        if (repo != null && currentUserId != null) {
-                          await repo.leavePair(pair.id, currentUserId);
-                          FeedbackMessenger.showSuccessToast(
-                            context,
-                            'ペアを解消しました。',
-                          );
-                        }
-                        if (context.mounted) {
-                          Navigator.of(dialogCtx).pop();
-                        }
-                      },
-                    ),
-                  ],
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  _showReportDialog(context, ref, otherMemberId);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.block, color: Colors.red),
+                title: const Text(
+                  'バディをブロック',
+                  style: TextStyle(color: Colors.red),
                 ),
-              );
-            },
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  showDialog(
+                    context: context,
+                    builder:
+                        (dialogCtx) => AlertDialog(
+                          title: const Text('バディをブロック'),
+                          content: const Text(
+                            'ブロックすると、今後このユーザーとマッチングしなくなります。本当によろしいですか？',
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('キャンセル'),
+                              onPressed: () => Navigator.of(dialogCtx).pop(),
+                            ),
+                            TextButton(
+                              child: const Text(
+                                'ブロック',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              onPressed: () async {
+                                if (repo != null && currentUserId != null) {
+                                  await repo.blockUser(
+                                    currentUserId,
+                                    otherMemberId,
+                                  );
+                                  FeedbackMessenger.showSuccessToast(
+                                    context,
+                                    'バディをブロックしました。',
+                                  );
+                                }
+                                if (context.mounted) {
+                                  Navigator.of(dialogCtx).pop();
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout, color: Colors.red),
+                title: const Text('ペアを解消', style: TextStyle(color: Colors.red)),
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  showDialog(
+                    context: context,
+                    builder:
+                        (dialogCtx) => AlertDialog(
+                          title: const Text('ペアを解消'),
+                          content: const Text(
+                            '本当にこのバディとのペアを解消しますか？この操作は取り消せません。',
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('キャンセル'),
+                              onPressed: () => Navigator.of(dialogCtx).pop(),
+                            ),
+                            TextButton(
+                              child: const Text(
+                                '解消する',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              onPressed: () async {
+                                if (repo != null && currentUserId != null) {
+                                  await repo.leavePair(pair.id, currentUserId);
+                                  FeedbackMessenger.showSuccessToast(
+                                    context,
+                                    'ペアを解消しました。',
+                                  );
+                                }
+                                if (context.mounted) {
+                                  Navigator.of(dialogCtx).pop();
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                  );
+                },
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -353,43 +358,41 @@ Future<void> _showReportDialog(
   final currentUserId = ref.read(uidProvider);
 
   if (currentUserId == null) {
-    FeedbackMessenger.showErrorSnackBar(
-      context,
-      l10n.notSignedIn,
-    );
+    FeedbackMessenger.showErrorSnackBar(context, l10n.notSignedIn);
     return;
   }
 
   final shouldReport = await showDialog<bool>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(l10n.reportUser),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(l10n.reportConfirmation),
-          const SizedBox(height: 12),
-          TextField(
-            controller: reasonController,
-            maxLines: 3,
-            decoration: const InputDecoration(
-              hintText: '内容を記入してください',
-              border: OutlineInputBorder(),
-            ),
+    builder:
+        (dialogContext) => AlertDialog(
+          title: Text(l10n.reportUser),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l10n.reportConfirmation),
+              const SizedBox(height: 12),
+              TextField(
+                controller: reasonController,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  hintText: '内容を記入してください',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(false),
-          child: Text(l10n.cancel),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(l10n.report),
+            ),
+          ],
         ),
-        FilledButton(
-          onPressed: () => Navigator.of(dialogContext).pop(true),
-          child: Text(l10n.report),
-        ),
-      ],
-    ),
   );
 
   if (shouldReport != true) {
@@ -399,18 +402,12 @@ Future<void> _showReportDialog(
 
   final repo = ref.read(pairRepositoryProvider);
   if (repo == null) {
-    FeedbackMessenger.showErrorSnackBar(
-      context,
-      l10n.errorGeneric,
-    );
+    FeedbackMessenger.showErrorSnackBar(context, l10n.errorGeneric);
     reasonController.dispose();
     return;
   }
 
   await repo.reportUser(currentUserId, buddyId, reasonController.text);
-  FeedbackMessenger.showSuccessToast(
-    context,
-    l10n.reportSubmitted,
-  );
+  FeedbackMessenger.showSuccessToast(context, l10n.reportSubmitted);
   reasonController.dispose();
 }

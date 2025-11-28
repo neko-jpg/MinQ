@@ -2,19 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   NotificationService({String storageFileName = 'notification_state.json'})
-      : _storageFileName = storageFileName;
+    : _storageFileName = storageFileName;
 
   static const List<String> defaultReminderTimes = ['07:30', '18:30', '21:30'];
   static const int _recurringNotificationBaseId = 200;
@@ -102,7 +101,11 @@ class NotificationService {
 
   Future<bool> hasPermission() async {
     if (!_supportsLocalNotifications) return false;
-    final androidImplementation = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    final androidImplementation =
+        _plugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
     if (androidImplementation != null) {
       return await androidImplementation.areNotificationsEnabled() ?? false;
     }
@@ -117,13 +120,17 @@ class NotificationService {
     if (lastAskedTimestamp == null) {
       return true; // Never asked before
     }
-    final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7)).millisecondsSinceEpoch;
-    return lastAskedTimestamp < sevenDaysAgo; // Ask again if it's been more than 7 days
+    final sevenDaysAgo =
+        DateTime.now().subtract(const Duration(days: 7)).millisecondsSinceEpoch;
+    return lastAskedTimestamp <
+        sevenDaysAgo; // Ask again if it's been more than 7 days
   }
 
   Future<void> recordPermissionRequestTimestamp() async {
     await _loadState();
-    _state = _state.copyWith(permissionLastAskedTimestamp: DateTime.now().millisecondsSinceEpoch);
+    _state = _state.copyWith(
+      permissionLastAskedTimestamp: DateTime.now().millisecondsSinceEpoch,
+    );
     await _persistState();
   }
 
@@ -133,7 +140,13 @@ class NotificationService {
     }
     // This now directly requests permission from the OS.
     // It should be called after the user agrees on a custom dialog.
-    final granted = await _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission() ?? false;
+    final granted =
+        await _plugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >()
+            ?.requestNotificationsPermission() ??
+        false;
     if (!granted) {
       await cancelAll();
     } else {
@@ -205,7 +218,10 @@ class NotificationService {
       if (recurringParsed == null) {
         return false;
       }
-      final recurringDate = _nextInstance(recurringParsed.$1, recurringParsed.$2);
+      final recurringDate = _nextInstance(
+        recurringParsed.$1,
+        recurringParsed.$2,
+      );
       return (scheduledDate.difference(recurringDate)).abs() < _minimumGap;
     });
 
@@ -218,14 +234,17 @@ class NotificationService {
       'もう一歩で達成です',
       '今日のミニクエストを記録して連続日数を伸ばしましょう。',
       scheduledDate,
-      NotificationDetails(android: _androidDetailsForChannel(_reminderChannelId)),
+      NotificationDetails(
+        android: _androidDetailsForChannel(_reminderChannelId),
+      ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: _recordRoutePayload,
       matchDateTimeComponents: DateTimeComponents.time,
     );
 
     _state = _state.copyWith(
-      auxiliaryReminderTime: _ReminderTime(totalMinutes: parsed.$1 * 60 + parsed.$2).formatted,
+      auxiliaryReminderTime:
+          _ReminderTime(totalMinutes: parsed.$1 * 60 + parsed.$2).formatted,
       suspended: false,
     );
     await _persistState();
@@ -258,10 +277,11 @@ class NotificationService {
       '後で再開しますか？',
       'タイマーを延長しました。覚えているうちに記録しましょう。',
       tz.TZDateTime.now(tz.local).add(duration),
-      NotificationDetails(android: _androidDetailsForChannel(_reminderChannelId)),
+      NotificationDetails(
+        android: _androidDetailsForChannel(_reminderChannelId),
+      ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: payload ?? _recordRoutePayload,
-
     );
   }
 
@@ -340,9 +360,10 @@ class NotificationService {
     final storedTimezone = _state.timezoneName;
 
     if (storedTimezone != currentTimezone) {
-      final recurring = _state.recurringReminderTimes.isNotEmpty
-          ? _state.recurringReminderTimes
-          : (fallbackRecurring ?? const <String>[]);
+      final recurring =
+          _state.recurringReminderTimes.isNotEmpty
+              ? _state.recurringReminderTimes
+              : (fallbackRecurring ?? const <String>[]);
       final auxiliary = _state.auxiliaryReminderTime ?? fallbackAuxiliary;
 
       _state = _state.copyWith(timezoneName: currentTimezone);
@@ -384,15 +405,10 @@ class NotificationService {
     final payload = data != null ? data['route'] ?? '' : '';
 
     final notificationId =
-        DateTime.now().millisecondsSinceEpoch % 1000000 + _auxiliaryNotificationId;
+        DateTime.now().millisecondsSinceEpoch % 1000000 +
+        _auxiliaryNotificationId;
 
-    await _plugin.show(
-      notificationId,
-      title,
-      body,
-      details,
-      payload: payload,
-    );
+    await _plugin.show(notificationId, title, body, details, payload: payload);
   }
 
   Future<void> _ensureAndroidChannels() async {
@@ -404,7 +420,10 @@ class NotificationService {
       return;
     }
     final androidPlugin =
-        _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+        _plugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
     if (androidPlugin == null) {
       return;
     }
@@ -466,11 +485,13 @@ class NotificationService {
         );
       case _reminderChannelId:
       default:
-        final profile =
-            NotificationSoundProfile.byId(_state.reminderSoundProfileId);
-        final vibrationPattern = profile.vibrationPattern != null
-            ? Int64List.fromList(profile.vibrationPattern!)
-            : null;
+        final profile = NotificationSoundProfile.byId(
+          _state.reminderSoundProfileId,
+        );
+        final vibrationPattern =
+            profile.vibrationPattern != null
+                ? Int64List.fromList(profile.vibrationPattern!)
+                : null;
         return AndroidNotificationDetails(
           _reminderChannelId,
           '習慣リマインダー',
@@ -528,7 +549,14 @@ class NotificationService {
 
   tz.TZDateTime _nextInstance(int hour, int minute) {
     final now = tz.TZDateTime.now(tz.local);
-    var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    var scheduled = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
     if (scheduled.isBefore(now)) {
       scheduled = scheduled.add(const Duration(days: 1));
     }
@@ -622,13 +650,13 @@ class _NotificationState {
   final String? reminderSoundProfileId;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'timezone': timezoneName,
-        'recurring': recurringReminderTimes,
-        'auxiliary': auxiliaryReminderTime,
-        'suspended': suspended,
-        'permissionLastAskedTimestamp': permissionLastAskedTimestamp,
-        'reminderSoundProfileId': reminderSoundProfileId,
-      };
+    'timezone': timezoneName,
+    'recurring': recurringReminderTimes,
+    'auxiliary': auxiliaryReminderTime,
+    'suspended': suspended,
+    'permissionLastAskedTimestamp': permissionLastAskedTimestamp,
+    'reminderSoundProfileId': reminderSoundProfileId,
+  };
 
   _NotificationState copyWith({
     String? timezoneName,
@@ -642,7 +670,8 @@ class _NotificationState {
       timezoneName: timezoneName ?? this.timezoneName,
       recurringReminderTimes:
           recurringReminderTimes ?? this.recurringReminderTimes,
-      auxiliaryReminderTime: auxiliaryReminderTime ?? this.auxiliaryReminderTime,
+      auxiliaryReminderTime:
+          auxiliaryReminderTime ?? this.auxiliaryReminderTime,
       suspended: suspended ?? this.suspended,
       permissionLastAskedTimestamp:
           permissionLastAskedTimestamp ?? this.permissionLastAskedTimestamp,
@@ -654,13 +683,15 @@ class _NotificationState {
   factory _NotificationState.fromJson(Map<String, dynamic> json) {
     return _NotificationState(
       timezoneName: json['timezone'] as String?,
-      recurringReminderTimes: (json['recurring'] as List<dynamic>?)
+      recurringReminderTimes:
+          (json['recurring'] as List<dynamic>?)
               ?.map((dynamic value) => value as String)
               .toList(growable: false) ??
           const <String>[],
       auxiliaryReminderTime: json['auxiliary'] as String?,
       suspended: json['suspended'] as bool? ?? false,
-      permissionLastAskedTimestamp: json['permissionLastAskedTimestamp'] as int?,
+      permissionLastAskedTimestamp:
+          json['permissionLastAskedTimestamp'] as int?,
       reminderSoundProfileId:
           json['reminderSoundProfileId'] as String? ?? 'default',
     );

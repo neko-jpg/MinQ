@@ -1,0 +1,1 @@
+C:\minq_android_build\android\jni\intermediates\cxx\RelWithDebInfo\374u6a1z\obj\armeabi-v7a

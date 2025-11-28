@@ -15,5 +15,6 @@ class HabitAnalysis with _$HabitAnalysis {
     required DateTime lastUpdated,
   }) = _HabitAnalysis;
 
-  factory HabitAnalysis.fromJson(Map<String, dynamic> json) => _$HabitAnalysisFromJson(json);
+  factory HabitAnalysis.fromJson(Map<String, dynamic> json) =>
+      _$HabitAnalysisFromJson(json);
 }

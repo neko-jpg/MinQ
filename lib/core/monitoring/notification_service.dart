@@ -1,22 +1,22 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../logging/app_logger.dart';
-import '../config/environment.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:minq/core/config/environment.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// 重大イベント通知サービス
-/// 
+///
 /// Slack、メール、その他の通知チャネルに
 /// 重大なイベントを通知する
 class NotificationService {
   final http.Client _client;
   final Environment _env;
 
-  NotificationService({
-    http.Client? client,
-    Environment? env,
-  })  : _client = client ?? http.Client(),
-        _env = env ?? Environment.current;
+  NotificationService({http.Client? client, Environment? env})
+    : _client = client ?? http.Client(),
+      _env = env ?? Environment.current;
 
   /// Slackに通知を送信
   Future<void> sendSlackNotification({
@@ -48,11 +48,7 @@ class NotificationService {
                 'value': severity.name.toUpperCase(),
                 'short': true,
               },
-              {
-                'title': 'Environment',
-                'value': _env.name,
-                'short': true,
-              },
+              {'title': 'Environment', 'value': _env.name, 'short': true},
               {
                 'title': 'Timestamp',
                 'value': DateTime.now().toIso8601String(),
@@ -182,29 +178,27 @@ class NotificationService {
     final futures = <Future<void>>[];
 
     // Slack通知
-    futures.add(sendSlackNotification(
-      title: title,
-      message: message,
-      severity: severity,
-    ));
+    futures.add(
+      sendSlackNotification(title: title, message: message, severity: severity),
+    );
 
     // メール通知
     if (emailRecipients != null && emailRecipients.isNotEmpty) {
-      futures.add(sendEmailNotification(
-        title: title,
-        message: message,
-        recipients: emailRecipients,
-        severity: severity,
-      ));
+      futures.add(
+        sendEmailNotification(
+          title: title,
+          message: message,
+          recipients: emailRecipients,
+          severity: severity,
+        ),
+      );
     }
 
     // クリティカルな場合はPagerDutyにも通知
     if (severity == NotificationSeverity.critical) {
-      futures.add(sendPagerDutyAlert(
-        title: title,
-        message: message,
-        severity: severity,
-      ));
+      futures.add(
+        sendPagerDutyAlert(title: title, message: message, severity: severity),
+      );
     }
 
     await Future.wait(futures);
@@ -312,12 +306,7 @@ This is an automated message from MiniQ Monitoring System.
 }
 
 /// 通知の重要度
-enum NotificationSeverity {
-  info,
-  warning,
-  error,
-  critical,
-}
+enum NotificationSeverity { info, warning, error, critical }
 
 /// 通知サービスのProvider
 final notificationServiceProvider = Provider<NotificationService>((ref) {

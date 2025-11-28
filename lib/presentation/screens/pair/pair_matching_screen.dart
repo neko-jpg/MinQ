@@ -1,15 +1,13 @@
 import 'dart:async';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:minq/data/providers.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/l10n/app_localizations.dart';
 
 enum PairMatchingStatus { searching, matchFound, noMatch, confirmed, timeout }
 
@@ -64,12 +62,18 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     }
 
     String? pairId;
-    if (widget.code != null) {
-      // pairId = await repo.joinPairWithCode(uid, widget.code!);
-      pairId = 'mock_pair_id_from_code'; // Placeholder
-    } else {
-      const category = 'Fitness';
-      pairId = await repo.requestRandomPair(uid, category);
+    try {
+      if (widget.code != null) {
+        // 招待コードでペアに参加
+        pairId = await repo.joinByInvitation(widget.code!, uid);
+      } else {
+        // ランダムマッチング
+        const category = 'Fitness';
+        pairId = await repo.requestRandomPair(uid, category);
+      }
+    } catch (e) {
+      // エラー時はマッチング失敗として処理
+      pairId = null;
     }
 
     _pairingTimer?.cancel();
@@ -120,18 +124,42 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 500),
           child: switch (_status) {
-            PairMatchingStatus.searching => _buildSearchingUI(context, tokens, l10n),
-            PairMatchingStatus.matchFound => _buildMatchFoundUI(context, tokens, l10n),
-            PairMatchingStatus.noMatch => _buildNoMatchUI(context, tokens, l10n),
-            PairMatchingStatus.confirmed => _buildConfirmedUI(context, tokens, l10n),
-            PairMatchingStatus.timeout => _buildTimeoutUI(context, tokens, l10n),
+            PairMatchingStatus.searching => _buildSearchingUI(
+              context,
+              tokens,
+              l10n,
+            ),
+            PairMatchingStatus.matchFound => _buildMatchFoundUI(
+              context,
+              tokens,
+              l10n,
+            ),
+            PairMatchingStatus.noMatch => _buildNoMatchUI(
+              context,
+              tokens,
+              l10n,
+            ),
+            PairMatchingStatus.confirmed => _buildConfirmedUI(
+              context,
+              tokens,
+              l10n,
+            ),
+            PairMatchingStatus.timeout => _buildTimeoutUI(
+              context,
+              tokens,
+              l10n,
+            ),
           },
         ),
       ),
     );
   }
 
-  Widget _buildSearchingUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildSearchingUI(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Column(
       key: const ValueKey('searching'),
       mainAxisAlignment: MainAxisAlignment.center,
@@ -160,7 +188,11 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
                   ),
                 ),
               ),
-              Icon(Icons.groups_2_rounded, color: tokens.brandPrimary, size: 64),
+              Icon(
+                Icons.groups_2_rounded,
+                color: tokens.brandPrimary,
+                size: 64,
+              ),
             ],
           ),
         ),
@@ -182,16 +214,17 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           ),
         ),
         const Spacer(flex: 3),
-        MinqSecondaryButton(
-          label: l10n.cancel,
-          onPressed: _cancelPairing,
-        ),
+        MinqSecondaryButton(label: l10n.cancel, onPressed: _cancelPairing),
         const SizedBox(height: 48),
       ],
     );
   }
 
-  Widget _buildTimeoutUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildTimeoutUI(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Padding(
       key: const ValueKey('timeout'),
       padding: const EdgeInsets.all(24.0),
@@ -199,11 +232,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
-          Icon(
-            Icons.timer_off_outlined,
-            color: tokens.accentWarning,
-            size: 72,
-          ),
+          Icon(Icons.timer_off_outlined, color: tokens.accentWarning, size: 72),
           const SizedBox(height: 24),
           Text(
             l10n.pairMatchingTimeoutTitle,
@@ -238,40 +267,137 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     );
   }
 
-  Widget _buildMatchFoundUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildMatchFoundUI(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Padding(
       key: const ValueKey('matchFound'),
       padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ... (existing implementation, can be localized later if needed)
+          const Spacer(),
+          Icon(Icons.celebration, color: tokens.accentSuccess, size: 72),
+          const SizedBox(height: 24),
+          Text(
+            'マッチング成功！',
+            textAlign: TextAlign.center,
+            style: tokens.titleLarge.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'バディが見つかりました。一緒に習慣を続けていきましょう！',
+            textAlign: TextAlign.center,
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          const Spacer(),
+          MinqPrimaryButton(
+            label: 'ペア画面へ',
+            icon: Icons.arrow_forward,
+            onPressed: () async {
+              if (_foundPairId != null) {
+                await _subscribeToNotifications();
+                if (context.mounted) {
+                  context.go(AppRoutes.pair);
+                }
+              }
+            },
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );
   }
 
-  Widget _buildNoMatchUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildNoMatchUI(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Padding(
       key: const ValueKey('noMatch'),
       padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ... (existing implementation, can be localized later if needed)
+          const Spacer(),
+          Icon(Icons.search_off, color: tokens.textMuted, size: 72),
+          const SizedBox(height: 24),
+          Text(
+            'マッチングできませんでした',
+            textAlign: TextAlign.center,
+            style: tokens.titleLarge.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            '現在マッチング可能なバディがいません。時間をおいて再度お試しください。',
+            textAlign: TextAlign.center,
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          const Spacer(),
+          MinqPrimaryButton(
+            label: l10n.retry,
+            icon: Icons.refresh,
+            onPressed: _startPairing,
+          ),
+          const SizedBox(height: 16),
+          MinqTextButton(
+            label: l10n.cancel,
+            onTap: () async {
+              context.pop();
+            },
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );
   }
 
-  Widget _buildConfirmedUI(BuildContext context, MinqTheme tokens, AppLocalizations l10n) {
+  Widget _buildConfirmedUI(
+    BuildContext context,
+    MinqTheme tokens,
+    AppLocalizations l10n,
+  ) {
     return Padding(
       key: const ValueKey('confirmed'),
       padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ... (existing implementation, can be localized later if needed)
+          const Spacer(),
+          Icon(Icons.check_circle, color: tokens.accentSuccess, size: 72),
+          const SizedBox(height: 24),
+          Text(
+            'ペアリング完了',
+            textAlign: TextAlign.center,
+            style: tokens.titleLarge.copyWith(
+              color: tokens.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'バディとのペアリングが完了しました。',
+            textAlign: TextAlign.center,
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+          ),
+          const Spacer(),
+          MinqPrimaryButton(
+            label: 'ペア画面へ',
+            icon: Icons.arrow_forward,
+            onPressed: () async {
+              context.go(AppRoutes.pair);
+            },
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );

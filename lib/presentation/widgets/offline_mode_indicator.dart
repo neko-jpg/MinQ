@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
-import '../../core/network/network_status_service.dart';
+import 'package:minq/data/providers.dart';
 
 /// オフラインモードインジケーター
 class OfflineModeIndicator extends ConsumerWidget {
   final Widget child;
 
-  const OfflineModeIndicator({
-    super.key,
-    required this.child,
-  });
+  const OfflineModeIndicator({super.key, required this.child});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,10 +16,7 @@ class OfflineModeIndicator extends ConsumerWidget {
     return Stack(
       children: [
         // メインコンテンツ（オフライン時は半透明）
-        Opacity(
-          opacity: isOnline ? 1.0 : 0.7,
-          child: child,
-        ),
+        Opacity(opacity: isOnline ? 1.0 : 0.7, child: child),
         // オフラインバナー
         if (!isOnline)
           Positioned(
@@ -77,23 +70,14 @@ class ReadOnlyModeWrapper extends ConsumerWidget {
   final Widget child;
   final VoidCallback? onTap;
 
-  const ReadOnlyModeWrapper({
-    super.key,
-    required this.child,
-    this.onTap,
-  });
+  const ReadOnlyModeWrapper({super.key, required this.child, this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isOnline = ref.watch(networkStatusProvider);
 
     if (!isOnline) {
-      return AbsorbPointer(
-        child: Opacity(
-          opacity: 0.5,
-          child: child,
-        ),
-      );
+      return AbsorbPointer(child: Opacity(opacity: 0.5, child: child));
     }
 
     return child;

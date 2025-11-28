@@ -1,4 +1,4 @@
-import '../../models/mini_quest.dart';
+import 'package:minq/data/models/mini_quest.dart';
 
 /// クエストリポジトリインターフェース
 /// テスト用のFake実装を可能にする

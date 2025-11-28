@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// 複数リマインダーサービス
 class MultipleReminderService {
@@ -63,12 +63,9 @@ class MultipleReminderService {
         time: time,
       );
 
-      AppLogger.info(
-        'Reminder added',
-        data: {'questId': questId, 'time': '${time.hour}:${time.minute}'},
-      );
+      logger.info('Reminder added');
     } catch (e, stack) {
-      AppLogger.error('Failed to add reminder', error: e, stackTrace: stack);
+      logger.error('Failed to add reminder', e, stack);
       rethrow;
     }
   }
@@ -85,9 +82,9 @@ class MultipleReminderService {
       // 通知をキャンセル
       await _cancelNotification(reminderId);
 
-      AppLogger.info('Reminder removed', data: {'reminderId': reminderId});
+      logger.info('Reminder removed');
     } catch (e, stack) {
-      AppLogger.error('Failed to remove reminder', error: e, stackTrace: stack);
+      logger.error('Failed to remove reminder', e, stack);
       rethrow;
     }
   }
@@ -142,7 +139,7 @@ class MultipleReminderService {
         await _cancelNotification(reminderId);
       }
     } catch (e, stack) {
-      AppLogger.error('Failed to toggle reminder', error: e, stackTrace: stack);
+      logger.error('Failed to toggle reminder', e, stack);
       rethrow;
     }
   }
@@ -247,12 +244,9 @@ class MultipleReminderService {
         }
       }
 
-      AppLogger.info(
-        'Reminders saved',
-        data: {'questId': questId, 'count': reminders.length},
-      );
+      logger.info('Reminders saved');
     } catch (e, stack) {
-      AppLogger.error('Failed to save reminders', error: e, stackTrace: stack);
+      logger.error('Failed to save reminders', e, stack);
       rethrow;
     }
   }
@@ -297,17 +291,11 @@ class MultipleReminderService {
           ),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
         matchDateTimeComponents: DateTimeComponents.time,
         payload: questId,
       );
     } catch (e, stack) {
-      AppLogger.warn(
-        'Failed to schedule reminder notification',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.warning('Failed to schedule reminder notification', e, stack);
     }
   }
 
@@ -317,11 +305,7 @@ class MultipleReminderService {
       final notificationId = reminderId.hashCode;
       await _notifications.cancel(notificationId);
     } catch (e, stack) {
-      AppLogger.warn(
-        'Failed to cancel reminder notification',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.warning('Failed to cancel reminder notification', e, stack);
     }
   }
 
@@ -348,10 +332,10 @@ class MultipleReminderService {
               >();
       await android?.createNotificationChannel(_reminderChannel);
     } catch (e, stack) {
-      AppLogger.warn(
+      logger.warning(
         'Failed to initialise notifications for reminders',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
     }
 

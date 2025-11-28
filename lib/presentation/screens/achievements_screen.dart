@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/achievements/achievement_system.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/core/achievements/achievement_system.dart';
+import 'package:minq/presentation/theme/app_theme.dart';
 
 /// アチーブメント一覧画面
 class AchievementsScreen extends ConsumerWidget {
@@ -36,7 +36,11 @@ class AchievementsScreen extends ConsumerWidget {
       body: Column(
         children: [
           // 統計サマリー
-          _buildSummary(tokens, unlockedAchievements.length, allAchievements.length),
+          _buildSummary(
+            tokens,
+            unlockedAchievements.length,
+            allAchievements.length,
+          ),
           // アチーブメントリスト
           Expanded(
             child: ListView.builder(
@@ -66,19 +70,13 @@ class AchievementsScreen extends ConsumerWidget {
       padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.primary,
-            tokens.primary.withOpacity(0.7),
-          ],
+          colors: [tokens.primary, tokens.primary.withOpacity(0.7)],
         ),
         borderRadius: BorderRadius.circular(tokens.radius.lg),
       ),
       child: Column(
         children: [
-          Text(
-            '🏆',
-            style: const TextStyle(fontSize: 48),
-          ),
+          const Text('🏆', style: TextStyle(fontSize: 48)),
           SizedBox(height: tokens.spacing.sm),
           Text(
             '$unlocked / $total',
@@ -150,9 +148,10 @@ class _AchievementCard extends StatelessWidget {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: isUnlocked
-                    ? tokens.primary.withOpacity(0.2)
-                    : tokens.background,
+                color:
+                    isUnlocked
+                        ? tokens.primary.withOpacity(0.2)
+                        : tokens.background,
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
               child: Center(
@@ -178,9 +177,10 @@ class _AchievementCard extends StatelessWidget {
                           achievement.title,
                           style: tokens.typography.body.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: isUnlocked
-                                ? tokens.textPrimary
-                                : tokens.textSecondary,
+                            color:
+                                isUnlocked
+                                    ? tokens.textPrimary
+                                    : tokens.textSecondary,
                           ),
                         ),
                       ),
@@ -192,7 +192,9 @@ class _AchievementCard extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: tokens.primary,
-                            borderRadius: BorderRadius.circular(tokens.radius.full),
+                            borderRadius: BorderRadius.circular(
+                              tokens.radius.full,
+                            ),
                           ),
                           child: Text(
                             '達成',
@@ -221,7 +223,9 @@ class _AchievementCard extends StatelessWidget {
                         value: 0.5, // TODO: 実際の進捗を表示
                         minHeight: 4,
                         backgroundColor: tokens.background,
-                        valueColor: AlwaysStoppedAnimation<Color>(tokens.primary),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          tokens.primary,
+                        ),
                       ),
                     ),
                     SizedBox(height: tokens.spacing.xs),
@@ -248,11 +252,7 @@ class BadgeWidget extends StatelessWidget {
   final Achievement achievement;
   final double size;
 
-  const BadgeWidget({
-    super.key,
-    required this.achievement,
-    this.size = 48,
-  });
+  const BadgeWidget({super.key, required this.achievement, this.size = 48});
 
   @override
   Widget build(BuildContext context) {
@@ -264,16 +264,10 @@ class BadgeWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: tokens.primary.withOpacity(0.1),
         shape: BoxShape.circle,
-        border: Border.all(
-          color: tokens.primary,
-          width: 2,
-        ),
+        border: Border.all(color: tokens.primary, width: 2),
       ),
       child: Center(
-        child: Text(
-          achievement.icon,
-          style: TextStyle(fontSize: size * 0.5),
-        ),
+        child: Text(achievement.icon, style: TextStyle(fontSize: size * 0.5)),
       ),
     );
   }

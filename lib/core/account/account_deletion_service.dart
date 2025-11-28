@@ -43,59 +43,65 @@ class AccountDeletionService {
     batch.delete(_firestore.collection('users').doc(userId));
 
     // クエストを削除
-    final questsSnapshot = await _firestore
-        .collection('quests')
-        .where('userId', '==', userId)
-        .get();
+    final questsSnapshot =
+        await _firestore
+            .collection('quests')
+            .where('userId', '==', userId)
+            .get();
 
     for (final doc in questsSnapshot.docs) {
       batch.delete(doc.reference);
     }
 
     // クエストログを削除
-    final logsSnapshot = await _firestore
-        .collection('questLogs')
-        .where('userId', '==', userId)
-        .get();
+    final logsSnapshot =
+        await _firestore
+            .collection('questLogs')
+            .where('userId', '==', userId)
+            .get();
 
     for (final doc in logsSnapshot.docs) {
       batch.delete(doc.reference);
     }
 
     // ペアリクエストを削除
-    final pairRequestsSnapshot = await _firestore
-        .collection('pairRequests')
-        .where('fromUserId', '==', userId)
-        .get();
+    final pairRequestsSnapshot =
+        await _firestore
+            .collection('pairRequests')
+            .where('fromUserId', '==', userId)
+            .get();
 
     for (final doc in pairRequestsSnapshot.docs) {
       batch.delete(doc.reference);
     }
 
-    final pairRequestsSnapshot2 = await _firestore
-        .collection('pairRequests')
-        .where('toUserId', '==', userId)
-        .get();
+    final pairRequestsSnapshot2 =
+        await _firestore
+            .collection('pairRequests')
+            .where('toUserId', '==', userId)
+            .get();
 
     for (final doc in pairRequestsSnapshot2.docs) {
       batch.delete(doc.reference);
     }
 
     // アチーブメントを削除
-    final achievementsSnapshot = await _firestore
-        .collection('achievements')
-        .where('userId', '==', userId)
-        .get();
+    final achievementsSnapshot =
+        await _firestore
+            .collection('achievements')
+            .where('userId', '==', userId)
+            .get();
 
     for (final doc in achievementsSnapshot.docs) {
       batch.delete(doc.reference);
     }
 
     // 通知設定を削除
-    final notificationSettingsSnapshot = await _firestore
-        .collection('notificationSettings')
-        .where('userId', '==', userId)
-        .get();
+    final notificationSettingsSnapshot =
+        await _firestore
+            .collection('notificationSettings')
+            .where('userId', '==', userId)
+            .get();
 
     for (final doc in notificationSettingsSnapshot.docs) {
       batch.delete(doc.reference);
@@ -155,24 +161,27 @@ class AccountDeletionService {
     final userData = userDoc.data();
 
     // クエスト情報
-    final questsSnapshot = await _firestore
-        .collection('quests')
-        .where('userId', '==', userId)
-        .get();
+    final questsSnapshot =
+        await _firestore
+            .collection('quests')
+            .where('userId', '==', userId)
+            .get();
     final quests = questsSnapshot.docs.map((doc) => doc.data()).toList();
 
     // クエストログ
-    final logsSnapshot = await _firestore
-        .collection('questLogs')
-        .where('userId', '==', userId)
-        .get();
+    final logsSnapshot =
+        await _firestore
+            .collection('questLogs')
+            .where('userId', '==', userId)
+            .get();
     final logs = logsSnapshot.docs.map((doc) => doc.data()).toList();
 
     // アチーブメント
-    final achievementsSnapshot = await _firestore
-        .collection('achievements')
-        .where('userId', '==', userId)
-        .get();
+    final achievementsSnapshot =
+        await _firestore
+            .collection('achievements')
+            .where('userId', '==', userId)
+            .get();
     final achievements =
         achievementsSnapshot.docs.map((doc) => doc.data()).toList();
 

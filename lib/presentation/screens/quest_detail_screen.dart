@@ -107,8 +107,9 @@ class _QuestDetailContent extends ConsumerWidget {
                             children: [
                               Text(
                                 quest.title,
-                                style: tokens.displaySmall
-                                    .copyWith(color: tokens.textPrimary),
+                                style: tokens.displaySmall.copyWith(
+                                  color: tokens.textPrimary,
+                                ),
                               ),
                               SizedBox(height: tokens.spacing(2)),
                               Wrap(
@@ -142,8 +143,9 @@ class _QuestDetailContent extends ConsumerWidget {
                     Text(
                       '短い時間で取り組める${quest.category}クエストです。'
                       '記録するとペアに進捗が共有され、次の継続に向けたリマインダーも届きます。',
-                      style:
-                          tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                      style: tokens.bodyMedium.copyWith(
+                        color: tokens.textMuted,
+                      ),
                     ),
                     contactLinkAsync.when(
                       data: (link) {
@@ -156,14 +158,15 @@ class _QuestDetailContent extends ConsumerWidget {
                           child: _ContactLinkButton(link: sanitized),
                         );
                       },
-                      loading: () => Padding(
-                        padding: EdgeInsets.only(top: tokens.spacing(4)),
-                        child: const SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
+                      loading:
+                          () => Padding(
+                            padding: EdgeInsets.only(top: tokens.spacing(4)),
+                            child: const SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
                       error: (_, __) => const SizedBox.shrink(),
                     ),
                   ],
@@ -172,6 +175,14 @@ class _QuestDetailContent extends ConsumerWidget {
             ),
             const Spacer(),
             MinqPrimaryButton(
+              label: '今すぐ開始',
+              icon: Icons.play_arrow,
+              onPressed: () async {
+                navigation.goToQuestTimer(quest.id);
+              },
+            ),
+            SizedBox(height: tokens.spacing(2)),
+            MinqSecondaryButton(
               label: 'このクエストを記録する',
               onPressed: () async {
                 navigation.goToRecord(quest.id);
@@ -219,18 +230,15 @@ class _ContactLinkButton extends StatelessWidget {
       onPressed: () async {
         final uri = Uri.tryParse(link);
         if (uri == null) {
-          FeedbackMessenger.showErrorSnackBar(
-            context,
-            'リンクの形式が正しくありません。',
-          );
+          FeedbackMessenger.showErrorSnackBar(context, 'リンクの形式が正しくありません。');
           return;
         }
-        final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+        final launched = await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
         if (!launched && context.mounted) {
-          FeedbackMessenger.showErrorSnackBar(
-            context,
-            'リンクを開けませんでした。',
-          );
+          FeedbackMessenger.showErrorSnackBar(context, 'リンクを開けませんでした。');
         }
       },
     );
@@ -250,12 +258,15 @@ class _QuestDetailNotFound extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off, size: tokens.spacing(14), color: tokens.textMuted),
+            Icon(
+              Icons.search_off,
+              size: tokens.spacing(14),
+              color: tokens.textMuted,
+            ),
             SizedBox(height: tokens.spacing(4)),
             Text(
               'クエストが見つかりませんでした',
-              style:
-                  tokens.titleSmall.copyWith(color: tokens.textPrimary),
+              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: tokens.spacing(2)),
@@ -291,12 +302,15 @@ class _QuestDetailError extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: tokens.spacing(14), color: tokens.accentError),
+            Icon(
+              Icons.error_outline,
+              size: tokens.spacing(14),
+              color: tokens.accentError,
+            ),
             SizedBox(height: tokens.spacing(4)),
             Text(
               'クエスト情報を読み込めませんでした',
-              style:
-                  tokens.titleSmall.copyWith(color: tokens.textPrimary),
+              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: tokens.spacing(2)),

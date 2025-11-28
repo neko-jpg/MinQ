@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 /// Bridge for Wear OS / Apple Watch quick progress sync.
 class WearableChannel {
   WearableChannel({MethodChannel? channel})
-      : _channel = channel ?? const MethodChannel('miinq/wearables');
+    : _channel = channel ?? const MethodChannel('miinq/wearables');
 
   final MethodChannel _channel;
 

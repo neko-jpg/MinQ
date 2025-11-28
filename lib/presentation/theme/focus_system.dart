@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
-enum FocusAccent {
-  neutral,
-  success,
-  error,
-}
+enum FocusAccent { neutral, success, error }
 
 /// フォーカスシステム - キーボード操作対応
 class FocusSystem {
@@ -69,21 +65,13 @@ class FocusSystem {
   // ========================================
 
   /// ライトモードのフォーカステーマ
-  static FocusThemeData lightFocusTheme() {
-    final tokens = MinqTheme.light();
-    return FocusThemeData(
-      glowColor: tokens.brandPrimary.withOpacity(0.3),
-      glowFactor: 2.0,
-    );
+  static Color lightFocusColor() {
+    return Colors.blue.withOpacity(0.3);
   }
 
   /// ダークモードのフォーカステーマ
-  static FocusThemeData darkFocusTheme() {
-    final tokens = MinqTheme.dark();
-    return FocusThemeData(
-      glowColor: tokens.brandPrimary.withOpacity(0.3),
-      glowFactor: 2.0,
-    );
+  static Color darkFocusColor() {
+    return Colors.blue.withOpacity(0.3);
   }
 
   // ========================================
@@ -98,10 +86,7 @@ class FocusSystem {
     bool highContrast = false,
   }) {
     return BoxDecoration(
-      border: Border.all(
-        color: focusColor,
-        width: width,
-      ),
+      border: Border.all(color: focusColor, width: width),
       borderRadius: BorderRadius.circular(radius),
       boxShadow: [
         BoxShadow(
@@ -144,10 +129,7 @@ class FocusSystem {
   }) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(radius),
-      borderSide: BorderSide(
-        color: focusColor,
-        width: width,
-      ),
+      borderSide: BorderSide(color: focusColor, width: width),
     );
   }
 }
@@ -232,12 +214,13 @@ class _FocusableWidgetState extends State<FocusableWidget> {
             widget.onTap?.call();
           },
           child: Container(
-            decoration: _isFocused
-                ? FocusSystem.focusDecoration(
-                    focusColor: focusColor,
-                    highContrast: tokens.isHighContrastMode(context),
-                  )
-                : null,
+            decoration:
+                _isFocused
+                    ? FocusSystem.focusDecoration(
+                      focusColor: focusColor,
+                      highContrast: tokens.isHighContrastMode(context),
+                    )
+                    : null,
             child: widget.child,
           ),
         ),
@@ -300,7 +283,10 @@ class _KeyboardNavigableListState extends State<KeyboardNavigableList> {
   }
 
   void _moveFocus(int direction) {
-    final newIndex = (_focusedIndex + direction).clamp(0, widget.children.length - 1);
+    final newIndex = (_focusedIndex + direction).clamp(
+      0,
+      widget.children.length - 1,
+    );
     if (newIndex != _focusedIndex) {
       setState(() {
         _focusedIndex = newIndex;
@@ -398,10 +384,7 @@ class FocusTraversalOrderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FocusTraversalOrder(
-      order: NumericFocusOrder(order),
-      child: child,
-    );
+    return FocusTraversalOrder(order: NumericFocusOrder(order), child: child);
   }
 }
 
@@ -449,7 +432,6 @@ class KeyboardShortcuts {
 
   /// Shift + Tab: 前のフォーカス
   static bool isShiftTabKey(RawKeyEvent event) {
-    return event.isShiftPressed &&
-        event.logicalKey == LogicalKeyboardKey.tab;
+    return event.isShiftPressed && event.logicalKey == LogicalKeyboardKey.tab;
   }
 }

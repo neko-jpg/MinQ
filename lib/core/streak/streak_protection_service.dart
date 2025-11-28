@@ -5,7 +5,7 @@ class StreakProtectionService {
   final FirebaseFirestore _firestore;
 
   StreakProtectionService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// クエストを一時停止
   Future<void> pauseQuest({
@@ -30,12 +30,13 @@ class StreakProtectionService {
     required String questId,
     required String userId,
   }) async {
-    final snapshot = await _firestore
-        .collection('questPauses')
-        .where('questId', isEqualTo: questId)
-        .where('userId', isEqualTo: userId)
-        .where('endDate', isGreaterThan: Timestamp.now())
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('questPauses')
+            .where('questId', isEqualTo: questId)
+            .where('userId', isEqualTo: userId)
+            .where('endDate', isGreaterThan: Timestamp.now())
+            .get();
 
     for (final doc in snapshot.docs) {
       await doc.reference.delete();
@@ -50,13 +51,20 @@ class StreakProtectionService {
   }) async {
     final checkDate = date ?? DateTime.now();
 
-    final snapshot = await _firestore
-        .collection('questPauses')
-        .where('questId', isEqualTo: questId)
-        .where('userId', isEqualTo: userId)
-        .where('startDate', isLessThanOrEqualTo: Timestamp.fromDate(checkDate))
-        .where('endDate', isGreaterThanOrEqualTo: Timestamp.fromDate(checkDate))
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('questPauses')
+            .where('questId', isEqualTo: questId)
+            .where('userId', isEqualTo: userId)
+            .where(
+              'startDate',
+              isLessThanOrEqualTo: Timestamp.fromDate(checkDate),
+            )
+            .where(
+              'endDate',
+              isGreaterThanOrEqualTo: Timestamp.fromDate(checkDate),
+            )
+            .get();
 
     return snapshot.docs.isNotEmpty;
   }
@@ -83,12 +91,13 @@ class StreakProtectionService {
     required String userId,
     required DateTime date,
   }) async {
-    final snapshot = await _firestore
-        .collection('freezeDays')
-        .where('questId', isEqualTo: questId)
-        .where('userId', isEqualTo: userId)
-        .where('date', isEqualTo: Timestamp.fromDate(date))
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('freezeDays')
+            .where('questId', isEqualTo: questId)
+            .where('userId', isEqualTo: userId)
+            .where('date', isEqualTo: Timestamp.fromDate(date))
+            .get();
 
     for (final doc in snapshot.docs) {
       await doc.reference.delete();
@@ -101,12 +110,13 @@ class StreakProtectionService {
     required String userId,
     required DateTime date,
   }) async {
-    final snapshot = await _firestore
-        .collection('freezeDays')
-        .where('questId', isEqualTo: questId)
-        .where('userId', isEqualTo: userId)
-        .where('date', isEqualTo: Timestamp.fromDate(date))
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('freezeDays')
+            .where('questId', isEqualTo: questId)
+            .where('userId', isEqualTo: userId)
+            .where('date', isEqualTo: Timestamp.fromDate(date))
+            .get();
 
     return snapshot.docs.isNotEmpty;
   }
@@ -116,10 +126,7 @@ class StreakProtectionService {
     required String questId,
     required String userId,
   }) async {
-    final questDoc = await _firestore
-        .collection('quests')
-        .doc(questId)
-        .get();
+    final questDoc = await _firestore.collection('quests').doc(questId).get();
 
     final data = questDoc.data();
     if (data == null) return 0;
@@ -136,13 +143,17 @@ class StreakProtectionService {
     final startOfMonth = DateTime(now.year, now.month, 1);
     final endOfMonth = DateTime(now.year, now.month + 1, 0);
 
-    final snapshot = await _firestore
-        .collection('freezeDays')
-        .where('questId', isEqualTo: questId)
-        .where('userId', isEqualTo: userId)
-        .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfMonth))
-        .where('date', isLessThanOrEqualTo: Timestamp.fromDate(endOfMonth))
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('freezeDays')
+            .where('questId', isEqualTo: questId)
+            .where('userId', isEqualTo: userId)
+            .where(
+              'date',
+              isGreaterThanOrEqualTo: Timestamp.fromDate(startOfMonth),
+            )
+            .where('date', isLessThanOrEqualTo: Timestamp.fromDate(endOfMonth))
+            .get();
 
     return snapshot.docs.length;
   }
@@ -159,7 +170,11 @@ class StreakProtectionService {
     DateTime currentDate = DateTime.now();
 
     while (true) {
-      final dateOnly = DateTime(currentDate.year, currentDate.month, currentDate.day);
+      final dateOnly = DateTime(
+        currentDate.year,
+        currentDate.month,
+        currentDate.day,
+      );
 
       // 一時停止中または凍結日の場合はスキップ
       final isPaused = await isQuestPaused(
@@ -244,13 +259,7 @@ class StreakProtectionConfig {
 }
 
 /// 一時停止理由
-enum PauseReason {
-  vacation,
-  illness,
-  work,
-  personal,
-  other,
-}
+enum PauseReason { vacation, illness, work, personal, other }
 
 extension PauseReasonExtension on PauseReason {
   String get displayName {
@@ -303,9 +312,10 @@ class StreakProtectionHistory {
       userId: data['userId'] as String,
       type: type,
       startDate: (data['startDate'] as Timestamp).toDate(),
-      endDate: data['endDate'] != null
-          ? (data['endDate'] as Timestamp).toDate()
-          : null,
+      endDate:
+          data['endDate'] != null
+              ? (data['endDate'] as Timestamp).toDate()
+              : null,
       reason: data['reason'] as String?,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
     );
@@ -338,7 +348,8 @@ class StreakStats {
 
   /// 保護使用率
   double get protectionUsageRate {
-    final total = totalCompletions + totalSkips + totalPauseDays + totalFreezeDays;
+    final total =
+        totalCompletions + totalSkips + totalPauseDays + totalFreezeDays;
     final protected = totalSkips + totalPauseDays + totalFreezeDays;
     return total > 0 ? protected / total : 0.0;
   }
@@ -352,8 +363,8 @@ class StreakProtectionManager {
   StreakProtectionManager({
     required StreakProtectionService service,
     StreakProtectionConfig config = StreakProtectionConfig.defaultConfig,
-  })  : _service = service,
-        _config = config;
+  }) : _service = service,
+       _config = config;
 
   /// スキップ可能かチェック
   Future<bool> canSkip({

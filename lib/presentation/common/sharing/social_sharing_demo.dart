@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/common/sharing/progress_share_card.dart';
 import 'package:minq/presentation/common/celebration/celebration_system.dart';
+import 'package:minq/presentation/common/sharing/progress_share_card.dart';
 
 /// ソーシャルシェア機能のデモ画面
 class SocialSharingDemo extends StatefulWidget {
@@ -31,10 +31,7 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
           children: [
             const Text(
               '進捗共有カード',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ProgressShareCard(
@@ -54,10 +51,7 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
             const SizedBox(height: 32),
             const Text(
               '祝福演出システム',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Wrap(
@@ -94,10 +88,7 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
             const SizedBox(height: 32),
             const Text(
               '進捗データ調整',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Card(
@@ -131,7 +122,8 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
                       _completedToday.toDouble(),
                       0,
                       10,
-                      (value) => setState(() => _completedToday = value.toInt()),
+                      (value) =>
+                          setState(() => _completedToday = value.toInt()),
                     ),
                   ],
                 ),
@@ -140,10 +132,7 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
             const SizedBox(height: 32),
             const Text(
               'ペアリマインダー機能',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Card(
@@ -180,9 +169,7 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF4ECDC4),
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       child: Text(label),
     );
@@ -219,17 +206,9 @@ class _SocialSharingDemoState extends State<SocialSharingDemo> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Text(
-            emoji,
-            style: const TextStyle(fontSize: 20),
-          ),
+          Text(emoji, style: const TextStyle(fontSize: 20)),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              message,
-              style: const TextStyle(fontSize: 14),
-            ),
-          ),
+          Expanded(child: Text(message, style: const TextStyle(fontSize: 14))),
         ],
       ),
     );

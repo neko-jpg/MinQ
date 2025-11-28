@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/animation_system.dart';
-import '../theme/minq_theme.dart';
-import '../theme/spacing_system.dart';
+import 'package:minq/presentation/theme/animation_system.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 画像プレースホルダとエラーハンドリングのユーティリティ
 class ImagePlaceholder extends StatelessWidget {
@@ -24,7 +23,8 @@ class ImagePlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tokens = context.tokens;
-    final bgColor = backgroundColor ?? theme.colorScheme.surfaceContainerHighest;
+    final bgColor =
+        backgroundColor ?? theme.colorScheme.surfaceContainerHighest;
     final iColor = iconColor ?? theme.colorScheme.onSurfaceVariant;
 
     return Semantics(
@@ -38,11 +38,7 @@ class ImagePlaceholder extends StatelessWidget {
           borderRadius: tokens.cornerMedium(),
         ),
         child: Center(
-          child: Icon(
-            icon,
-            size: tokens.spacing(12),
-            color: iColor,
-          ),
+          child: Icon(icon, size: tokens.spacing(12), color: iColor),
         ),
       ),
     );
@@ -84,21 +80,23 @@ class NetworkImageWithFallback extends StatelessWidget {
           if (wasSynchronouslyLoaded) {
             return child;
           }
-          final duration =
-              AnimationSystem.getDuration(context, AnimationSystem.animatedSwitcher);
-          final curve =
-              AnimationSystem.getCurve(context, AnimationSystem.animatedSwitcherCurve);
+          final duration = AnimationSystem.getDuration(
+            context,
+            AnimationSystem.animatedSwitcher,
+          );
+          final curve = AnimationSystem.getCurve(
+            context,
+            AnimationSystem.animatedSwitcherCurve,
+          );
           return AnimatedSwitcher(
             duration: duration,
             switchInCurve: curve,
             switchOutCurve: curve,
-            child: frame != null
-                ? child
-                : placeholder ??
-                    ImagePlaceholder(
-                      width: width,
-                      height: height,
-                    ),
+            child:
+                frame != null
+                    ? child
+                    : placeholder ??
+                        ImagePlaceholder(width: width, height: height),
           );
         },
         errorBuilder: (context, error, stackTrace) {
@@ -113,10 +111,7 @@ class NetworkImageWithFallback extends StatelessWidget {
           if (loadingProgress == null) {
             return child;
           }
-          return ImagePlaceholder(
-            width: width,
-            height: height,
-          );
+          return ImagePlaceholder(width: width, height: height);
         },
       ),
     );
@@ -192,11 +187,7 @@ class AvatarImage extends StatelessWidget {
       return CircleAvatar(
         radius: radius,
         backgroundColor: bgColor,
-        child: Icon(
-          fallbackIcon,
-          size: radius * 1.2,
-          color: iColor,
-        ),
+        child: Icon(fallbackIcon, size: radius * 1.2, color: iColor),
       );
     }
 
@@ -207,13 +198,10 @@ class AvatarImage extends StatelessWidget {
       onBackgroundImageError: (exception, stackTrace) {
         // エラー時はfallbackIconが表示される
       },
-      child: imageUrl!.isEmpty
-          ? Icon(
-              fallbackIcon,
-              size: radius * 1.2,
-              color: iColor,
-            )
-          : null,
+      child:
+          imageUrl!.isEmpty
+              ? Icon(fallbackIcon, size: radius * 1.2, color: iColor)
+              : null,
     );
   }
 }
@@ -262,10 +250,7 @@ class _FadeInImageState extends State<FadeInImage> {
       children: [
         if (!_isLoaded)
           widget.placeholder ??
-              ImagePlaceholder(
-                width: widget.width,
-                height: widget.height,
-              ),
+              ImagePlaceholder(width: widget.width, height: widget.height),
         AnimatedOpacity(
           opacity: _isLoaded ? 1.0 : 0.0,
           duration: widget.fadeDuration,
@@ -324,9 +309,11 @@ class OptimizedImage extends StatelessWidget {
   Widget build(BuildContext context) {
     // デバイスピクセル比を考慮したキャッシュサイズを計算
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final calculatedCacheWidth = cacheWidth ??
+    final calculatedCacheWidth =
+        cacheWidth ??
         (width != null ? (width! * devicePixelRatio).round() : null);
-    final calculatedCacheHeight = cacheHeight ??
+    final calculatedCacheHeight =
+        cacheHeight ??
         (height != null ? (height! * devicePixelRatio).round() : null);
 
     return NetworkImageWithFallback(

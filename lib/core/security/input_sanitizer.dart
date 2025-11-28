@@ -143,11 +143,7 @@ class InputSanitizer {
   /// テキスト入力を完全にサニタイズ
   static String sanitizeTextInput(String input, {int maxLength = 1000}) {
     return limitLength(
-      normalizeWhitespace(
-        removeDangerousCharacters(
-          sanitizeHtml(input),
-        ),
-      ),
+      normalizeWhitespace(removeDangerousCharacters(sanitizeHtml(input))),
       maxLength,
     );
   }
@@ -227,9 +223,7 @@ class InputSanitizer {
 
   /// Base64を検証
   static bool isValidBase64(String input) {
-    final base64Regex = RegExp(
-      r'^[A-Za-z0-9+/]*={0,2}$',
-    );
+    final base64Regex = RegExp(r'^[A-Za-z0-9+/]*={0,2}$');
     return base64Regex.hasMatch(input) && input.length % 4 == 0;
   }
 
@@ -262,8 +256,4 @@ class InputSanitizer {
 }
 
 /// パスワード強度
-enum PasswordStrength {
-  weak,
-  medium,
-  strong,
-}
+enum PasswordStrength { weak, medium, strong }

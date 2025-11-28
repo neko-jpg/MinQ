@@ -1,25 +1,34 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/material.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/config/stripe_config.dart';
+import 'package:minq/core/ai/failure_prediction_service.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service_provider.dart';
+import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/export/data_export_service.dart';
+import 'package:minq/core/gamification/gamification_engine.dart';
+import 'package:minq/core/gamification/reward_system.dart';
+import 'package:minq/core/logging/app_logger.dart';
+import 'package:minq/core/network/network_status_service.dart';
+import 'package:minq/core/notifications/notification_personalization_engine.dart';
+import 'package:minq/core/notifications/re_engagement_service.dart';
+import 'package:minq/core/notifications/smart_notification_service.dart';
+import 'package:minq/core/reminders/multiple_reminder_service.dart';
 import 'package:minq/core/sharing/ai_share_banner_service.dart';
-// TODO: Fix integrations package
-// import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
 import 'package:minq/core/sharing/share_service.dart';
-import 'package:minq/core/logging/app_logger.dart';
-import 'package:minq/core/reminders/multiple_reminder_service.dart';
 import 'package:minq/data/repositories/community_board_repository.dart';
 import 'package:minq/data/repositories/contact_link_repository.dart';
 import 'package:minq/data/repositories/firebase_auth_repository.dart';
@@ -42,13 +51,13 @@ import 'package:minq/data/services/marketing_attribution_service.dart';
 import 'package:minq/data/services/notification_service.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/data/services/photo_storage_service.dart';
+import 'package:minq/data/services/referral_service.dart';
 import 'package:minq/data/services/remote_config_service.dart';
 import 'package:minq/data/services/speech_input_service.dart';
 import 'package:minq/data/services/stripe_billing_service.dart';
 import 'package:minq/data/services/time_consistency_service.dart';
 import 'package:minq/data/services/usage_limit_service.dart';
 import 'package:minq/data/services/webhook_dispatch_service.dart';
-import 'package:minq/domain/config/feature_flags.dart';
 import 'package:minq/domain/log/quest_log.dart';
 import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/pair/pair.dart' as minq_pair;
@@ -297,8 +306,42 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
   return AnalyticsService(ref.watch(firebaseAnalyticsProvider));
 });
 
-final dataExportServiceProvider = Provider<DataExportService>((ref) {
-  return DataExportService();
+final referralServiceProvider = Provider<ReferralService>((ref) {
+  return ReferralService(
+    analytics: ref.watch(analyticsServiceProvider),
+  );
+});
+
+final failurePredictionServiceProvider = Provider<FailurePredictionService>((ref) {
+  return FailurePredictionService(
+    questLogRepository: ref.watch(questLogRepositoryProvider),
+    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
+    analytics: ref.watch(analyticsServiceProvider),
+  );
+});
+
+final smartNotificationServiceProvider = Provider<SmartNotificationService>((ref) {
+  return SmartNotificationService(
+    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
+  );
+});
+
+final notificationPersonalizationEngineProvider = Provider<NotificationPersonalizationEngine>((ref) {
+  return NotificationPersonalizationEngine(
+    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
+  );
+});
+
+final reEngagementServiceProvider = Provider<ReEngagementService>((ref) {
+  return ReEngagementService();
+});
+
+final dataExportServiceProvider = Provider<DataExportService?>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    return null;
+  }
+  return DataExportService(firestore);
 });
 
 // TODO: Implement FeatureFlagsNotifier
@@ -669,8 +712,17 @@ final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
 });
 
 final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>(
-  (ref) => HabitAiSuggestionService(),
+  (ref) {
+    return HabitAiSuggestionService();
+  },
 );
+
+// UID provider removed - already exists above
+
+// Network status provider
+final networkStatusProvider = Provider<NetworkStatusService>((ref) {
+  return NetworkStatusService();
+});
 
 final dailyFocusServiceProvider = Provider<DailyFocusService>(
   (ref) => DailyFocusService(),
@@ -683,7 +735,7 @@ final habitAiSuggestionsProvider = FutureProvider<List<HabitAiSuggestion>>((
   final logs = await ref.watch(recentLogsProvider.future);
   final quests = await ref.watch(userQuestsProvider.future);
   final service = ref.watch(habitAiSuggestionServiceProvider);
-  return service.generateSuggestions(
+  return await service.generateSuggestions(
     userQuests: quests,
     logs: logs,
     now: DateTime.now(),
@@ -697,3 +749,31 @@ final heatmapDataProvider = FutureProvider<Map<DateTime, int>>((ref) async {
   }
   return ref.read(questLogRepositoryProvider).getHeatmapData(user.uid);
 });
+
+// Gamification providers
+final gamificationEngineProvider = Provider<GamificationEngine>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    throw StateError('Firestore is not available');
+  }
+  return GamificationEngine(firestore);
+});
+
+final rewardSystemProvider = Provider<RewardSystem>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    throw StateError('Firestore is not available');
+  }
+  return RewardSystem(firestore);
+});
+
+final challengeServiceProvider = Provider<ChallengeService>((ref) {
+  final firestore = ref.watch(firestoreProvider);
+  if (firestore == null) {
+    throw StateError('Firestore is not available');
+  }
+  final gamificationEngine = ref.watch(gamificationEngineProvider);
+  return ChallengeService(firestore, gamificationEngine);
+});
+
+// AI providers - 既にgemma_ai_service.dartで定義されているので削除

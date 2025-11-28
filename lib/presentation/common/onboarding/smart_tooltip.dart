@@ -60,26 +60,23 @@ class _SmartTooltipState extends State<SmartTooltip>
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, -0.1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
+    );
   }
 
   Future<void> _checkShouldShow() async {
     if (widget.showOnce) {
-      final hasSeenTooltip = await OnboardingEngine.hasSeenTooltip(widget.tooltipId);
+      final hasSeenTooltip = await OnboardingEngine.hasSeenTooltip(
+        widget.tooltipId,
+      );
       setState(() {
         _shouldShow = !hasSeenTooltip;
       });
@@ -99,7 +96,7 @@ class _SmartTooltipState extends State<SmartTooltip>
     if (!_shouldShow) return;
 
     _animationController.forward();
-    
+
     // 自動的に非表示にする
     _hideTimer?.cancel();
     _hideTimer = Timer(widget.showDuration, () {
@@ -131,7 +128,8 @@ class _SmartTooltipState extends State<SmartTooltip>
 
     return GestureDetector(
       onTap: widget.trigger == TooltipTrigger.tap ? _showTooltip : null,
-      onLongPress: widget.trigger == TooltipTrigger.longPress ? _showTooltip : null,
+      onLongPress:
+          widget.trigger == TooltipTrigger.longPress ? _showTooltip : null,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -165,12 +163,13 @@ class _SmartTooltipState extends State<SmartTooltip>
 
   Widget _buildTooltipContent() {
     final theme = Theme.of(context);
-    
+
     return Container(
       margin: widget.margin ?? const EdgeInsets.symmetric(horizontal: 16),
       padding: widget.padding ?? const EdgeInsets.all(12),
       height: widget.height,
-      decoration: widget.decoration ??
+      decoration:
+          widget.decoration ??
           BoxDecoration(
             color: theme.colorScheme.inverseSurface,
             borderRadius: BorderRadius.circular(8),
@@ -188,7 +187,8 @@ class _SmartTooltipState extends State<SmartTooltip>
           Expanded(
             child: Text(
               widget.message,
-              style: widget.textStyle ??
+              style:
+                  widget.textStyle ??
                   theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onInverseSurface,
                   ),
@@ -210,11 +210,7 @@ class _SmartTooltipState extends State<SmartTooltip>
 }
 
 /// ツールチップのトリガー方法
-enum TooltipTrigger {
-  tap,
-  longPress,
-  manual,
-}
+enum TooltipTrigger { tap, longPress, manual }
 
 /// 自動表示されるスマートツールチップ
 class AutoSmartTooltip extends StatefulWidget {
@@ -261,26 +257,20 @@ class _AutoSmartTooltipState extends State<AutoSmartTooltip>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
+    );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
   }
 
   Future<void> _checkAndShow() async {
     if (widget.showOnce) {
-      final hasSeenTooltip = await OnboardingEngine.hasSeenTooltip(widget.tooltipId);
+      final hasSeenTooltip = await OnboardingEngine.hasSeenTooltip(
+        widget.tooltipId,
+      );
       if (hasSeenTooltip) {
         if (mounted) {
           setState(() {
@@ -302,7 +292,7 @@ class _AutoSmartTooltipState extends State<AutoSmartTooltip>
   void _showTooltip() {
     if (mounted) {
       _animationController.forward();
-      
+
       // 自動的に非表示にする
       _hideTimer?.cancel();
       _hideTimer = Timer(widget.showDuration, () {
@@ -385,11 +375,7 @@ class _AutoSmartTooltipState extends State<AutoSmartTooltip>
             ),
           ],
         ),
-        child: const Icon(
-          Icons.help_outline,
-          color: Colors.white,
-          size: 16,
-        ),
+        child: const Icon(Icons.help_outline, color: Colors.white, size: 16),
       ),
     );
   }

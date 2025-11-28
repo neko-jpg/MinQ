@@ -1,47 +1,79 @@
-import 'package:flutter_gemma/flutter_gemma.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:async';
+import 'dart:developer';
 
-// Provider for the service
-final gemmaAIServiceProvider = Provider<GemmaAIService>((ref) {
-  return GemmaAIService();
-});
-
+/// Gemma AI サービス
+/// Google Gemma モデルを使用したAI機能を提供
 class GemmaAIService {
-  late FlutterGemma _gemma;
+  static GemmaAIService? _instance;
+  static GemmaAIService get instance => _instance ??= GemmaAIService._();
+
+  GemmaAIService._();
+
   bool _isInitialized = false;
 
-  GemmaAIService() {
-    _initialize();
-  }
-
-  Future<void> _initialize() async {
+  /// サービスの初期化
+  Future<void> initialize() async {
     try {
-      // TODO: Add logic to download and manage the model file.
-      // For now, this assumes a model file is bundled with the app.
-      _gemma = FlutterGemma();
-      // NOTE: The model path will need to be configured correctly.
-      // This might involve bundling a model or downloading it post-install.
-      // await _gemma.loadModel(modelPath: 'assets/models/gemma-2b-it.bin');
+      log('GemmaAIService: 初期化開始');
+      // TODO: Gemmaモデルの初期化処理
       _isInitialized = true;
-      print("Gemma AI Service Initialized.");
+      log('GemmaAIService: 初期化完了');
     } catch (e) {
-      print("Error initializing Gemma AI Service: $e");
-      _isInitialized = false;
+      log('GemmaAIService: 初期化エラー - $e');
+      rethrow;
     }
   }
 
-  /// Generates text using the loaded Gemma model.
-  Future<String> generateText(String prompt) async {
-    if (!_isInitialized) {
-      return "AI service is not available.";
-    }
+  /// 診断情報の取得
+  Future<Map<String, dynamic>> getDiagnosticInfo() async {
+    return {
+      'initialized': _isInitialized,
+      'modelLoaded': _isInitialized,
+      'version': '1.0.0',
+    };
+  }
+
+  /// サービスのリセット
+  Future<void> forceReset() async {
     try {
-      // TODO: Implement actual text generation with proper error handling.
-      // final result = await _gemma.generate(prompt);
-      return "Generated response for: $prompt"; // Placeholder
+      log('GemmaAIService: リセット開始');
+      _isInitialized = false;
+      // TODO: モデルのクリーンアップ処理
+      log('GemmaAIService: リセット完了');
     } catch (e) {
-      print("Error generating text with Gemma: $e");
-      return "An error occurred while generating the AI response.";
+      log('GemmaAIService: リセットエラー - $e');
+      rethrow;
     }
   }
+
+  /// チャットメッセージの生成
+  Future<String> generateResponse(String message) async {
+    if (!_isInitialized) {
+      await initialize();
+    }
+
+    // TODO: 実際のGemmaモデルでの応答生成
+    return 'これはGemma AIからの応答です: $message';
+  }
+
+  /// サービスの終了
+  void dispose() {
+    _isInitialized = false;
+  }
+}
+
+/// チャットメッセージのロール
+enum GemmaChatRole { user, assistant }
+
+/// チャットメッセージ
+class GemmaChatMessage {
+  final String content;
+  final GemmaChatRole role;
+  final DateTime timestamp;
+
+  GemmaChatMessage({
+    required this.content,
+    required this.role,
+    DateTime? timestamp,
+  }) : timestamp = timestamp ?? DateTime.now();
 }

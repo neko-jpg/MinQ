@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import 'package:minq/presentation/theme/app_theme.dart';
 
 /// クエストタイマーウィジェット
 /// 習慣実行時のタイマー機能
@@ -194,10 +194,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
           ),
           if (widget.onCancel != null) ...[
             SizedBox(height: tokens.spacing.md),
-            TextButton(
-              onPressed: _cancelTimer,
-              child: Text('キャンセル'),
-            ),
+            TextButton(onPressed: _cancelTimer, child: const Text('キャンセル')),
           ],
         ],
       ),
@@ -296,9 +293,9 @@ class QuestTimerScreen extends StatelessWidget {
           child: QuestTimerWidget(
             durationMinutes: durationMinutes,
             onComplete: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('タイマー完了！')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('タイマー完了！')));
               Navigator.of(context).pop(true);
             },
             onCancel: () {
@@ -337,9 +334,11 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final duration = _isWorkSession
-        ? widget.workMinutes
-        : (_currentSession % widget.sessionsUntilLongBreak == 0 && _currentSession > 0)
+    final duration =
+        _isWorkSession
+            ? widget.workMinutes
+            : (_currentSession % widget.sessionsUntilLongBreak == 0 &&
+                _currentSession > 0)
             ? widget.longBreakMinutes
             : widget.breakMinutes;
 

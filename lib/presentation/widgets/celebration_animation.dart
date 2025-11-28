@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
 
 /// ペア成立時の祝アニメーション
 /// 軽量で視覚的に楽しい演出
@@ -30,10 +31,7 @@ class _CelebrationAnimationState extends State<CelebrationAnimation>
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _confettiController = AnimationController(
       duration: widget.duration,
@@ -42,13 +40,17 @@ class _CelebrationAnimationState extends State<CelebrationAnimation>
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 0.0, end: 1.2)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(
+          begin: 0.0,
+          end: 1.2,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 40,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.2, end: 1.0)
-            .chain(CurveTween(curve: Curves.elasticOut)),
+        tween: Tween<double>(
+          begin: 1.2,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.elasticOut)),
         weight: 60,
       ),
     ]).animate(_controller);
@@ -84,9 +86,7 @@ class _CelebrationAnimationState extends State<CelebrationAnimation>
             animation: _confettiController,
             builder: (context, child) {
               return CustomPaint(
-                painter: ConfettiPainter(
-                  progress: _confettiController.value,
-                ),
+                painter: ConfettiPainter(progress: _confettiController.value),
               );
             },
           ),
@@ -117,7 +117,7 @@ class ConfettiPainter extends CustomPainter {
   final List<ConfettiParticle> particles;
 
   ConfettiPainter({required this.progress})
-      : particles = List.generate(30, (index) => ConfettiParticle(index));
+    : particles = List.generate(30, (index) => ConfettiParticle(index));
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -171,9 +171,10 @@ class ConfettiParticle {
     // 画面外は描画しない
     if (y > size.height) return;
 
-    final paint = Paint()
-      ..color = color.withOpacity(1.0 - progress * 0.5)
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = color.withOpacity(1.0 - progress * 0.5)
+          ..style = PaintingStyle.fill;
 
     canvas.save();
     canvas.translate(x, y);
@@ -288,36 +289,31 @@ class CheckMarkPainter extends CustomPainter {
     final radius = size.width / 2;
 
     // 円の描画
-    final circlePaint = Paint()
-      ..color = color.withOpacity(0.2)
-      ..style = PaintingStyle.fill;
+    final circlePaint =
+        Paint()
+          ..color = color.withOpacity(0.2)
+          ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(
-      center,
-      radius * circleProgress,
-      circlePaint,
-    );
+    canvas.drawCircle(center, radius * circleProgress, circlePaint);
 
     // 円の枠線
-    final strokePaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
+    final strokePaint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3;
 
-    canvas.drawCircle(
-      center,
-      radius * circleProgress,
-      strokePaint,
-    );
+    canvas.drawCircle(center, radius * circleProgress, strokePaint);
 
     // チェックマーク
     if (checkProgress > 0) {
-      final checkPaint = Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 4
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round;
+      final checkPaint =
+          Paint()
+            ..color = color
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 4
+            ..strokeCap = StrokeCap.round
+            ..strokeJoin = StrokeJoin.round;
 
       final path = Path();
       final checkSize = size.width * 0.3;
@@ -325,11 +321,11 @@ class CheckMarkPainter extends CustomPainter {
       final startY = center.dy;
 
       path.moveTo(startX, startY);
-      
+
       // 短い線
       final midX = startX + checkSize * 0.4;
       final midY = startY + checkSize * 0.4;
-      
+
       if (checkProgress < 0.5) {
         final progress = checkProgress * 2;
         path.lineTo(
@@ -338,12 +334,12 @@ class CheckMarkPainter extends CustomPainter {
         );
       } else {
         path.lineTo(midX, midY);
-        
+
         // 長い線
         final endX = startX + checkSize * 1.2;
         final endY = startY - checkSize * 0.6;
         final progress = (checkProgress - 0.5) * 2;
-        
+
         path.lineTo(
           midX + (endX - midX) * progress,
           midY + (endY - midY) * progress,
@@ -387,20 +383,21 @@ class _PulseAnimationState extends State<PulseAnimation>
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 1.3)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(
+          begin: 1.0,
+          end: 1.3,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 50,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.3, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeIn)),
+        tween: Tween<double>(
+          begin: 1.3,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeIn)),
         weight: 50,
       ),
     ]).animate(_controller);

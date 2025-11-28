@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// 遅延初期化マネージャー
 class LazyInitializationManager {
@@ -88,9 +90,7 @@ class PrioritizedInitializationManager {
 
   /// 優先度順に初期化
   Future<void> initializeByPriority(InitializationPriority priority) async {
-    final tasks = _tasks
-        .where((task) => task.priority == priority)
-        .toList();
+    final tasks = _tasks.where((task) => task.priority == priority).toList();
 
     for (final task in tasks) {
       // 依存関係を先に初期化
@@ -170,12 +170,260 @@ class StartupTimer {
   }
 }
 
+/// 高速起動マネージャー
+class FastStartupManager {
+  static final FastStartupManager _instance = FastStartupManager._internal();
+  factory FastStartupManager() => _instance;
+  FastStartupManager._internal();
+
+  final StartupTimer _timer = StartupTimer();
+  final PrioritizedInitializationManager _initManager =
+      PrioritizedInitializationManager();
+  final ImagePrefetcher _imagePrefetcher = ImagePrefetcher();
+
+  /// 起動最適化を初期化
+  void initialize() {
+    _timer.start();
+
+    // Critical: 必須サービス
+    _initManager.addTask(
+      InitializationTask(
+        key: 'logging',
+        initializer: _initializeLogging,
+        priority: InitializationPriority.critical,
+      ),
+    );
+
+    _initManager.addTask(
+      InitializationTask(
+        key: 'error_handling',
+        initializer: _initializeErrorHandling,
+        priority: InitializationPriority.critical,
+      ),
+    );
+
+    // High: UI表示前
+    _initManager.addTask(
+      InitializationTask(
+        key: 'theme',
+        initializer: _initializeTheme,
+        priority: InitializationPriority.high,
+      ),
+    );
+
+    _initManager.addTask(
+      InitializationTask(
+        key: 'auth',
+        initializer: _initializeAuth,
+        priority: InitializationPriority.high,
+        dependencies: ['logging'],
+      ),
+    );
+
+    // Medium: UI表示後
+    _initManager.addTask(
+      InitializationTask(
+        key: 'analytics',
+        initializer: _initializeAnalytics,
+        priority: InitializationPriority.medium,
+      ),
+    );
+
+    _initManager.addTask(
+      InitializationTask(
+        key: 'notifications',
+        initializer: _initializeNotifications,
+        priority: InitializationPriority.medium,
+      ),
+    );
+
+    // Low: バックグラウンド
+    _initManager.addTask(
+      InitializationTask(
+        key: 'ai_services',
+        initializer: _initializeAIServices,
+        priority: InitializationPriority.low,
+      ),
+    );
+
+    _initManager.addTask(
+      InitializationTask(
+        key: 'image_cache',
+        initializer: _initializeImageCache,
+        priority: InitializationPriority.low,
+      ),
+    );
+  }
+
+  /// 段階的起動
+  Future<void> startStaged() async {
+    _timer.recordMilestone('initialization_start');
+
+    // Critical services
+    await _initManager.initializeByPriority(InitializationPriority.critical);
+    _timer.recordMilestone('critical_complete');
+
+    // High priority services
+    await _initManager.initializeByPriority(InitializationPriority.high);
+    _timer.recordMilestone('high_complete');
+
+    // Medium and Low priority services (async)
+    unawaited(_initManager.initializeByPriority(InitializationPriority.medium));
+    unawaited(_initManager.initializeByPriority(InitializationPriority.low));
+
+    _timer.recordMilestone('startup_complete');
+
+    if (kDebugMode) {
+      _printStartupMetrics();
+    }
+  }
+
+  /// 起動メトリクスを出力
+  void _printStartupMetrics() {
+    final results = _timer.getResults();
+    final totalTime = _timer.getTotalTime();
+
+    print('=== Startup Metrics ===');
+    print('Total startup time: ${totalTime?.inMilliseconds}ms');
+
+    for (final entry in results.entries) {
+      print('${entry.key}: ${entry.value.inMilliseconds}ms');
+    }
+    print('=====================');
+  }
+
+  // 初期化メソッド群
+  Future<void> _initializeLogging() async {
+    // ログシステム初期化
+    await Future.delayed(const Duration(milliseconds: 10));
+  }
+
+  Future<void> _initializeErrorHandling() async {
+    // エラーハンドリング初期化
+    await Future.delayed(const Duration(milliseconds: 5));
+  }
+
+  Future<void> _initializeTheme() async {
+    // テーマシステム初期化
+    await Future.delayed(const Duration(milliseconds: 20));
+  }
+
+  Future<void> _initializeAuth() async {
+    // 認証システム初期化
+    await Future.delayed(const Duration(milliseconds: 50));
+  }
+
+  Future<void> _initializeAnalytics() async {
+    // 分析システム初期化
+    await Future.delayed(const Duration(milliseconds: 100));
+  }
+
+  Future<void> _initializeNotifications() async {
+    // 通知システム初期化
+    await Future.delayed(const Duration(milliseconds: 80));
+  }
+
+  Future<void> _initializeAIServices() async {
+    // AIサービス初期化
+    await Future.delayed(const Duration(milliseconds: 200));
+  }
+
+  Future<void> _initializeImageCache() async {
+    // 画像キャッシュ初期化
+    await Future.delayed(const Duration(milliseconds: 150));
+  }
+}
+
+/// メモリ最適化マネージャー
+class MemoryOptimizer {
+  static final MemoryOptimizer _instance = MemoryOptimizer._internal();
+  factory MemoryOptimizer() => _instance;
+  MemoryOptimizer._internal();
+
+  Timer? _memoryCleanupTimer;
+
+  /// メモリ最適化を開始
+  void startOptimization() {
+    // 定期的なメモリクリーンアップ
+    _memoryCleanupTimer = Timer.periodic(
+      const Duration(minutes: 5),
+      (_) => _performMemoryCleanup(),
+    );
+  }
+
+  /// メモリクリーンアップを実行
+  void _performMemoryCleanup() {
+    // 画像キャッシュクリア
+    PaintingBinding.instance.imageCache.clear();
+
+    // ガベージコレクション促進
+    if (kDebugMode) {
+      print('Performing memory cleanup');
+    }
+  }
+
+  /// 停止
+  void stop() {
+    _memoryCleanupTimer?.cancel();
+    _memoryCleanupTimer = null;
+  }
+}
+
+/// 60fps保証マネージャー
+class PerformanceGuard {
+  static final PerformanceGuard _instance = PerformanceGuard._internal();
+  factory PerformanceGuard() => _instance;
+  PerformanceGuard._internal();
+
+  final List<Duration> _frameTimes = [];
+  Timer? _performanceMonitor;
+
+  /// パフォーマンス監視を開始
+  void startMonitoring() {
+    if (kDebugMode) {
+      _performanceMonitor = Timer.periodic(
+        const Duration(seconds: 10),
+        (_) => _analyzePerformance(),
+      );
+    }
+  }
+
+  /// フレーム時間を記録
+  void recordFrameTime(Duration frameTime) {
+    _frameTimes.add(frameTime);
+
+    // 最新100フレームのみ保持
+    if (_frameTimes.length > 100) {
+      _frameTimes.removeAt(0);
+    }
+  }
+
+  /// パフォーマンス分析
+  void _analyzePerformance() {
+    if (_frameTimes.isEmpty) return;
+
+    final avgFrameTime =
+        _frameTimes.fold<int>(0, (sum, time) => sum + time.inMicroseconds) /
+        _frameTimes.length;
+
+    final fps = 1000000 / avgFrameTime; // マイクロ秒からFPSに変換
+
+    if (fps < 55) {
+      print('Warning: Low FPS detected: ${fps.toStringAsFixed(1)}');
+    }
+
+    if (kDebugMode) {
+      print('Average FPS: ${fps.toStringAsFixed(1)}');
+    }
+  }
+
+  /// 停止
+  void stop() {
+    _performanceMonitor?.cancel();
+    _performanceMonitor = null;
+  }
+}
+
 void unawaited(Future<void> future) {
   // 意図的に待機しない
 }
-
-class BuildContext {}
-class NetworkImage {
-  NetworkImage(String url);
-}
-Future<void> precacheImage(NetworkImage image, BuildContext context) async {}

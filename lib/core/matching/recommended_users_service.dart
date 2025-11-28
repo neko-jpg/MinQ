@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// おすすめユーザーサービス
 class RecommendedUsersService {
   final FirebaseFirestore _firestore;
 
   RecommendedUsersService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// おすすめユーザーを取得
   Future<List<RecommendedUser>> getRecommendedUsers({
@@ -25,7 +25,9 @@ class RecommendedUsersService {
       final currentUserData = currentUserDoc.data()!;
       final currentUserTimezone = currentUserData['timezone'] as String?;
       final currentUserLanguage = currentUserData['language'] as String?;
-      final currentUserGoals = List<String>.from(currentUserData['goals'] ?? []);
+      final currentUserGoals = List<String>.from(
+        currentUserData['goals'] ?? [],
+      );
 
       // ブロックリストを取得
       final blockedUsers = await _getBlockedUsers(currentUserId);
@@ -53,16 +55,18 @@ class RecommendedUsersService {
           targetUserData: userData,
         );
 
-        recommendations.add(RecommendedUser(
-          userId: doc.id,
-          nickname: userData['nickname'] as String? ?? 'Unknown',
-          avatarUrl: userData['avatarUrl'] as String?,
-          timezone: userData['timezone'] as String?,
-          language: userData['language'] as String?,
-          goals: List<String>.from(userData['goals'] ?? []),
-          activityScore: userData['activityScore'] as int? ?? 0,
-          matchScore: score,
-        ));
+        recommendations.add(
+          RecommendedUser(
+            userId: doc.id,
+            nickname: userData['nickname'] as String? ?? 'Unknown',
+            avatarUrl: userData['avatarUrl'] as String?,
+            timezone: userData['timezone'] as String?,
+            language: userData['language'] as String?,
+            goals: List<String>.from(userData['goals'] ?? []),
+            activityScore: userData['activityScore'] as int? ?? 0,
+            matchScore: score,
+          ),
+        );
       }
 
       // スコア順にソート
@@ -70,8 +74,11 @@ class RecommendedUsersService {
 
       return recommendations.take(limit).toList();
     } catch (e, stack) {
-      AppLogger.error('Failed to get recommended users',
-          error: e, stackTrace: stack);
+      AppLogger.error(
+        'Failed to get recommended users',
+        error: e,
+        stackTrace: stack,
+      );
       return [];
     }
   }
@@ -128,11 +135,12 @@ class RecommendedUsersService {
   /// ブロックリストを取得
   Future<List<String>> _getBlockedUsers(String userId) async {
     try {
-      final doc = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('blocked')
-          .get();
+      final doc =
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('blocked')
+              .get();
 
       return doc.docs.map((d) => d.id).toList();
     } catch (e) {
@@ -160,8 +168,11 @@ class RecommendedUsersService {
         'lastLoginAt': DateTime.now().toIso8601String(),
       });
     } catch (e, stack) {
-      AppLogger.error('Failed to update activity score',
-          error: e, stackTrace: stack);
+      AppLogger.error(
+        'Failed to update activity score',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 }

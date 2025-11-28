@@ -71,4 +71,30 @@ class UserRepository {
       await _isar.users.put(user);
     });
   }
+
+  Future<User?> getUser(String uid) async {
+    return getUserById(uid);
+  }
+
+  Future<void> updateUser(String uid, Map<String, dynamic> updates) async {
+    await _isar.writeTxn(() async {
+      final user = await getUserById(uid);
+      if (user == null) {
+        return;
+      }
+
+      // Apply updates based on the map
+      if (updates.containsKey('onboardingCompleted')) {
+        user.onboardingCompleted = updates['onboardingCompleted'] as bool;
+      }
+      if (updates.containsKey('currentLevel')) {
+        user.currentLevel = updates['currentLevel'] as int;
+      }
+      if (updates.containsKey('totalPoints')) {
+        user.totalPoints = updates['totalPoints'] as int;
+      }
+
+      await _isar.users.put(user);
+    });
+  }
 }

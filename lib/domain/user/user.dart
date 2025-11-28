@@ -1,4 +1,4 @@
-﻿import 'package:isar/isar.dart';
+import 'package:isar/isar.dart';
 
 part 'user.g.dart';
 
@@ -22,4 +22,12 @@ class User {
   DateTime? longestStreakReachedAt;
 
   String? pairId;
+
+  // オンボーディング関連
+  bool onboardingCompleted = false;
+  int? onboardingLevel;
+
+  // ゲーミフィケーション関連
+  int currentLevel = 1;
+  int totalPoints = 0;
 }

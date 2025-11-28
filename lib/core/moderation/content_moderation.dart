@@ -8,9 +8,9 @@ class ContentModerationService {
     required NGWordFilter ngWordFilter,
     required SpamDetector spamDetector,
     required RateLimiter rateLimiter,
-  })  : _ngWordFilter = ngWordFilter,
-        _spamDetector = spamDetector,
-        _rateLimiter = rateLimiter;
+  }) : _ngWordFilter = ngWordFilter,
+       _spamDetector = spamDetector,
+       _rateLimiter = rateLimiter;
 
   /// テキストをモデレート
   Future<ModerationResult> moderateText(String text, String userId) async {
@@ -72,8 +72,9 @@ class ContentModerationService {
     }
 
     // 特殊文字チェック
-    if (!RegExp(r'^[a-zA-Z0-9_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]+$')
-        .hasMatch(username)) {
+    if (!RegExp(
+      r'^[a-zA-Z0-9_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]+$',
+    ).hasMatch(username)) {
       return ModerationResult.rejected(
         reason: ModerationReason.invalidFormat,
         details: '使用できない文字が含まれています',
@@ -89,11 +90,9 @@ class NGWordFilter {
   final List<String> _ngWords;
   final List<RegExp> _ngPatterns;
 
-  NGWordFilter({
-    required List<String> ngWords,
-    List<RegExp>? ngPatterns,
-  })  : _ngWords = ngWords,
-        _ngPatterns = ngPatterns ?? [];
+  NGWordFilter({required List<String> ngWords, List<RegExp>? ngPatterns})
+    : _ngWords = ngWords,
+      _ngPatterns = ngPatterns ?? [];
 
   /// テキストをチェック
   NGWordCheckResult check(String text) {
@@ -144,10 +143,7 @@ class NGWordCheckResult {
   final bool isClean;
   final List<String> detectedWords;
 
-  const NGWordCheckResult({
-    required this.isClean,
-    required this.detectedWords,
-  });
+  const NGWordCheckResult({required this.isClean, required this.detectedWords});
 }
 
 /// スパム検出器
@@ -160,7 +156,7 @@ class SpamDetector {
   Future<SpamCheckResult> check(String text, String userId) async {
     // 同じメッセージの連投チェック
     if (_isDuplicateMessage(text, userId)) {
-      return SpamCheckResult(
+      return const SpamCheckResult(
         isSpam: true,
         reason: 'Duplicate message',
         confidence: 1.0,
@@ -169,7 +165,7 @@ class SpamDetector {
 
     // 短時間での大量投稿チェック
     if (_isRapidPosting(userId)) {
-      return SpamCheckResult(
+      return const SpamCheckResult(
         isSpam: true,
         reason: 'Rapid posting',
         confidence: 0.9,
@@ -178,7 +174,7 @@ class SpamDetector {
 
     // URLスパムチェック
     if (_containsSuspiciousUrls(text)) {
-      return SpamCheckResult(
+      return const SpamCheckResult(
         isSpam: true,
         reason: 'Suspicious URLs',
         confidence: 0.8,
@@ -188,11 +184,7 @@ class SpamDetector {
     // メッセージ履歴を記録
     _recordMessage(userId);
 
-    return SpamCheckResult(
-      isSpam: false,
-      reason: '',
-      confidence: 0.0,
-    );
+    return const SpamCheckResult(isSpam: false, reason: '', confidence: 0.0);
   }
 
   /// 重複メッセージチェック
@@ -205,19 +197,17 @@ class SpamDetector {
   bool _isRapidPosting(String userId) {
     final history = _userMessageHistory[userId] ?? [];
     final now = DateTime.now();
-    final recentMessages = history.where((time) {
-      return now.difference(time) < _timeWindow;
-    }).toList();
+    final recentMessages =
+        history.where((time) {
+          return now.difference(time) < _timeWindow;
+        }).toList();
 
     return recentMessages.length >= _maxMessagesPerWindow;
   }
 
   /// 疑わしいURLチェック
   bool _containsSuspiciousUrls(String text) {
-    final urlPattern = RegExp(
-      r'https?://[^\s]+',
-      caseSensitive: false,
-    );
+    final urlPattern = RegExp(r'https?://[^\s]+', caseSensitive: false);
 
     final urls = urlPattern.allMatches(text);
     return urls.length > 2; // 2つ以上のURLは疑わしい
@@ -263,11 +253,9 @@ class RateLimiter {
   final Duration _timeWindow;
   final int _maxActions;
 
-  RateLimiter({
-    Duration? timeWindow,
-    int? maxActions,
-  })  : _timeWindow = timeWindow ?? const Duration(minutes: 1),
-        _maxActions = maxActions ?? 10;
+  RateLimiter({Duration? timeWindow, int? maxActions})
+    : _timeWindow = timeWindow ?? const Duration(minutes: 1),
+      _maxActions = maxActions ?? 10;
 
   /// 制限をチェック
   Future<bool> checkLimit(String userId) async {
@@ -275,9 +263,10 @@ class RateLimiter {
     final now = DateTime.now();
 
     // 時間窓内のアクションをカウント
-    final recentActions = actions.where((time) {
-      return now.difference(time) < _timeWindow;
-    }).toList();
+    final recentActions =
+        actions.where((time) {
+          return now.difference(time) < _timeWindow;
+        }).toList();
 
     if (recentActions.length >= _maxActions) {
       return false;
@@ -316,11 +305,7 @@ class ModerationResult {
   final ModerationReason? reason;
   final String? details;
 
-  const ModerationResult({
-    required this.status,
-    this.reason,
-    this.details,
-  });
+  const ModerationResult({required this.status, this.reason, this.details});
 
   /// 承認
   factory ModerationResult.approved() {
@@ -525,8 +510,7 @@ class BlockMuteSystem {
     _blockedUsers[userId]!.add(targetUserId);
 
     if (duration != null) {
-      _blockExpiry['$userId:$targetUserId'] =
-          DateTime.now().add(duration);
+      _blockExpiry['$userId:$targetUserId'] = DateTime.now().add(duration);
     }
   }
 
@@ -540,8 +524,7 @@ class BlockMuteSystem {
     _mutedUsers[userId]!.add(targetUserId);
 
     if (duration != null) {
-      _blockExpiry['mute:$userId:$targetUserId'] =
-          DateTime.now().add(duration);
+      _blockExpiry['mute:$userId:$targetUserId'] = DateTime.now().add(duration);
     }
   }
 
@@ -564,10 +547,7 @@ class BlockMuteSystem {
   }
 
   /// ブロックされているかチェック
-  bool isBlocked({
-    required String userId,
-    required String targetUserId,
-  }) {
+  bool isBlocked({required String userId, required String targetUserId}) {
     // 期限切れチェック
     final expiryKey = '$userId:$targetUserId';
     final expiry = _blockExpiry[expiryKey];
@@ -580,10 +560,7 @@ class BlockMuteSystem {
   }
 
   /// ミュートされているかチェック
-  bool isMuted({
-    required String userId,
-    required String targetUserId,
-  }) {
+  bool isMuted({required String userId, required String targetUserId}) {
     // 期限切れチェック
     final expiryKey = 'mute:$userId:$targetUserId';
     final expiry = _blockExpiry[expiryKey];

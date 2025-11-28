@@ -9,7 +9,7 @@ class OfflineBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: NetworkStatusService のプロバイダーを作成して使用
-    final isOffline = false; // ref.watch(networkStatusProvider).isOffline;
+    const isOffline = false; // ref.watch(networkStatusProvider).isOffline;
 
     if (!isOffline) {
       return const SizedBox.shrink();
@@ -21,19 +21,12 @@ class OfflineBanner extends ConsumerWidget {
       color: Colors.orange[700],
       child: Row(
         children: [
-          const Icon(
-            Icons.cloud_off,
-            color: Colors.white,
-            size: 20,
-          ),
+          const Icon(Icons.cloud_off, color: Colors.white, size: 20),
           const SizedBox(width: 12),
           const Expanded(
             child: Text(
               'オフラインモード - 一部機能が制限されています',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Colors.white, fontSize: 14),
             ),
           ),
           IconButton(
@@ -50,27 +43,28 @@ class OfflineBanner extends ConsumerWidget {
   void _showOfflineInfo(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('オフラインモード'),
-        content: const Text(
-          'インターネット接続がありません。\n\n'
-          '利用可能な機能:\n'
-          '• クエストの記録\n'
-          '• 進捗の確認\n'
-          '• 統計の表示\n\n'
-          '制限される機能:\n'
-          '• データの同期\n'
-          '• ペア機能\n'
-          '• 共有機能\n\n'
-          'インターネットに接続すると、自動的にデータが同期されます。',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('オフラインモード'),
+            content: const Text(
+              'インターネット接続がありません。\n\n'
+              '利用可能な機能:\n'
+              '• クエストの記録\n'
+              '• 進捗の確認\n'
+              '• 統計の表示\n\n'
+              '制限される機能:\n'
+              '• データの同期\n'
+              '• ペア機能\n'
+              '• 共有機能\n\n'
+              'インターネットに接続すると、自動的にデータが同期されます。',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }
@@ -94,19 +88,12 @@ class OfflineEmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.cloud_off,
-              size: 80,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.cloud_off, size: 80, color: Colors.grey[400]),
             const SizedBox(height: 24),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 24),
@@ -139,11 +126,7 @@ class ReadOnlyModeIndicator extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.visibility,
-            size: 16,
-            color: Colors.orange[700],
-          ),
+          Icon(Icons.visibility, size: 16, color: Colors.orange[700]),
           const SizedBox(width: 6),
           Text(
             '読み取り専用',
@@ -175,13 +158,11 @@ class NetworkDependentWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: NetworkStatusService のプロバイダーを作成して使用
-    final isOffline = false; // ref.watch(networkStatusProvider).isOffline;
+    const isOffline = false; // ref.watch(networkStatusProvider).isOffline;
 
     if (isOffline) {
       return offlineWidget ??
-          OfflineEmptyState(
-            message: offlineMessage ?? 'この機能はオフラインでは利用できません',
-          );
+          OfflineEmptyState(message: offlineMessage ?? 'この機能はオフラインでは利用できません');
     }
 
     return child;
@@ -192,25 +173,26 @@ class NetworkDependentWidget extends ConsumerWidget {
 void showOfflineDialog(BuildContext context) {
   showDialog(
     context: context,
-    builder: (context) => AlertDialog(
-      title: const Row(
-        children: [
-          Icon(Icons.cloud_off, color: Colors.orange),
-          SizedBox(width: 12),
-          Text('オフライン'),
-        ],
-      ),
-      content: const Text(
-        'この機能を使用するにはインターネット接続が必要です。\n\n'
-        'WiFiまたはモバイルデータに接続してから再度お試しください。',
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('OK'),
+    builder:
+        (context) => AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.cloud_off, color: Colors.orange),
+              SizedBox(width: 12),
+              Text('オフライン'),
+            ],
+          ),
+          content: const Text(
+            'この機能を使用するにはインターネット接続が必要です。\n\n'
+            'WiFiまたはモバイルデータに接続してから再度お試しください。',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
         ),
-      ],
-    ),
   );
 }
 
@@ -222,9 +204,7 @@ void showOfflineSnackBar(BuildContext context) {
         children: [
           Icon(Icons.cloud_off, color: Colors.white),
           SizedBox(width: 12),
-          Expanded(
-            child: Text('オフラインのため、この操作は実行できません'),
-          ),
+          Expanded(child: Text('オフラインのため、この操作は実行できません')),
         ],
       ),
       backgroundColor: Colors.orange[700],

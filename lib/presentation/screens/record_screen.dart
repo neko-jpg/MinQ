@@ -3,21 +3,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/data/services/acr_music_tagging_service.dart';
+import 'package:minq/data/services/focus_music_service.dart';
 import 'package:minq/data/services/image_moderation_service.dart';
 import 'package:minq/data/services/photo_storage_service.dart';
-import 'package:minq/data/services/focus_music_service.dart';
-import 'package:minq/data/services/acr_music_tagging_service.dart';
 import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
+import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/controllers/quest_log_controller.dart';
-import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -213,39 +213,67 @@ class _RecordForm extends ConsumerWidget {
   final void Function(RecordErrorType) onError;
   final VoidCallback onCompleted;
 
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final questAsync = ref.watch(questByIdProvider(questId));
 
-    return ListView(
-      padding: EdgeInsets.all(tokens.spacing(4)),
-      children: <Widget>[
-        SizedBox(height: tokens.spacing(4)),
-        Text(
-          'ミニクエスト',
-          style: tokens.titleLarge.copyWith(
-            color: tokens.textPrimary,
-            fontWeight: FontWeight.bold,
+    return questAsync.when(
+      loading:
+          () => Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
+            ),
           ),
-        ),
-        SizedBox(height: tokens.spacing(3)),
-        _buildQuestInfoCard(tokens),
-        SizedBox(height: tokens.spacing(8)),
-        const _FocusMusicPanel(),
-        SizedBox(height: tokens.spacing(8)),
-        Text(
-          '証明',
-          style: tokens.titleLarge.copyWith(
-            color: tokens.textPrimary,
-            fontWeight: FontWeight.bold,
+      error:
+          (error, _) => Center(
+            child: Text(
+              'クエスト情報の読み込みに失敗しました',
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+            ),
           ),
-        ),
-        SizedBox(height: tokens.spacing(4)),
-        _buildProofButtons(context, ref, tokens),
-      ],
+      data: (quest) {
+        if (quest == null) {
+          return Center(
+            child: Text(
+              'クエストが見つかりません',
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+            ),
+          );
+        }
+
+        return ListView(
+          padding: EdgeInsets.all(tokens.spacing(4)),
+          children: <Widget>[
+            SizedBox(height: tokens.spacing(4)),
+            Text(
+              'クエスト記録',
+              style: tokens.titleLarge.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: tokens.spacing(3)),
+            _buildQuestInfoCard(tokens, quest),
+            SizedBox(height: tokens.spacing(8)),
+            const _FocusMusicPanel(),
+            SizedBox(height: tokens.spacing(8)),
+            Text(
+              '証明',
+              style: tokens.titleLarge.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: tokens.spacing(4)),
+            _buildProofButtons(context, ref, tokens, quest),
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildQuestInfoCard(MinqTheme tokens) {
+  Widget _buildQuestInfoCard(MinqTheme tokens, quest) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -262,28 +290,30 @@ class _RecordForm extends ConsumerWidget {
               borderRadius: tokens.cornerLarge(),
             ),
             child: Icon(
-              Icons.spa,
+              iconDataForKey(quest.iconKey),
               color: tokens.brandPrimary,
               size: tokens.spacing(8),
             ),
           ),
           SizedBox(width: tokens.spacing(4)),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '瞑想',
-                style: tokens.titleMedium.copyWith(
-                  color: tokens.textPrimary,
-                  fontWeight: FontWeight.bold,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  quest.title,
+                  style: tokens.titleMedium.copyWith(
+                    color: tokens.textPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              SizedBox(height: tokens.spacing(1)),
-              Text(
-                '10分',
-                style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
-              ),
-            ],
+                SizedBox(height: tokens.spacing(1)),
+                Text(
+                  '${quest.estimatedMinutes}分',
+                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -294,6 +324,7 @@ class _RecordForm extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     MinqTheme tokens,
+    quest,
   ) {
     return LayoutBuilder(
       builder: (context, constraints) {

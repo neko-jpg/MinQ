@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/data/services/support_chat_service.dart';
 import 'package:minq/domain/support/support_message.dart';
 import 'package:minq/presentation/common/dialogs/discard_changes_dialog.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
@@ -326,7 +327,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'GPT-4o サポートチャット',
+              'Gemma AI サポートチャット',
               style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
             ),
             SizedBox(height: tokens.spacing(3)),

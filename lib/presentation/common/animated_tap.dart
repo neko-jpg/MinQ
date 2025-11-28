@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AnimatedTap extends StatefulWidget {
-  const AnimatedTap({
-    super.key,
-    required this.child,
-    this.onTap,
-  });
+  const AnimatedTap({super.key, required this.child, this.onTap});
 
   final Widget child;
   final VoidCallback? onTap;
@@ -14,7 +10,8 @@ class AnimatedTap extends StatefulWidget {
   State<AnimatedTap> createState() => _AnimatedTapState();
 }
 
-class _AnimatedTapState extends State<AnimatedTap> with SingleTickerProviderStateMixin {
+class _AnimatedTapState extends State<AnimatedTap>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
 
@@ -27,7 +24,11 @@ class _AnimatedTapState extends State<AnimatedTap> with SingleTickerProviderStat
       reverseDuration: const Duration(milliseconds: 100),
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut, reverseCurve: Curves.easeIn),
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOut,
+        reverseCurve: Curves.easeIn,
+      ),
     );
   }
 
@@ -60,10 +61,7 @@ class _AnimatedTapState extends State<AnimatedTap> with SingleTickerProviderStat
       onTapDown: _handleTapDown,
       onTapUp: _handleTapUp,
       onTapCancel: _handleTapCancel,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: widget.child,
-      ),
+      child: ScaleTransition(scale: _scaleAnimation, child: widget.child),
     );
   }
 }

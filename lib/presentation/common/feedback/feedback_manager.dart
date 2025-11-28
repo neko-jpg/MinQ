@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 import 'package:minq/presentation/common/feedback/audio_feedback_manager.dart';
+import 'package:minq/presentation/common/feedback/haptic_manager.dart';
 
 /// Unified feedback manager that coordinates haptic and audio feedback
 /// Provides convenient methods for common interaction patterns
@@ -18,7 +18,7 @@ class FeedbackManager {
   /// Initialize both haptic and audio feedback managers
   static Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
     try {
       await Future.wait([
         HapticManager.initialize(),

@@ -12,5 +12,6 @@ class InterventionStrategy with _$InterventionStrategy {
     required String type, // e.g., 'encouragement', 'goal_adjustment'
   }) = _InterventionStrategy;
 
-  factory InterventionStrategy.fromJson(Map<String, dynamic> json) => _$InterventionStrategyFromJson(json);
+  factory InterventionStrategy.fromJson(Map<String, dynamic> json) =>
+      _$InterventionStrategyFromJson(json);
 }

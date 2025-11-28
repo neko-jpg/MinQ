@@ -14,15 +14,30 @@ class EventManager {
 
   /// Creates a new event.
   Future<void> createEvent(Event event) async {
-    // TODO: Implement logic to save the event to Firestore.
-    print("Creating event: ${event.name}");
+    try {
+      await _firestore.collection('events').doc(event.id).set(event.toJson());
+      print("Event '${event.name}' created successfully.");
+    } catch (e) {
+      print('Error creating event: $e');
+    }
   }
 
   /// Fetches the currently active events.
   Future<List<Event>> getActiveEvents() async {
-    // TODO: Implement logic to query Firestore for events where the current date
-    // is between the start and end dates.
-    return [];
+    try {
+      final now = DateTime.now();
+      final snapshot =
+          await _firestore
+              .collection('events')
+              .where('startDate', isLessThanOrEqualTo: now)
+              .where('endDate', isGreaterThanOrEqualTo: now)
+              .get();
+
+      return snapshot.docs.map((doc) => Event.fromJson(doc.data())).toList();
+    } catch (e) {
+      print('Error fetching active events: $e');
+      return [];
+    }
   }
 
   /// Registers a user for an event.
@@ -30,7 +45,16 @@ class EventManager {
     required String userId,
     required String eventId,
   }) async {
-    // TODO: Add user to the list of participants for the event.
-    print("User $userId registered for event $eventId.");
+    try {
+      await _firestore
+          .collection('events')
+          .doc(eventId)
+          .collection('participants')
+          .doc(userId)
+          .set({'registeredAt': FieldValue.serverTimestamp()});
+      print('User $userId registered for event $eventId.');
+    } catch (e) {
+      print('Error registering user for event: $e');
+    }
   }
 }

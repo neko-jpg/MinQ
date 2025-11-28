@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../logging/app_logger.dart';
+import 'package:minq/core/logging/app_logger.dart';
 
 /// アーカイブサービス
 class ArchiveService {
   final FirebaseFirestore _firestore;
 
   ArchiveService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// クエストをアーカイブ
   Future<void> archiveQuest(String userId, String questId) async {
@@ -17,9 +17,9 @@ class ArchiveService {
           .collection('quests')
           .doc(questId)
           .update({
-        'isArchived': true,
-        'archivedAt': FieldValue.serverTimestamp(),
-      });
+            'isArchived': true,
+            'archivedAt': FieldValue.serverTimestamp(),
+          });
 
       AppLogger.info('Quest archived', data: {'questId': questId});
     } catch (e, stack) {
@@ -36,10 +36,7 @@ class ArchiveService {
           .doc(userId)
           .collection('quests')
           .doc(questId)
-          .update({
-        'isArchived': false,
-        'archivedAt': null,
-      });
+          .update({'isArchived': false, 'archivedAt': null});
 
       AppLogger.info('Quest unarchived', data: {'questId': questId});
     } catch (e, stack) {
@@ -58,13 +55,10 @@ class ArchiveService {
         .orderBy('archivedAt', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return {
-          'id': doc.id,
-          ...doc.data(),
-        };
-      }).toList();
-    });
+          return snapshot.docs.map((doc) {
+            return {'id': doc.id, ...doc.data()};
+          }).toList();
+        });
   }
 
   /// アーカイブされたクエストを完全削除
@@ -79,8 +73,11 @@ class ArchiveService {
 
       AppLogger.info('Archived quest deleted', data: {'questId': questId});
     } catch (e, stack) {
-      AppLogger.error('Failed to delete archived quest',
-          error: e, stackTrace: stack);
+      AppLogger.error(
+        'Failed to delete archived quest',
+        error: e,
+        stackTrace: stack,
+      );
       rethrow;
     }
   }
@@ -90,23 +87,29 @@ class ArchiveService {
     try {
       final cutoffDate = DateTime.now().subtract(const Duration(days: 90));
 
-      final snapshot = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('quests')
-          .where('isArchived', isEqualTo: true)
-          .where('archivedAt', isLessThan: Timestamp.fromDate(cutoffDate))
-          .get();
+      final snapshot =
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('quests')
+              .where('isArchived', isEqualTo: true)
+              .where('archivedAt', isLessThan: Timestamp.fromDate(cutoffDate))
+              .get();
 
       for (final doc in snapshot.docs) {
         await doc.reference.delete();
       }
 
-      AppLogger.info('Old archives cleaned',
-          data: {'count': snapshot.docs.length});
+      AppLogger.info(
+        'Old archives cleaned',
+        data: {'count': snapshot.docs.length},
+      );
     } catch (e, stack) {
-      AppLogger.error('Failed to clean old archives',
-          error: e, stackTrace: stack);
+      AppLogger.error(
+        'Failed to clean old archives',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 }
