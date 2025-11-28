@@ -5,7 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:minq/presentation/controllers/ai_concierge_chat_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/data/providers/gemma_ai_provider.dart';
+import 'package:minq/core/ai/ai_integration_manager.dart';
+import 'package:minq/data/providers.dart';
 
 enum _ConciergeMenuOption { insights, clearHistory, diagnostics, toggleAI }
 
@@ -477,8 +478,8 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
   }
 
   Future<void> _showDiagnostics() async {
-    final gemmaService = await ref.read(gemmaAIServiceProvider.future);
-    final diagnostics = await gemmaService.getDiagnosticInfo();
+    final diagnostics =
+        await ref.read(aiIntegrationManagerProvider).getDiagnosticInfo();
 
     if (!mounted) return;
 
@@ -563,9 +564,17 @@ class _AiConciergeChatScreenState extends ConsumerState<AiConciergeChatScreen> {
   }
 
   Future<void> _forceResetAI() async {
+    final uid = ref.read(uidProvider);
+    if (uid == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('ログインが必要です')),
+      );
+      return;
+    }
+
     try {
-      final gemmaService = await ref.read(gemmaAIServiceProvider.future);
-      await gemmaService.forceReset();
+      // AIマネージャー再初期化（forceResetはないため再初期化で代用）
+      await ref.read(aiIntegrationManagerProvider).initialize(userId: uid);
 
       // チャットも再初期化
       await ref

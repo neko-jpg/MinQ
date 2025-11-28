@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service_provider.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/core/progress/progress_visualization_service.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/presentation/widgets/effects/minq_resonance_burst.dart';
 
-// A dummy user ID for now
-const _userId = 'test_user';
+// Animation trigger provider
+final showBurstProvider = StateProvider<bool>((ref) => false);
 
 // Data class for the progress section
 class HomeProgressData {
@@ -23,10 +26,15 @@ class HomeProgressData {
 final homeProgressProvider = FutureProvider.autoDispose<HomeProgressData>((
   ref,
 ) async {
+  final uid = ref.watch(uidProvider);
+  if (uid == null) {
+    return HomeProgressData(streak: 0, completedQuests: 0, totalQuests: 0);
+  }
+
   final progressService = ref.watch(progressVisualizationServiceProvider);
 
   // Fetch streak
-  final streak = await progressService.calculateStreak(_userId);
+  final streak = await progressService.calculateStreak(uid);
 
   // Fetch today's quests
   final today = DateTime.now();
@@ -36,7 +44,7 @@ final homeProgressProvider = FutureProvider.autoDispose<HomeProgressData>((
   final questSnapshot =
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(_userId)
+          .doc(uid)
           .collection('quests')
           .where(
             'createdAt',
@@ -61,6 +69,8 @@ class HomeScreenV2 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final showBurst = ref.watch(showBurstProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('MinQ'),
@@ -73,23 +83,35 @@ class HomeScreenV2 extends ConsumerWidget {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: const [
-          // Placeholder for AI Daily Encouragement (Task 15.1)
-          _AiEncouragementCard(),
-          SizedBox(height: 16),
+      body: Stack(
+        children: [
+          ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: const [
+              // Placeholder for AI Daily Encouragement (Task 15.1)
+              _AiEncouragementCard(),
+              SizedBox(height: 16),
 
-          // Placeholder for Streak Counter & Progress (Task 15.1)
-          _StreakAndProgressSection(),
-          SizedBox(height: 24),
+              // Placeholder for Streak Counter & Progress (Task 15.1)
+              _StreakAndProgressSection(),
+              SizedBox(height: 24),
 
-          // Placeholder for Today's Pending Quests (Task 15.1)
-          _TodaysQuestsSection(),
-          SizedBox(height: 24),
+              // Placeholder for Today's Pending Quests (Task 15.1)
+              _TodaysQuestsSection(),
+              SizedBox(height: 24),
 
-          // Placeholder for Active Challenges (Task 15.1)
-          _ActiveChallengesSection(),
+              // Placeholder for Active Challenges (Task 15.1)
+              _ActiveChallengesSection(),
+            ],
+          ),
+          if (showBurst)
+            Positioned.fill(
+              child: MinqResonanceBurst(
+                onComplete: () {
+                  ref.read(showBurstProvider.notifier).state = false;
+                },
+              ),
+            ),
         ],
       ),
     );
@@ -98,10 +120,11 @@ class HomeScreenV2 extends ConsumerWidget {
 
 // Provider to generate a daily motivational quote
 final dailyQuoteProvider = FutureProvider.autoDispose<String>((ref) async {
-  final gemmaService = ref.watch(gemmaAIServiceProvider);
-  // This prompt is an example. It could be more dynamic.
-  return await gemmaService.generateText(
-    'Write a short, uplifting, one-sentence motivational quote for someone starting their day.',
+  final aiService = ref.watch(tfliteUnifiedAIServiceProvider);
+  return await aiService.generateChatResponse(
+    '今日の一言をお願いします',
+    systemPrompt: 'あなたは親しみやすいAIコーチです。ユーザーを励ます短くてポジティブな一言を日本語で生成してください。',
+    maxTokens: 50,
   );
 });
 
@@ -190,13 +213,18 @@ class _ProgressTile extends StatelessWidget {
 
 final todaysQuestsProvider =
     StreamProvider.autoDispose<List<QueryDocumentSnapshot>>((ref) {
+      final uid = ref.watch(uidProvider);
+      if (uid == null) {
+        return const Stream.empty();
+      }
+
       final today = DateTime.now();
       final startOfDay = DateTime(today.year, today.month, today.day);
       final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59);
 
       return FirebaseFirestore.instance
           .collection('users')
-          .doc(_userId)
+          .doc(uid)
           .collection('quests')
           .where(
             'createdAt',
@@ -209,6 +237,9 @@ final todaysQuestsProvider =
 
 final questCompletionProvider = Provider((ref) {
   return (String questId, String questName) async {
+    final uid = ref.read(uidProvider);
+    if (uid == null) return;
+
     final firestore = FirebaseFirestore.instance;
     final gamification = ref.read(gamificationEngineProvider);
     final challenges = ref.read(challengeServiceProvider);
@@ -216,7 +247,7 @@ final questCompletionProvider = Provider((ref) {
     // 1. Mark quest as complete
     await firestore
         .collection('users')
-        .doc(_userId)
+        .doc(uid)
         .collection('quests')
         .doc(questId)
         .update({'completed': true});
@@ -224,7 +255,7 @@ final questCompletionProvider = Provider((ref) {
     // 2. Log completion
     await firestore
         .collection('users')
-        .doc(_userId)
+        .doc(uid)
         .collection('quest_logs')
         .add({
           'questId': questId,
@@ -234,7 +265,7 @@ final questCompletionProvider = Provider((ref) {
 
     // 3. Award points
     await gamification.awardPoints(
-      userId: _userId,
+      userId: uid,
       basePoints: 10,
       reason: 'Completed quest: $questName',
     );
@@ -243,7 +274,7 @@ final questCompletionProvider = Provider((ref) {
     final dailyChallengeId =
         'daily_${DateTime.now().year}_${DateTime.now().month}_${DateTime.now().day}';
     await challenges.updateProgress(
-      userId: _userId,
+      userId: uid,
       challengeId: dailyChallengeId,
       incrementBy: 1,
     );
@@ -251,6 +282,9 @@ final questCompletionProvider = Provider((ref) {
     // 5. Invalidate providers to refresh UI
     ref.invalidate(homeProgressProvider);
     ref.invalidate(todaysQuestsProvider);
+
+    // 6. Trigger Burst Animation
+    ref.read(showBurstProvider.notifier).state = true;
   };
 });
 
@@ -319,11 +353,17 @@ class _TodaysQuestsSection extends ConsumerWidget {
 
 final activeChallengesProvider =
     StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) async* {
+      final uid = ref.watch(uidProvider);
+      if (uid == null) {
+        yield [];
+        return;
+      }
+
       final firestore = FirebaseFirestore.instance;
       final challengeProgressStream =
           firestore
               .collection('users')
-              .doc(_userId)
+              .doc(uid)
               .collection('challenge_progress')
               .where('completed', isEqualTo: false)
               .snapshots();

@@ -116,6 +116,22 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(pairAssignmentStreamProvider, (previous, next) {
+      next.whenData((doc) {
+        if (doc != null && doc.exists) {
+          final data = doc.data();
+          final pairId = data?['pairId'] as String?;
+          if (pairId != null && _status == PairMatchingStatus.searching) {
+            _pairingTimer?.cancel();
+            setState(() {
+              _foundPairId = pairId;
+              _status = PairMatchingStatus.matchFound;
+            });
+          }
+        }
+      });
+    });
+
     final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
