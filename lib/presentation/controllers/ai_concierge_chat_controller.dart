@@ -184,18 +184,11 @@ class AiConciergeChatController
       return [];
     }
   }
-}
 
   /// AIモードの切り替え
   void toggleAIMode() {
     // TODO: AIモードの切り替え実装
     log('AIモードを切り替えました');
-  }
-
-  /// 現在のAIモードを取得
-  String getCurrentAIMode() {
-    // TODO: 実際のAIモード取得実装
-    return 'Standard';
   }
 }
 

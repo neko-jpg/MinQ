@@ -147,6 +147,18 @@ class TFLiteUnifiedAIService {
 
   // ========== テキスト生成機能 ==========
 
+  /// 習慣提案生成
+  Future<String> generateHabitSuggestion({
+    required Map<String, dynamic> habitData,
+    required String context,
+  }) async {
+    return generateChatResponse(
+      '具体的な習慣の提案をお願いします。',
+      systemPrompt: context,
+      maxTokens: 200,
+    );
+  }
+
   /// AIチャット応答生成
   Future<String> generateChatResponse(
     String userMessage, {
@@ -173,7 +185,7 @@ class TFLiteUnifiedAIService {
       }
 
       final inputTensor = _prepareInputTensor(tokens, maxLength: 128);
-      final outputTensor = List.filled(maxTokens, 0.0).reshape([1, maxTokens]);
+      final outputTensor = [List.filled(maxTokens, 0.0)];
 
       _textGenerationModel!.run(inputTensor, outputTensor);
 
@@ -259,14 +271,11 @@ class TFLiteUnifiedAIService {
 
       final tokens = _tokenizeText(text);
       final inputTensor = _prepareInputTensor(tokens, maxLength: 64);
-      final outputTensor = List.filled(
-        3,
-        0.0,
-      ).reshape([1, 3]); // [negative, neutral, positive]
+      final outputTensor = [List.filled(3, 0.0)]; // [negative, neutral, positive]
 
       _sentimentModel!.run(inputTensor, outputTensor);
 
-      final scores = outputTensor[0] as List<double>;
+      final scores = outputTensor[0];
       return SentimentResult(
         positive: scores[2],
         neutral: scores[1],
@@ -326,14 +335,11 @@ class TFLiteUnifiedAIService {
         preferences,
       );
       final inputTensor = [features].reshape([1, features.length]);
-      final outputTensor = List.filled(
-        100,
-        0.0,
-      ).reshape([1, 100]); // 100種類の習慣スコア
+      final outputTensor = [List.filled(100, 0.0)]; // 100種類の習慣スコア
 
       _recommendationModel!.run(inputTensor, outputTensor);
 
-      final scores = outputTensor[0] as List<double>;
+      final scores = outputTensor[0];
       return _extractTopRecommendations(scores, limit);
     } catch (e) {
       log('TFLite AI: 推薦エラー - $e');
@@ -392,11 +398,11 @@ class TFLiteUnifiedAIService {
 
       final features = _encodeFailureFeatures(history, targetDate);
       final inputTensor = [features].reshape([1, features.length]);
-      final outputTensor = List.filled(1, 0.0).reshape([1, 1]);
+      final outputTensor = [List.filled(1, 0.0)];
 
       _predictionModel!.run(inputTensor, outputTensor);
 
-      final riskScore = outputTensor[0][0] as double;
+      final riskScore = outputTensor[0][0];
       return FailurePrediction(
         riskScore: riskScore,
         confidence: 0.8,
