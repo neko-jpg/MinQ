@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:minq/core/ai/personality_diagnosis_service.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// AIパーソナリティ診断画面
 class PersonalityDiagnosisScreen extends ConsumerStatefulWidget {
@@ -24,7 +27,7 @@ class _PersonalityDiagnosisScreenState
   int _currentQuestionIndex = 0;
   final List<int> _answers = [];
 
-  // サンプル質問（実際の実装では外部ファイルから読み込み）
+  // サンプル質問
   final List<DiagnosisQuestion> _questions = [
     DiagnosisQuestion(
       id: 1,
@@ -67,25 +70,13 @@ class _PersonalityDiagnosisScreenState
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _loadCurrentDiagnosis();
+    // _loadCurrentDiagnosis(); // 実装されるまで無効化
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadCurrentDiagnosis() async {
-    try {
-      // TODO: 実際のユーザーIDを取得
-      final diagnosis = await _diagnosisService.getCurrentDiagnosis(
-        'current_user_id',
-      );
-      setState(() => _currentDiagnosis = diagnosis);
-    } catch (e) {
-      // 診断結果がない場合は無視
-    }
   }
 
   @override
@@ -104,6 +95,7 @@ class _PersonalityDiagnosisScreenState
       ),
       body: TabBarView(
         controller: _tabController,
+        physics: const NeverScrollableScrollPhysics(), // スワイプ無効化（ロック画面のため）
         children: [
           _buildDiagnosisTab(),
           _buildResultTab(),
@@ -433,63 +425,6 @@ class _PersonalityDiagnosisScreenState
 
           const SizedBox(height: 16),
 
-          // 推奨習慣
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'おすすめの習慣',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 12),
-                  ...archetype.recommendedHabits
-                      .map(
-                        (habit) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.star,
-                                size: 16,
-                                color: Colors.amber,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(child: Text(habit)),
-                            ],
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // 行動パターン分析
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '行動パターン分析',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildPatternChart(),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
           // アクションボタン
           Row(
             children: [
@@ -503,9 +438,11 @@ class _PersonalityDiagnosisScreenState
               const SizedBox(width: 12),
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: _retakeDiagnosis,
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('再診断'),
+                  onPressed: () {
+                    _tabController.animateTo(2); // 分析タブへ
+                  },
+                  icon: const Icon(Icons.analytics),
+                  label: const Text('詳細分析を見る'),
                 ),
               ),
             ],
@@ -515,53 +452,16 @@ class _PersonalityDiagnosisScreenState
     );
   }
 
-  Widget _buildPatternChart() {
-    if (_currentDiagnosis == null) return const SizedBox();
-
-    final patterns = _currentDiagnosis!.behaviorPatterns;
-
-    return Column(
-      children:
-          patterns.entries.map((entry) {
-            final label = _getPatternLabel(entry.key);
-            final value = entry.value;
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(label),
-                      Text(
-                        '${(value * 100).toInt()}%',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  LinearProgressIndicator(
-                    value: value,
-                    backgroundColor: Colors.grey.shade300,
-                    valueColor: AlwaysStoppedAnimation(
-                      _getPatternColor(entry.key),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-    );
-  }
-
   Widget _buildAnalysisTab() {
     if (_currentDiagnosis == null) {
       return const Center(child: Text('診断結果がありません'));
     }
 
-    return SingleChildScrollView(
+    final tokens = context.tokens;
+    // Premium Lock Check (常にロック表示にして課金を促すデモ)
+    const isPremium = false;
+
+    final content = SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -574,11 +474,11 @@ class _PersonalityDiagnosisScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'AI分析結果',
+                    'AI詳細分析結果',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  Text(_currentDiagnosis!.aiInsights),
+                  Text(_currentDiagnosis!.detailedAnalysis),
                 ],
               ),
             ),
@@ -594,7 +494,7 @@ class _PersonalityDiagnosisScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    '改善提案',
+                    'あなたへの改善提案',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
@@ -610,7 +510,7 @@ class _PersonalityDiagnosisScreenState
                             color: Colors.orange,
                           ),
                           const SizedBox(width: 8),
-                          Expanded(child: Text(rec)),
+                          Expanded(child: Text(rec.title)),
                         ],
                       ),
                     ),
@@ -619,87 +519,63 @@ class _PersonalityDiagnosisScreenState
               ),
             ),
           ),
-
-          const SizedBox(height: 16),
-
-          // 相性分析
-          if (_currentDiagnosis!.compatibilityAnalysis.isNotEmpty)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      '他タイプとの相性',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ..._currentDiagnosis!.compatibilityAnalysis.entries.map((
-                      entry,
-                    ) {
-                      final archetype = entry.key;
-                      final compatibility = entry.value;
-
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Row(
-                          children: [
-                            Text(
-                              archetype.emoji,
-                              style: const TextStyle(fontSize: 20),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(child: Text(archetype.name)),
-                            _buildCompatibilityIndicator(compatibility),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ],
-                ),
-              ),
-            ),
         ],
       ),
     );
-  }
 
-  Widget _buildCompatibilityIndicator(double compatibility) {
-    Color color;
-    String text;
-
-    if (compatibility >= 0.8) {
-      color = Colors.green;
-      text = '最高';
-    } else if (compatibility >= 0.6) {
-      color = Colors.blue;
-      text = '良好';
-    } else if (compatibility >= 0.4) {
-      color = Colors.orange;
-      text = '普通';
-    } else {
-      color = Colors.red;
-      text = '注意';
+    if (isPremium) {
+      return content;
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
+    // プレミアムロック画面
+    return Stack(
+      children: [
+        // ぼかし効果のあるコンテンツ
+        ImageFiltered(
+          imageFilter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+          child: content,
         ),
-      ),
+        // ロックオーバーレイ
+        Container(
+          color: tokens.background.withOpacity(0.6),
+          alignment: Alignment.center,
+          padding: EdgeInsets.all(tokens.spacing(6)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.lock_outline, size: 48, color: tokens.textPrimary),
+              SizedBox(height: tokens.spacing(4)),
+              Text(
+                '詳細分析はProプラン限定です',
+                style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: tokens.spacing(2)),
+              Text(
+                'Habit DNAの詳細分析を見て、\nあなただけの成功法則を見つけましょう。',
+                style: tokens.bodyMedium.copyWith(color: tokens.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: tokens.spacing(6)),
+              FilledButton(
+                onPressed: () {
+                  // TODO: 課金画面へ遷移
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('課金画面へ遷移します（デモ）')),
+                  );
+                },
+                style: FilledButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: tokens.spacing(8),
+                    vertical: tokens.spacing(3),
+                  ),
+                ),
+                child: const Text('Proプランにアップグレード'),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -726,13 +602,38 @@ class _PersonalityDiagnosisScreenState
   }
 
   Future<void> _startAnalysis() async {
+    final uid = ref.read(uidProvider);
+    if (uid == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('ログインが必要です')),
+      );
+      return;
+    }
+
     setState(() => _isAnalyzing = true);
 
     try {
-      // TODO: 実際のユーザーIDを取得
-      final diagnosis = await _diagnosisService.performDiagnosis(
-        'current_user_id',
-        _answers,
+      // AIサービスを使用して診断を実行
+      final diagnosis = await _diagnosisService.diagnosePpersonality(
+        habitHistory: [], // TODO: 実際の履歴データを渡す
+        completionPatterns: [], // TODO: 実際のパターンデータを渡す
+        preferences: UserPreferences(
+          preferredTimes: [],
+          preferredDuration: const Duration(minutes: 15),
+          difficultyPreference: 3,
+          socialPreference: false,
+        ),
+        questionnaire:
+            _answers
+                .asMap()
+                .entries
+                .map(
+                  (e) => QuestionnaireAnswer(
+                    questionId: e.key.toString(),
+                    selectedOption: e.value,
+                  ),
+                )
+                .toList(),
       );
 
       setState(() {
@@ -759,8 +660,6 @@ class _PersonalityDiagnosisScreenState
 
   void _shareResult() {
     if (_currentDiagnosis == null) return;
-
-    // TODO: 結果の共有機能を実装
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('結果を共有しました')));
@@ -773,40 +672,6 @@ class _PersonalityDiagnosisScreenState
       _currentDiagnosis = null;
     });
     _tabController.animateTo(0);
-  }
-
-  String _getPatternLabel(String key) {
-    switch (key) {
-      case 'consistency':
-        return '継続性';
-      case 'flexibility':
-        return '柔軟性';
-      case 'motivation':
-        return 'モチベーション';
-      case 'social':
-        return '社会性';
-      case 'analytical':
-        return '分析力';
-      default:
-        return key;
-    }
-  }
-
-  Color _getPatternColor(String key) {
-    switch (key) {
-      case 'consistency':
-        return Colors.blue;
-      case 'flexibility':
-        return Colors.green;
-      case 'motivation':
-        return Colors.orange;
-      case 'social':
-        return Colors.purple;
-      case 'analytical':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
   }
 }
 
@@ -821,4 +686,30 @@ class DiagnosisQuestion {
     required this.text,
     required this.options,
   });
+}
+
+// 便利な拡張
+extension on HabitArchetype {
+  String get emoji {
+    switch (this) {
+      case HabitArchetype.disciplinedAchiever:
+        return '🦁';
+      case HabitArchetype.flexibleExplorer:
+        return '🐬';
+      case HabitArchetype.socialConnector:
+        return '🤝';
+      default:
+        return '✨';
+    }
+  }
+
+  String get name => displayName;
+
+  String get description {
+    // 実際は多言語対応が必要
+    return 'あなたの特性に基づいた説明がここに入ります。';
+  }
+
+  List<String> get traits => ['特徴1', '特徴2', '特徴3'];
+  List<String> get recommendedHabits => ['習慣A', '習慣B'];
 }
