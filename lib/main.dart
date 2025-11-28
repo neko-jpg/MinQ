@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/config/flavor.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/data/providers/gemma_ai_provider.dart';
 import 'package:minq/data/services/crash_recovery_store.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/firebase_options_dev.dart' as dev;
@@ -162,15 +161,6 @@ class _MinQAppState extends ConsumerState<MinQApp> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      try {
-        final gemma = await ref.read(gemmaAIServiceProvider.future);
-        await gemma.initialize();
-      } catch (e) {
-        // Gemma AIの初期化に失敗した場合はログに記録
-        print('Gemma AI initialization failed: $e');
-      }
-    });
 
     // レベルアップイベントリスナー
     ref.listen<LevelUpEvent?>(levelUpEventProvider, (previous, next) {
