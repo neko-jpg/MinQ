@@ -4,44 +4,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/support/support_message.dart';
-
-import 'package:minq/core/ai/gemma_ai_service.dart';
-import 'package:minq/data/providers/gemma_ai_provider.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service.dart';
+import 'package:minq/core/ai/tflite_unified_ai_service_provider.dart';
 
 class SupportChatService {
   SupportChatService({
     GenerativeSupportClient? client,
-    GemmaAIService? gemmaService,
+    TFLiteUnifiedAIService? aiService,
   }) : _client = client,
-       _gemmaService = gemmaService;
+       _aiService = aiService;
 
   final GenerativeSupportClient? _client;
-  final GemmaAIService? _gemmaService;
+  final TFLiteUnifiedAIService? _aiService;
 
   Future<SupportMessage> sendMessage({
     required String conversationId,
     required String content,
     required List<SupportMessage> history,
   }) async {
-    final gemma = _gemmaService;
-    if (gemma != null) {
+    final ai = _aiService;
+    if (ai != null) {
       try {
-        final historyMessages =
-            history
-                .map(
-                  (message) => GemmaChatMessage(
-                    role:
-                        message.role == 'user'
-                            ? GemmaChatRole.user
-                            : GemmaChatRole.assistant,
-                    content: message.content,
-                  ),
-                )
-                .toList();
+        final historyMessages = history
+            .map((message) => '${message.role}: ${message.content}')
+            .toList();
 
-        final reply = await gemma.generateText(
+        final reply = await ai.generateChatResponse(
           content,
-          history: historyMessages,
+          conversationHistory: historyMessages,
           systemPrompt: _supportSystemPrompt,
           maxTokens: 400,
         );
@@ -55,7 +45,7 @@ class SupportChatService {
           content: _supportFallback,
         );
       } catch (error, stackTrace) {
-        log('Gemma support reply failed', error: error, stackTrace: stackTrace);
+        log('AI support reply failed', error: error, stackTrace: stackTrace);
         if (_client != null) {
           return _fallbackToClient(conversationId, content, history);
         }
@@ -96,31 +86,15 @@ class SupportChatService {
 
 final supportChatServiceProvider = Provider<SupportChatService?>((ref) {
   final remoteConfig = ref.watch(remoteConfigServiceProvider);
-  final gemmaServiceAsync = ref.watch(gemmaAIServiceProvider);
-  final gemmaService = gemmaServiceAsync.valueOrNull;
+  final aiService = ref.watch(tfliteUnifiedAIServiceProvider);
 
-  // Gemma AIが利用可能な場合は優先的に使用
-  if (gemmaService != null) {
-    return SupportChatService(gemmaService: gemmaService);
-  }
-
-  // フォールバック: 従来のクライアント
-  final endpoint = remoteConfig.tryGetUri('support_bot_endpoint');
-  final apiKey = remoteConfig.tryGetString('support_bot_api_key');
-  if (endpoint == null || apiKey == null || apiKey.isEmpty) {
-    return null;
-  }
-
-  final client = GenerativeSupportClient(
-    httpClient: ref.watch(httpClientProvider),
-    endpoint: endpoint.toString(),
-    apiKey: apiKey,
-  );
-  return SupportChatService(client: client, gemmaService: gemmaService);
+  // AIが利用可能な場合は優先的に使用
+  // TFLiteサービスは常にnullではないが、初期化チェックなどは内部で行われる
+  return SupportChatService(aiService: aiService);
 });
 
 const String _supportSystemPrompt =
-    'あなたは習慣形成アプリ「MinQ」のサポートAI Gemma です。ユーザーの不安を'
+    'あなたは習慣形成アプリ「MinQ」のサポートAIです。ユーザーの不安を'
     '和らげつつ、具体的で実行しやすい提案や次のアクションを日本語で提供し'
     'てください。';
 

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/ai/ai_integration_manager.dart';
+import 'package:minq/data/providers.dart';
 
 @immutable
 class AiConciergeMessage {
@@ -33,13 +34,18 @@ class AiConciergeChatController
 
   @override
   Future<List<AiConciergeMessage>> build() async {
+    final uid = ref.watch(uidProvider);
+    if (uid == null) {
+      return [];
+    }
+
     // AI統合マネージャーの初期化
     try {
-      await _aiManager.initialize(userId: 'current_user'); // 実際のユーザーIDを使用
+      await _aiManager.initialize(userId: uid);
     } catch (e) {
       log('AI統合マネージャー初期化エラー: $e');
     }
-    
+
     return _createInitialConversation();
   }
 
