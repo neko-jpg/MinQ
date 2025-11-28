@@ -6,6 +6,10 @@ import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/core/progress/progress_visualization_service.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/presentation/widgets/effects/minq_resonance_burst.dart';
+
+// Animation trigger provider
+final showBurstProvider = StateProvider<bool>((ref) => false);
 
 // Data class for the progress section
 class HomeProgressData {
@@ -65,6 +69,8 @@ class HomeScreenV2 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final showBurst = ref.watch(showBurstProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('MinQ'),
@@ -77,23 +83,35 @@ class HomeScreenV2 extends ConsumerWidget {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: const [
-          // Placeholder for AI Daily Encouragement (Task 15.1)
-          _AiEncouragementCard(),
-          SizedBox(height: 16),
+      body: Stack(
+        children: [
+          ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: const [
+              // Placeholder for AI Daily Encouragement (Task 15.1)
+              _AiEncouragementCard(),
+              SizedBox(height: 16),
 
-          // Placeholder for Streak Counter & Progress (Task 15.1)
-          _StreakAndProgressSection(),
-          SizedBox(height: 24),
+              // Placeholder for Streak Counter & Progress (Task 15.1)
+              _StreakAndProgressSection(),
+              SizedBox(height: 24),
 
-          // Placeholder for Today's Pending Quests (Task 15.1)
-          _TodaysQuestsSection(),
-          SizedBox(height: 24),
+              // Placeholder for Today's Pending Quests (Task 15.1)
+              _TodaysQuestsSection(),
+              SizedBox(height: 24),
 
-          // Placeholder for Active Challenges (Task 15.1)
-          _ActiveChallengesSection(),
+              // Placeholder for Active Challenges (Task 15.1)
+              _ActiveChallengesSection(),
+            ],
+          ),
+          if (showBurst)
+            Positioned.fill(
+              child: MinqResonanceBurst(
+                onComplete: () {
+                  ref.read(showBurstProvider.notifier).state = false;
+                },
+              ),
+            ),
         ],
       ),
     );
@@ -264,6 +282,9 @@ final questCompletionProvider = Provider((ref) {
     // 5. Invalidate providers to refresh UI
     ref.invalidate(homeProgressProvider);
     ref.invalidate(todaysQuestsProvider);
+
+    // 6. Trigger Burst Animation
+    ref.read(showBurstProvider.notifier).state = true;
   };
 });
 
