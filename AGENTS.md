@@ -73,8 +73,7 @@ lib/
 *   **Scope:** Keep commits small and atomic.
 
 ## 7. Specific Known Issues (Memory)
-*   **PairRepository:** The current "Single Queue" implementation (`pair_queue/$category`) is not scalable. Avoid extending this pattern; plan for refactoring.
-*   **Habit DNA:** The logic exists in `HabitDNAService` but is unused. Future tasks should prioritize exposing this to the user.
+*   **Legacy Code:** Some older UI components in `lib/presentation` (not `lib/features`) may still need migration to the Feature-First structure.
 
 ## 8. Command Reference
 *   **Generate Code:** `flutter pub run build_runner build --delete-conflicting-outputs`
