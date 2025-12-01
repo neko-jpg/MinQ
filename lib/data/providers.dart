@@ -14,17 +14,13 @@ import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/config/stripe_config.dart';
-import 'package:minq/core/ai/failure_prediction_service.dart';
-import 'package:minq/core/ai/tflite_unified_ai_service_provider.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/export/data_export_service.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/core/gamification/reward_system.dart';
 import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/core/network/network_status_service.dart';
-import 'package:minq/core/notifications/notification_personalization_engine.dart';
 import 'package:minq/core/notifications/re_engagement_service.dart';
-import 'package:minq/core/notifications/smart_notification_service.dart';
 import 'package:minq/core/reminders/multiple_reminder_service.dart';
 import 'package:minq/core/sharing/ai_share_banner_service.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
@@ -309,26 +305,6 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
 final referralServiceProvider = Provider<ReferralService>((ref) {
   return ReferralService(
     analytics: ref.watch(analyticsServiceProvider),
-  );
-});
-
-final failurePredictionServiceProvider = Provider<FailurePredictionService>((ref) {
-  return FailurePredictionService(
-    questLogRepository: ref.watch(questLogRepositoryProvider),
-    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
-    analytics: ref.watch(analyticsServiceProvider),
-  );
-});
-
-final smartNotificationServiceProvider = Provider<SmartNotificationService>((ref) {
-  return SmartNotificationService(
-    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
-  );
-});
-
-final notificationPersonalizationEngineProvider = Provider<NotificationPersonalizationEngine>((ref) {
-  return NotificationPersonalizationEngine(
-    aiService: ref.watch(tfliteUnifiedAIServiceProvider),
   );
 });
 

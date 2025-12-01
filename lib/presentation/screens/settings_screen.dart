@@ -9,6 +9,7 @@ import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
+import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -304,34 +305,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onTap: navigation.goToEvents,
               ),
               _SettingsTile(
-                title: 'AIコーチ',
-                subtitle: 'リアルタイムコーチング設定',
-                onTap: navigation.goToAICoachSettings,
-              ),
-              _SettingsTile(
                 title: 'ライブアクティビティ',
                 subtitle: 'リアルタイム活動表示設定',
                 onTap: navigation.goToLiveActivitySettings,
               ),
               _SettingsTile(
-                title: 'ハビットストーリー',
-                subtitle: 'AI自動生成ストーリー',
-                onTap: navigation.goToHabitStory,
-              ),
-              _SettingsTile(
                 title: 'ハビットバトル',
                 subtitle: '習慣継続で対戦',
                 onTap: navigation.goToBattle,
-              ),
-              _SettingsTile(
-                title: 'パーソナリティ診断',
-                subtitle: 'AI習慣DNA分析',
-                onTap: navigation.goToPersonalityDiagnosis,
-              ),
-              _SettingsTile(
-                title: '週次AI分析レポート',
-                subtitle: '毎週の詳細分析と改善提案',
-                onTap: navigation.goToWeeklyReport,
               ),
               _SettingsTile(
                 title: 'ハビットコミュニティ',
@@ -450,11 +431,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       value ? 'ダミーデータモードを有効にしました' : 'ダミーデータモードを無効にしました',
                     );
                   },
-                ),
-                _SettingsTile(
-                  title: l10n.settingsSocialSharingDemo,
-                  subtitle: l10n.settingsSocialSharingDemoSubtitle,
-                  onTap: navigation.goToSocialSharingDemo,
                 ),
               ],
             ),
