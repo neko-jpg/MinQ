@@ -71,7 +71,6 @@ dependencies:
   just_audio: ^0.10.5
   speech_to_text: ^7.3.0
   # flutter_gemma: ^0.11.6 # 問題があるため無効化
-  tflite_flutter: ^0.11.0
   flutter_tts: ^4.2.0
   health: ^13.2.1
   # TODO: Fix integrations package

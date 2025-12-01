@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/core/ai/ai_integration_manager.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
@@ -14,7 +13,6 @@ import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/controllers/quest_log_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/widgets/ai_coach_overlay.dart';
 import 'package:minq/presentation/widgets/badge_notification_widget.dart';
 
 /// クエストタイマー画面
@@ -98,9 +96,6 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
 
     _pulseController.repeat(reverse: true);
 
-    // AIコーチング開始
-    _startAICoaching();
-
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_currentMode == TimerMode.timer) {
@@ -127,9 +122,6 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
 
     _timer?.cancel();
     _pulseController.stop();
-
-    // AIコーチング停止
-    _stopAICoaching();
   }
 
   void _resumeTimer() {
@@ -140,9 +132,6 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     });
 
     _pulseController.repeat(reverse: true);
-
-    // AIコーチング再開
-    _startAICoaching();
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
@@ -162,7 +151,6 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
   void _stopTimer() {
     _timer?.cancel();
     _pulseController.stop();
-    _stopAICoaching();
 
     setState(() {
       _isRunning = false;
@@ -175,7 +163,6 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
   void _completeTimer() {
     _timer?.cancel();
     _pulseController.stop();
-    _stopAICoaching();
 
     setState(() {
       _isRunning = false;
@@ -210,31 +197,6 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     }
   }
 
-  void _startAICoaching() async {
-    final quest = await ref.read(questByIdProvider(widget.questId).future);
-    if (quest == null) return;
-
-    try {
-      final aiManager = ref.read(aiIntegrationManagerProvider);
-      await aiManager.startRealtimeCoaching(
-        questId: widget.questId.toString(),
-        questTitle: quest.title,
-        estimatedDuration: _targetDuration,
-      );
-    } catch (e) {
-      // AIコーチングエラーは無視
-    }
-  }
-
-  void _stopAICoaching() async {
-    try {
-      final aiManager = ref.read(aiIntegrationManagerProvider);
-      await aiManager.stopRealtimeCoaching();
-    } catch (e) {
-      // AIコーチングエラーは無視
-    }
-  }
-
   void _switchMode(TimerMode mode) {
     if (_isRunning) return; // 実行中は切り替え不可
 
@@ -255,68 +217,59 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     final tokens = context.tokens;
     final questAsync = ref.watch(questByIdProvider(widget.questId));
 
-    return AICoachOverlay(
-      questId: widget.questId.toString(),
-      child: Scaffold(
-        backgroundColor: tokens.background,
-        appBar: AppBar(
-          title: questAsync.when(
-            data:
-                (quest) => Text(
-                  quest?.title ?? 'クエスト',
-                  style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
-                ),
-            loading: () => const Text('読み込み中...'),
-            error: (_, __) => const Text('エラー'),
-          ),
-          centerTitle: true,
-          backgroundColor: tokens.background,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () {
-              if (_isRunning) {
-                _showExitConfirmation();
-              } else {
-                context.pop();
-              }
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: _showSettings,
-            ),
-          ],
-        ),
-        body: Column(
-          children: [
-            // モード切り替えタブ
-            _buildModeSelector(tokens),
-
-            // タイマー/ストップウォッチ表示
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  if (!_isRunning) {
-                    setState(() {
-                      _currentMode = TimerMode.values[index];
-                      _currentDuration = Duration.zero;
-                    });
-                  }
-                },
-                children: [
-                  _buildTimerView(tokens),
-                  _buildStopwatchView(tokens),
-                ],
+    return Scaffold(
+      backgroundColor: tokens.background,
+      appBar: AppBar(
+        title: questAsync.when(
+          data:
+              (quest) => Text(
+                quest?.title ?? 'クエスト',
+                style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
               ),
-            ),
-
-            // コントロールボタン
-            _buildControlButtons(tokens),
-          ],
+          loading: () => const Text('読み込み中...'),
+          error: (_, __) => const Text('エラー'),
         ),
+        centerTitle: true,
+        backgroundColor: tokens.background,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            if (_isRunning) {
+              _showExitConfirmation();
+            } else {
+              context.pop();
+            }
+          },
+        ),
+        actions: [
+          IconButton(icon: const Icon(Icons.settings), onPressed: _showSettings),
+        ],
+      ),
+      body: Column(
+        children: [
+          // モード切り替えタブ
+          _buildModeSelector(tokens),
+
+          // タイマー/ストップウォッチ表示
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                if (!_isRunning) {
+                  setState(() {
+                    _currentMode = TimerMode.values[index];
+                    _currentDuration = Duration.zero;
+                  });
+                }
+              },
+              children: [_buildTimerView(tokens), _buildStopwatchView(tokens)],
+            ),
+          ),
+
+          // コントロールボタン
+          _buildControlButtons(tokens),
+        ],
       ),
     );
   }
