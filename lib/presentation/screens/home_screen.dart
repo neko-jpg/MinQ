@@ -9,8 +9,6 @@ import 'package:minq/presentation/controllers/home_data_controller.dart';
 import 'package:minq/presentation/controllers/sync_status_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/widgets/ai_concierge_card.dart';
-import 'package:minq/presentation/widgets/failure_prediction_widget.dart';
 import 'package:minq/presentation/widgets/gamification_status_card.dart';
 import 'package:minq/presentation/widgets/level_progress_widget.dart';
 import 'package:minq/presentation/widgets/live_activity_widget.dart';
@@ -147,8 +145,6 @@ class _HomeContent extends StatelessWidget {
         SizedBox(height: tokens.spacing(4)),
         _MiniQuestsSection(miniQuests: miniQuests),
         SizedBox(height: tokens.spacing(4)),
-        const AiConciergeCard(),
-        SizedBox(height: tokens.spacing(4)),
         _WeeklyStreakCard(recentLogs: data.recentLogs),
         SizedBox(height: tokens.spacing(4)),
         const GamificationStatusCard(),
@@ -156,8 +152,6 @@ class _HomeContent extends StatelessWidget {
         const ReferralCard(),
         SizedBox(height: tokens.spacing(4)),
         const LevelProgressWidget(isCompact: true),
-        SizedBox(height: tokens.spacing(4)),
-        const FailurePredictionWidget(),
         SizedBox(height: tokens.spacing(8)),
       ],
     );
