@@ -1,5 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/data/providers.dart';
+import 'package:minq/data/repositories/quest_log_repository.dart';
 import 'package:minq/domain/habit_dna/habit_archetype.dart';
 
 // Predefined Archetypes
@@ -43,45 +44,39 @@ final _archetypes = {
 
 // Provider for the service
 final habitDNAServiceProvider = Provider<HabitDNAService>((ref) {
-  return HabitDNAService(FirebaseFirestore.instance);
+  return HabitDNAService(ref.watch(questLogRepositoryProvider));
 });
 
 class HabitDNAService {
-  final FirebaseFirestore _firestore;
+  final QuestLogRepository _logRepository;
 
-  HabitDNAService(this._firestore);
+  HabitDNAService(this._logRepository);
 
   /// Determines the user's habit archetype based on their behavior patterns.
   Future<HabitArchetype?> determineArchetype(String userId) async {
-    print('Determining habit archetype for user $userId.');
     try {
-      final questLogsSnapshot =
-          await _firestore
-              .collection('users')
-              .doc(userId)
-              .collection('quest_logs')
-              .limit(100)
-              .get();
+      // Use local repository instead of Firestore for speed and offline support
+      final questLogs = await _logRepository.getLogsForUser(userId);
 
-      if (questLogsSnapshot.docs.length < 10) {
-        print('Not enough data to determine archetype.');
+      // Analyze last 100 logs
+      final recentLogs = questLogs.take(100).toList();
+
+      if (recentLogs.length < 10) {
         return null; // Need at least 10 completed quests
       }
 
-      final questLogs =
-          questLogsSnapshot.docs.map((doc) => doc.data()).toList();
-
       // Metric 1: Time of Day Preference (Morning vs. Evening)
+      // Using local time hour
       double averageCompletionHour =
-          questLogs
-              .map((log) => (log['completedAt'] as Timestamp).toDate().hour)
+          recentLogs
+              .map((log) => log.ts.toLocal().hour)
               .reduce((a, b) => a + b) /
-          questLogs.length;
+          recentLogs.length;
 
       // Metric 2: Quest Variety (Planner vs. Explorer)
-      final uniqueQuestNames =
-          questLogs.map((log) => log['name'] as String).toSet();
-      double varietyRatio = uniqueQuestNames.length / questLogs.length;
+      final uniqueQuestIds =
+          recentLogs.map((log) => log.questId).toSet();
+      double varietyRatio = uniqueQuestIds.length / recentLogs.length;
 
       // Simple classification logic
       if (averageCompletionHour < 14) {
@@ -96,7 +91,8 @@ class HabitDNAService {
             : _archetypes['the_marathoner'];
       }
     } catch (e) {
-      print('Error determining archetype: $e');
+      // Use AppLogger in real app, print for now as fallback if logger not available in scope
+      // debugPrint('Error determining archetype: $e');
       return null;
     }
   }
