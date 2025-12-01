@@ -51,6 +51,7 @@ import 'package:minq/data/services/referral_service.dart';
 import 'package:minq/data/services/remote_config_service.dart';
 import 'package:minq/data/services/speech_input_service.dart';
 import 'package:minq/data/services/stripe_billing_service.dart';
+import 'package:minq/data/services/sync_worker.dart';
 import 'package:minq/data/services/time_consistency_service.dart';
 import 'package:minq/data/services/usage_limit_service.dart';
 import 'package:minq/data/services/webhook_dispatch_service.dart';
@@ -303,9 +304,7 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
 });
 
 final referralServiceProvider = Provider<ReferralService>((ref) {
-  return ReferralService(
-    analytics: ref.watch(analyticsServiceProvider),
-  );
+  return ReferralService(analytics: ref.watch(analyticsServiceProvider));
 });
 
 final reEngagementServiceProvider = Provider<ReEngagementService>((ref) {
@@ -395,6 +394,14 @@ final firestoreSyncServiceProvider = Provider<FirestoreSyncService?>((ref) {
   );
 });
 
+final syncWorkerProvider = Provider<SyncWorker>((ref) {
+  final connectivity = ref.watch(connectivityServiceProvider);
+  final gamificationEngine = ref.watch(gamificationEngineProvider);
+  final worker = SyncWorker(connectivity, gamificationEngine);
+  ref.onDispose(worker.dispose);
+  return worker;
+});
+
 final appStartupProvider = FutureProvider<void>((ref) async {
   try {
     final localPrefs = ref.read(localPreferencesServiceProvider);
@@ -405,6 +412,9 @@ final appStartupProvider = FutureProvider<void>((ref) async {
     ref.read(notificationPermissionProvider.notifier).state = permissionGranted;
 
     await ref.read(remoteConfigServiceProvider).initialize();
+
+    await ref.read(connectivityServiceProvider).initialize();
+    ref.read(syncWorkerProvider).initialize();
 
     await ref.watch(isarProvider.future);
     await ref.read(questRepositoryProvider).seedInitialQuests();
@@ -687,11 +697,11 @@ final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
   return logs.take(30).toList();
 });
 
-final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>(
-  (ref) {
-    return HabitAiSuggestionService();
-  },
-);
+final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>((
+  ref,
+) {
+  return HabitAiSuggestionService();
+});
 
 // UID provider removed - already exists above
 
@@ -729,10 +739,8 @@ final heatmapDataProvider = FutureProvider<Map<DateTime, int>>((ref) async {
 // Gamification providers
 final gamificationEngineProvider = Provider<GamificationEngine>((ref) {
   final firestore = ref.watch(firestoreProvider);
-  if (firestore == null) {
-    throw StateError('Firestore is not available');
-  }
-  return GamificationEngine(firestore);
+  final isar = ref.watch(isarProvider).value;
+  return GamificationEngine(firestore, isar);
 });
 
 final rewardSystemProvider = Provider<RewardSystem>((ref) {

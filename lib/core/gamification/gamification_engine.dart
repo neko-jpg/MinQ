@@ -1,19 +1,26 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:isar/isar.dart';
+import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/domain/gamification/badge.dart';
+import 'package:minq/domain/gamification/pending_transaction.dart';
 import 'package:minq/domain/gamification/points.dart';
 
 // Provider for the engine
 final gamificationEngineProvider = Provider<GamificationEngine>((ref) {
   final firestore = ref.watch(firestoreProvider);
-  return GamificationEngine(firestore);
+  final isar = ref.watch(isarProvider).value;
+  return GamificationEngine(firestore, isar);
 });
 
 class GamificationEngine {
   final FirebaseFirestore? _firestore;
+  final Isar? _isar;
 
-  GamificationEngine(this._firestore);
+  GamificationEngine(this._firestore, this._isar);
 
   /// Awards points to a user for completing a quest or action.
   Future<void> awardPoints({
@@ -23,18 +30,28 @@ class GamificationEngine {
     double difficultyMultiplier = 1.0,
     double consistencyMultiplier = 1.0,
   }) async {
-    // Firestoreが利用できない場合はローカルログのみ
+    final totalPoints =
+        (basePoints * difficultyMultiplier * consistencyMultiplier).round();
+
+    // Firestoreが利用できない場合はローカルに保存
     if (_firestore == null) {
-      final totalPoints =
-          (basePoints * difficultyMultiplier * consistencyMultiplier).round();
-      print(
-        'Awarded $totalPoints points to user $userId for $reason (offline mode).',
+      await _savePendingTransaction(
+        userId: userId,
+        method: 'awardPoints',
+        payload: {
+          'userId': userId,
+          'basePoints': basePoints,
+          'reason': reason,
+          'difficultyMultiplier': difficultyMultiplier,
+          'consistencyMultiplier': consistencyMultiplier,
+        },
+      );
+      MinqLogger.info(
+        'Awarded $totalPoints points to user $userId for $reason (offline mode - queued).',
       );
       return;
     }
 
-    final totalPoints =
-        (basePoints * difficultyMultiplier * consistencyMultiplier).round();
     final pointsTransaction = Points(
       id: '', // Firestore will generate this
       userId: userId,
@@ -44,35 +61,58 @@ class GamificationEngine {
     );
 
     try {
-      await _firestore!
-          .collection('users')
-          .doc(userId)
-          .collection('points_transactions')
-          .add(pointsTransaction.toJson());
+      final batch = _firestore!.batch();
 
-      print('Awarded $totalPoints points to user $userId for $reason.');
+      // Add points transaction
+      final pointsRef =
+          _firestore!
+              .collection('users')
+              .doc(userId)
+              .collection('points_transactions')
+              .doc();
+      batch.set(pointsRef, pointsTransaction.toJson());
+
+      // Increment completedQuestsCount if the reason implies a quest completion
+      // This is a heuristic; ideally we'd have a specific flag or method for quest completion
+      if (reason.contains('Quest') || reason.contains('quest')) {
+        final userRef = _firestore!.collection('users').doc(userId);
+        batch.set(userRef, {
+          'completedQuestsCount': FieldValue.increment(1),
+        }, SetOptions(merge: true));
+      }
+
+      await batch.commit();
+
+      MinqLogger.info(
+        'Awarded $totalPoints points to user $userId for $reason.',
+      );
     } catch (e) {
-      print('Failed to award points (offline): $e');
+      MinqLogger.error('Failed to award points: $e');
+      // Fallback to offline queue on error
+      await _savePendingTransaction(
+        userId: userId,
+        method: 'awardPoints',
+        payload: {
+          'userId': userId,
+          'basePoints': basePoints,
+          'reason': reason,
+          'difficultyMultiplier': difficultyMultiplier,
+          'consistencyMultiplier': consistencyMultiplier,
+        },
+      );
     }
   }
 
   /// Checks for and awards any new badges to the user.
   Future<List<Badge>> checkAndAwardBadges(String userId) async {
-    // Firestoreが利用できない場合は空のリストを返す
     if (_firestore == null) {
-      print('Badge check skipped (offline mode).');
+      MinqLogger.info('Badge check skipped (offline mode).');
       return [];
     }
 
     try {
-      final userBadgesRef = _firestore!
-          .collection('users')
-          .doc(userId)
-          .collection('badges');
-      final questLogsRef = _firestore!
-          .collection('users')
-          .doc(userId)
-          .collection('quest_logs');
+      final userRef = _firestore!.collection('users').doc(userId);
+      final userBadgesRef = userRef.collection('badges');
 
       final awardedBadges = <Badge>[];
 
@@ -81,9 +121,10 @@ class GamificationEngine {
       final existingBadgeIds =
           existingBadgesSnapshot.docs.map((doc) => doc.id).toSet();
 
-      // Get quest logs
-      final questLogsSnapshot = await questLogsRef.get();
-      final completedQuests = questLogsSnapshot.docs.length;
+      // Get completed quests count efficiently
+      final userSnapshot = await userRef.get();
+      final userData = userSnapshot.data();
+      final completedQuests = (userData?['completedQuestsCount'] as int?) ?? 0;
 
       // Define all possible badges
       final allBadges = _getBadgeDefinitions(completedQuests);
@@ -97,12 +138,14 @@ class GamificationEngine {
       }
 
       if (awardedBadges.isNotEmpty) {
-        print('Awarded ${awardedBadges.length} new badges to user $userId.');
+        MinqLogger.info(
+          'Awarded ${awardedBadges.length} new badges to user $userId.',
+        );
       }
 
       return awardedBadges;
     } catch (e) {
-      print('Failed to check badges (offline): $e');
+      MinqLogger.error('Failed to check badges: $e');
       return [];
     }
   }
@@ -144,11 +187,13 @@ class GamificationEngine {
   /// Calculates the user's current rank based on their total points.
   Future<void> calculateRank(String userId) async {
     if (_firestore == null) {
-      print('Rank calculation skipped (offline mode).');
+      MinqLogger.info('Rank calculation skipped (offline mode).');
       return;
     }
 
     try {
+      // Note: For total points, we might also want to maintain a counter in the user doc
+      // to avoid reading all transactions. For now, keeping as is but adding logging.
       final pointsSnapshot =
           await _firestore!
               .collection('users')
@@ -157,7 +202,7 @@ class GamificationEngine {
               .get();
 
       if (pointsSnapshot.docs.isEmpty) {
-        print('User $userId has no points yet.');
+        MinqLogger.info('User $userId has no points yet.');
         return;
       }
 
@@ -168,9 +213,9 @@ class GamificationEngine {
       final rank = _getRankForPoints(totalPoints);
 
       await _firestore!.collection('users').doc(userId).update({'rank': rank});
-      print('User $userId rank updated to $rank.');
+      MinqLogger.info('User $userId rank updated to $rank.');
     } catch (e) {
-      print('Failed to calculate rank (offline): $e');
+      MinqLogger.error('Failed to calculate rank: $e');
     }
   }
 
@@ -204,7 +249,7 @@ class GamificationEngine {
           .map((doc) => Points.fromJson(doc.data()).value)
           .fold<int>(0, (prev, current) => prev + current);
     } catch (e) {
-      print('Failed to get user points (offline): $e');
+      MinqLogger.error('Failed to get user points: $e');
       return 0;
     }
   }
@@ -212,18 +257,74 @@ class GamificationEngine {
   /// Gets the rank for a given number of points
   ({String name, int minPoints}) getRankForPoints(int points) {
     if (points < 1000) {
-      return (name: 'ブロンズ', minPoints: 0);
+      return (name: 'rank_bronze', minPoints: 0);
     }
     if (points < 5000) {
-      return (name: 'シルバー', minPoints: 1000);
+      return (name: 'rank_silver', minPoints: 1000);
     }
     if (points < 15000) {
-      return (name: 'ゴールド', minPoints: 5000);
+      return (name: 'rank_gold', minPoints: 5000);
     }
     if (points < 50000) {
-      return (name: 'プラチナ', minPoints: 15000);
+      return (name: 'rank_platinum', minPoints: 15000);
     }
-    return (name: 'ダイヤモンド', minPoints: 50000);
+    return (name: 'rank_diamond', minPoints: 50000);
+  }
+
+  Future<void> _savePendingTransaction({
+    required String userId,
+    required String method,
+    required Map<String, dynamic> payload,
+  }) async {
+    if (_isar == null) return;
+
+    final transaction =
+        PendingTransaction()
+          ..userId = userId
+          ..method = method
+          ..payloadJson = jsonEncode(payload)
+          ..createdAt = DateTime.now();
+
+    await _isar!.writeTxn(() async {
+      await _isar!.pendingTransactions.put(transaction);
+    });
+  }
+
+  Future<void> syncPendingTransactions() async {
+    if (_firestore == null || _isar == null) return;
+
+    final pending =
+        await _isar!.pendingTransactions
+            .filter()
+            .isSyncedEqualTo(false)
+            .findAll();
+
+    if (pending.isEmpty) return;
+
+    MinqLogger.info('Syncing ${pending.length} pending transactions...');
+
+    for (final transaction in pending) {
+      try {
+        final payload = jsonDecode(transaction.payloadJson);
+        if (transaction.method == 'awardPoints') {
+          await awardPoints(
+            userId: transaction.userId,
+            basePoints: payload['basePoints'],
+            reason: payload['reason'],
+            difficultyMultiplier: payload['difficultyMultiplier'],
+            consistencyMultiplier: payload['consistencyMultiplier'],
+          );
+        }
+        // Add other methods as needed
+
+        await _isar!.writeTxn(() async {
+          transaction.isSynced = true;
+          await _isar!.pendingTransactions.put(transaction);
+        });
+      } catch (e) {
+        MinqLogger.error('Failed to sync transaction ${transaction.id}: $e');
+      }
+    }
   }
 }
 

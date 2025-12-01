@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/domain/home/home_view_data.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/minq_empty_state.dart';
 import 'package:minq/presentation/common/minq_skeleton.dart';
 import 'package:minq/presentation/common/quest_icon_catalog.dart';
@@ -61,49 +62,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final mediaQuery = MediaQuery.of(context);
     final syncStatus = ref.watch(syncStatusProvider);
     final homeAsync = ref.watch(homeDataProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
         bottom: false,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            const double maxWidth = 640;
-            Widget child = homeAsync.when(
-              loading: () => const _HomeScreenSkeleton(),
-              error:
-                  (error, _) => _HomeStateMessage(
-                    icon: Icons.error_outline,
-                    title: 'ホームデータの取得に失敗しました',
-                    message: '通信状態を確認して再度お試しください。',
-                    action: FilledButton.icon(
-                      onPressed: () => ref.invalidate(homeDataProvider),
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('再読み込み'),
-                    ),
-                  ),
-              data:
-                  (data) => _HomeContent(
-                    data: data,
-                    isOffline: syncStatus.phase == SyncPhase.offline,
-                    onRetry: () => ref.invalidate(homeDataProvider),
-                  ),
-            );
-
-            if (constraints.maxWidth > maxWidth) {
-              child = Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: maxWidth),
-                  child: child,
+        child: homeAsync.when(
+          loading: () => const _HomeScreenSkeleton(),
+          error:
+              (error, _) => _HomeStateMessage(
+                icon: Icons.error_outline,
+                title: l10n.homeDataLoadError,
+                message: l10n.checkConnection,
+                action: FilledButton.icon(
+                  onPressed: () => ref.invalidate(homeDataProvider),
+                  icon: const Icon(Icons.refresh),
+                  label: Text(l10n.reload),
                 ),
-              );
-            }
-
-            return Padding(
-              padding: EdgeInsets.only(bottom: mediaQuery.padding.bottom),
-              child: child,
-            );
-          },
+              ),
+          data:
+              (data) => _HomeContent(
+                data: data,
+                isOffline: syncStatus.phase == SyncPhase.offline,
+                onRetry: () => ref.invalidate(homeDataProvider),
+              ),
         ),
       ),
     );
@@ -124,36 +106,94 @@ class _HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     final miniQuests =
         data.quests.where((quest) => quest.category == 'MiniQuest').toList();
 
-    return ListView(
-      padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing(4),
-        vertical: tokens.spacing(4),
-      ),
-      children: [
-        if (isOffline) ...[
-          _HomeOfflineNotice(onRetry: onRetry),
-          SizedBox(height: tokens.spacing(4)),
-        ],
-        const _Header(),
-        SizedBox(height: tokens.spacing(4)),
-        const LiveActivityWidget(compact: true),
-        SizedBox(height: tokens.spacing(4)),
-        _TodayFocusCard(data: data),
-        SizedBox(height: tokens.spacing(4)),
-        _MiniQuestsSection(miniQuests: miniQuests),
-        SizedBox(height: tokens.spacing(4)),
-        _WeeklyStreakCard(recentLogs: data.recentLogs),
-        SizedBox(height: tokens.spacing(4)),
-        const GamificationStatusCard(),
-        SizedBox(height: tokens.spacing(4)),
-        const ReferralCard(),
-        SizedBox(height: tokens.spacing(4)),
-        const LevelProgressWidget(isCompact: true),
-        SizedBox(height: tokens.spacing(8)),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 800; // Threshold for 2 columns
+
+        if (isWide) {
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(tokens.spacing(4)),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      if (isOffline) ...[
+                        _HomeOfflineNotice(onRetry: onRetry),
+                        SizedBox(height: tokens.spacing(4)),
+                      ],
+                      const _Header(),
+                      SizedBox(height: tokens.spacing(4)),
+                      const LiveActivityWidget(compact: true),
+                      SizedBox(height: tokens.spacing(4)),
+                      _TodayFocusCard(data: data),
+                      SizedBox(height: tokens.spacing(4)),
+                      _MiniQuestsSection(miniQuests: miniQuests),
+                    ],
+                  ),
+                ),
+                SizedBox(width: tokens.spacing(6)),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    children: [
+                      _WeeklyStreakCard(recentLogs: data.recentLogs),
+                      SizedBox(height: tokens.spacing(4)),
+                      const GamificationStatusCard(),
+                      SizedBox(height: tokens.spacing(4)),
+                      const ReferralCard(),
+                      SizedBox(height: tokens.spacing(4)),
+                      const LevelProgressWidget(isCompact: true),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // Mobile layout
+        return CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.symmetric(
+                horizontal: tokens.spacing(4),
+                vertical: tokens.spacing(4),
+              ),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  if (isOffline) ...[
+                    _HomeOfflineNotice(onRetry: onRetry),
+                    SizedBox(height: tokens.spacing(4)),
+                  ],
+                  const _Header(),
+                  SizedBox(height: tokens.spacing(4)),
+                  const LiveActivityWidget(compact: true),
+                  SizedBox(height: tokens.spacing(4)),
+                  _TodayFocusCard(data: data),
+                  SizedBox(height: tokens.spacing(4)),
+                  _MiniQuestsSection(miniQuests: miniQuests),
+                  SizedBox(height: tokens.spacing(4)),
+                  _WeeklyStreakCard(recentLogs: data.recentLogs),
+                  SizedBox(height: tokens.spacing(4)),
+                  const GamificationStatusCard(),
+                  SizedBox(height: tokens.spacing(4)),
+                  const ReferralCard(),
+                  SizedBox(height: tokens.spacing(4)),
+                  const LevelProgressWidget(isCompact: true),
+                  SizedBox(height: tokens.spacing(8)),
+                ]),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -164,16 +204,17 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Welcome Home',
+          l10n.welcomeHome,
           style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: tokens.spacing(2)),
         Text(
-          '今日のフォーカスとMiniQuestをチェックして、一日のスタートを切りましょう。',
+          l10n.welcomeHomeSubtitle,
           style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
         ),
       ],
@@ -189,6 +230,7 @@ class _TodayFocusCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     final focus = data.focus;
     final quests = data.quests;
     final focusQuest =
@@ -221,12 +263,12 @@ class _TodayFocusCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Today’s Focus',
+                    l10n.todaysFocus,
                     style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                   ),
                   SizedBox(height: tokens.spacing(1)),
                   Text(
-                    focusQuest?.title ?? 'AIがあなたの習慣を学習中です',
+                    focusQuest?.title ?? l10n.aiLearningHabits,
                     style: tokens.titleLarge.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -235,7 +277,7 @@ class _TodayFocusCard extends ConsumerWidget {
                   ),
                   SizedBox(height: tokens.spacing(1)),
                   Text(
-                    focus?.headline ?? 'MiniQuestを作成して取り組むと、ここに今日のおすすめが表示されます。',
+                    focus?.headline ?? l10n.createMiniQuestPrompt,
                     style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
@@ -247,7 +289,7 @@ class _TodayFocusCard extends ConsumerWidget {
                       backgroundColor: tokens.brandPrimary,
                     ),
                     icon: const Icon(Icons.add_task),
-                    label: const Text('MiniQuestを作成'),
+                    label: Text(l10n.createMiniQuest),
                   ),
                 ],
               ),
@@ -295,6 +337,7 @@ class _MiniQuestsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     final navigation = ref.read(navigationUseCaseProvider);
 
     if (miniQuests.isEmpty) {
@@ -309,11 +352,11 @@ class _MiniQuestsSection extends ConsumerWidget {
           padding: EdgeInsets.all(tokens.spacing(4)),
           child: MinqEmptyState(
             icon: Icons.auto_awesome,
-            title: 'MiniQuestはまだありません',
-            message: 'まずは1件MiniQuestを作成して、習慣づくりを始めましょう。',
+            title: l10n.noMiniQuestsTitle,
+            message: l10n.noMiniQuestsMessage,
             actionArea: FilledButton(
               onPressed: navigation.goToCreateMiniQuest,
-              child: const Text('MiniQuestを作成'),
+              child: Text(l10n.createMiniQuest),
             ),
           ),
         ),
@@ -329,12 +372,12 @@ class _MiniQuestsSection extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Your Mini-Quests',
+              l10n.yourMiniQuests,
               style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: navigation.goToQuests,
-              child: const Text('一覧を見る'),
+              child: Text(l10n.viewAll),
             ),
           ],
         ),
@@ -436,6 +479,7 @@ class _WeeklyStreakCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final weekDays = List.generate(7, (index) {
       final date = now.subtract(Duration(days: 6 - index));
@@ -458,7 +502,7 @@ class _WeeklyStreakCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Weekly Streak',
+              l10n.weeklyStreak,
               style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: tokens.spacing(3)),
@@ -603,6 +647,7 @@ class _HomeOfflineNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
@@ -616,11 +661,11 @@ class _HomeOfflineNotice extends StatelessWidget {
           SizedBox(width: tokens.spacing(3)),
           Expanded(
             child: Text(
-              'オフラインモードです',
+              l10n.offlineMode,
               style: tokens.bodyMedium.copyWith(color: Colors.orange),
             ),
           ),
-          TextButton(onPressed: onRetry, child: const Text('再接続')),
+          TextButton(onPressed: onRetry, child: Text(l10n.reconnect)),
         ],
       ),
     );
