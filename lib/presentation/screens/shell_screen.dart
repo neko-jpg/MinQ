@@ -79,11 +79,9 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
 
   int _calculateSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).uri.toString();
-    if (location.startsWith(AppRoutes.stats)) return 1;
-    if (location.startsWith(AppRoutes.challenges)) return 2;
+    if (location.startsWith(AppRoutes.quests)) return 1;
+    if (location.startsWith(AppRoutes.stats)) return 2;
     if (location.startsWith(AppRoutes.pair)) return 3;
-    if (location.startsWith(AppRoutes.quests)) return 4;
-    if (location.startsWith(AppRoutes.settings)) return 5;
     return 0;
   }
 
@@ -99,19 +97,13 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
         navigation.goHome();
         break;
       case 1:
-        navigation.goToStats();
+        navigation.goToQuests();
         break;
       case 2:
-        navigation.goToChallenges();
+        navigation.goToStats();
         break;
       case 3:
         navigation.goToPair();
-        break;
-      case 4:
-        navigation.goToQuests();
-        break;
-      case 5:
-        navigation.goToSettings();
         break;
     }
     FeedbackManager.selected();
@@ -126,36 +118,25 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     const navItems = <BottomNavigationBarItem>[
       BottomNavigationBarItem(
         icon: Icon(Icons.home_outlined),
-        activeIcon: Icon(Icons.home),
+        activeIcon: Icon(Icons.home_rounded),
         label: 'ホーム',
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.bar_chart_outlined),
-        activeIcon: Icon(Icons.bar_chart),
-        label: '進捗',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.emoji_events_outlined),
-        activeIcon: Icon(Icons.emoji_events),
-        label: 'チャレンジ',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.groups_outlined),
-        activeIcon: Icon(Icons.groups),
-        label: 'ペア',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.checklist_outlined),
-        activeIcon: Icon(Icons.checklist),
+        icon: Icon(Icons.checklist_rtl_outlined),
+        activeIcon: Icon(Icons.checklist_rtl_rounded),
         label: 'クエスト',
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.settings_outlined),
-        activeIcon: Icon(Icons.settings),
-        label: '設定',
+        icon: Icon(Icons.bar_chart_outlined),
+        activeIcon: Icon(Icons.bar_chart_rounded),
+        label: '記録',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.groups_outlined),
+        activeIcon: Icon(Icons.groups_rounded),
+        label: 'ペア',
       ),
     ];
-    assert(navItems.length <= 6, 'ボトムナビゲーションのタブ数は6個以下にしてください。');
 
     final scaffold = Scaffold(
       body: PageTransitionSwitcher(
