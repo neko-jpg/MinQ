@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import 'package:minq/core/logging/app_logger.dart';
 
@@ -80,12 +81,13 @@ class PriorityService {
             'priorityOrder': priority.sortOrder,
           });
 
-      AppLogger.info(
+      AppLogger().logJson(
         'Priority set',
-        data: {'questId': questId, 'priority': priority.name},
+        {'questId': questId, 'priority': priority.name},
+        level: Level.info,
       );
     } catch (e, stack) {
-      AppLogger.error('Failed to set priority', error: e, stackTrace: stack);
+      AppLogger().error('Failed to set priority', e, stack);
       rethrow;
     }
   }

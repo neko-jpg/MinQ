@@ -18,8 +18,8 @@ class PointsDisplayWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
-    final uid = ref.watch(uidProvider);
+    final tokens = MinqTheme.of(context);
+    final uid = ref.watch(providers.uidProvider);
 
     if (uid == null) {
       return const SizedBox.shrink();
@@ -48,7 +48,7 @@ class PointsDisplayWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildSkeleton(MinqTokens tokens, bool compact) {
+  Widget _buildSkeleton(MinqTheme tokens, bool compact) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: tokens.spacing(3),
@@ -84,7 +84,7 @@ class PointsDisplayWidget extends ConsumerWidget {
   }
 
   Widget _buildCompactView(
-    MinqTokens tokens,
+    MinqTheme tokens,
     int points,
     String rank,
     IconData rankIcon,
@@ -127,7 +127,7 @@ class PointsDisplayWidget extends ConsumerWidget {
   }
 
   Widget _buildFullView(
-    MinqTokens tokens,
+    MinqTheme tokens,
     int points,
     String rank,
     IconData rankIcon,
@@ -295,8 +295,8 @@ class RankProgressWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
-    final uid = ref.watch(uidProvider);
+    final tokens = MinqTheme.of(context);
+    final uid = ref.watch(providers.uidProvider);
 
     if (uid == null) {
       return const SizedBox.shrink();

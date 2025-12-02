@@ -125,9 +125,6 @@ class TraceNames {
   static const String dataSync = 'data_sync';
 }
 
-/// HTTPメソッド
-enum HttpMethod { Connect, Delete, Get, Head, Options, Patch, Post, Put, Trace }
-
 /// パフォーマンスメトリクス
 class PerformanceMetrics {
   static const String frameCount = 'frame_count';
@@ -166,23 +163,6 @@ class PerformanceWatcher {
 
   /// 経過時間（ミリ秒）を取得
   int get elapsedMilliseconds => _stopwatch.elapsedMilliseconds;
-}
-
-class Trace {
-  void setMetric(String name, int value) {}
-  void putAttribute(String name, String value) {}
-  Future<void> start() async {}
-  Future<void> stop() async {}
-}
-
-class HttpMetric {
-  int? httpResponseCode;
-  int? requestPayloadSize;
-  int? responsePayloadSize;
-  String? responseContentType;
-
-  Future<void> start() async {}
-  Future<void> stop() async {}
 }
 
 /// 統合パフォーマンスマネージャー
@@ -297,7 +277,7 @@ class FrameRateMonitor {
   int getDroppedFrameCount() => _droppedFrames;
 
   void stop() {
-    SchedulerBinding.instance.removePersistentFrameCallback(_onFrame);
+    // SchedulerBinding.instance.removePersistentFrameCallback(_onFrame);
     _monitorTimer?.cancel();
     _monitorTimer = null;
   }
@@ -517,13 +497,4 @@ class _PerformanceOptimizedWidgetState
   Widget build(BuildContext context) {
     return RepaintBoundary(child: widget.child);
   }
-}
-
-class FirebasePerformance {
-  static final instance = FirebasePerformance._();
-  FirebasePerformance._();
-
-  Future<void> setPerformanceCollectionEnabled(bool enabled) async {}
-  Trace newTrace(String name) => Trace();
-  HttpMetric newHttpMetric(String url, HttpMethod method) => HttpMetric();
 }

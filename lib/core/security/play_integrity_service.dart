@@ -23,10 +23,10 @@ class PlayIntegrityService {
       // TODO: play_integrity パッケージを追加して実装
       // pubspec.yaml に追加: play_integrity: ^1.0.0
 
-      AppLogger.info('PlayIntegrityService initialized');
+      AppLogger().info('PlayIntegrityService initialized');
       _initialized = true;
     } catch (e, stack) {
-      AppLogger.error(
+      AppLogger().error(
         'Failed to initialize PlayIntegrityService',
         error: e,
         stackTrace: stack,
@@ -53,7 +53,7 @@ class PlayIntegrityService {
 
       return IntegrityResult.notImplemented();
     } catch (e, stack) {
-      AppLogger.error(
+      AppLogger().error(
         'Failed to request integrity token',
         error: e,
         stackTrace: stack,

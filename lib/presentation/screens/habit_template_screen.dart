@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/core/templates/habit_templates.dart';
-import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 習慣テンプレート選択画面
 class HabitTemplateScreen extends ConsumerStatefulWidget {
@@ -29,7 +29,7 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
       appBar: AppBar(
         title: Text(
           '習慣テンプレート',
-          style: tokens.typography.h3.copyWith(
+          style: tokens.typeScale.h3.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -39,7 +39,7 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: Column(
@@ -49,7 +49,7 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
           // テンプレートリスト
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.all(tokens.spacing.md),
+              padding: EdgeInsets.all(tokens.spacing(4)),
               itemCount: templates.length,
               itemBuilder: (context, index) {
                 final template = templates[index];
@@ -69,10 +69,10 @@ class _HabitTemplateScreenState extends ConsumerState<HabitTemplateScreen> {
   Widget _buildCategoryFilter(MinqTheme tokens) {
     return Container(
       height: 60,
-      padding: EdgeInsets.symmetric(vertical: tokens.spacing.sm),
+      padding: EdgeInsets.symmetric(vertical: tokens.spacing(2)),
       child: ListView(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: tokens.spacing.md),
+        padding: EdgeInsets.symmetric(horizontal: tokens.spacing(4)),
         children: [
           _CategoryChip(
             label: 'すべて',
@@ -131,21 +131,21 @@ class _CategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(right: tokens.spacing.sm),
+      padding: EdgeInsets.only(right: tokens.spacing(2)),
       child: FilterChip(
         label: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(icon, style: const TextStyle(fontSize: 16)),
-            SizedBox(width: tokens.spacing.xs),
+            SizedBox(width: tokens.spacing(1)),
             Text(label),
           ],
         ),
         selected: isSelected,
         onSelected: (_) => onTap(),
         backgroundColor: tokens.surface,
-        selectedColor: tokens.primary.withOpacity(0.2),
-        checkmarkColor: tokens.primary,
+        selectedColor: tokens.brandPrimary.withValues(alpha: 0.2),
+        checkmarkColor: tokens.brandPrimary,
       ),
     );
   }
@@ -166,18 +166,18 @@ class _TemplateCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing.md),
+      margin: EdgeInsets.only(bottom: tokens.spacing(4)),
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(tokens.radiusLarge),
         side: BorderSide(color: tokens.border, width: 1),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(tokens.radiusLarge),
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing.md),
+          padding: EdgeInsets.all(tokens.spacing(4)),
           child: Row(
             children: [
               // アイコン
@@ -185,8 +185,8 @@ class _TemplateCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: tokens.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(tokens.radius.md),
+                  color: tokens.brandPrimary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(tokens.radiusMedium),
                 ),
                 child: Center(
                   child: Text(
@@ -195,7 +195,7 @@ class _TemplateCard extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: tokens.spacing.md),
+              SizedBox(width: tokens.spacing(4)),
               // テキスト
               Expanded(
                 child: Column(
@@ -203,21 +203,21 @@ class _TemplateCard extends StatelessWidget {
                   children: [
                     Text(
                       template.title,
-                      style: tokens.typography.body.copyWith(
+                      style: tokens.typeScale.bodyMedium.copyWith(
                         fontWeight: FontWeight.bold,
                         color: tokens.textPrimary,
                       ),
                     ),
-                    SizedBox(height: tokens.spacing.xs),
+                    SizedBox(height: tokens.spacing(1)),
                     Text(
                       template.description,
-                      style: tokens.typography.caption.copyWith(
+                      style: tokens.typeScale.caption.copyWith(
                         color: tokens.textSecondary,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: tokens.spacing.xs),
+                    SizedBox(height: tokens.spacing(1)),
                     Row(
                       children: [
                         _InfoChip(
@@ -225,7 +225,7 @@ class _TemplateCard extends StatelessWidget {
                           label: '${template.estimatedMinutes}分',
                           tokens: tokens,
                         ),
-                        SizedBox(width: tokens.spacing.xs),
+                        SizedBox(width: tokens.spacing(1)),
                         _InfoChip(
                           icon: Icons.star_outline,
                           label: template.difficulty.displayName,
@@ -261,21 +261,21 @@ class _InfoChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.xs,
-        vertical: tokens.spacing.xxs,
+        horizontal: tokens.spacing(1),
+        vertical: tokens.spacing(0.5),
       ),
       decoration: BoxDecoration(
         color: tokens.background,
-        borderRadius: BorderRadius.circular(tokens.radius.sm),
+        borderRadius: BorderRadius.circular(tokens.radiusSmall),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: tokens.textSecondary),
-          SizedBox(width: tokens.spacing.xxs),
+          SizedBox(width: tokens.spacing(0.5)),
           Text(
             label,
-            style: tokens.typography.caption.copyWith(
+            style: tokens.typeScale.caption.copyWith(
               color: tokens.textSecondary,
               fontSize: 12,
             ),
@@ -301,10 +301,10 @@ class _TemplateDetailSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: tokens.surface,
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(tokens.radius.xl),
+          top: Radius.circular(tokens.radiusXLarge),
         ),
       ),
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(6)),
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -321,26 +321,26 @@ class _TemplateDetailSheet extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(6)),
             // アイコンとタイトル
             Row(
               children: [
                 Text(template.icon, style: const TextStyle(fontSize: 48)),
-                SizedBox(width: tokens.spacing.md),
+                SizedBox(width: tokens.spacing(4)),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         template.title,
-                        style: tokens.typography.h3.copyWith(
+                        style: tokens.typeScale.h3.copyWith(
                           color: tokens.textPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         template.category.displayName,
-                        style: tokens.typography.caption.copyWith(
+                        style: tokens.typeScale.caption.copyWith(
                           color: tokens.textSecondary,
                         ),
                       ),
@@ -349,13 +349,15 @@ class _TemplateDetailSheet extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(6)),
             // 説明
             Text(
               template.description,
-              style: tokens.typography.body.copyWith(color: tokens.textPrimary),
+              style: tokens.typeScale.bodyMedium.copyWith(
+                color: tokens.textPrimary,
+              ),
             ),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(6)),
             // 詳細情報
             _DetailRow(
               icon: Icons.timer_outlined,
@@ -375,22 +377,22 @@ class _TemplateDetailSheet extends StatelessWidget {
               value: template.suggestedTimes.join(', '),
               tokens: tokens,
             ),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(6)),
             // ヒント
             Container(
-              padding: EdgeInsets.all(tokens.spacing.md),
+              padding: EdgeInsets.all(tokens.spacing(4)),
               decoration: BoxDecoration(
-                color: tokens.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(tokens.radius.md),
+                color: tokens.brandPrimary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(tokens.radiusMedium),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.lightbulb_outline, color: tokens.primary),
-                  SizedBox(width: tokens.spacing.sm),
+                  Icon(Icons.lightbulb_outline, color: tokens.brandPrimary),
+                  SizedBox(width: tokens.spacing(2)),
                   Expanded(
                     child: Text(
                       template.tips,
-                      style: tokens.typography.body.copyWith(
+                      style: tokens.typeScale.bodyMedium.copyWith(
                         color: tokens.textPrimary,
                       ),
                     ),
@@ -398,22 +400,22 @@ class _TemplateDetailSheet extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: tokens.spacing.xl),
+            SizedBox(height: tokens.spacing(8)),
             // ボタン
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: onUse,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: tokens.primary,
-                  padding: EdgeInsets.symmetric(vertical: tokens.spacing.md),
+                  backgroundColor: tokens.brandPrimary,
+                  padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.full),
+                    borderRadius: BorderRadius.circular(999),
                   ),
                 ),
                 child: Text(
                   'このテンプレートを使う',
-                  style: tokens.typography.body.copyWith(
+                  style: tokens.typeScale.bodyMedium.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -444,19 +446,21 @@ class _DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing.sm),
+      padding: EdgeInsets.only(bottom: tokens.spacing(2)),
       child: Row(
         children: [
           Icon(icon, size: 20, color: tokens.textSecondary),
-          SizedBox(width: tokens.spacing.sm),
+          SizedBox(width: tokens.spacing(2)),
           Text(
             label,
-            style: tokens.typography.body.copyWith(color: tokens.textSecondary),
+            style: tokens.typeScale.bodyMedium.copyWith(
+              color: tokens.textSecondary,
+            ),
           ),
           const Spacer(),
           Text(
             value,
-            style: tokens.typography.body.copyWith(
+            style: tokens.typeScale.bodyMedium.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.w600,
             ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/onboarding/progressive_onboarding.dart';
-import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/feature_lock_widget.dart';
 
@@ -15,7 +14,7 @@ class LevelProgressWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final onboarding = ref.watch(progressiveOnboardingProvider);
 
     return onboarding.when(
@@ -27,7 +26,7 @@ class LevelProgressWidget extends ConsumerWidget {
 
   Widget _buildProgressWidget(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     ProgressiveOnboarding service,
   ) {
     // TODO: 実際のユーザーデータを取得
@@ -58,7 +57,7 @@ class LevelProgressWidget extends ConsumerWidget {
 
   Widget _buildCompactWidget(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
     OnboardingLevel? currentLevelInfo,
   ) {
@@ -152,7 +151,7 @@ class LevelProgressWidget extends ConsumerWidget {
 
   Widget _buildFullWidget(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
     OnboardingLevel? currentLevelInfo,
     OnboardingLevel? nextLevelInfo,
@@ -272,7 +271,7 @@ class LevelProgressWidget extends ConsumerWidget {
   }
 
   Widget _buildNextLevelSection(
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
     OnboardingLevel nextLevelInfo,
   ) {
@@ -336,7 +335,7 @@ class LevelProgressWidget extends ConsumerWidget {
   }
 
   Widget _buildDetailedProgress(
-    MinqTokens tokens,
+    MinqTheme tokens,
     OnboardingProgress progress,
   ) {
     return Row(
@@ -379,7 +378,7 @@ class LevelProgressWidget extends ConsumerWidget {
   }
 
   Widget _buildProgressItem(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String label,
     double progress,
     IconData icon,
@@ -413,7 +412,7 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildUnlockPreview(MinqTokens tokens, OnboardingLevel nextLevelInfo) {
+  Widget _buildUnlockPreview(MinqTheme tokens, OnboardingLevel nextLevelInfo) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
@@ -474,7 +473,7 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildMaxLevelSection(MinqTokens tokens) {
+  Widget _buildMaxLevelSection(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -520,7 +519,7 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoadingWidget(MinqTokens tokens) {
+  Widget _buildLoadingWidget(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -531,7 +530,7 @@ class LevelProgressWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildErrorWidget(MinqTokens tokens) {
+  Widget _buildErrorWidget(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(

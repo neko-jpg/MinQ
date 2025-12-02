@@ -28,7 +28,7 @@ class _EditQuestScreenState extends ConsumerState<EditQuestScreen> {
   final _contactLinkController = TextEditingController();
   final PageController _pageController = PageController();
   final SetEquality<int> _setEquality = const SetEquality<int>();
-  const ListEquality<_ReminderFormEntry> _reminderListEquality =
+  static const ListEquality<_ReminderFormEntry> _reminderListEquality =
       ListEquality<_ReminderFormEntry>(_ReminderFormEntryEquality());
 
   String _selectedIconKey = 'spa';

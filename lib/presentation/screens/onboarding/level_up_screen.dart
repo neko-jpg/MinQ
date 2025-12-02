@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lottie/lottie.dart';
 
 import 'package:minq/core/onboarding/progressive_onboarding.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/widgets/celebration_animation.dart';
 
 /// レベルアップ画面
 /// 新しいレベルに到達した時の演出画面
@@ -139,7 +137,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildBackgroundEffects(MinqTokens tokens) {
+  Widget _buildBackgroundEffects(MinqTheme tokens) {
     return Positioned.fill(
       child: AnimatedBuilder(
         animation: _mainController,
@@ -162,7 +160,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildLevelUpAnimation(MinqTokens tokens) {
+  Widget _buildLevelUpAnimation(MinqTheme tokens) {
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
@@ -215,7 +213,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildLevelInfo(MinqTokens tokens) {
+  Widget _buildLevelInfo(MinqTheme tokens) {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Container(
@@ -282,7 +280,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildUnlockedFeatures(MinqTokens tokens) {
+  Widget _buildUnlockedFeatures(MinqTheme tokens) {
     return SlideTransition(
       position: _slideAnimation,
       child: FadeTransition(
@@ -327,7 +325,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildFeatureItem(MinqTokens tokens, String featureId) {
+  Widget _buildFeatureItem(MinqTheme tokens, String featureId) {
     final featureInfo = _getFeatureInfo(featureId);
 
     return Container(
@@ -387,7 +385,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     );
   }
 
-  Widget _buildContinueButton(MinqTokens tokens) {
+  Widget _buildContinueButton(MinqTheme tokens) {
     return FadeTransition(
       opacity: _featuresController,
       child: SizedBox(
@@ -489,7 +487,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
       'templates' => const FeatureInfo(
         name: 'テンプレート',
         description: '習慣のテンプレート',
-        icon: Icons.template_outlined,
+        icon: Icons.copy,
       ),
       'timer' => const FeatureInfo(
         name: 'タイマー機能',

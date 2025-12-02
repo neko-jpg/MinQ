@@ -53,8 +53,6 @@ class _SubscriptionPremiumScreenState
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final subscriptionManager = ref.watch(subscriptionManagerProvider);
-    final currentStatus = ref.watch(subscriptionStatusProvider);
 
     // プレミアムプランのみを表示
     final premiumPlans =

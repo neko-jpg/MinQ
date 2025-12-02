@@ -54,6 +54,8 @@ class NetworkImageWithFallback extends StatelessWidget {
   final Widget? placeholder;
   final Widget? errorWidget;
   final BorderRadius? borderRadius;
+  final int? cacheWidth;
+  final int? cacheHeight;
 
   const NetworkImageWithFallback({
     super.key,
@@ -64,6 +66,8 @@ class NetworkImageWithFallback extends StatelessWidget {
     this.placeholder,
     this.errorWidget,
     this.borderRadius,
+    this.cacheWidth,
+    this.cacheHeight,
   });
 
   @override
@@ -76,6 +80,8 @@ class NetworkImageWithFallback extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
+        cacheWidth: cacheWidth,
+        cacheHeight: cacheHeight,
         frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
           if (wasSynchronouslyLoaded) {
             return child;
@@ -321,6 +327,8 @@ class OptimizedImage extends StatelessWidget {
       width: width,
       height: height,
       fit: fit,
+      cacheWidth: calculatedCacheWidth,
+      cacheHeight: calculatedCacheHeight,
     );
   }
 }

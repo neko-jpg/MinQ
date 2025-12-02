@@ -4,10 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/referral_service.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
-import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/widgets/points_display_widget.dart';
-import 'package:share_plus/share_plus.dart';
 
 /// リファラル画面
 /// 友達招待機能とリファラル統計を表示
@@ -84,7 +81,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildInviteTab(MinqTokens tokens) {
+  Widget _buildInviteTab(MinqTheme tokens) {
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
@@ -112,7 +109,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildHistoryTab(MinqTokens tokens) {
+  Widget _buildHistoryTab(MinqTheme tokens) {
     final uid = ref.watch(uidProvider);
 
     if (uid == null) {
@@ -157,7 +154,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildHeaderCard(MinqTokens tokens) {
+  Widget _buildHeaderCard(MinqTheme tokens) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(tokens.spacing(6)),
@@ -200,7 +197,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildInviteLinkCard(MinqTokens tokens) {
+  Widget _buildInviteLinkCard(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -264,7 +261,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildInviteMethods(MinqTokens tokens) {
+  Widget _buildInviteMethods(MinqTheme tokens) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -312,7 +309,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
   }
 
   Widget _buildInviteMethodCard(
-    MinqTokens tokens, {
+    MinqTheme tokens, {
     required IconData icon,
     required String title,
     required String description,
@@ -369,7 +366,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildRewardExplanation(MinqTokens tokens) {
+  Widget _buildRewardExplanation(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -414,7 +411,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
   }
 
   Widget _buildRewardItem(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String condition,
     String reward,
     String description,
@@ -463,7 +460,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildHistoryContent(MinqTokens tokens, ReferralStats stats) {
+  Widget _buildHistoryContent(MinqTheme tokens, ReferralStats stats) {
     return SingleChildScrollView(
       padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
@@ -495,7 +492,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildStatsCards(MinqTokens tokens, ReferralStats stats) {
+  Widget _buildStatsCards(MinqTheme tokens, ReferralStats stats) {
     return Row(
       children: [
         Expanded(
@@ -532,7 +529,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
   }
 
   Widget _buildStatCard(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String title,
     String value,
     IconData icon,
@@ -567,7 +564,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildConversionRate(MinqTokens tokens, ReferralStats stats) {
+  Widget _buildConversionRate(MinqTheme tokens, ReferralStats stats) {
     final rate = (stats.conversionRate * 100).toStringAsFixed(1);
 
     return Container(
@@ -606,7 +603,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildEmptyHistory(MinqTokens tokens) {
+  Widget _buildEmptyHistory(MinqTheme tokens) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(tokens.spacing(8)),
@@ -633,7 +630,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildHistoryList(MinqTokens tokens, ReferralStats stats) {
+  Widget _buildHistoryList(MinqTheme tokens, ReferralStats stats) {
     // 実際の履歴データを表示する場合は、ここでFirestoreから取得
     return Column(
       children: [
@@ -656,7 +653,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildHistoryItem(MinqTokens tokens, String status, DateTime date) {
+  Widget _buildHistoryItem(MinqTheme tokens, String status, DateTime date) {
     Color statusColor;
     IconData statusIcon;
     String statusText;

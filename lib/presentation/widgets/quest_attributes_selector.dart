@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/minq_theme_extension.dart';
-import 'package:minq/presentation/theme/minq_tokens.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエスト属性選択ウィジェット
 /// 難易度、推定時間、場所などの属性を選択
@@ -24,7 +23,7 @@ class QuestAttributesSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,48 +32,48 @@ class QuestAttributesSelector extends StatelessWidget {
         if (onDifficultyChanged != null) ...[
           Text(
             '難易度',
-            style: tokens.typography.body.copyWith(
+            style: tokens.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spaceSM),
           _DifficultySelector(
             selected: selectedDifficulty,
             onChanged: onDifficultyChanged!,
             tokens: tokens,
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spaceLG),
         ],
 
         // 推定時間選択
         if (onEstimatedMinutesChanged != null) ...[
           Text(
             '推定時間',
-            style: tokens.typography.body.copyWith(
+            style: tokens.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spaceSM),
           _DurationSelector(
             selected: estimatedMinutes,
             onChanged: onEstimatedMinutesChanged!,
             tokens: tokens,
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spaceLG),
         ],
 
         // 場所選択
         if (onLocationChanged != null) ...[
           Text(
             '場所',
-            style: tokens.typography.body.copyWith(
+            style: tokens.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spaceSM),
           _LocationSelector(
             selected: selectedLocation,
             onChanged: onLocationChanged!,
@@ -107,7 +106,7 @@ class _DifficultySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: tokens.spacing.sm,
+      spacing: tokens.spaceSM,
       children:
           difficulties.map((difficulty) {
             final isSelected = selected == difficulty['value'];
@@ -115,17 +114,17 @@ class _DifficultySelector extends StatelessWidget {
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(difficulty['icon']!),
-                  SizedBox(width: tokens.spacing.xs),
-                  Text(difficulty['label']!),
+                  Text(difficulty['icon']! as String),
+                  SizedBox(width: tokens.spaceBase),
+                  Text(difficulty['label']! as String),
                 ],
               ),
               selected: isSelected,
               onSelected: (selected) {
-                onChanged(selected ? difficulty['value'] : null);
+                onChanged(selected ? difficulty['value']! as String : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor: tokens.primary.withOpacity(0.2),
+              selectedColor: tokens.brandPrimary.withOpacity(0.2),
             );
           }).toList(),
     );
@@ -155,19 +154,19 @@ class _DurationSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: tokens.spacing.sm,
+      spacing: tokens.spaceSM,
       children:
           durations.map((duration) {
             final value = duration['value'] as int;
             final isSelected = selected == value;
             return ChoiceChip(
-              label: Text(duration['label']!),
+              label: Text(duration['label']! as String),
               selected: isSelected,
               onSelected: (selected) {
                 onChanged(selected ? value : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor: tokens.primary.withOpacity(0.2),
+              selectedColor: tokens.brandPrimary.withOpacity(0.2),
             );
           }).toList(),
     );
@@ -197,8 +196,8 @@ class _LocationSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: tokens.spacing.sm,
-      runSpacing: tokens.spacing.sm,
+      spacing: tokens.spaceSM,
+      runSpacing: tokens.spaceSM,
       children:
           locations.map((location) {
             final isSelected = selected == location['value'];
@@ -206,17 +205,17 @@ class _LocationSelector extends StatelessWidget {
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(location['icon']!),
-                  SizedBox(width: tokens.spacing.xs),
-                  Text(location['label']!),
+                  Text(location['icon']! as String),
+                  SizedBox(width: tokens.spaceBase),
+                  Text(location['label']! as String),
                 ],
               ),
               selected: isSelected,
               onSelected: (selected) {
-                onChanged(selected ? location['value'] : null);
+                onChanged(selected ? location['value']! as String : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor: tokens.primary.withOpacity(0.2),
+              selectedColor: tokens.brandPrimary.withOpacity(0.2),
             );
           }).toList(),
     );

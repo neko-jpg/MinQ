@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/content_moderation_service.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/security/sensitive_content.dart'
     as custom;
 import 'package:minq/presentation/screens/pair_screen.dart';
@@ -15,7 +14,6 @@ class ProfileSettingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
     final userAsync = ref.watch(localUserProvider);
     final isDummyMode = ref.watch(dummyDataModeProvider);
 
@@ -179,7 +177,6 @@ class ProfileSettingScreen extends ConsumerWidget {
   }
 
   void _showDummyModeWarning(BuildContext context) {
-    final tokens = context.tokens;
     showDialog(
       context: context,
       builder:
@@ -200,7 +197,6 @@ class ProfileSettingScreen extends ConsumerWidget {
   }
 
   void _editProfile(BuildContext context, WidgetRef ref, user) {
-    final tokens = context.tokens;
     final nameController = TextEditingController(text: user?.displayName ?? '');
     final bioController = TextEditingController(text: user?.bio ?? '');
 

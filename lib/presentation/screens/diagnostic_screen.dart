@@ -25,7 +25,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
       appBar: AppBar(
         title: Text(
           '自己診断',
-          style: tokens.typography.h3.copyWith(
+          style: tokens.typeScale.h3.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -35,27 +35,27 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: ListView(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: EdgeInsets.all(tokens.spacing(6)),
         children: [
           // 説明
           Container(
-            padding: EdgeInsets.all(tokens.spacing.md),
+            padding: EdgeInsets.all(tokens.spacing(4)),
             decoration: BoxDecoration(
-              color: tokens.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(tokens.radius.md),
+              color: tokens.brandPrimary.withValues(alpha: 0.1),
+              borderRadius: tokens.cornerMedium(),
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: tokens.primary),
-                SizedBox(width: tokens.spacing.sm),
+                Icon(Icons.info_outline, color: tokens.brandPrimary),
+                SizedBox(width: tokens.spacing(2)),
                 Expanded(
                   child: Text(
                     'アプリの動作を診断します。問題がある場合は結果を確認してください。',
-                    style: tokens.typography.body.copyWith(
+                    style: tokens.typeScale.bodyMedium.copyWith(
                       color: tokens.textPrimary,
                     ),
                   ),
@@ -63,7 +63,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
               ],
             ),
           ),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spacing(8)),
           // 診断項目
           _buildDiagnosticItem(
             title: '通知テスト',
@@ -92,7 +92,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
           _buildDiagnosticItem(
             title: 'データベーステスト',
             description: 'ローカルデータベースの動作を確認',
-            icon: Icons.database_outlined,
+            icon: Icons.storage,
             testKey: 'database',
             onTest: _testDatabase,
             tokens: tokens,
@@ -105,7 +105,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
             onTest: _testPerformance,
             tokens: tokens,
           ),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spacing(8)),
           // すべてテストボタン
           SizedBox(
             width: double.infinity,
@@ -121,15 +121,15 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
                       : const Icon(Icons.play_arrow),
               label: Text(_isRunning ? '診断中...' : 'すべてテスト'),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing(6)),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(tokens.radius.full),
+                  borderRadius: tokens.cornerFull(),
                 ),
               ),
             ),
           ),
           if (_results.isNotEmpty) ...[
-            SizedBox(height: tokens.spacing.xl),
+            SizedBox(height: tokens.spacing(8)),
             _buildSummary(tokens),
           ],
         ],
@@ -148,46 +148,46 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
     final result = _results[testKey];
 
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing.md),
+      margin: EdgeInsets.only(bottom: tokens.spacing(4)),
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Row(
           children: [
             Container(
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: _getStatusColor(result?.status, tokens).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(tokens.radius.md),
+                color: _getStatusColor(result?.status, tokens).withValues(alpha: 0.1),
+                borderRadius: tokens.cornerMedium(),
               ),
               child: Icon(icon, color: _getStatusColor(result?.status, tokens)),
             ),
-            SizedBox(width: tokens.spacing.md),
+            SizedBox(width: tokens.spacing(4)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: tokens.typography.body.copyWith(
+                    style: tokens.typeScale.bodyMedium.copyWith(
                       fontWeight: FontWeight.bold,
                       color: tokens.textPrimary,
                     ),
                   ),
                   Text(
                     description,
-                    style: tokens.typography.caption.copyWith(
+                    style: tokens.typeScale.caption.copyWith(
                       color: tokens.textSecondary,
                     ),
                   ),
                   if (result != null) ...[
-                    SizedBox(height: tokens.spacing.xs),
+                    SizedBox(height: tokens.spacing(1)),
                     Row(
                       children: [
                         Icon(
@@ -195,10 +195,10 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
                           size: 16,
                           color: _getStatusColor(result.status, tokens),
                         ),
-                        SizedBox(width: tokens.spacing.xs),
+                        SizedBox(width: tokens.spacing(1)),
                         Text(
                           result.message,
-                          style: tokens.typography.caption.copyWith(
+                          style: tokens.typeScale.caption.copyWith(
                             color: _getStatusColor(result.status, tokens),
                           ),
                         ),
@@ -230,10 +230,10 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
     final total = _results.length;
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(6)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -241,17 +241,17 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
         children: [
           Text(
             '診断結果サマリー',
-            style: tokens.typography.h4.copyWith(
+            style: tokens.typeScale.h4.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildSummaryItem('合格', passed, tokens.success, tokens),
-              _buildSummaryItem('不合格', failed, tokens.error, tokens),
+              _buildSummaryItem('合格', passed, tokens.accentSuccess, tokens),
+              _buildSummaryItem('不合格', failed, tokens.accentError, tokens),
               _buildSummaryItem('合計', total, tokens.textSecondary, tokens),
             ],
           ),
@@ -270,14 +270,14 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
       children: [
         Text(
           count.toString(),
-          style: tokens.typography.h2.copyWith(
+          style: tokens.typeScale.h2.copyWith(
             color: color,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           label,
-          style: tokens.typography.caption.copyWith(
+          style: tokens.typeScale.caption.copyWith(
             color: tokens.textSecondary,
           ),
         ),
@@ -287,8 +287,8 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
 
   Color _getStatusColor(DiagnosticStatus? status, MinqTheme tokens) {
     return switch (status) {
-      DiagnosticStatus.passed => tokens.success,
-      DiagnosticStatus.failed => tokens.error,
+      DiagnosticStatus.passed => tokens.accentSuccess,
+      DiagnosticStatus.failed => tokens.accentError,
       DiagnosticStatus.warning => Colors.orange,
       null => tokens.textSecondary,
     };

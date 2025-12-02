@@ -301,7 +301,6 @@ class _MoodRecordTabState extends ConsumerState<_MoodRecordTab> {
             label: '気分を記録する',
             icon: Icons.favorite,
             onPressed: _isLoading ? null : _recordMood,
-            isLoading: _isLoading,
           ),
 
           SizedBox(height: tokens.spacing(4)),

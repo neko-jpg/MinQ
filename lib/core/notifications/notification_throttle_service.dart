@@ -37,7 +37,7 @@ class NotificationThrottleService {
     final elapsed = now.difference(lastTime);
 
     if (elapsed < _debounceInterval) {
-      AppLogger.info(
+      AppLogger().info(
         'Notification debounced',
         data: {'type': notificationType, 'elapsed': elapsed.inSeconds},
       );
@@ -75,7 +75,7 @@ class NotificationThrottleService {
 
     // レート制限チェック
     if (count >= _maxNotificationsPerWindow) {
-      AppLogger.warning(
+      AppLogger().warning(
         'Notification rate limited',
         data: {
           'type': notificationType,
@@ -106,7 +106,7 @@ class NotificationThrottleService {
 
     _batchedNotifications[batchKey]!.add(notificationData);
 
-    AppLogger.info(
+    AppLogger().info(
       'Notification added to batch',
       data: {
         'batchKey': batchKey,
@@ -125,7 +125,7 @@ class NotificationThrottleService {
     final notifications = _batchedNotifications[batchKey];
     if (notifications == null || notifications.isEmpty) return;
 
-    AppLogger.info(
+    AppLogger().info(
       'Sending batched notifications',
       data: {'batchKey': batchKey, 'count': notifications.length},
     );

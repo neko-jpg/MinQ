@@ -22,7 +22,7 @@ class FeatureLockWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final onboarding = ref.watch(progressiveOnboardingProvider);
 
     return onboarding.when(
@@ -42,7 +42,7 @@ class FeatureLockWidget extends ConsumerWidget {
 
   Widget _buildLockedFeature(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     ProgressiveOnboarding service,
   ) {
     final requiredLevel = _getRequiredLevel(featureId);
@@ -75,7 +75,7 @@ class FeatureLockWidget extends ConsumerWidget {
   }
 
   Widget _buildLockContent(
-    MinqTokens tokens,
+    MinqTheme tokens,
     int requiredLevel,
     int currentLevel,
   ) {
@@ -145,7 +145,7 @@ class FeatureLockWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoadingState(MinqTokens tokens) {
+  Widget _buildLoadingState(MinqTheme tokens) {
     return Stack(
       children: [
         Opacity(opacity: 0.5, child: child),
@@ -164,7 +164,7 @@ class FeatureLockWidget extends ConsumerWidget {
 
   void _showUnlockDialog(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     int requiredLevel,
   ) {
     showDialog(
@@ -208,7 +208,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final onboarding = ref.watch(progressiveOnboardingProvider);
 
     return onboarding.when(
@@ -220,7 +220,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
 
   Widget _buildDialog(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     ProgressiveOnboarding service,
   ) {
     final levelInfo = service.getLevel(requiredLevel);
@@ -310,7 +310,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeatureInfo(MinqTokens tokens) {
+  Widget _buildFeatureInfo(MinqTheme tokens) {
     final featureInfo = _getFeatureInfo(featureId);
 
     return Container(
@@ -360,7 +360,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildLevelRequirement(MinqTokens tokens, OnboardingLevel levelInfo) {
+  Widget _buildLevelRequirement(MinqTheme tokens, OnboardingLevel levelInfo) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -421,7 +421,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildRequirementItem(MinqTokens tokens, IconData icon, String text) {
+  Widget _buildRequirementItem(MinqTheme tokens, IconData icon, String text) {
     return Padding(
       padding: EdgeInsets.only(bottom: tokens.spacing(1)),
       child: Row(
@@ -434,7 +434,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildProgressSection(MinqTokens tokens, OnboardingProgress progress) {
+  Widget _buildProgressSection(MinqTheme tokens, OnboardingProgress progress) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -480,7 +480,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
   }
 
   Widget _buildProgressBar(
-    MinqTokens tokens,
+    MinqTheme tokens,
     String label,
     double progress,
     IconData icon,
@@ -520,7 +520,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildErrorDialog(BuildContext context, MinqTokens tokens) {
+  Widget _buildErrorDialog(BuildContext context, MinqTheme tokens) {
     return Dialog(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing(6)),

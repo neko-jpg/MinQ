@@ -12,7 +12,6 @@ import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/gamification_status_card.dart';
 import 'package:minq/presentation/widgets/level_progress_widget.dart';
-import 'package:minq/presentation/widgets/live_activity_widget.dart';
 import 'package:minq/presentation/widgets/referral_card.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -59,7 +58,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
     final syncStatus = ref.watch(syncStatusProvider);
     final homeAsync = ref.watch(homeDataProvider);
     final l10n = AppLocalizations.of(context)!;
@@ -105,8 +103,7 @@ class _HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context)!;
+    final tokens = MinqTheme.of(context);
     final miniQuests =
         data.quests.where((quest) => quest.category == 'MiniQuest').toList();
 
@@ -129,8 +126,6 @@ class _HomeContent extends StatelessWidget {
                         SizedBox(height: tokens.spacing(4)),
                       ],
                       const _Header(),
-                      SizedBox(height: tokens.spacing(4)),
-                      const LiveActivityWidget(compact: true),
                       SizedBox(height: tokens.spacing(4)),
                       _TodayFocusCard(data: data),
                       SizedBox(height: tokens.spacing(4)),
@@ -174,8 +169,6 @@ class _HomeContent extends StatelessWidget {
                   ],
                   const _Header(),
                   SizedBox(height: tokens.spacing(4)),
-                  const LiveActivityWidget(compact: true),
-                  SizedBox(height: tokens.spacing(4)),
                   _TodayFocusCard(data: data),
                   SizedBox(height: tokens.spacing(4)),
                   _MiniQuestsSection(miniQuests: miniQuests),
@@ -203,7 +196,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,7 +222,7 @@ class _TodayFocusCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final focus = data.focus;
     final quests = data.quests;
@@ -336,7 +329,7 @@ class _MiniQuestsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final navigation = ref.read(navigationUseCaseProvider);
 
@@ -407,7 +400,7 @@ class _MiniQuestTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -478,7 +471,7 @@ class _WeeklyStreakCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final weekDays = List.generate(7, (index) {
@@ -579,7 +572,7 @@ class _HomeScreenSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     return ListView(
       padding: EdgeInsets.all(tokens.spacing(4)),
       children: [
@@ -608,7 +601,7 @@ class _HomeStateMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     return Center(
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing(6)),
@@ -646,7 +639,7 @@ class _HomeOfflineNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(tokens.spacing(3)),

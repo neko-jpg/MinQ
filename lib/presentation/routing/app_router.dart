@@ -14,8 +14,6 @@ import 'package:minq/presentation/screens/community_board_screen.dart';
 import 'package:minq/presentation/screens/create_mini_quest_screen.dart';
 import 'package:minq/presentation/screens/create_quest_screen.dart';
 import 'package:minq/presentation/screens/edit_quest_screen.dart';
-import 'package:minq/presentation/screens/events_screen.dart';
-import 'package:minq/presentation/screens/guild_screen.dart';
 import 'package:minq/presentation/screens/home_screen.dart';
 import 'package:minq/presentation/screens/login_screen.dart';
 import 'package:minq/presentation/screens/mood_tracking_screen.dart';
@@ -39,7 +37,6 @@ import 'package:minq/presentation/screens/stats_screen.dart';
 import 'package:minq/presentation/screens/streak_recovery_screen.dart';
 import 'package:minq/presentation/screens/support_screen.dart';
 import 'package:minq/presentation/screens/time_capsule_screen.dart';
-import 'package:minq/presentation/widgets/live_activity_widget.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -101,7 +98,6 @@ class AppRoutes {
   static const accountDeletion = '/settings/delete-account';
   static const communityBoard = '/community-board';
   static const battle = '/battle';
-  static const guild = '/guild';
   static const createMiniQuest = '/mini-quest/create';
   static const challenges = '/challenges';
   static const questTimer = '/quest/:questId/timer';
@@ -109,8 +105,6 @@ class AppRoutes {
   static const timeCapsule = '/time-capsule';
   static const moodTracking = '/mood-tracking';
   static const streakRecovery = '/streak-recovery/:questId';
-  static const events = '/events';
-  static const liveActivitySettings = '/live-activity-settings';
   static const home = '/';
   static const stats = '/stats';
   static const pair = '/pair';
@@ -342,17 +336,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: AppRoutes.guild,
-        pageBuilder: (context, state) {
-          return buildPageWithTransition<void>(
-            context: context,
-            state: state,
-            child: const GuildScreen(),
-            transitionType: SharedAxisTransitionType.horizontal,
-          );
-        },
-      ),
-      GoRoute(
         path: AppRoutes.createMiniQuest,
         pageBuilder: (context, state) {
           return buildPageWithTransition<void>(
@@ -418,26 +401,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             transitionType: SharedAxisTransitionType.vertical,
           );
         },
-      ),
-      GoRoute(
-        path: AppRoutes.events,
-        pageBuilder:
-            (context, state) => buildPageWithTransition<void>(
-              context: context,
-              state: state,
-              child: const EventsScreen(),
-              transitionType: SharedAxisTransitionType.horizontal,
-            ),
-      ),
-      GoRoute(
-        path: AppRoutes.liveActivitySettings,
-        pageBuilder:
-            (context, state) => buildPageWithTransition<void>(
-              context: context,
-              state: state,
-              child: const LiveActivitySettingsScreen(),
-              transitionType: SharedAxisTransitionType.horizontal,
-            ),
       ),
       // Main navigation shell
       ShellRoute(
@@ -527,7 +490,6 @@ class NavigationUseCase {
   void goToPairChat(String pairId) =>
       _router.push(AppRoutes.pairChat.replaceFirst(':pairId', pairId));
   void goToBattle() => _router.push(AppRoutes.battle);
-  void goToGuild() => _router.push(AppRoutes.guild);
   void goToCreateMiniQuest() => _router.push(AppRoutes.createMiniQuest);
   void goToChallenges() => _router.go(AppRoutes.challenges);
   void goToQuestTimer(int questId) => _router.push(
@@ -539,9 +501,6 @@ class NavigationUseCase {
   void goToStreakRecovery(int questId) => _router.push(
     AppRoutes.streakRecovery.replaceFirst(':questId', questId.toString()),
   );
-  void goToEvents() => _router.push(AppRoutes.events);
-  void goToLiveActivitySettings() =>
-      _router.push(AppRoutes.liveActivitySettings);
   void goHome() => _router.go(AppRoutes.home);
   void goToStats() => _router.go(AppRoutes.stats);
   void goToPair() => _router.go(AppRoutes.pair);

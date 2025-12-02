@@ -335,6 +335,7 @@ class BattleService {
       log('BattleService: ランキング取得開始');
 
       // 期間の計算
+      // ignore: unused_local_variable
       DateTime? startDate;
       switch (period) {
         case RankingPeriod.daily:

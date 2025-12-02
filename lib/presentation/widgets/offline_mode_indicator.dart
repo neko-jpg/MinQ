@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// オフラインモードインジケーター
 class OfflineModeIndicator extends ConsumerWidget {
@@ -10,8 +11,8 @@ class OfflineModeIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOnline = ref.watch(networkStatusProvider);
-    final tokens = context.tokens;
+    final isOnline = ref.watch(isOnlineProvider).value ?? true;
+    final tokens = MinqTheme.of(context);
 
     return Stack(
       children: [
@@ -30,7 +31,7 @@ class OfflineModeIndicator extends ConsumerWidget {
               child: Material(
                 color: Colors.orange,
                 child: Padding(
-                  padding: EdgeInsets.all(tokens.spacing(2)),
+                  padding: EdgeInsets.all(tokens.spaceSM),
                   child: Row(
                     children: [
                       const Icon(
@@ -38,7 +39,7 @@ class OfflineModeIndicator extends ConsumerWidget {
                         color: Colors.white,
                         size: 20,
                       ),
-                      SizedBox(width: tokens.spacing(2)),
+                      SizedBox(width: tokens.spaceSM),
                       const Expanded(
                         child: Text(
                           'オフラインモード（読み取り専用）',
@@ -74,7 +75,7 @@ class ReadOnlyModeWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOnline = ref.watch(networkStatusProvider);
+    final isOnline = ref.watch(isOnlineProvider).value ?? true;
 
     if (!isOnline) {
       return AbsorbPointer(child: Opacity(opacity: 0.5, child: child));

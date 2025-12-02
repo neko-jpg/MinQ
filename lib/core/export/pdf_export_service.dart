@@ -30,10 +30,10 @@ class PdfExportService {
       // final file = File('${output.path}/quests_$userId.pdf');
       // await file.writeAsBytes(await pdf.save());
 
-      AppLogger.info('PDF export completed');
+      AppLogger().info('PDF export completed');
       return null; // TODO: 実装後にファイルを返す
     } catch (e, stack) {
-      AppLogger.error('Failed to export PDF', error: e, stackTrace: stack);
+      AppLogger().error('Failed to export PDF', e, stack);
       return null;
     }
   }
@@ -45,13 +45,13 @@ class PdfExportService {
   }) async {
     try {
       // TODO: 実装
-      AppLogger.info('Stats PDF export completed');
+      AppLogger().info('Stats PDF export completed');
       return null;
     } catch (e, stack) {
-      AppLogger.error(
+      AppLogger().error(
         'Failed to export stats PDF',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return null;
     }

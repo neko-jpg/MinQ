@@ -33,7 +33,7 @@ class ReferralCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildSkeletonCard(MinqTokens tokens) {
+  Widget _buildSkeletonCard(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -82,7 +82,7 @@ class ReferralCard extends ConsumerWidget {
 
   Widget _buildReferralCard(
     BuildContext context,
-    MinqTokens tokens,
+    MinqTheme tokens,
     WidgetRef ref,
     ReferralStats stats,
   ) {

@@ -448,4 +448,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pairGoalProductivity => '生産性';
+
+  @override
+  String get homeDataLoadError => 'Failed to load data';
+
+  @override
+  String get checkConnection => 'Please check your connection';
+
+  @override
+  String get reload => 'Reload';
+
+  @override
+  String get welcomeHome => 'Welcome home';
+
+  @override
+  String get welcomeHomeSubtitle => 'Let\'s build good habits together';
+
+  @override
+  String get todaysFocus => 'Today\'s Focus';
+
+  @override
+  String get aiLearningHabits => 'Learning your habits...';
+
+  @override
+  String get createMiniQuestPrompt => 'Create a mini quest to start';
+
+  @override
+  String get createMiniQuest => 'Create Mini Quest';
+
+  @override
+  String get noMiniQuestsTitle => 'No Mini Quests';
+
+  @override
+  String get noMiniQuestsMessage => 'You haven\'t created any quests yet';
+
+  @override
+  String get yourMiniQuests => 'Your Mini Quests';
+
+  @override
+  String get viewAll => 'View All';
+
+  @override
+  String get weeklyStreak => 'Weekly Streak';
+
+  @override
+  String get offlineMode => 'Offline Mode';
+
+  @override
+  String get reconnect => 'Reconnect';
 }
