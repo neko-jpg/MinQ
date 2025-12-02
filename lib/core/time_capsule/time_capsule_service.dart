@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/domain/time_capsule/time_capsule.dart';
 import 'package:uuid/uuid.dart';
 

@@ -20,6 +20,7 @@ class StreakRecoveryScreen extends ConsumerStatefulWidget {
 class _StreakRecoveryScreenState extends ConsumerState<StreakRecoveryScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  final bool _isLoading = false;
 
   @override
   void initState() {
@@ -42,7 +43,7 @@ class _StreakRecoveryScreenState extends ConsumerState<StreakRecoveryScreen>
       appBar: AppBar(
         title: Text(
           'ストリーク保護・回復',
-          style: tokens.typography.h3.copyWith(color: tokens.textPrimary),
+          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
         ),
         centerTitle: true,
         backgroundColor: tokens.background,
@@ -194,90 +195,90 @@ class _RecoveryTabState extends ConsumerState<_RecoveryTab> {
     }
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // ストリーク状況カード
           _StreakStatusCard(questId: widget.questId),
 
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
 
           // リカバリーチケット情報
           _RecoveryTicketCard(userId: uid),
 
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
 
           // ストリーク回復ボタン
           Card(
             elevation: 0,
             color: tokens.surface,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(tokens.radius.lg),
+              borderRadius: tokens.cornerLarge(),
               side: BorderSide(color: tokens.border),
             ),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.md),
+              padding: EdgeInsets.all(tokens.spacing(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Icon(Icons.restore, color: tokens.encouragement),
-                      SizedBox(width: tokens.spacing.xs),
+                      SizedBox(width: tokens.spacing(2)),
                       Text(
                         'ストリーク回復',
-                        style: tokens.typography.h3.copyWith(
+                        style: tokens.titleMedium.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: tokens.spacing(2)),
                   Text(
                     'リカバリーチケットを使用してストリークを回復できます。\n24時間以内に1回まで使用可能です。',
-                    style: tokens.typography.body.copyWith(
-                        color: tokens.textMuted),
+                    style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                   ),
-                  SizedBox(height: tokens.spacing.md),
+                  SizedBox(height: tokens.spacing(4)),
                   MinqPrimaryButton(
                     label: 'ストリークを回復する',
                     icon: Icons.restore,
                     onPressed: _isRecovering ? null : _recoverStreak,
+                    isLoading: _isRecovering,
                   ),
                 ],
               ),
             ),
           ),
 
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
 
           // チケット購入オプション
           Card(
             elevation: 0,
             color: tokens.surface,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(tokens.radius.lg),
+              borderRadius: tokens.cornerLarge(),
               side: BorderSide(color: tokens.border),
             ),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.md),
+              padding: EdgeInsets.all(tokens.spacing(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Icon(Icons.shopping_cart, color: tokens.brandPrimary),
-                      SizedBox(width: tokens.spacing.xs),
+                      SizedBox(width: tokens.spacing(2)),
                       Text(
                         'チケット購入',
-                        style: tokens.typography.h3.copyWith(
+                        style: tokens.titleMedium.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.sm),
+                  SizedBox(height: tokens.spacing(3)),
 
                   // 課金購入
                   _PurchaseOption(
@@ -290,7 +291,7 @@ class _RecoveryTabState extends ConsumerState<_RecoveryTab> {
                     color: tokens.brandPrimary,
                   ),
 
-                  SizedBox(height: tokens.spacing.sm),
+                  SizedBox(height: tokens.spacing(3)),
 
                   // 広告視聴
                   _PurchaseOption(
@@ -307,38 +308,36 @@ class _RecoveryTabState extends ConsumerState<_RecoveryTab> {
             ),
           ),
 
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
 
           // 注意事項
           Card(
             elevation: 0,
-            color: tokens.joyAccent.withAlpha(26),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(tokens.radius.lg)),
+            color: tokens.joyAccent.withOpacity(0.1),
+            shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.md),
+              padding: EdgeInsets.all(tokens.spacing(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Icon(Icons.info, color: tokens.joyAccent),
-                      SizedBox(width: tokens.spacing.xs),
+                      SizedBox(width: tokens.spacing(2)),
                       Text(
                         '注意事項',
-                        style: tokens.typography.body.copyWith(
+                        style: tokens.bodyMedium.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: tokens.spacing(2)),
                   Text(
                     '• ストリーク回復は24時間以内に1回まで\n'
                     '• チケットは購入または広告視聴で獲得\n'
                     '• 回復後は通常通り習慣を継続してください',
-                    style:
-                        tokens.typography.caption.copyWith(color: tokens.textMuted),
+                    style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                   ),
                 ],
               ),
@@ -360,7 +359,7 @@ class _ProtectionTab extends ConsumerWidget {
     final tokens = context.tokens;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -369,76 +368,75 @@ class _ProtectionTab extends ConsumerWidget {
             elevation: 0,
             color: tokens.surface,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(tokens.radius.lg),
+              borderRadius: tokens.cornerLarge(),
               side: BorderSide(color: tokens.border),
             ),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.md),
+              padding: EdgeInsets.all(tokens.spacing(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Icon(Icons.shield, color: tokens.brandPrimary),
-                      SizedBox(width: tokens.spacing.xs),
+                      SizedBox(width: tokens.spacing(2)),
                       Text(
                         'ストリーク保護設定',
-                        style: tokens.typography.h3.copyWith(
+                        style: tokens.titleMedium.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.sm),
-                  // StreakProtectionWidget(questId: questId),
+                  SizedBox(height: tokens.spacing(3)),
+                  StreakProtectionWidget(questId: questId),
                 ],
               ),
             ),
           ),
 
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
 
           // 保護履歴
           _ProtectionHistoryCard(questId: questId),
 
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
 
           // 保護のヒント
           Card(
             elevation: 0,
-            color: tokens.serenity.withAlpha(26),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(tokens.radius.lg)),
+            color: tokens.serenity.withOpacity(0.1),
+            shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.md),
+              padding: EdgeInsets.all(tokens.spacing(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Icon(Icons.lightbulb, color: tokens.serenity),
-                      SizedBox(width: tokens.spacing.xs),
+                      SizedBox(width: tokens.spacing(2)),
                       Text(
                         'ストリーク保護のコツ',
-                        style: tokens.typography.h3.copyWith(
+                        style: tokens.titleMedium.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.sm),
+                  SizedBox(height: tokens.spacing(3)),
                   const _ProtectionTip(
                     icon: Icons.pause_circle,
                     title: '一時停止',
                     description: '長期間の休暇や体調不良時に使用',
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: tokens.spacing(2)),
                   const _ProtectionTip(
                     icon: Icons.ac_unit,
                     title: '凍結日',
                     description: '特定の日だけスキップしたい時に使用',
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: tokens.spacing(2)),
                   const _ProtectionTip(
                     icon: Icons.weekend,
                     title: '週末スキップ',
@@ -464,19 +462,19 @@ class _StatsTab extends ConsumerWidget {
     final tokens = context.tokens;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // 統計サマリー
           _StreakStatsCard(questId: questId),
 
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
 
           // 月別統計
           _MonthlyStatsCard(questId: questId),
 
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
 
           // 保護使用履歴
           _ProtectionUsageCard(questId: questId),
@@ -498,11 +496,10 @@ class _StreakStatusCard extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: tokens.encouragement.withAlpha(26),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.lg)),
+      color: tokens.encouragement.withOpacity(0.1),
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           children: [
             Icon(
@@ -510,23 +507,22 @@ class _StreakStatusCard extends StatelessWidget {
               size: 48,
               color: tokens.encouragement,
             ),
-            SizedBox(height: tokens.spacing.xs),
+            SizedBox(height: tokens.spacing(2)),
             Text(
               '現在のストリーク',
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
             ),
             Text(
               '7日', // TODO: 実際のデータを取得
-              style: tokens.typography.h1.copyWith(
+              style: tokens.displayMedium.copyWith(
                 color: tokens.encouragement,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: tokens.spacing.xs),
+            SizedBox(height: tokens.spacing(2)),
             Text(
               '最長記録: 15日',
-              style:
-                  tokens.typography.caption.copyWith(color: tokens.textMuted),
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             ),
           ],
         ),
@@ -548,18 +544,18 @@ class _RecoveryTicketCard extends StatelessWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Row(
           children: [
             Container(
-              padding: EdgeInsets.all(tokens.spacing.sm),
+              padding: EdgeInsets.all(tokens.spacing(3)),
               decoration: BoxDecoration(
-                color: tokens.joyAccent.withAlpha(26),
-                borderRadius: BorderRadius.circular(tokens.radius.lg),
+                color: tokens.joyAccent.withOpacity(0.1),
+                borderRadius: tokens.cornerLarge(),
               ),
               child: Icon(
                 Icons.confirmation_number,
@@ -567,21 +563,21 @@ class _RecoveryTicketCard extends StatelessWidget {
                 size: 32,
               ),
             ),
-            SizedBox(width: tokens.spacing.md),
+            SizedBox(width: tokens.spacing(4)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'リカバリーチケット',
-                    style: tokens.typography.body.copyWith(
+                    style: tokens.bodyMedium.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: tokens.spacing(1)),
                   Text(
                     '所持数: 3枚', // TODO: 実際のデータを取得
-                    style: tokens.typography.h2.copyWith(
+                    style: tokens.titleLarge.copyWith(
                       color: tokens.joyAccent,
                       fontWeight: FontWeight.bold,
                     ),
@@ -620,41 +616,40 @@ class _PurchaseOption extends StatelessWidget {
     final tokens = context.tokens;
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.sm),
+      padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
         border: Border.all(color: tokens.border),
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
       ),
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(tokens.spacing.xs),
+            padding: EdgeInsets.all(tokens.spacing(2)),
             decoration: BoxDecoration(
-              color: color.withAlpha(26),
-              borderRadius: BorderRadius.circular(tokens.radius.md),
+              color: color.withOpacity(0.1),
+              borderRadius: tokens.cornerMedium(),
             ),
             child: Icon(icon, color: color),
           ),
-          SizedBox(width: tokens.spacing.sm),
+          SizedBox(width: tokens.spacing(3)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: tokens.typography.body.copyWith(
+                  style: tokens.bodyMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   subtitle,
-                  style:
-                      tokens.typography.caption.copyWith(color: tokens.textMuted),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
               ],
             ),
           ),
-          SizedBox(width: tokens.spacing.xs),
+          SizedBox(width: tokens.spacing(2)),
           SizedBox(
             width: 100,
             child: ElevatedButton(
@@ -666,14 +661,14 @@ class _PurchaseOption extends StatelessWidget {
               child:
                   isLoading
                       ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(Colors.white),
-                          ),
-                        )
-                      : Text(buttonText, style: tokens.typography.caption),
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation(Colors.white),
+                        ),
+                      )
+                      : Text(buttonText, style: tokens.bodySmall),
             ),
           ),
         ],
@@ -695,23 +690,23 @@ class _ProtectionHistoryCard extends StatelessWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '保護履歴',
-              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             // TODO: 実際の履歴データを表示
             Text(
               '履歴がありません',
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
             ),
           ],
         ),
@@ -738,19 +733,18 @@ class _ProtectionTip extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 20, color: tokens.serenity),
-        SizedBox(width: tokens.spacing.xs),
+        SizedBox(width: tokens.spacing(2)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
                 description,
-                style:
-                    tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ],
           ),
@@ -773,19 +767,19 @@ class _StreakStatsCard extends StatelessWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'ストリーク統計',
-              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             Row(
               children: [
                 Expanded(
@@ -836,19 +830,19 @@ class _MonthlyStatsCard extends StatelessWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '今月の統計',
-              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             Row(
               children: [
                 Expanded(
@@ -899,25 +893,25 @@ class _ProtectionUsageCard extends StatelessWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '保護使用状況',
-              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             // TODO: 実際の使用状況データを表示
             Text(
               '今月の保護使用: 2回 / 3回',
-              style: tokens.typography.body.copyWith(color: tokens.textPrimary),
+              style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
             ),
-            SizedBox(height: tokens.spacing.xs),
+            SizedBox(height: tokens.spacing(2)),
             LinearProgressIndicator(
               value: 2 / 3,
               backgroundColor: tokens.border,
@@ -950,16 +944,15 @@ class _StatItem extends StatelessWidget {
     return Column(
       children: [
         Icon(icon, color: color, size: 24),
-        SizedBox(height: tokens.spacing.xs),
+        SizedBox(height: tokens.spacing(1)),
         Text(
           value,
-          style: tokens.typography.h2.copyWith(
+          style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(label,
-            style: tokens.typography.caption.copyWith(color: tokens.textMuted)),
+        Text(label, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
       ],
     );
   }

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Manages haptic feedback across the application with user preferences support
@@ -27,10 +26,9 @@ class HapticManager {
       _isEnabled = prefs.getBool(_hapticEnabledKey) ?? true;
       _isInitialized = true;
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Failed to initialize preferences',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Failed to initialize preferences: $e');
+      }
       _isEnabled = true;
       _isInitialized = true;
     }
@@ -46,10 +44,9 @@ class HapticManager {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_hapticEnabledKey, enabled);
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Failed to save preference',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Failed to save preference: $e');
+      }
     }
   }
 
@@ -67,10 +64,9 @@ class HapticManager {
         await HapticFeedback.lightImpact();
       }
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Success feedback failed',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Success feedback failed: $e');
+      }
     }
   }
 
@@ -88,10 +84,9 @@ class HapticManager {
         await HapticFeedback.mediumImpact();
       }
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Warning feedback failed',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Warning feedback failed: $e');
+      }
     }
   }
 
@@ -109,10 +104,9 @@ class HapticManager {
         await HapticFeedback.heavyImpact();
       }
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Error feedback failed',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Error feedback failed: $e');
+      }
     }
   }
 
@@ -130,10 +124,9 @@ class HapticManager {
         await HapticFeedback.selectionClick();
       }
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Selection feedback failed',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Selection feedback failed: $e');
+      }
     }
   }
 
@@ -150,10 +143,9 @@ class HapticManager {
       await Future.delayed(const Duration(milliseconds: 100));
       await HapticFeedback.lightImpact();
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Achievement feedback failed',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Achievement feedback failed: $e');
+      }
     }
   }
 
@@ -167,10 +159,9 @@ class HapticManager {
       await Future.delayed(const Duration(milliseconds: 50));
       await HapticFeedback.lightImpact();
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Streak feedback failed',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Streak feedback failed: $e');
+      }
     }
   }
 
@@ -186,10 +177,9 @@ class HapticManager {
       await Future.delayed(const Duration(milliseconds: 80));
       await HapticFeedback.heavyImpact();
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Level up feedback failed',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Level up feedback failed: $e');
+      }
     }
   }
 
@@ -201,10 +191,9 @@ class HapticManager {
     try {
       await HapticFeedback.selectionClick();
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Button press feedback failed',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Button press feedback failed: $e');
+      }
     }
   }
 
@@ -216,10 +205,9 @@ class HapticManager {
     try {
       await HapticFeedback.lightImpact();
     } catch (e) {
-      MinqLogger.warn(
-        'HapticManager: Toggle feedback failed',
-        metadata: {'error': e.toString()},
-      );
+      if (kDebugMode) {
+        print('HapticManager: Toggle feedback failed: $e');
+      }
     }
   }
 }

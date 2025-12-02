@@ -1,16 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:isar/isar.dart';
-import 'package:meta/meta.dart';
 import 'package:minq/domain/log/quest_log.dart';
 
 class QuestLogRepository {
   final Isar _isar;
 
   QuestLogRepository(this._isar);
-
-  /// Protected getter for subclasses to access Isar instance
-  @protected
-  Isar get isar => _isar;
 
   Future<void> addLog(QuestLog log) async {
     await _isar.writeTxn(() async {

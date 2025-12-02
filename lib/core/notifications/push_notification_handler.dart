@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:minq/core/deeplink/deeplink_handler.dart';
-import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/core/notifications/notification_channels.dart';
 
 /// プッシュ通知ハンドラー
@@ -32,11 +31,11 @@ class PushNotificationHandler {
 
     // FCMトークンを取得
     final token = await _messaging.getToken();
-    logger.info('📱 FCM Token: $token');
+    print('📱 FCM Token: $token');
 
     // トークン更新を監視
     _messaging.onTokenRefresh.listen((token) {
-      logger.info('🔄 FCM Token refreshed: $token');
+      print('🔄 FCM Token refreshed: $token');
       // サーバーに新しいトークンを送信
       _sendTokenToServer(token);
     });
@@ -67,18 +66,18 @@ class PushNotificationHandler {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      logger.info('✅ Notification permission granted');
+      print('✅ Notification permission granted');
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      logger.warning('⚠️ Notification permission granted provisionally');
+      print('⚠️ Notification permission granted provisionally');
     } else {
-      logger.error('❌ Notification permission denied');
+      print('❌ Notification permission denied');
     }
   }
 
   /// フォアグラウンドメッセージを処理
   Future<void> _handleForegroundMessage(RemoteMessage message) async {
-    logger.info('📬 Foreground message received: ${message.messageId}');
+    print('📬 Foreground message received: ${message.messageId}');
 
     _messageController.add(message);
 
@@ -88,7 +87,7 @@ class PushNotificationHandler {
 
   /// バックグラウンドメッセージを処理
   Future<void> _handleBackgroundMessage(RemoteMessage message) async {
-    logger.info('📬 Background message opened: ${message.messageId}');
+    print('📬 Background message opened: ${message.messageId}');
 
     _messageController.add(message);
 
@@ -197,19 +196,19 @@ class PushNotificationHandler {
   /// トークンをサーバーに送信
   Future<void> _sendTokenToServer(String token) async {
     // TODO: サーバーにトークンを送信
-    logger.info('📤 Sending token to server: $token');
+    print('📤 Sending token to server: $token');
   }
 
   /// トピックを購読
   Future<void> subscribeToTopic(String topic) async {
     await _messaging.subscribeToTopic(topic);
-    logger.info('✅ Subscribed to topic: $topic');
+    print('✅ Subscribed to topic: $topic');
   }
 
   /// トピックの購読を解除
   Future<void> unsubscribeFromTopic(String topic) async {
     await _messaging.unsubscribeFromTopic(topic);
-    logger.info('✅ Unsubscribed from topic: $topic');
+    print('✅ Unsubscribed from topic: $topic');
   }
 
   /// クリーンアップ
@@ -221,7 +220,7 @@ class PushNotificationHandler {
 /// バックグラウンドメッセージハンドラー（トップレベル関数）
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  logger.info('📬 Background message received: ${message.messageId}');
+  print('📬 Background message received: ${message.messageId}');
   // バックグラウンドでの処理（データ同期など）
 }
 

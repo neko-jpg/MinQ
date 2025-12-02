@@ -92,9 +92,9 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
 
   Future<void> _cancelPairing() async {
     _pairingTimer?.cancel();
+    final repo = ref.read(pairRepositoryProvider);
+    final uid = ref.read(uidProvider);
     // TODO: Implement cancellation on the backend if a request was sent
-    // final repo = ref.read(pairRepositoryProvider);
-    // final uid = ref.read(uidProvider);
     // if (uid != null && repo != null) {
     //   repo.cancelPairingRequest(uid);
     // }
@@ -180,7 +180,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
                     shape: BoxShape.circle,
                     gradient: SweepGradient(
                       colors: [
-                        tokens.brandPrimary.withAlpha(26),
+                        tokens.brandPrimary.withOpacity(0.1),
                         tokens.brandPrimary,
                       ],
                       stops: const [0.5, 1.0],
@@ -199,7 +199,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
         const SizedBox(height: 32),
         Text(
           'バディを探しています…',
-          style: tokens.typography.h3.copyWith(
+          style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -210,7 +210,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           child: Text(
             'あなたのプライバシーは保護されています。相手にはあなたの年齢層と目標カテゴリのみが共有されます。',
             textAlign: TextAlign.center,
-            style: tokens.typography.body.copyWith(color: tokens.textMuted),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
         ),
         const Spacer(flex: 3),
@@ -237,7 +237,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           Text(
             l10n.pairMatchingTimeoutTitle,
             textAlign: TextAlign.center,
-            style: tokens.typography.h3.copyWith(
+            style: tokens.titleLarge.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
@@ -246,7 +246,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           Text(
             l10n.pairMatchingTimeoutMessage,
             textAlign: TextAlign.center,
-            style: tokens.typography.body.copyWith(color: tokens.textMuted),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
           const Spacer(),
           MinqPrimaryButton(
@@ -284,7 +284,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           Text(
             'マッチング成功！',
             textAlign: TextAlign.center,
-            style: tokens.typography.h3.copyWith(
+            style: tokens.titleLarge.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
@@ -293,7 +293,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           Text(
             'バディが見つかりました。一緒に習慣を続けていきましょう！',
             textAlign: TextAlign.center,
-            style: tokens.typography.body.copyWith(color: tokens.textMuted),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
           const Spacer(),
           MinqPrimaryButton(
@@ -331,7 +331,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           Text(
             'マッチングできませんでした',
             textAlign: TextAlign.center,
-            style: tokens.typography.h3.copyWith(
+            style: tokens.titleLarge.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
@@ -340,7 +340,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           Text(
             '現在マッチング可能なバディがいません。時間をおいて再度お試しください。',
             textAlign: TextAlign.center,
-            style: tokens.typography.body.copyWith(color: tokens.textMuted),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
           const Spacer(),
           MinqPrimaryButton(
@@ -378,7 +378,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           Text(
             'ペアリング完了',
             textAlign: TextAlign.center,
-            style: tokens.typography.h3.copyWith(
+            style: tokens.titleLarge.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
@@ -387,7 +387,7 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
           Text(
             'バディとのペアリングが完了しました。',
             textAlign: TextAlign.center,
-            style: tokens.typography.body.copyWith(color: tokens.textMuted),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
           const Spacer(),
           MinqPrimaryButton(
@@ -403,4 +403,19 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
     );
   }
 
+  Widget _buildInfoRow(MinqTheme tokens, String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: tokens.bodyMedium.copyWith(color: tokens.textMuted)),
+        Text(
+          value,
+          style: tokens.bodyMedium.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
 }

@@ -52,7 +52,7 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
                 children: [
                   Text(
                     l10n.accountDeletionConfirmDialogDescription,
-                    style: tokens.typography.caption.copyWith(
+                    style: tokens.bodySmall.copyWith(
                       color: tokens.textMuted,
                       height: 1.5,
                     ),
@@ -60,7 +60,7 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
                   const SizedBox(height: 16),
                   Text(
                     l10n.accountDeletionConfirmDialogPrompt,
-                    style: tokens.typography.caption.copyWith(
+                    style: tokens.bodySmall.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -120,13 +120,13 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
             Text(
               l10n.accountDeletionTitle,
               textAlign: TextAlign.center,
-              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+              style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.accountDeletionWarning,
               textAlign: TextAlign.center,
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: tokens.bodyLarge.copyWith(color: tokens.textMuted),
             ),
             const Spacer(flex: 2),
             Row(
@@ -145,7 +145,7 @@ class _AccountDeletionScreenState extends ConsumerState<AccountDeletionScreen> {
                     padding: const EdgeInsets.only(top: 12.0),
                     child: Text(
                       l10n.accountDeletionConfirmationCheckbox,
-                      style: tokens.typography.body,
+                      style: tokens.bodyMedium,
                     ),
                   ),
                 ),

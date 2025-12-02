@@ -71,8 +71,8 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
       if (isProcessing) {
         return SizedBox(
           key: const ValueKey<String>('progress'),
-          height: tokens.spacing.lg,
-          width: tokens.spacing.lg,
+          height: tokens.spacing(6),
+          width: tokens.spacing(6),
           child: CircularProgressIndicator(
             strokeWidth: 3,
             valueColor: AlwaysStoppedAnimation<Color>(tokens.surface),
@@ -87,14 +87,14 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           if (hasIcon) ...<Widget>[
-            Icon(widget.icon, size: tokens.spacing.lg),
-            SizedBox(width: tokens.spacing.xs),
+            Icon(widget.icon, size: tokens.spacing(6)),
+            SizedBox(width: tokens.spacing(2)),
           ],
           Flexible(
             child: Text(
               widget.label,
               textAlign: TextAlign.center,
-              style: tokens.typography.button.copyWith(color: tokens.surface),
+              style: tokens.typeScale.button.copyWith(color: tokens.surface),
             ),
           ),
         ],
@@ -105,7 +105,7 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
     final buttonStyle = ButtonStyle(
       backgroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return baseColor.withAlpha(102);
+          return baseColor.withOpacity(0.4);
         }
         if (states.contains(WidgetState.pressed)) {
           return _darken(baseColor, 0.15);
@@ -120,31 +120,30 @@ class _MinqPrimaryButtonState extends State<MinqPrimaryButton>
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return tokens.surface.withAlpha(179);
+          return tokens.surface.withOpacity(0.7);
         }
         return tokens.surface;
       }),
       overlayColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.pressed) ||
             states.contains(WidgetState.focused)) {
-          return Colors.white.withAlpha(31);
+          return Colors.white.withOpacity(0.12);
         }
         if (states.contains(WidgetState.hovered)) {
-          return Colors.white.withAlpha(20);
+          return Colors.white.withOpacity(0.08);
         }
         return null;
       }),
       minimumSize: WidgetStatePropertyAll<Size>(
-        Size.fromHeight(tokens.spacing.xl),
+        Size.fromHeight(tokens.spacing(14)),
       ),
       padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
-        EdgeInsets.symmetric(horizontal: tokens.spacing.lg),
+        EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
       ),
       shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
-        RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.radius.xl)),
+        RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
       ),
-      textStyle: WidgetStatePropertyAll<TextStyle>(tokens.typography.button),
+      textStyle: WidgetStatePropertyAll<TextStyle>(tokens.typeScale.button),
       animationDuration: const Duration(milliseconds: 150),
       tapTargetSize: MaterialTapTargetSize.padded,
     );
@@ -203,8 +202,8 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
       if (isProcessing) {
         return SizedBox(
           key: const ValueKey<String>('progress'),
-          height: tokens.spacing.lg,
-          width: tokens.spacing.lg,
+          height: tokens.spacing(6),
+          width: tokens.spacing(6),
           child: CircularProgressIndicator(
             strokeWidth: 3,
             valueColor: AlwaysStoppedAnimation<Color>(tokens.textPrimary),
@@ -219,14 +218,14 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           if (hasIcon) ...<Widget>[
-            Icon(widget.icon, size: tokens.spacing.lg),
-            SizedBox(width: tokens.spacing.xs),
+            Icon(widget.icon, size: tokens.spacing(6)),
+            SizedBox(width: tokens.spacing(2)),
           ],
           Flexible(
             child: Text(
               widget.label,
               textAlign: TextAlign.center,
-              style: tokens.typography.button.copyWith(
+              style: tokens.typeScale.button.copyWith(
                 color: tokens.textPrimary,
               ),
             ),
@@ -260,10 +259,10 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
       overlayColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.pressed) ||
             states.contains(WidgetState.hovered)) {
-          return tokens.brandPrimary.withAlpha(20);
+          return tokens.brandPrimary.withOpacity(0.08);
         }
         if (states.contains(WidgetState.focused)) {
-          return tokens.brandPrimary.withAlpha(31);
+          return tokens.brandPrimary.withOpacity(0.12);
         }
         return null;
       }),
@@ -274,16 +273,15 @@ class _MinqSecondaryButtonState extends State<MinqSecondaryButton>
         return BorderSide(color: baseBorder);
       }),
       minimumSize: WidgetStatePropertyAll<Size>(
-        Size.fromHeight(tokens.spacing.xl),
+        Size.fromHeight(tokens.spacing(14)),
       ),
       padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
-        EdgeInsets.symmetric(horizontal: tokens.spacing.lg),
+        EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
       ),
       shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
-        RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.radius.xl)),
+        RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
       ),
-      textStyle: WidgetStatePropertyAll<TextStyle>(tokens.typography.button),
+      textStyle: WidgetStatePropertyAll<TextStyle>(tokens.typeScale.button),
       animationDuration: const Duration(milliseconds: 150),
       tapTargetSize: MaterialTapTargetSize.padded,
     );
@@ -345,8 +343,8 @@ class _MinqTextButtonState extends State<MinqTextButton>
       if (isProcessing) {
         return SizedBox(
           key: const ValueKey<String>('progress'),
-          height: tokens.spacing.lg,
-          width: tokens.spacing.lg,
+          height: tokens.spacing(6),
+          width: tokens.spacing(6),
           child: CircularProgressIndicator(
             strokeWidth: 3,
             valueColor: AlwaysStoppedAnimation<Color>(baseColor),
@@ -357,14 +355,14 @@ class _MinqTextButtonState extends State<MinqTextButton>
       final children = <Widget>[];
       if (widget.icon != null) {
         children
-          ..add(Icon(widget.icon, size: tokens.spacing.md))
-          ..add(SizedBox(width: tokens.spacing.xs));
+          ..add(Icon(widget.icon, size: tokens.spacing(5)))
+          ..add(SizedBox(width: tokens.spacing(2)));
       }
       children.add(
         Flexible(
           child: Text(
             widget.label,
-            style: tokens.typography.button.copyWith(color: baseColor),
+            style: tokens.typeScale.button.copyWith(color: baseColor),
           ),
         ),
       );
@@ -380,33 +378,32 @@ class _MinqTextButtonState extends State<MinqTextButton>
     final buttonStyle = ButtonStyle(
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return baseColor.withAlpha(128);
+          return baseColor.withOpacity(0.5);
         }
         return baseColor;
       }),
       overlayColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.pressed)) {
-          return baseColor.withAlpha(36);
+          return baseColor.withOpacity(0.14);
         }
         if (states.contains(WidgetState.hovered) ||
             states.contains(WidgetState.focused)) {
-          return baseColor.withAlpha(20);
+          return baseColor.withOpacity(0.08);
         }
         return null;
       }),
-      textStyle: WidgetStatePropertyAll<TextStyle>(tokens.typography.button),
+      textStyle: WidgetStatePropertyAll<TextStyle>(tokens.typeScale.button),
       minimumSize: WidgetStatePropertyAll<Size>(
-        Size(widget.expand ? double.infinity : 0, tokens.spacing.xl),
+        Size(widget.expand ? double.infinity : 0, tokens.spacing(12)),
       ),
       padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
         EdgeInsets.symmetric(
-          horizontal: tokens.spacing.sm,
-          vertical: tokens.spacing.sm,
+          horizontal: tokens.spacing(widget.expand ? 4 : 3),
+          vertical: tokens.spacing(3),
         ),
       ),
       shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
-        RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.radius.lg)),
+        RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       ),
       tapTargetSize: MaterialTapTargetSize.padded,
       animationDuration: const Duration(milliseconds: 150),

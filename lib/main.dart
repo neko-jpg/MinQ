@@ -9,18 +9,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/config/flavor.dart';
 import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/data/providers.dart';
-
 import 'package:minq/data/services/crash_recovery_store.dart';
 import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/firebase_options_dev.dart' as dev;
 import 'package:minq/firebase_options_prod.dart' as prod;
 import 'package:minq/firebase_options_stg.dart' as stg;
-import 'package:minq/core/initialization/optimal_initialization_service.dart';
+import 'package:minq/presentation/controllers/crash_recovery_controller.dart';
 import 'package:minq/presentation/controllers/progressive_onboarding_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
+import 'package:minq/presentation/screens/crash_recovery_screen.dart';
 import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
-import 'package:minq/presentation/screens/organic_splash_screen.dart';
-import 'package:minq/presentation/theme/theme.dart';
+import 'package:minq/presentation/theme/app_theme.dart';
 import 'package:minq/presentation/widgets/version_check_widget.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -155,19 +154,40 @@ class MinQApp extends ConsumerStatefulWidget {
 }
 
 class _MinQAppState extends ConsumerState<MinQApp> {
+  late final ProviderSubscription<AsyncValue<String>>
+  _notificationTapSubscription;
+  ProviderSubscription<AsyncValue<Uri>>? _deepLinkSubscription;
 
   @override
   void initState() {
     super.initState();
     // レベルアップイベントリスナー
-    Future.microtask(() {
-      _handleLevelUpEvent(ref.read(levelUpEventProvider));
-      _handleNotificationNavigation(ref.read(notificationTapStreamProvider));
-      _handleDeepLinkNavigation(ref.read(deepLinkStreamProvider));
+    ref.listen<LevelUpEvent?>(levelUpEventProvider, (previous, next) {
+      if (next != null && mounted) {
+        _showLevelUpScreen(next);
+      }
     });
+
+    // React to notification taps emitted by the native layer.
+    _notificationTapSubscription = ref.listenManual<AsyncValue<String>>(
+      notificationTapStreamProvider,
+      (previous, next) => _handleNotificationNavigation(next),
+    );
+    _handleNotificationNavigation(_notificationTapSubscription.read());
+
+    _deepLinkSubscription = ref.listenManual<AsyncValue<Uri>>(
+      deepLinkStreamProvider,
+      (previous, next) => _handleDeepLinkNavigation(next),
+    );
+    _handleDeepLinkNavigation(_deepLinkSubscription?.read());
   }
 
-
+  @override
+  void dispose() {
+    _notificationTapSubscription.close();
+    _deepLinkSubscription?.close();
+    super.dispose();
+  }
 
   void _handleNotificationNavigation(AsyncValue<String> notification) {
     notification.whenData((route) {
@@ -204,12 +224,6 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     return null;
   }
 
-  void _handleLevelUpEvent(LevelUpEvent? event) {
-    if (event != null && mounted) {
-      _showLevelUpScreen(event);
-    }
-  }
-
   void _showLevelUpScreen(LevelUpEvent event) {
     // レベルアップ画面を表示
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -235,79 +249,68 @@ class _MinQAppState extends ConsumerState<MinQApp> {
 
   @override
   Widget build(BuildContext context) {
-    // ref.listenをbuildメソッド内で使用
-    ref.listen<LevelUpEvent?>(
-      levelUpEventProvider,
-      (previous, next) => _handleLevelUpEvent(next),
-    );
-
-    ref.listen<AsyncValue<String>>(
-      notificationTapStreamProvider,
-      (previous, next) => _handleNotificationNavigation(next),
-    );
-
-    ref.listen<AsyncValue<Uri>>(
-      deepLinkStreamProvider,
-      (previous, next) => _handleDeepLinkNavigation(next),
-    );
-
-    final appStartupAsyncValue = ref.watch(optimizedAppStartupProvider);
+    final appStartupAsyncValue = ref.watch(appStartupProvider);
+    final initializationError = ref.watch(initializationErrorProvider);
     final router = ref.watch(routerProvider);
     final locale = ref.watch(appLocaleControllerProvider);
+    final crashRecoveryState = ref.watch(crashRecoveryControllerProvider);
 
-    // クラッシュリカバリダイアログを削除し、サイレントリカバリを実装
-    // エラーが発生した場合でも有機的スプラッシュ画面を表示
+    if (crashRecoveryState.needsRecovery) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        home: const CrashRecoveryScreen(),
+      );
+    }
 
-    return switch (appStartupAsyncValue) {
-      AsyncLoading() => MaterialApp(
+    if (initializationError != null) {
+      return MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: buildLightTheme(),
-        darkTheme: buildDarkTheme(),
-        themeMode: ThemeMode.system,
-        home: const OrganicSplashScreen(),
-      ),
-      AsyncError(:final error) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: buildLightTheme(),
-        darkTheme: buildDarkTheme(),
-        themeMode: ThemeMode.system,
         home: Scaffold(
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 64, color: Colors.red),
-                const SizedBox(height: 16),
-                Text('初期化エラーが発生しました'),
-                const SizedBox(height: 8),
-                Text('$error', style: const TextStyle(fontSize: 12)),
+                Text('Startup Error: $initializationError'),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    ref.invalidate(optimizedAppStartupProvider);
+                    ref.invalidate(appStartupProvider);
                   },
-                  child: const Text('再試行'),
+                  child: const Text('Retry'),
                 ),
               ],
             ),
           ),
         ),
+      );
+    }
+
+    return switch (appStartupAsyncValue) {
+      AsyncLoading() => const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(body: Center(child: CircularProgressIndicator())),
+      ),
+      AsyncError(:final error) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(body: Center(child: Text('Startup Error: $error'))),
       ),
       AsyncData() => MaterialApp.router(
         debugShowCheckedModeBanner: false,
         routerConfig: router,
         title: 'MinQ',
-        theme: buildLightTheme(),
-        darkTheme: buildDarkTheme(),
+        theme: lightTheme,
+        darkTheme: darkTheme,
         themeMode: ThemeMode.system,
-        locale: locale,
+        locale: locale ?? const Locale('ja'),
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: AppLocalizations.supportedLocales,
+        supportedLocales: const [Locale('ja')],
         builder: (BuildContext context, Widget? child) {
           final mediaQuery = MediaQuery.of(context);
           const double minScaleFactor = 1.0;
@@ -315,7 +318,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
 
           TextScaler effectiveTextScaler = mediaQuery.textScaler;
           if (maxScaleFactor > minScaleFactor) {
-            final double approxScale = mediaQuery.textScaler.scale(1);
+            final double approxScale = mediaQuery.textScaler.textScaleFactor;
             if (!approxScale.isFinite || approxScale <= 0) {
               assert(() {
                 debugPrint(
@@ -349,12 +352,9 @@ class _MinQAppState extends ConsumerState<MinQApp> {
           );
         },
       ),
-      _ => MaterialApp(
+      _ => const MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: buildLightTheme(),
-        darkTheme: buildDarkTheme(),
-        themeMode: ThemeMode.system,
-        home: const OrganicSplashScreen(),
+        home: Scaffold(body: Center(child: Text('Initializing...'))),
       ),
     };
   }

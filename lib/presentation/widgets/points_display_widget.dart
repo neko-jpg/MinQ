@@ -18,7 +18,7 @@ class PointsDisplayWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final uid = ref.watch(providers.uidProvider);
 
     if (uid == null) {
@@ -51,31 +51,31 @@ class PointsDisplayWidget extends ConsumerWidget {
   Widget _buildSkeleton(MinqTheme tokens, bool compact) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.md,
-        vertical: tokens.spacing.sm,
+        horizontal: tokens.spacing(3),
+        vertical: tokens.spacing(2),
       ),
       decoration: BoxDecoration(
         color: tokens.surfaceVariant,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: tokens.spacing.lg,
-            height: tokens.spacing.lg,
+            width: tokens.spacing(6),
+            height: tokens.spacing(6),
             decoration: BoxDecoration(
-              color: tokens.textMuted.withAlpha((255 * 0.3).round()),
+              color: tokens.textMuted.withOpacity(0.3),
               shape: BoxShape.circle,
             ),
           ),
-          SizedBox(width: tokens.spacing.sm),
+          SizedBox(width: tokens.spacing(2)),
           Container(
-            width: compact ? tokens.spacing.xl : 100,
-            height: 20,
+            width: compact ? tokens.spacing(12) : tokens.spacing(20),
+            height: tokens.spacing(4),
             decoration: BoxDecoration(
-              color: tokens.textMuted.withAlpha((255 * 0.3).round()),
-              borderRadius: BorderRadius.circular(tokens.radius.sm),
+              color: tokens.textMuted.withOpacity(0.3),
+              borderRadius: tokens.cornerSmall(),
             ),
           ),
         ],
@@ -91,22 +91,19 @@ class PointsDisplayWidget extends ConsumerWidget {
   ) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.md,
-        vertical: tokens.spacing.sm,
+        horizontal: tokens.spacing(3),
+        vertical: tokens.spacing(2),
       ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.brandPrimary,
-            tokens.brandPrimary.withAlpha((255 * 0.8).round())
-          ],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
         boxShadow: [
           BoxShadow(
-            color: tokens.brandPrimary.withAlpha((255 * 0.3).round()),
+            color: tokens.brandPrimary.withOpacity(0.3),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -115,11 +112,11 @@ class PointsDisplayWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(rankIcon, color: Colors.white, size: tokens.spacing.lg),
-          SizedBox(width: tokens.spacing.sm),
+          Icon(rankIcon, color: Colors.white, size: tokens.spacing(5)),
+          SizedBox(width: tokens.spacing(2)),
           Text(
             '$points',
-            style: tokens.typography.body.copyWith(
+            style: tokens.bodyMedium.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
@@ -136,20 +133,17 @@ class PointsDisplayWidget extends ConsumerWidget {
     IconData rankIcon,
   ) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.brandPrimary,
-            tokens.brandPrimary.withAlpha((255 * 0.8).round())
-          ],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         boxShadow: [
           BoxShadow(
-            color: tokens.brandPrimary.withAlpha((255 * 0.3).round()),
+            color: tokens.brandPrimary.withOpacity(0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -159,15 +153,15 @@ class PointsDisplayWidget extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: tokens.spacing.xl,
-            height: tokens.spacing.xl,
+            width: tokens.spacing(10),
+            height: tokens.spacing(10),
             decoration: BoxDecoration(
-              color: Colors.white.withAlpha((255 * 0.2).round()),
+              color: Colors.white.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(rankIcon, color: Colors.white, size: tokens.spacing.lg),
+            child: Icon(rankIcon, color: Colors.white, size: tokens.spacing(6)),
           ),
-          SizedBox(width: tokens.spacing.md),
+          SizedBox(width: tokens.spacing(3)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -175,16 +169,16 @@ class PointsDisplayWidget extends ConsumerWidget {
               if (showRank) ...[
                 Text(
                   rank,
-                  style: tokens.typography.caption.copyWith(
-                    color: Colors.white.withAlpha((255 * 0.9).round()),
+                  style: tokens.bodySmall.copyWith(
+                    color: Colors.white.withOpacity(0.9),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: tokens.spacing.xs),
+                SizedBox(height: tokens.spacing(0.5)),
               ],
               Text(
                 '$points ポイント',
-                style: tokens.typography.h3.copyWith(
+                style: tokens.titleSmall.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -301,7 +295,7 @@ class RankProgressWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final uid = ref.watch(providers.uidProvider);
 
     if (uid == null) {
@@ -315,10 +309,10 @@ class RankProgressWidget extends ConsumerWidget {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Container(
-            height: 100,
+            height: tokens.spacing(20),
             decoration: BoxDecoration(
               color: tokens.surfaceVariant,
-              borderRadius: BorderRadius.circular(tokens.radius.md),
+              borderRadius: tokens.cornerMedium(),
             ),
           );
         }
@@ -330,10 +324,10 @@ class RankProgressWidget extends ConsumerWidget {
         final pointsToNext = data['pointsToNext'] as int;
 
         return Container(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: EdgeInsets.all(tokens.spacing(4)),
           decoration: BoxDecoration(
             color: tokens.surface,
-            borderRadius: BorderRadius.circular(tokens.radius.lg),
+            borderRadius: tokens.cornerLarge(),
             border: Border.all(color: tokens.border),
           ),
           child: Column(
@@ -344,12 +338,11 @@ class RankProgressWidget extends ConsumerWidget {
                 children: [
                   Text(
                     '現在のランク',
-                    style: tokens.typography.caption
-                        .copyWith(color: tokens.textMuted),
+                    style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                   ),
                   Text(
                     currentRank,
-                    style: tokens.typography.h3.copyWith(
+                    style: tokens.titleMedium.copyWith(
                       color: tokens.brandPrimary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -358,40 +351,37 @@ class RankProgressWidget extends ConsumerWidget {
               ),
 
               if (nextRank != null) ...[
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: tokens.spacing(3)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       '次のランクまで',
-                      style: tokens.typography.caption
-                          .copyWith(color: tokens.textMuted),
+                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                     ),
                     Text(
                       '$pointsToNext ポイント',
-                      style: tokens.typography.caption.copyWith(
+                      style: tokens.bodySmall.copyWith(
                         color: tokens.textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: tokens.spacing.sm),
+                SizedBox(height: tokens.spacing(2)),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(tokens.radius.sm),
+                  borderRadius: tokens.cornerSmall(),
                   child: LinearProgressIndicator(
                     value: progress,
-                    minHeight: tokens.spacing.sm,
-                    backgroundColor:
-                        tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+                    minHeight: tokens.spacing(2),
+                    backgroundColor: tokens.brandPrimary.withOpacity(0.1),
                     valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
                   ),
                 ),
-                SizedBox(height: tokens.spacing.xs),
+                SizedBox(height: tokens.spacing(1)),
                 Text(
                   '次のランク: $nextRank',
-                  style: tokens.typography.caption
-                      .copyWith(color: tokens.textMuted),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
               ],
             ],

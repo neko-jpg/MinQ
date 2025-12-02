@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
-import 'package:minq/core/error/exceptions.dart';
-import 'package:minq/core/logging/app_logger.dart';
 
 /// リトライ戦略
 enum RetryStrategy {
@@ -109,10 +106,7 @@ class RetryUtil {
           strategy: config.strategy,
         );
 
-        // Use secure logging instead of print
-        if (kDebugMode) {
-          debugPrint('⚠️ Retry attempt $attempt after ${delay.inMilliseconds}ms: $error');
-        }
+        print('⚠️ Retry attempt $attempt after ${delay.inMilliseconds}ms: $error');
 
         // 待機
         await Future.delayed(delay);

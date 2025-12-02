@@ -1,5 +1,4 @@
-import 'dart:ui' as ui;
-
+import 'dart:ui';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
@@ -23,7 +22,7 @@ class CrashlyticsService {
     FlutterError.onError = _crashlytics.recordFlutterFatalError;
 
     // 非同期エラーをキャッチ
-    ui.PlatformDispatcher.instance.onError = (error, stack) {
+    PlatformDispatcher.instance.onError = (error, stack) {
       _crashlytics.recordError(error, stack, fatal: true);
       return true;
     };
@@ -125,5 +124,50 @@ class CrashlyticsWrapper {
   /// パンくずを追加
   static Future<void> addBreadcrumb(String message, {Map<String, dynamic>? data}) async {
     await _service.addBreadcrumb(message, data: data);
+  }
+}
+
+/// エラーハンドラー
+class ErrorHandler {
+  /// エラーをハンドル
+  static Future<void> handle(
+    dynamic error,
+    StackTrace? stackTrace, {
+    String? context,
+    Map<String, dynamic>? additionalInfo,
+  }) async {
+    // ログに記録
+    print('Error: $error');
+    if (stackTrace != null) {
+      print('StackTrace: $stackTrace');
+    }
+
+    // Crashlyticsに送信
+    await CrashlyticsWrapper.recordError(
+      error,
+      stackTrace,
+      reason: context,
+    );
+
+    // 追加情報を設定
+    if (additionalInfo != null) {
+      for (final entry in additionalInfo.entries) {
+        await CrashlyticsWrapper.setCustomKey(entry.key, entry.value);
+      }
+    }
+  }
+
+  /// 非致命的エラーをハンドル
+  static Future<void> handleNonFatal(
+    dynamic error,
+    StackTrace? stackTrace, {
+    String? context,
+  }) async {
+    await CrashlyticsWrapper.recordError(
+      error,
+      stackTrace,
+      reason: context,
+      fatal: false,
+    );
   }
 }

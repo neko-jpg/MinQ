@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/common/feedback/audio_feedback_manager.dart';
 import 'package:minq/presentation/common/feedback/haptic_manager.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// 祝福演出の種類
 enum CelebrationType { confetti, fireworks, sparkles, trophy, mascot, golden }
@@ -23,8 +21,8 @@ class CelebrationConfig {
     required this.type,
     this.duration = const Duration(seconds: 3),
     this.message,
-    required this.primaryColor,
-    required this.secondaryColor,
+    this.primaryColor = const Color(0xFFFFD700),
+    this.secondaryColor = const Color(0xFFFF6B6B),
     this.playSound = true,
     this.hapticFeedback = true,
   });
@@ -34,58 +32,56 @@ class CelebrationConfig {
 class CelebrationSystem {
   static final Random _random = Random();
 
-  /// 利用可能な祝福演出のリストを生成（デザイントークンを使用）
-  static List<CelebrationConfig> _getCelebrations(MinqColorTokens colors) => [
+  /// 利用可能な祝福演出のリスト
+  static const List<CelebrationConfig> _celebrations = [
     CelebrationConfig(
       type: CelebrationType.confetti,
       message: '素晴らしい！🎉',
-      primaryColor: colors.warning, // Golden color
-      secondaryColor: colors.error,
+      primaryColor: Color(0xFFFFD700),
+      secondaryColor: Color(0xFFFF6B6B),
     ),
     CelebrationConfig(
       type: CelebrationType.fireworks,
       message: 'やったね！🎆',
-      primaryColor: colors.secondary,
-      secondaryColor: colors.warning,
+      primaryColor: Color(0xFF4ECDC4),
+      secondaryColor: Color(0xFFFFD700),
     ),
     CelebrationConfig(
       type: CelebrationType.sparkles,
       message: 'キラキラ✨',
-      primaryColor: colors.warning,
-      secondaryColor: colors.tertiary,
+      primaryColor: Color(0xFFFFD700),
+      secondaryColor: Color(0xFFFFA726),
     ),
     CelebrationConfig(
       type: CelebrationType.trophy,
       message: 'チャンピオン！🏆',
-      primaryColor: colors.warning,
-      secondaryColor: colors.success,
+      primaryColor: Color(0xFFFFD700),
+      secondaryColor: Color(0xFFFF8F00),
     ),
     CelebrationConfig(
       type: CelebrationType.mascot,
       message: 'がんばったね！🐱',
-      primaryColor: colors.error,
-      secondaryColor: colors.warning,
+      primaryColor: Color(0xFFFF6B6B),
+      secondaryColor: Color(0xFFFFD700),
     ),
     CelebrationConfig(
       type: CelebrationType.golden,
       message: 'ゴールド達成！⭐',
-      primaryColor: colors.warning,
-      secondaryColor: colors.primary,
+      primaryColor: Color(0xFFFFD700),
+      secondaryColor: Color(0xFFFFC107),
     ),
   ];
 
-  /// ランダムな祝福演出を取得（デザイントークンを使用）
-  static CelebrationConfig getRandomCelebration(MinqColorTokens colors) {
-    final celebrations = _getCelebrations(colors);
-    return celebrations[_random.nextInt(celebrations.length)];
+  /// ランダムな祝福演出を取得
+  static CelebrationConfig getRandomCelebration() {
+    return _celebrations[_random.nextInt(_celebrations.length)];
   }
 
-  /// 特定の祝福演出を取得（デザイントークンを使用）
-  static CelebrationConfig getCelebration(CelebrationType type, MinqColorTokens colors) {
-    final celebrations = _getCelebrations(colors);
-    return celebrations.firstWhere(
+  /// 特定の種類の祝福演出を取得
+  static CelebrationConfig getCelebration(CelebrationType type) {
+    return _celebrations.firstWhere(
       (config) => config.type == type,
-      orElse: () => celebrations.first,
+      orElse: () => _celebrations.first,
     );
   }
 
@@ -95,8 +91,7 @@ class CelebrationSystem {
     CelebrationConfig? config,
     VoidCallback? onComplete,
   }) {
-    final theme = Theme.of(context).extension<MinqTheme>()!;
-    final celebrationConfig = config ?? getRandomCelebration(theme.tokens);
+    final celebrationConfig = config ?? getRandomCelebration();
 
     // ハプティックフィードバック
     if (celebrationConfig.hapticFeedback) {
@@ -125,41 +120,33 @@ class CelebrationSystem {
   }
 
   /// 連続達成記録に応じた特別な祝福演出
-  static CelebrationConfig getStreakCelebration(int streak, MinqColorTokens colors) {
+  static CelebrationConfig getStreakCelebration(int streak) {
     if (streak >= 100) {
-      return CelebrationConfig(
+      return const CelebrationConfig(
         type: CelebrationType.golden,
         message: '100日達成！伝説の継続者🌟',
-        duration: const Duration(seconds: 5),
-        primaryColor: colors.primary,
-        secondaryColor: colors.secondary,
+        duration: Duration(seconds: 5),
       );
     } else if (streak >= 50) {
-      return CelebrationConfig(
+      return const CelebrationConfig(
         type: CelebrationType.trophy,
         message: '50日達成！継続マスター🏆',
-        duration: const Duration(seconds: 4),
-        primaryColor: colors.primary,
-        secondaryColor: colors.secondary,
+        duration: Duration(seconds: 4),
       );
     } else if (streak >= 30) {
-      return CelebrationConfig(
+      return const CelebrationConfig(
         type: CelebrationType.fireworks,
         message: '30日達成！習慣化成功🎆',
-        duration: const Duration(seconds: 4),
-        primaryColor: colors.primary,
-        secondaryColor: colors.secondary,
+        duration: Duration(seconds: 4),
       );
     } else if (streak >= 7) {
-      return CelebrationConfig(
+      return const CelebrationConfig(
         type: CelebrationType.confetti,
         message: '1週間達成！素晴らしい🎉',
-        duration: const Duration(seconds: 3),
-        primaryColor: colors.primary,
-        secondaryColor: colors.secondary,
+        duration: Duration(seconds: 3),
       );
     } else {
-      return getRandomCelebration(colors);
+      return getRandomCelebration();
     }
   }
 }
@@ -258,8 +245,8 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
           center: Alignment.center,
           radius: 1.0,
           colors: [
-            widget.config.primaryColor.withAlpha(
-              (25.5 * _opacityAnimation.value).round(),
+            widget.config.primaryColor.withOpacity(
+              0.1 * _opacityAnimation.value,
             ),
             Colors.transparent,
           ],
@@ -276,7 +263,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: widget.config.primaryColor.withAlpha(77),
+            color: widget.config.primaryColor.withOpacity(0.3),
             blurRadius: 20,
             spreadRadius: 5,
           ),
@@ -370,7 +357,7 @@ class ParticleEffectPainter extends CustomPainter {
     for (final particle in particles) {
       final paint =
           Paint()
-            ..color = particle.color.withAlpha(((1 - progress) * 204).round())
+            ..color = particle.color.withOpacity((1 - progress) * 0.8)
             ..style = PaintingStyle.fill;
 
       final x = (particle.x + particle.vx * progress) * size.width;

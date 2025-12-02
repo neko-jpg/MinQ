@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/presentation/theme/color_tokens.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -25,7 +24,7 @@ class ImageUploadService {
       if (image == null) return null;
       return File(image.path);
     } catch (e) {
-      logger.error('❌ Failed to pick image from gallery: $e');
+      print('❌ Failed to pick image from gallery: $e');
       return null;
     }
   }
@@ -43,7 +42,7 @@ class ImageUploadService {
       if (image == null) return null;
       return File(image.path);
     } catch (e) {
-      logger.error('❌ Failed to pick image from camera: $e');
+      print('❌ Failed to pick image from camera: $e');
       return null;
     }
   }
@@ -56,6 +55,15 @@ class ImageUploadService {
     List<CropAspectRatioPreset>? aspectRatioPresets,
   }) async {
     try {
+      final presets = aspectRatioPresets ??
+          [
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9,
+          ];
+
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: imageFile.path,
         aspectRatio: aspectRatio,
@@ -66,30 +74,14 @@ class ImageUploadService {
             toolbarWidgetColor: ColorTokens.light.onPrimary,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false,
-            // TODO(jules): Re-add cropStyle when it's supported again.
-            // cropStyle: cropStyle,
-            // TODO(jules): Re-add aspectRatioPresets when it's supported again.
-            // aspectRatioPresets: aspectRatioPresets ??
-            //     [
-            //       CropAspectRatioPreset.square,
-            //       CropAspectRatioPreset.ratio3x2,
-            //       CropAspectRatioPreset.original,
-            //       CropAspectRatioPreset.ratio4x3,
-            //       CropAspectRatioPreset.ratio16x9,
-            //     ],
+            cropStyle: cropStyle,
+            aspectRatioPresets: presets,
           ),
           IOSUiSettings(
             title: '画像をクロップ',
             minimumAspectRatio: 1.0,
-            // TODO(jules): Re-add aspectRatioPresets when it's supported again.
-            // aspectRatioPresets: aspectRatioPresets ??
-            //     [
-            //       CropAspectRatioPreset.square,
-            //       CropAspectRatioPreset.ratio3x2,
-            //       CropAspectRatioPreset.original,
-            //       CropAspectRatioPreset.ratio4x3,
-            //       CropAspectRatioPreset.ratio16x9,
-            //     ],
+            cropStyle: cropStyle,
+            aspectRatioPresets: presets,
           ),
         ],
       );
@@ -97,7 +89,7 @@ class ImageUploadService {
       if (croppedFile == null) return null;
       return File(croppedFile.path);
     } catch (e) {
-      logger.error('❌ Failed to crop image: $e');
+      print('❌ Failed to crop image: $e');
       return null;
     }
   }
@@ -125,7 +117,7 @@ class ImageUploadService {
       if (result == null) return null;
       return File(result.path);
     } catch (e) {
-      logger.error('❌ Failed to compress image: $e');
+      print('❌ Failed to compress image: $e');
       return null;
     }
   }
@@ -136,7 +128,7 @@ class ImageUploadService {
       final image = await decodeImageFromList(await imageFile.readAsBytes());
       return ImageSize(width: image.width, height: image.height);
     } catch (e) {
-      logger.error('❌ Failed to get image size: $e');
+      print('❌ Failed to get image size: $e');
       return null;
     }
   }
@@ -163,7 +155,7 @@ class ImageUploadService {
       if (result == null) return null;
       return File(result.path);
     } catch (e) {
-      logger.error('❌ Failed to resize image: $e');
+      print('❌ Failed to resize image: $e');
       return null;
     }
   }

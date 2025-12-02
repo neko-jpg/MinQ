@@ -22,7 +22,7 @@ class TodayLogsScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           '今日の記録',
-          style: tokens.typography.h3.copyWith(
+          style: tokens.titleMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -32,7 +32,7 @@ class TodayLogsScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withAlpha(230),
+        backgroundColor: tokens.background.withOpacity(0.9),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -42,13 +42,13 @@ class TodayLogsScreen extends ConsumerWidget {
             (error, _) => Center(
               child: Text(
                 'エラーが発生しました: $error',
-                style: tokens.typography.body.copyWith(color: tokens.accentError),
+                style: tokens.bodyMedium.copyWith(color: tokens.accentError),
               ),
             ),
         data: (logs) {
           if (logs.isEmpty) {
             return Padding(
-              padding: EdgeInsets.all(tokens.spacing.lg),
+              padding: EdgeInsets.all(tokens.spacing(4)),
               child: MinqEmptyState(
                 icon: Icons.today_outlined,
                 title: '今日の記録はありません',
@@ -62,7 +62,7 @@ class TodayLogsScreen extends ConsumerWidget {
           }
 
           return ListView.builder(
-            padding: EdgeInsets.all(tokens.spacing.lg),
+            padding: EdgeInsets.all(tokens.spacing(4)),
             itemCount: logs.length,
             itemBuilder: (context, index) {
               final log = logs[index];
@@ -89,13 +89,13 @@ class _LogCard extends ConsumerWidget {
     return Card(
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.border),
       ),
       elevation: 0,
-      margin: EdgeInsets.only(bottom: tokens.spacing.md),
+      margin: EdgeInsets.only(bottom: tokens.spacing(3)),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: questAsync.when(
           loading:
               () => const SizedBox(
@@ -126,8 +126,8 @@ class _LogCard extends ConsumerWidget {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withAlpha(26),
-                        borderRadius: BorderRadius.circular(tokens.radius.md),
+                        color: tokens.brandPrimary.withOpacity(0.1),
+                        borderRadius: tokens.cornerMedium(),
                       ),
                       child: Icon(
                         iconDataForKey(quest.iconKey),
@@ -135,46 +135,45 @@ class _LogCard extends ConsumerWidget {
                         size: 24,
                       ),
                     ),
-                    SizedBox(width: tokens.spacing.md),
+                    SizedBox(width: tokens.spacing(3)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             quest.title,
-                            style: tokens.typography.body.copyWith(
+                            style: tokens.titleSmall.copyWith(
                               color: tokens.textPrimary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: tokens.spacing.xs),
+                          SizedBox(height: tokens.spacing(1)),
                           Text(
                             DateFormat('HH:mm').format(log.ts.toLocal()),
-                            style: tokens.typography.caption.copyWith(
+                            style: tokens.bodySmall.copyWith(
                               color: tokens.textMuted,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    _ProofTypeChip(proofType: log.proofType.name),
+                    _ProofTypeChip(proofType: log.proofType),
                   ],
                 ),
-                if (log.proofType == ProofType.photo &&
-                    log.proofValue != null &&
-                    log.proofValue!.isNotEmpty) ...[
-                  SizedBox(height: tokens.spacing.md),
+                if (log.proofType == ProofType.photo.name &&
+                    log.proofValue.isNotEmpty) ...[
+                  SizedBox(height: tokens.spacing(3)),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(tokens.radius.md),
+                    borderRadius: tokens.cornerMedium(),
                     child: Image.network(
-                      log.proofValue!,
+                      log.proofValue,
                       height: 120,
                       width: double.infinity,
                       fit: BoxFit.cover,
                       errorBuilder:
                           (context, error, stackTrace) => Container(
                             height: 120,
-                            color: tokens.border.withAlpha(77),
+                            color: tokens.border.withOpacity(0.3),
                             child: const Center(
                               child: Icon(Icons.broken_image_outlined),
                             ),
@@ -182,7 +181,7 @@ class _LogCard extends ConsumerWidget {
                     ),
                   ),
                 ],
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: tokens.spacing(3)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -237,7 +236,6 @@ class _LogCard extends ConsumerWidget {
                     questLogControllerProvider.notifier,
                   );
                   final success = await controller.undoLog(log.id);
-                  if (!context.mounted) return;
 
                   if (success) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -293,22 +291,22 @@ class _ProofTypeChip extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.sm,
-        vertical: tokens.spacing.xs,
+        horizontal: tokens.spacing(2),
+        vertical: tokens.spacing(1),
       ),
       decoration: BoxDecoration(
-        color: color.withAlpha(26),
-        borderRadius: BorderRadius.circular(tokens.radius.sm),
-        border: Border.all(color: color.withAlpha(77)),
+        color: color.withOpacity(0.1),
+        borderRadius: tokens.cornerSmall(),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 16, color: color),
-          SizedBox(width: tokens.spacing.xs),
+          SizedBox(width: tokens.spacing(1)),
           Text(
             label,
-            style: tokens.typography.caption.copyWith(
+            style: tokens.bodySmall.copyWith(
               color: color,
               fontWeight: FontWeight.w600,
             ),

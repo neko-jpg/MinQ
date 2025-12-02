@@ -22,11 +22,11 @@ class MoodSelectorWidget extends StatelessWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           children: [
             // 5段階評価の横並び
@@ -42,13 +42,13 @@ class MoodSelectorWidget extends StatelessWidget {
                       onTap: () => onMoodSelected(moodKey),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        padding: EdgeInsets.all(tokens.spacing.sm),
+                        padding: EdgeInsets.all(tokens.spacing(2)),
                         decoration: BoxDecoration(
-                          color: isSelected
-                              ? moodData.color.withAlpha((255 * 0.2).round())
-                              : Colors.transparent,
-                          borderRadius:
-                              BorderRadius.circular(tokens.radius.lg),
+                          color:
+                              isSelected
+                                  ? moodData.color.withOpacity(0.2)
+                                  : Colors.transparent,
+                          borderRadius: tokens.cornerLarge(),
                           border:
                               isSelected
                                   ? Border.all(color: moodData.color, width: 2)
@@ -65,10 +65,10 @@ class MoodSelectorWidget extends StatelessWidget {
                                 style: const TextStyle(fontSize: 32),
                               ),
                             ),
-                            SizedBox(height: tokens.spacing.xs),
+                            SizedBox(height: tokens.spacing(1)),
                             Text(
                               moodData.label,
-                              style: tokens.typography.caption.copyWith(
+                              style: tokens.bodySmall.copyWith(
                                 color:
                                     isSelected
                                         ? moodData.color
@@ -86,19 +86,17 @@ class MoodSelectorWidget extends StatelessWidget {
                   }).toList(),
             ),
 
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(3)),
 
             // 選択された気分の詳細表示
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               child: Container(
                 key: ValueKey(selectedMood),
-                padding: EdgeInsets.all(tokens.spacing.md),
+                padding: EdgeInsets.all(tokens.spacing(3)),
                 decoration: BoxDecoration(
-                  color: moodOptions[selectedMood]!
-                      .color
-                      .withAlpha((255 * 0.1).round()),
-                  borderRadius: BorderRadius.circular(tokens.radius.md),
+                  color: moodOptions[selectedMood]!.color.withOpacity(0.1),
+                  borderRadius: tokens.cornerMedium(),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -107,10 +105,10 @@ class MoodSelectorWidget extends StatelessWidget {
                       moodOptions[selectedMood]!.emoji,
                       style: const TextStyle(fontSize: 24),
                     ),
-                    SizedBox(width: tokens.spacing.sm),
+                    SizedBox(width: tokens.spacing(2)),
                     Text(
                       moodOptions[selectedMood]!.description,
-                      style: tokens.typography.body.copyWith(
+                      style: tokens.bodyMedium.copyWith(
                         color: moodOptions[selectedMood]!.color,
                         fontWeight: FontWeight.bold,
                       ),
@@ -151,12 +149,12 @@ class CompactMoodSelector extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.md,
-        vertical: tokens.spacing.sm,
+        horizontal: tokens.spacing(3),
+        vertical: tokens.spacing(2),
       ),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Row(
@@ -170,13 +168,14 @@ class CompactMoodSelector extends StatelessWidget {
               return GestureDetector(
                 onTap: () => onMoodSelected(moodKey),
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: tokens.spacing.xs),
-                  padding: EdgeInsets.all(tokens.spacing.xs),
+                  margin: EdgeInsets.symmetric(horizontal: tokens.spacing(1)),
+                  padding: EdgeInsets.all(tokens.spacing(1)),
                   decoration: BoxDecoration(
-                    color: isSelected
-                        ? tokens.brandPrimary.withAlpha((255 * 0.2).round())
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(tokens.radius.md),
+                    color:
+                        isSelected
+                            ? tokens.brandPrimary.withOpacity(0.2)
+                            : Colors.transparent,
+                    borderRadius: tokens.cornerMedium(),
                   ),
                   child: Text(
                     emoji,
@@ -231,27 +230,27 @@ class MoodHistoryItem extends StatelessWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
         side: BorderSide(color: tokens.border),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing.md),
+          padding: EdgeInsets.all(tokens.spacing(3)),
           child: Row(
             children: [
               // 気分アイコン
               Container(
-                padding: EdgeInsets.all(tokens.spacing.sm),
+                padding: EdgeInsets.all(tokens.spacing(2)),
                 decoration: BoxDecoration(
-                  color: color.withAlpha((255 * 0.1).round()),
-                  borderRadius: BorderRadius.circular(tokens.radius.md),
+                  color: color.withOpacity(0.1),
+                  borderRadius: tokens.cornerMedium(),
                 ),
                 child: Text(emoji, style: const TextStyle(fontSize: 24)),
               ),
 
-              SizedBox(width: tokens.spacing.md),
+              SizedBox(width: tokens.spacing(3)),
 
               // 詳細情報
               Expanded(
@@ -262,11 +261,11 @@ class MoodHistoryItem extends StatelessWidget {
                       children: [
                         Text(
                           _getMoodLabel(mood),
-                          style: tokens.typography.body.copyWith(
+                          style: tokens.bodyMedium.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(width: tokens.spacing.sm),
+                        SizedBox(width: tokens.spacing(2)),
                         // 評価星
                         Row(
                           mainAxisSize: MainAxisSize.min,
@@ -280,11 +279,10 @@ class MoodHistoryItem extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: tokens.spacing.xs),
+                    SizedBox(height: tokens.spacing(1)),
                     Text(
                       _formatTime(timestamp),
-                      style: tokens.typography.caption
-                          .copyWith(color: tokens.textMuted),
+                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                     ),
                   ],
                 ),
@@ -360,19 +358,19 @@ class MoodStatsWidget extends StatelessWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '$periodの統計',
-              style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(3)),
             Row(
               children: [
                 Expanded(
@@ -421,16 +419,15 @@ class _StatItem extends StatelessWidget {
     return Column(
       children: [
         Icon(icon, color: color, size: 24),
-        SizedBox(height: tokens.spacing.xs),
+        SizedBox(height: tokens.spacing(1)),
         Text(
           value,
-          style: tokens.typography.h1.copyWith(
+          style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(label,
-            style: tokens.typography.caption.copyWith(color: tokens.textMuted)),
+        Text(label, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
       ],
     );
   }

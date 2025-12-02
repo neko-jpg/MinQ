@@ -13,6 +13,7 @@ class OnboardingDemoScreen extends StatefulWidget {
 class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
   bool _hasCompletedOnboarding = false;
   int _currentStep = 0;
+  final List<String> _viewedTooltips = [];
 
   @override
   void initState() {
@@ -31,12 +32,11 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
   }
 
   Future<void> _resetOnboarding() async {
-    final messenger = ScaffoldMessenger.of(context);
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await _loadOnboardingState();
 
-    messenger.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('オンボーディング状態をリセットしました'),
         backgroundColor: Colors.green,
@@ -231,7 +231,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
             Text(
               '現在のステップ: $_currentStep',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withAlpha(179),
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
               ),
             ),
           ],
@@ -262,7 +262,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
             Text(
               description,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withAlpha(179),
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
               ),
             ),
             const SizedBox(height: 16),
@@ -289,7 +289,7 @@ class _OnboardingDemoScreenState extends State<OnboardingDemoScreen> {
               decoration: BoxDecoration(
                 color: Theme.of(
                   context,
-                ).colorScheme.primaryContainer.withAlpha(77),
+                ).colorScheme.primaryContainer.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(

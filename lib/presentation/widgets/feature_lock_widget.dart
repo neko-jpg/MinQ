@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:minq/core/onboarding/progressive_onboarding.dart';
@@ -23,7 +22,7 @@ class FeatureLockWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final onboarding = ref.watch(progressiveOnboardingProvider);
 
     return onboarding.when(
@@ -60,10 +59,10 @@ class FeatureLockWidget extends ConsumerWidget {
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withAlpha((255 * 0.7).round()),
-                borderRadius: BorderRadius.circular(tokens.radius.md),
+                color: Colors.black.withOpacity(0.7),
+                borderRadius: tokens.cornerMedium(),
                 border: Border.all(
-                  color: Colors.orange.withAlpha((255 * 0.5).round()),
+                  color: Colors.orange.withOpacity(0.5),
                   width: 2,
                 ),
               ),
@@ -86,56 +85,56 @@ class FeatureLockWidget extends ConsumerWidget {
         children: [
           // ロックアイコン
           Container(
-            width: tokens.spacing.xl,
-            height: tokens.spacing.xl,
+            width: tokens.spacing(12),
+            height: tokens.spacing(12),
             decoration: BoxDecoration(
-              color: Colors.orange.withAlpha((255 * 0.2).round()),
+              color: Colors.orange.withOpacity(0.2),
               shape: BoxShape.circle,
               border: Border.all(color: Colors.orange, width: 2),
             ),
             child: Icon(
               Icons.lock,
               color: Colors.orange,
-              size: tokens.spacing.lg,
+              size: tokens.spacing(6),
             ),
           ),
 
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(2)),
 
           // レベル要件
           Text(
             'レベル$requiredLevel で解放',
-            style: tokens.typography.body.copyWith(
+            style: tokens.bodyMedium.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
 
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(1)),
 
           // 現在のレベル
           Text(
             '現在: レベル$currentLevel',
-            style: tokens.typography.caption.copyWith(
-              color: Colors.white.withAlpha((255 * 0.8).round()),
+            style: tokens.bodySmall.copyWith(
+              color: Colors.white.withOpacity(0.8),
             ),
           ),
 
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(2)),
 
           // タップヒント
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: tokens.spacing.md,
-              vertical: tokens.spacing.xs,
+              horizontal: tokens.spacing(3),
+              vertical: tokens.spacing(1),
             ),
             decoration: BoxDecoration(
-              color: Colors.orange.withAlpha((255 * 0.2).round()),
-              borderRadius: BorderRadius.circular(tokens.radius.sm),
+              color: Colors.orange.withOpacity(0.2),
+              borderRadius: tokens.cornerSmall(),
             ),
             child: Text(
               'タップで詳細',
-              style: tokens.typography.caption.copyWith(
+              style: tokens.bodySmall.copyWith(
                 color: Colors.orange,
                 fontWeight: FontWeight.w600,
               ),
@@ -153,8 +152,8 @@ class FeatureLockWidget extends ConsumerWidget {
         Positioned.fill(
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.black.withAlpha((255 * 0.3).round()),
-              borderRadius: BorderRadius.circular(tokens.radius.md),
+              color: Colors.black.withOpacity(0.3),
+              borderRadius: tokens.cornerMedium(),
             ),
             child: const Center(child: CircularProgressIndicator()),
           ),
@@ -209,7 +208,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final onboarding = ref.watch(progressiveOnboardingProvider);
 
     return onboarding.when(
@@ -233,11 +232,9 @@ class FeatureUnlockDialog extends ConsumerWidget {
 
     return Dialog(
       backgroundColor: tokens.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.xl),
+        padding: EdgeInsets.all(tokens.spacing(6)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -247,13 +244,13 @@ class FeatureUnlockDialog extends ConsumerWidget {
                 Icon(
                   Icons.lock_outline,
                   color: Colors.orange,
-                  size: tokens.spacing.xl,
+                  size: tokens.spacing(8),
                 ),
-                SizedBox(width: tokens.spacing.md),
+                SizedBox(width: tokens.spacing(3)),
                 Expanded(
                   child: Text(
                     '機能がロックされています',
-                    style: tokens.typography.h2.copyWith(
+                    style: tokens.titleLarge.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -265,22 +262,22 @@ class FeatureUnlockDialog extends ConsumerWidget {
               ],
             ),
 
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(4)),
 
             // 機能情報
             _buildFeatureInfo(tokens),
 
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(4)),
 
             // レベル要件
             if (levelInfo != null) _buildLevelRequirement(tokens, levelInfo),
 
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(4)),
 
             // 進捗表示
             _buildProgressSection(tokens, progress),
 
-            SizedBox(height: tokens.spacing.xl),
+            SizedBox(height: tokens.spacing(6)),
 
             // アクションボタン
             Row(
@@ -288,10 +285,10 @@ class FeatureUnlockDialog extends ConsumerWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(AppLocalizations.of(context)!.close),
+                    child: const Text('閉じる'),
                   ),
                 ),
-                SizedBox(width: tokens.spacing.md),
+                SizedBox(width: tokens.spacing(3)),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -302,7 +299,7 @@ class FeatureUnlockDialog extends ConsumerWidget {
                       backgroundColor: tokens.brandPrimary,
                       foregroundColor: Colors.white,
                     ),
-                    child: Text(AppLocalizations.of(context)!.progress),
+                    child: const Text('進捗を確認'),
                   ),
                 ),
               ],
@@ -317,28 +314,28 @@ class FeatureUnlockDialog extends ConsumerWidget {
     final featureInfo = _getFeatureInfo(featureId);
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surfaceVariant,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
       ),
       child: Row(
         children: [
           Container(
-            width: tokens.spacing.xl,
-            height: tokens.spacing.xl,
+            width: tokens.spacing(12),
+            height: tokens.spacing(12),
             decoration: BoxDecoration(
-              color: Colors.orange.withAlpha((255 * 0.1).round()),
+              color: Colors.orange.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               featureInfo.icon,
               color: Colors.orange,
-              size: tokens.spacing.lg,
+              size: tokens.spacing(6),
             ),
           ),
 
-          SizedBox(width: tokens.spacing.md),
+          SizedBox(width: tokens.spacing(3)),
 
           Expanded(
             child: Column(
@@ -346,14 +343,14 @@ class FeatureUnlockDialog extends ConsumerWidget {
               children: [
                 Text(
                   featureInfo.name,
-                  style: tokens.typography.h3.copyWith(
+                  style: tokens.titleMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: tokens.spacing.xs),
+                SizedBox(height: tokens.spacing(1)),
                 Text(
                   featureInfo.description,
-                  style: tokens.typography.body.copyWith(color: tokens.textMuted),
+                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                 ),
               ],
             ),
@@ -365,23 +362,22 @@ class FeatureUnlockDialog extends ConsumerWidget {
 
   Widget _buildLevelRequirement(MinqTheme tokens, OnboardingLevel levelInfo) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
-        color: Colors.orange.withAlpha((255 * 0.1).round()),
-        borderRadius: BorderRadius.circular(tokens.radius.md),
-        border:
-            Border.all(color: Colors.orange.withAlpha((255 * 0.3).round())),
+        color: Colors.orange.withOpacity(0.1),
+        borderRadius: tokens.cornerMedium(),
+        border: Border.all(color: Colors.orange.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.star, color: Colors.orange, size: tokens.spacing.md),
-              SizedBox(width: tokens.spacing.sm),
+              Icon(Icons.star, color: Colors.orange, size: tokens.spacing(5)),
+              SizedBox(width: tokens.spacing(2)),
               Text(
                 'レベル$requiredLevel: ${levelInfo.title}',
-                style: tokens.typography.h3.copyWith(
+                style: tokens.titleMedium.copyWith(
                   color: Colors.orange,
                   fontWeight: FontWeight.bold,
                 ),
@@ -389,18 +385,18 @@ class FeatureUnlockDialog extends ConsumerWidget {
             ],
           ),
 
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(2)),
 
-          Text(levelInfo.description, style: tokens.typography.body),
+          Text(levelInfo.description, style: tokens.bodyMedium),
 
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(3)),
 
           Text(
             '解放条件:',
-            style: tokens.typography.body.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.bodyMedium.copyWith(fontWeight: FontWeight.bold),
           ),
 
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(1)),
 
           _buildRequirementItem(
             tokens,
@@ -427,35 +423,33 @@ class FeatureUnlockDialog extends ConsumerWidget {
 
   Widget _buildRequirementItem(MinqTheme tokens, IconData icon, String text) {
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing.xs),
+      padding: EdgeInsets.only(bottom: tokens.spacing(1)),
       child: Row(
         children: [
-          Icon(icon, size: tokens.spacing.lg, color: tokens.textMuted),
-          SizedBox(width: tokens.spacing.sm),
-          Text(text,
-              style: tokens.typography.caption.copyWith(color: tokens.textMuted)),
+          Icon(icon, size: tokens.spacing(4), color: tokens.textMuted),
+          SizedBox(width: tokens.spacing(2)),
+          Text(text, style: tokens.bodySmall.copyWith(color: tokens.textMuted)),
         ],
       ),
     );
   }
 
-  Widget _buildProgressSection(
-      MinqTheme tokens, OnboardingProgress progress) {
+  Widget _buildProgressSection(MinqTheme tokens, OnboardingProgress progress) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surfaceVariant,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '現在の進捗',
-            style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
 
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(3)),
 
           if (progress.questProgress != null)
             _buildProgressBar(
@@ -492,28 +486,27 @@ class FeatureUnlockDialog extends ConsumerWidget {
     IconData icon,
   ) {
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing.md),
+      padding: EdgeInsets.only(bottom: tokens.spacing(3)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: tokens.spacing.lg, color: tokens.textMuted),
-              SizedBox(width: tokens.spacing.sm),
+              Icon(icon, size: tokens.spacing(4), color: tokens.textMuted),
+              SizedBox(width: tokens.spacing(2)),
               Text(
                 label,
-                style:
-                    tokens.typography.caption.copyWith(fontWeight: FontWeight.w600),
+                style: tokens.bodySmall.copyWith(fontWeight: FontWeight.w600),
               ),
               const Spacer(),
               Text(
                 '${(progress * 100).toInt()}%',
-                style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ],
           ),
 
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(1)),
 
           LinearProgressIndicator(
             value: progress,
@@ -530,21 +523,21 @@ class FeatureUnlockDialog extends ConsumerWidget {
   Widget _buildErrorDialog(BuildContext context, MinqTheme tokens) {
     return Dialog(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.xl),
+        padding: EdgeInsets.all(tokens.spacing(6)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.error_outline,
-              size: tokens.spacing.xl * 2,
+              size: tokens.spacing(16),
               color: tokens.textMuted,
             ),
-            SizedBox(height: tokens.spacing.lg),
-            Text(AppLocalizations.of(context)!.errorOccurred, style: tokens.typography.h3),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(4)),
+            Text('エラーが発生しました', style: tokens.titleMedium),
+            SizedBox(height: tokens.spacing(4)),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(AppLocalizations.of(context)!.close),
+              child: const Text('閉じる'),
             ),
           ],
         ),

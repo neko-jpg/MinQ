@@ -310,33 +310,14 @@ class HabitTemplate {
   /// QuestTemplateに変換
   QuestTemplate toQuestTemplate() {
     return QuestTemplate(
-      id: id,
       title: title,
       description: description,
       icon: icon,
-      category: _categoryToQuestCategory(category),
-      difficulty: _difficultyToDifficultyLevel(difficulty),
+      category: _categoryToString(category),
+      difficulty: _difficultyToString(difficulty),
       estimatedMinutes: estimatedMinutes,
       tips: [tips],
     );
-  }
-
-  QuestCategory _categoryToQuestCategory(HabitCategory category) {
-    return switch (category) {
-      HabitCategory.health => QuestCategory.health,
-      HabitCategory.learning => QuestCategory.learning,
-      HabitCategory.productivity => QuestCategory.productivity,
-      HabitCategory.mindfulness => QuestCategory.mindfulness,
-      HabitCategory.social => QuestCategory.social,
-    };
-  }
-
-  DifficultyLevel _difficultyToDifficultyLevel(HabitDifficulty difficulty) {
-    return switch (difficulty) {
-      HabitDifficulty.easy => DifficultyLevel.easy,
-      HabitDifficulty.medium => DifficultyLevel.medium,
-      HabitDifficulty.hard => DifficultyLevel.hard,
-    };
   }
 
   String _categoryToString(HabitCategory category) {

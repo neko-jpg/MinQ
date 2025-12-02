@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:minq/data/logging/minq_logger.dart';
-
 /// アプリ内更新サービス
 /// Android: In-App Update API
 /// iOS: App Store強制更新チェック
@@ -41,7 +39,7 @@ class InAppUpdateService {
         updateType: UpdateType.none,
       );
     } catch (e) {
-      MinqLogger.error('Failed to check Android update', exception: e);
+      print('❌ Failed to check Android update: $e');
       return const UpdateInfo(
         isUpdateAvailable: false,
         updateType: UpdateType.none,
@@ -78,7 +76,7 @@ class InAppUpdateService {
         updateType: UpdateType.none,
       );
     } catch (e) {
-      MinqLogger.error('Failed to check iOS update', exception: e);
+      print('❌ Failed to check iOS update: $e');
       return const UpdateInfo(
         isUpdateAvailable: false,
         updateType: UpdateType.none,
@@ -95,7 +93,7 @@ class InAppUpdateService {
       // await InAppUpdate.startFlexibleUpdate();
       return true;
     } catch (e) {
-      MinqLogger.error('Failed to start flexible update', exception: e);
+      print('❌ Failed to start flexible update: $e');
       return false;
     }
   }
@@ -109,7 +107,7 @@ class InAppUpdateService {
       // await InAppUpdate.performImmediateUpdate();
       return true;
     } catch (e) {
-      MinqLogger.error('Failed to start immediate update', exception: e);
+      print('❌ Failed to start immediate update: $e');
       return false;
     }
   }
@@ -122,7 +120,7 @@ class InAppUpdateService {
       // TODO: in_app_update パッケージを使用
       // await InAppUpdate.completeFlexibleUpdate();
     } catch (e) {
-      MinqLogger.error('Failed to complete flexible update', exception: e);
+      print('❌ Failed to complete flexible update: $e');
     }
   }
 
@@ -137,8 +135,22 @@ class InAppUpdateService {
       //   await launchUrl(Uri.parse(url));
       // }
     } catch (e) {
-      MinqLogger.error('Failed to open App Store', exception: e);
+      print('❌ Failed to open App Store: $e');
     }
+  }
+
+  /// バージョン比較
+  bool _isNewerVersion(String storeVersion, String currentVersion) {
+    final storeParts = storeVersion.split('.').map(int.parse).toList();
+    final currentParts = currentVersion.split('.').map(int.parse).toList();
+
+    for (int i = 0; i < storeParts.length; i++) {
+      if (i >= currentParts.length) return true;
+      if (storeParts[i] > currentParts[i]) return true;
+      if (storeParts[i] < currentParts[i]) return false;
+    }
+
+    return false;
   }
 }
 

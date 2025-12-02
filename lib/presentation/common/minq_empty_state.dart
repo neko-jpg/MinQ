@@ -20,41 +20,39 @@ class MinqEmptyState extends StatelessWidget {
     final tokens = context.tokens;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: tokens.spacing.lg),
+      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
-            width: tokens.spacing.xxl,
-            height: tokens.spacing.xxl,
+            width: tokens.spacing(20),
+            height: tokens.spacing(20),
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withAlpha((255 * 0.08).round()),
+              color: tokens.brandPrimary.withValues(alpha: 0.08),
               shape: BoxShape.circle,
             ),
             child: Icon(
               icon,
-              size: tokens.spacing.xl,
+              size: tokens.spacing(12),
               color: tokens.brandPrimary,
             ),
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spacing(6)),
           Text(
             title,
             textAlign: TextAlign.center,
-            style:
-                tokens.typography.h4.copyWith(color: tokens.textPrimary),
+            style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(3)),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: tokens.typography.body
-                .copyWith(color: tokens.textMuted),
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
           ),
           if (actionArea != null) ...<Widget>[
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(5)),
             actionArea!,
           ],
         ],

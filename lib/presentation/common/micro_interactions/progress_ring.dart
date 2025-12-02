@@ -380,7 +380,7 @@ class _SparklesPainter extends CustomPainter {
 
     final paint =
         Paint()
-          ..color = color.withAlpha((animation * 255).round())
+          ..color = color.withOpacity(animation)
           ..strokeWidth = 2.0
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round;

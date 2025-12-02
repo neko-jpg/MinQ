@@ -423,9 +423,12 @@ class NotificationScheduler {
         _convertToTZDateTime(schedule.scheduledTime),
         details,
         payload: payload,
-        androidScheduleMode: schedule.exactTiming
-            ? AndroidScheduleMode.exactAllowWhileIdle
-            : AndroidScheduleMode.inexactAllowWhileIdle,
+        androidScheduleMode:
+            schedule.exactTiming
+                ? AndroidScheduleMode.exactAllowWhileIdle
+                : AndroidScheduleMode.inexactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
       );
     }
   }

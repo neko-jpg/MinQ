@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
 
 /// ペア成立時の祝アニメーション
 /// 軽量で視覚的に楽しい演出
@@ -87,10 +86,7 @@ class _CelebrationAnimationState extends State<CelebrationAnimation>
             animation: _confettiController,
             builder: (context, child) {
               return CustomPaint(
-                painter: ConfettiPainter(
-                  progress: _confettiController.value,
-                  context: context,
-                ),
+                painter: ConfettiPainter(progress: _confettiController.value),
               );
             },
           ),
@@ -119,11 +115,9 @@ class _CelebrationAnimationState extends State<CelebrationAnimation>
 class ConfettiPainter extends CustomPainter {
   final double progress;
   final List<ConfettiParticle> particles;
-  final BuildContext context;
 
-  ConfettiPainter({required this.progress, required this.context})
-      : particles = List.generate(
-            30, (index) => ConfettiParticle(index, context));
+  ConfettiPainter({required this.progress})
+    : particles = List.generate(30, (index) => ConfettiParticle(index));
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -149,9 +143,8 @@ class ConfettiParticle {
   late final Color color;
   late final double size;
 
-  ConfettiParticle(this.seed, BuildContext context) {
+  ConfettiParticle(this.seed) {
     final random = math.Random(seed);
-    final themeColors = context.tokens.colors;
     startX = random.nextDouble();
     startY = -0.1;
     velocityX = (random.nextDouble() - 0.5) * 0.5;
@@ -161,12 +154,12 @@ class ConfettiParticle {
 
     // カラフルな色
     final colors = [
-      themeColors.primary,
-      themeColors.secondary,
-      themeColors.tertiary,
-      themeColors.success,
-      themeColors.warning,
-      themeColors.error,
+      const Color(0xFFFF6B6B),
+      const Color(0xFF4ECDC4),
+      const Color(0xFFFFE66D),
+      const Color(0xFF95E1D3),
+      const Color(0xFFF38181),
+      const Color(0xFFAA96DA),
     ];
     color = colors[random.nextInt(colors.length)];
   }
@@ -180,7 +173,7 @@ class ConfettiParticle {
 
     final paint =
         Paint()
-          ..color = color.withAlpha((255 * (1.0 - progress * 0.5)).round())
+          ..color = color.withOpacity(1.0 - progress * 0.5)
           ..style = PaintingStyle.fill;
 
     canvas.save();
@@ -298,7 +291,7 @@ class CheckMarkPainter extends CustomPainter {
     // 円の描画
     final circlePaint =
         Paint()
-          ..color = color.withAlpha((255 * 0.2).round())
+          ..color = color.withOpacity(0.2)
           ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, radius * circleProgress, circlePaint);

@@ -4,7 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/referral_service.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
+import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/widgets/points_display_widget.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// リファラル画面
 /// 友達招待機能とリファラル統計を表示
@@ -42,24 +45,17 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
       final referralService = ref.read(referralServiceProvider);
       final link = await referralService.generateInviteLink(userId: uid);
 
-      if (mounted) {
-        setState(() {
-          _inviteLink = link;
-          _isLoading = false;
-        });
-      }
+      setState(() {
+        _inviteLink = link;
+        _isLoading = false;
+      });
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+      setState(() {
+        _isLoading = false;
+      });
 
-        // WidgetsBinding.instance.addPostFrameCallbackを使用してScaffoldが構築された後に実行
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            FeedbackMessenger.showErrorSnackBar(context, '招待リンクの生成に失敗しました');
-          }
-        });
+      if (mounted) {
+        FeedbackMessenger.showErrorSnackBar(context, '招待リンクの生成に失敗しました');
       }
     }
   }
@@ -78,40 +74,45 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
           tabs: const [Tab(text: '招待する'), Tab(text: '招待履歴')],
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-              controller: _tabController,
-              children: [_buildInviteTab(), _buildHistoryTab()],
-            ),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : TabBarView(
+                controller: _tabController,
+                children: [_buildInviteTab(tokens), _buildHistoryTab(tokens)],
+              ),
     );
   }
 
-  Widget _buildInviteTab() {
-    final tokens = context.tokens;
+  Widget _buildInviteTab(MinqTokens tokens) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ヘッダーカード
-          _buildHeaderCard(),
-          SizedBox(height: tokens.spacing.lg),
+          _buildHeaderCard(tokens),
+
+          SizedBox(height: tokens.spacing(6)),
+
           // 招待リンクカード
-          _buildInviteLinkCard(),
-          SizedBox(height: tokens.spacing.lg),
+          _buildInviteLinkCard(tokens),
+
+          SizedBox(height: tokens.spacing(6)),
+
           // 招待方法
-          _buildInviteMethods(),
-          SizedBox(height: tokens.spacing.lg),
+          _buildInviteMethods(tokens),
+
+          SizedBox(height: tokens.spacing(6)),
+
           // 報酬説明
-          _buildRewardExplanation(),
+          _buildRewardExplanation(tokens),
         ],
       ),
     );
   }
 
-  Widget _buildHistoryTab() {
-    final tokens = context.tokens;
+  Widget _buildHistoryTab(MinqTokens tokens) {
     final uid = ref.watch(uidProvider);
 
     if (uid == null) {
@@ -132,16 +133,15 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
               children: [
                 Icon(
                   Icons.error_outline,
-                  size: tokens.spacing.xl,
+                  size: tokens.spacing(16),
                   color: tokens.textMuted,
                 ),
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: tokens.spacing(4)),
                 Text(
                   'データの読み込みに失敗しました',
-                  style: tokens.typography.bodyMedium
-                      .copyWith(color: tokens.textMuted),
+                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                 ),
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: tokens.spacing(4)),
                 ElevatedButton(
                   onPressed: () => setState(() {}),
                   child: const Text('再試行'),
@@ -152,29 +152,25 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
         }
 
         final stats = snapshot.data!;
-        return _buildHistoryContent(stats);
+        return _buildHistoryContent(tokens, stats);
       },
     );
   }
 
-  Widget _buildHeaderCard() {
-    final tokens = context.tokens;
+  Widget _buildHeaderCard(MinqTokens tokens) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(6)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            tokens.brandPrimary,
-            tokens.brandPrimary.withAlpha(204)
-          ],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         boxShadow: [
           BoxShadow(
-            color: tokens.brandPrimary.withAlpha(77),
+            color: tokens.brandPrimary.withOpacity(0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -182,20 +178,20 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
       ),
       child: Column(
         children: [
-          Icon(Icons.people, size: tokens.spacing.xl, color: Colors.white),
-          SizedBox(height: tokens.spacing.sm),
+          Icon(Icons.people, size: tokens.spacing(16), color: Colors.white),
+          SizedBox(height: tokens.spacing(3)),
           Text(
             '友達を招待しよう！',
-            style: tokens.typography.h3.copyWith(
+            style: tokens.titleLarge.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             '友達が登録すると、あなたも友達も\n特別なボーナスポイントがもらえます！',
-            style: tokens.typography.body.copyWith(
-              color: Colors.white.withAlpha(230),
+            style: tokens.bodyMedium.copyWith(
+              color: Colors.white.withOpacity(0.9),
             ),
             textAlign: TextAlign.center,
           ),
@@ -204,13 +200,12 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildInviteLinkCard() {
-    final tokens = context.tokens;
+  Widget _buildInviteLinkCard(MinqTokens tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -218,18 +213,17 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
         children: [
           Text(
             'あなたの招待リンク',
-            style:
-                tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(3)),
 
           // リンク表示
           Container(
             width: double.infinity,
-            padding: EdgeInsets.all(tokens.spacing.sm),
+            padding: EdgeInsets.all(tokens.spacing(3)),
             decoration: BoxDecoration(
               color: tokens.surfaceVariant,
-              borderRadius: BorderRadius.circular(tokens.radius.md),
+              borderRadius: tokens.cornerMedium(),
               border: Border.all(color: tokens.border),
             ),
             child: Row(
@@ -237,7 +231,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
                 Expanded(
                   child: Text(
                     _inviteLink ?? 'リンク生成中...',
-                    style: tokens.typography.body,
+                    style: tokens.bodyMedium,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -250,7 +244,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
             ),
           ),
 
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(3)),
 
           // シェアボタン
           SizedBox(
@@ -270,19 +264,19 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildInviteMethods() {
-    final tokens = context.tokens;
+  Widget _buildInviteMethods(MinqTokens tokens) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '招待方法',
-          style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: tokens.spacing.sm),
+        SizedBox(height: tokens.spacing(3)),
 
         // LINE招待
         _buildInviteMethodCard(
+          tokens,
           icon: Icons.chat,
           title: 'LINEで招待',
           description: 'LINEで友達に招待メッセージを送信',
@@ -290,10 +284,11 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
           onTap: _shareToLine,
         ),
 
-        SizedBox(height: tokens.spacing.sm),
+        SizedBox(height: tokens.spacing(3)),
 
         // Twitter招待
         _buildInviteMethodCard(
+          tokens,
           icon: Icons.share,
           title: 'SNSで招待',
           description: 'Twitter、Instagram等で招待リンクをシェア',
@@ -301,10 +296,11 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
           onTap: _shareToSocial,
         ),
 
-        SizedBox(height: tokens.spacing.sm),
+        SizedBox(height: tokens.spacing(3)),
 
         // その他の方法
         _buildInviteMethodCard(
+          tokens,
           icon: Icons.more_horiz,
           title: 'その他の方法',
           description: 'メール、SMS等で招待リンクを送信',
@@ -315,57 +311,56 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildInviteMethodCard({
+  Widget _buildInviteMethodCard(
+    MinqTokens tokens, {
     required IconData icon,
     required String title,
     required String description,
     required Color color,
     required VoidCallback onTap,
   }) {
-    final tokens = context.tokens;
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         decoration: BoxDecoration(
           color: tokens.surface,
-          borderRadius: BorderRadius.circular(tokens.radius.md),
+          borderRadius: tokens.cornerMedium(),
           border: Border.all(color: tokens.border),
         ),
         child: Row(
           children: [
             Container(
-              width: tokens.spacing.xl,
-              height: tokens.spacing.xl,
+              width: tokens.spacing(12),
+              height: tokens.spacing(12),
               decoration: BoxDecoration(
-                color: color.withAlpha(25),
-                borderRadius: BorderRadius.circular(tokens.radius.md),
+                color: color.withOpacity(0.1),
+                borderRadius: tokens.cornerMedium(),
               ),
-              child: Icon(icon, color: color, size: tokens.spacing.lg),
+              child: Icon(icon, color: color, size: tokens.spacing(6)),
             ),
-            SizedBox(width: tokens.spacing.sm),
+            SizedBox(width: tokens.spacing(3)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: tokens.typography.body.copyWith(
+                    style: tokens.bodyMedium.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: tokens.spacing(1)),
                   Text(
                     description,
-                    style: tokens.typography.caption
-                        .copyWith(color: tokens.textMuted),
+                    style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                   ),
                 ],
               ),
             ),
             Icon(
               Icons.arrow_forward_ios,
-              size: tokens.spacing.md,
+              size: tokens.spacing(4),
               color: tokens.textMuted,
             ),
           ],
@@ -374,14 +369,13 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildRewardExplanation() {
-    final tokens = context.tokens;
+  Widget _buildRewardExplanation(MinqTokens tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
-        color: Colors.amber.withAlpha(25),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-        border: Border.all(color: Colors.amber.withAlpha(77)),
+        color: Colors.amber.withOpacity(0.1),
+        borderRadius: tokens.cornerLarge(),
+        border: Border.all(color: Colors.amber.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -391,51 +385,51 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
               Icon(
                 Icons.emoji_events,
                 color: Colors.amber.shade700,
-                size: tokens.spacing.lg,
+                size: tokens.spacing(6),
               ),
-              SizedBox(width: tokens.spacing.xs),
+              SizedBox(width: tokens.spacing(2)),
               Text(
                 '招待報酬',
-                style: tokens.typography.h4.copyWith(
+                style: tokens.titleMedium.copyWith(
                   color: Colors.amber.shade700,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(3)),
 
-          _buildRewardItem('友達が登録完了', '500ポイント', 'あなたと友達の両方がもらえます'),
+          _buildRewardItem(tokens, '友達が登録完了', '500ポイント', 'あなたと友達の両方がもらえます'),
 
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(2)),
 
-          _buildRewardItem('友達が初回クエスト完了', '1000ポイント', 'さらにボーナスポイント！'),
+          _buildRewardItem(tokens, '友達が初回クエスト完了', '1000ポイント', 'さらにボーナスポイント！'),
 
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(2)),
 
-          _buildRewardItem('友達が7日継続', '2000ポイント', '継続ボーナスで大量ポイント！'),
+          _buildRewardItem(tokens, '友達が7日継続', '2000ポイント', '継続ボーナスで大量ポイント！'),
         ],
       ),
     );
   }
 
   Widget _buildRewardItem(
+    MinqTokens tokens,
     String condition,
     String reward,
     String description,
   ) {
-    final tokens = context.tokens;
     return Row(
       children: [
         Container(
-          width: tokens.spacing.xs,
-          height: tokens.spacing.xs,
+          width: tokens.spacing(2),
+          height: tokens.spacing(2),
           decoration: BoxDecoration(
             color: Colors.amber.shade700,
             shape: BoxShape.circle,
           ),
         ),
-        SizedBox(width: tokens.spacing.sm),
+        SizedBox(width: tokens.spacing(3)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -445,13 +439,13 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
                 children: [
                   Text(
                     condition,
-                    style: tokens.typography.body.copyWith(
+                    style: tokens.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
                     reward,
-                    style: tokens.typography.body.copyWith(
+                    style: tokens.bodyMedium.copyWith(
                       color: Colors.amber.shade700,
                       fontWeight: FontWeight.bold,
                     ),
@@ -460,8 +454,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
               ),
               Text(
                 description,
-                style: tokens.typography.caption
-                    .copyWith(color: tokens.textMuted),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ],
           ),
@@ -470,63 +463,64 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildHistoryContent(ReferralStats stats) {
-    final tokens = context.tokens;
+  Widget _buildHistoryContent(MinqTokens tokens, ReferralStats stats) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 統計カード
-          _buildStatsCards(stats),
+          _buildStatsCards(tokens, stats),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spacing(6)),
 
           // 成功率表示
-          _buildConversionRate(stats),
+          _buildConversionRate(tokens, stats),
 
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spacing(6)),
 
           // 最近の招待履歴
           Text(
             '招待履歴',
-            style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(3)),
 
           if (stats.totalReferrals == 0)
-            _buildEmptyHistory()
+            _buildEmptyHistory(tokens)
           else
-            _buildHistoryList(stats),
+            _buildHistoryList(tokens, stats),
         ],
       ),
     );
   }
 
-  Widget _buildStatsCards(ReferralStats stats) {
-    final tokens = context.tokens;
+  Widget _buildStatsCards(MinqTokens tokens, ReferralStats stats) {
     return Row(
       children: [
         Expanded(
           child: _buildStatCard(
+            tokens,
             '総招待数',
             '${stats.totalReferrals}人',
             Icons.people_outline,
             Colors.blue,
           ),
         ),
-        SizedBox(width: tokens.spacing.sm),
+        SizedBox(width: tokens.spacing(3)),
         Expanded(
           child: _buildStatCard(
+            tokens,
             '成功数',
             '${stats.completedReferrals + stats.rewardedReferrals}人',
             Icons.check_circle_outline,
             Colors.green,
           ),
         ),
-        SizedBox(width: tokens.spacing.sm),
+        SizedBox(width: tokens.spacing(3)),
         Expanded(
           child: _buildStatCard(
+            tokens,
             '待機中',
             '${stats.pendingReferrals}人',
             Icons.schedule,
@@ -538,35 +532,34 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
   }
 
   Widget _buildStatCard(
+    MinqTokens tokens,
     String title,
     String value,
     IconData icon,
     Color color,
   ) {
-    final tokens = context.tokens;
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.sm),
+      padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: tokens.spacing.lg),
-          SizedBox(height: tokens.spacing.xs),
+          Icon(icon, color: color, size: tokens.spacing(6)),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             value,
-            style: tokens.typography.h4.copyWith(
+            style: tokens.titleMedium.copyWith(
               color: color,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(1)),
           Text(
             title,
-            style: tokens.typography.caption
-                .copyWith(color: tokens.textMuted),
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -574,34 +567,33 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildConversionRate(ReferralStats stats) {
-    final tokens = context.tokens;
+  Widget _buildConversionRate(MinqTokens tokens, ReferralStats stats) {
     final rate = (stats.conversionRate * 100).toStringAsFixed(1);
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
         border: Border.all(color: tokens.border),
       ),
       child: Row(
         children: [
-          Icon(Icons.trending_up, color: Colors.green, size: tokens.spacing.lg),
-          SizedBox(width: tokens.spacing.sm),
+          Icon(Icons.trending_up, color: Colors.green, size: tokens.spacing(6)),
+          SizedBox(width: tokens.spacing(3)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   '成功率',
-                  style: tokens.typography.body.copyWith(
+                  style: tokens.bodyMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   '$rate%',
-                  style: tokens.typography.h3.copyWith(
+                  style: tokens.titleLarge.copyWith(
                     color: Colors.green,
                     fontWeight: FontWeight.bold,
                   ),
@@ -614,29 +606,26 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildEmptyHistory() {
-    final tokens = context.tokens;
+  Widget _buildEmptyHistory(MinqTokens tokens) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(tokens.spacing.xl),
+      padding: EdgeInsets.all(tokens.spacing(8)),
       child: Column(
         children: [
           Icon(
             Icons.people_outline,
-            size: tokens.spacing.xl,
+            size: tokens.spacing(16),
             color: tokens.textMuted,
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
           Text(
             'まだ招待履歴がありません',
-            style:
-                tokens.typography.h4.copyWith(color: tokens.textMuted),
+            style: tokens.titleMedium.copyWith(color: tokens.textMuted),
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             '友達を招待して、一緒にMinQを楽しみましょう！',
-            style: tokens.typography.body
-                .copyWith(color: tokens.textMuted),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -644,19 +633,22 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildHistoryList(ReferralStats stats) {
+  Widget _buildHistoryList(MinqTokens tokens, ReferralStats stats) {
     // 実際の履歴データを表示する場合は、ここでFirestoreから取得
     return Column(
       children: [
         _buildHistoryItem(
+          tokens,
           'pending',
           DateTime.now().subtract(const Duration(days: 1)),
         ),
         _buildHistoryItem(
+          tokens,
           'completed',
           DateTime.now().subtract(const Duration(days: 3)),
         ),
         _buildHistoryItem(
+          tokens,
           'rewarded',
           DateTime.now().subtract(const Duration(days: 7)),
         ),
@@ -664,8 +656,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     );
   }
 
-  Widget _buildHistoryItem(String status, DateTime date) {
-    final tokens = context.tokens;
+  Widget _buildHistoryItem(MinqTokens tokens, String status, DateTime date) {
     Color statusColor;
     IconData statusIcon;
     String statusText;
@@ -688,44 +679,43 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen>
     }
 
     return Container(
-      margin: EdgeInsets.only(bottom: tokens.spacing.sm),
-      padding: EdgeInsets.all(tokens.spacing.sm),
+      margin: EdgeInsets.only(bottom: tokens.spacing(3)),
+      padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
         border: Border.all(color: tokens.border),
       ),
       child: Row(
         children: [
           Container(
-            width: tokens.spacing.lg,
-            height: tokens.spacing.lg,
+            width: tokens.spacing(10),
+            height: tokens.spacing(10),
             decoration: BoxDecoration(
-              color: statusColor.withAlpha(25),
+              color: statusColor.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               statusIcon,
               color: statusColor,
-              size: tokens.spacing.md,
+              size: tokens.spacing(5),
             ),
           ),
-          SizedBox(width: tokens.spacing.sm),
+          SizedBox(width: tokens.spacing(3)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   statusText,
-                  style: tokens.typography.body.copyWith(
+                  style: tokens.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: tokens.spacing.xs),
+                SizedBox(height: tokens.spacing(1)),
                 Text(
                   '${date.month}/${date.day} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-                  style: tokens.typography.caption
-                      .copyWith(color: tokens.textMuted),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
               ],
             ),

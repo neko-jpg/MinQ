@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/routing/app_router.dart';
@@ -66,9 +65,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
 
     if (result == true) {
       final granted = await notificationService.requestPermission();
-      if (mounted) {
-        ref.read(notificationPermissionProvider.notifier).state = granted;
-      }
+      ref.read(notificationPermissionProvider.notifier).state = granted;
       if (!granted) {
         await notificationService.recordPermissionRequestTimestamp();
       }
@@ -80,14 +77,11 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   Future<void> _maybeTriggerInAppReview() async {
     try {
       final currentStreak = await ref.read(streakProvider.future);
-      if (mounted) {
-        await ref
-            .read(inAppReviewServiceProvider)
-            .maybeRequestReview(currentStreak: currentStreak);
-      }
+      await ref
+          .read(inAppReviewServiceProvider)
+          .maybeRequestReview(currentStreak: currentStreak);
     } catch (error) {
-      logger.debug('In-app review trigger skipped',
-        data: {'error': error.toString()});
+      debugPrint('In-app review trigger skipped: $error');
     }
   }
 
@@ -105,8 +99,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
         totalCompleted: totalCompleted,
       );
     } catch (error) {
-      logger.error('Share failed',
-        data: {'error': error.toString()});
+      debugPrint('Share failed: $error');
       if (mounted) {
         ScaffoldMessenger.of(
           context,
@@ -184,19 +177,19 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
               ],
             ),
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spacing(4)),
           Text(
             titleText,
-            style: tokens.typography.h1.copyWith(
+            style: tokens.displaySmall.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.w800,
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             subtitleText,
-            style: tokens.typography.bodyLarge.copyWith(color: tokens.textMuted),
+            style: tokens.bodyLarge.copyWith(color: tokens.textMuted),
             textAlign: TextAlign.center,
           ),
         ],
@@ -206,62 +199,62 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
 
   Widget _buildRewardCard(MinqTheme tokens, AppLocalizations l10n) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: tokens.spacing.xl),
+      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(5)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: tokens.spacing.sm),
+            padding: EdgeInsets.only(left: tokens.spacing(2)),
             child: Text(
               l10n.celebrationRewardTitle,
-              style: tokens.typography.h5.copyWith(
+              style: tokens.titleSmall.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(3)),
           Material(
-            color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
-            borderRadius: BorderRadius.circular(tokens.radius.lg),
+            color: tokens.brandPrimary.withOpacity(0.1),
+            borderRadius: tokens.cornerLarge(),
             child: InkWell(
               onTap: () {
                 /* TODO: Implement reward action */
               },
-              borderRadius: BorderRadius.circular(tokens.radius.lg),
+              borderRadius: tokens.cornerLarge(),
               child: Container(
-                padding: EdgeInsets.all(tokens.spacing.lg),
+                padding: EdgeInsets.all(tokens.spacing(4)),
                 child: Row(
                   children: <Widget>[
                     Container(
-                      width: tokens.spacing.xxl * 2,
-                      height: tokens.spacing.xxl * 2,
+                      width: tokens.spacing(14),
+                      height: tokens.spacing(14),
                       decoration: BoxDecoration(
-                        color: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
-                        borderRadius: BorderRadius.circular(tokens.radius.lg),
+                        color: tokens.brandPrimary.withOpacity(0.2),
+                        borderRadius: tokens.cornerLarge(),
                       ),
                       child: Icon(
                         Icons.self_improvement,
                         color: tokens.brandPrimary,
-                        size: tokens.spacing.xl,
+                        size: tokens.spacing(8),
                       ),
                     ),
-                    SizedBox(width: tokens.spacing.lg),
+                    SizedBox(width: tokens.spacing(4)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
                             l10n.celebrationRewardName,
-                            style: tokens.typography.h5.copyWith(
+                            style: tokens.titleSmall.copyWith(
                               color: tokens.textPrimary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: tokens.spacing.xs),
+                          SizedBox(height: tokens.spacing(1)),
                           Text(
                             l10n.celebrationRewardDescription,
-                            style: tokens.typography.body.copyWith(
+                            style: tokens.bodyMedium.copyWith(
                               color: tokens.textMuted,
                             ),
                           ),
@@ -270,7 +263,7 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
                     ),
                     Icon(
                       Icons.arrow_forward_ios,
-                      size: tokens.spacing.lg,
+                      size: tokens.spacing(4),
                       color: tokens.textMuted,
                     ),
                   ],
@@ -290,10 +283,10 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   ) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        tokens.spacing.lg,
-        tokens.spacing.lg,
-        tokens.spacing.lg,
-        tokens.spacing.xl,
+        tokens.spacing(4),
+        tokens.spacing(4),
+        tokens.spacing(4),
+        tokens.spacing(6),
       ),
       child: Column(
         children: [
@@ -305,14 +298,14 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
               icon: const Icon(Icons.share),
               label: const Text('達成を共有する'),
               style: OutlinedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
                 shape: RoundedRectangleBorder(
                   borderRadius: tokens.cornerFull(),
                 ),
               ),
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(3)),
           // 完了ボタン
           SizedBox(
             width: double.infinity,
@@ -321,14 +314,14 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: tokens.brandPrimary,
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
+                padding: EdgeInsets.symmetric(vertical: tokens.spacing(4)),
                 shape: RoundedRectangleBorder(
                   borderRadius: tokens.cornerFull(),
                 ),
               ),
               child: Text(
                 l10n.celebrationDone,
-                style: tokens.typography.h5.copyWith(
+                style: tokens.titleMedium.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -343,13 +336,13 @@ class _CelebrationScreenState extends ConsumerState<CelebrationScreen>
   Widget _buildCloseButton(BuildContext context, MinqTheme tokens) {
     return Positioned(
       top: MediaQuery.of(context).padding.top,
-      left: tokens.spacing.sm,
+      left: tokens.spacing(2),
       child: IconButton(
         icon: Container(
-          width: tokens.spacing.xxl,
-          height: tokens.spacing.xxl,
+          width: tokens.spacing(12),
+          height: tokens.spacing(12),
           decoration: BoxDecoration(
-            color: Colors.white.withAlpha(51),
+            color: Colors.white.withOpacity(0.2),
             shape: BoxShape.circle,
             backgroundBlendMode: BlendMode.overlay,
           ),
@@ -382,18 +375,18 @@ class _NotificationEducationDialog extends StatelessWidget {
         children: [
           Text(
             l10n.notificationPermissionDialogMessage,
-            style: tokens.typography.body.copyWith(color: tokens.textPrimary),
+            style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
           ),
           if (showEducation) ...[
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(3)),
             Text(
               l10n.notificationPermissionDialogBenefitsHeading,
-              style: tokens.typography.body.copyWith(
+              style: tokens.bodyMedium.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(2)),
             _DialogBullet(
               text: l10n.notificationPermissionDialogBenefitReminders,
               tokens: tokens,
@@ -407,10 +400,10 @@ class _NotificationEducationDialog extends StatelessWidget {
               tokens: tokens,
             ),
           ],
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(3)),
           Text(
             l10n.notificationPermissionDialogFooter,
-            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
           ),
         ],
       ),
@@ -437,19 +430,19 @@ class _DialogBullet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing.xs),
+      padding: EdgeInsets.only(bottom: tokens.spacing(1)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '•',
-            style: tokens.typography.body.copyWith(color: tokens.brandPrimary),
+            style: tokens.bodyMedium.copyWith(color: tokens.brandPrimary),
           ),
-          SizedBox(width: tokens.spacing.sm),
+          SizedBox(width: tokens.spacing(2)),
           Expanded(
             child: Text(
               text,
-              style: tokens.typography.body.copyWith(color: tokens.textPrimary),
+              style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
             ),
           ),
         ],
@@ -481,7 +474,7 @@ class _PingAnimation extends AnimatedWidget {
         height: 288 * animation.value,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: color.withAlpha(77),
+          color: color.withOpacity(0.3),
         ),
       ),
     );

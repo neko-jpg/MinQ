@@ -34,12 +34,10 @@ subprojects {
     plugins.withId("com.android.application") {
         if (name == "app") {
             afterEvaluate {
-                val targetDir = rootProject.projectDir.parentFile.resolve("build/app/outputs")
-                val syncOutputsTask = tasks.register("syncFlutterOutputs") {
-                    // Flutter expects outputs under build/app even though we build elsewhere.
-                    outputs.upToDateWhen { false }
+                tasks.named("packageDebug").configure {
                     doLast {
                         val outputsDir = layout.buildDirectory.dir("outputs").get().asFile
+                        val targetDir = rootProject.projectDir.parentFile.resolve("build/app/outputs")
                         if (targetDir.exists()) {
                             targetDir.deleteRecursively()
                         }
@@ -48,12 +46,6 @@ subprojects {
                             from(outputsDir)
                             into(targetDir)
                         }
-                    }
-                }
-
-                listOf("packageDebug", "packageRelease").forEach { taskName ->
-                    tasks.matching { it.name == taskName }.configureEach {
-                        finalizedBy(syncOutputsTask)
                     }
                 }
             }

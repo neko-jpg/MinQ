@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// What's New画面（バージョンアップ時の変更点案内）
 class WhatsNewScreen extends StatelessWidget {
@@ -10,31 +9,30 @@ class WhatsNewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = Theme.of(context).extension<MinqTheme>()!;
     return Scaffold(
       appBar: AppBar(title: const Text('新機能のご紹介')),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(tokens.spacing.xl),
+            padding: const EdgeInsets.all(24),
             child: Column(
               children: [
                 Icon(
                   Icons.celebration,
                   size: 64,
-                  color: tokens.brandPrimary,
+                  color: Theme.of(context).primaryColor,
                 ),
-                SizedBox(height: tokens.spacing.md),
+                const SizedBox(height: 16),
                 Text(
                   'バージョン $version',
-                  style: tokens.typography.h2,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ],
             ),
           ),
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.all(tokens.spacing.md),
+              padding: const EdgeInsets.all(16),
               itemCount: items.length,
               itemBuilder: (context, index) {
                 return _buildItem(context, items[index]);
@@ -42,7 +40,7 @@ class WhatsNewScreen extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(tokens.spacing.md),
+            padding: const EdgeInsets.all(16),
             child: ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
@@ -57,11 +55,10 @@ class WhatsNewScreen extends StatelessWidget {
   }
 
   Widget _buildItem(BuildContext context, WhatsNewItem item) {
-    final tokens = Theme.of(context).extension<MinqTheme>()!;
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing.md),
+      margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: const EdgeInsets.all(16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -69,24 +66,24 @@ class WhatsNewScreen extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: item.color.withAlpha(26),
-                borderRadius: BorderRadius.circular(tokens.radius.sm),
+                color: item.color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(item.icon, color: item.color),
             ),
-            SizedBox(width: tokens.spacing.md),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     item.title,
-                    style: tokens.typography.h3,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  const SizedBox(height: 4),
                   Text(
                     item.description,
-                    style: tokens.typography.body,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
               ),

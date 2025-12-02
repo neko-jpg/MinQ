@@ -31,26 +31,29 @@ class PairScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           l10n.pairTitle,
-          style: tokens.typography.h4.copyWith(
+          style: tokens.titleMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
         leading: MinqIconButton(icon: Icons.close, onTap: () => context.pop()),
-        backgroundColor: tokens.background.withAlpha((255 * 0.8).round()),
+        backgroundColor: tokens.background.withOpacity(0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
       body: pairAsync.when(
-        data: (pair) => AnimatedSwitcher(
-          duration: const Duration(milliseconds: 500),
-          transitionBuilder: (child, animation) =>
-              FadeTransition(opacity: animation, child: child),
-          child: pair != null
-              ? _PairedView(key: ValueKey(pair.id), pairId: pair.id)
-              : const _UnpairedView(key: ValueKey('unpaired')),
-        ),
+        data:
+            (pair) => AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              transitionBuilder:
+                  (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+              child:
+                  pair != null
+                      ? _PairedView(key: ValueKey(pair.id), pairId: pair.id)
+                      : const _UnpairedView(key: ValueKey('unpaired')),
+            ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(child: Text(l10n.errorGeneric)),
       ),
@@ -78,7 +81,8 @@ class _PairedView extends ConsumerWidget {
         }
         final pair = Pair.fromSnapshot(snapshot.data!);
 
-        final canHighFive = pair.lastHighfiveAt == null ||
+        final canHighFive =
+            pair.lastHighfiveAt == null ||
             DateTime.now().difference(pair.lastHighfiveAt!).inHours >= 24;
         final quickMessages = <String>[
           l10n.pairQuickMessageGreat,
@@ -88,67 +92,69 @@ class _PairedView extends ConsumerWidget {
         ];
 
         return SingleChildScrollView(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: EdgeInsets.all(tokens.spacing(5)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: tokens.spacing.lg),
+              SizedBox(height: tokens.spacing(5)),
               CircleAvatar(
-                radius: 64,
-                backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.12).round()),
+                radius: tokens.spacing(16),
+                backgroundColor: tokens.brandPrimary.withOpacity(0.12),
                 child: Icon(
                   Icons.person_off_outlined,
-                  size: 64,
+                  size: tokens.spacing(16),
                   color: tokens.brandPrimary,
                 ),
               ),
-              SizedBox(height: tokens.spacing.lg),
+              SizedBox(height: tokens.spacing(4)),
               Text(
                 l10n.pairAnonymousPartner,
-                style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
+                style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
               ),
-              SizedBox(height: tokens.spacing.xs),
+              SizedBox(height: tokens.spacing(1)),
               Text(
                 l10n.pairPairedQuest(pair.category),
-                style:
-                    tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: tokens.spacing(8)),
               MinqPrimaryButton(
-                label: canHighFive
-                    ? l10n.pairHighFiveAction
-                    : l10n.pairHighFiveSent,
-                onPressed: canHighFive
-                    ? () async {
-                        final uid = ref.read(uidProvider);
-                        if (uid == null) return;
-                        // TODO: Handle null repository gracefully
-                        await ref
-                            .read(pairRepositoryProvider)!
-                            .sendHighFive(pairId, uid);
-                      }
-                    : null,
+                label:
+                    canHighFive
+                        ? l10n.pairHighFiveAction
+                        : l10n.pairHighFiveSent,
+                onPressed:
+                    canHighFive
+                        ? () async {
+                          final uid = ref.read(uidProvider);
+                          if (uid == null) return;
+                          // TODO: Handle null repository gracefully
+                          await ref
+                              .read(pairRepositoryProvider)!
+                              .sendHighFive(pairId, uid);
+                        }
+                        : null,
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: tokens.spacing(10)),
               Text(
                 l10n.pairQuickMessagePrompt,
-                style:
-                    tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
-              SizedBox(height: tokens.spacing.lg),
+              SizedBox(height: tokens.spacing(4)),
               Wrap(
-                spacing: tokens.spacing.md,
-                runSpacing: tokens.spacing.md,
+                spacing: tokens.spacing(3),
+                runSpacing: tokens.spacing(3),
                 alignment: WrapAlignment.center,
-                children: quickMessages
-                    .map(
-                      (message) => _QuickMessageChip(
-                        text: message,
-                        onTap: () => _sendQuickMessage(ref, pairId, message),
-                      ),
-                    )
-                    .toList(),
+                children:
+                    quickMessages
+                        .map(
+                          (message) => _QuickMessageChip(
+                            text: message,
+                            onTap:
+                                () => _sendQuickMessage(ref, pairId, message),
+                          ),
+                        )
+                        .toList(),
               ),
             ],
           ),
@@ -179,20 +185,20 @@ class _QuickMessageChip extends StatelessWidget {
     return ActionChip(
       label: Text(
         text,
-        style: tokens.typography.bodySmall.copyWith(
+        style: tokens.bodySmall.copyWith(
           color: tokens.brandPrimary,
           fontWeight: FontWeight.w600,
         ),
       ),
       onPressed: onTap,
       backgroundColor: tokens.surface,
-      side: BorderSide(color: tokens.brandPrimary.withAlpha((255 * 0.4).round())),
+      side: BorderSide(color: tokens.brandPrimary.withOpacity(0.4)),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(tokens.radiusLarge),
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.md,
-        vertical: tokens.spacing.sm,
+        horizontal: tokens.spacing(3),
+        vertical: tokens.spacing(2),
       ),
     );
   }
@@ -228,6 +234,19 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     }
   }
 
+  Future<void> _findRandomPartner() async {
+    final uid = ref.read(uidProvider);
+    if (uid == null) return;
+
+    // TODO: Handle null repository gracefully
+    final pairId = await ref
+        .read(pairRepositoryProvider)!
+        .requestRandomPair(uid, _selectedCategory);
+    if (mounted && pairId == null) {
+      FeedbackMessenger.showInfoToast(context, '現在マッチング中です。順番をお待ちください。');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
@@ -235,27 +254,28 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
     return SafeArea(
       top: false,
       bottom: true,
-      minimum: EdgeInsets.only(bottom: tokens.spacing.xl),
+      minimum: EdgeInsets.only(bottom: tokens.spacing(6)),
       child: ListView(
         padding: EdgeInsets.fromLTRB(
-          tokens.spacing.xl,
-          tokens.spacing.xl,
-          tokens.spacing.xl,
-          tokens.spacing.lg,
+          tokens.spacing(6),
+          tokens.spacing(6),
+          tokens.spacing(6),
+          tokens.spacing(4),
         ),
         children: [
           _buildHeader(tokens, l10n),
-          const SizedBox(height: 32),
+          SizedBox(height: tokens.spacing(8)),
           _buildInviteCodeInput(tokens, l10n),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spacing(6)),
           _buildDivider(tokens, l10n),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spacing(6)),
           _buildRandomMatchForm(tokens, l10n),
-          const SizedBox(height: 32),
+          SizedBox(height: tokens.spacing(8)),
           MinqPrimaryButton(
             label: 'マッチングを開始する',
-            onPressed: () async =>
-                ref.read(navigationUseCaseProvider).goToPairMatching(),
+            onPressed:
+                () async =>
+                    ref.read(navigationUseCaseProvider).goToPairMatching(),
           ),
         ],
       ),
@@ -270,32 +290,32 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
           children: [
             Icon(
               Icons.groups,
-              size: 40,
+              size: tokens.spacing(10),
               color: tokens.brandPrimary,
             ),
-            SizedBox(width: tokens.spacing.sm),
-            Icon(Icons.add, size: 24, color: tokens.textMuted),
-            SizedBox(width: tokens.spacing.sm),
+            SizedBox(width: tokens.spacing(2)),
+            Icon(Icons.add, size: tokens.spacing(6), color: tokens.textMuted),
+            SizedBox(width: tokens.spacing(2)),
             Icon(
               Icons.help_outline,
-              size: 40,
+              size: tokens.spacing(10),
               color: tokens.brandPrimary,
             ),
           ],
         ),
-        SizedBox(height: tokens.spacing.lg),
+        SizedBox(height: tokens.spacing(4)),
         Text(
           l10n.pairPartnerHeroTitle,
-          style: tokens.typography.h2.copyWith(
+          style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: tokens.spacing.sm),
+        SizedBox(height: tokens.spacing(2)),
         Text(
           l10n.pairPartnerHeroDescription,
-          style: tokens.typography.body.copyWith(color: tokens.textMuted),
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           textAlign: TextAlign.center,
         ),
       ],
@@ -304,7 +324,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
 
   Widget _buildInviteCodeInput(MinqTheme tokens, AppLocalizations l10n) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(5)),
       decoration: BoxDecoration(
         color: tokens.surface,
         borderRadius: tokens.cornerXLarge(),
@@ -315,12 +335,12 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         children: [
           Text(
             l10n.pairInviteTitle,
-            style: tokens.typography.bodyMedium.copyWith(
+            style: tokens.bodyMedium.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(2)),
           Row(
             children: [
               Expanded(
@@ -335,24 +355,24 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
                       borderSide: BorderSide(color: tokens.border),
                     ),
                     contentPadding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing.lg,
+                      horizontal: tokens.spacing(4),
                     ),
                   ),
                 ),
               ),
-              SizedBox(width: tokens.spacing.md),
+              SizedBox(width: tokens.spacing(3)),
               ElevatedButton(
                 onPressed: _joinWithInvite,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+                  backgroundColor: tokens.brandPrimary.withOpacity(0.2),
                   foregroundColor: tokens.brandPrimary,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: tokens.cornerLarge(),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: tokens.spacing(4),
+                    vertical: tokens.spacing(3.5),
                   ),
                 ),
                 child: Text(l10n.pairInviteApply),
@@ -369,10 +389,10 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
       children: [
         Expanded(child: Divider(color: tokens.border, thickness: 1)),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: tokens.spacing.md),
+          padding: EdgeInsets.symmetric(horizontal: tokens.spacing(3)),
           child: Text(
             l10n.pairDividerOr,
-            style: tokens.typography.bodySmall.copyWith(
+            style: tokens.bodySmall.copyWith(
               color: tokens.textMuted,
               fontWeight: FontWeight.w600,
             ),
@@ -397,7 +417,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
       _DropdownOption(value: 'Productivity', label: l10n.pairGoalProductivity),
     ];
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(5)),
       decoration: BoxDecoration(
         color: tokens.surface,
         borderRadius: tokens.cornerXLarge(),
@@ -408,12 +428,12 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
         children: [
           Text(
             l10n.pairRandomMatchTitle,
-            style: tokens.typography.bodyMedium.copyWith(
+            style: tokens.bodyMedium.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spacing(4)),
           _buildDropdown(
             tokens,
             l10n.pairAgeRangeLabel,
@@ -421,7 +441,7 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
             _selectedAgeRange,
             (val) => setState(() => _selectedAgeRange = val!),
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spacing(4)),
           _buildDropdown(
             tokens,
             l10n.pairGoalCategoryLabel,
@@ -429,10 +449,10 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
             _selectedCategory,
             (val) => setState(() => _selectedCategory = val!),
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spacing(4)),
           Text(
             l10n.pairRandomMatchNote,
-            style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
           ),
         ],
       ),
@@ -451,22 +471,23 @@ class _UnpairedViewState extends ConsumerState<_UnpairedView> {
       children: [
         Text(
           label,
-          style: tokens.typography.bodySmall.copyWith(
+          style: tokens.bodySmall.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.w600,
           ),
         ),
-        SizedBox(height: tokens.spacing.xs),
+        SizedBox(height: tokens.spacing(1)),
         DropdownButtonFormField<String>(
-          value: currentValue,
-          items: items
-              .map(
-                (item) => DropdownMenuItem(
-                  value: item.value,
-                  child: Text(item.label),
-                ),
-              )
-              .toList(),
+          initialValue: currentValue,
+          items:
+              items
+                  .map(
+                    (item) => DropdownMenuItem(
+                      value: item.value,
+                      child: Text(item.label),
+                    ),
+                  )
+                  .toList(),
           onChanged: onChanged,
           decoration: InputDecoration(
             filled: true,

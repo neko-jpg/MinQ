@@ -29,9 +29,9 @@ class AccountDeletionService {
       // 3. Authenticationを削除
       await user.delete();
 
-      logger.info('✅ Account deleted successfully');
-    } catch (e, s) {
-      logger.error('Failed to delete account', error: e, stackTrace: s);
+      AppLogger().info('Account deleted successfully');
+    } catch (e) {
+      AppLogger().error('Failed to delete account', e);
       rethrow;
     }
   }
@@ -109,7 +109,7 @@ class AccountDeletionService {
     }
 
     await batch.commit();
-    logger.info('✅ Firestore data deleted');
+    AppLogger().info('Firestore data deleted');
   }
 
   /// Storageのユーザーデータを削除
@@ -128,9 +128,9 @@ class AccountDeletionService {
         await _deleteStorageFolder(prefix);
       }
 
-      logger.info('✅ Storage data deleted');
-    } catch (e, s) {
-      logger.warning('Failed to delete storage data', error: e, stackTrace: s);
+      AppLogger().info('Storage data deleted');
+    } catch (e) {
+      AppLogger().warning('Failed to delete storage data: $e');
       // Storageの削除に失敗してもアカウント削除は続行
     }
   }
@@ -162,24 +162,27 @@ class AccountDeletionService {
     final userData = userDoc.data();
 
     // クエスト情報
-    final questsSnapshot = await _firestore
-        .collection('quests')
-        .where('userId', isEqualTo: userId)
-        .get();
+    final questsSnapshot =
+        await _firestore
+            .collection('quests')
+            .where('userId', isEqualTo: userId)
+            .get();
     final quests = questsSnapshot.docs.map((doc) => doc.data()).toList();
 
     // クエストログ
-    final logsSnapshot = await _firestore
-        .collection('questLogs')
-        .where('userId', isEqualTo: userId)
-        .get();
+    final logsSnapshot =
+        await _firestore
+            .collection('questLogs')
+            .where('userId', isEqualTo: userId)
+            .get();
     final logs = logsSnapshot.docs.map((doc) => doc.data()).toList();
 
     // アチーブメント
-    final achievementsSnapshot = await _firestore
-        .collection('achievements')
-        .where('userId', isEqualTo: userId)
-        .get();
+    final achievementsSnapshot =
+        await _firestore
+            .collection('achievements')
+            .where('userId', isEqualTo: userId)
+            .get();
     final achievements =
         achievementsSnapshot.docs.map((doc) => doc.data()).toList();
 
@@ -211,7 +214,7 @@ class AccountDeletionService {
       'deletionDate': DateTime.now().add(const Duration(days: 30)),
     });
 
-    logger.info('✅ Account deletion scheduled for 30 days from now');
+    AppLogger().info('Account deletion scheduled for 30 days from now');
   }
 
   /// 削除予約をキャンセル
@@ -226,6 +229,6 @@ class AccountDeletionService {
       'deletionDate': FieldValue.delete(),
     });
 
-    logger.info('✅ Account deletion cancelled');
+    AppLogger().info('Account deletion cancelled');
   }
 }

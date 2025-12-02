@@ -1,5 +1,8 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/core/notifications/re_engagement_service.dart';
+import 'package:minq/core/notifications/smart_notification_service.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -17,6 +20,8 @@ class _SmartNotificationSettingsScreenState
     extends ConsumerState<SmartNotificationSettingsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  NotificationAnalytics? _analytics;
+  ReEngagementAnalytics? _reEngagementAnalytics;
   bool _isLoading = true;
 
   @override
@@ -37,7 +42,16 @@ class _SmartNotificationSettingsScreenState
     if (uid == null) return;
 
     try {
+      final smartService = ref.read(smartNotificationServiceProvider);
+      final reEngagementService = ref.read(reEngagementServiceProvider);
+
+      final analytics = await smartService.getNotificationAnalytics(uid);
+      final reEngagementAnalytics =
+          await reEngagementService.analyzeReEngagementEffectiveness();
+
       setState(() {
+        _analytics = analytics;
+        _reEngagementAnalytics = reEngagementAnalytics;
         _isLoading = false;
       });
     } catch (e) {
@@ -55,7 +69,7 @@ class _SmartNotificationSettingsScreenState
       appBar: AppBar(
         title: Text(
           'スマート通知設定',
-          style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         backgroundColor: tokens.surface,
         elevation: 0,
@@ -64,78 +78,112 @@ class _SmartNotificationSettingsScreenState
           tabs: const [Tab(text: '設定'), Tab(text: '分析'), Tab(text: 'A/Bテスト')],
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-              controller: _tabController,
-              children: [
-                _buildSettingsTab(),
-                _buildAnalyticsTab(),
-                _buildABTestTab(),
-              ],
-            ),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildSettingsTab(tokens),
+                  _buildAnalyticsTab(tokens),
+                  _buildABTestTab(tokens),
+                ],
+              ),
     );
   }
 
-  Widget _buildSettingsTab() {
-    final tokens = context.tokens;
+  Widget _buildSettingsTab(MinqTokens tokens) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // AI通知設定
-          _buildAINotificationSettings(),
-          SizedBox(height: tokens.spacing.lg),
+          _buildAINotificationSettings(tokens),
+
+          SizedBox(height: tokens.spacing(6)),
+
           // 最適時刻設定
-          _buildOptimalTimingSettings(),
-          SizedBox(height: tokens.spacing.lg),
+          _buildOptimalTimingSettings(tokens),
+
+          SizedBox(height: tokens.spacing(6)),
+
           // パーソナライゼーション設定
-          _buildPersonalizationSettings(),
-          SizedBox(height: tokens.spacing.lg),
+          _buildPersonalizationSettings(tokens),
+
+          SizedBox(height: tokens.spacing(6)),
+
           // 再エンゲージメント設定
-          _buildReEngagementSettings(),
+          _buildReEngagementSettings(tokens),
         ],
       ),
     );
   }
 
-  Widget _buildAnalyticsTab() {
-    return _buildNoDataState('まだ分析データがありません');
+  Widget _buildAnalyticsTab(MinqTokens tokens) {
+    if (_analytics == null) {
+      return _buildNoDataState(tokens, 'まだ分析データがありません');
+    }
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(tokens.spacing(4)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 通知効果サマリー
+          _buildNotificationSummary(tokens, _analytics!),
+
+          SizedBox(height: tokens.spacing(6)),
+
+          // 開封率グラフ
+          _buildOpenRateChart(tokens, _analytics!),
+
+          SizedBox(height: tokens.spacing(6)),
+
+          // 再エンゲージメント分析
+          if (_reEngagementAnalytics != null)
+            _buildReEngagementAnalysis(tokens, _reEngagementAnalytics!),
+        ],
+      ),
+    );
   }
 
-  Widget _buildABTestTab() {
-    final tokens = context.tokens;
+  Widget _buildABTestTab(MinqTokens tokens) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'A/Bテスト管理',
-            style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: tokens.spacing.md),
+
+          SizedBox(height: tokens.spacing(4)),
+
           // 実行中のテスト
-          _buildActiveTests(),
-          SizedBox(height: tokens.spacing.lg),
+          _buildActiveTests(tokens),
+
+          SizedBox(height: tokens.spacing(6)),
+
           // テスト結果
-          _buildTestResults(),
-          SizedBox(height: tokens.spacing.lg),
+          _buildTestResults(tokens),
+
+          SizedBox(height: tokens.spacing(6)),
+
           // 新しいテストを作成
-          _buildCreateTestSection(),
+          _buildCreateTestSection(tokens),
         ],
       ),
     );
   }
 
-  Widget _buildAINotificationSettings() {
-    final tokens = context.tokens;
+  Widget _buildAINotificationSettings(MinqTokens tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -146,17 +194,18 @@ class _SmartNotificationSettingsScreenState
               Icon(
                 Icons.psychology,
                 color: tokens.brandPrimary,
-                size: tokens.spacing.lg,
+                size: tokens.spacing(6),
               ),
-              SizedBox(width: tokens.spacing.xs),
+              SizedBox(width: tokens.spacing(2)),
               Text(
                 'AI通知設定',
-                style:
-                    tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.md),
+
+          SizedBox(height: tokens.spacing(4)),
+
           SwitchListTile(
             title: const Text('AI生成メッセージ'),
             subtitle: const Text('AIがパーソナライズされたメッセージを生成'),
@@ -165,6 +214,7 @@ class _SmartNotificationSettingsScreenState
               // TODO: 設定を保存
             },
           ),
+
           SwitchListTile(
             title: const Text('失敗予測通知'),
             subtitle: const Text('習慣失敗のリスクが高い時に警告'),
@@ -173,6 +223,7 @@ class _SmartNotificationSettingsScreenState
               // TODO: 設定を保存
             },
           ),
+
           SwitchListTile(
             title: const Text('励まし通知'),
             subtitle: const Text('成果に基づいて励ましメッセージを送信'),
@@ -186,13 +237,12 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildOptimalTimingSettings() {
-    final tokens = context.tokens;
+  Widget _buildOptimalTimingSettings(MinqTokens tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -203,17 +253,18 @@ class _SmartNotificationSettingsScreenState
               Icon(
                 Icons.schedule,
                 color: Colors.orange,
-                size: tokens.spacing.lg,
+                size: tokens.spacing(6),
               ),
-              SizedBox(width: tokens.spacing.xs),
+              SizedBox(width: tokens.spacing(2)),
               Text(
                 '最適時刻設定',
-                style:
-                    tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.md),
+
+          SizedBox(height: tokens.spacing(4)),
+
           SwitchListTile(
             title: const Text('自動最適化'),
             subtitle: const Text('AIがあなたの行動パターンから最適時刻を計算'),
@@ -222,6 +273,7 @@ class _SmartNotificationSettingsScreenState
               // TODO: 設定を保存
             },
           ),
+
           ListTile(
             title: const Text('現在の最適時刻'),
             subtitle: const Text('朝 9:15（AI計算結果）'),
@@ -233,17 +285,19 @@ class _SmartNotificationSettingsScreenState
               child: const Text('再計算'),
             ),
           ),
+
           ListTile(
             title: const Text('通知頻度'),
             subtitle: const Text('1日最大3回'),
             trailing: DropdownButton<int>(
               value: 3,
-              items: [1, 2, 3, 4, 5].map((count) {
-                return DropdownMenuItem(
-                  value: count,
-                  child: Text('$count回'),
-                );
-              }).toList(),
+              items:
+                  [1, 2, 3, 4, 5].map((count) {
+                    return DropdownMenuItem(
+                      value: count,
+                      child: Text('$count回'),
+                    );
+                  }).toList(),
               onChanged: (value) {
                 // TODO: 頻度設定を保存
               },
@@ -254,13 +308,12 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildPersonalizationSettings() {
-    final tokens = context.tokens;
+  Widget _buildPersonalizationSettings(MinqTokens tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -268,16 +321,17 @@ class _SmartNotificationSettingsScreenState
         children: [
           Row(
             children: [
-              Icon(Icons.person, color: Colors.purple, size: tokens.spacing.lg),
-              SizedBox(width: tokens.spacing.xs),
+              Icon(Icons.person, color: Colors.purple, size: tokens.spacing(6)),
+              SizedBox(width: tokens.spacing(2)),
               Text(
                 'パーソナライゼーション',
-                style:
-                    tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.md),
+
+          SizedBox(height: tokens.spacing(4)),
+
           ListTile(
             title: const Text('メッセージトーン'),
             subtitle: const Text('励まし重視'),
@@ -294,6 +348,7 @@ class _SmartNotificationSettingsScreenState
               },
             ),
           ),
+
           SwitchListTile(
             title: const Text('絵文字使用'),
             subtitle: const Text('メッセージに絵文字を含める'),
@@ -302,6 +357,7 @@ class _SmartNotificationSettingsScreenState
               // TODO: 設定を保存
             },
           ),
+
           SwitchListTile(
             title: const Text('名前呼びかけ'),
             subtitle: const Text('メッセージにあなたの名前を含める'),
@@ -315,13 +371,12 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildReEngagementSettings() {
-    final tokens = context.tokens;
+  Widget _buildReEngagementSettings(MinqTokens tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -329,16 +384,17 @@ class _SmartNotificationSettingsScreenState
         children: [
           Row(
             children: [
-              Icon(Icons.refresh, color: Colors.green, size: tokens.spacing.lg),
-              SizedBox(width: tokens.spacing.xs),
+              Icon(Icons.refresh, color: Colors.green, size: tokens.spacing(6)),
+              SizedBox(width: tokens.spacing(2)),
               Text(
                 '再エンゲージメント',
-                style:
-                    tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+                style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.md),
+
+          SizedBox(height: tokens.spacing(4)),
+
           SwitchListTile(
             title: const Text('自動再エンゲージメント'),
             subtitle: const Text('非アクティブ時に自動で復帰を促す'),
@@ -347,22 +403,25 @@ class _SmartNotificationSettingsScreenState
               // TODO: 設定を保存
             },
           ),
+
           ListTile(
             title: const Text('再エンゲージメント開始'),
             subtitle: const Text('2日間非アクティブ後'),
             trailing: DropdownButton<int>(
               value: 2,
-              items: [1, 2, 3, 5, 7].map((days) {
-                return DropdownMenuItem(
-                  value: days,
-                  child: Text('$days日後'),
-                );
-              }).toList(),
+              items:
+                  [1, 2, 3, 5, 7].map((days) {
+                    return DropdownMenuItem(
+                      value: days,
+                      child: Text('$days日後'),
+                    );
+                  }).toList(),
               onChanged: (value) {
                 // TODO: 設定を保存
               },
             ),
           ),
+
           ListTile(
             title: const Text('段階的アプローチ'),
             subtitle: const Text('優しい → 励まし → 価値提案'),
@@ -376,13 +435,265 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildActiveTests() {
-    final tokens = context.tokens;
+  Widget _buildNotificationSummary(
+    MinqTokens tokens,
+    NotificationAnalytics analytics,
+  ) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
+        border: Border.all(color: tokens.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '通知効果サマリー',
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+          ),
+
+          SizedBox(height: tokens.spacing(4)),
+
+          Row(
+            children: [
+              Expanded(
+                child: _buildSummaryItem(
+                  tokens,
+                  '送信数',
+                  '${analytics.totalSent}',
+                  Icons.send,
+                  Colors.blue,
+                ),
+              ),
+              Expanded(
+                child: _buildSummaryItem(
+                  tokens,
+                  '開封数',
+                  '${analytics.totalOpened}',
+                  Icons.mark_email_read,
+                  Colors.green,
+                ),
+              ),
+              Expanded(
+                child: _buildSummaryItem(
+                  tokens,
+                  '開封率',
+                  '${(analytics.openRate * 100).toInt()}%',
+                  Icons.trending_up,
+                  Colors.orange,
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: tokens.spacing(4)),
+
+          Row(
+            children: [
+              Expanded(
+                child: _buildSummaryItem(
+                  tokens,
+                  'アクション',
+                  '${analytics.totalActionTaken}',
+                  Icons.touch_app,
+                  Colors.purple,
+                ),
+              ),
+              Expanded(
+                child: _buildSummaryItem(
+                  tokens,
+                  'アクション率',
+                  '${(analytics.actionRate * 100).toInt()}%',
+                  Icons.analytics,
+                  Colors.red,
+                ),
+              ),
+              Expanded(
+                child: Container(), // 空のスペース
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryItem(
+    MinqTokens tokens,
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing(3)),
+      margin: EdgeInsets.all(tokens.spacing(1)),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: tokens.cornerMedium(),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: tokens.spacing(6)),
+          SizedBox(height: tokens.spacing(2)),
+          Text(
+            value,
+            style: tokens.titleMedium.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: tokens.spacing(1)),
+          Text(
+            label,
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOpenRateChart(
+    MinqTokens tokens,
+    NotificationAnalytics analytics,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing(4)),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: tokens.cornerLarge(),
+        border: Border.all(color: tokens.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '開封率推移',
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+          ),
+
+          SizedBox(height: tokens.spacing(4)),
+
+          SizedBox(
+            height: tokens.spacing(60),
+            child: LineChart(
+              LineChartData(
+                gridData: const FlGridData(show: false),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          '${(value * 100).toInt()}%',
+                          style: tokens.bodySmall,
+                        );
+                      },
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        const days = ['月', '火', '水', '木', '金', '土', '日'];
+                        return Text(
+                          days[value.toInt() % 7],
+                          style: tokens.bodySmall,
+                        );
+                      },
+                    ),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                ),
+                borderData: FlBorderData(show: false),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: _generateMockChartData(),
+                    isCurved: true,
+                    color: tokens.brandPrimary,
+                    barWidth: 3,
+                    dotData: const FlDotData(show: false),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReEngagementAnalysis(
+    MinqTokens tokens,
+    ReEngagementAnalytics analytics,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing(4)),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: tokens.cornerLarge(),
+        border: Border.all(color: tokens.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '再エンゲージメント分析',
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
+          ),
+
+          SizedBox(height: tokens.spacing(4)),
+
+          Row(
+            children: [
+              Expanded(
+                child: _buildSummaryItem(
+                  tokens,
+                  '試行回数',
+                  '${analytics.totalAttempts}',
+                  Icons.send,
+                  Colors.blue,
+                ),
+              ),
+              Expanded(
+                child: _buildSummaryItem(
+                  tokens,
+                  '復帰数',
+                  '${analytics.estimatedReturns}',
+                  Icons.person_add,
+                  Colors.green,
+                ),
+              ),
+              Expanded(
+                child: _buildSummaryItem(
+                  tokens,
+                  '復帰率',
+                  '${(analytics.returnRate * 100).toInt()}%',
+                  Icons.trending_up,
+                  Colors.orange,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActiveTests(MinqTokens tokens) {
+    return Container(
+      padding: EdgeInsets.all(tokens.spacing(4)),
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -390,17 +701,22 @@ class _SmartNotificationSettingsScreenState
         children: [
           Text(
             '実行中のテスト',
-            style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: tokens.spacing.md),
+
+          SizedBox(height: tokens.spacing(4)),
+
           // モックテスト
           _buildTestItem(
+            tokens,
             'メッセージトーン比較',
             '励まし vs データ重視',
             '実行中',
             Colors.green,
           ),
+
           _buildTestItem(
+            tokens,
             '送信タイミング最適化',
             '朝9時 vs 夕方6時',
             '分析中',
@@ -411,13 +727,12 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildTestResults() {
-    final tokens = context.tokens;
+  Widget _buildTestResults(MinqTokens tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -425,10 +740,13 @@ class _SmartNotificationSettingsScreenState
         children: [
           Text(
             '過去のテスト結果',
-            style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: tokens.spacing.md),
+
+          SizedBox(height: tokens.spacing(4)),
+
           _buildTestItem(
+            tokens,
             '絵文字使用効果',
             '絵文字あり: 65% vs なし: 45%',
             '完了',
@@ -440,18 +758,18 @@ class _SmartNotificationSettingsScreenState
   }
 
   Widget _buildTestItem(
+    MinqTokens tokens,
     String title,
     String description,
     String status,
     Color statusColor,
   ) {
-    final tokens = context.tokens;
     return Container(
-      margin: EdgeInsets.only(bottom: tokens.spacing.sm),
-      padding: EdgeInsets.all(tokens.spacing.sm),
+      margin: EdgeInsets.only(bottom: tokens.spacing(3)),
+      padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
         color: tokens.surfaceVariant,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
+        borderRadius: tokens.cornerMedium(),
       ),
       child: Row(
         children: [
@@ -461,31 +779,31 @@ class _SmartNotificationSettingsScreenState
               children: [
                 Text(
                   title,
-                  style: tokens.typography.body.copyWith(
+                  style: tokens.bodyMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: tokens.spacing.xs),
+                SizedBox(height: tokens.spacing(1)),
                 Text(
                   description,
-                  style: tokens.typography.caption
-                      .copyWith(color: tokens.textMuted),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
               ],
             ),
           ),
+
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: tokens.spacing.xs,
-              vertical: tokens.spacing.xs,
+              horizontal: tokens.spacing(2),
+              vertical: tokens.spacing(1),
             ),
             decoration: BoxDecoration(
-              color: statusColor.withAlpha(51),
-              borderRadius: BorderRadius.circular(tokens.radius.sm),
+              color: statusColor.withOpacity(0.2),
+              borderRadius: tokens.cornerSmall(),
             ),
             child: Text(
               status,
-              style: tokens.typography.caption.copyWith(
+              style: tokens.bodySmall.copyWith(
                 color: statusColor,
                 fontWeight: FontWeight.bold,
               ),
@@ -496,13 +814,12 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildCreateTestSection() {
-    final tokens = context.tokens;
+  Widget _buildCreateTestSection(MinqTokens tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -510,9 +827,11 @@ class _SmartNotificationSettingsScreenState
         children: [
           Text(
             '新しいテストを作成',
-            style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+            style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: tokens.spacing.md),
+
+          SizedBox(height: tokens.spacing(4)),
+
           ElevatedButton.icon(
             onPressed: () {
               // TODO: テスト作成画面に遷移
@@ -529,25 +848,37 @@ class _SmartNotificationSettingsScreenState
     );
   }
 
-  Widget _buildNoDataState(String message) {
-    final tokens = context.tokens;
+  Widget _buildNoDataState(MinqTokens tokens, String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.analytics,
-            size: tokens.spacing.xl,
+            size: tokens.spacing(20),
             color: tokens.textMuted,
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
           Text(
             message,
-            style: tokens.typography.h4.copyWith(color: tokens.textMuted),
+            style: tokens.titleMedium.copyWith(color: tokens.textMuted),
           ),
         ],
       ),
     );
+  }
+
+  List<FlSpot> _generateMockChartData() {
+    // モックデータ（実際は過去7日間の開封率データ）
+    return [
+      const FlSpot(0, 0.6),
+      const FlSpot(1, 0.65),
+      const FlSpot(2, 0.7),
+      const FlSpot(3, 0.68),
+      const FlSpot(4, 0.72),
+      const FlSpot(5, 0.75),
+      const FlSpot(6, 0.78),
+    ];
   }
 
   void _recalculateOptimalTime() {

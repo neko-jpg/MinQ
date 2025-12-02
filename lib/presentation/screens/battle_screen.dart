@@ -103,7 +103,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
             children: [
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: _selectedCategory,
+                  initialValue: _selectedCategory,
                   decoration: const InputDecoration(
                     labelText: 'カテゴリ',
                     border: OutlineInputBorder(),
@@ -139,15 +139,12 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
           child:
               _availableBattles.isEmpty
                   ? EmptyStateWidget(
-                      icon: Icons.sports_esports,
-                      title: 'バトルがありません',
-                      message:
-                          '新しいバトルを作成するか、しばらく待ってから再度確認してください',
-                      action: ElevatedButton(
-                        onPressed: () => _tabController.animateTo(1),
-                        child: const Text('バトルを作成'),
-                      ),
-                    )
+                    icon: Icons.sports_esports,
+                    title: 'バトルがありません',
+                    subtitle: '新しいバトルを作成するか、しばらく待ってから再度確認してください',
+                    actionText: 'バトルを作成',
+                    onAction: () => _tabController.animateTo(1),
+                  )
                   : RefreshIndicator(
                     onRefresh: _loadData,
                     child: ListView.builder(
@@ -187,7 +184,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                     decoration: BoxDecoration(
                       color: _getCategoryColor(
                         battle.category,
-                      ).withAlpha((255 * 0.1).round()),
+                      ).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -224,7 +221,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withAlpha((255 * 0.1).round()),
+                      color: Colors.orange.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -596,11 +593,9 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
           return EmptyStateWidget(
             icon: Icons.history,
             title: 'バトル履歴がありません',
-            message: 'バトルに参加すると履歴が表示されます',
-            action: ElevatedButton(
-              onPressed: () => _tabController.animateTo(0),
-              child: const Text('バトルに参加'),
-            ),
+            subtitle: 'バトルに参加すると履歴が表示されます',
+            actionText: 'バトルに参加',
+            onAction: () => _tabController.animateTo(0),
           );
         }
 
@@ -660,7 +655,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withAlpha((255 * 0.1).round()),
+                  color: Colors.amber.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

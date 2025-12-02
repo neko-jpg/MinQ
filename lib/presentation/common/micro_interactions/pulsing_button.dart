@@ -240,10 +240,10 @@ class _PulsingButtonState extends State<PulsingButton>
                     (widget.backgroundColor ?? theme.brandPrimary),
                 borderRadius:
                     widget.borderRadius ??
-                    BorderRadius.circular(theme.radius.md),
+                    BorderRadius.circular(theme.radiusMedium),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha(26),
+                    color: Colors.black.withOpacity(0.1),
                     blurRadius:
                         _isPressed ? widget.pressedElevation : widget.elevation,
                     offset: Offset(
@@ -258,7 +258,7 @@ class _PulsingButtonState extends State<PulsingButton>
               child: Material(
                 color: Colors.transparent,
                 child: Padding(
-                  padding: widget.padding ?? EdgeInsets.all(theme.spacing.md),
+                  padding: widget.padding ?? EdgeInsets.all(theme.spaceMD),
                   child: Center(child: widget.child),
                 ),
               ),

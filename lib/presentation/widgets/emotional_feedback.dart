@@ -2,10 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:minq/l10n/app_localizations.dart';
 
 import 'package:minq/core/audio/sound_effects_service.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// エモーショナルフィードバックウィジェット集
 class EmotionalFeedback {
@@ -142,7 +140,6 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqTheme.of(context);
     return Material(
       color: Colors.transparent,
       child: Stack(
@@ -152,8 +149,7 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
             animation: _controller,
             builder: (context, child) {
               return Container(
-                color: Colors.black
-                    .withAlpha((255 * 0.3 * _controller.value).round()),
+                color: Colors.black.withOpacity(0.3 * _controller.value),
               );
             },
           ),
@@ -185,33 +181,32 @@ class _CelebrationOverlayState extends State<_CelebrationOverlay>
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black
-                                .withAlpha((255 * 0.2).round()),
+                            color: Colors.black.withOpacity(0.2),
                             blurRadius: 10,
                             spreadRadius: 2,
                           ),
                         ],
                       ),
-                      child: Column(
+                      child: const Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.celebration,
                             size: 48,
                             color: Colors.amber,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16),
                           Text(
                             'おめでとうございます！',
-                            style: tokens.typography.h2.copyWith(
+                            style: TextStyle(
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
                           Text(
                             '素晴らしい成果です！',
-                            style: tokens.typography.body
-                                .copyWith(color: Colors.grey),
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
                           ),
                         ],
                       ),
@@ -314,7 +309,6 @@ class _ComfortDialogState extends State<_ComfortDialog>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqTheme.of(context);
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -331,17 +325,15 @@ class _ComfortDialogState extends State<_ComfortDialog>
                 children: [
                   const Icon(Icons.favorite, size: 48, color: Colors.pink),
                   const SizedBox(height: 16),
-                  Text(
+                  const Text(
                     '大丈夫です',
-                    style: tokens.typography.h2.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     widget.message,
                     textAlign: TextAlign.center,
-                    style: tokens.typography.body,
+                    style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
@@ -353,7 +345,7 @@ class _ComfortDialogState extends State<_ComfortDialog>
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text(AppLocalizations.of(context)!.thankYou),
+                    child: const Text('ありがとう'),
                   ),
                 ],
               ),
@@ -432,7 +424,6 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqTheme.of(context);
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -441,8 +432,8 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.purple.withAlpha((255 * 0.8).round()),
-              Colors.blue.withAlpha((255 * 0.8).round()),
+              Colors.purple.withOpacity(0.8),
+              Colors.blue.withOpacity(0.8),
             ],
           ),
         ),
@@ -482,8 +473,7 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.amber
-                                      .withAlpha((255 * 0.5).round()),
+                                  color: Colors.amber.withOpacity(0.5),
                                   blurRadius: 20,
                                   spreadRadius: 5,
                                 ),
@@ -512,9 +502,11 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
                           offset: Offset(0, 50 * (1 - _textController.value)),
                           child: Column(
                             children: [
-                              Text(
+                              const Text(
                                 'EPIC ACHIEVEMENT!',
-                                style: tokens.typography.h1.copyWith(
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                   letterSpacing: 2,
                                 ),
@@ -523,7 +515,8 @@ class _EpicAchievementOverlayState extends State<_EpicAchievementOverlay>
                               Text(
                                 widget.achievement,
                                 textAlign: TextAlign.center,
-                                style: tokens.typography.h3.copyWith(
+                                style: const TextStyle(
+                                  fontSize: 18,
                                   color: Colors.white,
                                 ),
                               ),
@@ -560,7 +553,7 @@ class _EpicParticlePainter extends CustomPainter {
       final scale = random.nextDouble() * progress;
       final opacity = (1.0 - progress) * random.nextDouble();
 
-      paint.color = Colors.white.withAlpha((255 * opacity).round());
+      paint.color = Colors.white.withOpacity(opacity);
 
       canvas.drawCircle(Offset(x, y), scale * 3, paint);
     }
@@ -662,8 +655,7 @@ class _EmotionalButtonState extends State<EmotionalButton>
               backgroundColor: _colorAnimation.value,
               foregroundColor: Colors.white,
               elevation: 4 + (_controller.value * 4),
-              shadowColor:
-                  _colorAnimation.value?.withAlpha((255 * 0.5).round()),
+              shadowColor: _colorAnimation.value?.withOpacity(0.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -749,8 +741,7 @@ class _EmotionalCardState extends State<EmotionalCard>
                       BoxShadow(
                         color: _getStateColor(
                           widget.state,
-                        ).withAlpha(
-                            (255 * 0.3 * _glowAnimation.value).round()),
+                        ).withOpacity(0.3 * _glowAnimation.value),
                         blurRadius: 10 + (10 * _glowAnimation.value),
                         spreadRadius: 2 + (2 * _glowAnimation.value),
                       ),
@@ -764,8 +755,7 @@ class _EmotionalCardState extends State<EmotionalCard>
               side: BorderSide(
                 color: _getStateColor(
                   widget.state,
-                ).withAlpha(
-                    (255 * 0.3 * _glowAnimation.value).round()),
+                ).withOpacity(0.3 * _glowAnimation.value),
                 width: 1 + _glowAnimation.value,
               ),
             ),

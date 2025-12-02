@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:minq/presentation/theme/animation_system.dart';
 import 'package:minq/presentation/theme/spacing_system.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:minq/l10n/app_localizations.dart';
 
 /// チュートリアルステップ
 class TutorialStep {
@@ -136,10 +135,9 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withAlpha((255 * 0.3).round()),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.3),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -206,13 +204,13 @@ class _TutorialOverlayState extends State<TutorialOverlay>
         color: Colors.transparent,
         child: Container(
           width: 300,
-          padding: const EdgeInsets.all(SpacingSystem.md),
+          padding: EdgeInsets.all(SpacingSystem.md),
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha((255 * 0.2).round()),
+                color: Colors.black.withOpacity(0.2),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -227,7 +225,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 children: [
                   if (step.icon != null) ...[
                     Icon(step.icon, color: theme.colorScheme.primary, size: 24),
-                    const SizedBox(width: SpacingSystem.sm),
+                    SizedBox(width: SpacingSystem.sm),
                   ],
                   Expanded(
                     child: Text(
@@ -240,12 +238,12 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 ],
               ),
 
-              const SizedBox(height: SpacingSystem.sm),
+              SizedBox(height: SpacingSystem.sm),
 
               // 説明
               Text(step.description, style: theme.textTheme.bodyMedium),
 
-              const SizedBox(height: SpacingSystem.md),
+              SizedBox(height: SpacingSystem.md),
 
               // 進捗インジケータ
               Row(
@@ -254,34 +252,32 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                   (index) => Container(
                     width: 8,
                     height: 8,
-                    margin: const EdgeInsets.only(right: SpacingSystem.xxs),
+                    margin: EdgeInsets.only(right: SpacingSystem.xxs),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: index == _currentStep
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.onSurface
-                              .withAlpha((255 * 0.3).round()),
+                      color:
+                          index == _currentStep
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.onSurface.withOpacity(0.3),
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: SpacingSystem.md),
+              SizedBox(height: SpacingSystem.md),
 
               // ボタン
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // スキップボタン
-                  TextButton(onPressed: _onSkip, child: Text(AppLocalizations.of(context)!.skip)),
+                  TextButton(onPressed: _onSkip, child: const Text('スキップ')),
 
                   // 次へボタン
                   ElevatedButton(
                     onPressed: _onNext,
                     child: Text(
-                      _currentStep == widget.steps.length - 1
-                        ? AppLocalizations.of(context)!.complete
-                        : AppLocalizations.of(context)!.next,
+                      _currentStep == widget.steps.length - 1 ? '完了' : '次へ',
                     ),
                   ),
                 ],
@@ -408,13 +404,13 @@ class CoachMark extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(SpacingSystem.sm),
+      padding: EdgeInsets.all(SpacingSystem.sm),
       decoration: BoxDecoration(
         color: theme.colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha((255 * 0.1).round()),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -428,7 +424,7 @@ class CoachMark extends StatelessWidget {
             color: theme.colorScheme.onPrimaryContainer,
             size: 20,
           ),
-          const SizedBox(width: SpacingSystem.xs),
+          SizedBox(width: SpacingSystem.xs),
           Flexible(
             child: Text(
               message,

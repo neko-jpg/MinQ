@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエスト検索バー
@@ -32,15 +31,15 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
 
     return Column(
       children: [
         // 検索バー
         Container(
           padding: EdgeInsets.symmetric(
-            horizontal: tokens.spacing.md,
-            vertical: tokens.spacing.sm,
+            horizontal: tokens.spaceMD,
+            vertical: tokens.spaceSM,
           ),
           child: Row(
             children: [
@@ -48,36 +47,35 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                 child: TextField(
                   controller: _controller,
                   decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)!.searchQuests,
+                    hintText: 'クエストを検索...',
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon:
                         _controller.text.isNotEmpty
                             ? IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  _controller.clear();
-                                  widget.onSearch('');
-                                },
-                              )
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _controller.clear();
+                                widget.onSearch('');
+                              },
+                            )
                             : null,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(tokens.radius.xl),
+                      borderRadius: tokens.cornerFull(),
                     ),
                     contentPadding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing.md,
-                      vertical: tokens.spacing.sm,
+                      horizontal: tokens.spaceMD,
+                      vertical: tokens.spaceSM,
                     ),
                   ),
                   onChanged: widget.onSearch,
                 ),
               ),
               if (widget.availableTags.isNotEmpty) ...[
-                SizedBox(width: tokens.spacing.sm),
+                SizedBox(width: tokens.spaceSM),
                 IconButton(
                   icon: Icon(
                     _showFilters ? Icons.filter_alt : Icons.filter_alt_outlined,
-                    color:
-                        _selectedTags.isNotEmpty ? tokens.brandPrimary : null,
+                    color: _selectedTags.isNotEmpty ? tokens.brandPrimary : null,
                   ),
                   onPressed: () {
                     setState(() {
@@ -93,23 +91,23 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
         if (_showFilters && widget.availableTags.isNotEmpty)
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: tokens.spacing.md,
-              vertical: tokens.spacing.sm,
+              horizontal: tokens.spaceMD,
+              vertical: tokens.spaceSM,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.filterByTags,
-                  style: tokens.typography.caption.copyWith(
+                  'タグでフィルター',
+                  style: tokens.labelSmall.copyWith(
                     color: tokens.textSecondary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: tokens.spacing.sm),
+                SizedBox(height: tokens.spaceSM),
                 Wrap(
-                  spacing: tokens.spacing.sm,
-                  runSpacing: tokens.spacing.sm,
+                  spacing: tokens.spaceSM,
+                  runSpacing: tokens.spaceSM,
                   children:
                       widget.availableTags.map((tag) {
                         final isSelected = _selectedTags.contains(tag);
@@ -127,14 +125,13 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                             widget.onTagsChanged?.call(_selectedTags.toList());
                           },
                           backgroundColor: tokens.surface,
-                          selectedColor: tokens.brandPrimary
-                              .withAlpha((255 * 0.2).round()),
+                          selectedColor: tokens.brandPrimary.withOpacity(0.2),
                           checkmarkColor: tokens.brandPrimary,
                         );
                       }).toList(),
                 ),
                 if (_selectedTags.isNotEmpty) ...[
-                  SizedBox(height: tokens.spacing.sm),
+                  SizedBox(height: tokens.spaceSM),
                   TextButton.icon(
                     onPressed: () {
                       setState(() {
@@ -143,7 +140,7 @@ class _QuestSearchBarState extends State<QuestSearchBar> {
                       widget.onTagsChanged?.call([]);
                     },
                     icon: const Icon(Icons.clear_all),
-                    label: Text(AppLocalizations.of(context)!.clearFilters),
+                    label: const Text('フィルターをクリア'),
                   ),
                 ],
               ],
@@ -306,12 +303,11 @@ class SearchHighlight extends StatelessWidget {
       return Text(text, style: style);
     }
 
-    final tokens = Theme.of(context).extension<MinqTheme>()!;
+    final tokens = MinqTheme.of(context);
     final defaultHighlightStyle =
         highlightStyle ??
         TextStyle(
-          backgroundColor:
-              tokens.brandPrimary.withAlpha((255 * 0.3).round()),
+          backgroundColor: tokens.brandPrimary.withOpacity(0.3),
           fontWeight: FontWeight.bold,
         );
 

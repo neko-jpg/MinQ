@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/presentation/theme/typography_system.dart';
 
 /// 変更履歴・お知らせセンター画面
 class ChangelogScreen extends ConsumerWidget {
@@ -9,14 +9,13 @@ class ChangelogScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.newsAndChangelog)),
+      appBar: AppBar(title: const Text('お知らせ・変更履歴')),
       body: ListView(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         children: [
           _buildSection(context, title: '最新のお知らせ', items: _getAnnouncements()),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: AppSpacing.lg),
           _buildSection(context, title: '変更履歴', items: _getChangelogs()),
         ],
       ),
@@ -28,63 +27,57 @@ class ChangelogScreen extends ConsumerWidget {
     required String title,
     required List<ChangelogItem> items,
   }) {
-    final tokens = context.tokens;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: tokens.typography.h2),
-        SizedBox(height: tokens.spacing.md),
+        Text(title, style: AppTypography.h2),
+        SizedBox(height: AppSpacing.md),
         ...items.map((item) => _buildChangelogCard(context, item)),
       ],
     );
   }
 
   Widget _buildChangelogCard(BuildContext context, ChangelogItem item) {
-    final tokens = context.tokens;
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing.md),
+      margin: EdgeInsets.only(bottom: AppSpacing.md),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                _buildTypeChip(item.type),
-                SizedBox(width: tokens.spacing.sm),
-                Expanded(child: Text(item.title, style: tokens.typography.h3)),
-              ],
-            ),
-            SizedBox(height: tokens.spacing.xs),
-            Text(
-              _formatDate(item.date),
-              style: tokens.typography.caption.copyWith(color: Colors.grey),
-            ),
-            if (item.description != null) ...[
-              SizedBox(height: tokens.spacing.sm),
-              Text(item.description!, style: tokens.typography.body),
+        padding: EdgeInsets.all(AppSpacing.md),
+        children: [
+          Row(
+            children: [
+              _buildTypeChip(item.type),
+              SizedBox(width: AppSpacing.sm),
+              Expanded(child: Text(item.title, style: AppTypography.h3)),
             ],
-            if (item.changes.isNotEmpty) ...[
-              SizedBox(height: tokens.spacing.sm),
-              ...item.changes.map(
-                (change) => Padding(
-                  padding: EdgeInsets.only(
-                    left: tokens.spacing.md,
-                    bottom: tokens.spacing.xs,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('• ', style: tokens.typography.body),
-                      Expanded(
-                          child: Text(change, style: tokens.typography.body)),
-                    ],
-                  ),
+          ),
+          SizedBox(height: AppSpacing.xs),
+          Text(
+            _formatDate(item.date),
+            style: AppTypography.caption.copyWith(color: Colors.grey),
+          ),
+          if (item.description != null) ...[
+            SizedBox(height: AppSpacing.sm),
+            Text(item.description!, style: AppTypography.body),
+          ],
+          if (item.changes.isNotEmpty) ...[
+            SizedBox(height: AppSpacing.sm),
+            ...item.changes.map(
+              (change) => Padding(
+                padding: EdgeInsets.only(
+                  left: AppSpacing.md,
+                  bottom: AppSpacing.xs,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('• ', style: AppTypography.body),
+                    Expanded(child: Text(change, style: AppTypography.body)),
+                  ],
                 ),
               ),
-            ],
+            ),
           ],
-        ),
+        ],
       ),
     );
   }

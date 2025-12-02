@@ -1,6 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// トラッキングサービス
@@ -20,9 +19,7 @@ class TrackingService {
     // Firebase Analyticsの設定
     await _analytics.setAnalyticsCollectionEnabled(enabled);
 
-    MinqLogger.info(
-      'Tracking ${enabled ? 'enabled' : 'disabled'}',
-    );
+    print('✅ Tracking ${enabled ? 'enabled' : 'disabled'}');
   }
 
   /// トラッキングが有効かチェック
@@ -39,9 +36,7 @@ class TrackingService {
     // Firebase Crashlyticsの設定
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(enabled);
 
-    MinqLogger.info(
-      'Crashlytics ${enabled ? 'enabled' : 'disabled'}',
-    );
+    print('✅ Crashlytics ${enabled ? 'enabled' : 'disabled'}');
   }
 
   /// Crashlyticsが有効かチェック
@@ -69,9 +64,7 @@ class TrackingService {
     //   );
     // }
 
-    MinqLogger.info(
-      'Personalized ads ${enabled ? 'enabled' : 'disabled'}',
-    );
+    print('✅ Personalized ads ${enabled ? 'enabled' : 'disabled'}');
   }
 
   /// パーソナライズド広告が有効かチェック
@@ -86,7 +79,7 @@ class TrackingService {
     await setCrashlyticsEnabled(false);
     await setPersonalizedAdsEnabled(false);
 
-    MinqLogger.info('Do Not Track enabled');
+    print('✅ Do Not Track enabled');
   }
 
   /// すべてのトラッキングを有効化
@@ -95,7 +88,7 @@ class TrackingService {
     await setCrashlyticsEnabled(true);
     await setPersonalizedAdsEnabled(true);
 
-    MinqLogger.info('Do Not Track disabled');
+    print('✅ Do Not Track disabled');
   }
 
   /// プライバシー設定を取得
@@ -113,13 +106,13 @@ class TrackingService {
     await setCrashlyticsEnabled(settings.crashlyticsEnabled);
     await setPersonalizedAdsEnabled(settings.personalizedAdsEnabled);
 
-    MinqLogger.info('Privacy settings updated');
+    print('✅ Privacy settings updated');
   }
 
   /// ユーザーIDの匿名化
   Future<void> anonymizeUserId() async {
     await _analytics.setUserId(id: null);
-    MinqLogger.info('User ID anonymized');
+    print('✅ User ID anonymized');
   }
 
   /// ユーザープロパティをクリア
@@ -128,7 +121,7 @@ class TrackingService {
     await _analytics.setUserProperty(name: 'user_type', value: null);
     await _analytics.setUserProperty(name: 'subscription_status', value: null);
 
-    MinqLogger.info('User properties cleared');
+    print('✅ User properties cleared');
   }
 
   /// データ収集の同意を記録
@@ -151,7 +144,7 @@ class TrackingService {
     await setCrashlyticsEnabled(crashlyticsConsent);
     await setPersonalizedAdsEnabled(adsConsent);
 
-    MinqLogger.info('Consent recorded');
+    print('✅ Consent recorded');
   }
 
   /// 同意が記録されているかチェック
@@ -193,7 +186,7 @@ class TrackingService {
     await prefs.remove('consent_crashlytics');
     await prefs.remove('consent_ads');
 
-    MinqLogger.info('Consent revoked');
+    print('✅ Consent revoked');
   }
 }
 

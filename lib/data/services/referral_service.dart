@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:minq/data/services/analytics_service.dart';
 
@@ -6,31 +7,62 @@ import 'package:minq/data/services/analytics_service.dart';
 /// 招待リンク生成、トラッキング、報酬管理
 class ReferralService {
   final FirebaseFirestore _firestore;
+  final FirebaseDynamicLinks _dynamicLinks;
   final AnalyticsService _analytics;
 
   ReferralService({
     FirebaseFirestore? firestore,
+    FirebaseDynamicLinks? dynamicLinks,
     required AnalyticsService analytics,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _analytics = analytics;
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _dynamicLinks = dynamicLinks ?? FirebaseDynamicLinks.instance,
+       _analytics = analytics;
 
   /// 招待リンク生成
   Future<String> generateInviteLink({
     required String userId,
     String? campaignName,
   }) async {
-    // Firebase Dynamic Links is deprecated.
-    // Replace with a different dynamic link service or a simple URL shortener.
-    final link = 'https://minquest.app/invite?referrer=$userId';
-    await _analytics.logEvent(
-      'referral_link_generated',
-      parameters: {
-        'user_id': userId,
-        'campaign': campaignName ?? 'default',
-        'link': link,
-      },
-    );
-    return link;
+    try {
+      final parameters = DynamicLinkParameters(
+        uriPrefix: 'https://minquest.page.link',
+        link: Uri.parse('https://minquest.app/invite?referrer=$userId'),
+        androidParameters: const AndroidParameters(
+          packageName: 'com.minquest.app',
+          minimumVersion: 1,
+        ),
+        iosParameters: const IOSParameters(
+          bundleId: 'com.minquest.app',
+          minimumVersion: '1.0.0',
+          appStoreId: '123456789',
+        ),
+        socialMetaTagParameters: SocialMetaTagParameters(
+          title: 'MiniQuestに参加しよう！',
+          description: '一緒に習慣を作って、目標を達成しましょう',
+          imageUrl: Uri.parse('https://minquest.app/assets/invite-banner.png'),
+        ),
+      );
+
+      final shortLink = await _dynamicLinks.buildShortLink(parameters);
+
+      // リンク生成をトラッキング
+      await _analytics.logEvent(
+        'referral_link_generated',
+        parameters: {
+          'user_id': userId,
+          'campaign': campaignName ?? 'default',
+          'link': shortLink.shortUrl.toString(),
+        },
+      );
+
+      return shortLink.shortUrl.toString();
+    } catch (e) {
+      await _analytics.logError(
+        'referral_link_generation_failed',
+        e.toString(),
+      );
+      rethrow;
+    }
   }
 
   /// 招待リンクをシェア
@@ -42,7 +74,7 @@ class ReferralService {
       final link = await generateInviteLink(userId: userId);
       final message = customMessage ?? 'MiniQuestで一緒に習慣を作りませんか？\n$link';
 
-      await SharePlus.instance.share(ShareParams(text: message, subject: 'MiniQuestへの招待'));
+      await Share.share(message, subject: 'MiniQuestへの招待');
 
       await _analytics.logEvent(
         'referral_link_shared',
@@ -55,8 +87,11 @@ class ReferralService {
   }
 
   /// Dynamic Linkを処理
-  Future<String?> handleDynamicLink(Uri deepLink) async {
+  Future<String?> handleDynamicLink(PendingDynamicLinkData? linkData) async {
+    if (linkData == null) return null;
+
     try {
+      final deepLink = linkData.link;
       final referrerId = deepLink.queryParameters['referrer'];
 
       if (referrerId != null) {

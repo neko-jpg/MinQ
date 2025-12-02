@@ -24,7 +24,10 @@ class _CrashRecoveryScreenState extends ConsumerState<CrashRecoveryScreen> {
     final hasDetails =
         report != null &&
         (report.message.isNotEmpty || report.stackTrace.isNotEmpty);
-    const animationDuration = Duration(milliseconds: 250);
+    final animationDuration = tokens.getAnimationDuration(
+      context,
+      const Duration(milliseconds: 250),
+    );
 
     return Scaffold(
       backgroundColor: tokens.background,
@@ -33,32 +36,32 @@ class _CrashRecoveryScreenState extends ConsumerState<CrashRecoveryScreen> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.xl),
+              padding: EdgeInsets.all(tokens.spacing(6)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
                     Icons.refresh,
-                    size: 48,
+                    size: tokens.spacing(12),
                     color: tokens.brandPrimary,
                   ),
-                  SizedBox(height: tokens.spacing.lg),
+                  SizedBox(height: tokens.spacing(4)),
                   Text(
                     '前回のセッションを復元しますか？',
-                    style: tokens.typography.h3.copyWith(
+                    style: tokens.typeScale.h3.copyWith(
                       color: tokens.textPrimary,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.sm),
+                  SizedBox(height: tokens.spacing(2)),
                   Text(
                     '前回の起動でアプリが予期せず終了しました。状態を復元すると、保存されていないデータを再読み込みします。',
-                    style: tokens.typography.body.copyWith(
+                    style: tokens.typeScale.bodyMedium.copyWith(
                       color: tokens.textMuted,
                     ),
                   ),
                   if (hasDetails) ...[
-                    SizedBox(height: tokens.spacing.lg),
+                    SizedBox(height: tokens.spacing(4)),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton.icon(
@@ -77,10 +80,10 @@ class _CrashRecoveryScreenState extends ConsumerState<CrashRecoveryScreen> {
                               ? CrossFadeState.showSecond
                               : CrossFadeState.showFirst,
                       firstChild: const SizedBox.shrink(),
-                      secondChild: _CrashDetailCard(report: report),
+                      secondChild: _CrashDetailCard(report: report!),
                     ),
                   ],
-                  SizedBox(height: tokens.spacing.xl),
+                  SizedBox(height: tokens.spacing(6)),
                   if (state.isRestoring)
                     Center(
                       child: CircularProgressIndicator(
@@ -102,7 +105,7 @@ class _CrashRecoveryScreenState extends ConsumerState<CrashRecoveryScreen> {
                         child: const Text('状態を復元する'),
                       ),
                     ),
-                    SizedBox(height: tokens.spacing.sm),
+                    SizedBox(height: tokens.spacing(2)),
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
@@ -138,10 +141,10 @@ class _CrashDetailCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(3)),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         border: Border.all(color: tokens.border),
       ),
       child: Column(
@@ -149,34 +152,33 @@ class _CrashDetailCard extends StatelessWidget {
         children: [
           Text(
             '記録時刻: $recordedAt',
-            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             report.message,
-            style: tokens.typography.body.copyWith(color: tokens.textPrimary),
+            style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
           ),
           if (report.stackTrace.isNotEmpty) ...[
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(3)),
             Text(
               'スタックトレース',
-              style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             ),
-            SizedBox(height: tokens.spacing.xs),
+            SizedBox(height: tokens.spacing(1)),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(tokens.spacing.sm),
+              padding: EdgeInsets.all(tokens.spacing(2)),
               decoration: BoxDecoration(
                 color: tokens.background,
-                borderRadius: BorderRadius.circular(tokens.radius.md),
+                borderRadius: tokens.cornerMedium(),
                 border: Border.all(color: tokens.border),
               ),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: SelectableText(
                   report.stackTrace,
-                  style:
-                      tokens.typography.caption.copyWith(color: tokens.textMuted),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
               ),
             ),

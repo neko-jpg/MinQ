@@ -20,11 +20,33 @@ class StatsScreen extends ConsumerStatefulWidget {
 }
 
 class _StatsScreenState extends ConsumerState<StatsScreen> {
+  ProviderSubscription<SyncStatus>? _syncStatusSubscription;
   bool _hasRequestedReview = false;
 
   @override
   void initState() {
     super.initState();
+    _syncStatusSubscription = ref.listenManual<SyncStatus>(syncStatusProvider, (
+      previous,
+      next,
+    ) {
+      if (!mounted) return;
+      if (next.showBanner && next.bannerMessage != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.hideCurrentSnackBar();
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(next.bannerMessage!),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
+        });
+      }
+    });
+
     // Stats画面表示時にレビューリクエストを試行
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _maybeRequestReview();
@@ -52,30 +74,13 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    ref.listen<SyncStatus>(
-      syncStatusProvider,
-      (previous, next) {
-        if (!mounted ||
-            !next.showBanner ||
-            next.bannerMessage == null) {
-          return;
-        }
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
-          final messenger = ScaffoldMessenger.of(context);
-          messenger.hideCurrentSnackBar();
-          messenger.showSnackBar(
-            SnackBar(
-              content: Text(next.bannerMessage!),
-              duration: const Duration(seconds: 2),
-            ),
-          );
-          ref.read(syncStatusProvider.notifier).acknowledgeBanner();
-        });
-      },
-    );
+  void dispose() {
+    _syncStatusSubscription?.close();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context)!;
     final statsAsync = ref.watch(statsDataProvider);
@@ -95,11 +100,11 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
     }
 
     return Scaffold(
-      backgroundColor: tokens.surface,
+      backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
           '進捗',
-          style: tokens.typography.h3.copyWith(
+          style: tokens.titleMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -109,7 +114,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
           icon: Icons.arrow_back,
           onTap: () => context.pop(),
         ),
-        backgroundColor: tokens.surface.withAlpha(230),
+        backgroundColor: tokens.background.withOpacity(0.9),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
@@ -119,31 +124,31 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
 
           Widget child = ListView(
             padding: EdgeInsets.symmetric(
-              horizontal: tokens.spacing.md,
-              vertical: tokens.spacing.xl,
+              horizontal: tokens.spacing(4),
+              vertical: tokens.spacing(6),
             ),
             children: [
               if (isRefreshing)
                 Padding(
-                  padding: EdgeInsets.only(bottom: tokens.spacing.sm),
+                  padding: EdgeInsets.only(bottom: tokens.spacing(3)),
                   child: const LinearProgressIndicator(),
                 ),
               _buildStreakCard(context, tokens, content, l10n),
-              SizedBox(height: tokens.spacing.xl),
+              SizedBox(height: tokens.spacing(6)),
               _buildTodayStatsCard(context, tokens, content, ref),
-              SizedBox(height: tokens.spacing.xl),
+              SizedBox(height: tokens.spacing(6)),
               _buildWeeklyStatsCard(context, tokens, content, ref),
-              SizedBox(height: tokens.spacing.xl),
+              SizedBox(height: tokens.spacing(6)),
               _buildGoalCard(context, tokens),
-              SizedBox(height: tokens.spacing.xl),
+              SizedBox(height: tokens.spacing(6)),
               _buildCompareProgressCard(context, ref, tokens),
-              SizedBox(height: tokens.spacing.xl),
+              SizedBox(height: tokens.spacing(6)),
               _buildWeeklyProgressCard(context, ref, tokens),
-              SizedBox(height: tokens.spacing.xl),
+              SizedBox(height: tokens.spacing(6)),
               _buildCalendarCard(context, ref, tokens, content.heatmap),
-              SizedBox(height: tokens.spacing.xl),
+              SizedBox(height: tokens.spacing(6)),
               _buildInsightsCard(context, ref, tokens, content),
-              SizedBox(height: tokens.spacing.xl),
+              SizedBox(height: tokens.spacing(6)),
               _buildExportCard(context, ref, tokens),
             ],
           );
@@ -180,22 +185,22 @@ Widget _buildStreakCard(
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.radius.xl),
+      borderRadius: tokens.cornerXLarge(),
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
     child: Padding(
-      padding: EdgeInsets.all(tokens.spacing.xl),
+      padding: EdgeInsets.all(tokens.spacing(6)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             '現在の連続日数',
-            style: tokens.typography.body.copyWith(
+            style: tokens.typeScale.bodyMedium.copyWith(
               color: tokens.textMuted,
             ),
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(2)),
           Semantics(
             label: streakDescription,
             value: streakDescription,
@@ -205,23 +210,23 @@ Widget _buildStreakCard(
               children: [
                 Icon(
                   Icons.local_fire_department,
-                  size: 48,
+                  size: tokens.spacing(12),
                   color: hasStreak ? tokens.brandPrimary : tokens.textMuted,
                 ),
-                SizedBox(width: tokens.spacing.xs),
+                SizedBox(width: tokens.spacing(2)),
                 Text(
                   streakText,
-                  style: tokens.typography.h1.copyWith(
+                  style: tokens.typeScale.h1.copyWith(
                     color: tokens.textPrimary,
                   ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             hasStreak ? streakDescription : '今日の最初の習慣を記録して連続日数をスタートしましょう。',
-            style: tokens.typography.body.copyWith(
+            style: tokens.typeScale.bodyMedium.copyWith(
               color: tokens.textMuted,
             ),
             textAlign: TextAlign.center,
@@ -236,38 +241,38 @@ Widget _buildGoalCard(BuildContext context, MinqTheme tokens) {
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.radius.xl),
+      borderRadius: tokens.cornerXLarge(),
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
     child: ListTile(
       onTap: () => _showGoalBottomSheet(context, tokens),
       contentPadding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.md,
-        vertical: tokens.spacing.xs,
+        horizontal: tokens.spacing(4),
+        vertical: tokens.spacing(2),
       ),
       leading: Container(
-        width: 40,
-        height: 40,
+        width: tokens.spacing(10),
+        height: tokens.spacing(10),
         decoration: BoxDecoration(
-          color: tokens.brandPrimary.withAlpha(31),
-          borderRadius: BorderRadius.circular(tokens.radius.lg),
+          color: tokens.brandPrimary.withOpacity(0.12),
+          borderRadius: tokens.cornerLarge(),
         ),
         child: Icon(
           Icons.flag,
           color: tokens.brandPrimary,
-          size: 24,
+          size: tokens.spacing(6),
         ),
       ),
       title: Text(
         '目標設定',
-        style: tokens.typography.body.copyWith(color: tokens.textPrimary),
+        style: tokens.typeScale.h4.copyWith(color: tokens.textPrimary),
       ),
       subtitle: Padding(
-        padding: EdgeInsets.only(top: tokens.spacing.xs),
+        padding: EdgeInsets.only(top: tokens.spacing(1)),
         child: Text(
           '今月の目標: 5日継続',
-          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+          style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
         ),
       ),
       trailing: Row(
@@ -275,11 +280,11 @@ Widget _buildGoalCard(BuildContext context, MinqTheme tokens) {
         children: [
           Text(
             '編集する',
-            style: tokens.typography.caption.copyWith(
+            style: tokens.typeScale.bodySmall.copyWith(
               color: tokens.brandPrimary,
             ),
           ),
-          SizedBox(width: tokens.spacing.xs),
+          SizedBox(width: tokens.spacing(1)),
           Icon(Icons.chevron_right, color: tokens.brandPrimary),
         ],
       ),
@@ -291,8 +296,7 @@ void _showGoalBottomSheet(BuildContext context, MinqTheme tokens) {
   showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.xl)),
+    shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
     builder: (context) {
       return SafeArea(
         child: ConstrainedBox(
@@ -301,11 +305,11 @@ void _showGoalBottomSheet(BuildContext context, MinqTheme tokens) {
           ),
           child: SingleChildScrollView(
             padding: EdgeInsets.only(
-              left: tokens.spacing.md,
-              right: tokens.spacing.md,
-              top: tokens.spacing.md,
+              left: tokens.spacing(4),
+              right: tokens.spacing(4),
+              top: tokens.spacing(4),
               bottom:
-                  MediaQuery.of(context).viewInsets.bottom + tokens.spacing.md,
+                  MediaQuery.of(context).viewInsets.bottom + tokens.spacing(4),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -313,22 +317,22 @@ void _showGoalBottomSheet(BuildContext context, MinqTheme tokens) {
               children: [
                 Text(
                   '目標を編集する',
-                  style: tokens.typography.h3.copyWith(
+                  style: tokens.titleMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: tokens.spacing(4)),
                 TextField(
                   decoration: InputDecoration(
                     labelText: '連続日数の目標',
                     hintText: '例: 7',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(tokens.radius.lg),
+                      borderRadius: tokens.cornerLarge(),
                     ),
                   ),
                   keyboardType: TextInputType.number,
                 ),
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: tokens.spacing(4)),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -377,6 +381,7 @@ class _RingMetric {
   final double value;
   final String unit;
   final double progress;
+  final double? delta;
 }
 
 Widget _buildCompareProgressCard(
@@ -416,7 +421,7 @@ Widget _buildCompareProgressCard(
       label: '今週',
       value: thisWeekCompletions.toDouble(),
       unit: '日',
-      progress: (thisWeekCompletions / weeklyGoal).toDouble(),
+      progress: thisWeekCompletions / weeklyGoal,
       color: tokens.brandPrimary,
       icon: Icons.trending_up,
       semanticsLabel: '今週は$thisWeekCompletions日達成しています',
@@ -425,16 +430,15 @@ Widget _buildCompareProgressCard(
       label: '先週',
       value: lastWeekCompletions.toDouble(),
       unit: '日',
-      progress: (lastWeekCompletions / weeklyGoal).toDouble(),
+      progress: lastWeekCompletions / weeklyGoal,
       color: tokens.serenity,
       icon: Icons.history,
       semanticsLabel: '先週は$lastWeekCompletions日達成しました',
     ),
   ];
   final hasProgress = entries.any((entry) => entry.progress > 0);
-  final double? deltaFromPrevious = entries.length >= 2
-      ? (entries.first.value - entries[1].value).toDouble()
-      : null;
+  final double? deltaFromPrevious =
+      entries.length >= 2 ? entries.first.value - entries[1].value : null;
 
   if (!hasProgress) {
     return _buildZeroChart(
@@ -448,26 +452,26 @@ Widget _buildCompareProgressCard(
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.radius.xl),
+      borderRadius: tokens.cornerXLarge(),
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
     child: Padding(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '進捗を比較する',
-            style: tokens.typography.h2.copyWith(
+            style: tokens.titleLarge.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(3)),
           Wrap(
-            spacing: tokens.spacing.sm,
-            runSpacing: tokens.spacing.xs,
+            spacing: tokens.spacing(3),
+            runSpacing: tokens.spacing(2),
             children: [
               for (final entry in entries)
                 Semantics(
@@ -477,10 +481,10 @@ Widget _buildCompareProgressCard(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _LegendBadge(color: entry.color, icon: entry.icon),
-                      SizedBox(width: tokens.spacing.xs),
+                      SizedBox(width: tokens.spacing(1.5)),
                       Text(
                         '${entry.label}（${entry.unit}）',
-                        style: tokens.typography.caption.copyWith(
+                        style: tokens.typeScale.bodySmall.copyWith(
                           color: tokens.textMuted,
                         ),
                       ),
@@ -489,7 +493,7 @@ Widget _buildCompareProgressCard(
                 ),
             ],
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
           for (int i = 0; i < entries.length; i++) ...[
             _buildProgressBar(
               tokens,
@@ -497,7 +501,7 @@ Widget _buildCompareProgressCard(
               isPrimary: i == 0,
               delta: i == 0 ? deltaFromPrevious : null,
             ),
-            if (i < entries.length - 1) SizedBox(height: tokens.spacing.md),
+            if (i < entries.length - 1) SizedBox(height: tokens.spacing(4)),
           ],
         ],
       ),
@@ -551,55 +555,51 @@ Widget _buildWeeklyProgressCard(
       label: '日数',
       value: weeklyCompletions.toDouble(),
       unit: '日',
-      progress: (weeklyCompletions / weeklyGoal).toDouble(),
+      progress: weeklyCompletions / weeklyGoal,
     ),
     _RingMetric(
       label: '合計時間',
-      value: (totalMinutes / 60).toDouble(),
+      value: totalMinutes / 60,
       unit: '時間',
-      progress:
-          ((totalMinutes / 60) / (weeklyGoal * dailyGoalMinutes / 60)).toDouble(),
+      progress: (totalMinutes / 60) / (weeklyGoal * dailyGoalMinutes / 60),
     ),
     _RingMetric(
       label: '平均時間',
-      value: averageMinutes.toDouble(),
+      value: averageMinutes,
       unit: '分',
-      progress: (averageMinutes / dailyGoalMinutes).toDouble(),
+      progress: averageMinutes / dailyGoalMinutes,
     ),
   ];
 
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.radius.xl),
+      borderRadius: tokens.cornerXLarge(),
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
     child: Padding(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '週間の進捗',
-            style: tokens.typography.h2.copyWith(
+            style: tokens.titleLarge.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
           Row(
             children: [
               for (final metric in metrics)
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: tokens.spacing.xs,
+                      horizontal: tokens.spacing(2),
                     ),
-                    child: _buildProgressRing(
-                      tokens: tokens,
-                      metric: metric,
-                    ),
+                    child: _buildProgressRing(tokens, metric),
                   ),
                 ),
             ],
@@ -619,14 +619,14 @@ Widget _buildZeroChart(
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.radius.xl),
+      borderRadius: tokens.cornerXLarge(),
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
     child: Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.md,
-        vertical: tokens.spacing.lg,
+        horizontal: tokens.spacing(4),
+        vertical: tokens.spacing(6),
       ),
       child: MinqEmptyState(
         icon: Icons.insights_outlined,
@@ -647,8 +647,7 @@ Widget _buildProgressBar(
   bool isPrimary = false,
   double? delta,
 }) {
-  final progressColor =
-      isPrimary ? entry.color : entry.color.withAlpha((255 * 0.7).round());
+  final progressColor = isPrimary ? entry.color : entry.color.withOpacity(0.7);
   final deltaLabel = delta != null ? _formatDelta(delta, entry.unit) : null;
   final valueText =
       '${entry.value.toStringAsFixed(entry.value % 1 == 0 ? 0 : 1)}${entry.unit}';
@@ -660,14 +659,14 @@ Widget _buildProgressBar(
         Row(
           children: [
             _LegendBadge(color: progressColor, icon: entry.icon),
-            SizedBox(width: tokens.spacing.xs),
+            SizedBox(width: tokens.spacing(2)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     entry.label,
-                    style: tokens.typography.body.copyWith(
+                    style: tokens.typeScale.bodyMedium.copyWith(
                       color: tokens.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -675,7 +674,7 @@ Widget _buildProgressBar(
                   if (deltaLabel != null)
                     Text(
                       '先週比 $deltaLabel',
-                      style: tokens.typography.caption.copyWith(
+                      style: tokens.typeScale.bodySmall.copyWith(
                         color: tokens.textMuted,
                       ),
                     ),
@@ -687,7 +686,7 @@ Widget _buildProgressBar(
               children: [
                 Text(
                   valueText,
-                  style: tokens.typography.body.copyWith(
+                  style: tokens.typeScale.bodyMedium.copyWith(
                     color: tokens.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
@@ -696,16 +695,16 @@ Widget _buildProgressBar(
             ),
           ],
         ),
-        SizedBox(height: tokens.spacing.xs),
+        SizedBox(height: tokens.spacing(2)),
         Semantics(
           label: entry.semanticsLabel,
           value: '${(entry.progress * 100).round()}%',
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(tokens.radius.lg),
+            borderRadius: tokens.cornerLarge(),
             child: LinearProgressIndicator(
               value: entry.progress.clamp(0.0, 1.0),
-              minHeight: 10.0,
-              backgroundColor: tokens.border.withAlpha((255 * 0.3).round()),
+              minHeight: 10,
+              backgroundColor: tokens.border.withOpacity(0.3),
               valueColor: AlwaysStoppedAnimation<Color>(progressColor),
             ),
           ),
@@ -724,20 +723,20 @@ class _LegendBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final Color iconColor =
-        ThemeData.estimateBrightnessForColor(color) == Brightness.dark
-            ? Colors.white
-            : Colors.black;
+    final Color iconColor = tokens.ensureAccessibleOnBackground(
+      tokens.textPrimary,
+      color,
+    );
     return Container(
-      width: tokens.spacing.lg,
-      height: tokens.spacing.lg,
+      width: tokens.spacing(6),
+      height: tokens.spacing(6),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
-        border: Border.all(color: tokens.border.withAlpha((255 * 0.4).round())),
+        borderRadius: tokens.cornerMedium(),
+        border: Border.all(color: tokens.border.withOpacity(0.4)),
       ),
       alignment: Alignment.center,
-      child: Icon(icon, color: iconColor, size: tokens.spacing.sm),
+      child: Icon(icon, color: iconColor, size: tokens.spacing(3.5)),
     );
   }
 }
@@ -752,13 +751,12 @@ String _formatDelta(double delta, String unit) {
   return '±0$unit';
 }
 
-Widget _buildProgressRing({
-  required MinqTheme tokens,
-  required _RingMetric metric,
-}) {
+Widget _buildProgressRing(MinqTheme tokens, _RingMetric metric) {
   final hasProgress = metric.progress > 0;
   final valueText =
       '${metric.value.toStringAsFixed(metric.value % 1 == 0 ? 0 : 1)}${metric.unit}';
+  final deltaLabel =
+      metric.delta != null ? _formatDelta(metric.delta!, metric.unit) : null;
   return RepaintBoundary(
     child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -773,13 +771,13 @@ Widget _buildProgressRing({
                 value: 1,
                 strokeWidth: 8,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  tokens.border.withAlpha((255 * 0.3).round()),
+                  tokens.border.withOpacity(0.3),
                 ),
                 backgroundColor: Colors.transparent,
               ),
               if (hasProgress)
                 CircularProgressIndicator(
-                  value: metric.progress.clamp(0.0, 1.0).toDouble(),
+                  value: metric.progress.clamp(0.0, 1.0),
                   strokeWidth: 8,
                   valueColor: AlwaysStoppedAnimation<Color>(
                     tokens.brandPrimary,
@@ -787,12 +785,12 @@ Widget _buildProgressRing({
                   backgroundColor: Colors.transparent,
                 ),
               Padding(
-                padding: EdgeInsets.all(tokens.spacing.xs),
+                padding: EdgeInsets.all(tokens.spacing(2)),
                 child:
                     hasProgress
                         ? Text(
                           valueText,
-                          style: tokens.typography.body.copyWith(
+                          style: tokens.typeScale.bodyMedium.copyWith(
                             color: tokens.textPrimary,
                             fontWeight: FontWeight.bold,
                           ),
@@ -802,13 +800,13 @@ Widget _buildProgressRing({
                           children: [
                             Icon(
                               Icons.hourglass_empty,
-                              size: tokens.spacing.lg,
+                              size: tokens.spacing(6),
                               color: tokens.textMuted,
                             ),
-                            SizedBox(height: tokens.spacing.xs),
+                            SizedBox(height: tokens.spacing(2)),
                             Text(
                               '未計測',
-                              style: tokens.typography.caption.copyWith(
+                              style: tokens.bodySmall.copyWith(
                                 color: tokens.textMuted,
                               ),
                             ),
@@ -818,15 +816,22 @@ Widget _buildProgressRing({
             ],
           ),
         ),
-        SizedBox(height: tokens.spacing.xs),
+        SizedBox(height: tokens.spacing(2)),
         Text(
           metric.label,
-          style: tokens.typography.caption.copyWith(
+          style: tokens.typeScale.bodySmall.copyWith(
             color: tokens.textMuted,
             fontWeight: FontWeight.w600,
           ),
           textAlign: TextAlign.center,
         ),
+        if (deltaLabel != null) ...[
+          SizedBox(height: tokens.spacing(1)),
+          Text(
+            '先週比 $deltaLabel',
+            style: tokens.typeScale.bodySmall.copyWith(color: tokens.textMuted),
+          ),
+        ],
       ],
     ),
   );
@@ -858,12 +863,12 @@ Widget _buildCalendarCard(
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.radius.xl),
+      borderRadius: tokens.cornerXLarge(),
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
     child: Padding(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -872,7 +877,7 @@ Widget _buildCalendarCard(
             children: [
               Text(
                 monthName,
-                style: tokens.typography.h2.copyWith(
+                style: tokens.titleLarge.copyWith(
                   color: tokens.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
@@ -891,7 +896,7 @@ Widget _buildCalendarCard(
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -911,19 +916,19 @@ Widget _buildCalendarCard(
               return Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: value > 0
-                      ? tokens.brandPrimary
-                          .withAlpha((255 * (value.toDouble() / 5.0)).round())
-                      : Colors.transparent,
+                  color:
+                      value > 0
+                          ? tokens.brandPrimary.withOpacity(value / 5.0)
+                          : Colors.transparent,
                   shape: BoxShape.circle,
                   border:
                       isToday
-                          ? Border.all(color: tokens.brandPrimary, width: 2.0)
+                          ? Border.all(color: tokens.brandPrimary, width: 2)
                           : null,
                 ),
                 child: Text(
                   '$day',
-                  style: tokens.typography.body.copyWith(color: tokens.textPrimary),
+                  style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
                 ),
               );
             },
@@ -948,35 +953,35 @@ Widget _buildTodayStatsCard(
     return Card(
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.xl),
+        borderRadius: tokens.cornerXLarge(),
         side: BorderSide(color: tokens.border),
       ),
       elevation: 0,
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: EdgeInsets.all(tokens.spacing(6)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               Icons.today_outlined,
-              size: tokens.spacing.xxl,
+              size: tokens.spacing(12),
               color: tokens.textMuted,
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             Text(
               '今日はまだ記録がありません',
-              style: tokens.typography.h4.copyWith(
+              style: tokens.titleMedium.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: tokens.spacing.xs),
+            SizedBox(height: tokens.spacing(2)),
             Text(
               '最初のクエストを完了して、今日の記録を始めましょう！',
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(4)),
             ElevatedButton(
               onPressed: () => navigation.goToQuests(),
               child: const Text('クエストを見る'),
@@ -990,44 +995,44 @@ Widget _buildTodayStatsCard(
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.radius.xl),
+      borderRadius: tokens.cornerXLarge(),
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
     child: Padding(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(6)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             '今日の完了数',
-            style: tokens.typography.body.copyWith(
+            style: tokens.typeScale.bodyMedium.copyWith(
               color: tokens.textMuted,
             ),
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(2)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(
                 Icons.check_circle,
-                size: tokens.spacing.xxl,
+                size: tokens.spacing(12),
                 color: tokens.accentSuccess,
               ),
-              SizedBox(width: tokens.spacing.xs),
+              SizedBox(width: tokens.spacing(2)),
               Text(
                 '$todayCount',
-                style: tokens.typography.h1.copyWith(color: tokens.textPrimary),
+                style: tokens.typeScale.h1.copyWith(color: tokens.textPrimary),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             todayCount >= 3
                 ? '素晴らしい！今日の目標を達成しました。'
                 : '目標まであと${3 - todayCount}個です。',
-            style: tokens.typography.body.copyWith(
+            style: tokens.typeScale.bodyMedium.copyWith(
               color: tokens.textMuted,
             ),
             textAlign: TextAlign.center,
@@ -1053,35 +1058,35 @@ Widget _buildWeeklyStatsCard(
     return Card(
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.xl),
+        borderRadius: tokens.cornerXLarge(),
         side: BorderSide(color: tokens.border),
       ),
       elevation: 0,
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: EdgeInsets.all(tokens.spacing(6)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               Icons.calendar_today,
-              size: tokens.spacing.xxl,
+              size: tokens.spacing(12),
               color: tokens.textMuted,
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             Text(
               '今週はまだ記録がありません',
-              style: tokens.typography.h4.copyWith(
+              style: tokens.titleMedium.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: tokens.spacing.xs),
+            SizedBox(height: tokens.spacing(2)),
             Text(
               '今週の習慣を始めて、週間達成率を向上させましょう！',
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(4)),
             ElevatedButton(
               onPressed: () => navigation.goToQuests(),
               child: const Text('今すぐ始める'),
@@ -1095,22 +1100,22 @@ Widget _buildWeeklyStatsCard(
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.radius.xl),
+      borderRadius: tokens.cornerXLarge(),
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
     child: Padding(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(6)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             '今週の達成率',
-            style: tokens.typography.body.copyWith(
+            style: tokens.typeScale.bodyMedium.copyWith(
               color: tokens.textMuted,
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
           SizedBox(
             width: 120,
             height: 120,
@@ -1121,12 +1126,12 @@ Widget _buildWeeklyStatsCard(
                   value: 1,
                   strokeWidth: 12,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    tokens.border.withAlpha((255 * 0.3).round()),
+                    tokens.border.withOpacity(0.3),
                   ),
                   backgroundColor: Colors.transparent,
                 ),
                 CircularProgressIndicator(
-                  value: weeklyRate.clamp(0.0, 1.0).toDouble(),
+                  value: weeklyRate.clamp(0.0, 1.0),
                   strokeWidth: 12,
                   valueColor: AlwaysStoppedAnimation<Color>(
                     weeklyRate >= 0.7
@@ -1140,28 +1145,28 @@ Widget _buildWeeklyStatsCard(
                   children: [
                     Text(
                       '$percentage%',
-                      style: tokens.typography.h2.copyWith(
+                      style: tokens.typeScale.h2.copyWith(
                         color: tokens.textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       '達成',
-                      style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(4)),
           Text(
             weeklyRate >= 0.7
                 ? '素晴らしい週間パフォーマンスです！'
                 : weeklyRate >= 0.5
                 ? '良いペースです。継続していきましょう。'
                 : '今週はもう少し頑張ってみましょう。',
-            style: tokens.typography.body.copyWith(
+            style: tokens.typeScale.bodyMedium.copyWith(
               color: tokens.textMuted,
             ),
             textAlign: TextAlign.center,
@@ -1187,12 +1192,12 @@ Widget _buildInsightsCard(
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.radius.xl),
+      borderRadius: tokens.cornerXLarge(),
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
     child: Padding(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1201,31 +1206,31 @@ Widget _buildInsightsCard(
               Icon(
                 Icons.lightbulb_outline,
                 color: tokens.brandPrimary,
-                size: tokens.spacing.lg,
+                size: tokens.spacing(6),
               ),
-              SizedBox(width: tokens.spacing.xs),
+              SizedBox(width: tokens.spacing(2)),
               Text(
                 'インサイト',
-                style: tokens.typography.h2.copyWith(
+                style: tokens.titleLarge.copyWith(
                   color: tokens.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(3)),
           ...insights.map(
             (insight) => Padding(
-              padding: EdgeInsets.only(bottom: tokens.spacing.xs),
+              padding: EdgeInsets.only(bottom: tokens.spacing(2)),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: tokens.spacing.xxs,
-                    height: tokens.spacing.xxs,
+                    width: tokens.spacing(1),
+                    height: tokens.spacing(1),
                     margin: EdgeInsets.only(
-                      top: tokens.spacing.xs,
-                      right: tokens.spacing.xs,
+                      top: tokens.spacing(2),
+                      right: tokens.spacing(2),
                     ),
                     decoration: BoxDecoration(
                       color: tokens.brandPrimary,
@@ -1235,7 +1240,7 @@ Widget _buildInsightsCard(
                   Expanded(
                     child: Text(
                       insight,
-                      style: tokens.typography.body.copyWith(
+                      style: tokens.bodyMedium.copyWith(
                         color: tokens.textPrimary,
                       ),
                     ),
@@ -1296,12 +1301,12 @@ Widget _buildExportCard(BuildContext context, WidgetRef ref, MinqTheme tokens) {
   return Card(
     color: tokens.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.radius.xl),
+      borderRadius: tokens.cornerXLarge(),
       side: BorderSide(color: tokens.border),
     ),
     elevation: 0,
     child: Padding(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1310,24 +1315,24 @@ Widget _buildExportCard(BuildContext context, WidgetRef ref, MinqTheme tokens) {
               Icon(
                 Icons.download_outlined,
                 color: tokens.brandPrimary,
-                size: tokens.spacing.lg,
+                size: tokens.spacing(6),
               ),
-              SizedBox(width: tokens.spacing.xs),
+              SizedBox(width: tokens.spacing(2)),
               Text(
                 'データエクスポート',
-                style: tokens.typography.h2.copyWith(
+                style: tokens.titleLarge.copyWith(
                   color: tokens.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             '統計データをCSVファイルでエクスポートして、他のアプリで分析できます。',
-            style: tokens.typography.body.copyWith(color: tokens.textMuted),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(3)),
           Row(
             children: [
               Expanded(
@@ -1337,7 +1342,7 @@ Widget _buildExportCard(BuildContext context, WidgetRef ref, MinqTheme tokens) {
                   label: const Text('CSV形式'),
                 ),
               ),
-              SizedBox(width: tokens.spacing.xs),
+              SizedBox(width: tokens.spacing(2)),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => _exportStatsImage(context, ref),
@@ -1368,7 +1373,7 @@ Future<void> _exportStatsData(BuildContext context, WidgetRef ref) async {
     final statsData = await ref.read(statsDataProvider.future);
 
     // CSV形式でエクスポート（簡易実装）
-    _generateCSVData(statsData);
+    final csvData = _generateCSVData(statsData);
 
     if (context.mounted) {
       ScaffoldMessenger.of(

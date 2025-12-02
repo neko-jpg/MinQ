@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/subscription/subscription_service.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/app_spacing.dart';
+import 'package:minq/presentation/theme/app_typography.dart';
 
 /// サブスクリプション画面
 class SubscriptionScreen extends ConsumerWidget {
@@ -9,22 +10,21 @@ class SubscriptionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
     final currentPlan = ref.watch(currentPlanProvider);
     final isPremium = ref.watch(isPremiumProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('プレミアムプラン')),
       body: ListView(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           if (isPremium) _buildCurrentPlanCard(context, currentPlan),
           if (!isPremium) _buildUpgradeHeader(context),
-          SizedBox(height: tokens.spacing.lg),
+          const SizedBox(height: AppSpacing.lg),
           _buildFeaturesList(context),
-          SizedBox(height: tokens.spacing.lg),
+          const SizedBox(height: AppSpacing.lg),
           _buildPricingCards(context, ref),
-          SizedBox(height: tokens.spacing.lg),
+          const SizedBox(height: AppSpacing.lg),
           if (isPremium) _buildManageSubscription(context),
           if (!isPremium) _buildRestoreButton(context, ref),
         ],
@@ -33,22 +33,21 @@ class SubscriptionScreen extends ConsumerWidget {
   }
 
   Widget _buildCurrentPlanCard(BuildContext context, SubscriptionPlan plan) {
-    final tokens = context.tokens;
     return Card(
-      color: tokens.brandPrimary.withAlpha(26),
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           children: [
             Icon(
               Icons.check_circle,
               size: 48,
-              color: tokens.brandPrimary,
+              color: Theme.of(context).colorScheme.primary,
             ),
-            SizedBox(height: tokens.spacing.sm),
-            Text('プレミアム会員', style: tokens.typography.h2),
-            SizedBox(height: tokens.spacing.xs),
-            Text(_getPlanName(plan), style: tokens.typography.body),
+            const SizedBox(height: AppSpacing.sm),
+            const Text('プレミアム会員', style: AppTypography.h2),
+            const SizedBox(height: AppSpacing.xs),
+            Text(_getPlanName(plan), style: AppTypography.body),
           ],
         ),
       ),
@@ -56,32 +55,30 @@ class SubscriptionScreen extends ConsumerWidget {
   }
 
   Widget _buildUpgradeHeader(BuildContext context) {
-    final tokens = context.tokens;
     return Column(
       children: [
         Icon(
           Icons.workspace_premium,
           size: 64,
-          color: tokens.brandPrimary,
+          color: Theme.of(context).colorScheme.primary,
         ),
-        SizedBox(height: tokens.spacing.md),
-        Text(
+        const SizedBox(height: AppSpacing.md),
+        const Text(
           'プレミアムで\nもっと便利に',
           textAlign: TextAlign.center,
-          style: tokens.typography.h1,
+          style: AppTypography.h1,
         ),
-        SizedBox(height: tokens.spacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           '広告なし・無制限のクエスト・高度な統計',
           textAlign: TextAlign.center,
-          style: tokens.typography.body.copyWith(color: tokens.textMuted),
+          style: AppTypography.body.copyWith(color: Colors.grey),
         ),
       ],
     );
   }
 
   Widget _buildFeaturesList(BuildContext context) {
-    final tokens = context.tokens;
     final features = [
       _FeatureItem(
         icon: Icons.block,
@@ -113,42 +110,40 @@ class SubscriptionScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('プレミアム機能', style: tokens.typography.h2),
-        SizedBox(height: tokens.spacing.md),
+        const Text('プレミアム機能', style: AppTypography.h2),
+        const SizedBox(height: AppSpacing.md),
         ...features.map((feature) => _buildFeatureItem(context, feature)),
       ],
     );
   }
 
   Widget _buildFeatureItem(BuildContext context, _FeatureItem feature) {
-    final tokens = context.tokens;
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing.md),
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         children: [
           Container(
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withAlpha(26),
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               feature.icon,
-              color: tokens.brandPrimary,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          SizedBox(width: tokens.spacing.md),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(feature.title, style: tokens.typography.h4),
-                SizedBox(height: tokens.spacing.xs),
+                Text(feature.title, style: AppTypography.h4),
+                SizedBox(height: AppSpacing.xxs),
                 Text(
                   feature.description,
-                  style: tokens.typography.caption
-                      .copyWith(color: tokens.textMuted),
+                  style: AppTypography.caption.copyWith(color: Colors.grey),
                 ),
               ],
             ),
@@ -159,12 +154,11 @@ class SubscriptionScreen extends ConsumerWidget {
   }
 
   Widget _buildPricingCards(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('プランを選択', style: tokens.typography.h2),
-        SizedBox(height: tokens.spacing.md),
+        const Text('プランを選択', style: AppTypography.h2),
+        const SizedBox(height: AppSpacing.md),
         _buildPricingCard(
           context,
           ref,
@@ -175,7 +169,7 @@ class SubscriptionScreen extends ConsumerWidget {
           savings: '2ヶ月分お得',
           isRecommended: true,
         ),
-        SizedBox(height: tokens.spacing.md),
+        const SizedBox(height: AppSpacing.md),
         _buildPricingCard(
           context,
           ref,
@@ -198,72 +192,73 @@ class SubscriptionScreen extends ConsumerWidget {
     String? savings,
     bool isRecommended = false,
   }) {
-    final tokens = context.tokens;
     return Card(
       elevation: isRecommended ? 4 : 1,
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (isRecommended)
               Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacing.sm,
-                  vertical: tokens.spacing.xs,
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xxs,
                 ),
                 decoration: BoxDecoration(
-                  color: tokens.brandPrimary,
+                  color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
                   'おすすめ',
-                  style: tokens.typography.caption.copyWith(
+                  style: AppTypography.caption.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-            if (isRecommended) SizedBox(height: tokens.spacing.sm),
-            Text(title, style: tokens.typography.h3),
-            SizedBox(height: tokens.spacing.xs),
+            if (isRecommended) const SizedBox(height: AppSpacing.sm),
+            Text(title, style: AppTypography.h3),
+            const SizedBox(height: AppSpacing.xs),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   price,
-                  style: tokens.typography.h1.copyWith(
-                    color: tokens.brandPrimary,
+                  style: AppTypography.h1.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-                SizedBox(width: tokens.spacing.xs),
+                const SizedBox(width: AppSpacing.xs),
                 Padding(
-                  padding: EdgeInsets.only(bottom: tokens.spacing.xs),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                   child: Text(
                     '/ $period',
-                    style: tokens.typography.body
-                        .copyWith(color: tokens.textMuted),
+                    style: AppTypography.body.copyWith(color: Colors.grey),
                   ),
                 ),
               ],
             ),
             if (savings != null) ...[
-              SizedBox(height: tokens.spacing.xs),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 savings,
-                style: tokens.typography.caption.copyWith(
-                  color: tokens.accentSuccess,
+                style: AppTypography.caption.copyWith(
+                  color: Colors.green,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
-            SizedBox(height: tokens.spacing.md),
+            const SizedBox(height: AppSpacing.md),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () => _handlePurchase(context, ref, plan),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isRecommended ? tokens.brandPrimary : null,
+                  backgroundColor:
+                      isRecommended
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
                 ),
                 child: const Text('購入する'),
               ),
@@ -275,17 +270,16 @@ class SubscriptionScreen extends ConsumerWidget {
   }
 
   Widget _buildManageSubscription(BuildContext context) {
-    final tokens = context.tokens;
     return Column(
       children: [
-        Text('サブスクリプションの管理', style: tokens.typography.h3),
-        SizedBox(height: tokens.spacing.sm),
+        const Text('サブスクリプションの管理', style: AppTypography.h3),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'サブスクリプションのキャンセルや変更は、\nApp Store / Google Play Storeの設定から行えます。',
           textAlign: TextAlign.center,
-          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+          style: AppTypography.caption.copyWith(color: Colors.grey),
         ),
-        SizedBox(height: tokens.spacing.md),
+        const SizedBox(height: AppSpacing.md),
         OutlinedButton(
           onPressed: () {
             // TODO: ストアの設定画面を開く

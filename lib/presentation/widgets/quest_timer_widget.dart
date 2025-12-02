@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエストタイマーウィジェット
@@ -95,14 +94,14 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final progress = _remainingSeconds / (widget.durationMinutes * 60);
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.xl),
+      padding: EdgeInsets.all(tokens.spaceXL),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.xl),
+        borderRadius: BorderRadius.circular(tokens.radiusXLarge),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -118,8 +117,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                   value: 1 - progress,
                   strokeWidth: 12,
                   backgroundColor: tokens.background,
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
+                  valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
                 ),
               ),
               Column(
@@ -127,15 +125,15 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                 children: [
                   Text(
                     _formatTime(_remainingSeconds),
-                    style: tokens.typography.h1.copyWith(
+                    style: tokens.displayMedium.copyWith(
                       color: tokens.textPrimary,
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
                   ),
                   Text(
-                    _getStatusText(context),
-                    style: tokens.typography.body.copyWith(
+                    _getStatusText(),
+                    style: tokens.bodyMedium.copyWith(
                       color: tokens.textSecondary,
                     ),
                   ),
@@ -143,7 +141,7 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spaceXL),
           // コントロールボタン
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -152,46 +150,51 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
                 // 開始ボタン
                 _TimerButton(
                   icon: Icons.play_arrow,
-                  label: AppLocalizations.of(context)!.start,
+                  label: '開始',
                   onPressed: _startTimer,
                   isPrimary: true,
+                  tokens: tokens,
                 ),
               ] else if (_isPaused) ...[
                 // 再開ボタン
                 _TimerButton(
                   icon: Icons.play_arrow,
-                  label: AppLocalizations.of(context)!.resume,
+                  label: '再開',
                   onPressed: _resumeTimer,
                   isPrimary: true,
+                  tokens: tokens,
                 ),
-                SizedBox(width: tokens.spacing.md),
+                SizedBox(width: tokens.spaceMD),
                 // リセットボタン
                 _TimerButton(
                   icon: Icons.refresh,
-                  label: AppLocalizations.of(context)!.reset,
+                  label: 'リセット',
                   onPressed: _resetTimer,
+                  tokens: tokens,
                 ),
               ] else ...[
                 // 一時停止ボタン
                 _TimerButton(
                   icon: Icons.pause,
-                  label: AppLocalizations.of(context)!.pause,
+                  label: '一時停止',
                   onPressed: _pauseTimer,
+                  tokens: tokens,
                 ),
-                SizedBox(width: tokens.spacing.md),
+                SizedBox(width: tokens.spaceMD),
                 // 完了ボタン
                 _TimerButton(
                   icon: Icons.check,
-                  label: AppLocalizations.of(context)!.complete,
+                  label: '完了',
                   onPressed: _completeTimer,
                   isPrimary: true,
+                  tokens: tokens,
                 ),
               ],
             ],
           ),
           if (widget.onCancel != null) ...[
-            SizedBox(height: tokens.spacing.md),
-            TextButton(onPressed: _cancelTimer, child: Text(AppLocalizations.of(context)!.cancel)),
+            SizedBox(height: tokens.spaceMD),
+            TextButton(onPressed: _cancelTimer, child: const Text('キャンセル')),
           ],
         ],
       ),
@@ -204,16 +207,15 @@ class _QuestTimerWidgetState extends State<QuestTimerWidget> {
     return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
   }
 
-  String _getStatusText(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+  String _getStatusText() {
     if (_remainingSeconds == 0) {
-      return l10n.completed;
+      return '完了！';
     } else if (_isPaused) {
-      return l10n.paused;
+      return '一時停止中';
     } else if (_isRunning) {
-      return l10n.running;
+      return '実行中';
     } else {
-      return l10n.ready;
+      return '準備完了';
     }
   }
 }
@@ -224,17 +226,18 @@ class _TimerButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
   final bool isPrimary;
+  final MinqTheme tokens;
 
   const _TimerButton({
     required this.icon,
     required this.label,
     required this.onPressed,
     this.isPrimary = false,
+    required this.tokens,
   });
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
     return ElevatedButton.icon(
       onPressed: onPressed,
       icon: Icon(icon),
@@ -243,11 +246,11 @@ class _TimerButton extends StatelessWidget {
         backgroundColor: isPrimary ? tokens.brandPrimary : tokens.surface,
         foregroundColor: isPrimary ? Colors.white : tokens.textPrimary,
         padding: EdgeInsets.symmetric(
-          horizontal: tokens.spacing.lg,
-          vertical: tokens.spacing.md,
+          horizontal: tokens.spaceLG,
+          vertical: tokens.spaceMD,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.xl),
+          borderRadius: tokens.cornerFull(),
           side: isPrimary ? BorderSide.none : BorderSide(color: tokens.border),
         ),
       ),
@@ -268,31 +271,31 @@ class QuestTimerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
 
     return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
           questTitle,
-          style: tokens.typography.h3.copyWith(
+          style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        backgroundColor: tokens.background.withAlpha((255 * 0.9).round()),
+        backgroundColor: tokens.background.withOpacity(0.9),
         elevation: 0,
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: EdgeInsets.all(tokens.spaceLG),
           child: QuestTimerWidget(
             durationMinutes: durationMinutes,
             onComplete: () {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.timerCompleted)));
+              ).showSnackBar(const SnackBar(content: Text('タイマー完了！')));
               Navigator.of(context).pop(true);
             },
             onCancel: () {
@@ -330,7 +333,7 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
     final duration =
         _isWorkSession
             ? widget.workMinutes
@@ -343,10 +346,10 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
       children: [
         // セッション表示
         Container(
-          padding: EdgeInsets.all(tokens.spacing.md),
+          padding: EdgeInsets.all(tokens.spaceMD),
           decoration: BoxDecoration(
-            color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
-            borderRadius: BorderRadius.circular(tokens.radius.md),
+            color: tokens.brandPrimary.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(tokens.radiusMedium),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -355,25 +358,25 @@ class _PomodoroTimerWidgetState extends State<PomodoroTimerWidget> {
                 _isWorkSession ? Icons.work_outline : Icons.coffee_outlined,
                 color: tokens.brandPrimary,
               ),
-              SizedBox(width: tokens.spacing.sm),
+              SizedBox(width: tokens.spaceSM),
               Text(
-                _isWorkSession ? AppLocalizations.of(context)!.workSession : AppLocalizations.of(context)!.breakTime,
-                style: tokens.typography.body.copyWith(
+                _isWorkSession ? '作業セッション' : '休憩',
+                style: tokens.bodyMedium.copyWith(
                   color: tokens.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(width: tokens.spacing.sm),
+              SizedBox(width: tokens.spaceSM),
               Text(
                 '${_currentSession + 1}/${widget.sessionsUntilLongBreak}',
-                style: tokens.typography.caption.copyWith(
+                style: tokens.labelSmall.copyWith(
                   color: tokens.textSecondary,
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(height: tokens.spacing.lg),
+        SizedBox(height: tokens.spaceLG),
         // タイマー
         QuestTimerWidget(
           durationMinutes: duration,

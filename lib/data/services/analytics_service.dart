@@ -139,7 +139,7 @@ class AnalyticsService {
     }
 
     try {
-      await _analytics.logEvent(name: name, parameters: parameters);
+      await _analytics!.logEvent(name: name, parameters: parameters);
       debugPrint('Analytics: $name ${parameters ?? ""}');
     } catch (e) {
       debugPrint('Analytics error: $e');

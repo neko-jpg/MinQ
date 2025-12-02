@@ -23,7 +23,7 @@ class BuddyListScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           '現在のバディ',
-          style: tokens.typography.h4.copyWith(
+          style: tokens.titleMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -65,9 +65,9 @@ class BuddyListScreen extends ConsumerWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: tokens.brandPrimary,
             foregroundColor: tokens.surface,
-            minimumSize: Size.fromHeight(tokens.spacing.xl),
+            minimumSize: Size.fromHeight(tokens.spacing(14)),
             shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
-            textStyle: tokens.typography.h5,
+            textStyle: tokens.titleSmall,
           ),
         ),
       ),
@@ -88,7 +88,6 @@ class _BuddyCard extends ConsumerWidget {
     final repo = ref.read(pairRepositoryProvider);
     final currentUserId = ref.read(uidProvider);
     final l10n = AppLocalizations.of(context)!;
-    final navigator = Navigator.of(context);
 
     showModalBottomSheet(
       context: context,
@@ -102,7 +101,7 @@ class _BuddyCard extends ConsumerWidget {
                   style: const TextStyle(color: Colors.redAccent),
                 ),
                 onTap: () {
-                  navigator.pop();
+                  Navigator.of(ctx).pop();
                   _showReportDialog(context, ref, otherMemberId);
                 },
               ),
@@ -113,7 +112,7 @@ class _BuddyCard extends ConsumerWidget {
                   style: TextStyle(color: Colors.red),
                 ),
                 onTap: () {
-                  navigator.pop();
+                  Navigator.of(ctx).pop();
                   showDialog(
                     context: context,
                     builder:
@@ -138,12 +137,10 @@ class _BuddyCard extends ConsumerWidget {
                                     currentUserId,
                                     otherMemberId,
                                   );
-                                  if (context.mounted) {
-                                    FeedbackMessenger.showSuccessToast(
-                                      context,
-                                      'バディをブロックしました。',
-                                    );
-                                  }
+                                  FeedbackMessenger.showSuccessToast(
+                                    context,
+                                    'バディをブロックしました。',
+                                  );
                                 }
                                 if (context.mounted) {
                                   Navigator.of(dialogCtx).pop();
@@ -159,7 +156,7 @@ class _BuddyCard extends ConsumerWidget {
                 leading: const Icon(Icons.logout, color: Colors.red),
                 title: const Text('ペアを解消', style: TextStyle(color: Colors.red)),
                 onTap: () {
-                  navigator.pop();
+                  Navigator.of(ctx).pop();
                   showDialog(
                     context: context,
                     builder:
@@ -181,12 +178,10 @@ class _BuddyCard extends ConsumerWidget {
                               onPressed: () async {
                                 if (repo != null && currentUserId != null) {
                                   await repo.leavePair(pair.id, currentUserId);
-                                  if (context.mounted) {
-                                    FeedbackMessenger.showSuccessToast(
-                                      context,
-                                      'ペアを解消しました。',
-                                    );
-                                  }
+                                  FeedbackMessenger.showSuccessToast(
+                                    context,
+                                    'ペアを解消しました。',
+                                  );
                                 }
                                 if (context.mounted) {
                                   Navigator.of(dialogCtx).pop();
@@ -235,7 +230,7 @@ class _BuddyCard extends ConsumerWidget {
                     children: [
                       Text(
                         'Buddy#${otherMemberId.substring(0, 4)}',
-                        style: tokens.typography.h5.copyWith(
+                        style: tokens.titleSmall.copyWith(
                           color: tokens.textPrimary,
                           fontWeight: FontWeight.bold,
                         ),
@@ -243,7 +238,7 @@ class _BuddyCard extends ConsumerWidget {
                       const SizedBox(height: 2),
                       Text(
                         '目標：${pair.category}',
-                        style: tokens.typography.bodySmall.copyWith(
+                        style: tokens.bodySmall.copyWith(
                           color: tokens.textMuted,
                         ),
                       ),
@@ -341,7 +336,7 @@ class _ActionItem extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               label,
-              style: tokens.typography.bodySmall.copyWith(
+              style: tokens.bodySmall.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.w500,
               ),
@@ -407,16 +402,12 @@ Future<void> _showReportDialog(
 
   final repo = ref.read(pairRepositoryProvider);
   if (repo == null) {
-    if (context.mounted) {
-      FeedbackMessenger.showErrorSnackBar(context, l10n.errorGeneric);
-    }
+    FeedbackMessenger.showErrorSnackBar(context, l10n.errorGeneric);
     reasonController.dispose();
     return;
   }
 
   await repo.reportUser(currentUserId, buddyId, reasonController.text);
-  if (context.mounted) {
-    FeedbackMessenger.showSuccessToast(context, l10n.reportSubmitted);
-  }
+  FeedbackMessenger.showSuccessToast(context, l10n.reportSubmitted);
   reasonController.dispose();
 }

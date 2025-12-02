@@ -9,7 +9,7 @@ class Debouncer {
 
   Debouncer({required this.milliseconds});
 
-  void run(VoidCallback action) {
+  run(VoidCallback action) {
     if (_timer != null) {
       _timer!.cancel();
     }

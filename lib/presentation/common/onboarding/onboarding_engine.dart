@@ -61,7 +61,6 @@ class OnboardingEngine {
     String screenId,
     BuildContext context,
   ) async {
-    if (!context.mounted) return;
     if (await hasCompletedOnboarding()) return;
 
     switch (screenId) {
@@ -101,7 +100,6 @@ class OnboardingEngine {
     BuildContext context,
     List<TourStep> steps,
   ) async {
-    if (!context.mounted) return;
     if (await hasCompletedOnboarding()) return;
 
     await Navigator.of(context).push(
@@ -114,7 +112,6 @@ class OnboardingEngine {
   // プライベートメソッド
   static Future<void> _showHomeScreenGuide(BuildContext context) async {
     const tooltipId = 'home_screen_guide';
-    if (!context.mounted) return;
     if (await hasSeenTooltip(tooltipId)) return;
 
     // ホーム画面のガイドを表示
@@ -129,7 +126,6 @@ class OnboardingEngine {
 
   static Future<void> _showQuestCreationGuide(BuildContext context) async {
     const tooltipId = 'quest_creation_guide';
-    if (!context.mounted) return;
     if (await hasSeenTooltip(tooltipId)) return;
 
     await _showOverlayGuide(
@@ -143,7 +139,6 @@ class OnboardingEngine {
 
   static Future<void> _showStatsScreenGuide(BuildContext context) async {
     const tooltipId = 'stats_screen_guide';
-    if (!context.mounted) return;
     if (await hasSeenTooltip(tooltipId)) return;
 
     await _showOverlayGuide(
@@ -157,7 +152,6 @@ class OnboardingEngine {
 
   static Future<void> _showPairScreenGuide(BuildContext context) async {
     const tooltipId = 'pair_screen_guide';
-    if (!context.mounted) return;
     if (await hasSeenTooltip(tooltipId)) return;
 
     await _showOverlayGuide(
@@ -176,7 +170,6 @@ class OnboardingEngine {
     String description, {
     String? targetKey,
   }) async {
-    if (!context.mounted) return;
     await showDialog(
       context: context,
       barrierDismissible: true,
@@ -187,9 +180,7 @@ class OnboardingEngine {
             targetKey: targetKey,
             onDismiss: () async {
               await markTooltipSeen(tooltipId);
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
+              Navigator.of(context).pop();
             },
           ),
     );

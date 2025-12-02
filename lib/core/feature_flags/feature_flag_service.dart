@@ -1,5 +1,4 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 
 /// 機能フラグサービス
 /// Remote Configを使用した機能の有効/無効切り替え
@@ -50,16 +49,10 @@ class FeatureFlagService {
   Future<bool> fetchAndActivate() async {
     try {
       final activated = await _remoteConfig.fetchAndActivate();
-      MinqLogger.info(
-        'Remote Config fetched and activated',
-        metadata: {'activated': activated},
-      );
+      print('✅ Remote Config ${activated ? 'activated' : 'not changed'}');
       return activated;
     } catch (e) {
-      MinqLogger.error(
-        'Failed to fetch remote config',
-        exception: e,
-      );
+      print('❌ Failed to fetch remote config: $e');
       return false;
     }
   }

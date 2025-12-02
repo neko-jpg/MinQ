@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logger/logger.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
 /// ペア解消サービス
@@ -38,18 +39,15 @@ class PairDissolutionService {
       await _updateUserPairStatus(user1Id, pairId, dissolved: true);
       await _updateUserPairStatus(user2Id, pairId, dissolved: true);
 
-      logger.logJson(
+      AppLogger().logJson(
         'Pair dissolved',
         {'pairId': pairId, 'dissolvedBy': userId, 'reason': reason},
+        level: Level.info,
       );
 
       return true;
     } catch (e, stack) {
-      logger.error(
-        'Failed to dissolve pair',
-        error: e,
-        stackTrace: stack,
-      );
+      AppLogger().error('Failed to dissolve pair', e, stack);
       return false;
     }
   }

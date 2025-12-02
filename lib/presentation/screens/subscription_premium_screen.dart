@@ -53,6 +53,8 @@ class _SubscriptionPremiumScreenState
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final subscriptionManager = ref.watch(subscriptionManagerProvider);
+    final currentStatus = ref.watch(subscriptionStatusProvider);
 
     // プレミアムプランのみを表示
     final premiumPlans =
@@ -81,7 +83,7 @@ class _SubscriptionPremiumScreenState
                     end: Alignment.bottomRight,
                     colors: [
                       tokens.brandPrimary,
-                      tokens.brandPrimary.withAlpha(204),
+                      tokens.brandPrimary.withOpacity(0.8),
                     ],
                   ),
                 ),
@@ -90,28 +92,28 @@ class _SubscriptionPremiumScreenState
                   child: SlideTransition(
                     position: _slideAnimation,
                     child: Padding(
-                      padding: EdgeInsets.all(tokens.spacing.xl),
+                      padding: EdgeInsets.all(tokens.spacing(6)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.workspace_premium,
-                            size: 80,
+                            size: tokens.spacing(20),
                             color: Colors.white,
                           ),
-                          SizedBox(height: tokens.spacing.md),
+                          SizedBox(height: tokens.spacing(4)),
                           Text(
                             'MinQ Premium',
-                            style: tokens.typography.h1.copyWith(
+                            style: tokens.typeScale.h1.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: tokens.spacing.xs),
+                          SizedBox(height: tokens.spacing(2)),
                           Text(
                             '習慣形成を次のレベルへ',
-                            style: tokens.typography.h4.copyWith(
-                              color: Colors.white.withAlpha(230),
+                            style: tokens.typeScale.h4.copyWith(
+                              color: Colors.white.withOpacity(0.9),
                             ),
                           ),
                         ],
@@ -126,18 +128,18 @@ class _SubscriptionPremiumScreenState
           // 機能一覧
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.xl),
+              padding: EdgeInsets.all(tokens.spacing(6)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'プレミアム機能',
-                    style: tokens.typography.h3.copyWith(
+                    style: tokens.typeScale.h3.copyWith(
                       color: tokens.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.md),
+                  SizedBox(height: tokens.spacing(4)),
                   ...premiumPlans.first.features.map(
                     (feature) => _buildFeatureItem(tokens, feature),
                   ),
@@ -149,18 +151,18 @@ class _SubscriptionPremiumScreenState
           // プラン選択
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: tokens.spacing.xl),
+              padding: EdgeInsets.symmetric(horizontal: tokens.spacing(6)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'プランを選択',
-                    style: tokens.typography.h3.copyWith(
+                    style: tokens.typeScale.h3.copyWith(
                       color: tokens.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.md),
+                  SizedBox(height: tokens.spacing(4)),
                   ...premiumPlans.asMap().entries.map((entry) {
                     final index = entry.key;
                     final plan = entry.value;
@@ -174,7 +176,7 @@ class _SubscriptionPremiumScreenState
           // 購入ボタン
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(tokens.spacing.xl),
+              padding: EdgeInsets.all(tokens.spacing(6)),
               child: Column(
                 children: [
                   SizedBox(
@@ -186,39 +188,37 @@ class _SubscriptionPremiumScreenState
                         backgroundColor: tokens.brandPrimary,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(tokens.radius.lg),
+                          borderRadius: tokens.cornerLarge(),
                         ),
                       ),
                       child:
                           _isProcessing
                               ? const CircularProgressIndicator(
-                                  valueColor:
-                                      AlwaysStoppedAnimation(Colors.white),
-                                )
+                                color: Colors.white,
+                              )
                               : Text(
-                                  'プレミアムを開始',
-                                  style: tokens.typography.h4.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                'プレミアムを開始',
+                                style: tokens.typeScale.h4.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
+                              ),
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.sm),
+                  SizedBox(height: tokens.spacing(3)),
                   TextButton(
                     onPressed: _handleRestore,
                     child: Text(
                       '購入を復元',
-                      style: tokens.typography.bodyMedium.copyWith(
+                      style: tokens.typeScale.bodyMedium.copyWith(
                         color: tokens.brandPrimary,
                       ),
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: tokens.spacing(2)),
                   Text(
                     '• いつでもキャンセル可能\n• 自動更新（設定で変更可能）\n• 購入後すぐに全機能利用可能',
-                    style: tokens.typography.bodySmall.copyWith(
+                    style: tokens.typeScale.bodySmall.copyWith(
                       color: tokens.textMuted,
                     ),
                     textAlign: TextAlign.center,
@@ -234,27 +234,27 @@ class _SubscriptionPremiumScreenState
 
   Widget _buildFeatureItem(MinqTheme tokens, String feature) {
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing.sm),
+      padding: EdgeInsets.only(bottom: tokens.spacing(3)),
       child: Row(
         children: [
           Container(
-            width: tokens.spacing.xl,
-            height: tokens.spacing.xl,
+            width: tokens.spacing(6),
+            height: tokens.spacing(6),
             decoration: BoxDecoration(
-              color: tokens.accentSuccess.withAlpha(26),
+              color: tokens.accentSuccess.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.check,
-              size: tokens.spacing.md,
+              size: tokens.spacing(4),
               color: tokens.accentSuccess,
             ),
           ),
-          SizedBox(width: tokens.spacing.sm),
+          SizedBox(width: tokens.spacing(3)),
           Expanded(
             child: Text(
               feature,
-              style: tokens.typography.bodyLarge.copyWith(
+              style: tokens.typeScale.bodyLarge.copyWith(
                 color: tokens.textPrimary,
               ),
             ),
@@ -271,26 +271,28 @@ class _SubscriptionPremiumScreenState
     return GestureDetector(
       onTap: () => setState(() => _selectedPlanIndex = index),
       child: Container(
-        margin: EdgeInsets.only(bottom: tokens.spacing.sm),
-        padding: EdgeInsets.all(tokens.spacing.md),
+        margin: EdgeInsets.only(bottom: tokens.spacing(3)),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         decoration: BoxDecoration(
           color:
-              isSelected ? tokens.brandPrimary.withAlpha(26) : tokens.surface,
+              isSelected
+                  ? tokens.brandPrimary.withOpacity(0.1)
+                  : tokens.surface,
           border: Border.all(
             color: isSelected ? tokens.brandPrimary : tokens.border,
             width: isSelected ? 2 : 1,
           ),
-          borderRadius: BorderRadius.circular(tokens.radius.lg),
+          borderRadius: tokens.cornerLarge(),
         ),
         child: Row(
           children: [
-            Icon(
-              isSelected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_unchecked,
-              color: isSelected ? tokens.brandPrimary : tokens.textMuted,
+            Radio<int>(
+              value: index,
+              groupValue: _selectedPlanIndex,
+              onChanged: (value) => setState(() => _selectedPlanIndex = value!),
+              activeColor: tokens.brandPrimary,
             ),
-            SizedBox(width: tokens.spacing.sm),
+            SizedBox(width: tokens.spacing(3)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,26 +301,25 @@ class _SubscriptionPremiumScreenState
                     children: [
                       Text(
                         plan.name,
-                        style: tokens.typography.h4.copyWith(
+                        style: tokens.typeScale.h4.copyWith(
                           color: tokens.textPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       if (isYearly) ...[
-                        SizedBox(width: tokens.spacing.xs),
+                        SizedBox(width: tokens.spacing(2)),
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: tokens.spacing.xs,
-                            vertical: tokens.spacing.xs / 2,
+                            horizontal: tokens.spacing(2),
+                            vertical: tokens.spacing(1),
                           ),
                           decoration: BoxDecoration(
                             color: tokens.accentSuccess,
-                            borderRadius:
-                                BorderRadius.circular(tokens.radius.sm),
+                            borderRadius: tokens.cornerSmall(),
                           ),
                           child: Text(
                             '30%お得',
-                            style: tokens.typography.bodySmall.copyWith(
+                            style: tokens.typeScale.bodySmall.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -327,10 +328,10 @@ class _SubscriptionPremiumScreenState
                       ],
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: tokens.spacing(1)),
                   Text(
                     plan.description,
-                    style: tokens.typography.bodyMedium.copyWith(
+                    style: tokens.typeScale.bodyMedium.copyWith(
                       color: tokens.textMuted,
                     ),
                   ),
@@ -342,7 +343,7 @@ class _SubscriptionPremiumScreenState
               children: [
                 Text(
                   '¥${plan.price}',
-                  style: tokens.typography.h4.copyWith(
+                  style: tokens.typeScale.h4.copyWith(
                     color: tokens.textPrimary,
                     fontWeight: FontWeight.bold,
                   ),
@@ -350,7 +351,7 @@ class _SubscriptionPremiumScreenState
                 if (isYearly)
                   Text(
                     '月額¥${(plan.price / 12).round()}',
-                    style: tokens.typography.bodySmall.copyWith(
+                    style: tokens.typeScale.bodySmall.copyWith(
                       color: tokens.textMuted,
                     ),
                   ),

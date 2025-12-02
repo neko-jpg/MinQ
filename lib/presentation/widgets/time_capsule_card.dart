@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minq/domain/time_capsule/time_capsule.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/l10n/app_localizations.dart';
 
 class TimeCapsuleCard extends StatelessWidget {
   const TimeCapsuleCard({
@@ -24,7 +23,7 @@ class TimeCapsuleCard extends StatelessWidget {
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(
           color: isDelivered ? tokens.encouragement : tokens.border,
           width: isDelivered ? 2 : 1,
@@ -32,9 +31,9 @@ class TimeCapsuleCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: EdgeInsets.all(tokens.spacing(4)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -42,12 +41,13 @@ class TimeCapsuleCard extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(tokens.spacing.sm),
+                    padding: EdgeInsets.all(tokens.spacing(2)),
                     decoration: BoxDecoration(
-                      color: isDelivered
-                          ? tokens.encouragement.withAlpha((255 * 0.1).round())
-                          : tokens.brandPrimary.withAlpha((255 * 0.1).round()),
-                      borderRadius: BorderRadius.circular(tokens.radius.md),
+                      color:
+                          isDelivered
+                              ? tokens.encouragement.withOpacity(0.1)
+                              : tokens.brandPrimary.withOpacity(0.1),
+                      borderRadius: tokens.cornerMedium(),
                     ),
                     child: Icon(
                       isDelivered ? Icons.mail : Icons.schedule_send,
@@ -58,16 +58,14 @@ class TimeCapsuleCard extends StatelessWidget {
                       size: 20,
                     ),
                   ),
-                  SizedBox(width: tokens.spacing.md),
+                  SizedBox(width: tokens.spacing(3)),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isDelivered
-                            ? AppLocalizations.of(context)!.delivered
-                            : AppLocalizations.of(context)!.pending,
-                          style: tokens.typography.caption.copyWith(
+                          isDelivered ? '配信済み' : '配信待ち',
+                          style: tokens.bodySmall.copyWith(
                             color:
                                 isDelivered
                                     ? tokens.encouragement
@@ -76,11 +74,8 @@ class TimeCapsuleCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          AppLocalizations.of(context)!.createdOn
-                            .replaceAll('{year}', capsule.createdAt.year.toString())
-                            .replaceAll('{month}', capsule.createdAt.month.toString())
-                            .replaceAll('{day}', capsule.createdAt.day.toString()),
-                          style: tokens.typography.caption.copyWith(
+                          '${capsule.createdAt.year}年${capsule.createdAt.month}月${capsule.createdAt.day}日作成',
+                          style: tokens.bodySmall.copyWith(
                             color: tokens.textMuted,
                           ),
                         ),
@@ -90,16 +85,16 @@ class TimeCapsuleCard extends StatelessWidget {
                   if (isDelivered)
                     Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: tokens.spacing.sm,
-                        vertical: tokens.spacing.xs,
+                        horizontal: tokens.spacing(2),
+                        vertical: tokens.spacing(1),
                       ),
                       decoration: BoxDecoration(
                         color: tokens.encouragement,
-                        borderRadius: BorderRadius.circular(tokens.radius.sm),
+                        borderRadius: tokens.cornerSmall(),
                       ),
                       child: Text(
-                        AppLocalizations.of(context)!.canOpen,
-                        style: tokens.typography.caption.copyWith(
+                        '開封可能',
+                        style: tokens.bodySmall.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
@@ -108,17 +103,16 @@ class TimeCapsuleCard extends StatelessWidget {
                   else
                     Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: tokens.spacing.sm,
-                        vertical: tokens.spacing.xs,
+                        horizontal: tokens.spacing(2),
+                        vertical: tokens.spacing(1),
                       ),
                       decoration: BoxDecoration(
                         color: tokens.surfaceVariant,
-                        borderRadius: BorderRadius.circular(tokens.radius.sm),
+                        borderRadius: tokens.cornerSmall(),
                       ),
                       child: Text(
-                        AppLocalizations.of(context)!.daysUntil
-                          .replaceAll('{days}', daysUntilDelivery.toString()),
-                        style: tokens.typography.caption.copyWith(
+                        '$daysUntilDelivery日後',
+                        style: tokens.bodySmall.copyWith(
                           color: tokens.textMuted,
                           fontWeight: FontWeight.bold,
                         ),
@@ -127,31 +121,26 @@ class TimeCapsuleCard extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(height: tokens.spacing.md),
+              SizedBox(height: tokens.spacing(3)),
 
               // メッセージプレビュー
               Text(
                 _truncateMessage(capsule.message),
-                style:
-                    tokens.typography.body.copyWith(color: tokens.textPrimary),
+                style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
 
-              SizedBox(height: tokens.spacing.md),
+              SizedBox(height: tokens.spacing(3)),
 
               // 配信日
               Row(
                 children: [
                   Icon(Icons.calendar_today, size: 16, color: tokens.textMuted),
-                  SizedBox(width: tokens.spacing.xs),
+                  SizedBox(width: tokens.spacing(1)),
                   Text(
-                    AppLocalizations.of(context)!.deliveryDate
-                      .replaceAll('{year}', capsule.deliveryDate.year.toString())
-                      .replaceAll('{month}', capsule.deliveryDate.month.toString())
-                      .replaceAll('{day}', capsule.deliveryDate.day.toString()),
-                    style:
-                        tokens.typography.caption.copyWith(color: tokens.textMuted),
+                    '配信日: ${capsule.deliveryDate.year}年${capsule.deliveryDate.month}月${capsule.deliveryDate.day}日',
+                    style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                   ),
                   const Spacer(),
                   Icon(
@@ -164,7 +153,7 @@ class TimeCapsuleCard extends StatelessWidget {
 
               // 開封アニメーション（配信済みの場合）
               if (isDelivered) ...[
-                SizedBox(height: tokens.spacing.sm),
+                SizedBox(height: tokens.spacing(2)),
                 _OpeningAnimation(),
               ],
             ],
@@ -231,26 +220,26 @@ class _OpeningAnimationState extends State<_OpeningAnimation>
             opacity: _opacityAnimation.value,
             child: Container(
               padding: EdgeInsets.symmetric(
-                horizontal: tokens.spacing.sm,
-                vertical: tokens.spacing.xs,
+                horizontal: tokens.spacing(2),
+                vertical: tokens.spacing(1),
               ),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    tokens.encouragement.withAlpha((255 * 0.8).round()),
-                    tokens.joyAccent.withAlpha((255 * 0.8).round()),
+                    tokens.encouragement.withOpacity(0.8),
+                    tokens.joyAccent.withOpacity(0.8),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(tokens.radius.sm),
+                borderRadius: tokens.cornerSmall(),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.auto_awesome, size: 16, color: Colors.white),
-                  SizedBox(width: tokens.spacing.xs),
+                  SizedBox(width: tokens.spacing(1)),
                   Text(
-                    AppLocalizations.of(context)!.tapToOpen,
-                    style: tokens.typography.caption.copyWith(
+                    'タップして開封',
+                    style: tokens.bodySmall.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),

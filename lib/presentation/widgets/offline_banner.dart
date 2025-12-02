@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// オフラインバナー
 /// ネットワーク接続がない場合に表示
@@ -11,28 +9,28 @@ class OfflineBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: NetworkStatusService のプロバイダーを作成して使用
-    // const isOffline = ref.watch(networkStatusProvider).isOffline;
+    const isOffline = false; // ref.watch(networkStatusProvider).isOffline;
 
-    final tokens = Theme.of(context).extension<MinqTheme>()!;
+    if (!isOffline) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.md,
-        vertical: tokens.spacing.sm,
-      ),
-      color: tokens.accentWarning,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      color: Colors.orange[700],
       child: Row(
         children: [
-          Icon(Icons.cloud_off, color: tokens.onPrimary, size: 20),
-          SizedBox(width: tokens.spacing.sm),
-          Expanded(
+          const Icon(Icons.cloud_off, color: Colors.white, size: 20),
+          const SizedBox(width: 12),
+          const Expanded(
             child: Text(
               'オフラインモード - 一部機能が制限されています',
-              style: tokens.typography.body.copyWith(color: tokens.onPrimary),
+              style: TextStyle(color: Colors.white, fontSize: 14),
             ),
           ),
           IconButton(
-            icon: Icon(Icons.info_outline, color: tokens.onPrimary),
+            icon: const Icon(Icons.info_outline, color: Colors.white),
             onPressed: () => _showOfflineInfo(context),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
@@ -47,8 +45,19 @@ class OfflineBanner extends ConsumerWidget {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.offlineMode),
-            content: Text(AppLocalizations.of(context)!.noInternetConnection),
+            title: const Text('オフラインモード'),
+            content: const Text(
+              'インターネット接続がありません。\n\n'
+              '利用可能な機能:\n'
+              '• クエストの記録\n'
+              '• 進捗の確認\n'
+              '• 統計の表示\n\n'
+              '制限される機能:\n'
+              '• データの同期\n'
+              '• ペア機能\n'
+              '• 共有機能\n\n'
+              'インターネットに接続すると、自動的にデータが同期されます。',
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -73,26 +82,25 @@ class OfflineEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = Theme.of(context).extension<MinqTheme>()!;
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.xl),
+        padding: const EdgeInsets.all(32.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.cloud_off, size: 80, color: tokens.textMuted),
-            SizedBox(height: tokens.spacing.lg),
+            Icon(Icons.cloud_off, size: 80, color: Colors.grey[400]),
+            const SizedBox(height: 24),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: tokens.typography.body.copyWith(color: tokens.textSecondary),
+              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
             ),
             if (onRetry != null) ...[
-              SizedBox(height: tokens.spacing.lg),
+              const SizedBox(height: 24),
               ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: Text(AppLocalizations.of(context)!.retry),
+                label: const Text('再試行'),
               ),
             ],
           ],
@@ -108,26 +116,23 @@ class ReadOnlyModeIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = Theme.of(context).extension<MinqTheme>()!;
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.sm,
-        vertical: tokens.spacing.xs,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: tokens.accentWarning.withAlpha(51),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
-        border: Border.all(color: tokens.accentWarning.withAlpha(128)),
+        color: Colors.orange[100],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.orange[300]!),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.visibility, size: 16, color: tokens.accentWarning),
-          SizedBox(width: tokens.spacing.xs),
+          Icon(Icons.visibility, size: 16, color: Colors.orange[700]),
+          const SizedBox(width: 6),
           Text(
             '読み取り専用',
-            style: tokens.typography.caption.copyWith(
-              color: tokens.accentWarning,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.orange[700],
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -153,7 +158,12 @@ class NetworkDependentWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: NetworkStatusService のプロバイダーを作成して使用
-    // const isOffline = ref.watch(networkStatusProvider).isOffline;
+    const isOffline = false; // ref.watch(networkStatusProvider).isOffline;
+
+    if (isOffline) {
+      return offlineWidget ??
+          OfflineEmptyState(message: offlineMessage ?? 'この機能はオフラインでは利用できません');
+    }
 
     return child;
   }
@@ -169,7 +179,7 @@ void showOfflineDialog(BuildContext context) {
             children: [
               Icon(Icons.cloud_off, color: Colors.orange),
               SizedBox(width: 12),
-              Text(AppLocalizations.of(context)!.offline),
+              Text('オフライン'),
             ],
           ),
           content: const Text(
@@ -194,7 +204,7 @@ void showOfflineSnackBar(BuildContext context) {
         children: [
           Icon(Icons.cloud_off, color: Colors.white),
           SizedBox(width: 12),
-          Expanded(child: Text(AppLocalizations.of(context)!.offlineOperationNotAvailable)),
+          Expanded(child: Text('オフラインのため、この操作は実行できません')),
         ],
       ),
       backgroundColor: Colors.orange[700],

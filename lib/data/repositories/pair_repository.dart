@@ -88,24 +88,41 @@ class PairRepository {
       return null;
     }
 
-    final queueDoc = _firestore.collection('pair_queue').doc(category);
+    final waitersRef = _firestore
+        .collection('pair_queue')
+        .doc(category)
+        .collection('waiters');
+
+    // 1. Check if anyone is waiting (oldest first)
+    final querySnapshot = await waitersRef.orderBy('createdAt').limit(1).get();
+
+    if (querySnapshot.docs.isEmpty) {
+      // No one waiting, add myself
+      await waitersRef.doc(uid).set({
+        'uid': uid,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      return null;
+    }
+
+    final waiterDoc = querySnapshot.docs.first;
+    final waitingUid = waiterDoc.id;
+
+    if (waitingUid == uid) {
+      // Already waiting
+      return null;
+    }
+
     final pairRef = _firestore.collection('pairs').doc();
 
     return _firestore.runTransaction<String?>((transaction) async {
-      final snapshot = await transaction.get(queueDoc);
-      if (!snapshot.exists) {
-        transaction.set(queueDoc, {
-          'waitingUid': uid,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-        return null;
-      }
-
-      final data = snapshot.data() as Map<String, dynamic>;
-      final waitingUid = data['waitingUid'] as String?;
-      if (waitingUid == null || waitingUid == uid) {
-        transaction.set(queueDoc, {
-          'waitingUid': uid,
+      // 2. Double check inside transaction
+      final freshWaiterSnap = await transaction.get(waiterDoc.reference);
+      if (!freshWaiterSnap.exists) {
+        // Someone matched them already, or they cancelled
+        // Fallback: Add self to queue
+        transaction.set(waitersRef.doc(uid), {
+          'uid': uid,
           'createdAt': FieldValue.serverTimestamp(),
         });
         return null;
@@ -113,10 +130,16 @@ class PairRepository {
 
       final blocked = await _isBlocked(uid, waitingUid);
       if (blocked) {
+        // Fallback: Add self to queue
+        transaction.set(waitersRef.doc(uid), {
+          'uid': uid,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
         return null;
       }
 
-      transaction.delete(queueDoc);
+      // 3. Match!
+      transaction.delete(waiterDoc.reference);
       transaction.set(pairRef, {
         'members': [waitingUid, uid],
         'category': category,
@@ -124,6 +147,7 @@ class PairRepository {
         'lastHighfiveAt': null,
         'lastHighfiveBy': null,
       });
+
       transaction.set(
         _firestore.collection('pair_assignments').doc(waitingUid),
         {'pairId': pairRef.id, 'updatedAt': FieldValue.serverTimestamp()},
@@ -132,22 +156,18 @@ class PairRepository {
         'pairId': pairRef.id,
         'updatedAt': FieldValue.serverTimestamp(),
       });
+
       return pairRef.id;
     });
   }
 
   Future<void> cancelRandomRequest(String uid, String category) async {
-    final queueDoc = _firestore.collection('pair_queue').doc(category);
-    await _firestore.runTransaction<void>((transaction) async {
-      final snapshot = await transaction.get(queueDoc);
-      if (!snapshot.exists) {
-        return;
-      }
-      final data = snapshot.data() as Map<String, dynamic>;
-      if (data['waitingUid'] == uid) {
-        transaction.delete(queueDoc);
-      }
-    });
+    await _firestore
+        .collection('pair_queue')
+        .doc(category)
+        .collection('waiters')
+        .doc(uid)
+        .delete();
   }
 
   Future<String> createInvitation(String ownerUid, String category) async {

@@ -3,13 +3,10 @@ import 'dart:typed_data';
 
 import 'package:image/image.dart' as img;
 
-/// Simple procedural banner generator that emulates AI-personalised
-/// backgrounds.
+/// Simple procedural banner generator that emulates AI-personalised backgrounds.
 class AIBannerGenerator {
-  /// Creates a new [AIBannerGenerator].
   const AIBannerGenerator();
 
-  /// Generates a banner image.
   Future<Uint8List> generate({
     required String title,
     required String subtitle,

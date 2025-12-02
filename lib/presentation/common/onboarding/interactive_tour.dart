@@ -126,7 +126,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.black.withAlpha(204),
+      backgroundColor: Colors.black.withOpacity(0.8),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SafeArea(
@@ -169,7 +169,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
             onPressed: _skipTour,
             child: Text(
               'スキップ',
-              style: TextStyle(color: Colors.white.withAlpha(204)),
+              style: TextStyle(color: Colors.white.withOpacity(0.8)),
             ),
           ),
         ],
@@ -186,7 +186,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(51),
+            color: Colors.black.withOpacity(0.2),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -216,7 +216,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
           Text(
             step.description,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurface.withAlpha(204),
+              color: theme.colorScheme.onSurface.withOpacity(0.8),
               height: 1.5,
             ),
           ),
@@ -249,7 +249,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
             color:
                 index <= _currentStepIndex
                     ? theme.colorScheme.primary
-                    : theme.colorScheme.outline.withAlpha(77),
+                    : theme.colorScheme.outline.withOpacity(0.3),
           ),
         ),
       ),
@@ -274,9 +274,9 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer.withAlpha(77),
+        color: theme.colorScheme.primaryContainer.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.primary.withAlpha(77)),
+        border: Border.all(color: theme.colorScheme.primary.withOpacity(0.3)),
       ),
       child: Row(
         children: [
@@ -300,7 +300,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.secondaryContainer.withAlpha(77),
+        color: theme.colorScheme.secondaryContainer.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -355,9 +355,9 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: theme.colorScheme.primaryContainer.withAlpha(77),
+          color: theme.colorScheme.primaryContainer.withOpacity(0.3),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: theme.colorScheme.primary.withAlpha(77)),
+          border: Border.all(color: theme.colorScheme.primary.withOpacity(0.3)),
         ),
         child: Row(
           children: [
@@ -385,7 +385,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
             ),
             Icon(
               Icons.touch_app,
-              color: theme.colorScheme.primary.withAlpha(179),
+              color: theme.colorScheme.primary.withOpacity(0.7),
             ),
           ],
         ),
@@ -406,7 +406,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
               icon: const Icon(Icons.arrow_back),
               label: const Text('戻る'),
               style: TextButton.styleFrom(
-                foregroundColor: Colors.white.withAlpha(204),
+                foregroundColor: Colors.white.withOpacity(0.8),
               ),
             )
           else
@@ -416,7 +416,7 @@ class _InteractiveTourScreenState extends State<InteractiveTourScreen>
           Text(
             '${_currentStepIndex + 1} / ${widget.steps.length}',
             style: TextStyle(
-              color: Colors.white.withAlpha((255 * 0.8).round()),
+              color: Colors.white.withOpacity(0.8),
               fontSize: 16,
             ),
           ),

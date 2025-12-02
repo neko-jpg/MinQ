@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 
 /// サブスクリプション管理サービス
 class SubscriptionManager {
@@ -105,7 +104,9 @@ class SubscriptionManager {
   Future<bool> startSubscription(String planId) async {
     try {
       // In-App Purchase実装（将来）
-      MinqLogger.debug('Starting subscription', metadata: {'planId': planId});
+      if (kDebugMode) {
+        print('Starting subscription: $planId');
+      }
 
       // 仮実装: デバッグモードでは即座に有効化
       if (kDebugMode) {
@@ -122,11 +123,9 @@ class SubscriptionManager {
 
       return false;
     } catch (e) {
-      MinqLogger.error(
-        'Subscription error',
-        exception: e,
-        metadata: {'planId': planId},
-      );
+      if (kDebugMode) {
+        print('Subscription error: $e');
+      }
       return false;
     }
   }
@@ -135,12 +134,16 @@ class SubscriptionManager {
   Future<bool> cancelSubscription() async {
     try {
       // In-App Purchase実装（将来）
-      MinqLogger.debug('Canceling subscription');
+      if (kDebugMode) {
+        print('Canceling subscription');
+      }
 
       _currentStatus = const SubscriptionStatus.free();
       return true;
     } catch (e) {
-      MinqLogger.error('Cancel subscription error', exception: e);
+      if (kDebugMode) {
+        print('Cancel subscription error: $e');
+      }
       return false;
     }
   }
@@ -149,9 +152,13 @@ class SubscriptionManager {
   Future<void> restoreSubscriptions() async {
     try {
       // In-App Purchase実装（将来）
-      MinqLogger.debug('Restoring subscriptions');
+      if (kDebugMode) {
+        print('Restoring subscriptions');
+      }
     } catch (e) {
-      MinqLogger.error('Restore subscriptions error', exception: e);
+      if (kDebugMode) {
+        print('Restore subscriptions error: $e');
+      }
     }
   }
 

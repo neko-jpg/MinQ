@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/presentation/common/layout/responsive_layout.dart';
-import 'package:minq/presentation/common/layout/safe_scaffold.dart';
 import 'package:minq/presentation/common/security/sensitive_content.dart'
     as custom;
 import 'package:minq/presentation/routing/app_router.dart';
@@ -15,32 +13,31 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
 
-    return SafeScaffold(
+    return Scaffold(
       backgroundColor: tokens.background,
       appBar: AppBar(
         title: Text(
           'プロフィール',
-          style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
+          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
-        leading: ResponsiveLayout.ensureTouchTarget(
-          child: IconButton(
-            icon: Icon(Icons.arrow_back, color: tokens.textPrimary),
-            onPressed: () => context.pop(),
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: tokens.textPrimary),
+          onPressed: () => context.pop(),
         ),
       ),
       body: custom.SensitiveContent(
-        child: SafeScrollView(
+        child: ListView(
+          padding: EdgeInsets.all(tokens.spacing(5)),
           children: <Widget>[
-            _buildProfileHeader(context, tokens),
-            SizedBox(height: tokens.spacing.xl),
+            _buildProfileHeader(tokens),
+            SizedBox(height: tokens.spacing(6)),
             _buildStatsRow(tokens),
-            const SizedBox(height: 32),
+            SizedBox(height: tokens.spacing(8)),
             _buildAboutSection(tokens),
-            SizedBox(height: tokens.spacing.xl),
+            SizedBox(height: tokens.spacing(6)),
             _buildMenu(context, tokens, ref),
           ],
         ),
@@ -48,12 +45,12 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, MinqTheme tokens) {
+  Widget _buildProfileHeader(MinqTheme tokens) {
     return Column(
       children: <Widget>[
         Builder(
           builder: (context) {
-            const avatarSize = 96.0;
+            final avatarSize = tokens.spacing(24);
             final pixelRatio = MediaQuery.of(context).devicePixelRatio;
             final cacheDimension = (avatarSize * pixelRatio).round();
             return ClipOval(
@@ -69,20 +66,20 @@ class ProfileScreen extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: tokens.spacing(4)),
         Text(
           'Ethan',
-          style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
+          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
         ),
-        SizedBox(height: tokens.spacing.xs),
+        SizedBox(height: tokens.spacing(1)),
         Text(
           '@ethan_123',
-          style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
         ),
-        SizedBox(height: tokens.spacing.sm),
+        SizedBox(height: tokens.spacing(2)),
         Text(
           '2ヶ月前に参加',
-          style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
         ),
       ],
     );
@@ -101,18 +98,18 @@ class ProfileScreen extends ConsumerWidget {
 
   Widget _buildAboutSection(MinqTheme tokens) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: tokens.spacing.sm),
+      padding: EdgeInsets.symmetric(horizontal: tokens.spacing(2)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             '概要',
-            style: tokens.typography.h5.copyWith(color: tokens.textPrimary),
+            style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             '私はソフトウェアエンジニアで、コーディングとものづくりが大好きです。また、生産性向上や習慣化の大ファンでもあり、MinQを使って目標を達成できることを楽しみにしています。',
-            style: tokens.typography.bodySmall.copyWith(
+            style: tokens.bodySmall.copyWith(
               color: tokens.textMuted,
               height: 1.5,
             ),
@@ -123,152 +120,45 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Widget _buildMenu(BuildContext context, MinqTheme tokens, WidgetRef ref) {
-    final navigation = ref.read(navigationUseCaseProvider);
-
-    return Column(
-      children: [
-        // Main Features Section
-        Card(
-          elevation: 0,
-          color: tokens.surface,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
-          child: Column(
-            children: <Widget>[
-              _buildMenuItem(
-                context,
-                tokens,
-                title: 'プロフィールを編集',
-                icon: Icons.edit_outlined,
-                onTap: () => navigation.goToProfileSettings(),
-              ),
-              const Divider(height: 1),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: 'ペア',
-                subtitle: '友達と一緒に習慣を継続',
-                icon: Icons.groups_outlined,
-                onTap: () => navigation.goToPair(),
-              ),
-              const Divider(height: 1),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: 'クエスト',
-                subtitle: '習慣をクエストとして管理',
-                icon: Icons.checklist_outlined,
-                onTap: () => navigation.goToQuests(),
-              ),
-              const Divider(height: 1),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: 'AIインサイト',
-                subtitle: 'データに基づく習慣分析',
-                icon: Icons.insights_outlined,
-                onTap: () => navigation.goToAiInsights(),
-              ),
-            ],
-          ),
-        ),
-
-        SizedBox(height: tokens.spacing.lg),
-
-        // Settings Section with Hamburger Menu
-        Card(
-          elevation: 0,
-          color: tokens.surface,
-          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
-          child: ExpansionTile(
-            leading: Icon(Icons.menu, color: tokens.textPrimary),
+    return Card(
+      elevation: 0,
+      color: tokens.surface,
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
+      child: Column(
+        children: <Widget>[
+          ListTile(
             title: Text(
-              '設定とその他',
-              style: tokens.typography.bodyMedium.copyWith(
+              'プロフィールを編集',
+              style: tokens.bodyMedium.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            children: [
-              _buildMenuItem(
-                context,
-                tokens,
-                title: '設定',
-                icon: Icons.settings_outlined,
-                onTap: () => navigation.goToSettings(),
-                isInExpansion: true,
-              ),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: '通知設定',
-                icon: Icons.notifications_outlined,
-                onTap: () => navigation.goToNotificationSettings(),
-                isInExpansion: true,
-              ),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: '友達招待',
-                icon: Icons.person_add_outlined,
-                onTap: () => navigation.goToReferral(),
-                isInExpansion: true,
-              ),
-              _buildMenuItem(
-                context,
-                tokens,
-                title: 'ヘルプセンター',
-                icon: Icons.help_outline,
-                onTap: () => navigation.goToHelpCenter(),
-                isInExpansion: true,
-              ),
-            ],
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: tokens.spacing(4),
+              color: tokens.textMuted,
+            ),
+            onTap: () {},
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMenuItem(
-    BuildContext context,
-    MinqTheme tokens, {
-    required String title,
-    String? subtitle,
-    required IconData icon,
-    required VoidCallback onTap,
-    bool isInExpansion = false,
-  }) {
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.lg,
-        vertical: isInExpansion ? tokens.spacing.xs : tokens.spacing.sm,
-      ),
-      minTileHeight: ResponsiveLayout.minTouchTarget + 12, // Ensure proper touch target
-      leading: Icon(
-        icon,
-        color: tokens.textPrimary,
-        size: 24,
-      ),
-      title: Text(
-        title,
-        style: tokens.typography.bodyMedium.copyWith(
-          color: tokens.textPrimary,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      subtitle: subtitle != null
-          ? Text(
-              subtitle,
-              style: tokens.typography.bodySmall.copyWith(
-                color: tokens.textMuted,
+          const Divider(height: 1),
+          ListTile(
+            title: Text(
+              '設定',
+              style: tokens.bodyMedium.copyWith(
+                color: tokens.textPrimary,
+                fontWeight: FontWeight.w600,
               ),
-            )
-          : null,
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        size: 16,
-        color: tokens.textMuted,
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: tokens.spacing(4),
+              color: tokens.textMuted,
+            ),
+            onTap: () => ref.read(navigationUseCaseProvider).goToSettings(),
+          ),
+        ],
       ),
-      onTap: onTap,
     );
   }
 }
@@ -285,25 +175,25 @@ class _StatItem extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.symmetric(
-        vertical: tokens.spacing.md,
-        horizontal: tokens.spacing.xl,
+        vertical: tokens.spacing(3),
+        horizontal: tokens.spacing(6),
       ),
       decoration: BoxDecoration(
         color: tokens.surface,
         borderRadius: tokens.cornerMedium(),
-        border: Border.all(color: tokens.brandPrimary.withAlpha(46)),
-        boxShadow: tokens.shadow.soft,
+        border: Border.all(color: tokens.brandPrimary.withValues(alpha: 0.18)),
+        boxShadow: tokens.shadowSoft,
       ),
       child: Column(
         children: <Widget>[
           Text(
             value,
-            style: tokens.typography.h5.copyWith(color: tokens.brandPrimary),
+            style: tokens.titleSmall.copyWith(color: tokens.brandPrimary),
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(1)),
           Text(
             label,
-            style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
           ),
         ],
       ),

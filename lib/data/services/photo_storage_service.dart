@@ -80,9 +80,6 @@ class PhotoStorageService {
     );
 
     final directory = await _ensurePhotoDirectory(ownerUid);
-    // TODO(Jules): The analyzer is incorrectly flagging Uuid.NAMESPACE_URL as deprecated.
-    // The suggested replacement, Namespace.url, is not a string and causes a type error.
-    // ignore: deprecated_member_use
     final hashedName = _uuid.v5(
       Uuid.NAMESPACE_URL,
       '$ownerUid-$questId-${DateTime.now().toUtc().toIso8601String()}-${sanitizedBytes.length}',

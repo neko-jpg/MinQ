@@ -68,11 +68,7 @@ class WebhookDispatchService {
           body: response.body,
         );
       } catch (error, stackTrace) {
-        logger.warning(
-          'Failed to dispatch webhook',
-          error: error,
-          stackTrace: stackTrace,
-        );
+        logger.warning('Failed to dispatch webhook', error, stackTrace);
       }
     }
   }

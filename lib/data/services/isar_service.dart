@@ -1,62 +1,34 @@
+import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
-import 'package:minq/core/database/database_lifecycle_manager.dart';
-import 'package:minq/core/database/database_performance_monitor.dart';
 import 'package:minq/domain/badge/badge.dart';
 import 'package:minq/domain/log/quest_log.dart';
 // import 'package:minq/domain/pair/pair.dart'; // Pair is Firestore-only for now
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/user/user.dart';
+import 'package:path_provider/path_provider.dart';
 
-class IsarService with DatabasePerformanceTracking {
-  final EnhancedIsarService _enhancedService = EnhancedIsarService();
-
+class IsarService {
   late final Isar isar;
 
-  Future<Isar> init({
-    Function(String message, double progress)? onProgress,
-  }) async {
-    return trackOperation('isar_init', () async {
-      // Start performance monitoring
-      DatabasePerformanceMonitor.instance.startMonitoring();
-
-      final existing = Isar.getInstance();
-      if (existing != null) {
-        isar = existing;
-        onProgress?.call('Using existing database instance', 1.0);
-        return isar;
-      }
-
-      isar = await _enhancedService.init(
-        schemas: [
-          QuestSchema,
-          UserSchema,
-          // PairSchema, // Pair is Firestore-only for now
-          QuestLogSchema,
-          BadgeSchema,
-        ],
-        onProgress: onProgress,
-      );
-
+  Future<Isar> init() async {
+    final existing = Isar.getInstance();
+    if (existing != null) {
+      isar = existing;
       return isar;
-    });
-  }
+    }
 
-  /// Get database health status
-  Future<DatabaseHealthStatus> getHealthStatus() {
-    return _enhancedService.checkHealth();
-  }
+    final directory = kIsWeb ? null : await getApplicationDocumentsDirectory();
+    final schemas = [
+      QuestSchema,
+      UserSchema,
+      // PairSchema, // Pair is Firestore-only for now
+      QuestLogSchema,
+      BadgeSchema,
+    ];
 
-  /// Optimize database storage
-  Future<void> optimize() {
-    return trackOperation('isar_optimize', () => _enhancedService.optimize());
-  }
+    final directoryPath = directory?.path ?? 'isar_web';
+    isar = await Isar.open(schemas, directory: directoryPath);
 
-  /// Check if database is ready
-  bool get isReady => _enhancedService.isReady;
-
-  /// Dispose database resources
-  Future<void> dispose() async {
-    await trackOperation('isar_dispose', () => _enhancedService.dispose());
-    DatabasePerformanceMonitor.instance.dispose();
+    return isar;
   }
 }

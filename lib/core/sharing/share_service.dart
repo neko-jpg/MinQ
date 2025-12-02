@@ -4,23 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:minq/data/logging/minq_logger.dart';
-import 'package:minq/core/sharing/ai_share_banner_service.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
 
 /// 共有サービス
 class ShareService {
   final OgpImageGenerator? _ogpGenerator;
-  final AIShareBannerService? _aiBannerService;
 
   ShareService({
     OgpImageGenerator? ogpGenerator,
-    AIShareBannerService? aiBannerService,
-  }) : _ogpGenerator = ogpGenerator,
-       _aiBannerService = aiBannerService;
+  }) : _ogpGenerator = ogpGenerator;
 
   /// テキストを共有
   Future<void> shareText({required String text, String? subject}) async {
+    // ignore: deprecated_member_use
     await Share.share(text, subject: subject);
   }
 
@@ -30,6 +26,7 @@ class ShareService {
     String? text,
     String? subject,
   }) async {
+    // ignore: deprecated_member_use
     await Share.shareXFiles([XFile(file.path)], text: text, subject: subject);
   }
 
@@ -39,6 +36,7 @@ class ShareService {
     String? text,
     String? subject,
   }) async {
+    // ignore: deprecated_member_use
     await Share.shareXFiles(
       files.map((f) => XFile(f.path)).toList(),
       text: text,
@@ -104,28 +102,6 @@ class ShareService {
     await shareFile(file: imageFile, text: text);
   }
 
-  Future<void> shareAIGeneratedBanner({
-    required String title,
-    required String subtitle,
-    String? text,
-    int seed = 0,
-  }) async {
-    if (_aiBannerService == null) {
-      await shareText(text: text ?? '$title\n$subtitle');
-      return;
-    }
-
-    final bannerBytes = await _aiBannerService!.buildBanner(
-      title: title,
-      subtitle: subtitle,
-      seed: seed,
-    );
-    final tempDir = await getTemporaryDirectory();
-    final file = File('${tempDir.path}/miinq_ai_banner.png');
-    await file.writeAsBytes(bannerBytes, flush: true);
-    await shareFile(file: file, text: text ?? '$title\n$subtitle');
-  }
-
   /// ウィジェットをキャプチャ
   Future<ui.Image?> _captureWidget(GlobalKey key) async {
     try {
@@ -136,7 +112,7 @@ class ShareService {
       final image = await boundary.toImage(pixelRatio: 3.0);
       return image;
     } catch (e) {
-      MinqLogger.error('❌ Failed to capture widget', exception: e);
+      print('❌ Failed to capture widget: $e');
       return null;
     }
   }

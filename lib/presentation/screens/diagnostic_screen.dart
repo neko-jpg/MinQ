@@ -35,7 +35,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withAlpha(230),
+        backgroundColor: tokens.background.withOpacity(0.9),
         elevation: 0,
       ),
       body: ListView(
@@ -45,12 +45,12 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
           Container(
             padding: EdgeInsets.all(tokens.spacing.md),
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withAlpha(26),
+              color: tokens.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(tokens.radius.md),
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: tokens.brandPrimary),
+                Icon(Icons.info_outline, color: tokens.primary),
                 SizedBox(width: tokens.spacing.sm),
                 Expanded(
                   child: Text(
@@ -92,7 +92,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
           _buildDiagnosticItem(
             title: 'データベーステスト',
             description: 'ローカルデータベースの動作を確認',
-            icon: Icons.storage,
+            icon: Icons.database_outlined,
             testKey: 'database',
             onTest: _testDatabase,
             tokens: tokens,
@@ -123,7 +123,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(tokens.radius.full),
                 ),
               ),
             ),
@@ -163,7 +163,7 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: _getStatusColor(result?.status, tokens).withAlpha(26),
+                color: _getStatusColor(result?.status, tokens).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(tokens.radius.md),
               ),
               child: Icon(icon, color: _getStatusColor(result?.status, tokens)),
@@ -250,8 +250,8 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildSummaryItem('合格', passed, tokens.accentSuccess, tokens),
-              _buildSummaryItem('不合格', failed, tokens.accentError, tokens),
+              _buildSummaryItem('合格', passed, tokens.success, tokens),
+              _buildSummaryItem('不合格', failed, tokens.error, tokens),
               _buildSummaryItem('合計', total, tokens.textSecondary, tokens),
             ],
           ),
@@ -287,8 +287,8 @@ class _DiagnosticScreenState extends ConsumerState<DiagnosticScreen> {
 
   Color _getStatusColor(DiagnosticStatus? status, MinqTheme tokens) {
     return switch (status) {
-      DiagnosticStatus.passed => tokens.accentSuccess,
-      DiagnosticStatus.failed => tokens.accentError,
+      DiagnosticStatus.passed => tokens.success,
+      DiagnosticStatus.failed => tokens.error,
       DiagnosticStatus.warning => Colors.orange,
       null => tokens.textSecondary,
     };

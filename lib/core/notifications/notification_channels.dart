@@ -226,6 +226,7 @@ class NotificationSettingsHelper {
       enableVibration: enableVibration,
       enableLights: enableLights,
       sound: sound != null ? RawResourceAndroidNotificationSound(sound) : null,
+      vibrationPattern: vibrationPattern,
       largeIcon:
           largeIcon != null ? DrawableResourceAndroidBitmap(largeIcon) : null,
       showWhen: true,

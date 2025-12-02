@@ -121,7 +121,7 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
         ),
         title: Text(
           'MiniQuestを作成',
-          style: tokens.typography.h4.copyWith(
+          style: tokens.titleMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -131,18 +131,18 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: EdgeInsets.all(tokens.spacing(4)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'MiniQuestのタイトル',
-                style: tokens.typography.body.copyWith(
+                style: tokens.bodyMedium.copyWith(
                   color: tokens.textMuted,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: tokens.spacing.sm),
+              SizedBox(height: tokens.spacing(2)),
               TextFormField(
                 controller: _titleController,
                 validator:
@@ -156,15 +156,15 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
                   filled: true,
                   fillColor: tokens.surface,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
+                    borderRadius: tokens.cornerLarge(),
                     borderSide: BorderSide(color: tokens.border),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
+                    borderRadius: tokens.cornerLarge(),
                     borderSide: BorderSide(color: tokens.border),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
+                    borderRadius: tokens.cornerLarge(),
                     borderSide: BorderSide(
                       color: tokens.brandPrimary,
                       width: 2,
@@ -172,39 +172,39 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: tokens.spacing.lg),
+              SizedBox(height: tokens.spacing(4)),
               Text(
                 'アイコンとカラー',
-                style: tokens.typography.body.copyWith(
+                style: tokens.bodyMedium.copyWith(
                   color: tokens.textMuted,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: tokens.spacing.sm),
+              SizedBox(height: tokens.spacing(2)),
               Row(
                 children: [
                   GestureDetector(
                     onTap: _onChooseIcon,
                     child: Container(
-                      width: 64,
-                      height: 64,
+                      width: tokens.spacing(16),
+                      height: tokens.spacing(16),
                       decoration: BoxDecoration(
                         color: tokens.surface,
-                        borderRadius: BorderRadius.circular(tokens.radius.lg),
+                        borderRadius: tokens.cornerLarge(),
                         border: Border.all(color: tokens.border),
                       ),
                       child: Icon(
                         iconDataForKey(_selectedIconKey),
-                        size: 40,
+                        size: tokens.spacing(10),
                         color: tokens.brandPrimary,
                       ),
                     ),
                   ),
-                  SizedBox(width: tokens.spacing.lg),
+                  SizedBox(width: tokens.spacing(4)),
                   Expanded(
                     child: Wrap(
-                      spacing: tokens.spacing.sm,
-                      runSpacing: tokens.spacing.sm,
+                      spacing: tokens.spacing(2),
+                      runSpacing: tokens.spacing(2),
                       children:
                           _miniQuestColors
                               .map(
@@ -214,8 +214,8 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
                                         () => _selectedColor = color,
                                       ),
                                   child: Container(
-                                    width: 28,
-                                    height: 28,
+                                    width: tokens.spacing(7),
+                                    height: tokens.spacing(7),
                                     decoration: BoxDecoration(
                                       color: color,
                                       shape: BoxShape.circle,
@@ -235,15 +235,15 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: tokens.spacing.lg),
+              SizedBox(height: tokens.spacing(4)),
               Text(
                 '目標タイプ',
-                style: tokens.typography.body.copyWith(
+                style: tokens.bodyMedium.copyWith(
                   color: tokens.textMuted,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: tokens.spacing.sm),
+              SizedBox(height: tokens.spacing(2)),
               SegmentedButton<bool>(
                 segments: const [
                   ButtonSegment<bool>(value: true, label: Text('時間で記録')),
@@ -254,15 +254,15 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
                   setState(() => _isTimeGoal = selection.first);
                 },
               ),
-              SizedBox(height: tokens.spacing.md),
+              SizedBox(height: tokens.spacing(3)),
               Text(
                 '目標値',
-                style: tokens.typography.body.copyWith(
+                style: tokens.bodyMedium.copyWith(
                   color: tokens.textMuted,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: tokens.spacing.sm),
+              SizedBox(height: tokens.spacing(2)),
               TextFormField(
                 controller: _goalValueController,
                 keyboardType: TextInputType.number,
@@ -271,15 +271,15 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
                   filled: true,
                   fillColor: tokens.surface,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
+                    borderRadius: tokens.cornerLarge(),
                     borderSide: BorderSide(color: tokens.border),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
+                    borderRadius: tokens.cornerLarge(),
                     borderSide: BorderSide(color: tokens.border),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.lg),
+                    borderRadius: tokens.cornerLarge(),
                     borderSide: BorderSide(
                       color: tokens.brandPrimary,
                       width: 2,
@@ -287,12 +287,12 @@ class _CreateMiniQuestScreenState extends ConsumerState<CreateMiniQuestScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: tokens.spacing.xxl),
+              SizedBox(height: tokens.spacing(8)),
               FilledButton(
                 onPressed: _saveMiniQuest,
                 style: FilledButton.styleFrom(
                   backgroundColor: tokens.brandPrimary,
-                  minimumSize: const Size(double.infinity, 48),
+                  minimumSize: Size(double.infinity, tokens.spacing(12)),
                 ),
                 child: const Text('MiniQuestを保存'),
               ),
@@ -330,7 +330,7 @@ class _IconPickerDialog extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: tokens.surfaceVariant,
-                  borderRadius: BorderRadius.circular(tokens.radius.lg),
+                  borderRadius: tokens.cornerLarge(),
                 ),
                 child: Icon(icon.icon, size: 28),
               ),

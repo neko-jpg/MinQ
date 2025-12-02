@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health/health.dart';
+import 'package:logger/logger.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
@@ -38,7 +39,7 @@ class HealthSyncService {
       );
       return requested;
     } catch (e) {
-      logger.error('Error requesting health permissions: $e');
+      AppLogger().error('Error requesting health permissions', e);
       return false;
     }
   }
@@ -55,17 +56,16 @@ class HealthSyncService {
     ];
 
     try {
-      List<HealthDataPoint> healthData =
-          await _health.getHealthDataFromTypes(
-        startTime: startDate,
-        endTime: endDate,
-        types: types,
+      List<HealthDataPoint> healthData = await _health.getHealthDataFromTypes(
+        startDate,
+        endDate,
+        types,
       );
       // Remove duplicates
       healthData = _health.removeDuplicates(healthData);
       return healthData;
     } catch (e) {
-      logger.error('Error fetching health data: $e');
+      AppLogger().error('Error fetching health data', e);
       return [];
     }
   }
@@ -76,7 +76,7 @@ class HealthSyncService {
     List<HealthDataPoint> healthData,
   ) async {
     if (healthData.isEmpty) {
-      logger.info('No new health data to process.');
+      AppLogger().info('No new health data to process.');
       return;
     }
 
@@ -90,7 +90,7 @@ class HealthSyncService {
         ifAbsent: () => value,
       );
     }
-    logger.info('Aggregated health data: $aggregatedData');
+    AppLogger().logJson('Aggregated health data', {'data': aggregatedData.toString()}, level: Level.debug);
 
     // 2. Fetch user's active, uncompleted, health-related quests
     final questSnapshot =
@@ -103,7 +103,7 @@ class HealthSyncService {
             .get();
 
     if (questSnapshot.docs.isEmpty) {
-      logger.info('No relevant health quests to update.');
+      AppLogger().info('No relevant health quests to update.');
       return;
     }
 
@@ -131,7 +131,7 @@ class HealthSyncService {
       if (healthType != null && (aggregatedData[healthType] ?? 0) >= goal) {
         // Mark quest as complete
         await questDoc.reference.update({'completed': true});
-        logger.info("Auto-completed quest: ${quest['name']}");
+        AppLogger().info("Auto-completed quest: ${quest['name']}");
         completedQuestsCount++;
 
         // Also log the completion

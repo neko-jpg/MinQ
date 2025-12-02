@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// クエスト属性選択ウィジェット
@@ -24,7 +23,7 @@ class QuestAttributesSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,49 +31,49 @@ class QuestAttributesSelector extends StatelessWidget {
         // 難易度選択
         if (onDifficultyChanged != null) ...[
           Text(
-            AppLocalizations.of(context)!.difficulty,
-            style: tokens.typography.body.copyWith(
+            '難易度',
+            style: tokens.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spaceSM),
           _DifficultySelector(
             selected: selectedDifficulty,
             onChanged: onDifficultyChanged!,
             tokens: tokens,
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spaceLG),
         ],
 
         // 推定時間選択
         if (onEstimatedMinutesChanged != null) ...[
           Text(
-            AppLocalizations.of(context)!.estimatedTime,
-            style: tokens.typography.body.copyWith(
+            '推定時間',
+            style: tokens.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spaceSM),
           _DurationSelector(
             selected: estimatedMinutes,
             onChanged: onEstimatedMinutesChanged!,
             tokens: tokens,
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spaceLG),
         ],
 
         // 場所選択
         if (onLocationChanged != null) ...[
           Text(
-            AppLocalizations.of(context)!.location,
-            style: tokens.typography.body.copyWith(
+            '場所',
+            style: tokens.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: tokens.textPrimary,
             ),
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spaceSM),
           _LocationSelector(
             selected: selectedLocation,
             onChanged: onLocationChanged!,
@@ -98,28 +97,25 @@ class _DifficultySelector extends StatelessWidget {
     required this.tokens,
   });
 
-  static List<Map<String, String>> getDifficulties(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return [
-      {'value': 'easy', 'label': l10n.difficultyEasy, 'icon': '⭐'},
-      {'value': 'medium', 'label': l10n.difficultyMedium, 'icon': '⭐⭐'},
-      {'value': 'hard', 'label': l10n.difficultyHard, 'icon': '⭐⭐⭐'},
-    ];
-  }
+  static const difficulties = [
+    {'value': 'easy', 'label': '簡単', 'icon': '⭐'},
+    {'value': 'medium', 'label': '普通', 'icon': '⭐⭐'},
+    {'value': 'hard', 'label': '難しい', 'icon': '⭐⭐⭐'},
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: tokens.spacing.sm,
+      spacing: tokens.spaceSM,
       children:
-          getDifficulties(context).map((difficulty) {
+          difficulties.map((difficulty) {
             final isSelected = selected == difficulty['value'];
             return ChoiceChip(
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(difficulty['icon']!),
-                  SizedBox(width: tokens.spacing.xs),
+                  SizedBox(width: tokens.spaceBase),
                   Text(difficulty['label']!),
                 ],
               ),
@@ -128,8 +124,7 @@ class _DifficultySelector extends StatelessWidget {
                 onChanged(selected ? difficulty['value'] : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor:
-                  tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+              selectedColor: tokens.brandPrimary.withOpacity(0.2),
             );
           }).toList(),
     );
@@ -148,34 +143,30 @@ class _DurationSelector extends StatelessWidget {
     required this.tokens,
   });
 
-  static List<Map<String, dynamic>> getDurations(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return [
-      {'value': 5, 'label': l10n.duration5min},
-      {'value': 10, 'label': l10n.duration10min},
-      {'value': 15, 'label': l10n.duration15min},
-      {'value': 30, 'label': l10n.duration30min},
-      {'value': 60, 'label': l10n.duration1hour},
-    ];
-  }
+  static const durations = [
+    {'value': 5, 'label': '5分'},
+    {'value': 10, 'label': '10分'},
+    {'value': 15, 'label': '15分'},
+    {'value': 30, 'label': '30分'},
+    {'value': 60, 'label': '1時間'},
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: tokens.spacing.sm,
+      spacing: tokens.spaceSM,
       children:
-          getDurations(context).map((duration) {
+          durations.map((duration) {
             final value = duration['value'] as int;
             final isSelected = selected == value;
             return ChoiceChip(
-              label: Text(duration['label'] as String),
+              label: Text(duration['label']!),
               selected: isSelected,
               onSelected: (selected) {
                 onChanged(selected ? value : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor:
-                  tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+              selectedColor: tokens.brandPrimary.withOpacity(0.2),
             );
           }).toList(),
     );
@@ -194,32 +185,29 @@ class _LocationSelector extends StatelessWidget {
     required this.tokens,
   });
 
-  static List<Map<String, String>> getLocations(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return [
-      {'value': 'home', 'label': l10n.locationHome, 'icon': '🏠'},
-      {'value': 'gym', 'label': l10n.locationGym, 'icon': '🏋️'},
-      {'value': 'office', 'label': l10n.locationOffice, 'icon': '🏢'},
-      {'value': 'outdoor', 'label': l10n.locationOutdoor, 'icon': '🌳'},
-      {'value': 'library', 'label': l10n.locationLibrary, 'icon': '📚'},
-    ];
-  }
+  static const locations = [
+    {'value': 'home', 'label': '自宅', 'icon': '🏠'},
+    {'value': 'gym', 'label': 'ジム', 'icon': '🏋️'},
+    {'value': 'office', 'label': 'オフィス', 'icon': '🏢'},
+    {'value': 'outdoor', 'label': '屋外', 'icon': '🌳'},
+    {'value': 'library', 'label': '図書館', 'icon': '📚'},
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: tokens.spacing.sm,
-      runSpacing: tokens.spacing.sm,
+      spacing: tokens.spaceSM,
+      runSpacing: tokens.spaceSM,
       children:
-          getLocations(context).map((location) {
+          locations.map((location) {
             final isSelected = selected == location['value'];
             return ChoiceChip(
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(location['icon'] as String),
-                  SizedBox(width: tokens.spacing.xs),
-                  Text(location['label'] as String),
+                  Text(location['icon']!),
+                  SizedBox(width: tokens.spaceBase),
+                  Text(location['label']!),
                 ],
               ),
               selected: isSelected,
@@ -227,8 +215,7 @@ class _LocationSelector extends StatelessWidget {
                 onChanged(selected ? location['value'] : null);
               },
               backgroundColor: tokens.surface,
-              selectedColor:
-                  tokens.brandPrimary.withAlpha((255 * 0.2).round()),
+              selectedColor: tokens.brandPrimary.withOpacity(0.2),
             );
           }).toList(),
     );

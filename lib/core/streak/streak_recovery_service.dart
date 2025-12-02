@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logger/logger.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
 /// ストリークリカバリーサービス
 class StreakRecoveryService {
   final FirebaseFirestore _firestore;
-  final AppLogger _logger = AppLogger();
 
   StreakRecoveryService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// リカバリーチケットを使用してストリークを復元
   Future<bool> recoverStreak({
@@ -33,7 +33,7 @@ class StreakRecoveryService {
         // リカバリーチケット数を確認
         final recoveryTickets = userData['recoveryTickets'] as int? ?? 0;
         if (recoveryTickets <= 0) {
-          _logger.warning('No recovery tickets available');
+          AppLogger().warning('No recovery tickets available');
           return false;
         }
 
@@ -47,19 +47,20 @@ class StreakRecoveryService {
         // チケットを消費
         transaction.update(userRef, {'recoveryTickets': recoveryTickets - 1});
 
-        _logger.info(
+        AppLogger().logJson(
           'Streak recovered',
-          data: {
+          {
             'userId': userId,
             'questId': questId,
             'remainingTickets': recoveryTickets - 1,
           },
+          level: Level.info,
         );
 
         return true;
       });
     } catch (e, stack) {
-      _logger.error('Failed to recover streak', error: e, stackTrace: stack);
+      AppLogger().error('Failed to recover streak', e, stack);
       return false;
     }
   }
@@ -78,17 +79,18 @@ class StreakRecoveryService {
 
       await userRef.update({'recoveryTickets': FieldValue.increment(count)});
 
-      _logger.info(
+      AppLogger().logJson(
         'Recovery tickets purchased',
-        data: {'userId': userId, 'count': count},
+        {'userId': userId, 'count': count},
+        level: Level.info,
       );
 
       return true;
     } catch (e, stack) {
-      _logger.error(
+      AppLogger().error(
         'Failed to purchase recovery ticket',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return false;
     }
@@ -108,14 +110,14 @@ class StreakRecoveryService {
         'lastAdWatchedAt': FieldValue.serverTimestamp(),
       });
 
-      _logger.info('Recovery ticket earned by ad', data: {'userId': userId});
+      AppLogger().logJson('Recovery ticket earned by ad', {'userId': userId}, level: Level.info);
 
       return true;
     } catch (e, stack) {
-      _logger.error(
+      AppLogger().error(
         'Failed to earn ticket by ad',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return false;
     }
@@ -132,10 +134,10 @@ class StreakRecoveryService {
 
       return userDoc.data()?['recoveryTickets'] as int? ?? 0;
     } catch (e, stack) {
-      _logger.error(
+      AppLogger().error(
         'Failed to get recovery ticket count',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return 0;
     }
@@ -178,10 +180,10 @@ class StreakRecoveryService {
 
       return true;
     } catch (e, stack) {
-      _logger.error(
+      AppLogger().error(
         'Failed to check recovery availability',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return false;
     }

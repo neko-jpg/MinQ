@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:minq/data/providers.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/domain/challenges/challenge.dart';
-import 'package:minq/domain/challenges/challenge_progress.dart';
-import 'package:minq/presentation/common/layout/responsive_layout.dart';
-import 'package:minq/presentation/common/layout/safe_scaffold.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/widgets/badge_notification_widget.dart';
 
 /// チャレンジ画面
 /// 期間限定チャレンジやイベントを表示・参加できる画面
@@ -25,7 +21,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -38,19 +34,16 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
-    return SafeScaffold(
-      enableResponsiveLayout: false, // Let TabBarView handle its own layout
+    return Scaffold(
       appBar: AppBar(
         title: const Text('チャレンジ'),
         backgroundColor: tokens.surface,
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          labelColor: tokens.onSurface,
-          unselectedLabelColor: tokens.textMuted,
-          indicatorColor: tokens.brandPrimary,
           tabs: const [
             Tab(text: 'アクティブ'),
+            Tab(text: '参加可能'),
             Tab(text: '完了済み'),
           ],
         ),
@@ -59,28 +52,11 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
         controller: _tabController,
         children: const [
           _ActiveChallengesTab(),
+          _AvailableChallengesTab(),
           _CompletedChallengesTab(),
         ],
       ),
     );
-  }
-
-  /// Calculate reward points based on challenge difficulty and duration
-  int _calculateReward(Challenge challenge) {
-    final duration = challenge.endDate.difference(challenge.startDate).inDays;
-    final baseReward = challenge.goal * 10; // 10 points per goal unit
-    final durationBonus = (duration / 7).ceil() * 25; // 25 points per week
-
-    switch (challenge.type) {
-      case 'daily':
-        return baseReward + durationBonus;
-      case 'weekly':
-        return (baseReward * 1.5).round() + durationBonus;
-      case 'event':
-        return (baseReward * 2).round() + durationBonus;
-      default:
-        return baseReward + durationBonus;
-    }
   }
 }
 
@@ -90,10 +66,24 @@ class _ActiveChallengesTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final challengeState = ref.watch(activeChallengesProvider);
+    final challengeService = ref.watch(challengeServiceProvider);
 
-    return challengeState.when(
-      data: (challenges) {
+    return FutureBuilder<List<Challenge>>(
+      future: challengeService.getActiveChallenges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return _ErrorWidget(
+            message: 'チャレンジの読み込みに失敗しました',
+            onRetry: () => setState(() {}),
+          );
+        }
+
+        final challenges = snapshot.data ?? [];
+
         if (challenges.isEmpty) {
           return const _EmptyStateWidget(
             icon: Icons.emoji_events,
@@ -101,21 +91,62 @@ class _ActiveChallengesTab extends ConsumerWidget {
             message: '新しいチャレンジに参加して、特別な報酬を獲得しましょう！',
           );
         }
-        return ResponsiveLayout.constrainedContainer(
-          child: ListView.builder(
-            padding: context.responsivePadding,
-            itemCount: challenges.length,
-            itemBuilder: (context, index) {
-              return _ChallengeCard(challenge: challenges[index]);
-            },
-          ),
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: challenges.length,
+          itemBuilder: (context, index) {
+            return _ChallengeCard(challenge: challenges[index], isActive: true);
+          },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => _ErrorWidget(
-        message: 'チャレンジの読み込みに失敗しました',
-        onRetry: () => ref.refresh(activeChallengesProvider),
-      ),
+    );
+  }
+}
+
+/// 参加可能チャレンジタブ
+class _AvailableChallengesTab extends ConsumerWidget {
+  const _AvailableChallengesTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final challengeService = ref.watch(challengeServiceProvider);
+
+    return FutureBuilder<List<Challenge>>(
+      future: challengeService.getAvailableChallenges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return _ErrorWidget(
+            message: 'チャレンジの読み込みに失敗しました',
+            onRetry: () => setState(() {}),
+          );
+        }
+
+        final challenges = snapshot.data ?? [];
+
+        if (challenges.isEmpty) {
+          return const _EmptyStateWidget(
+            icon: Icons.schedule,
+            title: '参加可能なチャレンジはありません',
+            message: '新しいチャレンジが追加されるまでお待ちください。',
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: challenges.length,
+          itemBuilder: (context, index) {
+            return _ChallengeCard(
+              challenge: challenges[index],
+              isActive: false,
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -126,10 +157,24 @@ class _CompletedChallengesTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final challengeState = ref.watch(completedChallengesProvider);
+    final challengeService = ref.watch(challengeServiceProvider);
 
-    return challengeState.when(
-      data: (challenges) {
+    return FutureBuilder<List<Challenge>>(
+      future: challengeService.getCompletedChallenges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return _ErrorWidget(
+            message: 'チャレンジの読み込みに失敗しました',
+            onRetry: () => setState(() {}),
+          );
+        }
+
+        final challenges = snapshot.data ?? [];
+
         if (challenges.isEmpty) {
           return const _EmptyStateWidget(
             icon: Icons.check_circle_outline,
@@ -137,24 +182,19 @@ class _CompletedChallengesTab extends ConsumerWidget {
             message: 'チャレンジに参加して、達成の喜びを味わいましょう！',
           );
         }
-        return ResponsiveLayout.constrainedContainer(
-          child: ListView.builder(
-            padding: context.responsivePadding,
-            itemCount: challenges.length,
-            itemBuilder: (context, index) {
-              return _ChallengeCard(
-                challenge: challenges[index],
-                isCompleted: true,
-              );
-            },
-          ),
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: challenges.length,
+          itemBuilder: (context, index) {
+            return _ChallengeCard(
+              challenge: challenges[index],
+              isActive: false,
+              isCompleted: true,
+            );
+          },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => _ErrorWidget(
-        message: '完了済みチャレンジの読み込みに失敗しました',
-        onRetry: () => ref.refresh(completedChallengesProvider),
-      ),
     );
   }
 }
@@ -163,71 +203,67 @@ class _CompletedChallengesTab extends ConsumerWidget {
 class _ChallengeCard extends ConsumerWidget {
   const _ChallengeCard({
     required this.challenge,
+    required this.isActive,
     this.isCompleted = false,
   });
 
   final Challenge challenge;
+  final bool isActive;
   final bool isCompleted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final userId = ref.watch(uidProvider);
-    final progressState = ref.watch(
-      challengeProgressProvider(
-        ChallengeProgressIdentity(userId: userId!, challengeId: challenge.id),
-      ),
-    );
 
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing.md),
+      margin: EdgeInsets.only(bottom: tokens.spacing(3)),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.border),
       ),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(tokens.radius.lg),
+          borderRadius: tokens.cornerLarge(),
           gradient: _getGradient(tokens),
         ),
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: EdgeInsets.all(tokens.spacing(4)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    width: 48,
-                    height: 48,
+                    width: tokens.spacing(12),
+                    height: tokens.spacing(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withAlpha((255 * 0.2).round()),
-                      borderRadius: BorderRadius.circular(tokens.radius.md),
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: tokens.cornerMedium(),
                     ),
                     child: Icon(
-                      _getChallengeIcon(challenge.type),
+                      _getChallengeIcon(),
                       color: Colors.white,
-                      size: 24,
+                      size: tokens.spacing(6),
                     ),
                   ),
-                  SizedBox(width: tokens.spacing.md),
+                  SizedBox(width: tokens.spacing(3)),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          challenge.name,
-                          style: tokens.typography.h4.copyWith(
+                          challenge.title,
+                          style: tokens.titleMedium.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: tokens.spacing.xs),
+                        SizedBox(height: tokens.spacing(1)),
                         Text(
                           challenge.description,
-                          style: tokens.typography.caption.copyWith(
-                            color: Colors.white.withAlpha((255 * 0.9).round()),
+                          style: tokens.bodySmall.copyWith(
+                            color: Colors.white.withOpacity(0.9),
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -236,81 +272,105 @@ class _ChallengeCard extends ConsumerWidget {
                     ),
                   ),
                   if (isCompleted)
-                    const Icon(
+                    Icon(
                       Icons.check_circle,
                       color: Colors.white,
-                      size: 24,
+                      size: tokens.spacing(6),
                     ),
                 ],
               ),
-              SizedBox(height: tokens.spacing.md),
-              progressState.when(
-                data: (progress) => _buildProgressSection(
-                  context,
-                  tokens,
-                  progress,
+
+              SizedBox(height: tokens.spacing(3)),
+
+              // 進捗バー
+              if (isActive || isCompleted) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '進捗',
+                      style: tokens.bodySmall.copyWith(
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                    ),
+                    Text(
+                      '${challenge.currentProgress}/${challenge.targetValue}',
+                      style: tokens.bodySmall.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                loading: () =>
-                    const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white))),
-                error: (e, s) => Text(
-                  '進捗の読み込み失敗',
-                  style: tokens.typography.caption.copyWith(color: Colors.white),
+                SizedBox(height: tokens.spacing(2)),
+                ClipRRect(
+                  borderRadius: tokens.cornerSmall(),
+                  child: LinearProgressIndicator(
+                    value: challenge.currentProgress / challenge.targetValue,
+                    minHeight: tokens.spacing(2),
+                    backgroundColor: Colors.white.withOpacity(0.3),
+                    valueColor: const AlwaysStoppedAnimation(Colors.white),
+                  ),
                 ),
-              ),
-              SizedBox(height: tokens.spacing.md),
+                SizedBox(height: tokens.spacing(3)),
+              ],
+
+              // 報酬情報
               Row(
                 children: [
                   Icon(
                     Icons.emoji_events,
-                    color: Colors.white.withAlpha((255 * 0.9).round()),
-                    size: 16,
+                    color: Colors.white.withOpacity(0.9),
+                    size: tokens.spacing(4),
                   ),
-                  SizedBox(width: tokens.spacing.xs),
+                  SizedBox(width: tokens.spacing(1)),
                   Text(
-                    '報酬: ${_calculateReward(challenge)}ポイント',
-                    style: tokens.typography.caption.copyWith(
-                      color: Colors.white.withAlpha((255 * 0.9).round()),
+                    '報酬: ${challenge.rewardPoints}ポイント',
+                    style: tokens.bodySmall.copyWith(
+                      color: Colors.white.withOpacity(0.9),
                     ),
                   ),
                   const Spacer(),
-                  Icon(
-                    Icons.schedule,
-                    color: Colors.white.withAlpha((255 * 0.9).round()),
-                    size: 16,
-                  ),
-                  SizedBox(width: tokens.spacing.xs),
-                  Text(
-                    _formatEndDate(challenge.endDate),
-                    style: tokens.typography.caption.copyWith(
-                      color: Colors.white.withAlpha((255 * 0.9).round()),
+                  if (challenge.endDate != null) ...[
+                    Icon(
+                      Icons.schedule,
+                      color: Colors.white.withOpacity(0.9),
+                      size: tokens.spacing(4),
                     ),
-                  ),
+                    SizedBox(width: tokens.spacing(1)),
+                    Text(
+                      _formatEndDate(challenge.endDate!),
+                      style: tokens.bodySmall.copyWith(
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                    ),
+                  ],
                 ],
               ),
-              if (!isCompleted) ...[
-                SizedBox(height: tokens.spacing.md),
+
+              SizedBox(height: tokens.spacing(3)),
+
+              // アクションボタン
+              if (!isCompleted)
                 SizedBox(
                   width: double.infinity,
-                  child: ResponsiveLayout.ensureTouchTarget(
-                    child: ElevatedButton(
-                      onPressed: () => _showChallengeDetails(context, challenge),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: tokens.brandPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(tokens.radius.md),
-                        ),
+                  child: ElevatedButton(
+                    onPressed: () => _handleChallengeAction(context, ref),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: tokens.brandPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: tokens.cornerMedium(),
                       ),
-                      child: Text(
-                        '詳細を見る',
-                        style: tokens.typography.body.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    ),
+                    child: Text(
+                      isActive ? 'チャレンジ中' : '参加する',
+                      style: tokens.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-              ],
             ],
           ),
         ),
@@ -318,81 +378,41 @@ class _ChallengeCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildProgressSection(
-    BuildContext context,
-    MinqTheme tokens,
-    ChallengeProgress? progress,
-  ) {
-    final progressValue = progress?.progress ?? 0;
-    final goal = challenge.goal;
-    final percentage = goal > 0 ? progressValue / goal : 0.0;
-
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '進捗',
-              style: tokens.typography.caption.copyWith(
-                color: Colors.white.withAlpha((255 * 0.9).round()),
-              ),
-            ),
-            Text(
-              '$progressValue/$goal',
-              style: tokens.typography.caption.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: tokens.spacing.sm),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(tokens.radius.sm),
-          child: LinearProgressIndicator(
-            value: percentage,
-            minHeight: 8,
-            backgroundColor: Colors.white.withAlpha((255 * 0.3).round()),
-            valueColor: const AlwaysStoppedAnimation(Colors.white),
-          ),
-        ),
-      ],
-    );
-  }
-
-  LinearGradient _getGradient(MinqTheme tokens) {
+  LinearGradient _getGradient(MinqTokens tokens) {
     if (isCompleted) {
       return LinearGradient(
-        colors: [
-          Colors.green,
-          Colors.green.withAlpha((255 * 0.8).round()),
-        ],
+        colors: [Colors.green, Colors.green.withOpacity(0.8)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
     }
+
+    if (isActive) {
+      return LinearGradient(
+        colors: [tokens.brandPrimary, tokens.brandPrimary.withOpacity(0.8)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    }
+
     return LinearGradient(
-      colors: [
-        tokens.brandPrimary,
-        tokens.brandPrimary.withAlpha((255 * 0.8).round()),
-      ],
+      colors: [Colors.grey.shade600, Colors.grey.shade500],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     );
   }
 
-  IconData _getChallengeIcon(String type) {
-    switch (type) {
-      case 'daily':
+  IconData _getChallengeIcon() {
+    switch (challenge.type) {
+      case ChallengeType.daily:
         return Icons.today;
-      case 'weekly':
+      case ChallengeType.weekly:
         return Icons.date_range;
-      case 'streak':
+      case ChallengeType.streak:
         return Icons.local_fire_department;
-      case 'completion':
+      case ChallengeType.completion:
         return Icons.task_alt;
-      case 'social':
+      case ChallengeType.social:
         return Icons.people;
       default:
         return Icons.emoji_events;
@@ -403,53 +423,82 @@ class _ChallengeCard extends ConsumerWidget {
     final now = DateTime.now();
     final difference = endDate.difference(now);
 
-    if (difference.isNegative) {
-      return '終了';
-    }
     if (difference.inDays > 0) {
       return '残り${difference.inDays}日';
-    }
-    if (difference.inHours > 0) {
+    } else if (difference.inHours > 0) {
       return '残り${difference.inHours}時間';
+    } else if (difference.inMinutes > 0) {
+      return '残り${difference.inMinutes}分';
+    } else {
+      return '終了';
     }
-    return '残り${difference.inMinutes}分';
   }
 
-  void _showChallengeDetails(BuildContext context, Challenge challenge) {
+  Future<void> _handleChallengeAction(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final challengeService = ref.read(challengeServiceProvider);
+
+    try {
+      if (isActive) {
+        // チャレンジ詳細画面に遷移
+        _showChallengeDetails(context);
+      } else {
+        // チャレンジに参加
+        await challengeService.joinChallenge(challenge.id);
+
+        // 成功通知
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${challenge.title}に参加しました！'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('エラーが発生しました: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showChallengeDetails(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => _ChallengeDetailsSheet(challenge: challenge),
+      builder: (context) => _ChallengeDetailsSheet(challenge: challenge),
     );
   }
 }
 
 /// チャレンジ詳細シート
-class _ChallengeDetailsSheet extends ConsumerWidget {
+class _ChallengeDetailsSheet extends StatelessWidget {
   const _ChallengeDetailsSheet({required this.challenge});
 
   final Challenge challenge;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final userId = ref.watch(uidProvider);
-    final progressState = ref.watch(
-      challengeProgressProvider(
-        ChallengeProgressIdentity(userId: userId!, challengeId: challenge.id),
-      ),
-    );
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ハンドル
           Center(
             child: Container(
               width: 40,
@@ -460,107 +509,106 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
               ),
             ),
           ),
-          SizedBox(height: tokens.spacing.lg),
+
+          SizedBox(height: tokens.spacing(4)),
+
+          // タイトル
           Text(
-            challenge.name,
-            style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+            challenge.title,
+            style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: tokens.spacing.sm),
+
+          SizedBox(height: tokens.spacing(2)),
+
+          // 説明
           Text(
             challenge.description,
-            style: tokens.typography.body.copyWith(color: tokens.textMuted),
+            style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
           ),
-          SizedBox(height: tokens.spacing.lg),
-          progressState.when(
-            data: (progress) {
-              final progressValue = progress?.progress ?? 0;
-              final goal = challenge.goal;
-              final percentage = goal > 0 ? progressValue / goal : 0.0;
-              return Container(
-                padding: EdgeInsets.all(tokens.spacing.md),
-                decoration: BoxDecoration(
-                  color: tokens.surfaceVariant,
-                  borderRadius: BorderRadius.circular(tokens.radius.md),
+
+          SizedBox(height: tokens.spacing(4)),
+
+          // 進捗情報
+          Container(
+            padding: EdgeInsets.all(tokens.spacing(3)),
+            decoration: BoxDecoration(
+              color: tokens.surfaceVariant,
+              borderRadius: tokens.cornerMedium(),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '進捗状況',
+                  style: tokens.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                SizedBox(height: tokens.spacing(2)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '進捗状況',
-                      style:
-                          tokens.typography.h5.copyWith(fontWeight: FontWeight.bold),
+                      '${challenge.currentProgress}/${challenge.targetValue}',
+                      style: tokens.bodyLarge.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    SizedBox(height: tokens.spacing.sm),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '$progressValue / $goal',
-                          style: tokens.typography.bodyLarge.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          NumberFormat.percentPattern().format(percentage),
-                          style: tokens.typography.body.copyWith(
-                            color: tokens.brandPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: tokens.spacing.sm),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(tokens.radius.sm),
-                      child: LinearProgressIndicator(
-                        value: percentage,
-                        minHeight: 8,
-                        backgroundColor:
-                            tokens.brandPrimary.withAlpha((255 * 0.2).round()),
-                        valueColor:
-                            AlwaysStoppedAnimation(tokens.brandPrimary),
+                    Text(
+                      '${((challenge.currentProgress / challenge.targetValue) * 100).toStringAsFixed(1)}%',
+                      style: tokens.bodyMedium.copyWith(
+                        color: tokens.brandPrimary,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-              );
-            },
-            loading: () =>
-                const Center(child: CircularProgressIndicator()),
-            error: (e, s) => const Text('進捗の読み込みに失敗しました'),
+                SizedBox(height: tokens.spacing(2)),
+                ClipRRect(
+                  borderRadius: tokens.cornerSmall(),
+                  child: LinearProgressIndicator(
+                    value: challenge.currentProgress / challenge.targetValue,
+                    minHeight: tokens.spacing(2),
+                    backgroundColor: tokens.brandPrimary.withOpacity(0.2),
+                    valueColor: AlwaysStoppedAnimation(tokens.brandPrimary),
+                  ),
+                ),
+              ],
+            ),
           ),
-          SizedBox(height: tokens.spacing.lg),
+
+          SizedBox(height: tokens.spacing(4)),
+
+          // 報酬情報
           Container(
-            padding: EdgeInsets.all(tokens.spacing.md),
+            padding: EdgeInsets.all(tokens.spacing(3)),
             decoration: BoxDecoration(
-              color: Colors.amber.withAlpha((255 * 0.1).round()),
-              borderRadius: BorderRadius.circular(tokens.radius.md),
-              border: Border.all(
-                color: Colors.amber.withAlpha((255 * 0.3).round()),
-              ),
+              color: Colors.amber.withOpacity(0.1),
+              borderRadius: tokens.cornerMedium(),
+              border: Border.all(color: Colors.amber.withOpacity(0.3)),
             ),
             child: Row(
               children: [
                 Icon(
                   Icons.emoji_events,
                   color: Colors.amber.shade700,
-                  size: 24,
+                  size: tokens.spacing(6),
                 ),
-                SizedBox(width: tokens.spacing.md),
+                SizedBox(width: tokens.spacing(3)),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '報酬',
-                        style: tokens.typography.caption.copyWith(
+                        style: tokens.bodySmall.copyWith(
                           color: Colors.amber.shade700,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        '${_calculateReward(challenge)}ポイント',
-                        style: tokens.typography.h5.copyWith(
+                        '${challenge.rewardPoints}ポイント',
+                        style: tokens.titleMedium.copyWith(
                           color: Colors.amber.shade700,
                           fontWeight: FontWeight.bold,
                         ),
@@ -571,7 +619,10 @@ class _ChallengeDetailsSheet extends ConsumerWidget {
               ],
             ),
           ),
+
           const Spacer(),
+
+          // 閉じるボタン
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -598,22 +649,22 @@ class _ErrorWidget extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.xl),
+        padding: EdgeInsets.all(tokens.spacing(6)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.error_outline,
-              size: 64,
+              size: tokens.spacing(16),
               color: tokens.textMuted,
             ),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(4)),
             Text(
               message,
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: tokens.titleMedium.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(4)),
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
@@ -644,21 +695,21 @@ class _EmptyStateWidget extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.xl),
+        padding: EdgeInsets.all(tokens.spacing(6)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 64, color: tokens.textMuted),
-            SizedBox(height: tokens.spacing.lg),
+            Icon(icon, size: tokens.spacing(16), color: tokens.textMuted),
+            SizedBox(height: tokens.spacing(4)),
             Text(
               title,
-              style: tokens.typography.h4.copyWith(fontWeight: FontWeight.bold),
+              style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(2)),
             Text(
               message,
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
               textAlign: TextAlign.center,
             ),
           ],

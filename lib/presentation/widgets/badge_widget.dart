@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
 
 /// バッジの種類
 enum BadgeType {
@@ -49,32 +48,44 @@ class BadgeWidget extends StatelessWidget {
   /// 数値バッジを作成
   const BadgeWidget.numeric({
     super.key,
-    required this.count,
-    this.size = BadgeSize.medium,
-    this.backgroundColor,
-    this.textColor,
-    this.show = true,
+    required int count,
+    BadgeSize size = BadgeSize.medium,
+    Color? backgroundColor,
+    Color? textColor,
+    bool show = true,
   }) : type = BadgeType.numeric,
-       text = null;
+       count = count,
+       text = null,
+       size = size,
+       backgroundColor = backgroundColor,
+       textColor = textColor,
+       show = show;
 
   /// ドットバッジを作成
-  const BadgeWidget.dot({super.key, this.backgroundColor, this.show = true})
+  const BadgeWidget.dot({super.key, Color? backgroundColor, bool show = true})
     : type = BadgeType.dot,
       count = null,
       text = null,
       size = BadgeSize.small,
-      textColor = null;
+      backgroundColor = backgroundColor,
+      textColor = null,
+      show = show;
 
   /// テキストバッジを作成
   const BadgeWidget.text({
     super.key,
-    required this.text,
-    this.size = BadgeSize.medium,
-    this.backgroundColor,
-    this.textColor,
-    this.show = true,
+    required String text,
+    BadgeSize size = BadgeSize.medium,
+    Color? backgroundColor,
+    Color? textColor,
+    bool show = true,
   }) : type = BadgeType.text,
-       count = null;
+       count = null,
+       text = text,
+       size = size,
+       backgroundColor = backgroundColor,
+       textColor = textColor,
+       show = show;
 
   @override
   Widget build(BuildContext context) {
@@ -82,37 +93,34 @@ class BadgeWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final tokens = context.tokens;
-    final bgColor = backgroundColor ?? tokens.colors.error;
-    final fgColor = textColor ?? tokens.colors.onError;
+    final theme = Theme.of(context);
+    final bgColor = backgroundColor ?? theme.colorScheme.error;
+    final fgColor = textColor ?? theme.colorScheme.onError;
 
     switch (type) {
       case BadgeType.dot:
-        return _buildDotBadge(tokens, bgColor);
+        return _buildDotBadge(bgColor);
       case BadgeType.numeric:
-        return _buildNumericBadge(tokens, bgColor, fgColor);
+        return _buildNumericBadge(context, bgColor, fgColor);
       case BadgeType.text:
-        return _buildTextBadge(tokens, bgColor, fgColor);
+        return _buildTextBadge(context, bgColor, fgColor);
     }
   }
 
-  Widget _buildDotBadge(MinqDesignTokens tokens, Color color) {
+  Widget _buildDotBadge(Color color) {
     return Container(
-      width: MinqSpacingTokens.sm,
-      height: MinqSpacingTokens.sm,
+      width: 8,
+      height: 8,
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: tokens.colors.surface,
-          width: 1.5,
-        ),
+        border: Border.all(color: Colors.white, width: 1.5),
       ),
     );
   }
 
   Widget _buildNumericBadge(
-    MinqDesignTokens tokens,
+    BuildContext context,
     Color bgColor,
     Color fgColor,
   ) {
@@ -125,27 +133,25 @@ class BadgeWidget extends StatelessWidget {
 
     return Container(
       constraints: BoxConstraints(
-        minWidth: isLarge ? tokens.spacing.xl : tokens.spacing.lg,
-        minHeight: isLarge ? tokens.spacing.xl : tokens.spacing.lg,
+        minWidth: isLarge ? 20 : 16,
+        minHeight: isLarge ? 20 : 16,
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: isLarge ? tokens.spacing.sm : tokens.spacing.xs,
-        vertical: tokens.spacing.xs,
+        horizontal: isLarge ? 8.0 : 4.0,
+        vertical: 4.0,
       ),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: tokens.radius.fullRadius,
-        border: Border.all(
-          color: tokens.colors.surface,
-          width: 1.5,
-        ),
+        borderRadius: BorderRadius.circular(isLarge ? 10 : 8),
+        border: Border.all(color: Colors.white, width: 1.5),
       ),
       child: Center(
         child: Text(
           displayText,
-          style: tokens.typography.labelSmall.copyWith(
-            color: fgColor,
+          style: TextStyle(
+            fontSize: isLarge ? 10 : 9,
             fontWeight: FontWeight.bold,
+            color: fgColor,
             height: 1.0,
           ),
         ),
@@ -153,29 +159,24 @@ class BadgeWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildTextBadge(MinqDesignTokens tokens, Color bgColor, Color fgColor) {
+  Widget _buildTextBadge(BuildContext context, Color bgColor, Color fgColor) {
     if (text == null || text!.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.sm,
-        vertical: tokens.spacing.xs,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: tokens.radius.smRadius,
-        border: Border.all(
-          color: tokens.colors.surface,
-          width: 1.5,
-        ),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.white, width: 1.5),
       ),
       child: Text(
         text!,
-        style: tokens.typography.labelSmall.copyWith(
-          color: fgColor,
+        style: TextStyle(
+          fontSize: 9,
           fontWeight: FontWeight.bold,
+          color: fgColor,
           height: 1.0,
         ),
       ),

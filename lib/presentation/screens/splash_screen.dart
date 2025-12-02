@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -66,17 +68,17 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
     );
 
-    _pulseScale = Tween<double>(begin: 1.0, end: 1.2).animate(
+    _pulseScale = Tween<double>(begin: 1.0, end: 1.3).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    _pulseOpacity = Tween<double>(begin: 0.8, end: 0.3).animate(
+    _pulseOpacity = Tween<double>(begin: 0.6, end: 0.0).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
     // パーティクルアニメーション
     _particleController = AnimationController(
-      duration: const Duration(milliseconds: 3000),
+      duration: const Duration(milliseconds: 4000),
       vsync: this,
     );
 
@@ -103,11 +105,11 @@ class _SplashScreenState extends State<SplashScreen>
 
     // 脈動アニメーション（繰り返し）
     Future.delayed(const Duration(milliseconds: 800), () {
-      _pulseController.repeat(reverse: true);
+      _pulseController.repeat();
     });
 
     // パーティクルアニメーション（繰り返し）
-    Future.delayed(const Duration(milliseconds: 1200), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       _particleController.repeat();
     });
   }
@@ -165,14 +167,14 @@ class _SplashScreenState extends State<SplashScreen>
             colors:
                 isDark
                     ? [
-                      const Color(0xFF0A0A0A),
-                      const Color(0xFF1A1A1A),
-                      const Color(0xFF2A2A2A),
+                      const Color(0xFF0F172A), // Slate 900
+                      const Color(0xFF1E293B), // Slate 800
+                      const Color(0xFF334155), // Slate 700
                     ]
                     : [
-                      const Color(0xFFF8FAFC),
-                      const Color(0xFFE2E8F0),
-                      const Color(0xFFCBD5E1),
+                      const Color(0xFFF8FAFC), // Slate 50
+                      const Color(0xFFE2E8F0), // Slate 200
+                      const Color(0xFFCBD5E1), // Slate 300
                     ],
           ),
         ),
@@ -186,6 +188,7 @@ class _SplashScreenState extends State<SplashScreen>
                   painter: ParticlePainter(
                     animation: _particleController,
                     isDark: isDark,
+                    primaryColor: primaryColor,
                   ),
                   size: Size.infinite,
                 );
@@ -215,71 +218,61 @@ class _SplashScreenState extends State<SplashScreen>
                               Transform.scale(
                                 scale: _pulseScale.value,
                                 child: Container(
-                                  width: 140,
-                                  height: 140,
+                                  width: 160,
+                                  height: 160,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     gradient: RadialGradient(
                                       colors: [
-                                        primaryColor.withAlpha(
-                                            (255 * _pulseOpacity.value * 0.3)
-                                                .toInt()),
-                                        primaryColor.withAlpha(
-                                            (255 * _pulseOpacity.value * 0.1)
-                                                .toInt()),
-                                        Colors.transparent,
+                                        primaryColor.withOpacity(
+                                          _pulseOpacity.value * 0.4,
+                                        ),
+                                        primaryColor.withOpacity(0.0),
                                       ],
                                     ),
                                   ),
                                 ),
                               ),
 
-                              // メインロゴ
-                              Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      primaryColor,
-                                      primaryColor.withAlpha(204),
-                                    ],
+                              // メインロゴ（グラスモーフィズム風）
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 10,
+                                    sigmaY: 10,
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: primaryColor.withAlpha(77),
-                                      blurRadius: 20,
-                                      spreadRadius: 5,
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          primaryColor.withOpacity(0.9),
+                                          primaryColor.withOpacity(0.7),
+                                        ],
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: primaryColor.withOpacity(0.4),
+                                          blurRadius: 20,
+                                          spreadRadius: 5,
+                                          offset: const Offset(0, 10),
+                                        ),
+                                      ],
+                                      border: Border.all(
+                                        color: Colors.white.withOpacity(0.2),
+                                        width: 1.5,
+                                      ),
                                     ),
-                                  ],
-                                ),
-                                child: ClipOval(
-                                  child: Image.asset(
-                                    'assets/images/app_icon.png',
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: [
-                                              primaryColor,
-                                              primaryColor.withAlpha(204),
-                                            ],
-                                          ),
-                                        ),
-                                        child: const Icon(
-                                          Icons.psychology,
-                                          size: 50,
-                                          color: Colors.white,
-                                        ),
-                                      );
-                                    },
+                                    child: const Icon(
+                                      Icons.psychology,
+                                      size: 50,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -290,7 +283,7 @@ class _SplashScreenState extends State<SplashScreen>
                     },
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 40),
 
                   // アプリ名
                   AnimatedBuilder(
@@ -298,46 +291,29 @@ class _SplashScreenState extends State<SplashScreen>
                     builder: (context, child) {
                       return Opacity(
                         opacity: _logoOpacity.value,
-                        child: ShaderMask(
-                          shaderCallback:
-                              (bounds) => LinearGradient(
-                                colors: [
-                                  primaryColor,
-                                  primaryColor.withAlpha(204),
-                                ],
-                              ).createShader(bounds),
-                          child: const Text(
-                            'MinQ',
-                            style: TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 2,
+                        child: Column(
+                          children: [
+                            Text(
+                              'MinQ',
+                              style: TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.w900,
+                                color: isDark ? Colors.white : Colors.black87,
+                                letterSpacing: 1.5,
+                                height: 1.0,
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // サブタイトル
-                  AnimatedBuilder(
-                    animation: _logoController,
-                    builder: (context, child) {
-                      return Opacity(
-                        opacity: _logoOpacity.value * 0.8,
-                        child: Text(
-                          'AI-Powered Habit Tracker',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color:
-                                isDark
-                                    ? Colors.grey.shade400
-                                    : Colors.grey.shade600,
-                            letterSpacing: 1,
-                          ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'AI-Powered Habit Tracker',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: isDark ? Colors.white70 : Colors.black54,
+                                letterSpacing: 1.2,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     },
@@ -347,7 +323,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                   // ローディングセクション
                   SizedBox(
-                    height: 60,
+                    height: 80,
                     child: Column(
                       children: [
                         // ローディングテキスト
@@ -361,12 +337,13 @@ class _SplashScreenState extends State<SplashScreen>
                                 child: Text(
                                   _loadingText,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color:
                                         isDark
-                                            ? Colors.grey.shade300
-                                            : Colors.grey.shade700,
+                                            ? Colors.white60
+                                            : Colors.black45,
                                     fontWeight: FontWeight.w500,
+                                    letterSpacing: 0.5,
                                   ),
                                 ),
                               ),
@@ -374,7 +351,7 @@ class _SplashScreenState extends State<SplashScreen>
                           },
                         ),
 
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 24),
 
                         // プログレスインジケーター
                         AnimatedBuilder(
@@ -383,16 +360,19 @@ class _SplashScreenState extends State<SplashScreen>
                             return Opacity(
                               opacity: _logoOpacity.value,
                               child: SizedBox(
-                                width: 200,
-                                child: LinearProgressIndicator(
-                                  backgroundColor:
-                                      isDark
-                                          ? Colors.grey.shade800
-                                          : Colors.grey.shade300,
-                                  valueColor: AlwaysStoppedAnimation(
-                                    primaryColor,
+                                width: 160,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(2),
+                                  child: LinearProgressIndicator(
+                                    backgroundColor:
+                                        isDark
+                                            ? Colors.white10
+                                            : Colors.black12,
+                                    valueColor: AlwaysStoppedAnimation(
+                                      primaryColor,
+                                    ),
+                                    minHeight: 4,
                                   ),
-                                  minHeight: 3,
                                 ),
                               ),
                             );
@@ -402,78 +382,6 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ),
                 ],
-              ),
-            ),
-
-            // ストリーク表示（右上）
-            if (_currentStreak > 0)
-              Positioned(
-                top: 60,
-                right: 24,
-                child: AnimatedBuilder(
-                  animation: _textController,
-                  builder: (context, child) {
-                    return FadeTransition(
-                      opacity: _textOpacity,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.withAlpha(26),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: Colors.orange.withAlpha(77),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.local_fire_department,
-                              color: Colors.orange,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '$_currentStreak日',
-                              style: const TextStyle(
-                                color: Colors.orange,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-            // 時間帯メッセージ（左上）
-            Positioned(
-              top: 60,
-              left: 24,
-              child: AnimatedBuilder(
-                animation: _logoController,
-                builder: (context, child) {
-                  return Opacity(
-                    opacity: _logoOpacity.value * 0.7,
-                    child: Text(
-                      _getTimeBasedMessage(),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color:
-                            isDark
-                                ? Colors.grey.shade400
-                                : Colors.grey.shade600,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  );
-                },
               ),
             ),
           ],
@@ -501,110 +409,33 @@ class _SplashScreenState extends State<SplashScreen>
 class ParticlePainter extends CustomPainter {
   final Animation<double> animation;
   final bool isDark;
+  final Color primaryColor;
 
-  ParticlePainter({required this.animation, required this.isDark});
+  ParticlePainter({
+    required this.animation,
+    required this.isDark,
+    required this.primaryColor,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
 
     // パーティクルの数と位置を計算
-    for (int i = 0; i < 20; i++) {
-      final progress = (animation.value + i * 0.1) % 1.0;
-      final x = (i * 37.0) % size.width;
-      final y = size.height * progress;
+    for (int i = 0; i < 25; i++) {
+      final progress = (animation.value + i * 0.04) % 1.0;
+      final x = (i * 37.0 * 13.0) % size.width;
+      final y =
+          size.height * ((i * 17.0) % 100 / 100.0 + progress) % size.height;
 
-      final opacity = (1.0 - progress) * 0.3;
-      paint.color = isDark
-          ? Colors.white.withAlpha((255 * opacity).toInt())
-          : Colors.grey.withAlpha((255 * opacity).toInt());
+      final opacity = (1.0 - progress) * 0.4;
+      paint.color = primaryColor.withOpacity(opacity);
 
-      canvas.drawCircle(Offset(x, y), 2.0 * (1.0 - progress), paint);
+      final radius = (i % 3 + 1) * 1.5 * (1.0 - progress);
+      canvas.drawCircle(Offset(x, y), radius, paint);
     }
-
-    // 追加のキラキラエフェクト
-    for (int i = 0; i < 10; i++) {
-      final sparkleProgress = (animation.value * 2 + i * 0.2) % 1.0;
-      final sparkleX = (i * 73.0) % size.width;
-      final sparkleY = (i * 47.0) % size.height;
-
-      if (sparkleProgress > 0.8) {
-        final sparkleOpacity = (1.0 - sparkleProgress) * 5.0;
-        paint.color = isDark
-            ? Colors.blue.withAlpha((255 * sparkleOpacity * 0.5).toInt())
-            : Colors.blue.withAlpha((255 * sparkleOpacity * 0.3).toInt());
-
-        _drawSparkle(canvas, Offset(sparkleX, sparkleY), paint);
-      }
-    }
-  }
-
-  void _drawSparkle(Canvas canvas, Offset center, Paint paint) {
-    final path = Path();
-    const size = 4.0;
-
-    // 4方向の星形
-    path.moveTo(center.dx, center.dy - size);
-    path.lineTo(center.dx + size * 0.3, center.dy - size * 0.3);
-    path.lineTo(center.dx + size, center.dy);
-    path.lineTo(center.dx + size * 0.3, center.dy + size * 0.3);
-    path.lineTo(center.dx, center.dy + size);
-    path.lineTo(center.dx - size * 0.3, center.dy + size * 0.3);
-    path.lineTo(center.dx - size, center.dy);
-    path.lineTo(center.dx - size * 0.3, center.dy - size * 0.3);
-    path.close();
-
-    canvas.drawPath(path, paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
-
-/// スプラッシュ画面設定ガイド
-///
-/// Android:
-/// - android/app/src/main/res/drawable/launch_background.xml
-/// - android/app/src/main/res/drawable-night/launch_background.xml
-///
-/// iOS:
-/// - ios/Runner/Assets.xcassets/LaunchImage.imageset/
-/// - LaunchScreen.storyboard
-class SplashScreenConfig {
-  const SplashScreenConfig._();
-
-  /// Android launch_background.xml (Light)
-  static const String androidLightXml = '''
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/splash_background_light"/>
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/splash_logo"/>
-    </item>
-</layer-list>
-''';
-
-  /// Android launch_background.xml (Dark)
-  static const String androidDarkXml = '''
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/splash_background_dark"/>
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/splash_logo_dark"/>
-    </item>
-</layer-list>
-''';
-
-  /// Android colors.xml
-  static const String androidColorsXml = '''
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="splash_background_light">#FFFFFF</color>
-    <color name="splash_background_dark">#1A1A1A</color>
-</resources>
-''';
 }

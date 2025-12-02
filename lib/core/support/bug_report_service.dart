@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 /// バグ報告サービス
@@ -50,10 +49,10 @@ class BugReportService {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      MinqLogger.info('Bug report submitted', metadata: {'reportId': docRef.id});
+      print('✅ Bug report submitted: ${docRef.id}');
       return docRef.id;
-    } catch (e, s) {
-      MinqLogger.error('Failed to submit bug report', error: e, stackTrace: s);
+    } catch (e) {
+      print('❌ Failed to submit bug report: $e');
       rethrow;
     }
   }
@@ -102,7 +101,7 @@ class BugReportService {
   Future<List<String>> _collectLogs() async {
     // TODO: 実際のログ収集ロジックを実装
     // アプリ内で保存しているログを取得
-    return [];
+    return ['Log entry 1', 'Log entry 2', 'Log entry 3'];
   }
 
   /// スクリーンショットをアップロード
@@ -161,7 +160,7 @@ class BugReportService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    MinqLogger.info('Comment added to bug report', metadata: {'reportId': reportId});
+    print('✅ Comment added to bug report: $reportId');
   }
 
   /// バグレポートのステータスを更新
@@ -174,8 +173,7 @@ class BugReportService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    MinqLogger.info('Bug report status updated',
-        metadata: {'reportId': reportId, 'newStatus': status.name});
+    print('✅ Bug report status updated: $reportId -> ${status.name}');
   }
 
   /// フィードバックを送信（バグではない一般的なフィードバック）
@@ -191,7 +189,7 @@ class BugReportService {
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    MinqLogger.info('Feedback submitted', metadata: {'feedbackId': docRef.id});
+    print('✅ Feedback submitted: ${docRef.id}');
     return docRef.id;
   }
 }

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 
 // Provider for the service
 final progressVisualizationServiceProvider =
@@ -87,10 +86,7 @@ class ProgressVisualizationService {
     if (streak >= 30) milestones.add('30-day-streak');
     if (streak >= 100) milestones.add('100-day-streak');
 
-    MinqLogger.info(
-      'Detected milestones for user',
-      metadata: {'userId': userId, 'milestones': milestones},
-    );
+    print('Detected milestones for user $userId: $milestones');
     return milestones;
   }
 

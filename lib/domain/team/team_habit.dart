@@ -60,8 +60,9 @@ class TeamHabit {
     required this.createdAt,
     required this.members,
     List<TeamHabitCompletion>? completions,
-    this.archivedAt,
-  }) : _completions = completions ?? <TeamHabitCompletion>[];
+    DateTime? archivedAt,
+  }) : _completions = completions ?? <TeamHabitCompletion>[],
+       archivedAt = archivedAt;
 
   final String id;
   final String name;

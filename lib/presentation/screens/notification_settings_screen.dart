@@ -87,7 +87,7 @@ class _NotificationSettingsScreenState
     final tokens = context.tokens;
     return PopScope(
       canPop: !_hasUnsavedChanges,
-      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+      onPopInvoked: (didPop) async {
         if (didPop) {
           return;
         }
@@ -97,7 +97,7 @@ class _NotificationSettingsScreenState
         appBar: AppBar(
           title: Text(
             '通知時間',
-            style: tokens.typography.h4.copyWith(
+            style: tokens.titleMedium.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
@@ -109,7 +109,7 @@ class _NotificationSettingsScreenState
           ),
         ),
         body: ListView(
-          padding: EdgeInsets.all(tokens.spacing.md),
+          padding: EdgeInsets.all(tokens.spacing(4)),
           children: [
             _TimePickerTile(
               tokens: tokens,
@@ -122,7 +122,7 @@ class _NotificationSettingsScreenState
                     (time) => _morningTime = time,
                   ),
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(4)),
             _TimePickerTile(
               tokens: tokens,
               label: '夜のリマインダー',
@@ -134,30 +134,30 @@ class _NotificationSettingsScreenState
                     (time) => _eveningTime = time,
                   ),
             ),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(6)),
             Text(
               '通知する曜日',
-              style: tokens.typography.h5.copyWith(
+              style: tokens.titleSmall.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             _WeekdaySelector(
               tokens: tokens,
               enabledWeekdays: _enabledWeekdays,
               onToggle: _toggleWeekday,
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(4)),
             SwitchListTile(
-              title: Text('祝日も通知する', style: tokens.typography.bodyLarge),
+              title: Text('祝日も通知する', style: tokens.bodyLarge),
               value: _notifyOnHolidays,
               onChanged: (value) {
                 setState(() => _notifyOnHolidays = value);
                 _updateUnsavedState();
               },
             ),
-            SizedBox(height: tokens.spacing.xl),
+            SizedBox(height: tokens.spacing(8)),
             MinqPrimaryButton(label: '保存', onPressed: _saveSettings),
           ],
         ),
@@ -228,7 +228,7 @@ class _TimePickerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      shadowColor: tokens.background.withAlpha((255 * 0.1).round()),
+      shadowColor: tokens.background.withOpacity(0.1),
       color: tokens.surface,
       shape: RoundedRectangleBorder(borderRadius: tokens.cornerXLarge()),
       clipBehavior: Clip.antiAlias,
@@ -236,11 +236,11 @@ class _TimePickerTile extends StatelessWidget {
         onTap: onTap,
         title: Text(
           label,
-          style: tokens.typography.bodyLarge.copyWith(fontWeight: FontWeight.w600),
+          style: tokens.bodyLarge.copyWith(fontWeight: FontWeight.w600),
         ),
         trailing: Text(
           time.format(context),
-          style: tokens.typography.h4.copyWith(
+          style: tokens.titleMedium.copyWith(
             color: tokens.brandPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -288,7 +288,7 @@ class _WeekdaySelector extends StatelessWidget {
             child: Center(
               child: Text(
                 weekdayLabels[index],
-                style: tokens.typography.body.copyWith(
+                style: tokens.bodyMedium.copyWith(
                   color: isEnabled ? Colors.white : tokens.textMuted,
                   fontWeight: FontWeight.bold,
                 ),

@@ -11,16 +11,15 @@ class OfflineModeIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
+    final isOnline = ref.watch(isOnlineProvider).value ?? true;
+    final tokens = MinqTheme.of(context);
 
     return Stack(
       children: [
         // メインコンテンツ（オフライン時は半透明）
-        Opacity(
-            opacity: ref.watch(networkStatusProvider).isOnline ? 1.0 : 0.7,
-            child: child),
+        Opacity(opacity: isOnline ? 1.0 : 0.7, child: child),
         // オフラインバナー
-        if (!ref.watch(networkStatusProvider).isOnline)
+        if (!isOnline)
           Positioned(
             top: 0,
             left: 0,
@@ -32,7 +31,7 @@ class OfflineModeIndicator extends ConsumerWidget {
               child: Material(
                 color: Colors.orange,
                 child: Padding(
-                  padding: EdgeInsets.all(tokens.spacing.sm),
+                  padding: EdgeInsets.all(tokens.spaceSM),
                   child: Row(
                     children: [
                       const Icon(
@@ -40,7 +39,7 @@ class OfflineModeIndicator extends ConsumerWidget {
                         color: Colors.white,
                         size: 20,
                       ),
-                      SizedBox(width: tokens.spacing.sm),
+                      SizedBox(width: tokens.spaceSM),
                       const Expanded(
                         child: Text(
                           'オフラインモード（読み取り専用）',
@@ -76,7 +75,7 @@ class ReadOnlyModeWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOnline = ref.watch(networkStatusProvider).isOnline;
+    final isOnline = ref.watch(isOnlineProvider).value ?? true;
 
     if (!isOnline) {
       return AbsorbPointer(child: Opacity(opacity: 0.5, child: child));

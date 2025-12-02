@@ -43,11 +43,7 @@ class OgpImageGenerator {
       _logger.info('OGP image generated: ${file.path}');
       return file;
     } catch (e, stack) {
-      _logger.error(
-        'Failed to generate OGP image',
-        error: e,
-        stackTrace: stack,
-      );
+      _logger.error('Failed to generate OGP image', e, stack);
       return null;
     }
   }
@@ -135,7 +131,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(51),
+                    color: Colors.white.withOpacity(0.2),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -156,7 +152,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                       Shadow(
                         offset: const Offset(0, 2),
                         blurRadius: 4,
-                        color: Colors.black.withAlpha(77),
+                        color: Colors.black.withOpacity(0.3),
                       ),
                     ],
                   ),
@@ -175,7 +171,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                         Shadow(
                           offset: const Offset(0, 1),
                           blurRadius: 2,
-                          color: Colors.black.withAlpha(51),
+                          color: Colors.black.withOpacity(0.2),
                         ),
                       ],
                     ),
@@ -208,7 +204,7 @@ class _AchievementBannerWidget extends StatelessWidget {
                   'MinQ - 3分で続く習慣化アプリ',
                   style: TextStyle(
                     fontSize: 24,
-                    color: Colors.white.withAlpha(230),
+                    color: Colors.white.withOpacity(0.9),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -238,7 +234,7 @@ class _StatBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha(51),
+        color: Colors.white.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -274,7 +270,7 @@ class _BackgroundPatternPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = Colors.white.withAlpha(13)
+          ..color = Colors.white.withOpacity(0.05)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2;
 

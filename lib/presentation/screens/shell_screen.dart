@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/common/feedback/feedback_manager.dart';
-import 'package:minq/presentation/common/layout/responsive_layout.dart';
-import 'package:minq/presentation/common/layout/safe_scaffold.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/controllers/usage_limit_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
@@ -83,7 +81,9 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     final String location = GoRouterState.of(context).uri.toString();
     if (location.startsWith(AppRoutes.stats)) return 1;
     if (location.startsWith(AppRoutes.challenges)) return 2;
-    if (location.startsWith(AppRoutes.profile) || location.startsWith(AppRoutes.settings)) return 3;
+    if (location.startsWith(AppRoutes.pair)) return 3;
+    if (location.startsWith(AppRoutes.quests)) return 4;
+    if (location.startsWith(AppRoutes.settings)) return 5;
     return 0;
   }
 
@@ -105,7 +105,13 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
         navigation.goToChallenges();
         break;
       case 3:
-        navigation.goToProfile();
+        navigation.goToPair();
+        break;
+      case 4:
+        navigation.goToQuests();
+        break;
+      case 5:
+        navigation.goToSettings();
         break;
     }
     FeedbackManager.selected();
@@ -134,12 +140,22 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
         label: 'チャレンジ',
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.person_outlined),
-        activeIcon: Icon(Icons.person),
-        label: 'プロフィール',
+        icon: Icon(Icons.groups_outlined),
+        activeIcon: Icon(Icons.groups),
+        label: 'ペア',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.checklist_outlined),
+        activeIcon: Icon(Icons.checklist),
+        label: 'クエスト',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.settings_outlined),
+        activeIcon: Icon(Icons.settings),
+        label: '設定',
       ),
     ];
-    assert(navItems.length <= 4, 'ボトムナビゲーションのタブ数は4個以下にしてください。');
+    assert(navItems.length <= 6, 'ボトムナビゲーションのタブ数は6個以下にしてください。');
 
     final scaffold = Scaffold(
       body: PageTransitionSwitcher(
@@ -157,26 +173,18 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
       ),
       bottomNavigationBar: SafeArea(
         top: false,
-        child: ResponsiveLayoutBuilder(
-          builder: (context, screenType, constraints) {
-            return Container(
-              height: ResponsiveLayout.minTouchTarget + 36,
-              padding: EdgeInsets.symmetric(vertical: tokens.spacing.sm),
-              child: BottomNavigationBar(
-                currentIndex: currentIndex,
-                onTap: (int index) => _onItemTapped(index, context),
-                type: BottomNavigationBarType.fixed,
-                selectedItemColor: tokens.brandPrimary,
-                unselectedItemColor: tokens.textMuted,
-                selectedFontSize: screenType == ScreenType.mobile ? 12 : 14,
-                unselectedFontSize: screenType == ScreenType.mobile ? 10 : 12,
-                backgroundColor: tokens.surface,
-                elevation: 0,
-                iconSize: screenType == ScreenType.mobile ? 24 : 28,
-                items: navItems,
-              ),
-            );
-          },
+        minimum: EdgeInsets.only(bottom: tokens.spacing(6)),
+        child: BottomNavigationBar(
+          currentIndex: currentIndex,
+          onTap: (int index) => _onItemTapped(index, context),
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: tokens.brandPrimary,
+          unselectedItemColor: tokens.textMuted,
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
+          backgroundColor: tokens.surface,
+          elevation: 0,
+          items: navItems,
         ),
       ),
     );
@@ -216,14 +224,14 @@ class _UsageLimitOverlay extends ConsumerWidget {
 
     return Positioned.fill(
       child: Material(
-        color: Colors.black.withAlpha(140),
+        color: Colors.black.withOpacity(0.55),
         child: Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 360),
-            padding: EdgeInsets.all(tokens.spacing.xl),
+            padding: EdgeInsets.all(tokens.spacing(5)),
             decoration: BoxDecoration(
               color: tokens.surface,
-              borderRadius: BorderRadius.circular(tokens.radius.xl),
+              borderRadius: tokens.cornerXLarge(),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -231,31 +239,31 @@ class _UsageLimitOverlay extends ConsumerWidget {
               children: [
                 Icon(
                   Icons.lock_clock,
-                  size: tokens.spacing.xl,
+                  size: tokens.spacing(10),
                   color: tokens.brandPrimary,
                 ),
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: tokens.spacing(3)),
                 Text(
                   '利用時間制限に達しました',
-                  style: tokens.typography.h4.copyWith(
+                  style: tokens.titleLarge.copyWith(
                     color: tokens.textPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: tokens.spacing.sm),
+                SizedBox(height: tokens.spacing(2)),
                 Text(
                   '本日の利用 ${_formatDuration(used)} / ${_formatDuration(dailyLimit)}',
-                  style: tokens.typography.bodyMedium.copyWith(color: tokens.textMuted),
+                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                 ),
-                SizedBox(height: tokens.spacing.xs),
+                SizedBox(height: tokens.spacing(1)),
                 Text(
                   remaining == Duration.zero
                       ? '今日はこれ以上操作できません。'
                       : '残り時間: ${_formatDuration(remaining)}',
-                  style: tokens.typography.bodySmall.copyWith(color: tokens.textMuted),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
-                SizedBox(height: tokens.spacing.lg),
+                SizedBox(height: tokens.spacing(4)),
                 MinqSecondaryButton(
                   label: '設定を開く',
                   onPressed: () async {

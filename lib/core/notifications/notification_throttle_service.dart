@@ -37,9 +37,9 @@ class NotificationThrottleService {
     final elapsed = now.difference(lastTime);
 
     if (elapsed < _debounceInterval) {
-      logger.logJson(
+      AppLogger().info(
         'Notification debounced',
-        {'type': notificationType, 'elapsed': elapsed.inSeconds},
+        data: {'type': notificationType, 'elapsed': elapsed.inSeconds},
       );
       return true; // デバウンス中
     }
@@ -75,14 +75,13 @@ class NotificationThrottleService {
 
     // レート制限チェック
     if (count >= _maxNotificationsPerWindow) {
-      logger.logJson(
+      AppLogger().warning(
         'Notification rate limited',
-        {
+        data: {
           'type': notificationType,
           'count': count,
           'window': _rateLimitWindow.inMinutes,
         },
-        level: Level.warning,
       );
       return true;
     }
@@ -107,9 +106,9 @@ class NotificationThrottleService {
 
     _batchedNotifications[batchKey]!.add(notificationData);
 
-    logger.logJson(
+    AppLogger().info(
       'Notification added to batch',
-      {
+      data: {
         'batchKey': batchKey,
         'count': _batchedNotifications[batchKey]!.length,
       },
@@ -126,9 +125,9 @@ class NotificationThrottleService {
     final notifications = _batchedNotifications[batchKey];
     if (notifications == null || notifications.isEmpty) return;
 
-    logger.logJson(
+    AppLogger().info(
       'Sending batched notifications',
-      {'batchKey': batchKey, 'count': notifications.length},
+      data: {'batchKey': batchKey, 'count': notifications.length},
     );
 
     // バッチをクリア

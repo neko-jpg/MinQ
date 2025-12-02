@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 
 /// ネットワークステータスサービス
 class NetworkStatusService {
@@ -52,10 +51,7 @@ class NetworkStatusService {
     if (newStatus != _currentStatus) {
       _currentStatus = newStatus;
       _statusController.add(newStatus);
-      MinqLogger.info(
-        'Network status changed',
-        metadata: {'status': newStatus.name},
-      );
+      print('📡 Network status changed: ${newStatus.name}');
     }
   }
 

@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
+import 'package:minq/presentation/theme/typography_system.dart';
 
 /// ライセンス表示画面
 class LicensesScreen extends ConsumerWidget {
@@ -9,7 +10,6 @@ class LicensesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = context.tokens;
     return Scaffold(
       appBar: AppBar(title: const Text('オープンソースライセンス')),
       body: FutureBuilder<LicenseData>(
@@ -25,8 +25,8 @@ class LicensesScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  SizedBox(height: tokens.spacing.md),
-                  Text('ライセンス情報の読み込みに失敗しました', style: tokens.typography.body),
+                  SizedBox(height: AppSpacing.md),
+                  Text('ライセンス情報の読み込みに失敗しました', style: AppTypography.body),
                 ],
               ),
             );
@@ -35,10 +35,10 @@ class LicensesScreen extends ConsumerWidget {
           final licenseData = snapshot.data!;
 
           return ListView(
-            padding: EdgeInsets.all(tokens.spacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             children: [
               _buildHeader(context, licenseData),
-              SizedBox(height: tokens.spacing.lg),
+              SizedBox(height: AppSpacing.lg),
               _buildPackageList(context, licenseData),
             ],
           );
@@ -48,18 +48,17 @@ class LicensesScreen extends ConsumerWidget {
   }
 
   Widget _buildHeader(BuildContext context, LicenseData data) {
-    final tokens = context.tokens;
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('このアプリは以下のオープンソースソフトウェアを使用しています', style: tokens.typography.body),
-            SizedBox(height: tokens.spacing.sm),
+            Text('このアプリは以下のオープンソースソフトウェアを使用しています', style: AppTypography.body),
+            SizedBox(height: AppSpacing.sm),
             Text(
               '合計 ${data.packages.length} パッケージ',
-              style: tokens.typography.caption.copyWith(color: Colors.grey),
+              style: AppTypography.caption.copyWith(color: Colors.grey),
             ),
           ],
         ),
@@ -68,29 +67,28 @@ class LicensesScreen extends ConsumerWidget {
   }
 
   Widget _buildPackageList(BuildContext context, LicenseData data) {
-    final tokens = context.tokens;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('パッケージ一覧', style: tokens.typography.h2),
-        SizedBox(height: tokens.spacing.md),
+        Text('パッケージ一覧', style: AppTypography.h2),
+        SizedBox(height: AppSpacing.md),
         ...data.packages.map((package) => _buildPackageCard(context, package)),
       ],
     );
   }
 
   Widget _buildPackageCard(BuildContext context, LicenseEntry entry) {
-    final tokens = context.tokens;
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing.sm),
+      margin: EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
-        title: Text(entry.packages.join(', '), style: tokens.typography.h4),
-        subtitle: entry.paragraphs.isNotEmpty
-            ? Text(
-                _getLicenseType(entry.paragraphs.first.text),
-                style: tokens.typography.caption,
-              )
-            : null,
+        title: Text(entry.packages.join(', '), style: AppTypography.h4),
+        subtitle:
+            entry.paragraphs.isNotEmpty
+                ? Text(
+                  _getLicenseType(entry.paragraphs.first.text),
+                  style: AppTypography.caption,
+                )
+                : null,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
           _showLicenseDetail(context, entry);
@@ -100,32 +98,33 @@ class LicensesScreen extends ConsumerWidget {
   }
 
   void _showLicenseDetail(BuildContext context, LicenseEntry entry) {
-    final tokens = context.tokens;
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(entry.packages.join(', ')),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: entry.paragraphs.map((paragraph) {
-              return Padding(
-                padding: EdgeInsets.only(bottom: tokens.spacing.sm),
-                child: Text(
-                  paragraph.text,
-                  style: tokens.typography.caption,
-                ),
-              );
-            }).toList(),
+      builder:
+          (context) => AlertDialog(
+            title: Text(entry.packages.join(', ')),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:
+                    entry.paragraphs.map((paragraph) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: AppSpacing.sm),
+                        child: Text(
+                          paragraph.text,
+                          style: AppTypography.bodySmall,
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('閉じる'),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('閉じる'),
-          ),
-        ],
-      ),
     );
   }
 

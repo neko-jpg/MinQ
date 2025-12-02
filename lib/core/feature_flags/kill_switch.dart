@@ -1,9 +1,9 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/material.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
 /// Feature Flag Kill Switch
 /// Remote Configのみで機能を即時停止
-
 class KillSwitch {
   final FirebaseRemoteConfig _remoteConfig;
   final AppLogger _logger;
@@ -22,11 +22,7 @@ class KillSwitch {
 
       return enabled;
     } catch (e, stack) {
-      _logger.error(
-        'Kill switch check failed',
-        error: e,
-        stackTrace: stack,
-      );
+      _logger.error('Kill switch check failed', e, stack);
       // エラー時はデフォルトで有効
       return true;
     }
@@ -60,11 +56,7 @@ class KillSwitch {
 
       return defaultValue;
     } catch (e, stack) {
-      _logger.error(
-        'Feature config fetch failed',
-        error: e,
-        stackTrace: stack,
-      );
+      _logger.error('Feature config fetch failed', e, stack);
       return defaultValue;
     }
   }
@@ -87,8 +79,8 @@ class KillSwitch {
     } catch (e, stack) {
       _logger.error(
         'Failed to get all feature flags',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return {};
     }
@@ -132,6 +124,52 @@ class FeatureKeys {
   static const rewardedAds = 'rewarded_ads';
 }
 
+/// Kill Switch ウィジェット
+/// 機能が無効な場合に代替UIを表示
+class KillSwitchWidget {
+  final KillSwitch _killSwitch;
+
+  KillSwitchWidget(this._killSwitch);
+
+  /// 機能が有効な場合のみウィジェットを表示
+  Future<Widget?> buildIfEnabled({
+    required String featureKey,
+    required Widget Function() builder,
+    Widget Function()? fallback,
+  }) async {
+    final enabled = await _killSwitch.isFeatureEnabled(featureKey);
+
+    if (enabled) {
+      return builder();
+    } else if (fallback != null) {
+      return fallback();
+    }
+
+    return null;
+  }
+}
+
+/// 機能無効化メッセージ
+class FeatureDisabledMessages {
+  const FeatureDisabledMessages._();
+
+  static String getMessage(String featureKey) {
+    return switch (featureKey) {
+      FeatureKeys.pairMatching => 'ペア機能は現在メンテナンス中です',
+      FeatureKeys.sharing => '共有機能は一時的に利用できません',
+      FeatureKeys.events => 'イベント機能は現在準備中です',
+      _ => 'この機能は現在利用できません',
+    };
+  }
+
+  static String getAlternative(String featureKey) {
+    return switch (featureKey) {
+      FeatureKeys.pairMatching => '個人でクエストを続けることができます',
+      FeatureKeys.sharing => 'スクリーンショットで共有できます',
+      _ => '他の機能をお試しください',
+    };
+  }
+}
 
 /// Remote Config デフォルト値
 class RemoteConfigDefaults {

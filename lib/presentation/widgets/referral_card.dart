@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:minq/data/providers.dart';
@@ -36,41 +35,41 @@ class ReferralCard extends ConsumerWidget {
 
   Widget _buildSkeletonCard(MinqTheme tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         color: tokens.surfaceVariant,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
       ),
       child: Row(
         children: [
           Container(
-            width: tokens.spacing.xl,
-            height: tokens.spacing.xl,
+            width: tokens.spacing(12),
+            height: tokens.spacing(12),
             decoration: BoxDecoration(
-              color: tokens.textMuted.withAlpha((255 * 0.3).round()),
+              color: tokens.textMuted.withOpacity(0.3),
               shape: BoxShape.circle,
             ),
           ),
-          SizedBox(width: tokens.spacing.md),
+          SizedBox(width: tokens.spacing(3)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 100,
-                  height: 20,
+                  width: tokens.spacing(20),
+                  height: tokens.spacing(4),
                   decoration: BoxDecoration(
-                    color: tokens.textMuted.withAlpha((255 * 0.3).round()),
-                    borderRadius: BorderRadius.circular(tokens.radius.sm),
+                    color: tokens.textMuted.withOpacity(0.3),
+                    borderRadius: tokens.cornerSmall(),
                   ),
                 ),
-                SizedBox(height: tokens.spacing.sm),
+                SizedBox(height: tokens.spacing(2)),
                 Container(
-                  width: 150,
-                  height: 15,
+                  width: tokens.spacing(32),
+                  height: tokens.spacing(3),
                   decoration: BoxDecoration(
-                    color: tokens.textMuted.withAlpha((255 * 0.3).round()),
-                    borderRadius: BorderRadius.circular(tokens.radius.sm),
+                    color: tokens.textMuted.withOpacity(0.3),
+                    borderRadius: tokens.cornerSmall(),
                   ),
                 ),
               ],
@@ -93,17 +92,17 @@ class ReferralCard extends ConsumerWidget {
         navigation.goToReferral();
       },
       child: Container(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.purple.shade400, Colors.purple.shade600],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(tokens.radius.lg),
+          borderRadius: tokens.cornerLarge(),
           boxShadow: [
             BoxShadow(
-              color: Colors.purple.withAlpha((255 * 0.3).round()),
+              color: Colors.purple.withOpacity(0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -112,45 +111,43 @@ class ReferralCard extends ConsumerWidget {
         child: Row(
           children: [
             Container(
-              width: tokens.spacing.xl,
-              height: tokens.spacing.xl,
+              width: tokens.spacing(12),
+              height: tokens.spacing(12),
               decoration: BoxDecoration(
-                color: Colors.white.withAlpha((255 * 0.2).round()),
+                color: Colors.white.withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.people,
                 color: Colors.white,
-                size: tokens.spacing.lg,
+                size: tokens.spacing(6),
               ),
             ),
-            SizedBox(width: tokens.spacing.md),
+            SizedBox(width: tokens.spacing(3)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.friendInvitationTitle,
-                    style: tokens.typography.h3.copyWith(
+                    '友達招待',
+                    style: tokens.titleMedium.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: tokens.spacing(1)),
                   if (stats.totalReferrals > 0)
                     Text(
-                      AppLocalizations.of(context)!.invitedFriends
-                        .replaceAll('{count}', stats.totalReferrals.toString())
-                        .replaceAll('{rate}', (stats.conversionRate * 100).toStringAsFixed(0)),
-                      style: tokens.typography.caption.copyWith(
-                        color: Colors.white.withAlpha((255 * 0.9).round()),
+                      '${stats.totalReferrals}人招待済み・成功率${(stats.conversionRate * 100).toStringAsFixed(0)}%',
+                      style: tokens.bodySmall.copyWith(
+                        color: Colors.white.withOpacity(0.9),
                       ),
                     )
                   else
                     Text(
-                      AppLocalizations.of(context)!.inviteFriendsBonus,
-                      style: tokens.typography.caption.copyWith(
-                        color: Colors.white.withAlpha((255 * 0.9).round()),
+                      '友達を招待してボーナスポイントをゲット！',
+                      style: tokens.bodySmall.copyWith(
+                        color: Colors.white.withOpacity(0.9),
                       ),
                     ),
                 ],
@@ -158,8 +155,8 @@ class ReferralCard extends ConsumerWidget {
             ),
             Icon(
               Icons.arrow_forward_ios,
-              color: Colors.white.withAlpha((255 * 0.8).round()),
-              size: tokens.spacing.lg,
+              color: Colors.white.withOpacity(0.8),
+              size: tokens.spacing(4),
             ),
           ],
         ),
@@ -198,8 +195,8 @@ class CompactReferralCard extends ConsumerWidget {
       },
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: tokens.spacing.md,
-          vertical: tokens.spacing.sm,
+          horizontal: tokens.spacing(3),
+          vertical: tokens.spacing(2),
         ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -207,16 +204,16 @@ class CompactReferralCard extends ConsumerWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(tokens.radius.md),
+          borderRadius: tokens.cornerMedium(),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.people, color: Colors.white, size: tokens.spacing.lg),
-            SizedBox(width: tokens.spacing.sm),
+            Icon(Icons.people, color: Colors.white, size: tokens.spacing(4)),
+            SizedBox(width: tokens.spacing(2)),
             Text(
-              AppLocalizations.of(context)!.friendInvitationTitle,
-              style: tokens.typography.caption.copyWith(
+              '友達招待',
+              style: tokens.bodySmall.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
@@ -237,18 +234,18 @@ class ReferralPromotionBanner extends ConsumerWidget {
     final tokens = context.tokens;
 
     return Container(
-      margin: EdgeInsets.all(tokens.spacing.lg),
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      margin: EdgeInsets.all(tokens.spacing(4)),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.purple.shade300, Colors.purple.shade500],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         boxShadow: [
           BoxShadow(
-            color: Colors.purple.withAlpha((255 * 0.3).round()),
+            color: Colors.purple.withOpacity(0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -262,26 +259,26 @@ class ReferralPromotionBanner extends ConsumerWidget {
               Icon(
                 Icons.card_giftcard,
                 color: Colors.white,
-                size: tokens.spacing.lg,
+                size: tokens.spacing(6),
               ),
-              SizedBox(width: tokens.spacing.sm),
+              SizedBox(width: tokens.spacing(2)),
               Text(
-                AppLocalizations.of(context)!.specialCampaignTitle,
-                style: tokens.typography.h3.copyWith(
+                '特別キャンペーン',
+                style: tokens.titleMedium.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(2)),
           Text(
-            AppLocalizations.of(context)!.inviteFriendsPoints,
-            style: tokens.typography.body.copyWith(
-              color: Colors.white.withAlpha((255 * 0.9).round()),
+            '友達を招待すると、あなたも友達も\n最大3500ポイントがもらえます！',
+            style: tokens.bodyMedium.copyWith(
+              color: Colors.white.withOpacity(0.9),
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spacing(3)),
           Row(
             children: [
               Expanded(
@@ -294,7 +291,7 @@ class ReferralPromotionBanner extends ConsumerWidget {
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.purple.shade600,
                   ),
-                  child: Text(AppLocalizations.of(context)!.inviteNow),
+                  child: const Text('今すぐ招待'),
                 ),
               ),
             ],

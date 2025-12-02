@@ -1,76 +1,9 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:minq/presentation/theme/color_tokens.dart';
-import 'package:minq/presentation/theme/design_tokens.dart';
-
-class MinqRadius {
-  const MinqRadius({
-    required this.sm,
-    required this.md,
-    required this.lg,
-    required this.xl,
-  });
-  final double sm;
-  final double md;
-  final double lg;
-  final double xl;
-}
-
-class MinqSpacing {
-  const MinqSpacing({
-    required this.xxs,
-    required this.xs,
-    required this.sm,
-    required this.md,
-    required this.lg,
-    required this.xl,
-    required this.xxl,
-  });
-  final double xxs;
-  final double xs;
-  final double sm;
-  final double md;
-  final double lg;
-  final double xl;
-  final double xxl;
-}
-
-class MinqShadow {
-  const MinqShadow({
-    required this.soft,
-    required this.strong,
-  });
-  final List<BoxShadow> soft;
-  final List<BoxShadow> strong;
-}
-
-class MinqTypography {
-  const MinqTypography({
-    required this.h1,
-    required this.h2,
-    required this.h3,
-    required this.h4,
-    required this.h5,
-    required this.body,
-    required this.bodyLarge,
-    required this.bodyMedium,
-    required this.bodySmall,
-    required this.button,
-    required this.caption,
-  });
-  final TextStyle h1;
-  final TextStyle h2;
-  final TextStyle h3;
-  final TextStyle h4;
-  final TextStyle h5;
-  final TextStyle body;
-  final TextStyle bodyLarge;
-  final TextStyle bodyMedium;
-  final TextStyle bodySmall;
-  final TextStyle button;
-  final TextStyle caption;
-}
 
 class MinqTheme extends ThemeExtension<MinqTheme> {
   const MinqTheme({
@@ -109,60 +42,44 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     required this.highContrastText,
     required this.highContrastBackground,
     required this.highContrastPrimary,
-    required this.radius,
-    required this.spacing,
-    required this.shadow,
-    required this.typography,
+    required this.radiusSmall,
+    required this.radiusMedium,
+    required this.radiusLarge,
+    required this.radiusXLarge,
+    required this.spaceBase,
+    required this.spaceSM,
+    required this.spaceMD,
+    required this.spaceLG,
+    required this.spaceXL,
+    // Enhanced spacing system
+    required this.breathingSpace,
+    required this.intimateSpace,
+    required this.respectfulSpace,
+    required this.dramaticSpace,
+    required this.shadowSoft,
+    required this.shadowStrong,
+    required this.displayMedium,
+    required this.displaySmall,
+    required this.titleLarge,
+    required this.titleMedium,
+    required this.titleSmall,
+    required this.bodyLarge,
+    required this.bodyMedium,
+    required this.bodySmall,
+    required this.labelSmall,
+    // Emotional typography
+    required this.celebrationText,
+    required this.encouragementText,
+    required this.guidanceText,
+    required this.whisperText,
     // Animation curves
     required this.easeInOutCubic,
     required this.easeOutBack,
     required this.easeInOutQuart,
     required this.bounceOut,
-  }) : tokens = MinqColorTokens(
-        primary: brandPrimary,
-        primaryHover: primaryHover,
-        primaryContainer: surface,
-        onPrimary: primaryForeground,
-        onPrimaryContainer: textPrimary,
-        secondary: accentSecondary,
-        secondaryContainer: surfaceAlt,
-        onSecondary: secondaryForeground,
-        onSecondaryContainer: textSecondary,
-        tertiary: joyAccent,
-        tertiaryContainer: surface,
-        onTertiary: primaryForeground,
-        onTertiaryContainer: textPrimary,
-        error: accentError,
-        errorContainer: surface,
-        onError: primaryForeground,
-        onErrorContainer: textPrimary,
-        warning: accentWarning,
-        warningContainer: surface,
-        onWarning: primaryForeground,
-        onWarningContainer: textPrimary,
-        success: accentSuccess,
-        successContainer: surface,
-        onSuccess: primaryForeground,
-        onSuccessContainer: textPrimary,
-        surface: surface,
-        surfaceVariant: surfaceAlt,
-        surfaceContainer: surfaceAlt, // Mapped from surfaceAlt
-        surfaceContainerHigh: divider, // Mapped from divider
-        onSurface: textPrimary,
-        onSurfaceVariant: textSecondary,
-        background: background,
-        onBackground: textPrimary,
-        outline: border,
-        outlineVariant: divider,
-        shadow: const Color(0x1A000000),
-        scrim: const Color(0x80000000),
-        inverseSurface: textPrimary,
-        onInverseSurface: surface,
-        inversePrimary: surface,
-      );
+  });
 
   final Brightness brightness;
-  final MinqColorTokens tokens;
   final Color brandPrimary;
   final Color primaryHover;
   final Color accentSecondary;
@@ -203,10 +120,39 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   final Color highContrastBackground;
   final Color highContrastPrimary;
 
-  final MinqRadius radius;
-  final MinqSpacing spacing;
-  final MinqShadow shadow;
-  final MinqTypography typography;
+  final double radiusSmall;
+  final double radiusMedium;
+  final double radiusLarge;
+  final double radiusXLarge;
+  final double spaceBase;
+  final double spaceSM;
+  final double spaceMD;
+  final double spaceLG;
+  final double spaceXL;
+
+  // Enhanced spacing system
+  final double breathingSpace;
+  final double intimateSpace;
+  final double respectfulSpace;
+  final double dramaticSpace;
+
+  final List<BoxShadow> shadowSoft;
+  final List<BoxShadow> shadowStrong;
+  final TextStyle displayMedium;
+  final TextStyle displaySmall;
+  final TextStyle titleLarge;
+  final TextStyle titleMedium;
+  final TextStyle titleSmall;
+  final TextStyle bodyLarge;
+  final TextStyle bodyMedium;
+  final TextStyle bodySmall;
+  final TextStyle labelSmall;
+
+  // Emotional typography
+  final TextStyle celebrationText;
+  final TextStyle encouragementText;
+  final TextStyle guidanceText;
+  final TextStyle whisperText;
 
   // Animation curves
   final Curve easeInOutCubic;
@@ -227,21 +173,25 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
   Color get onSurface => surfaceForeground;
 
   TextStyle get labelMedium =>
-      typography.body.copyWith(fontSize: 12, fontWeight: FontWeight.w500);
+      bodyMedium.copyWith(fontSize: 12, fontWeight: FontWeight.w500);
 
-  BorderRadius cornerSmall() => BorderRadius.circular(radius.sm);
-  BorderRadius cornerMedium() => BorderRadius.circular(radius.md);
-  BorderRadius cornerLarge() => BorderRadius.circular(radius.lg);
-  BorderRadius cornerXLarge() => BorderRadius.circular(radius.xl);
+  double spacing(double units) => spaceBase * units;
+
+  double radius(double units) => radiusSmall * units;
+
+  BorderRadius cornerSmall() => BorderRadius.circular(radiusSmall);
+  BorderRadius cornerMedium() => BorderRadius.circular(radiusMedium);
+  BorderRadius cornerLarge() => BorderRadius.circular(radiusLarge);
+  BorderRadius cornerXLarge() => BorderRadius.circular(radiusXLarge);
   BorderRadius cornerFull() => BorderRadius.circular(999);
 
   // Enhanced spacing helpers for emotional design
-  EdgeInsets get breathingPadding => EdgeInsets.all(spacing.lg);
-  EdgeInsets get intimatePadding => EdgeInsets.all(spacing.sm);
-  EdgeInsets get respectfulPadding => EdgeInsets.all(spacing.md);
-  EdgeInsets get dramaticPadding => EdgeInsets.all(spacing.xl);
+  EdgeInsets get breathingPadding => EdgeInsets.all(breathingSpace);
+  EdgeInsets get intimatePadding => EdgeInsets.all(intimateSpace);
+  EdgeInsets get respectfulPadding => EdgeInsets.all(respectfulSpace);
+  EdgeInsets get dramaticPadding => EdgeInsets.all(dramaticSpace);
 
-  // Enhanced accessibility helpers
+  // Accessibility helpers
   bool isHighContrastMode(BuildContext context) {
     return MediaQuery.of(context).highContrast;
   }
@@ -252,34 +202,6 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
 
   Color getAccessibleBackgroundColor(BuildContext context) {
     return isHighContrastMode(context) ? highContrastBackground : background;
-  }
-
-  /// Ensure minimum touch target size for accessibility (44pt)
-  BoxConstraints get minTouchTargetConstraints => const BoxConstraints(
-    minWidth: minTouchTargetSize,
-    minHeight: minTouchTargetSize,
-  );
-
-  /// Get accessible button padding that ensures minimum touch target
-  EdgeInsets getAccessibleButtonPadding({
-    EdgeInsets? basePadding,
-    required Size contentSize,
-  }) {
-    final base = basePadding ?? EdgeInsets.symmetric(
-      horizontal: spacing.md,
-      vertical: spacing.sm,
-    );
-
-    final totalWidth = contentSize.width + base.horizontal;
-    final totalHeight = contentSize.height + base.vertical;
-
-    final additionalHorizontal = (minTouchTargetSize - totalWidth).clamp(0.0, double.infinity) / 2;
-    final additionalVertical = (minTouchTargetSize - totalHeight).clamp(0.0, double.infinity) / 2;
-
-    return EdgeInsets.symmetric(
-      horizontal: base.horizontal / 2 + additionalHorizontal,
-      vertical: base.vertical / 2 + additionalVertical,
-    );
   }
 
   /// Returns a version of [base] that meets WCAG AA contrast on [background].
@@ -376,8 +298,8 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       progressComplete: palette.success,
       progressPending: pending,
       // Interaction colors
-      tapFeedback: palette.primary.withAlpha(31),
-      hoverState: palette.primaryHover.withAlpha(20),
+      tapFeedback: palette.primary.withOpacity(0.12),
+      hoverState: palette.primaryHover.withOpacity(0.08),
       // Error and warning colors
       accentError: palette.error,
       accentWarning: palette.warning,
@@ -385,91 +307,105 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       highContrastText: palette.highContrastOnPrimary,
       highContrastBackground: palette.highContrastPrimary,
       highContrastPrimary: palette.highContrastPrimary,
-      radius: const MinqRadius(
-        sm: 8,
-        md: 12,
-        lg: 16,
-        xl: 28,
+
+      radiusSmall: 8,
+      radiusMedium: 12,
+      radiusLarge: 16,
+      radiusXLarge: 28,
+      spaceBase: base,
+      spaceSM: base * 2,
+      spaceMD: base * 3,
+      spaceLG: base * 5,
+      spaceXL: base * 6,
+
+      // Enhanced spacing system for emotional design
+      breathingSpace: base * 4, // 16px - comfortable breathing room
+      intimateSpace: base * 1.5, // 6px - close, intimate spacing
+      respectfulSpace: base * 8, // 32px - respectful distance between sections
+      dramaticSpace: base * 12, // 48px - dramatic spacing for emphasis
+
+      shadowSoft: [
+        BoxShadow(
+          color: palette.textPrimary.withOpacity(0.08),
+          blurRadius: 18,
+          offset: const Offset(0, 8),
+        ),
+      ],
+      shadowStrong: [
+        BoxShadow(
+          color: palette.textPrimary.withOpacity(0.12),
+          blurRadius: 24,
+          offset: const Offset(0, 14),
+        ),
+      ],
+      displayMedium: GoogleFonts.plusJakartaSans(
+        fontSize: 32,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.5,
       ),
-      spacing: const MinqSpacing(
-        xxs: base / 2,
-        xs: base,
-        sm: base * 2,
-        md: base * 3,
-        lg: base * 5,
-        xl: base * 6,
-        xxl: base * 8,
+      displaySmall: GoogleFonts.plusJakartaSans(
+        fontSize: 28,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.3,
       ),
-      shadow: MinqShadow(
-        soft: [
-          BoxShadow(
-            color: palette.textPrimary.withAlpha(20),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-        strong: [
-          BoxShadow(
-            color: palette.textPrimary.withAlpha(31),
-            blurRadius: 24,
-            offset: const Offset(0, 14),
-          ),
-        ],
+      titleLarge: GoogleFonts.plusJakartaSans(
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.2,
       ),
-      typography: MinqTypography(
-        h1: GoogleFonts.plusJakartaSans(
-          fontSize: 32,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -0.5,
-        ),
-        h2: GoogleFonts.plusJakartaSans(
-          fontSize: 28,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.3,
-        ),
-        h3: GoogleFonts.plusJakartaSans(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.2,
-        ),
-        h4: GoogleFonts.plusJakartaSans(
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-        ),
-        h5: GoogleFonts.plusJakartaSans(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-        ),
-        body: GoogleFonts.plusJakartaSans(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          height: 1.5,
-        ),
-        bodyLarge: GoogleFonts.plusJakartaSans(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          height: 1.5,
-        ),
-        bodyMedium: GoogleFonts.plusJakartaSans(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          height: 1.5,
-        ),
-        bodySmall: GoogleFonts.plusJakartaSans(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          height: 1.5,
-        ),
-        button: GoogleFonts.plusJakartaSans(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
-        caption: GoogleFonts.plusJakartaSans(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
+      titleMedium: GoogleFonts.plusJakartaSans(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+      ),
+      titleSmall: GoogleFonts.plusJakartaSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+      ),
+      bodyLarge: GoogleFonts.plusJakartaSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+      ),
+      bodyMedium: GoogleFonts.plusJakartaSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+      ),
+      bodySmall: GoogleFonts.plusJakartaSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        height: 1.4,
+      ),
+      labelSmall: GoogleFonts.plusJakartaSans(
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.5,
+      ),
+
+      // Emotional typography styles
+      celebrationText: GoogleFonts.plusJakartaSans(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        height: 1.3,
+        color: joyAccent,
+      ),
+      encouragementText: GoogleFonts.plusJakartaSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        height: 1.4,
+        color: palette.warning,
+      ),
+      guidanceText: GoogleFonts.plusJakartaSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+        color: serenity,
+      ),
+      whisperText: GoogleFonts.plusJakartaSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        height: 1.4,
+        color: muted,
       ),
 
       // Animation curves for delightful interactions
@@ -519,8 +455,8 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       progressComplete: palette.success,
       progressPending: pending,
       // Interaction colors
-      tapFeedback: palette.primary.withAlpha(56),
-      hoverState: palette.primaryHover.withAlpha(41),
+      tapFeedback: palette.primary.withOpacity(0.22),
+      hoverState: palette.primaryHover.withOpacity(0.16),
       // Error and warning colors
       accentError: palette.error,
       accentWarning: palette.warning,
@@ -528,91 +464,105 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       highContrastText: palette.highContrastOnPrimary,
       highContrastBackground: palette.highContrastPrimary,
       highContrastPrimary: palette.highContrastPrimary,
-      radius: const MinqRadius(
-        sm: 8,
-        md: 12,
-        lg: 16,
-        xl: 28,
+
+      radiusSmall: 8,
+      radiusMedium: 12,
+      radiusLarge: 16,
+      radiusXLarge: 28,
+      spaceBase: base,
+      spaceSM: base * 2,
+      spaceMD: base * 3,
+      spaceLG: base * 5,
+      spaceXL: base * 6,
+
+      // Enhanced spacing system for emotional design
+      breathingSpace: base * 4,
+      intimateSpace: base * 1.5,
+      respectfulSpace: base * 8,
+      dramaticSpace: base * 12,
+
+      shadowSoft: [
+        BoxShadow(
+          color: palette.onSurface.withOpacity(0.18),
+          blurRadius: 20,
+          offset: const Offset(0, 6),
+        ),
+      ],
+      shadowStrong: [
+        BoxShadow(
+          color: palette.onSurface.withOpacity(0.22),
+          blurRadius: 28,
+          offset: const Offset(0, 16),
+        ),
+      ],
+      displayMedium: GoogleFonts.plusJakartaSans(
+        fontSize: 32,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.5,
       ),
-      spacing: const MinqSpacing(
-        xxs: base / 2,
-        xs: base,
-        sm: base * 2,
-        md: base * 3,
-        lg: base * 5,
-        xl: base * 6,
-        xxl: base * 8,
+      displaySmall: GoogleFonts.plusJakartaSans(
+        fontSize: 28,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.3,
       ),
-      shadow: MinqShadow(
-        soft: [
-          BoxShadow(
-            color: palette.onSurface.withAlpha(46),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
-          ),
-        ],
-        strong: [
-          BoxShadow(
-            color: palette.onSurface.withAlpha(56),
-            blurRadius: 28,
-            offset: const Offset(0, 16),
-          ),
-        ],
+      titleLarge: GoogleFonts.plusJakartaSans(
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.2,
       ),
-      typography: MinqTypography(
-        h1: GoogleFonts.plusJakartaSans(
-          fontSize: 32,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -0.5,
-        ),
-        h2: GoogleFonts.plusJakartaSans(
-          fontSize: 28,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.3,
-        ),
-        h3: GoogleFonts.plusJakartaSans(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.2,
-        ),
-        h4: GoogleFonts.plusJakartaSans(
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-        ),
-        h5: GoogleFonts.plusJakartaSans(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-        ),
-        body: GoogleFonts.plusJakartaSans(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          height: 1.5,
-        ),
-        bodyLarge: GoogleFonts.plusJakartaSans(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          height: 1.5,
-        ),
-        bodyMedium: GoogleFonts.plusJakartaSans(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          height: 1.5,
-        ),
-        bodySmall: GoogleFonts.plusJakartaSans(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          height: 1.5,
-        ),
-        button: GoogleFonts.plusJakartaSans(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
-        caption: GoogleFonts.plusJakartaSans(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
+      titleMedium: GoogleFonts.plusJakartaSans(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+      ),
+      titleSmall: GoogleFonts.plusJakartaSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+      ),
+      bodyLarge: GoogleFonts.plusJakartaSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+      ),
+      bodyMedium: GoogleFonts.plusJakartaSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+      ),
+      bodySmall: GoogleFonts.plusJakartaSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        height: 1.4,
+      ),
+      labelSmall: GoogleFonts.plusJakartaSans(
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.5,
+      ),
+
+      // Emotional typography styles (adjusted for dark theme)
+      celebrationText: GoogleFonts.plusJakartaSans(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        height: 1.3,
+        color: joyAccent,
+      ),
+      encouragementText: GoogleFonts.plusJakartaSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        height: 1.4,
+        color: encouragement,
+      ),
+      guidanceText: GoogleFonts.plusJakartaSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+        color: serenity,
+      ),
+      whisperText: GoogleFonts.plusJakartaSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        height: 1.4,
+        color: muted,
       ),
 
       // Animation curves for delightful interactions
@@ -655,10 +605,34 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
     Color? highContrastText,
     Color? highContrastBackground,
     Color? highContrastPrimary,
-    MinqRadius? radius,
-    MinqSpacing? spacing,
-    MinqShadow? shadow,
-    MinqTypography? typography,
+    double? radiusSmall,
+    double? radiusMedium,
+    double? radiusLarge,
+    double? radiusXLarge,
+    double? spaceBase,
+    double? spaceSM,
+    double? spaceMD,
+    double? spaceLG,
+    double? spaceXL,
+    double? breathingSpace,
+    double? intimateSpace,
+    double? respectfulSpace,
+    double? dramaticSpace,
+    List<BoxShadow>? shadowSoft,
+    List<BoxShadow>? shadowStrong,
+    TextStyle? displayMedium,
+    TextStyle? displaySmall,
+    TextStyle? titleLarge,
+    TextStyle? titleMedium,
+    TextStyle? titleSmall,
+    TextStyle? bodyLarge,
+    TextStyle? bodyMedium,
+    TextStyle? bodySmall,
+    TextStyle? labelSmall,
+    TextStyle? celebrationText,
+    TextStyle? encouragementText,
+    TextStyle? guidanceText,
+    TextStyle? whisperText,
     Curve? easeInOutCubic,
     Curve? easeOutBack,
     Curve? easeInOutQuart,
@@ -696,10 +670,34 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       highContrastBackground:
           highContrastBackground ?? this.highContrastBackground,
       highContrastPrimary: highContrastPrimary ?? this.highContrastPrimary,
-      radius: radius ?? this.radius,
-      spacing: spacing ?? this.spacing,
-      shadow: shadow ?? this.shadow,
-      typography: typography ?? this.typography,
+      radiusSmall: radiusSmall ?? this.radiusSmall,
+      radiusMedium: radiusMedium ?? this.radiusMedium,
+      radiusLarge: radiusLarge ?? this.radiusLarge,
+      radiusXLarge: radiusXLarge ?? this.radiusXLarge,
+      spaceBase: spaceBase ?? this.spaceBase,
+      spaceSM: spaceSM ?? this.spaceSM,
+      spaceMD: spaceMD ?? this.spaceMD,
+      spaceLG: spaceLG ?? this.spaceLG,
+      spaceXL: spaceXL ?? this.spaceXL,
+      breathingSpace: breathingSpace ?? this.breathingSpace,
+      intimateSpace: intimateSpace ?? this.intimateSpace,
+      respectfulSpace: respectfulSpace ?? this.respectfulSpace,
+      dramaticSpace: dramaticSpace ?? this.dramaticSpace,
+      shadowSoft: shadowSoft ?? this.shadowSoft,
+      shadowStrong: shadowStrong ?? this.shadowStrong,
+      displayMedium: displayMedium ?? this.displayMedium,
+      displaySmall: displaySmall ?? this.displaySmall,
+      titleLarge: titleLarge ?? this.titleLarge,
+      titleMedium: titleMedium ?? this.titleMedium,
+      titleSmall: titleSmall ?? this.titleSmall,
+      bodyLarge: bodyLarge ?? this.bodyLarge,
+      bodyMedium: bodyMedium ?? this.bodyMedium,
+      bodySmall: bodySmall ?? this.bodySmall,
+      labelSmall: labelSmall ?? this.labelSmall,
+      celebrationText: celebrationText ?? this.celebrationText,
+      encouragementText: encouragementText ?? this.encouragementText,
+      guidanceText: guidanceText ?? this.guidanceText,
+      whisperText: whisperText ?? this.whisperText,
       easeInOutCubic: easeInOutCubic ?? this.easeInOutCubic,
       easeOutBack: easeOutBack ?? this.easeOutBack,
       easeInOutQuart: easeInOutQuart ?? this.easeInOutQuart,
@@ -769,16 +767,98 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       highContrastPrimary:
           Color.lerp(highContrastPrimary, other.highContrastPrimary, t) ??
           highContrastPrimary,
-      radius: t < 0.5 ? radius : other.radius,
-      spacing: t < 0.5 ? spacing : other.spacing,
-      shadow: t < 0.5 ? shadow : other.shadow,
-      typography: t < 0.5 ? typography : other.typography,
+      radiusSmall: lerpDouble(radiusSmall, other.radiusSmall, t) ?? radiusSmall,
+      radiusMedium:
+          lerpDouble(radiusMedium, other.radiusMedium, t) ?? radiusMedium,
+      radiusLarge: lerpDouble(radiusLarge, other.radiusLarge, t) ?? radiusLarge,
+      radiusXLarge:
+          lerpDouble(radiusXLarge, other.radiusXLarge, t) ?? radiusXLarge,
+      spaceBase: lerpDouble(spaceBase, other.spaceBase, t) ?? spaceBase,
+      spaceSM: lerpDouble(spaceSM, other.spaceSM, t) ?? spaceSM,
+      spaceMD: lerpDouble(spaceMD, other.spaceMD, t) ?? spaceMD,
+      spaceLG: lerpDouble(spaceLG, other.spaceLG, t) ?? spaceLG,
+      spaceXL: lerpDouble(spaceXL, other.spaceXL, t) ?? spaceXL,
+      breathingSpace:
+          lerpDouble(breathingSpace, other.breathingSpace, t) ?? breathingSpace,
+      intimateSpace:
+          lerpDouble(intimateSpace, other.intimateSpace, t) ?? intimateSpace,
+      respectfulSpace:
+          lerpDouble(respectfulSpace, other.respectfulSpace, t) ??
+          respectfulSpace,
+      dramaticSpace:
+          lerpDouble(dramaticSpace, other.dramaticSpace, t) ?? dramaticSpace,
+      shadowSoft: t < 0.5 ? shadowSoft : other.shadowSoft,
+      shadowStrong: t < 0.5 ? shadowStrong : other.shadowStrong,
+      displayMedium:
+          TextStyle.lerp(displayMedium, other.displayMedium, t) ??
+          displayMedium,
+      displaySmall:
+          TextStyle.lerp(displaySmall, other.displaySmall, t) ?? displaySmall,
+      titleLarge: TextStyle.lerp(titleLarge, other.titleLarge, t) ?? titleLarge,
+      titleMedium:
+          TextStyle.lerp(titleMedium, other.titleMedium, t) ?? titleMedium,
+      titleSmall: TextStyle.lerp(titleSmall, other.titleSmall, t) ?? titleSmall,
+      bodyLarge: TextStyle.lerp(bodyLarge, other.bodyLarge, t) ?? bodyLarge,
+      bodyMedium: TextStyle.lerp(bodyMedium, other.bodyMedium, t) ?? bodyMedium,
+      bodySmall: TextStyle.lerp(bodySmall, other.bodySmall, t) ?? bodySmall,
+      labelSmall: TextStyle.lerp(labelSmall, other.labelSmall, t) ?? labelSmall,
+      celebrationText:
+          TextStyle.lerp(celebrationText, other.celebrationText, t) ??
+          celebrationText,
+      encouragementText:
+          TextStyle.lerp(encouragementText, other.encouragementText, t) ??
+          encouragementText,
+      guidanceText:
+          TextStyle.lerp(guidanceText, other.guidanceText, t) ?? guidanceText,
+      whisperText:
+          TextStyle.lerp(whisperText, other.whisperText, t) ?? whisperText,
       easeInOutCubic: t < 0.5 ? easeInOutCubic : other.easeInOutCubic,
       easeOutBack: t < 0.5 ? easeOutBack : other.easeOutBack,
       easeInOutQuart: t < 0.5 ? easeInOutQuart : other.easeInOutQuart,
       bounceOut: t < 0.5 ? bounceOut : other.bounceOut,
     );
   }
+}
+
+class MinqTypeScale {
+  const MinqTypeScale({
+    required this.h1,
+    required this.h2,
+    required this.h3,
+    required this.h4,
+    required this.h5,
+    required this.bodyLarge,
+    required this.bodyMedium,
+    required this.bodySmall,
+    required this.button,
+    required this.caption,
+  });
+
+  final TextStyle h1;
+  final TextStyle h2;
+  final TextStyle h3;
+  final TextStyle h4;
+  final TextStyle h5;
+  final TextStyle bodyLarge;
+  final TextStyle bodyMedium;
+  final TextStyle bodySmall;
+  final TextStyle button;
+  final TextStyle caption;
+}
+
+extension MinqThemeTypography on MinqTheme {
+  MinqTypeScale get typeScale => MinqTypeScale(
+    h1: displayMedium,
+    h2: displaySmall,
+    h3: titleLarge,
+    h4: titleMedium,
+    h5: titleSmall,
+    bodyLarge: bodyLarge,
+    bodyMedium: bodyMedium,
+    bodySmall: bodySmall,
+    button: titleSmall.copyWith(letterSpacing: 0.2),
+    caption: labelSmall,
+  );
 }
 
 extension MinqThemeGetter on BuildContext {

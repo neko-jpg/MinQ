@@ -371,7 +371,6 @@ class _RotationTransitionState extends State<_RotationTransition>
   @override
   void dispose() {
     _controller.dispose();
-    super.dispose();
   }
 
   @override

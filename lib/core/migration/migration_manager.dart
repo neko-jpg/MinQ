@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 
 /// データモデルのバージョン
 class ModelVersion {
@@ -34,9 +33,7 @@ class MigrationV1ToV2 implements Migration {
 
   @override
   Future<void> migrate(FirebaseFirestore firestore) async {
-    MinqLogger.info(
-      'Migrating from v$fromVersion to v$toVersion: $description',
-    );
+    print('🔄 Migrating from v$fromVersion to v$toVersion: $description');
 
     final questsSnapshot = await firestore.collection('quests').get();
 
@@ -58,9 +55,9 @@ class MigrationV1ToV2 implements Migration {
 
     if (count > 0) {
       await batch.commit();
-      MinqLogger.info('Migrated $count quests');
+      print('✅ Migrated $count quests');
     } else {
-      MinqLogger.info('No quests to migrate');
+      print('ℹ️ No quests to migrate');
     }
   }
 }
@@ -78,9 +75,7 @@ class MigrationV2ToV3 implements Migration {
 
   @override
   Future<void> migrate(FirebaseFirestore firestore) async {
-    MinqLogger.info(
-      'Migrating from v$fromVersion to v$toVersion: $description',
-    );
+    print('🔄 Migrating from v$fromVersion to v$toVersion: $description');
 
     final usersSnapshot = await firestore.collection('users').get();
 
@@ -106,9 +101,9 @@ class MigrationV2ToV3 implements Migration {
 
     if (count > 0) {
       await batch.commit();
-      MinqLogger.info('Migrated $count users');
+      print('✅ Migrated $count users');
     } else {
-      MinqLogger.info('No users to migrate');
+      print('ℹ️ No users to migrate');
     }
   }
 }
@@ -128,16 +123,13 @@ class MigrationManager {
     required int targetVersion,
   }) async {
     if (currentVersion >= targetVersion) {
-      MinqLogger.info(
-        'No migrations needed',
-        metadata: {'current': currentVersion, 'target': targetVersion},
+      print(
+        'ℹ️ No migrations needed (current: $currentVersion, target: $targetVersion)',
       );
       return;
     }
 
-    MinqLogger.info(
-      'Starting migrations from v$currentVersion to v$targetVersion',
-    );
+    print('🚀 Starting migrations from v$currentVersion to v$targetVersion');
 
     // 必要なマイグレーションを抽出
     final requiredMigrations =
@@ -154,10 +146,8 @@ class MigrationManager {
       try {
         await migration.migrate(_firestore);
       } catch (e) {
-        MinqLogger.error(
-          'Migration failed: ${migration.description}',
-          exception: e,
-        );
+        print('❌ Migration failed: ${migration.description}');
+        print('Error: $e');
         rethrow;
       }
     }
@@ -165,7 +155,7 @@ class MigrationManager {
     // マイグレーション情報を記録
     await _recordMigration(currentVersion, targetVersion);
 
-    MinqLogger.info('All migrations completed successfully');
+    print('✅ All migrations completed successfully');
   }
 
   /// マイグレーション情報を記録
@@ -194,10 +184,7 @@ class MigrationManager {
 
       return snapshot.docs.first.data()['toVersion'] as int;
     } catch (e) {
-      MinqLogger.warn(
-        'Failed to get database version',
-        metadata: {'error': e.toString()},
-      );
+      print('⚠️ Failed to get database version: $e');
       return 1;
     }
   }
@@ -213,10 +200,7 @@ class MigrationManager {
 
       return doc.data()?['modelVersion'] as int? ?? 1;
     } catch (e) {
-      MinqLogger.warn(
-        'Failed to get user data version',
-        metadata: {'userId': userId, 'error': e.toString()},
-      );
+      print('⚠️ Failed to get user data version: $e');
       return 1;
     }
   }
@@ -227,9 +211,7 @@ class MigrationManager {
     const targetVersion = ModelVersion.current;
 
     if (currentVersion < targetVersion) {
-      MinqLogger.info(
-        'Migrating user data for $userId from v$currentVersion to v$targetVersion',
-      );
+      print('🔄 Migrating user data from v$currentVersion to v$targetVersion');
       await runMigrations(
         currentVersion: currentVersion,
         targetVersion: targetVersion,
@@ -239,7 +221,7 @@ class MigrationManager {
 
   /// 全ユーザーデータをマイグレート（管理者用）
   Future<void> migrateAllUserData() async {
-    MinqLogger.info('Starting migration for all users');
+    print('🚀 Starting migration for all users');
 
     final usersSnapshot = await _firestore.collection('users').get();
 
@@ -247,15 +229,11 @@ class MigrationManager {
       try {
         await migrateUserData(doc.id);
       } catch (e) {
-        MinqLogger.error(
-          'Failed to migrate user',
-          exception: e,
-          metadata: {'userId': doc.id},
-        );
+        print('❌ Failed to migrate user ${doc.id}: $e');
       }
     }
 
-    MinqLogger.info('All user data migrated');
+    print('✅ All user data migrated');
   }
 
   /// マイグレーション履歴を取得
@@ -271,9 +249,8 @@ class MigrationManager {
 
   /// ロールバック（注意: データ損失の可能性あり）
   Future<void> rollback(int targetVersion) async {
-    MinqLogger.warn(
-      'Rolling back to version $targetVersion. This operation may cause data loss!',
-    );
+    print('⚠️ Rolling back to version $targetVersion');
+    print('⚠️ This operation may cause data loss!');
 
     // ロールバックロジックは慎重に実装する必要がある
     // 通常は手動でのデータ復元を推奨

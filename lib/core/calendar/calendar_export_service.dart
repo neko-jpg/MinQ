@@ -166,6 +166,7 @@ class CalendarExportService {
 
   /// ICSファイルを共有
   Future<void> shareICS(File icsFile) async {
+    // ignore: deprecated_member_use
     await Share.shareXFiles(
       [XFile(icsFile.path)],
       subject: 'MiniQuest カレンダー',

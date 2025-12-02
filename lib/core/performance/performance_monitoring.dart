@@ -126,7 +126,7 @@ class TraceNames {
 }
 
 /// HTTPメソッド
-enum HttpMethod { connect, delete, get, head, options, patch, post, put, trace }
+enum HttpMethod { Connect, Delete, Get, Head, Options, Patch, Post, Put, Trace }
 
 /// パフォーマンスメトリクス
 class PerformanceMetrics {
@@ -243,10 +243,8 @@ class FrameRateMonitor {
   final List<Duration> _frameTimes = [];
   int _droppedFrames = 0;
   Timer? _monitorTimer;
-  bool _isMonitoring = false;
 
   void start() {
-    _isMonitoring = true;
     SchedulerBinding.instance.addPersistentFrameCallback(_onFrame);
 
     _monitorTimer = Timer.periodic(
@@ -256,7 +254,6 @@ class FrameRateMonitor {
   }
 
   void _onFrame(Duration timestamp) {
-    if (!_isMonitoring) return;
     _frameTimes.add(timestamp);
 
     // 最新100フレームのみ保持
@@ -282,7 +279,7 @@ class FrameRateMonitor {
     _droppedFrames += droppedInPeriod;
 
     if (kDebugMode && droppedInPeriod > 0) {
-      debugPrint('Dropped frames detected: $droppedInPeriod');
+      print('Dropped frames detected: $droppedInPeriod');
     }
   }
 
@@ -300,7 +297,7 @@ class FrameRateMonitor {
   int getDroppedFrameCount() => _droppedFrames;
 
   void stop() {
-    _isMonitoring = false;
+    SchedulerBinding.instance.removePersistentFrameCallback(_onFrame);
     _monitorTimer?.cancel();
     _monitorTimer = null;
   }
@@ -332,7 +329,7 @@ class MemoryMonitor {
     if (usage > 200 * 1024 * 1024) {
       // 200MB以上
       if (kDebugMode) {
-        debugPrint('High memory usage detected: ${usage ~/ (1024 * 1024)}MB');
+        print('High memory usage detected: ${usage ~/ (1024 * 1024)}MB');
       }
     }
   }
@@ -384,7 +381,7 @@ class NetworkPerformanceMonitor {
       if (avgLatency.inMilliseconds > 2000) {
         // 2秒以上
         if (kDebugMode) {
-          debugPrint(
+          print(
             'High network latency detected: ${avgLatency.inMilliseconds}ms',
           );
         }

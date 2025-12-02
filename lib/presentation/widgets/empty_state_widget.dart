@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:minq/l10n/app_localizations.dart';
 
 import 'package:minq/core/assets/app_icons.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// 空状態ウィジェット - 統一されたスタイル
 class EmptyStateWidget extends StatelessWidget {
@@ -80,7 +79,7 @@ class EmptyStateWidget extends StatelessWidget {
               ? ElevatedButton.icon(
                 onPressed: onFindPair,
                 icon: const Icon(AppIcons.search),
-                label: const Text('ペアを見つける'),
+                label: const Text('ペアを探す'),
               )
               : null,
     );
@@ -163,11 +162,12 @@ class EmptyStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqTheme.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.xl),
+        padding: SpacingSystem.paddingXXL,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -178,35 +178,34 @@ class EmptyStateWidget extends StatelessWidget {
             else if (icon != null)
               _buildIcon(context, icon!, type),
 
-            SizedBox(height: tokens.spacing.lg),
+            SpacingSystem.vSpaceLG,
 
             // タイトル
             if (title != null)
               Text(
                 title!,
-                style: tokens.typography.h2.copyWith(
-                  color: _getTitleColor(tokens, type),
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: _getTitleColor(colorScheme, type),
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
               ),
 
-            if (title != null && message != null)
-              SizedBox(height: tokens.spacing.sm),
+            if (title != null && message != null) SpacingSystem.vSpaceSM,
 
             // メッセージ
             if (message != null)
               Text(
                 message!,
-                style: tokens.typography.body.copyWith(
-                  color: tokens.onSurface.withAlpha((255 * 0.6).round()),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurface.withOpacity(0.6),
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
               ),
 
             // アクション
-            if (action != null) ...[SizedBox(height: tokens.spacing.xl), action!],
+            if (action != null) ...[SpacingSystem.vSpaceXL, action!],
           ],
         ),
       ),
@@ -214,42 +213,42 @@ class EmptyStateWidget extends StatelessWidget {
   }
 
   Widget _buildIcon(BuildContext context, IconData icon, EmptyStateType type) {
-    final tokens = MinqTheme.of(context);
-    final iconColor = _getIconColor(tokens, type);
+    final colorScheme = Theme.of(context).colorScheme;
+    final iconColor = _getIconColor(colorScheme, type);
 
     return Container(
       width: 96,
       height: 96,
       decoration: BoxDecoration(
-        color: iconColor.withAlpha((255 * 0.1).round()),
+        color: iconColor.withOpacity(0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(icon, size: 48, color: iconColor),
     );
   }
 
-  Color _getIconColor(MinqTheme tokens, EmptyStateType type) {
+  Color _getIconColor(ColorScheme colorScheme, EmptyStateType type) {
     switch (type) {
       case EmptyStateType.error:
       case EmptyStateType.networkError:
-        return tokens.accentError;
+        return colorScheme.error;
       case EmptyStateType.permissionDenied:
-        return tokens.accentWarning; // Warning color
+        return const Color(0xFFF59E0B); // Warning color
       case EmptyStateType.quests:
       case EmptyStateType.pairs:
-        return tokens.brandPrimary;
+        return colorScheme.primary;
       default:
-        return tokens.onSurface.withAlpha((255 * 0.4).round());
+        return colorScheme.onSurface.withOpacity(0.4);
     }
   }
 
-  Color _getTitleColor(MinqTheme tokens, EmptyStateType type) {
+  Color _getTitleColor(ColorScheme colorScheme, EmptyStateType type) {
     switch (type) {
       case EmptyStateType.error:
       case EmptyStateType.networkError:
-        return tokens.accentError;
+        return colorScheme.error;
       default:
-        return tokens.onSurface;
+        return colorScheme.onSurface;
     }
   }
 }
@@ -343,36 +342,37 @@ class EmptyStateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = MinqTheme.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Card(
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: SpacingSystem.paddingLG,
           child: Row(
             children: [
               Container(
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
+                  color: colorScheme.primary.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: tokens.brandPrimary, size: 24),
+                child: Icon(icon, color: colorScheme.primary, size: 24),
               ),
-              SizedBox(width: tokens.spacing.md),
+              SpacingSystem.hSpaceMD,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: tokens.typography.h3),
-                    SizedBox(height: tokens.spacing.xs),
+                    Text(title, style: theme.textTheme.titleMedium),
+                    SpacingSystem.vSpaceXS,
                     Text(
                       message,
-                      style: tokens.typography.caption.copyWith(
-                        color: tokens.onSurface.withAlpha((255 * 0.6).round()),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                   ],
@@ -382,7 +382,7 @@ class EmptyStateCard extends StatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 16,
-                  color: tokens.onSurface.withAlpha((255 * 0.4).round()),
+                  color: colorScheme.onSurface.withOpacity(0.4),
                 ),
             ],
           ),

@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/monetization/subscription_manager.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 
 /// ストリーク回復購入サービス
 class StreakRecoveryPurchase {
@@ -16,10 +15,9 @@ class StreakRecoveryPurchase {
   Future<StreakRecoveryResult> recoverByAd(String questId) async {
     try {
       // 広告表示実装（将来）
-      MinqLogger.debug(
-        'Showing ad for streak recovery',
-        metadata: {'questId': questId},
-      );
+      if (kDebugMode) {
+        print('Showing ad for streak recovery: $questId');
+      }
 
       // 仮実装: デバッグモードでは即座に成功
       if (kDebugMode) {
@@ -29,11 +27,6 @@ class StreakRecoveryPurchase {
 
       return const StreakRecoveryResult.failed('広告の読み込みに失敗しました');
     } catch (e) {
-      MinqLogger.error(
-        'Error recovering streak by ad',
-        exception: e,
-        metadata: {'questId': questId},
-      );
       return StreakRecoveryResult.failed('エラーが発生しました: $e');
     }
   }
@@ -49,10 +42,9 @@ class StreakRecoveryPurchase {
       }
 
       // In-App Purchase実装（将来）
-      MinqLogger.debug(
-        'Processing streak recovery purchase',
-        metadata: {'questId': questId},
-      );
+      if (kDebugMode) {
+        print('Processing streak recovery purchase: $questId');
+      }
 
       // 仮実装: デバッグモードでは即座に成功
       if (kDebugMode) {
@@ -62,11 +54,6 @@ class StreakRecoveryPurchase {
 
       return const StreakRecoveryResult.failed('購入処理に失敗しました');
     } catch (e) {
-      MinqLogger.error(
-        'Error recovering streak by purchase',
-        exception: e,
-        metadata: {'questId': questId},
-      );
       return StreakRecoveryResult.failed('エラーが発生しました: $e');
     }
   }
@@ -88,10 +75,11 @@ class StreakRecoveryPurchase {
       final price = _getProtectionPrice(type);
 
       // In-App Purchase実装（将来）
-      MinqLogger.debug(
-        'Purchasing protection ticket',
-        metadata: {'questId': questId, 'type': type, 'price': price},
-      );
+      if (kDebugMode) {
+        print(
+          'Purchasing protection ticket: $questId, type: $type, price: $price',
+        );
+      }
 
       // 仮実装: デバッグモードでは即座に成功
       if (kDebugMode) {
@@ -101,11 +89,6 @@ class StreakRecoveryPurchase {
 
       return const ProtectionPurchaseResult.failed('購入処理に失敗しました');
     } catch (e) {
-      MinqLogger.error(
-        'Error purchasing protection ticket',
-        exception: e,
-        metadata: {'questId': questId, 'type': type},
-      );
       return ProtectionPurchaseResult.failed('エラーが発生しました: $e');
     }
   }

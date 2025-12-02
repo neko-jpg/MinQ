@@ -41,10 +41,10 @@ class PairReminderService {
         );
       }
     } catch (e, stack) {
-      logger.error(
+      AppLogger().error(
         'Failed to check pair progress',
-        e,
-        stack,
+        error: e,
+        stackTrace: stack,
       );
     }
   }
@@ -96,9 +96,9 @@ class PairReminderService {
       details,
     );
 
-    logger.logJson(
+    AppLogger().info(
       'Pair reminder sent',
-      {'userId': userId, 'partnerProgress': partnerProgress},
+      data: {'userId': userId, 'partnerProgress': partnerProgress},
     );
   }
 }

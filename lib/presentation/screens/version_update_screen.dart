@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:minq/core/version/version_check_service.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /// バージョン更新画面
 class VersionUpdateScreen extends ConsumerWidget {
@@ -24,24 +24,24 @@ class VersionUpdateScreen extends ConsumerWidget {
       child: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(tokens.spacing.lg),
+            padding: EdgeInsets.all(tokens.spacing(4)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.system_update, size: 80, color: tokens.brandPrimary),
-                SizedBox(height: tokens.spacing.xl),
+                SizedBox(height: tokens.spacing(6)),
                 Text(
                   _getTitle(result),
-                  style: tokens.typography.h2,
+                  style: tokens.titleLarge,
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: tokens.spacing.md),
+                SizedBox(height: tokens.spacing(3)),
                 Text(
                   _getMessage(result),
-                  style: tokens.typography.body,
+                  style: tokens.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: tokens.spacing.xl),
+                SizedBox(height: tokens.spacing(6)),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -50,7 +50,7 @@ class VersionUpdateScreen extends ConsumerWidget {
                   ),
                 ),
                 if (canDismiss) ...[
-                  SizedBox(height: tokens.spacing.md),
+                  SizedBox(height: tokens.spacing(3)),
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text('後で'),
@@ -74,10 +74,11 @@ class VersionUpdateScreen extends ConsumerWidget {
 
   String _getMessage(VersionCheckResult result) {
     return switch (result) {
-      VersionForceUpdate(:final minVersion) =>
-        'このバージョンはサポートが終了しました。\n'
+      VersionForceUpdate(:final currentVersion, :final minVersion) =>
+        'このバージョン（$currentVersion）はサポートが終了しました。\n'
             '最新バージョン（$minVersion以上）にアップデートしてください。',
       VersionUpdateAvailable(
+        :final currentVersion,
         :final recommendedVersion,
       ) =>
         '新しいバージョン（$recommendedVersion）が利用可能です。\n'

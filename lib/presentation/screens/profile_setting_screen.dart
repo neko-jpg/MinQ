@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
 import 'package:minq/data/services/content_moderation_service.dart';
+import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/security/sensitive_content.dart'
     as custom;
 import 'package:minq/presentation/screens/pair_screen.dart';
@@ -14,6 +15,7 @@ class ProfileSettingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context)!;
     final userAsync = ref.watch(localUserProvider);
     final isDummyMode = ref.watch(dummyDataModeProvider);
 
@@ -22,7 +24,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           'プロフィール', // HTMLに合わせる
-          style: tokens.typography.h4.copyWith(
+          style: tokens.titleMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -32,7 +34,7 @@ class ProfileSettingScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withAlpha(204),
+        backgroundColor: tokens.background.withOpacity(0.8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         actions: [
@@ -51,7 +53,7 @@ class ProfileSettingScreen extends ConsumerWidget {
               (error, _) => Center(
                 child: Text(
                   'プロフィールの読み込みに失敗しました',
-                  style: tokens.typography.body.copyWith(color: tokens.accentError),
+                  style: tokens.bodyMedium.copyWith(color: tokens.accentError),
                 ),
               ),
           data:
@@ -152,13 +154,13 @@ class ProfileSettingScreen extends ConsumerWidget {
         const SizedBox(height: 16),
         Text(
           displayName,
-          style: tokens.typography.h2.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleLarge.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Text(
           bio,
           textAlign: TextAlign.center,
-          style: tokens.typography.body.copyWith(color: tokens.textMuted),
+          style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
         ),
       ],
     );
@@ -169,7 +171,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       width: radius * 2,
       height: radius * 2,
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withAlpha(25),
+        color: tokens.brandPrimary.withOpacity(0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(Icons.person, size: radius, color: tokens.brandPrimary),
@@ -177,6 +179,7 @@ class ProfileSettingScreen extends ConsumerWidget {
   }
 
   void _showDummyModeWarning(BuildContext context) {
+    final tokens = context.tokens;
     showDialog(
       context: context,
       builder:
@@ -197,6 +200,7 @@ class ProfileSettingScreen extends ConsumerWidget {
   }
 
   void _editProfile(BuildContext context, WidgetRef ref, user) {
+    final tokens = context.tokens;
     final nameController = TextEditingController(text: user?.displayName ?? '');
     final bioController = TextEditingController(text: user?.bio ?? '');
 
@@ -241,13 +245,11 @@ class ProfileSettingScreen extends ConsumerWidget {
                   final bio = bioController.text.trim();
 
                   // Content moderation
-                  final messenger = ScaffoldMessenger.of(context);
-                  final navigator = Navigator.of(context);
                   if (name.isNotEmpty) {
                     final nameResult =
                         ContentModerationService.moderateUsername(name);
                     if (nameResult.isBlocked) {
-                      messenger.showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(nameResult.details ?? '不適切なニックネームです'),
                         ),
@@ -261,7 +263,7 @@ class ProfileSettingScreen extends ConsumerWidget {
                       bio,
                     );
                     if (bioResult.isBlocked) {
-                      messenger.showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(bioResult.details ?? '不適切な自己紹介です'),
                         ),
@@ -278,19 +280,15 @@ class ProfileSettingScreen extends ConsumerWidget {
                       user.bio = bio.isNotEmpty ? bio : null;
                       await userRepository.saveLocalUser(user);
 
-                      if (context.mounted) {
-                        navigator.pop();
-                        messenger.showSnackBar(
-                          const SnackBar(content: Text('プロフィールを更新しました')),
-                        );
-                      }
-                    }
-                  } catch (e) {
-                    if (context.mounted) {
-                      messenger.showSnackBar(
-                        const SnackBar(content: Text('プロフィールの更新に失敗しました')),
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('プロフィールを更新しました')),
                       );
                     }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('プロフィールの更新に失敗しました')),
+                    );
                   }
                 },
                 child: const Text('保存'),
@@ -302,36 +300,37 @@ class ProfileSettingScreen extends ConsumerWidget {
 
   Widget _buildDummyDataControls(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+
     return Card(
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         side: BorderSide(color: tokens.accentWarning),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Icon(Icons.warning, color: tokens.accentWarning),
-                SizedBox(width: tokens.spacing.xs),
+                SizedBox(width: tokens.spacing(2)),
                 Text(
                   'ダミーデータモード',
-                  style: tokens.typography.h3.copyWith(
+                  style: tokens.titleSmall.copyWith(
                     color: tokens.accentWarning,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: tokens.spacing.xs),
+            SizedBox(height: tokens.spacing(2)),
             Text(
               'ダミーデータモードが有効になっています。実際のデータを使用するには、下のボタンを押してダミーデータを撤去してください。',
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -368,21 +367,17 @@ class ProfileSettingScreen extends ConsumerWidget {
               TextButton(
                 onPressed: () async {
                   // Disable dummy data mode
-                  final navigator = Navigator.of(context);
-                  final messenger = ScaffoldMessenger.of(context);
                   ref.read(dummyDataModeProvider.notifier).state = false;
                   await ref
                       .read(localPreferencesServiceProvider)
                       .setDummyDataMode(false);
 
-                  if (context.mounted) {
-                    navigator.pop();
-                    messenger.showSnackBar(
-                      const SnackBar(
-                        content: Text('ダミーデータモードを無効にしました。実際のデータで動作します。'),
-                      ),
-                    );
-                  }
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('ダミーデータモードを無効にしました。実際のデータで動作します。'),
+                    ),
+                  );
                 },
                 style: TextButton.styleFrom(foregroundColor: Colors.red),
                 child: const Text('撤去する'),
@@ -405,7 +400,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       children: [
         Text(
           'タグ',
-          style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         Wrap(
@@ -416,8 +411,8 @@ class ProfileSettingScreen extends ConsumerWidget {
                   .map(
                     (tag) => Chip(
                       label: Text(tag),
-                      backgroundColor: tokens.brandPrimary.withAlpha(25),
-                      labelStyle: tokens.typography.caption.copyWith(
+                      backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+                      labelStyle: tokens.bodySmall.copyWith(
                         color: tokens.brandPrimary,
                       ),
                     ),
@@ -443,14 +438,14 @@ class ProfileSettingScreen extends ConsumerWidget {
                 children: [
                   Text(
                     'ストリーク',
-                    style: tokens.typography.body.copyWith(color: tokens.textMuted),
+                    style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                   ),
                   const SizedBox(height: 8),
                   streakAsync.when(
                     data:
                         (streak) => Text(
                           '$streak日',
-                          style: tokens.typography.h2.copyWith(
+                          style: tokens.titleLarge.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -471,14 +466,14 @@ class ProfileSettingScreen extends ConsumerWidget {
                 children: [
                   Text(
                     '今日の完了',
-                    style: tokens.typography.body.copyWith(color: tokens.textMuted),
+                    style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                   ),
                   const SizedBox(height: 8),
                   todayCountAsync.when(
                     data:
                         (count) => Text(
                           '$count個',
-                          style: tokens.typography.h2.copyWith(
+                          style: tokens.titleLarge.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -501,7 +496,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       children: [
         Text(
           'アカウント設定',
-          style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         const _ComingSoonTile(
@@ -525,11 +520,11 @@ class ProfileSettingScreen extends ConsumerWidget {
       children: [
         Text(
           'SNS共有',
-          style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         const _ComingSoonPill(),
-        SizedBox(height: tokens.spacing.xs),
+        SizedBox(height: tokens.spacing(2)),
         FilledButton.icon(
           onPressed: null,
           icon: const Icon(Icons.share),
@@ -548,7 +543,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       children: [
         Text(
           'ペア情報',
-          style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         pairAsync.when(
@@ -606,7 +601,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       children: [
         Text(
           'その他',
-          style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         const _ComingSoonTile(
@@ -661,7 +656,7 @@ class ProfileSettingScreen extends ConsumerWidget {
       children: [
         Text(
           'プレミアム機能',
-          style: tokens.typography.h3.copyWith(fontWeight: FontWeight.bold),
+          style: tokens.titleMedium.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         const Card(
@@ -684,37 +679,37 @@ class ProfileSettingScreen extends ConsumerWidget {
     );
   }
 
-  // Widget _buildTagChip(BuildContext context, String label) {
-  //   final tokens = context.tokens;
-  //   return Chip(
-  //     label: Text(label),
-  //     backgroundColor: tokens.brandPrimary.withAlpha(25),
-  //     labelStyle: tokens.typography.caption.copyWith(color: tokens.brandPrimary),
-  //     side: BorderSide.none,
-  //   );
-  // }
+  Widget _buildTagChip(BuildContext context, String label) {
+    final tokens = context.tokens;
+    return Chip(
+      label: Text(label),
+      backgroundColor: tokens.brandPrimary.withOpacity(0.1),
+      labelStyle: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
+      side: BorderSide.none,
+    );
+  }
 
-  // Widget _buildSocialButton({Color? color, bool isGradient = false}) {
-  //   return Container(
-  //     width: 48,
-  //     height: 48,
-  //     decoration: BoxDecoration(
-  //       color: isGradient ? null : color,
-  //       gradient:
-  //           isGradient
-  //               ? const LinearGradient(
-  //                   colors: [
-  //                     Color(0xFF833AB4),
-  //                     Color(0xFFFD1D1D),
-  //                     Color(0xFFFCAF45),
-  //                   ],
-  //                 )
-  //               : null,
-  //       shape: BoxShape.circle,
-  //     ),
-  //     child: const Icon(Icons.share, color: Colors.white, size: 24),
-  //   );
-  // }
+  Widget _buildSocialButton({Color? color, bool isGradient = false}) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: isGradient ? null : color,
+        gradient:
+            isGradient
+                ? const LinearGradient(
+                  colors: [
+                    Color(0xFF833AB4),
+                    Color(0xFFFD1D1D),
+                    Color(0xFFFCAF45),
+                  ],
+                )
+                : null,
+        shape: BoxShape.circle,
+      ),
+      child: const Icon(Icons.share, color: Colors.white, size: 24),
+    );
+  }
 }
 
 class _ComingSoonPill extends StatelessWidget {
@@ -725,8 +720,8 @@ class _ComingSoonPill extends StatelessWidget {
     final tokens = context.tokens;
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: tokens.spacing.xs,
-        vertical: tokens.spacing.xs,
+        horizontal: tokens.spacing(2),
+        vertical: tokens.spacing(1),
       ),
       decoration: BoxDecoration(
         color: tokens.surfaceVariant,
@@ -734,7 +729,7 @@ class _ComingSoonPill extends StatelessWidget {
       ),
       child: Text(
         '準備中',
-        style: tokens.typography.caption.copyWith(
+        style: tokens.labelSmall.copyWith(
           color: tokens.textMuted,
           fontWeight: FontWeight.bold,
         ),
@@ -762,7 +757,7 @@ class _ComingSoonTile extends StatelessWidget {
       leading: Icon(icon, color: tokens.textMuted),
       title: Text(
         title,
-        style: tokens.typography.body.copyWith(
+        style: tokens.bodyLarge.copyWith(
           color: tokens.textPrimary,
           fontWeight: FontWeight.w600,
         ),
@@ -773,10 +768,10 @@ class _ComingSoonTile extends StatelessWidget {
         children: [
           const _ComingSoonPill(),
           if (description != null) ...[
-            SizedBox(height: tokens.spacing.xs),
+            SizedBox(height: tokens.spacing(1)),
             Text(
               description!,
-              style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             ),
           ],
         ],
@@ -797,9 +792,9 @@ class _PairStatusSubtitle extends StatelessWidget {
       children: [
         Text(
           '一緒に頑張っています',
-          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
         ),
-        SizedBox(height: tokens.spacing.xs),
+        SizedBox(height: tokens.spacing(2)),
         const _ComingSoonPill(),
       ],
     );

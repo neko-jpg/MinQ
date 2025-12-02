@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/app_theme.dart';
 
 /// アクセシビリティ設定画面
 /// 高齢者向けの特大UI・音声読み上げ速度などの設定
@@ -22,10 +22,6 @@ class _AccessibilitySettingsScreenState
   bool _boldText = false;
   bool _largeButtons = false;
   bool _simplifiedUI = false;
-  bool _screenReaderOptimized = false;
-  bool _hapticFeedback = true;
-  bool _soundFeedback = true;
-  double _buttonSize = 1.0;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +42,7 @@ class _AccessibilitySettingsScreenState
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withAlpha((255 * 0.9).round()),
+        backgroundColor: tokens.background.withOpacity(0.9),
         elevation: 0,
       ),
       body: ListView(
@@ -56,6 +52,7 @@ class _AccessibilitySettingsScreenState
           _buildSection(
             title: '視覚設定',
             icon: Icons.visibility,
+            tokens: tokens,
             children: [
               _buildSliderTile(
                 title: 'テキストサイズ',
@@ -66,24 +63,28 @@ class _AccessibilitySettingsScreenState
                 divisions: 12,
                 onChanged: (value) => setState(() => _textScale = value),
                 valueLabel: '${(_textScale * 100).toInt()}%',
+                tokens: tokens,
               ),
               _buildSwitchTile(
                 title: '太字テキスト',
                 subtitle: 'すべてのテキストを太字で表示',
                 value: _boldText,
                 onChanged: (value) => setState(() => _boldText = value),
+                tokens: tokens,
               ),
               _buildSwitchTile(
                 title: '高コントラスト',
                 subtitle: '色のコントラストを強調',
                 value: _highContrast,
                 onChanged: (value) => setState(() => _highContrast = value),
+                tokens: tokens,
               ),
               _buildSwitchTile(
                 title: '大きなボタン',
                 subtitle: 'タップしやすい大きなボタン',
                 value: _largeButtons,
                 onChanged: (value) => setState(() => _largeButtons = value),
+                tokens: tokens,
               ),
             ],
           ),
@@ -92,6 +93,7 @@ class _AccessibilitySettingsScreenState
           _buildSection(
             title: '音声設定',
             icon: Icons.record_voice_over,
+            tokens: tokens,
             children: [
               _buildSliderTile(
                 title: '読み上げ速度',
@@ -102,6 +104,7 @@ class _AccessibilitySettingsScreenState
                 divisions: 15,
                 onChanged: (value) => setState(() => _speechRate = value),
                 valueLabel: '${(_speechRate * 100).toInt()}%',
+                tokens: tokens,
               ),
             ],
           ),
@@ -110,12 +113,14 @@ class _AccessibilitySettingsScreenState
           _buildSection(
             title: 'モーション設定',
             icon: Icons.animation,
+            tokens: tokens,
             children: [
               _buildSwitchTile(
                 title: 'アニメーションを減らす',
                 subtitle: '画面の動きを最小限に',
                 value: _reduceMotion,
                 onChanged: (value) => setState(() => _reduceMotion = value),
+                tokens: tokens,
               ),
             ],
           ),
@@ -124,62 +129,20 @@ class _AccessibilitySettingsScreenState
           _buildSection(
             title: 'UI設定',
             icon: Icons.dashboard_customize,
+            tokens: tokens,
             children: [
               _buildSwitchTile(
                 title: 'シンプルUI',
                 subtitle: '必要最小限の機能のみ表示',
                 value: _simplifiedUI,
                 onChanged: (value) => setState(() => _simplifiedUI = value),
-              ),
-              _buildSliderTile(
-                title: 'ボタンサイズ',
-                subtitle: 'タップしやすさを調整',
-                value: _buttonSize,
-                min: 0.8,
-                max: 1.5,
-                divisions: 7,
-                onChanged: (value) => setState(() => _buttonSize = value),
-                valueLabel: '${(_buttonSize * 100).toInt()}%',
-              ),
-            ],
-          ),
-          SizedBox(height: tokens.spacing.xl),
-          // スクリーンリーダー設定
-          _buildSection(
-            title: 'スクリーンリーダー',
-            icon: Icons.accessibility_new,
-            children: [
-              _buildSwitchTile(
-                title: 'スクリーンリーダー最適化',
-                subtitle: '読み上げに最適化された表示',
-                value: _screenReaderOptimized,
-                onChanged: (value) => setState(() => _screenReaderOptimized = value),
-              ),
-            ],
-          ),
-          SizedBox(height: tokens.spacing.xl),
-          // フィードバック設定
-          _buildSection(
-            title: 'フィードバック',
-            icon: Icons.vibration,
-            children: [
-              _buildSwitchTile(
-                title: '触覚フィードバック',
-                subtitle: 'ボタンタップ時の振動',
-                value: _hapticFeedback,
-                onChanged: (value) => setState(() => _hapticFeedback = value),
-              ),
-              _buildSwitchTile(
-                title: '音声フィードバック',
-                subtitle: '操作時の効果音',
-                value: _soundFeedback,
-                onChanged: (value) => setState(() => _soundFeedback = value),
+                tokens: tokens,
               ),
             ],
           ),
           SizedBox(height: tokens.spacing.xl),
           // プレビュー
-          _buildPreview(),
+          _buildPreview(tokens),
           SizedBox(height: tokens.spacing.xl),
           // 保存ボタン
           SizedBox(
@@ -189,12 +152,12 @@ class _AccessibilitySettingsScreenState
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
                 shape: RoundedRectangleBorder(
-                  borderRadius: tokens.cornerFull(),
+                  borderRadius: BorderRadius.circular(tokens.radius.full),
                 ),
               ),
               child: Text(
                 '設定を保存',
-                style: tokens.typography.bodyLarge.copyWith(
+                style: tokens.typography.body.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -208,15 +171,15 @@ class _AccessibilitySettingsScreenState
   Widget _buildSection({
     required String title,
     required IconData icon,
+    required MinqTheme tokens,
     required List<Widget> children,
   }) {
-    final tokens = context.tokens;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, color: tokens.brandPrimary),
+            Icon(icon, color: tokens.primary),
             SizedBox(width: tokens.spacing.sm),
             Text(
               title,
@@ -238,14 +201,14 @@ class _AccessibilitySettingsScreenState
     required String subtitle,
     required bool value,
     required ValueChanged<bool> onChanged,
+    required MinqTheme tokens,
   }) {
-    final tokens = context.tokens;
     return Card(
       margin: EdgeInsets.only(bottom: tokens.spacing.sm),
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         side: BorderSide(color: tokens.border),
       ),
       child: SwitchListTile(
@@ -274,14 +237,14 @@ class _AccessibilitySettingsScreenState
     required int divisions,
     required ValueChanged<double> onChanged,
     required String valueLabel,
+    required MinqTheme tokens,
   }) {
-    final tokens = context.tokens;
     return Card(
       margin: EdgeInsets.only(bottom: tokens.spacing.sm),
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
@@ -317,13 +280,13 @@ class _AccessibilitySettingsScreenState
                     vertical: tokens.spacing.xs,
                   ),
                   decoration: BoxDecoration(
-                    color: tokens.brandPrimary.withAlpha((255 * 0.1).round()),
-                    borderRadius: tokens.cornerMedium(),
+                    color: tokens.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(tokens.radius.md),
                   ),
                   child: Text(
                     valueLabel,
                     style: tokens.typography.body.copyWith(
-                      color: tokens.brandPrimary,
+                      color: tokens.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -343,13 +306,12 @@ class _AccessibilitySettingsScreenState
     );
   }
 
-  Widget _buildPreview() {
-    final tokens = context.tokens;
+  Widget _buildPreview(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing.lg),
       decoration: BoxDecoration(
         color: _highContrast ? Colors.black : tokens.surface,
-        borderRadius: tokens.cornerLarge(),
+        borderRadius: BorderRadius.circular(tokens.radius.lg),
         border: Border.all(
           color: _highContrast ? Colors.white : tokens.border,
           width: _highContrast ? 2 : 1,
@@ -381,8 +343,7 @@ class _AccessibilitySettingsScreenState
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(
                 horizontal: tokens.spacing.lg,
-                vertical:
-                    _largeButtons ? tokens.spacing.lg : tokens.spacing.md,
+                vertical: _largeButtons ? tokens.spacing.lg : tokens.spacing.md,
               ),
             ),
             child: Text(

@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -31,9 +29,9 @@ class ContrastValidator {
 
   /// 相対輝度を計算
   static double _relativeLuminance(Color color) {
-    final r = _linearize(color.red / 255);
-    final g = _linearize(color.green / 255);
-    final b = _linearize(color.blue / 255);
+    final r = _linearize(color.red / 255.0);
+    final g = _linearize(color.green / 255.0);
+    final b = _linearize(color.blue / 255.0);
 
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   }

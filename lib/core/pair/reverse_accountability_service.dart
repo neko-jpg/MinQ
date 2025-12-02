@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
-import 'package:minq/core/logging/app_logger.dart';
 
 // Provider for the service
 final reverseAccountabilityServiceProvider =
@@ -49,11 +48,11 @@ class ReverseAccountabilityService {
         'body': notification['body'],
       });
 
-      logger.info(
+      print(
         "Queued push notification for pair $pairId for user $userId's success.",
       );
     } catch (e) {
-      logger.error('Error notifying pair: $e');
+      print('Error notifying pair: $e');
     }
   }
 
@@ -68,7 +67,7 @@ class ReverseAccountabilityService {
       final bool user2Completed = await _hasCompletedDailyGoal(user2Id);
 
       if (user1Completed && user2Completed) {
-        logger.info('Both users completed daily goals! Awarding Resonance Bonus.');
+        print('Both users completed daily goals! Awarding Resonance Bonus.');
         await _gamificationEngine.awardPoints(
           userId: user1Id,
           basePoints: 50,
@@ -82,10 +81,10 @@ class ReverseAccountabilityService {
 
         // Maybe create a special notification for this
       } else {
-        logger.info('Resonance bonus conditions not met.');
+        print('Resonance bonus conditions not met.');
       }
     } catch (e) {
-      logger.error('Error creating resonance bonus: $e');
+      print('Error creating resonance bonus: $e');
     }
   }
 
@@ -112,10 +111,10 @@ class ReverseAccountabilityService {
   }) {
     // This would trigger a UI prompt with pre-written supportive message templates.
     // The logic to determine "struggling" would be more complex, e.g., based on broken streaks.
-    logger.info(
+    print(
       'UI TRIGGER: Prompting user $activeUserId to support struggling pair $strugglingPairId.',
     );
-    logger.info(
+    print(
       "Suggestion: 'Your pair might be having a tough time. Send them a message of support?'",
     );
   }

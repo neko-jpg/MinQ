@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 import 'package:minq/domain/mood/mood_state.dart';
 import 'package:uuid/uuid.dart';
 
@@ -35,16 +34,9 @@ class MoodTrackingService {
           .collection('mood_logs')
           .doc(moodState.id)
           .set(moodState.toJson());
-      MinqLogger.info(
-        'Recorded mood for user',
-        metadata: {'userId': userId, 'mood': mood, 'rating': rating},
-      );
+      print('Recorded mood for user $userId: $mood ($rating/5)');
     } catch (e) {
-      MinqLogger.error(
-        'Error recording mood',
-        exception: e,
-        metadata: {'userId': userId},
-      );
+      print('Error recording mood: $e');
     }
   }
 
@@ -70,10 +62,7 @@ class MoodTrackingService {
               .get();
 
       if (moodLogsSnapshot.docs.isEmpty || questLogsSnapshot.docs.isEmpty) {
-        MinqLogger.info(
-          'Not enough data to analyze mood-habit correlation',
-          metadata: {'userId': userId},
-        );
+        print('Not enough data to analyze correlation.');
         return;
       }
 
@@ -138,16 +127,11 @@ class MoodTrackingService {
         'lastCorrelationAnalysis': FieldValue.serverTimestamp(),
       });
 
-      MinqLogger.info(
-        'Successfully analyzed and saved mood-habit correlation for user',
-        metadata: {'userId': userId},
+      print(
+        'Successfully analyzed and saved mood-habit correlation for user $userId.',
       );
     } catch (e) {
-      MinqLogger.error(
-        'Error analyzing mood-habit correlation',
-        exception: e,
-        metadata: {'userId': userId},
-      );
+      print('Error analyzing mood-habit correlation: $e');
     }
   }
 }

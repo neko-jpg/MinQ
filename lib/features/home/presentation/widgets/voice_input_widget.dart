@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/features/home/presentation/screens/home_screen_v2.dart';
+import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // For reusing providers
 import 'package:speech_to_text/speech_to_text.dart';
 
 // Provider for the speech_to_text instance
 final speechToTextProvider = Provider<SpeechToText>((ref) => SpeechToText());
 
 final voiceQuestCompleterProvider = Provider.autoDispose((ref) {
-  final userId = ref.watch(userIdProvider);
   return (String recognizedText) async {
     // Simple parsing: assumes format " [Quest Name] を完了"
     const keyword = 'を完了';
@@ -25,7 +24,7 @@ final voiceQuestCompleterProvider = Provider.autoDispose((ref) {
     final snapshot =
         await FirebaseFirestore.instance
             .collection('users')
-            .doc(userId) // Using the dummy user ID from home_screen_v2
+            .doc(_userId) // Using the dummy user ID from home_screen_v2
             .collection('quests')
             .where('name', isEqualTo: questName)
             .where('completed', isEqualTo: false)

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minq/data/logging/minq_logger.dart';
 
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -50,11 +49,8 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
     widget.onError?.call(error, stackTrace);
 
     // ログに記録
-    MinqLogger.error(
-      'Error caught by ErrorBoundary',
-      exception: error,
-      stackTrace: stackTrace,
-    );
+    print('❌ Error caught by ErrorBoundary: $error');
+    print('Stack trace: $stackTrace');
   }
 
   void _reset() {
@@ -108,48 +104,48 @@ class ErrorScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.error_outline, size: 80, color: tokens.accentError),
-                SizedBox(height: tokens.spacing.xl),
+                SizedBox(height: tokens.spacing(6)),
                 Text(
                   'エラーが発生しました',
-                  style: tokens.typography.h2.copyWith(color: tokens.textPrimary),
+                  style: tokens.titleLarge.copyWith(color: tokens.textPrimary),
                 ),
-                SizedBox(height: tokens.spacing.lg),
+                SizedBox(height: tokens.spacing(4)),
                 Text(
                   _getErrorMessage(error),
                   textAlign: TextAlign.center,
-                  style: tokens.typography.body.copyWith(
+                  style: tokens.bodyMedium.copyWith(
                     color: tokens.textSecondary,
                   ),
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: tokens.spacing(8)),
                 if (onRetry != null)
                   ElevatedButton.icon(
                     onPressed: onRetry,
                     icon: const Icon(Icons.refresh),
                     label: const Text('再試行'),
                   ),
-                SizedBox(height: tokens.spacing.lg),
+                SizedBox(height: tokens.spacing(4)),
                 OutlinedButton.icon(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: const Icon(Icons.arrow_back),
                   label: const Text('戻る'),
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: tokens.spacing(8)),
                 ExpansionTile(
                   title: Text(
                     '詳細情報',
-                    style: tokens.typography.body.copyWith(
+                    style: tokens.bodyMedium.copyWith(
                       color: tokens.textPrimary,
                     ),
                   ),
                   children: [
                     Container(
-                      padding: EdgeInsets.all(tokens.spacing.lg),
+                      padding: EdgeInsets.all(tokens.spacing(4)),
                       color: tokens.surfaceAlt,
                       child: SingleChildScrollView(
                         child: Text(
                           'Error: $error\n\nStack trace:\n$stackTrace',
-                          style: tokens.typography.bodySmall.copyWith(
+                          style: tokens.bodySmall.copyWith(
                             fontFamily: 'monospace',
                             color: tokens.textSecondary,
                           ),
@@ -191,11 +187,8 @@ class GlobalErrorHandler {
   }
 
   static void _logError(Object error, StackTrace? stackTrace) {
-    MinqLogger.error(
-      'Global error caught',
-      exception: error,
-      stackTrace: stackTrace,
-    );
+    print('❌ Global error: $error');
+    print('Stack trace: $stackTrace');
 
     // TODO: Crashlytics や Sentry に送信
     // FirebaseCrashlytics.instance.recordError(error, stackTrace);
@@ -212,16 +205,16 @@ class ErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Container(
-      color: tokens.accentError.withAlpha(31),
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      color: tokens.accentError.withOpacity(0.12),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.error, color: tokens.accentError),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             message,
-            style: tokens.typography.body.copyWith(color: tokens.accentError),
+            style: tokens.bodyMedium.copyWith(color: tokens.accentError),
             textAlign: TextAlign.center,
           ),
         ],

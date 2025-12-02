@@ -335,6 +335,7 @@ class BattleService {
       log('BattleService: ランキング取得開始');
 
       // 期間の計算
+      // ignore: unused_local_variable
       DateTime? startDate;
       switch (period) {
         case RankingPeriod.daily:
@@ -350,8 +351,6 @@ class BattleService {
           startDate = null;
           break;
       }
-
-      log('BattleService: ランキング集計開始日 - $startDate');
 
       // TODO: 実際の実装では、ユーザーの統計データを集計
       // ここでは簡略化してサンプルデータを返す

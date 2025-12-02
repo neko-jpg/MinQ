@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
 /// タグサービス
 class TagService {
   final FirebaseFirestore _firestore;
-  final AppLogger _logger = AppLogger();
 
   TagService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// タグを作成
   Future<String?> createTag({
@@ -22,22 +22,14 @@ class TagService {
 
       await tagRef.set({
         'name': name,
-        // ignore: deprecated_member_use
         'color': color.value,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      _logger.info(
-        'Tag created',
-        data: {'tagId': tagRef.id, 'name': name},
-      );
+      AppLogger().logJson('Tag created', {'tagId': tagRef.id, 'name': name}, level: Level.info);
       return tagRef.id;
     } catch (e, stack) {
-      _logger.error(
-        'Failed to create tag',
-        error: e,
-        stackTrace: stack,
-      );
+      AppLogger().error('Failed to create tag', e, stack);
       return null;
     }
   }
@@ -72,16 +64,9 @@ class TagService {
           .doc(tagId)
           .delete();
 
-      _logger.info(
-        'Tag deleted',
-        data: {'tagId': tagId},
-      );
+      AppLogger().logJson('Tag deleted', {'tagId': tagId}, level: Level.info);
     } catch (e, stack) {
-      _logger.error(
-        'Failed to delete tag',
-        error: e,
-        stackTrace: stack,
-      );
+      AppLogger().error('Failed to delete tag', e, stack);
     }
   }
 }

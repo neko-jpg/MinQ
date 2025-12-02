@@ -65,11 +65,7 @@ class MultipleReminderService {
 
       logger.info('Reminder added');
     } catch (e, stack) {
-      logger.error(
-        'Failed to add reminder',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.error('Failed to add reminder', e, stack);
       rethrow;
     }
   }
@@ -88,11 +84,7 @@ class MultipleReminderService {
 
       logger.info('Reminder removed');
     } catch (e, stack) {
-      logger.error(
-        'Failed to remove reminder',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.error('Failed to remove reminder', e, stack);
       rethrow;
     }
   }
@@ -147,11 +139,7 @@ class MultipleReminderService {
         await _cancelNotification(reminderId);
       }
     } catch (e, stack) {
-      logger.error(
-        'Failed to toggle reminder',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.error('Failed to toggle reminder', e, stack);
       rethrow;
     }
   }
@@ -258,11 +246,7 @@ class MultipleReminderService {
 
       logger.info('Reminders saved');
     } catch (e, stack) {
-      logger.error(
-        'Failed to save reminders',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.error('Failed to save reminders', e, stack);
       rethrow;
     }
   }
@@ -311,11 +295,7 @@ class MultipleReminderService {
         payload: questId,
       );
     } catch (e, stack) {
-      logger.warning(
-        'Failed to schedule reminder notification',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.warning('Failed to schedule reminder notification', e, stack);
     }
   }
 
@@ -325,11 +305,7 @@ class MultipleReminderService {
       final notificationId = reminderId.hashCode;
       await _notifications.cancel(notificationId);
     } catch (e, stack) {
-      logger.warning(
-        'Failed to cancel reminder notification',
-        error: e,
-        stackTrace: stack,
-      );
+      logger.warning('Failed to cancel reminder notification', e, stack);
     }
   }
 
@@ -358,8 +334,8 @@ class MultipleReminderService {
     } catch (e, stack) {
       logger.warning(
         'Failed to initialise notifications for reminders',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
     }
 

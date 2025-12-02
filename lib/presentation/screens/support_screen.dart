@@ -47,7 +47,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     Future<void>.microtask(() async {
       final prefs = ref.read(localPreferencesServiceProvider);
       final response = await prefs.loadNpsResponse();
-      if (!context.mounted || response == null) {
+      if (!mounted || response == null) {
         return;
       }
       final comment = response.comment ?? '';
@@ -82,7 +82,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
 
     return PopScope(
       canPop: !_hasUnsavedChanges,
-      onPopInvokedWithResult: (didPop, _) async {
+      onPopInvoked: (didPop) async {
         if (didPop) {
           return;
         }
@@ -99,32 +99,32 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           ),
           title: Text(
             'サポートとFAQ',
-            style: tokens.typography.h3.copyWith(color: tokens.textPrimary),
+            style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
           ),
         ),
         body: ListView(
-          padding: EdgeInsets.all(tokens.spacing.lg),
+          padding: EdgeInsets.all(tokens.spacing(5)),
           children: <Widget>[
             _buildSupportBotCard(tokens),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(5)),
             _buildNpsCard(tokens),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(5)),
             Card(
               elevation: 0,
               color: tokens.surface,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(tokens.radius.lg)),
+              shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
               child: Padding(
-                padding: EdgeInsets.all(tokens.spacing.md),
+                padding: EdgeInsets.all(tokens.spacing(4)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
                       'Contact Us',
-                      style: tokens.typography.h4
-                          .copyWith(color: tokens.textPrimary),
+                      style: tokens.titleSmall.copyWith(
+                        color: tokens.textPrimary,
+                      ),
                     ),
-                    SizedBox(height: tokens.spacing.sm),
+                    SizedBox(height: tokens.spacing(3)),
                     _SupportActionTile(
                       icon: Icons.mail_outline,
                       title: 'Email',
@@ -132,7 +132,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                       onCopy:
                           () => _copyToClipboard(context, 'support@minq.app'),
                     ),
-                    Divider(height: tokens.spacing.xl),
+                    Divider(height: tokens.spacing(6)),
                     _SupportActionTile(
                       icon: Icons.forum_outlined,
                       title: 'Feedback Form',
@@ -147,23 +147,23 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 ),
               ),
             ),
-            SizedBox(height: tokens.spacing.lg),
+            SizedBox(height: tokens.spacing(5)),
             Card(
               elevation: 0,
               color: tokens.surface,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(tokens.radius.lg)),
+              shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
               child: Padding(
-                padding: EdgeInsets.all(tokens.spacing.md),
+                padding: EdgeInsets.all(tokens.spacing(4)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
                       'Quick Answers',
-                      style: tokens.typography.h4
-                          .copyWith(color: tokens.textPrimary),
+                      style: tokens.titleSmall.copyWith(
+                        color: tokens.textPrimary,
+                      ),
                     ),
-                    SizedBox(height: tokens.spacing.sm),
+                    SizedBox(height: tokens.spacing(3)),
                     const _FaqItem(
                       questionJa: '通知が届かないときは？',
                       questionEn: 'Notifications are missing?',
@@ -192,8 +192,8 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 ),
               ),
             ),
-            SizedBox(height: tokens.spacing.lg),
-            const _BatteryOptimizationCard(),
+            SizedBox(height: tokens.spacing(5)),
+            _BatteryOptimizationCard(tokens: tokens),
           ],
         ),
       ),
@@ -218,7 +218,6 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
       return;
     }
 
-    final messenger = ScaffoldMessenger.of(context);
     FocusScope.of(context).unfocus();
     final history = List<SupportMessage>.from(_messages);
     setState(() {
@@ -235,30 +234,29 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
         content: content,
         history: history,
       );
-      if (!context.mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _messages.add(reply);
         _chatSending = false;
       });
       _scrollToBottom();
     } catch (error) {
-      if (context.mounted) {
-        setState(() {
-          _chatSending = false;
-          _messages.add(
-            const SupportMessage(
-              role: 'assistant',
-              content: '申し訳ありません。現在サポートボットに接続できませんでした。時間をおいて再度お試しください。',
-            ),
-          );
-        });
-        _scrollToBottom();
+      if (!mounted) {
+        return;
       }
-      // TODO(agent): Re-implement with FeedbackMessenger if a non-static version is available
-      // to preserve original toast appearance.
-      messenger.showSnackBar(
-        const SnackBar(content: Text('サポートボットとの通信に失敗しました。')),
-      );
+      setState(() {
+        _chatSending = false;
+        _messages.add(
+          const SupportMessage(
+            role: 'assistant',
+            content: '申し訳ありません。現在サポートボットに接続できませんでした。時間をおいて再度お試しください。',
+          ),
+        );
+      });
+      FeedbackMessenger.showErrorToast(context, 'サポートボットとの通信に失敗しました。');
+      _scrollToBottom();
     }
   }
 
@@ -283,7 +281,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
 
   void _updateUnsavedState() {
     final shouldFlag = _computeHasUnsavedChanges();
-    if (shouldFlag != _hasUnsavedChanges && context.mounted) {
+    if (shouldFlag != _hasUnsavedChanges && mounted) {
       setState(() {
         _hasUnsavedChanges = shouldFlag;
       });
@@ -292,21 +290,19 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
 
   Future<void> _requestExit() async {
     if (!_hasUnsavedChanges) {
-      if (context.mounted) {
+      if (mounted) {
         Navigator.of(context).pop();
       }
       return;
     }
 
-    final navigator = Navigator.of(context);
     final shouldLeave = await showDiscardChangesDialog(
       context,
       message: '未送信のチャットや保存されていないフィードバックがあります。画面を閉じると破棄されます。',
       discardLabel: '破棄して戻る',
     );
-
-    if (shouldLeave) {
-      navigator.pop();
+    if (shouldLeave && mounted) {
+      Navigator.of(context).pop();
     }
   }
 
@@ -324,42 +320,40 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     return Card(
       elevation: 0,
       color: tokens.surface,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.lg)),
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'AI サポートチャット',
-              style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
+              'Gemma AI サポートチャット',
+              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             if (!isChatAvailable)
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(tokens.spacing.sm),
-                margin: EdgeInsets.only(bottom: tokens.spacing.sm),
+                padding: EdgeInsets.all(tokens.spacing(3)),
+                margin: EdgeInsets.only(bottom: tokens.spacing(3)),
                 decoration: BoxDecoration(
                   color: tokens.surfaceVariant,
-                  borderRadius: BorderRadius.circular(tokens.radius.md),
+                  borderRadius: tokens.cornerMedium(),
                 ),
                 child: Text(
                   '現在はサポートボットへの接続を準備中です。しばらくお待ちください。',
-                  style:
-                      tokens.typography.caption.copyWith(color: tokens.textMuted),
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 ),
               ),
             Container(
               height: 220,
               decoration: BoxDecoration(
                 color: tokens.surfaceVariant,
-                borderRadius: BorderRadius.circular(tokens.radius.md),
+                borderRadius: tokens.cornerMedium(),
               ),
               child: ListView.builder(
                 controller: _chatScrollController,
-                padding: EdgeInsets.all(tokens.spacing.sm),
+                padding: EdgeInsets.all(tokens.spacing(3)),
                 itemCount: _messages.length,
                 itemBuilder: (context, index) {
                   final message = _messages[index];
@@ -373,26 +367,25 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   return Align(
                     alignment: alignment,
                     child: Container(
-                      margin: EdgeInsets.only(bottom: tokens.spacing.xs),
+                      margin: EdgeInsets.only(bottom: tokens.spacing(2)),
                       padding: EdgeInsets.symmetric(
-                        horizontal: tokens.spacing.sm,
-                        vertical: tokens.spacing.xs,
+                        horizontal: tokens.spacing(3),
+                        vertical: tokens.spacing(2),
                       ),
                       decoration: BoxDecoration(
                         color: bubbleColor,
-                        borderRadius: BorderRadius.circular(tokens.radius.sm),
+                        borderRadius: BorderRadius.circular(tokens.radius(3)),
                       ),
                       child: Text(
                         message.content,
-                        style:
-                            tokens.typography.caption.copyWith(color: textColor),
+                        style: tokens.bodySmall.copyWith(color: textColor),
                       ),
                     ),
                   );
                 },
               ),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             Row(
               children: [
                 Expanded(
@@ -410,7 +403,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                     ),
                   ),
                 ),
-                SizedBox(width: tokens.spacing.xs),
+                SizedBox(width: tokens.spacing(2)),
                 FilledButton.icon(
                   onPressed:
                       !_chatSending && isChatAvailable
@@ -438,23 +431,22 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     return Card(
       elevation: 0,
       color: tokens.surface,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.lg)),
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               'MinQの使い心地を教えてください',
-              style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
+              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
             ),
-            SizedBox(height: tokens.spacing.xs),
+            SizedBox(height: tokens.spacing(2)),
             Text(
               '0 = おすすめしたくない / 10 = とてもおすすめしたい',
-              style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(4)),
             Slider(
               value: _npsScore.toDouble(),
               min: 0,
@@ -468,10 +460,10 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               alignment: Alignment.centerRight,
               child: Text(
                 'スコア: $_npsScore',
-                style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(4)),
             TextField(
               controller: _commentController,
               minLines: 2,
@@ -479,18 +471,16 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               decoration: InputDecoration(
                 labelText: 'コメント (任意)',
                 hintText: 'ペア機能や通知タイミングで改善して欲しい点を教えてください',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(tokens.radius.md)),
+                border: OutlineInputBorder(borderRadius: tokens.cornerMedium()),
               ),
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(4)),
             if (_submitted && _recordedAt != null)
               Padding(
-                padding: EdgeInsets.only(bottom: tokens.spacing.xs),
+                padding: EdgeInsets.only(bottom: tokens.spacing(2)),
                 child: Text(
                   'ありがとうございます！ ${_recordedAt!.year}/${_recordedAt!.month}/${_recordedAt!.day} に保存しました。',
-                  style: tokens.typography.caption
-                      .copyWith(color: tokens.accentSuccess),
+                  style: tokens.bodySmall.copyWith(color: tokens.accentSuccess),
                 ),
               ),
             Align(
@@ -508,7 +498,6 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
 
   Future<void> _submitNps(MinqTheme tokens) async {
     final prefs = ref.read(localPreferencesServiceProvider);
-    final messenger = ScaffoldMessenger.of(context);
     await prefs.saveNpsResponse(
       score: _npsScore,
       comment: _commentController.text,
@@ -521,21 +510,20 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
       _initialComment = _commentController.text.trim();
     });
     _updateUnsavedState();
-
-    // TODO(agent): Re-implement with FeedbackMessenger if a non-static version is available
-    // to preserve original toast appearance.
-    messenger.showSnackBar(
-      const SnackBar(content: Text('ご協力ありがとうございます！')),
-    );
+    if (!mounted) {
+      return;
+    }
+    FeedbackMessenger.showSuccessToast(context, 'ご協力ありがとうございます！');
   }
 }
 
 class _BatteryOptimizationCard extends StatelessWidget {
-  const _BatteryOptimizationCard();
+  const _BatteryOptimizationCard({required this.tokens});
+
+  final MinqTheme tokens;
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
     const instructions = <String>[
       'Android: 設定 > アプリと通知 > 特別なアプリアクセス > 電池の最適化 で MinQ を「最適化しない」に設定してください。',
       'iOS: 設定 > 一般 > Appのバックグラウンド更新 から MinQ をオンにして通知を維持してください。',
@@ -545,34 +533,35 @@ class _BatteryOptimizationCard extends StatelessWidget {
     return Card(
       elevation: 0,
       color: tokens.surface,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.lg)),
+      shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               '通知が届かない場合のチェックリスト',
-              style: tokens.typography.h4.copyWith(color: tokens.textPrimary),
+              style: tokens.titleSmall.copyWith(color: tokens.textPrimary),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             ...instructions.map(
               (instruction) => Padding(
-                padding: EdgeInsets.only(bottom: tokens.spacing.xs),
+                padding: EdgeInsets.only(bottom: tokens.spacing(2)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       '• ',
-                      style: tokens.typography.body
-                          .copyWith(color: tokens.brandPrimary),
+                      style: tokens.bodyMedium.copyWith(
+                        color: tokens.brandPrimary,
+                      ),
                     ),
                     Expanded(
                       child: Text(
                         instruction,
-                        style: tokens.typography.body
-                            .copyWith(color: tokens.textPrimary),
+                        style: tokens.bodyMedium.copyWith(
+                          color: tokens.textPrimary,
+                        ),
                       ),
                     ),
                   ],
@@ -606,21 +595,19 @@ class _SupportActionTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Icon(icon, color: tokens.brandPrimary),
-        SizedBox(width: tokens.spacing.sm),
+        SizedBox(width: tokens.spacing(3)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
                 title,
-                style:
-                    tokens.typography.body.copyWith(color: tokens.textPrimary),
+                style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
               ),
-              SizedBox(height: tokens.spacing.xs),
+              SizedBox(height: tokens.spacing(1)),
               SelectableText(
                 subtitle,
-                style:
-                    tokens.typography.caption.copyWith(color: tokens.textMuted),
+                style: tokens.bodySmall.copyWith(color: tokens.textMuted),
               ),
             ],
           ),
@@ -652,32 +639,31 @@ class _FaqItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Padding(
-      padding: EdgeInsets.only(bottom: tokens.spacing.sm),
+      padding: EdgeInsets.only(bottom: tokens.spacing(3)),
       child: ExpansionTile(
         tilePadding: EdgeInsets.zero,
-        childrenPadding: EdgeInsets.only(bottom: tokens.spacing.xs),
+        childrenPadding: EdgeInsets.only(bottom: tokens.spacing(2)),
         title: Text(
           questionJa,
-          style: tokens.typography.body.copyWith(color: tokens.textPrimary),
+          style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
         ),
         subtitle: Text(
           questionEn,
-          style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+          style: tokens.labelSmall.copyWith(color: tokens.textMuted),
         ),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.radius.md)),
+        shape: RoundedRectangleBorder(borderRadius: tokens.cornerMedium()),
         collapsedShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.md),
+          borderRadius: tokens.cornerMedium(),
         ),
         children: <Widget>[
           Text(
             answerJa,
-            style: tokens.typography.caption.copyWith(color: tokens.textPrimary),
+            style: tokens.bodySmall.copyWith(color: tokens.textPrimary),
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spacing(2)),
           Text(
             answerEn,
-            style: tokens.typography.caption.copyWith(color: tokens.textMuted),
+            style: tokens.bodySmall.copyWith(color: tokens.textMuted),
           ),
         ],
       ),

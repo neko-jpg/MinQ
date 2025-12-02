@@ -69,22 +69,21 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
     }
   }
 
-  void _handleBackRequest(WidgetRef ref) {
+  Future<void> _handleBackRequest(WidgetRef ref) async {
     if (!_hasUnsavedChanges) {
       _popOrGoHome(ref);
       return;
     }
 
-    showDiscardChangesDialog(
+    final shouldLeave = await showDiscardChangesDialog(
       context,
       message: '記録を保存せずに終了しますか？',
       discardLabel: '終了する',
-    ).then((shouldLeave) {
-      if (shouldLeave == true) {
-        setState(() => _hasUnsavedChanges = false);
-        _popOrGoHome(ref);
-      }
-    });
+    );
+    if (shouldLeave) {
+      setState(() => _hasUnsavedChanges = false);
+      _popOrGoHome(ref);
+    }
   }
 
   void _popOrGoHome(WidgetRef ref) {
@@ -108,18 +107,18 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
     return PopScope(
       canPop: !_hasUnsavedChanges,
-      onPopInvokedWithResult: (didPop, _) {
+      onPopInvoked: (didPop) async {
         if (didPop) {
           return;
         }
-        _handleBackRequest(ref);
+        await _handleBackRequest(ref);
       },
       child: Scaffold(
         backgroundColor: tokens.background,
         appBar: AppBar(
           title: Text(
             '記録',
-            style: tokens.typography.h4.copyWith(
+            style: tokens.titleMedium.copyWith(
               color: tokens.textPrimary,
               fontWeight: FontWeight.bold,
             ),
@@ -170,30 +169,30 @@ class _RecordSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       children: <Widget>[
         const MinqSkeletonLine(width: 140, height: 28),
-        SizedBox(height: tokens.spacing.sm),
+        SizedBox(height: tokens.spacing(3)),
         MinqSkeleton(
-          height: 176,
-          borderRadius: BorderRadius.circular(tokens.radius.lg),
+          height: tokens.spacing(22),
+          borderRadius: tokens.cornerLarge(),
         ),
-        SizedBox(height: tokens.spacing.xl),
+        SizedBox(height: tokens.spacing(8)),
         const MinqSkeletonLine(width: 110, height: 28),
-        SizedBox(height: tokens.spacing.md),
+        SizedBox(height: tokens.spacing(4)),
         Row(
           children: [
             Expanded(
               child: MinqSkeleton(
-                height: 320,
-                borderRadius: BorderRadius.circular(tokens.radius.lg),
+                height: tokens.spacing(40),
+                borderRadius: tokens.cornerLarge(),
               ),
             ),
-            SizedBox(width: tokens.spacing.md),
+            SizedBox(width: tokens.spacing(4)),
             Expanded(
               child: MinqSkeleton(
-                height: 320,
-                borderRadius: BorderRadius.circular(tokens.radius.lg),
+                height: tokens.spacing(40),
+                borderRadius: tokens.cornerLarge(),
               ),
             ),
           ],
@@ -230,7 +229,7 @@ class _RecordForm extends ConsumerWidget {
           (error, _) => Center(
             child: Text(
               'クエスト情報の読み込みに失敗しました',
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
             ),
           ),
       data: (quest) {
@@ -238,35 +237,35 @@ class _RecordForm extends ConsumerWidget {
           return Center(
             child: Text(
               'クエストが見つかりません',
-              style: tokens.typography.body.copyWith(color: tokens.textMuted),
+              style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
             ),
           );
         }
 
         return ListView(
-          padding: EdgeInsets.all(tokens.spacing.md),
+          padding: EdgeInsets.all(tokens.spacing(4)),
           children: <Widget>[
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(4)),
             Text(
               'クエスト記録',
-              style: tokens.typography.h2.copyWith(
+              style: tokens.titleLarge.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: tokens.spacing.sm),
+            SizedBox(height: tokens.spacing(3)),
             _buildQuestInfoCard(tokens, quest),
-            SizedBox(height: tokens.spacing.xl),
+            SizedBox(height: tokens.spacing(8)),
             const _FocusMusicPanel(),
-            SizedBox(height: tokens.spacing.xl),
+            SizedBox(height: tokens.spacing(8)),
             Text(
               '証明',
-              style: tokens.typography.h2.copyWith(
+              style: tokens.titleLarge.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: tokens.spacing.md),
+            SizedBox(height: tokens.spacing(4)),
             _buildProofButtons(context, ref, tokens, quest),
           ],
         );
@@ -276,44 +275,42 @@ class _RecordForm extends ConsumerWidget {
 
   Widget _buildQuestInfoCard(MinqTheme tokens, quest) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.md),
+      padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
-        color: tokens.brandPrimary.withAlpha(25),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        color: tokens.brandPrimary.withOpacity(0.1),
+        borderRadius: tokens.cornerLarge(),
       ),
       child: Row(
         children: <Widget>[
           Container(
-            width: 56,
-            height: 56,
+            width: tokens.spacing(14),
+            height: tokens.spacing(14),
             decoration: BoxDecoration(
-              color: tokens.brandPrimary.withAlpha(51),
-              borderRadius: BorderRadius.circular(tokens.radius.lg),
+              color: tokens.brandPrimary.withOpacity(0.2),
+              borderRadius: tokens.cornerLarge(),
             ),
             child: Icon(
               iconDataForKey(quest.iconKey),
               color: tokens.brandPrimary,
-              size: 32,
+              size: tokens.spacing(8),
             ),
           ),
-          SizedBox(width: tokens.spacing.md),
+          SizedBox(width: tokens.spacing(4)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
                   quest.title,
-                  style: tokens.typography.h4.copyWith(
+                  style: tokens.titleMedium.copyWith(
                     color: tokens.textPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: tokens.spacing.xs),
+                SizedBox(height: tokens.spacing(1)),
                 Text(
                   '${quest.estimatedMinutes}分',
-                  style: tokens.typography.body.copyWith(
-                    color: tokens.textMuted,
-                  ),
+                  style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
                 ),
               ],
             ),
@@ -344,8 +341,8 @@ class _RecordForm extends ConsumerWidget {
               ),
             ),
             SizedBox(
-              width: isWide ? tokens.spacing.md : 0,
-              height: isWide ? 0 : tokens.spacing.md,
+              width: isWide ? tokens.spacing(4) : 0,
+              height: isWide ? 0 : tokens.spacing(4),
             ),
             Expanded(
               child: _ProofButton(
@@ -362,13 +359,9 @@ class _RecordForm extends ConsumerWidget {
   }
 
   Future<void> _handlePhotoTap(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final navigation = ref.read(navigationUseCaseProvider);
     final uid = ref.read(uidProvider);
     if (uid == null || uid.isEmpty) {
-      messenger.showSnackBar(
-        const SnackBar(content: Text('サインインしていないため記録できません。')),
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'サインインしていないため記録できません。');
       onError(RecordErrorType.permissionDenied);
       return;
     }
@@ -376,17 +369,13 @@ class _RecordForm extends ConsumerWidget {
       final result = await ref
           .read(photoStorageServiceProvider)
           .captureAndSanitize(ownerUid: uid, questId: questId);
-      if (!context.mounted) return;
       if (!result.hasFile) {
-        messenger.showSnackBar(
-          const SnackBar(content: Text('写真の撮影がキャンセルされました。')),
-        );
+        FeedbackMessenger.showInfoToast(context, '写真の撮影がキャンセルされました。');
         return;
       }
 
       final proceed = await _handleModerationWarning(context, result);
       if (!proceed) return;
-      if (!context.mounted) return;
 
       final controller = ref.read(questLogControllerProvider.notifier);
       final success = await controller.recordProgress(
@@ -398,7 +387,7 @@ class _RecordForm extends ConsumerWidget {
       if (success) {
         onError(RecordErrorType.none);
         onCompleted();
-        navigation.goToCelebration();
+        ref.read(navigationUseCaseProvider).goToCelebration();
         FeedbackManager.questCompleted();
       } else {
         onError(RecordErrorType.cameraFailure);
@@ -422,8 +411,6 @@ class _RecordForm extends ConsumerWidget {
     WidgetRef ref,
   ) async {
     final controller = ref.read(questLogControllerProvider.notifier);
-    final messenger = ScaffoldMessenger.of(context);
-    final navigation = ref.read(navigationUseCaseProvider);
     final success = await controller.recordProgress(
       questId,
       proofType: ProofType.check,
@@ -431,13 +418,14 @@ class _RecordForm extends ConsumerWidget {
 
     if (success) {
       onCompleted();
-      navigation.goToCelebration();
+      ref.read(navigationUseCaseProvider).goToCelebration();
       FeedbackManager.questCompleted();
     } else {
-      if (!context.mounted) return;
       final error = ref.read(questLogControllerProvider).error;
       if (error != null) {
-        messenger.showSnackBar(SnackBar(content: Text(error.toString())));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.toString())));
       }
     }
   }
@@ -461,20 +449,20 @@ class _FocusMusicPanel extends ConsumerWidget {
       children: [
         Text(
           '集中BGM',
-          style: tokens.typography.h2.copyWith(
+          style: tokens.titleLarge.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: tokens.spacing.xs),
+        SizedBox(height: tokens.spacing(2)),
         Text(
           '習慣を実行しながら流す音楽を選べます。ヘッドホン推奨です。',
-          style: tokens.typography.body.copyWith(color: tokens.textMuted),
+          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
         ),
-        SizedBox(height: tokens.spacing.sm),
+        SizedBox(height: tokens.spacing(3)),
         ...FocusMusicService.tracks.map(
           (track) => Padding(
-            padding: EdgeInsets.only(bottom: tokens.spacing.xs),
+            padding: EdgeInsets.only(bottom: tokens.spacing(2)),
             child: _FocusMusicTile(
               track: track,
               service: service,
@@ -485,7 +473,7 @@ class _FocusMusicPanel extends ConsumerWidget {
         ),
         if (isPlaying)
           Padding(
-            padding: EdgeInsets.only(top: tokens.spacing.xs),
+            padding: EdgeInsets.only(top: tokens.spacing(1)),
             child: MinqSecondaryButton(
               label: '再生を停止',
               icon: Icons.stop,
@@ -520,7 +508,6 @@ class _FocusMusicTile extends ConsumerWidget {
   final bool isPlaying;
 
   Future<void> _handleTap(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
     try {
       if (isActive && isPlaying) {
         await service.stop();
@@ -528,40 +515,28 @@ class _FocusMusicTile extends ConsumerWidget {
         await service.play(track);
       }
     } catch (error) {
-      messenger.showSnackBar(
-        const SnackBar(content: Text('BGMの再生に失敗しました。')),
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'BGMの再生に失敗しました。');
     }
   }
 
   Future<void> _identifyTrack(BuildContext context, WidgetRef ref) async {
     final taggingService = ref.read(acrMusicTaggingServiceProvider);
-    final messenger = ScaffoldMessenger.of(context);
     if (taggingService == null) {
-      messenger.showSnackBar(
-        const SnackBar(content: Text('BGMの識別は現在ご利用いただけません')),
-      );
+      FeedbackMessenger.showInfoToast(context, 'BGMの識別は現在ご利用いただけません');
       return;
     }
     try {
       final result = await taggingService.identifyFromUrl(track.url);
-      if (!context.mounted) return;
       if (result == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('楽曲を特定できませんでした')),
-        );
+        FeedbackMessenger.showInfoToast(context, '楽曲を特定できませんでした');
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${result.title} / ${result.artists.join(', ')}'),
-        ),
+      FeedbackMessenger.showSuccessToast(
+        context,
+        '${result.title} / ${result.artists.join(', ')}',
       );
     } catch (error) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('BGMの識別に失敗しました')),
-      );
+      FeedbackMessenger.showErrorSnackBar(context, 'BGMの識別に失敗しました');
     }
   }
 
@@ -570,32 +545,32 @@ class _FocusMusicTile extends ConsumerWidget {
     final tokens = context.tokens;
     final hasTagging = ref.watch(acrMusicTaggingServiceProvider) != null;
     final Color tileColor =
-        isActive ? tokens.brandPrimary.withAlpha(30) : tokens.surface;
+        isActive ? tokens.brandPrimary.withOpacity(0.12) : tokens.surface;
     final borderColor =
-        isActive ? tokens.brandPrimary : tokens.border.withAlpha(102);
+        isActive ? tokens.brandPrimary : tokens.border.withOpacity(0.4);
 
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(tokens.radius.lg),
+      borderRadius: tokens.cornerLarge(),
       child: InkWell(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: tokens.cornerLarge(),
         onTap: () => _handleTap(context),
         child: Container(
           decoration: BoxDecoration(
             color: tileColor,
-            borderRadius: BorderRadius.circular(tokens.radius.lg),
+            borderRadius: tokens.cornerLarge(),
             border: Border.all(color: borderColor),
           ),
-          padding: EdgeInsets.all(tokens.spacing.md),
+          padding: EdgeInsets.all(tokens.spacing(4)),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
                 isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill,
                 color: tokens.brandPrimary,
-                size: 28,
+                size: tokens.spacing(7),
               ),
-              SizedBox(width: tokens.spacing.sm),
+              SizedBox(width: tokens.spacing(3)),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -605,7 +580,7 @@ class _FocusMusicTile extends ConsumerWidget {
                         Expanded(
                           child: Text(
                             track.title,
-                            style: tokens.typography.body.copyWith(
+                            style: tokens.titleSmall.copyWith(
                               color: tokens.textPrimary,
                               fontWeight: FontWeight.w600,
                             ),
@@ -621,16 +596,15 @@ class _FocusMusicTile extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: tokens.spacing.xs),
+                    SizedBox(height: tokens.spacing(1)),
                     Text(
                       track.description,
-                      style: tokens.typography.caption
-                          .copyWith(color: tokens.textMuted),
+                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                     ),
                   ],
                 ),
               ),
-              SizedBox(width: tokens.spacing.sm),
+              SizedBox(width: tokens.spacing(3)),
               FilledButton.tonal(
                 onPressed: () => _handleTap(context),
                 style: FilledButton.styleFrom(
@@ -655,7 +629,6 @@ Future<bool> _handleModerationWarning(
 ) async {
   if (result.moderationVerdict == PhotoModerationVerdict.ok) return true;
 
-  if (!context.mounted) return false;
   final tokens = context.tokens;
   final message = switch (result.moderationVerdict) {
     PhotoModerationVerdict.tooDark => '撮影した写真が非常に暗いようです。パートナーを安心させるために撮り直しますか？',
@@ -693,7 +666,6 @@ Future<bool> _handleModerationWarning(
   if (!proceed) {
     try {
       final file = File(result.path);
-      // `File.existsSync` is a slow operation, use `exists` instead.
       if (await file.exists()) await file.delete();
     } catch (_) {
       // Ignore cleanup errors.
@@ -727,7 +699,7 @@ class _ProofButtonState extends State<_ProofButton>
     final Color background =
         widget.isPrimary
             ? tokens.brandPrimary
-            : tokens.brandPrimary.withAlpha(25);
+            : tokens.brandPrimary.withOpacity(0.1);
     final Color foreground =
         widget.isPrimary ? Colors.white : tokens.textPrimary;
 
@@ -737,41 +709,41 @@ class _ProofButtonState extends State<_ProofButton>
         style: ElevatedButton.styleFrom(
           backgroundColor: background,
           foregroundColor: foreground,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(tokens.radius.lg),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: tokens.cornerLarge()),
           elevation: 0,
         ),
         onPressed: isProcessing ? null : () => runGuarded(widget.onTap),
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          transitionBuilder: (Widget child, Animation<double> animation) =>
-              FadeTransition(opacity: animation, child: child),
-          child: isProcessing
-              ? SizedBox(
-                  key: const ValueKey<String>('progress'),
-                  height: 28,
-                  width: 28,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    valueColor: AlwaysStoppedAnimation<Color>(foreground),
-                  ),
-                )
-              : Column(
-                  key: const ValueKey<String>('content'),
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(widget.icon, size: 40),
-                    SizedBox(height: tokens.spacing.xs),
-                    Text(
-                      widget.text,
-                      style: tokens.typography.h4.copyWith(
-                        color: foreground,
-                        fontWeight: FontWeight.bold,
-                      ),
+          transitionBuilder:
+              (Widget child, Animation<double> animation) =>
+                  FadeTransition(opacity: animation, child: child),
+          child:
+              isProcessing
+                  ? SizedBox(
+                    key: const ValueKey<String>('progress'),
+                    height: tokens.spacing(7),
+                    width: tokens.spacing(7),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      valueColor: AlwaysStoppedAnimation<Color>(foreground),
                     ),
-                  ],
-                ),
+                  )
+                  : Column(
+                    key: const ValueKey<String>('content'),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(widget.icon, size: tokens.spacing(10)),
+                      SizedBox(height: tokens.spacing(2)),
+                      Text(
+                        widget.text,
+                        style: tokens.titleMedium.copyWith(
+                          color: foreground,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
         ),
       ),
     );

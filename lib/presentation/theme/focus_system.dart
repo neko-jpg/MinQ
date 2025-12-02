@@ -48,6 +48,7 @@ class FocusSystem {
         baseColor = tokens.accentError;
         break;
       case FocusAccent.neutral:
+      default:
         baseColor = tokens.brandPrimary;
         break;
     }
@@ -65,12 +66,12 @@ class FocusSystem {
 
   /// ライトモードのフォーカステーマ
   static Color lightFocusColor() {
-    return Colors.blue.withAlpha(77);
+    return Colors.blue.withOpacity(0.3);
   }
 
   /// ダークモードのフォーカステーマ
   static Color darkFocusColor() {
-    return Colors.blue.withAlpha(77);
+    return Colors.blue.withOpacity(0.3);
   }
 
   // ========================================
@@ -89,7 +90,7 @@ class FocusSystem {
       borderRadius: BorderRadius.circular(radius),
       boxShadow: [
         BoxShadow(
-          color: highContrast ? focusColor : focusColor.withAlpha(77),
+          color: highContrast ? focusColor : focusColor.withOpacity(0.3),
           blurRadius: 4,
           spreadRadius: 1,
         ),
@@ -197,8 +198,8 @@ class _FocusableWidgetState extends State<FocusableWidget> {
       child: Focus(
         focusNode: _focusNode,
         autofocus: widget.autofocus,
-        onKeyEvent: (node, event) {
-          if (event is KeyDownEvent) {
+        onKey: (node, event) {
+          if (event is RawKeyDownEvent) {
             if (event.logicalKey == LogicalKeyboardKey.enter ||
                 event.logicalKey == LogicalKeyboardKey.space) {
               widget.onTap?.call();
@@ -297,8 +298,8 @@ class _KeyboardNavigableListState extends State<KeyboardNavigableList> {
   @override
   Widget build(BuildContext context) {
     return Focus(
-      onKeyEvent: (node, event) {
-        if (event is KeyDownEvent) {
+      onKey: (node, event) {
+        if (event is RawKeyDownEvent) {
           if (widget.scrollDirection == Axis.vertical) {
             if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
               _moveFocus(1);
@@ -392,46 +393,45 @@ class KeyboardShortcuts {
   const KeyboardShortcuts._();
 
   /// Ctrl/Cmd + S: 保存
-  static bool isSaveShortcut(KeyEvent event) {
-    return HardwareKeyboard.instance.isControlPressed &&
+  static bool isSaveShortcut(RawKeyEvent event) {
+    return event.isControlPressed &&
         event.logicalKey == LogicalKeyboardKey.keyS;
   }
 
   /// Ctrl/Cmd + N: 新規作成
-  static bool isNewShortcut(KeyEvent event) {
-    return HardwareKeyboard.instance.isControlPressed &&
+  static bool isNewShortcut(RawKeyEvent event) {
+    return event.isControlPressed &&
         event.logicalKey == LogicalKeyboardKey.keyN;
   }
 
   /// Ctrl/Cmd + F: 検索
-  static bool isSearchShortcut(KeyEvent event) {
-    return HardwareKeyboard.instance.isControlPressed &&
+  static bool isSearchShortcut(RawKeyEvent event) {
+    return event.isControlPressed &&
         event.logicalKey == LogicalKeyboardKey.keyF;
   }
 
   /// Esc: キャンセル/閉じる
-  static bool isEscapeKey(KeyEvent event) {
+  static bool isEscapeKey(RawKeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.escape;
   }
 
   /// Enter: 確定
-  static bool isEnterKey(KeyEvent event) {
+  static bool isEnterKey(RawKeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.enter;
   }
 
   /// Space: 選択/トグル
-  static bool isSpaceKey(KeyEvent event) {
+  static bool isSpaceKey(RawKeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.space;
   }
 
   /// Tab: 次のフォーカス
-  static bool isTabKey(KeyEvent event) {
+  static bool isTabKey(RawKeyEvent event) {
     return event.logicalKey == LogicalKeyboardKey.tab;
   }
 
   /// Shift + Tab: 前のフォーカス
-  static bool isShiftTabKey(KeyEvent event) {
-    return HardwareKeyboard.instance.isShiftPressed &&
-        event.logicalKey == LogicalKeyboardKey.tab;
+  static bool isShiftTabKey(RawKeyEvent event) {
+    return event.isShiftPressed && event.logicalKey == LogicalKeyboardKey.tab;
   }
 }

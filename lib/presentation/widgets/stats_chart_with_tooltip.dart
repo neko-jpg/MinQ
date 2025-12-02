@@ -59,10 +59,10 @@ class _StatsChartWithTooltipState extends State<StatsChartWithTooltip> {
     final data = widget.data[_hoveredIndex!];
     final tokens = context.tokens;
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.sm),
+      padding: EdgeInsets.all(tokens.spacing(2)),
       decoration: BoxDecoration(
         color: Colors.black87,
-        borderRadius: BorderRadius.circular(tokens.radius.sm),
+        borderRadius: tokens.cornerSmall(),
       ),
       child: Text(
         widget.tooltipBuilder(data),

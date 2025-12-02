@@ -45,15 +45,15 @@ extension AccentColorExtension on AccentColor {
   /// MaterialColorを生成
   MaterialColor get materialColor {
     return MaterialColor(color.value, <int, Color>{
-      50: color.withAlpha(26),
-      100: color.withAlpha(51),
-      200: color.withAlpha(77),
-      300: color.withAlpha(102),
-      400: color.withAlpha(153),
+      50: color.withOpacity(0.1),
+      100: color.withOpacity(0.2),
+      200: color.withOpacity(0.3),
+      300: color.withOpacity(0.4),
+      400: color.withOpacity(0.6),
       500: color,
-      600: color.withAlpha(204),
-      700: color.withAlpha(230),
-      800: color.withAlpha(242),
+      600: color.withOpacity(0.8),
+      700: color.withOpacity(0.9),
+      800: color.withOpacity(0.95),
       900: color,
     });
   }
@@ -133,7 +133,7 @@ class AccentColorPicker extends ConsumerWidget {
                       isSelected
                           ? [
                             BoxShadow(
-                              color: color.color.withAlpha(128),
+                              color: color.color.withOpacity(0.5),
                               blurRadius: 8,
                               spreadRadius: 2,
                             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minq/presentation/theme/animation_system.dart';
-import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/theme/spacing_system.dart';
 
 /// スクロール到達インジケータの種類
 enum ScrollIndicatorType {
@@ -88,7 +88,11 @@ class ScrollIndicatorWrapper extends StatelessWidget {
   }
 
   Widget _buildEdgeGlow(BuildContext context, ScrollIndicatorConfig config) {
-    final glowColor = config.glowColor ?? Theme.of(context).colorScheme.primary;
+    final theme = Theme.of(context);
+    final glowColor = config.glowColor ?? theme.colorScheme.primary;
+
+    // ignore: unused_local_variable
+    final unused = theme;
 
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(overscroll: true),
@@ -226,8 +230,8 @@ class _ScrollEdgeIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = [
-      theme.colorScheme.surface.withAlpha(0),
-      theme.colorScheme.surface.withAlpha((255 * 0.8).round()),
+      theme.colorScheme.surface.withOpacity(0.0),
+      theme.colorScheme.surface.withOpacity(0.8),
     ];
 
     return IgnorePointer(
@@ -296,7 +300,6 @@ class _ScrollPositionIndicatorState extends State<ScrollPositionIndicator> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tokens = Theme.of(context).extension<MinqTheme>()!;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -307,11 +310,12 @@ class _ScrollPositionIndicatorState extends State<ScrollPositionIndicator> {
           curve: AnimationSystem.standard,
           width: isActive ? 24 : 8,
           height: 8,
-          margin: EdgeInsets.symmetric(horizontal: tokens.spacing.xs),
+          margin: EdgeInsets.symmetric(horizontal: SpacingSystem.xxs),
           decoration: BoxDecoration(
-            color: isActive
-                ? theme.colorScheme.primary
-                : theme.colorScheme.onSurface.withAlpha((255 * 0.3).round()),
+            color:
+                isActive
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurface.withOpacity(0.3),
             borderRadius: BorderRadius.circular(4),
           ),
         );
