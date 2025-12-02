@@ -100,15 +100,17 @@ final todayCompletionCountProvider = FutureProvider<int>((ref) async {
       .countLogsForDay(user.uid, DateTime.now());
 });
 
-final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
+final allLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
   await _ensureStartup(ref);
   final user = await ref.watch(localUserProvider.future);
   if (user == null) {
     return [];
   }
-  final logs = await ref
-      .read(questLogRepositoryProvider)
-      .getLogsForUser(user.uid);
+  return ref.read(questLogRepositoryProvider).getLogsForUser(user.uid);
+});
+
+final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
+  final logs = await ref.watch(allLogsProvider.future);
   return logs.take(30).toList();
 });
 
