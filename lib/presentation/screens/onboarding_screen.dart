@@ -169,6 +169,8 @@ class _BottomNavigation extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
+    final navigation = ref.read(navigationUseCaseProvider);
+
     return Padding(
       padding: const EdgeInsets.all(16.0).copyWith(top: 8),
       child: Column(
@@ -176,7 +178,7 @@ class _BottomNavigation extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              onPressed: () => ref.read(navigationUseCaseProvider).goToLogin(),
+              onPressed: navigation.goToLogin,
               icon: const Icon(Icons.arrow_forward),
               label: const Text('始める'),
               style: FilledButton.styleFrom(
@@ -201,8 +203,7 @@ class _BottomNavigation extends ConsumerWidget {
             children: [
               Text('すでにアカウントをお持ちですか？', style: textTheme.bodySmall),
               TextButton(
-                onPressed:
-                    () => ref.read(navigationUseCaseProvider).goToLogin(),
+                onPressed: navigation.goToLogin,
                 child: Text(
                   'ログイン',
                   style: textTheme.bodySmall?.copyWith(

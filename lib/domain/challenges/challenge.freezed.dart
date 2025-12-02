@@ -177,7 +177,7 @@ class __$$ChallengeImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ChallengeImpl implements _Challenge {
+class _$ChallengeImpl extends _Challenge {
   const _$ChallengeImpl(
       {required this.id,
       required this.name,
@@ -185,7 +185,8 @@ class _$ChallengeImpl implements _Challenge {
       required this.type,
       required this.goal,
       required this.startDate,
-      required this.endDate});
+      required this.endDate})
+      : super._();
 
   factory _$ChallengeImpl.fromJson(Map<String, dynamic> json) =>
       _$$ChallengeImplFromJson(json);
@@ -247,7 +248,7 @@ class _$ChallengeImpl implements _Challenge {
   }
 }
 
-abstract class _Challenge implements Challenge {
+abstract class _Challenge extends Challenge {
   const factory _Challenge(
       {required final String id,
       required final String name,
@@ -256,6 +257,7 @@ abstract class _Challenge implements Challenge {
       required final int goal,
       required final DateTime startDate,
       required final DateTime endDate}) = _$ChallengeImpl;
+  const _Challenge._() : super._();
 
   factory _Challenge.fromJson(Map<String, dynamic> json) =
       _$ChallengeImpl.fromJson;

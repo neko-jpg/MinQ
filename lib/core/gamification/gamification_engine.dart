@@ -9,12 +9,7 @@ import 'package:minq/domain/gamification/badge.dart';
 import 'package:minq/domain/gamification/pending_transaction.dart';
 import 'package:minq/domain/gamification/points.dart';
 
-// Provider for the engine
-final gamificationEngineProvider = Provider<GamificationEngine>((ref) {
-  final firestore = ref.watch(firestoreProvider);
-  final isar = ref.watch(isarProvider).value;
-  return GamificationEngine(firestore, isar);
-});
+
 
 class GamificationEngine {
   final FirebaseFirestore? _firestore;

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/gestures.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,11 +14,12 @@ import 'package:minq/data/services/operations_metrics_service.dart';
 import 'package:minq/firebase_options_dev.dart' as dev;
 import 'package:minq/firebase_options_prod.dart' as prod;
 import 'package:minq/firebase_options_stg.dart' as stg;
-import 'package:minq/presentation/controllers/crash_recovery_controller.dart';
+// import 'package:minq/presentation/controllers/crash_recovery_controller.dart';
 import 'package:minq/presentation/controllers/progressive_onboarding_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
-import 'package:minq/presentation/screens/crash_recovery_screen.dart';
+// import 'package:minq/presentation/screens/crash_recovery_screen.dart';
 import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
+import 'package:minq/presentation/screens/splash_screen.dart';
 import 'package:minq/presentation/theme/app_theme.dart';
 import 'package:minq/presentation/widgets/version_check_widget.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -29,121 +30,160 @@ import 'package:minq/l10n/app_localizations.dart';
 Future<void> main() async {
   const sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
   if (sentryDsn.isNotEmpty) {
-    await SentryFlutter.init(
-      (options) {
-        options.dsn = sentryDsn;
-        options.tracesSampleRate = 1.0;
-      },
-      appRunner: () async {
-        await _bootstrapApplication();
-      },
-    );
+    await SentryFlutter.init((options) {
+      options.dsn = sentryDsn;
+      options.tracesSampleRate = 1.0;
+    }, appRunner: () => runApp(const BootstrapWidget()));
     return;
   }
 
-  await _bootstrapApplication();
+  runApp(const BootstrapWidget());
 }
 
-Future<void> _bootstrapApplication() async {
-  final binding = WidgetsFlutterBinding.ensureInitialized();
-  // TensorFlow Lite AIサービスは必要に応じて初期化される
-  GestureBinding.instance.resamplingEnabled = true;
+class BootstrapWidget extends StatefulWidget {
+  const BootstrapWidget({super.key});
 
-  final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-  final crashRecoveryStore = CrashRecoveryStore(sharedPrefs);
-  final operationsMetricsService = OperationsMetricsService(sharedPrefs);
-  await operationsMetricsService.recordSessionStart(DateTime.now());
+  @override
+  State<BootstrapWidget> createState() => _BootstrapWidgetState();
+}
 
-  FlutterError.onError = (FlutterErrorDetails details) {
-    FlutterError.presentError(details);
-    unawaited(operationsMetricsService.recordCrash(DateTime.now()));
-    unawaited(
-      crashRecoveryStore.recordCrash(
-        CrashReport(
-          message: details.exceptionAsString(),
-          stackTrace: details.stack?.toString() ?? '',
-          recordedAt: DateTime.now(),
+class _BootstrapWidgetState extends State<BootstrapWidget> {
+  bool _isInitialized = false;
+  late final SharedPreferences _sharedPrefs;
+  late final CrashRecoveryStore _crashRecoveryStore;
+  late final OperationsMetricsService _operationsMetricsService;
+  late final bool _firebaseInitialized;
+
+  @override
+  void initState() {
+    super.initState();
+    _bootstrap();
+  }
+
+  Future<void> _bootstrap() async {
+    final binding = WidgetsFlutterBinding.ensureInitialized();
+    // TensorFlow Lite AIサービスは必要に応じて初期化される
+
+    _sharedPrefs = await SharedPreferences.getInstance();
+    _crashRecoveryStore = CrashRecoveryStore(_sharedPrefs);
+    _operationsMetricsService = OperationsMetricsService(_sharedPrefs);
+    await _operationsMetricsService.recordSessionStart(DateTime.now());
+
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      unawaited(_operationsMetricsService.recordCrash(DateTime.now()));
+      unawaited(
+        _crashRecoveryStore.recordCrash(
+          CrashReport(
+            message: _maskPii(details.exceptionAsString()),
+            stackTrace: details.stack?.toString() ?? '',
+            recordedAt: DateTime.now(),
+          ),
         ),
-      ),
-    );
-  };
+      );
+    };
 
-  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
-    unawaited(operationsMetricsService.recordCrash(DateTime.now()));
-    unawaited(
-      crashRecoveryStore.recordCrash(
-        CrashReport(
-          message: error.toString(),
-          stackTrace: stack.toString(),
-          recordedAt: DateTime.now(),
+    PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+      unawaited(_operationsMetricsService.recordCrash(DateTime.now()));
+      unawaited(
+        _crashRecoveryStore.recordCrash(
+          CrashReport(
+            message: error.toString(),
+            stackTrace: stack.toString(),
+            recordedAt: DateTime.now(),
+          ),
         ),
-      ),
-    );
-    return false;
-  };
+      );
+      return false;
+    };
 
-  assert(() {
-    binding.addTimingsCallback((List<FrameTiming> timings) {
-      for (final timing in timings) {
-        final totalMillis = timing.totalSpan.inMilliseconds;
-        if (totalMillis > 16) {
-          MinqLogger.debug(
-            'Frame exceeded vsync budget',
-            metadata: <String, Object?>{
-              'frameTimeMs': totalMillis,
-              'buildTimeMs': timing.buildDuration.inMilliseconds,
-              'rasterTimeMs': timing.rasterDuration.inMilliseconds,
-            },
-          );
+    assert(() {
+      binding.addTimingsCallback((List<FrameTiming> timings) {
+        for (final timing in timings) {
+          final totalMillis = timing.totalSpan.inMilliseconds;
+          if (totalMillis > 16) {
+            MinqLogger.debug(
+              'Frame exceeded vsync budget',
+              metadata: <String, Object?>{
+                'frameTimeMs': totalMillis,
+                'buildTimeMs': timing.buildDuration.inMilliseconds,
+                'rasterTimeMs': timing.rasterDuration.inMilliseconds,
+              },
+            );
+          }
         }
+      });
+      return true;
+    }());
+
+    const flavorString = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
+    final flavor = Flavor.values.firstWhere(
+      (e) => e.toString().split('.').last == flavorString,
+    );
+
+    _firebaseInitialized = await _initializeFirebaseIfAvailable(flavor);
+
+    if (mounted) {
+      setState(() {
+        _isInitialized = true;
+      });
+    }
+  }
+
+  Future<bool> _initializeFirebaseIfAvailable(Flavor flavor) async {
+    try {
+      FirebaseOptions options;
+      switch (flavor) {
+        case Flavor.dev:
+          options = dev.DefaultFirebaseOptions.currentPlatform;
+          break;
+        case Flavor.stg:
+          options = stg.DefaultFirebaseOptions.currentPlatform;
+          break;
+        case Flavor.prod:
+          options = prod.DefaultFirebaseOptions.currentPlatform;
+          break;
       }
-    });
-    return true;
-  }());
+      await Firebase.initializeApp(options: options);
+      return true;
+    } on UnsupportedError catch (error) {
+      debugPrint('Skipping Firebase initialization: $error');
+    } catch (error) {
+      debugPrint('Failed to initialize Firebase: $error');
+    }
+    return false;
+  }
 
-  const flavorString = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
-  final flavor = Flavor.values.firstWhere(
-    (e) => e.toString().split('.').last == flavorString,
-  );
+  String _maskPii(String message) {
+    final emailRegex = RegExp(
+      r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',
+    );
+    return message.replaceAllMapped(emailRegex, (match) => '***@***.***');
+  }
 
-  final firebaseInitialized = await _initializeFirebaseIfAvailable(flavor);
+  @override
+  Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: ThemeMode.system,
+        home: const SplashScreen(),
+      );
+    }
 
-  runApp(
-    ProviderScope(
+    return ProviderScope(
       overrides: [
-        firebaseAvailabilityProvider.overrideWithValue(firebaseInitialized),
-        crashRecoveryStoreProvider.overrideWithValue(crashRecoveryStore),
+        firebaseAvailabilityProvider.overrideWithValue(_firebaseInitialized),
+        crashRecoveryStoreProvider.overrideWithValue(_crashRecoveryStore),
         operationsMetricsServiceProvider.overrideWithValue(
-          operationsMetricsService,
+          _operationsMetricsService,
         ),
       ],
       child: const MinQApp(),
-    ),
-  );
-}
-
-Future<bool> _initializeFirebaseIfAvailable(Flavor flavor) async {
-  try {
-    FirebaseOptions options;
-    switch (flavor) {
-      case Flavor.dev:
-        options = dev.DefaultFirebaseOptions.currentPlatform;
-        break;
-      case Flavor.stg:
-        options = stg.DefaultFirebaseOptions.currentPlatform;
-        break;
-      case Flavor.prod:
-        options = prod.DefaultFirebaseOptions.currentPlatform;
-        break;
-    }
-    await Firebase.initializeApp(options: options);
-    return true;
-  } on UnsupportedError catch (error) {
-    debugPrint('Skipping Firebase initialization: $error');
-  } catch (error) {
-    debugPrint('Failed to initialize Firebase: $error');
+    );
   }
-  return false;
 }
 
 class MinQApp extends ConsumerStatefulWidget {
@@ -161,12 +201,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
   @override
   void initState() {
     super.initState();
-    // レベルアップイベントリスナー
-    ref.listen<LevelUpEvent?>(levelUpEventProvider, (previous, next) {
-      if (next != null && mounted) {
-        _showLevelUpScreen(next);
-      }
-    });
+    // Level up event listener moved to build method
 
     // React to notification taps emitted by the native layer.
     _notificationTapSubscription = ref.listenManual<AsyncValue<String>>(
@@ -253,16 +288,14 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     final initializationError = ref.watch(initializationErrorProvider);
     final router = ref.watch(routerProvider);
     final locale = ref.watch(appLocaleControllerProvider);
-    final crashRecoveryState = ref.watch(crashRecoveryControllerProvider);
+    // final crashRecoveryState = ref.watch(crashRecoveryControllerProvider); // Removed intrusive check
 
-    if (crashRecoveryState.needsRecovery) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: lightTheme,
-        darkTheme: darkTheme,
-        home: const CrashRecoveryScreen(),
-      );
-    }
+    // レベルアップイベントリスナー
+    ref.listen<LevelUpEvent?>(levelUpEventProvider, (previous, next) {
+      if (next != null) {
+        _showLevelUpScreen(next);
+      }
+    });
 
     if (initializationError != null) {
       return MaterialApp(
@@ -288,9 +321,12 @@ class _MinQAppState extends ConsumerState<MinQApp> {
     }
 
     return switch (appStartupAsyncValue) {
-      AsyncLoading() => const MaterialApp(
+      AsyncLoading() => MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Scaffold(body: Center(child: CircularProgressIndicator())),
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: ThemeMode.system,
+        home: const SplashScreen(),
       ),
       AsyncError(:final error) => MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -318,7 +354,7 @@ class _MinQAppState extends ConsumerState<MinQApp> {
 
           TextScaler effectiveTextScaler = mediaQuery.textScaler;
           if (maxScaleFactor > minScaleFactor) {
-            final double approxScale = mediaQuery.textScaler.textScaleFactor;
+            final double approxScale = mediaQuery.textScaler.scale(1);
             if (!approxScale.isFinite || approxScale <= 0) {
               assert(() {
                 debugPrint(

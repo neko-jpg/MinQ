@@ -1,0 +1,1 @@
+C:\dev\MinQ\packages\vendor\jni\src\CMakeLists.txt

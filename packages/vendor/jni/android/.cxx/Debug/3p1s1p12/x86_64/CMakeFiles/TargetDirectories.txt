@@ -1,0 +1,3 @@
+C:/dev/MinQ/packages/vendor/jni/android/.cxx/Debug/3p1s1p12/x86_64/CMakeFiles/jni.dir
+C:/dev/MinQ/packages/vendor/jni/android/.cxx/Debug/3p1s1p12/x86_64/CMakeFiles/edit_cache.dir
+C:/dev/MinQ/packages/vendor/jni/android/.cxx/Debug/3p1s1p12/x86_64/CMakeFiles/rebuild_cache.dir
