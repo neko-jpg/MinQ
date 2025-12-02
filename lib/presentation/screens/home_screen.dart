@@ -58,7 +58,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
     final syncStatus = ref.watch(syncStatusProvider);
     final homeAsync = ref.watch(homeDataProvider);
     final l10n = AppLocalizations.of(context)!;
@@ -105,7 +104,6 @@ class _HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
     final miniQuests =
         data.quests.where((quest) => quest.category == 'MiniQuest').toList();
 

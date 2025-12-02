@@ -308,7 +308,6 @@ class _CreateTimeCapsuleTabState extends ConsumerState<_CreateTimeCapsuleTab> {
               label: 'タイムカプセルを作成',
               icon: Icons.send,
               onPressed: _isLoading ? null : _createTimeCapsule,
-              isLoading: _isLoading,
             ),
           ],
         ),
@@ -617,9 +616,9 @@ class _TimeCapsuleDetailSheet extends StatelessWidget {
     );
   }
 
-  void _shareTimeCapsule(BuildContext context, TimeCapsule capsule) {
+  Future<void> _shareTimeCapsule(BuildContext context, TimeCapsule capsule) async {
     // TODO: SNS共有機能を実装
-    FeedbackMessenger.showInfoSnackBar(context, 'SNS共有機能は準備中です');
+    FeedbackMessenger.showInfoToast(context, 'SNS共有機能は準備中です');
   }
 }
 

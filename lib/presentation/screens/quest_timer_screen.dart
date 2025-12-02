@@ -1,19 +1,14 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/data/providers.dart';
-import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
-import 'package:minq/presentation/common/minq_buttons.dart';
-import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/controllers/quest_log_controller.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
-import 'package:minq/presentation/widgets/badge_notification_widget.dart';
 
 /// クエストタイマー画面
 /// タイマーとストップウォッチの両方の機能を提供
@@ -274,7 +269,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildModeSelector(MinqTokens tokens) {
+  Widget _buildModeSelector(MinqTheme tokens) {
     return Container(
       margin: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -312,7 +307,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildTimerView(MinqTokens tokens) {
+  Widget _buildTimerView(MinqTheme tokens) {
     final progress =
         _targetDuration.inSeconds > 0
             ? _currentDuration.inSeconds / _targetDuration.inSeconds
@@ -397,7 +392,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildStopwatchView(MinqTokens tokens) {
+  Widget _buildStopwatchView(MinqTheme tokens) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -442,7 +437,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildTimerSettings(MinqTokens tokens) {
+  Widget _buildTimerSettings(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       decoration: BoxDecoration(
@@ -474,7 +469,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildTimeButton(MinqTokens tokens, String label, Duration duration) {
+  Widget _buildTimeButton(MinqTheme tokens, String label, Duration duration) {
     final isSelected = _targetDuration == duration;
 
     return GestureDetector(
@@ -506,7 +501,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildControlButtons(MinqTokens tokens) {
+  Widget _buildControlButtons(MinqTheme tokens) {
     return Container(
       padding: EdgeInsets.all(tokens.spacing(4)),
       child: Row(
@@ -539,7 +534,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
     );
   }
 
-  Widget _buildMainControlButton(MinqTokens tokens) {
+  Widget _buildMainControlButton(MinqTheme tokens) {
     IconData icon;
     String label;
     VoidCallback onPressed;
@@ -588,7 +583,7 @@ class _QuestTimerScreenState extends ConsumerState<QuestTimerScreen>
   }
 
   Widget _buildControlButton(
-    MinqTokens tokens, {
+    MinqTheme tokens, {
     required IconData icon,
     required String label,
     required Color color,

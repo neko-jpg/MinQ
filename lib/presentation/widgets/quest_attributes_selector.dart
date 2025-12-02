@@ -114,14 +114,14 @@ class _DifficultySelector extends StatelessWidget {
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(difficulty['icon']!),
+                  Text(difficulty['icon']! as String),
                   SizedBox(width: tokens.spaceBase),
-                  Text(difficulty['label']!),
+                  Text(difficulty['label']! as String),
                 ],
               ),
               selected: isSelected,
               onSelected: (selected) {
-                onChanged(selected ? difficulty['value'] : null);
+                onChanged(selected ? difficulty['value']! as String : null);
               },
               backgroundColor: tokens.surface,
               selectedColor: tokens.brandPrimary.withOpacity(0.2),
@@ -160,7 +160,7 @@ class _DurationSelector extends StatelessWidget {
             final value = duration['value'] as int;
             final isSelected = selected == value;
             return ChoiceChip(
-              label: Text(duration['label']!),
+              label: Text(duration['label']! as String),
               selected: isSelected,
               onSelected: (selected) {
                 onChanged(selected ? value : null);
@@ -205,14 +205,14 @@ class _LocationSelector extends StatelessWidget {
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(location['icon']!),
+                  Text(location['icon']! as String),
                   SizedBox(width: tokens.spaceBase),
-                  Text(location['label']!),
+                  Text(location['label']! as String),
                 ],
               ),
               selected: isSelected,
               onSelected: (selected) {
-                onChanged(selected ? location['value'] : null);
+                onChanged(selected ? location['value']! as String : null);
               },
               backgroundColor: tokens.surface,
               selectedColor: tokens.brandPrimary.withOpacity(0.2),

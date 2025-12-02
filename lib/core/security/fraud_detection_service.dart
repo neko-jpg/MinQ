@@ -1,3 +1,4 @@
+import 'package:logger/logger.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
 /// 不正利用検出サービス
@@ -28,9 +29,10 @@ class FraudDetectionService {
               .length;
 
       if (lastHourCompletions > _maxQuestsPerHour) {
-        _logger.warning(
+        _logger.logJson(
           'Suspicious activity detected: $lastHourCompletions quests in 1 hour',
-          metadata: {'userId': userId},
+          {'userId': userId},
+          level: Level.warning,
         );
         return FraudDetectionResult.suspicious(
           reason:
@@ -47,9 +49,10 @@ class FraudDetectionService {
               .length;
 
       if (lastDayCompletions > _maxQuestsPerDay) {
-        _logger.warning(
+        _logger.logJson(
           'Suspicious activity detected: $lastDayCompletions quests in 1 day',
-          metadata: {'userId': userId},
+          {'userId': userId},
+          level: Level.warning,
         );
         return FraudDetectionResult.suspicious(
           reason: '1日に$lastDayCompletions個のクエストを完了しました（上限: $_maxQuestsPerDay）',
@@ -61,9 +64,10 @@ class FraudDetectionService {
       // 短時間での連続完了をチェック
       final suspiciousPattern = _detectSuspiciousPattern(recentCompletions);
       if (suspiciousPattern != null) {
-        _logger.warning(
+        _logger.logJson(
           'Suspicious pattern detected',
-          metadata: {'userId': userId, 'pattern': suspiciousPattern},
+          {'userId': userId, 'pattern': suspiciousPattern},
+          level: Level.warning,
         );
         return FraudDetectionResult.suspicious(
           reason: '短時間に連続してクエストを完了しています',
@@ -74,7 +78,7 @@ class FraudDetectionService {
 
       return FraudDetectionResult.clean();
     } catch (e, stack) {
-      _logger.error('Fraud detection failed', error: e, stackTrace: stack);
+      _logger.error('Fraud detection failed', e, stack);
       return FraudDetectionResult.clean(); // エラー時は通常動作を許可
     }
   }
@@ -124,8 +128,8 @@ class FraudDetectionService {
     } catch (e, stack) {
       _logger.error(
         'Account fraud detection failed',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return FraudDetectionResult.clean();
     }
@@ -157,9 +161,10 @@ class FraudDetectionService {
       const checkWindow = Duration(days: 1);
 
       if (timeWindow < checkWindow && pairChangeCount > maxPairChanges) {
-        _logger.warning(
+        _logger.logJson(
           'Suspicious pair activity: $pairChangeCount changes in ${timeWindow.inHours} hours',
-          metadata: {'userId': userId},
+          {'userId': userId},
+          level: Level.warning,
         );
         return FraudDetectionResult.suspicious(
           reason: '短期間に頻繁にペアを変更しています',
@@ -170,7 +175,7 @@ class FraudDetectionService {
 
       return FraudDetectionResult.clean();
     } catch (e, stack) {
-      _logger.error('Pair fraud detection failed', error: e, stackTrace: stack);
+      _logger.error('Pair fraud detection failed', e, stack);
       return FraudDetectionResult.clean();
     }
   }

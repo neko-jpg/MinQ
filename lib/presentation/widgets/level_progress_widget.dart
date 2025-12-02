@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minq/core/onboarding/progressive_onboarding.dart';
-import 'package:minq/presentation/screens/onboarding/level_up_screen.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 import 'package:minq/presentation/widgets/feature_lock_widget.dart';
 
