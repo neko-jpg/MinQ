@@ -308,10 +308,10 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       highContrastBackground: palette.highContrastPrimary,
       highContrastPrimary: palette.highContrastPrimary,
 
-      radiusSmall: 8,
-      radiusMedium: 12,
-      radiusLarge: 16,
-      radiusXLarge: 28,
+      radiusSmall: 12,
+      radiusMedium: 16,
+      radiusLarge: 24,
+      radiusXLarge: 32,
       spaceBase: base,
       spaceSM: base * 2,
       spaceMD: base * 3,
@@ -319,7 +319,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       spaceXL: base * 6,
 
       // Enhanced spacing system for emotional design
-      breathingSpace: base * 4, // 16px - comfortable breathing room
+      breathingSpace: base * 5, // 20px - comfortable breathing room
       intimateSpace: base * 1.5, // 6px - close, intimate spacing
       respectfulSpace: base * 8, // 32px - respectful distance between sections
       dramaticSpace: base * 12, // 48px - dramatic spacing for emphasis
@@ -465,10 +465,10 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       highContrastBackground: palette.highContrastPrimary,
       highContrastPrimary: palette.highContrastPrimary,
 
-      radiusSmall: 8,
-      radiusMedium: 12,
-      radiusLarge: 16,
-      radiusXLarge: 28,
+      radiusSmall: 12,
+      radiusMedium: 16,
+      radiusLarge: 24,
+      radiusXLarge: 32,
       spaceBase: base,
       spaceSM: base * 2,
       spaceMD: base * 3,
@@ -476,7 +476,7 @@ class MinqTheme extends ThemeExtension<MinqTheme> {
       spaceXL: base * 6,
 
       // Enhanced spacing system for emotional design
-      breathingSpace: base * 4,
+      breathingSpace: base * 5,
       intimateSpace: base * 1.5,
       respectfulSpace: base * 8,
       dramaticSpace: base * 12,
