@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minq/domain/log/quest_log.dart';
+import 'package:minq/domain/recommendation/recommendation_engine.dart';
+import 'package:minq/features/quest/data/quest_providers.dart';
+import 'package:minq/presentation/common/quest_icon_catalog.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -11,107 +15,108 @@ class HomeScreen extends ConsumerWidget {
     final tokens = MinqTheme.of(context);
     final navigation = ref.read(navigationUseCaseProvider);
 
-    // Mock Data for UI Development
-    // In the future, this will come from a provider
-    final heroQuest = (
-      id: 1,
-      title: "朝の瞑想を実践する",
-      duration: 10,
-      category: "マインドフルネス",
-      streak: 12,
-      icon: Icons.self_improvement_rounded,
-    );
-
-    final otherQuests = [
-      (
-        id: 2,
-        title: "コップ1杯の水を飲む",
-        duration: 1,
-        category: "健康",
-        icon: Icons.local_drink_rounded,
-      ),
-      (
-        id: 3,
-        title: "軽いストレッチ",
-        duration: 5,
-        category: "運動",
-        icon: Icons.accessibility_new_rounded,
-      ),
-      (
-        id: 4,
-        title: "技術書を3ページ読む",
-        duration: 15,
-        category: "学習",
-        icon: Icons.menu_book_rounded,
-      ),
-      (
-        id: 5,
-        title: "今日の日記を書く",
-        duration: 5,
-        category: "振り返り",
-        icon: Icons.edit_note_rounded,
-      ),
-    ];
+    final questsAsync = ref.watch(userQuestsProvider);
+    final logsAsync = ref.watch(allLogsProvider);
 
     return Scaffold(
       backgroundColor: tokens.background,
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-              tokens.spacing(5),
-              MediaQuery.of(context).padding.top + tokens.spacing(2),
-              tokens.spacing(5),
-              tokens.spacing(4),
-            ),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _HomeHeader(
-                  onSettingsTap: navigation.goToSettings,
-                ),
-                SizedBox(height: tokens.spacing(6)),
-                const _SectionTitle(title: "今日のイチオシ"),
-                SizedBox(height: tokens.spacing(3)),
-                _HeroQuestCard(
-                  title: heroQuest.title,
-                  category: heroQuest.category,
-                  duration: heroQuest.duration,
-                  streak: heroQuest.streak,
-                  icon: heroQuest.icon,
-                  onTap: () => navigation.goToRecord(heroQuest.id),
-                ),
-                SizedBox(height: tokens.spacing(6)),
-                const _SectionTitle(title: "クエストリスト"),
-                SizedBox(height: tokens.spacing(3)),
-              ]),
-            ),
-          ),
-          SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: tokens.spacing(5)),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final q = otherQuests[index];
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: tokens.spacing(3)),
-                    child: _QuestListItem(
-                      title: q.title,
-                      duration: q.duration,
-                      icon: q.icon,
-                      onTap: () => navigation.goToRecord(q.id),
+      body: questsAsync.when(
+        data: (quests) {
+          return logsAsync.when(
+            data: (logs) {
+              if (quests.isEmpty) {
+                return Center(
+                  child: Text(
+                    "クエストを追加しましょう",
+                    style: tokens.bodyLarge,
+                  ),
+                );
+              }
+
+              // Recommendation Logic
+              final engine = RecommendationEngine();
+              final contextObj = UserContext(
+                now: DateTime.now(),
+                allLogs: logs,
+              );
+              final recommendations = engine.recommend(quests, contextObj);
+
+              if (recommendations.isEmpty) {
+                 return const Center(child: Text("No recommendations"));
+              }
+
+              final heroQuest = recommendations.first;
+              final otherQuests = recommendations.skip(1).take(5).toList();
+
+              return CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: EdgeInsets.fromLTRB(
+                      tokens.spacing(5),
+                      MediaQuery.of(context).padding.top + tokens.spacing(2),
+                      tokens.spacing(5),
+                      tokens.spacing(4),
                     ),
-                  );
-                },
-                childCount: otherQuests.length,
-              ),
-            ),
-          ),
-          // Add some bottom padding for the floating navigation bar
-          SliverPadding(padding: EdgeInsets.only(bottom: tokens.spacing(12))),
-        ],
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        _HomeHeader(
+                          onSettingsTap: navigation.goToSettings,
+                        ),
+                        SizedBox(height: tokens.spacing(6)),
+                        const _SectionTitle(title: "今日のイチオシ"),
+                        SizedBox(height: tokens.spacing(3)),
+                        _HeroQuestCard(
+                          title: heroQuest.quest.title,
+                          category: heroQuest.quest.category,
+                          duration: heroQuest.quest.estimatedMinutes,
+                          streak: heroQuest.currentStreak,
+                          icon: iconDataForKey(heroQuest.quest.iconKey),
+                          onTap: () => navigation.goToRecord(heroQuest.quest.id),
+                          reason: heroQuest.reasons.isNotEmpty ? heroQuest.reasons.first : null,
+                        ),
+                        SizedBox(height: tokens.spacing(6)),
+                        const _SectionTitle(title: "クエストリスト"),
+                        SizedBox(height: tokens.spacing(3)),
+                      ]),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: tokens.spacing(5)),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final scored = otherQuests[index];
+                          final q = scored.quest;
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: tokens.spacing(3)),
+                            child: _QuestListItem(
+                              title: q.title,
+                              duration: q.estimatedMinutes,
+                              icon: iconDataForKey(q.iconKey),
+                              onTap: () => navigation.goToRecord(q.id),
+                              reason: scored.reasons.isNotEmpty ? scored.reasons.first : null,
+                            ),
+                          );
+                        },
+                        childCount: otherQuests.length,
+                      ),
+                    ),
+                  ),
+                  // Add some bottom padding for the floating navigation bar
+                  SliverPadding(padding: EdgeInsets.only(bottom: tokens.spacing(12))),
+                ],
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (err, stack) => Center(child: Text('Error: $err')),
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(child: Text('Error: $err')),
       ),
     );
   }
+
 }
 
 class _HomeHeader extends StatelessWidget {
@@ -123,7 +128,7 @@ class _HomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = MinqTheme.of(context);
     // TODO: Get real user name
-    const userName = "Guest";
+    const userName = "User";
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -189,6 +194,7 @@ class _HeroQuestCard extends StatelessWidget {
     required this.streak,
     required this.icon,
     required this.onTap,
+    this.reason,
   });
 
   final String title;
@@ -197,6 +203,7 @@ class _HeroQuestCard extends StatelessWidget {
   final int streak;
   final IconData icon;
   final VoidCallback onTap;
+  final String? reason;
 
   @override
   Widget build(BuildContext context) {
@@ -269,6 +276,13 @@ class _HeroQuestCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
+              if (reason != null) ...[
+                SizedBox(height: tokens.spacing(2)),
+                Text(
+                  reason!,
+                  style: tokens.bodyMedium.copyWith(color: Colors.white.withOpacity(0.9), fontStyle: FontStyle.italic),
+                ),
+              ],
               SizedBox(height: tokens.spacing(4)),
               Row(
                 children: [
@@ -319,12 +333,14 @@ class _QuestListItem extends StatelessWidget {
     required this.duration,
     required this.icon,
     required this.onTap,
+    this.reason,
   });
 
   final String title;
   final int duration;
   final IconData icon;
   final VoidCallback onTap;
+  final String? reason;
 
   @override
   Widget build(BuildContext context) {
@@ -368,9 +384,23 @@ class _QuestListItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: tokens.spacing(1)),
-                    Text(
-                      "$duration min",
-                      style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                    Row(
+                      children: [
+                        Text(
+                          "$duration min",
+                          style: tokens.bodySmall.copyWith(color: tokens.textMuted),
+                        ),
+                        if (reason != null) ...[
+                           SizedBox(width: tokens.spacing(2)),
+                           Expanded(
+                             child: Text(
+                               reason!,
+                               style: tokens.bodySmall.copyWith(color: tokens.brandPrimary),
+                               overflow: TextOverflow.ellipsis,
+                             ),
+                           ),
+                        ]
+                      ],
                     ),
                   ],
                 ),
