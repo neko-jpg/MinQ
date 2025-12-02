@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
+import 'package:minq/data/providers.dart';
 
 import 'package:minq/core/logging/app_logger.dart';
 
@@ -9,6 +9,7 @@ import 'package:minq/core/logging/app_logger.dart';
 /// ユーザーの課金状態を管理し、機能へのアクセス権限を制御する
 class SubscriptionService {
   final FirebaseFirestore _firestore;
+  final String? _userId;
 
   /// 現在のサブスクリプションプラン
   SubscriptionPlan _currentPlan = SubscriptionPlan.free;
@@ -19,7 +20,7 @@ class SubscriptionService {
   /// プレミアムユーザーかどうか
   bool get isPremium => _currentPlan != SubscriptionPlan.free;
 
-  SubscriptionService(this._firestore);
+  SubscriptionService(this._firestore, this._userId);
 
   /// 初期化
   Future<void> initialize() async {
@@ -35,6 +36,10 @@ class SubscriptionService {
 
   /// サブスクリプション状態を読み込み
   Future<void> _loadSubscriptionStatus() async {
+    if (_userId == null) {
+      _currentPlan = SubscriptionPlan.free;
+      return;
+    }
     try {
       final userDoc = await _firestore.collection('users').doc(_userId).get();
       final data = userDoc.data();
@@ -62,7 +67,7 @@ class SubscriptionService {
 
   /// サブスクリプションを購入
   Future<bool> purchase(SubscriptionPlan plan) async {
-    if (plan == SubscriptionPlan.free) return false;
+    if (plan == SubscriptionPlan.free || _userId == null) return false;
     try {
       AppLogger().info('Attempting to purchase subscription', {
         'plan': plan.name,
@@ -285,7 +290,8 @@ class FeatureLimit {
 
 /// サブスクリプションサービスのProvider
 final subscriptionServiceProvider = Provider<SubscriptionService>((ref) {
-  final service = SubscriptionService(FirebaseFirestore.instance);
+  final userId = ref.watch(uidProvider);
+  final service = SubscriptionService(FirebaseFirestore.instance, userId);
   service.initialize();
   return service;
 });

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// アクセシビリティ設定画面
 /// 高齢者向けの特大UI・音声読み上げ速度などの設定
@@ -32,7 +32,7 @@ class _AccessibilitySettingsScreenState
       appBar: AppBar(
         title: Text(
           'アクセシビリティ',
-          style: tokens.typography.h3.copyWith(
+          style: tokens.typeScale.h3.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -42,11 +42,11 @@ class _AccessibilitySettingsScreenState
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: ListView(
-        padding: EdgeInsets.all(tokens.spacing.lg),
+        padding: EdgeInsets.all(tokens.spaceLG),
         children: [
           // 視覚設定
           _buildSection(
@@ -88,7 +88,7 @@ class _AccessibilitySettingsScreenState
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spaceXL),
           // 音声設定
           _buildSection(
             title: '音声設定',
@@ -108,7 +108,7 @@ class _AccessibilitySettingsScreenState
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spaceXL),
           // モーション設定
           _buildSection(
             title: 'モーション設定',
@@ -124,7 +124,7 @@ class _AccessibilitySettingsScreenState
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spaceXL),
           // UI設定
           _buildSection(
             title: 'UI設定',
@@ -140,24 +140,24 @@ class _AccessibilitySettingsScreenState
               ),
             ],
           ),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spaceXL),
           // プレビュー
           _buildPreview(tokens),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spaceXL),
           // 保存ボタン
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _saveSettings,
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: tokens.spacing.lg),
+                padding: EdgeInsets.symmetric(vertical: tokens.spaceLG),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(tokens.radius.full),
+                  borderRadius: tokens.cornerFull(),
                 ),
               ),
               child: Text(
                 '設定を保存',
-                style: tokens.typography.body.copyWith(
+                style: tokens.typeScale.bodyMedium.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -179,18 +179,18 @@ class _AccessibilitySettingsScreenState
       children: [
         Row(
           children: [
-            Icon(icon, color: tokens.primary),
-            SizedBox(width: tokens.spacing.sm),
+            Icon(icon, color: tokens.brandPrimary),
+            SizedBox(width: tokens.spaceSM),
             Text(
               title,
-              style: tokens.typography.h4.copyWith(
+              style: tokens.typeScale.h4.copyWith(
                 color: tokens.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
-        SizedBox(height: tokens.spacing.md),
+        SizedBox(height: tokens.spaceMD),
         ...children,
       ],
     );
@@ -204,21 +204,21 @@ class _AccessibilitySettingsScreenState
     required MinqTheme tokens,
   }) {
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing.sm),
+      margin: EdgeInsets.only(bottom: tokens.spaceSM),
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(tokens.radiusLarge),
         side: BorderSide(color: tokens.border),
       ),
       child: SwitchListTile(
         title: Text(
           title,
-          style: tokens.typography.body.copyWith(fontWeight: FontWeight.w600),
+          style: tokens.typeScale.bodyMedium.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
           subtitle,
-          style: tokens.typography.caption.copyWith(
+          style: tokens.typeScale.caption.copyWith(
             color: tokens.textSecondary,
           ),
         ),
@@ -240,15 +240,15 @@ class _AccessibilitySettingsScreenState
     required MinqTheme tokens,
   }) {
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing.sm),
+      margin: EdgeInsets.only(bottom: tokens.spaceSM),
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(tokens.radiusLarge),
         side: BorderSide(color: tokens.border),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spaceMD),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -261,13 +261,13 @@ class _AccessibilitySettingsScreenState
                     children: [
                       Text(
                         title,
-                        style: tokens.typography.body.copyWith(
+                        style: tokens.typeScale.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
                         subtitle,
-                        style: tokens.typography.caption.copyWith(
+                        style: tokens.typeScale.caption.copyWith(
                           color: tokens.textSecondary,
                         ),
                       ),
@@ -276,17 +276,17 @@ class _AccessibilitySettingsScreenState
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: tokens.spacing.sm,
-                    vertical: tokens.spacing.xs,
+                    horizontal: tokens.spaceSM,
+                    vertical: tokens.spaceBase, // using spaceBase as XS equivalent
                   ),
                   decoration: BoxDecoration(
-                    color: tokens.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(tokens.radius.md),
+                    color: tokens.brandPrimary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(tokens.radiusMedium),
                   ),
                   child: Text(
                     valueLabel,
-                    style: tokens.typography.body.copyWith(
-                      color: tokens.primary,
+                    style: tokens.typeScale.bodyMedium.copyWith(
+                      color: tokens.brandPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -308,10 +308,10 @@ class _AccessibilitySettingsScreenState
 
   Widget _buildPreview(MinqTheme tokens) {
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spaceLG),
       decoration: BoxDecoration(
         color: _highContrast ? Colors.black : tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(tokens.radiusLarge),
         border: Border.all(
           color: _highContrast ? Colors.white : tokens.border,
           width: _highContrast ? 2 : 1,
@@ -322,28 +322,28 @@ class _AccessibilitySettingsScreenState
         children: [
           Text(
             'プレビュー',
-            style: tokens.typography.h4.copyWith(
+            style: tokens.typeScale.h4.copyWith(
               color: _highContrast ? Colors.white : tokens.textPrimary,
               fontWeight: _boldText ? FontWeight.bold : FontWeight.w600,
-              fontSize: tokens.typography.h4.fontSize! * _textScale,
+              fontSize: tokens.typeScale.h4.fontSize! * _textScale,
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spaceMD),
           Text(
             'これは設定のプレビューです。実際の表示を確認できます。',
-            style: tokens.typography.body.copyWith(
+            style: tokens.typeScale.bodyMedium.copyWith(
               color: _highContrast ? Colors.white : tokens.textPrimary,
               fontWeight: _boldText ? FontWeight.w600 : FontWeight.normal,
-              fontSize: tokens.typography.body.fontSize! * _textScale,
+              fontSize: tokens.typeScale.bodyMedium.fontSize! * _textScale,
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spaceMD),
           ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(
-                horizontal: tokens.spacing.lg,
-                vertical: _largeButtons ? tokens.spacing.lg : tokens.spacing.md,
+                horizontal: tokens.spaceLG,
+                vertical: _largeButtons ? tokens.spaceLG : tokens.spaceMD,
               ),
             ),
             child: Text(

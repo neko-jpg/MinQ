@@ -44,9 +44,11 @@ class ChangelogScreen extends ConsumerWidget {
       margin: EdgeInsets.only(bottom: tokens.spacing(4)),
       child: Padding(
         padding: EdgeInsets.all(tokens.spacing(4)),
-        children: [
-          Row(
-            children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
               _buildTypeChip(item.type),
               SizedBox(width: tokens.spacing(2)),
               Expanded(child: Text(item.title, style: tokens.typeScale.h3)),
@@ -81,7 +83,8 @@ class ChangelogScreen extends ConsumerWidget {
               ),
             ),
           ],
-        ],
+          ],
+        ),
       ),
     );
   }

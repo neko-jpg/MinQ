@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 /// 通知チャンネルID
@@ -226,7 +228,8 @@ class NotificationSettingsHelper {
       enableVibration: enableVibration,
       enableLights: enableLights,
       sound: sound != null ? RawResourceAndroidNotificationSound(sound) : null,
-      vibrationPattern: vibrationPattern,
+      vibrationPattern:
+          vibrationPattern != null ? Int64List.fromList(vibrationPattern) : null,
       largeIcon:
           largeIcon != null ? DrawableResourceAndroidBitmap(largeIcon) : null,
       showWhen: true,

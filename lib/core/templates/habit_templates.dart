@@ -310,31 +310,32 @@ class HabitTemplate {
   /// QuestTemplateに変換
   QuestTemplate toQuestTemplate() {
     return QuestTemplate(
+      id: id,
       title: title,
       description: description,
       icon: icon,
-      category: _categoryToString(category),
-      difficulty: _difficultyToString(difficulty),
-      estimatedMinutes: estimatedMinutes,
+      category: _mapCategory(category),
+      difficulty: _mapDifficulty(difficulty),
+      estimatedDuration: Duration(minutes: estimatedMinutes),
       tips: [tips],
     );
   }
 
-  String _categoryToString(HabitCategory category) {
+  QuestCategory _mapCategory(HabitCategory category) {
     return switch (category) {
-      HabitCategory.health => '健康',
-      HabitCategory.learning => '学習',
-      HabitCategory.productivity => '生産性',
-      HabitCategory.mindfulness => 'マインドフルネス',
-      HabitCategory.social => '社交',
+      HabitCategory.health => QuestCategory.health,
+      HabitCategory.learning => QuestCategory.learning,
+      HabitCategory.productivity => QuestCategory.productivity,
+      HabitCategory.mindfulness => QuestCategory.mindfulness,
+      HabitCategory.social => QuestCategory.social,
     };
   }
 
-  String _difficultyToString(HabitDifficulty difficulty) {
+  DifficultyLevel _mapDifficulty(HabitDifficulty difficulty) {
     return switch (difficulty) {
-      HabitDifficulty.easy => '簡単',
-      HabitDifficulty.medium => '普通',
-      HabitDifficulty.hard => '難しい',
+      HabitDifficulty.easy => DifficultyLevel.easy,
+      HabitDifficulty.medium => DifficultyLevel.medium,
+      HabitDifficulty.hard => DifficultyLevel.hard,
     };
   }
 }

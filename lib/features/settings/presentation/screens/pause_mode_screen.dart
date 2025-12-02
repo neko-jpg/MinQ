@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/features/home/presentation/screens/home_screen_v2.dart'; // for _userId
+import 'package:minq/data/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String _pauseModeKey = 'is_pause_mode_enabled';
@@ -16,7 +16,7 @@ class PauseModeNotifier extends StateNotifier<bool> {
     state = prefs.getBool(_pauseModeKey) ?? false;
   }
 
-  Future<void> setPauseMode(bool isEnabled) async {
+  Future<void> setPauseMode(bool isEnabled, String userId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_pauseModeKey, isEnabled);
 
@@ -24,7 +24,7 @@ class PauseModeNotifier extends StateNotifier<bool> {
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(_userId) // Using dummy user ID
+          .doc(userId)
           .update({'isPaused': isEnabled});
     } catch (e) {
       print('Error updating backend pause state: $e');
@@ -60,7 +60,12 @@ class PauseModeScreen extends ConsumerWidget {
               subtitle: const Text('有効にすると、全ての通知がオフになり、ストリークが維持されます。'),
               value: isPaused,
               onChanged: (bool value) {
-                ref.read(pauseModeProvider.notifier).setPauseMode(value);
+                final userId = ref.read(uidProvider);
+                if (userId != null) {
+                  ref
+                      .read(pauseModeProvider.notifier)
+                      .setPauseMode(value, userId);
+                }
               },
             ),
             const SizedBox(height: 24),

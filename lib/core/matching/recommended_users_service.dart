@@ -76,8 +76,8 @@ class RecommendedUsersService {
     } catch (e, stack) {
       AppLogger().error(
         'Failed to get recommended users',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return [];
     }
@@ -170,8 +170,8 @@ class RecommendedUsersService {
     } catch (e, stack) {
       AppLogger().error(
         'Failed to update activity score',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
     }
   }

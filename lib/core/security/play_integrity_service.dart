@@ -28,8 +28,8 @@ class PlayIntegrityService {
     } catch (e, stack) {
       AppLogger().error(
         'Failed to initialize PlayIntegrityService',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
     }
   }
@@ -55,8 +55,8 @@ class PlayIntegrityService {
     } catch (e, stack) {
       AppLogger().error(
         'Failed to request integrity token',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return IntegrityResult.error(e.toString());
     }

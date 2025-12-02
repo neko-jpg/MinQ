@@ -254,7 +254,7 @@ sealed class SubscriptionStatus {
     };
   }
 
-  T? maybeWhen<T>({
+  T maybeWhen<T>({
     T Function()? free,
     T Function(SubscriptionPlan plan, DateTime expiresAt)? premium,
     T Function(SubscriptionPlan plan, DateTime expiresAt)? coaching,

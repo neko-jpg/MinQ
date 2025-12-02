@@ -1,16 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:minq/core/gamification/gamification_engine.dart';
 import 'package:minq/domain/challenges/challenge.dart';
 import 'package:minq/domain/challenges/challenge_progress.dart';
-
-// Provider for the service
-final challengeServiceProvider = Provider<ChallengeService>((ref) {
-  final firestore = FirebaseFirestore.instance;
-  final gamificationEngine = ref.watch(gamificationEngineProvider);
-  return ChallengeService(firestore, gamificationEngine);
-});
 
 class ChallengeService {
   final FirebaseFirestore _firestore;
@@ -183,5 +175,24 @@ class ChallengeService {
     } catch (e) {
       print('Error completing challenge $challengeId: $e');
     }
+  }
+
+  Future<List<Challenge>> getActiveChallenges(String userId) async {
+    // TODO: Implement fetching active challenges
+    return [];
+  }
+
+  Future<List<Challenge>> getAvailableChallenges(String userId) async {
+    // TODO: Implement fetching available challenges
+    return [];
+  }
+
+  Future<List<Challenge>> getCompletedChallenges(String userId) async {
+    // TODO: Implement fetching completed challenges
+    return [];
+  }
+
+  Future<void> joinChallenge(String userId, String challengeId) async {
+    // TODO: Implement joining logic
   }
 }

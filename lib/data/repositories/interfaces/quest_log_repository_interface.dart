@@ -1,4 +1,4 @@
-import 'package:minq/data/models/quest_log.dart';
+import 'package:minq/domain/log/quest_log.dart';
 
 /// クエストログリポジトリインターフェース
 abstract class IQuestLogRepository {
