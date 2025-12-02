@@ -4,6 +4,7 @@ import 'package:health/health.dart';
 import 'package:logger/logger.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/logging/app_logger.dart';
+import 'package:minq/data/providers.dart';
 
 // Provider for the service
 final healthSyncServiceProvider = Provider<HealthSyncService>((ref) {
@@ -57,9 +58,9 @@ class HealthSyncService {
 
     try {
       List<HealthDataPoint> healthData = await _health.getHealthDataFromTypes(
-        startDate,
-        endDate,
-        types,
+        startTime: startDate,
+        endTime: endDate,
+        types: types,
       );
       // Remove duplicates
       healthData = _health.removeDuplicates(healthData);

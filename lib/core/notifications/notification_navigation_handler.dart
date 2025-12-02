@@ -11,9 +11,9 @@ class NotificationNavigationHandler {
     Map<String, dynamic>? payload,
   }) async {
     try {
-      AppLogger().info(
+      AppLogger().logJson(
         'Notification tapped',
-        data: {'type': notificationType, 'payload': payload},
+        {'type': notificationType, 'payload': payload},
       );
 
       switch (notificationType) {
@@ -55,8 +55,8 @@ class NotificationNavigationHandler {
     } catch (e, stack) {
       AppLogger().error(
         'Failed to handle notification tap',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
     }
   }

@@ -123,7 +123,7 @@ class BugReportService {
     final snapshot =
         await _firestore
             .collection('bugReports')
-            .where('userId', '==', userId)
+            .where('userId', isEqualTo: userId)
             .orderBy('createdAt', descending: true)
             .limit(limit)
             .get();

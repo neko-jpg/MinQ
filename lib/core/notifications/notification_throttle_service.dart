@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
@@ -37,9 +38,9 @@ class NotificationThrottleService {
     final elapsed = now.difference(lastTime);
 
     if (elapsed < _debounceInterval) {
-      AppLogger().info(
+      AppLogger().logJson(
         'Notification debounced',
-        data: {'type': notificationType, 'elapsed': elapsed.inSeconds},
+        {'type': notificationType, 'elapsed': elapsed.inSeconds},
       );
       return true; // デバウンス中
     }
@@ -75,13 +76,14 @@ class NotificationThrottleService {
 
     // レート制限チェック
     if (count >= _maxNotificationsPerWindow) {
-      AppLogger().warning(
+      AppLogger().logJson(
         'Notification rate limited',
-        data: {
+        {
           'type': notificationType,
           'count': count,
           'window': _rateLimitWindow.inMinutes,
         },
+        level: Level.warning,
       );
       return true;
     }
@@ -106,9 +108,9 @@ class NotificationThrottleService {
 
     _batchedNotifications[batchKey]!.add(notificationData);
 
-    AppLogger().info(
+    AppLogger().logJson(
       'Notification added to batch',
-      data: {
+      {
         'batchKey': batchKey,
         'count': _batchedNotifications[batchKey]!.length,
       },
@@ -125,9 +127,9 @@ class NotificationThrottleService {
     final notifications = _batchedNotifications[batchKey];
     if (notifications == null || notifications.isEmpty) return;
 
-    AppLogger().info(
+    AppLogger().logJson(
       'Sending batched notifications',
-      data: {'batchKey': batchKey, 'count': notifications.length},
+      {'batchKey': batchKey, 'count': notifications.length},
     );
 
     // バッチをクリア

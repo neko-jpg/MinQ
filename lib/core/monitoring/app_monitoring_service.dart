@@ -53,7 +53,10 @@ class AppMonitoringService {
     Map<String, dynamic>? parameters,
   }) async {
     try {
-      await _analytics.logEvent(name: action, parameters: parameters);
+      await _analytics.logEvent(
+        name: action,
+        parameters: parameters?.cast<String, Object>(),
+      );
       AppLogger().logJson('User action: $action', parameters ?? {}, level: Level.debug);
     } catch (e, stack) {
       AppLogger().error('Failed to track user action', e, stack);

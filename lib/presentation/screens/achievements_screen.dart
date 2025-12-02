@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minq/core/achievements/achievement_system.dart';
-import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// アチーブメント一覧画面
 class AchievementsScreen extends ConsumerWidget {
@@ -20,7 +20,7 @@ class AchievementsScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           'アチーブメント',
-          style: tokens.typography.h3.copyWith(
+          style: tokens.typeScale.h3.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -30,7 +30,7 @@ class AchievementsScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        backgroundColor: tokens.background.withOpacity(0.9),
+        backgroundColor: tokens.background.withValues(alpha: 0.9),
         elevation: 0,
       ),
       body: Column(
@@ -44,7 +44,7 @@ class AchievementsScreen extends ConsumerWidget {
           // アチーブメントリスト
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.all(tokens.spacing.md),
+              padding: EdgeInsets.all(tokens.spaceMD),
               itemCount: allAchievements.length,
               itemBuilder: (context, index) {
                 final achievement = allAchievements[index];
@@ -66,46 +66,46 @@ class AchievementsScreen extends ConsumerWidget {
     final percentage = total > 0 ? (unlocked / total * 100).toInt() : 0;
 
     return Container(
-      margin: EdgeInsets.all(tokens.spacing.md),
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      margin: EdgeInsets.all(tokens.spaceMD),
+      padding: EdgeInsets.all(tokens.spaceLG),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [tokens.primary, tokens.primary.withOpacity(0.7)],
+          colors: [tokens.brandPrimary, tokens.brandPrimary.withValues(alpha: 0.7)],
         ),
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(tokens.radiusLarge),
       ),
       child: Column(
         children: [
           const Text('🏆', style: TextStyle(fontSize: 48)),
-          SizedBox(height: tokens.spacing.sm),
+          SizedBox(height: tokens.spaceSM),
           Text(
             '$unlocked / $total',
-            style: tokens.typography.h2.copyWith(
+            style: tokens.typeScale.h2.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
             'アチーブメント達成',
-            style: tokens.typography.body.copyWith(
-              color: Colors.white.withOpacity(0.9),
+            style: tokens.typeScale.bodyMedium.copyWith(
+              color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
-          SizedBox(height: tokens.spacing.md),
+          SizedBox(height: tokens.spaceMD),
           ClipRRect(
-            borderRadius: BorderRadius.circular(tokens.radius.full),
+            borderRadius: tokens.cornerFull(),
             child: LinearProgressIndicator(
               value: percentage / 100,
               minHeight: 8,
-              backgroundColor: Colors.white.withOpacity(0.3),
+              backgroundColor: Colors.white.withValues(alpha: 0.3),
               valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
             ),
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spaceBase),
           Text(
             '$percentage% 完了',
-            style: tokens.typography.caption.copyWith(
-              color: Colors.white.withOpacity(0.9),
+            style: tokens.typeScale.caption.copyWith(
+              color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
         ],
@@ -129,18 +129,18 @@ class _AchievementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(bottom: tokens.spacing.md),
+      margin: EdgeInsets.only(bottom: tokens.spaceMD),
       elevation: 0,
       color: tokens.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.lg),
+        borderRadius: BorderRadius.circular(tokens.radiusLarge),
         side: BorderSide(
-          color: isUnlocked ? tokens.primary : tokens.border,
+          color: isUnlocked ? tokens.brandPrimary : tokens.border,
           width: isUnlocked ? 2 : 1,
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(tokens.spacing.md),
+        padding: EdgeInsets.all(tokens.spaceMD),
         child: Row(
           children: [
             // アイコン
@@ -150,9 +150,9 @@ class _AchievementCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     isUnlocked
-                        ? tokens.primary.withOpacity(0.2)
+                        ? tokens.brandPrimary.withValues(alpha: 0.2)
                         : tokens.background,
-                borderRadius: BorderRadius.circular(tokens.radius.md),
+                borderRadius: BorderRadius.circular(tokens.radiusMedium),
               ),
               child: Center(
                 child: Text(
@@ -164,7 +164,7 @@ class _AchievementCard extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: tokens.spacing.md),
+            SizedBox(width: tokens.spaceMD),
             // テキスト
             Expanded(
               child: Column(
@@ -175,7 +175,7 @@ class _AchievementCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           achievement.title,
-                          style: tokens.typography.body.copyWith(
+                          style: tokens.typeScale.bodyMedium.copyWith(
                             fontWeight: FontWeight.bold,
                             color:
                                 isUnlocked
@@ -187,18 +187,16 @@ class _AchievementCard extends StatelessWidget {
                       if (isUnlocked)
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: tokens.spacing.sm,
-                            vertical: tokens.spacing.xxs,
+                            horizontal: tokens.spaceSM,
+                            vertical: tokens.spaceBase / 2,
                           ),
                           decoration: BoxDecoration(
-                            color: tokens.primary,
-                            borderRadius: BorderRadius.circular(
-                              tokens.radius.full,
-                            ),
+                            color: tokens.brandPrimary,
+                            borderRadius: tokens.cornerFull(),
                           ),
                           child: Text(
                             '達成',
-                            style: tokens.typography.caption.copyWith(
+                            style: tokens.typeScale.caption.copyWith(
                               color: Colors.white,
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -207,31 +205,31 @@ class _AchievementCard extends StatelessWidget {
                         ),
                     ],
                   ),
-                  SizedBox(height: tokens.spacing.xs),
+                  SizedBox(height: tokens.spaceBase),
                   Text(
                     achievement.description,
-                    style: tokens.typography.caption.copyWith(
+                    style: tokens.typeScale.caption.copyWith(
                       color: tokens.textSecondary,
                     ),
                   ),
-                  SizedBox(height: tokens.spacing.sm),
+                  SizedBox(height: tokens.spaceSM),
                   // 進捗バー（未達成の場合）
                   if (!isUnlocked) ...[
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(tokens.radius.full),
+                      borderRadius: tokens.cornerFull(),
                       child: LinearProgressIndicator(
                         value: 0.5, // TODO: 実際の進捗を表示
                         minHeight: 4,
                         backgroundColor: tokens.background,
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          tokens.primary,
+                          tokens.brandPrimary,
                         ),
                       ),
                     ),
-                    SizedBox(height: tokens.spacing.xs),
+                    SizedBox(height: tokens.spaceBase),
                     Text(
                       '5 / ${achievement.requirement}', // TODO: 実際の進捗を表示
-                      style: tokens.typography.caption.copyWith(
+                      style: tokens.typeScale.caption.copyWith(
                         color: tokens.textSecondary,
                         fontSize: 10,
                       ),
@@ -262,9 +260,9 @@ class BadgeWidget extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: tokens.primary.withOpacity(0.1),
+        color: tokens.brandPrimary.withValues(alpha: 0.1),
         shape: BoxShape.circle,
-        border: Border.all(color: tokens.primary, width: 2),
+        border: Border.all(color: tokens.brandPrimary, width: 2),
       ),
       child: Center(
         child: Text(achievement.icon, style: TextStyle(fontSize: size * 0.5)),
@@ -294,7 +292,7 @@ class BadgeListWidget extends StatelessWidget {
       children: [
         ...displayAchievements.map((achievement) {
           return Padding(
-            padding: EdgeInsets.only(right: tokens.spacing.xs),
+            padding: EdgeInsets.only(right: tokens.spaceBase),
             child: BadgeWidget(achievement: achievement, size: 40),
           );
         }),
@@ -310,7 +308,7 @@ class BadgeListWidget extends StatelessWidget {
             child: Center(
               child: Text(
                 '+$remaining',
-                style: tokens.typography.caption.copyWith(
+                style: tokens.typeScale.caption.copyWith(
                   color: tokens.textSecondary,
                   fontWeight: FontWeight.bold,
                 ),

@@ -5,8 +5,8 @@ import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:minq/data/models/mini_quest.dart';
-import 'package:minq/data/models/quest_log.dart';
+import 'package:minq/domain/quest/quest.dart';
+import 'package:minq/domain/log/quest_log.dart';
 
 /// データエクスポートサービス
 /// CSV、JSON形式でのデータ出力
@@ -23,25 +23,25 @@ class ExportService {
     rows.add([
       'Date',
       'Quest ID',
-      'Quest Title',
       'Completed',
       'Completion Time',
-      'Notes',
+      'Proof Value',
+      'Proof Type',
     ]);
 
     // データ行
     for (final log in logs) {
-      final date = log.date;
+      final date = log.ts;
       if (startDate != null && date.isBefore(startDate)) continue;
       if (endDate != null && date.isAfter(endDate)) continue;
 
       rows.add([
-        _formatDate(log.date),
-        log.questId,
-        log.questTitle ?? '',
-        log.completed ? 'Yes' : 'No',
-        log.completedAt != null ? _formatDateTime(log.completedAt!) : '',
-        log.notes ?? '',
+        _formatDate(log.ts),
+        log.questId.toString(),
+        'Yes', // Logs are completed
+        _formatDateTime(log.ts),
+        log.proofValue ?? '',
+        log.proofType.name,
       ]);
     }
 
@@ -50,30 +50,32 @@ class ExportService {
   }
 
   /// クエストをCSVエクスポート
-  Future<File> exportQuestsToCSV(List<MiniQuest> quests) async {
+  Future<File> exportQuestsToCSV(List<Quest> quests) async {
     final rows = <List<String>>[];
 
     // ヘッダー行
     rows.add([
       'ID',
       'Title',
-      'Description',
-      'Reminder Time',
-      'Active',
+      'Category',
+      'Status',
       'Created At',
-      'Order',
+      'Estimated Minutes',
+      'Difficulty',
+      'Location',
     ]);
 
     // データ行
     for (final quest in quests) {
       rows.add([
-        quest.id,
+        quest.id.toString(),
         quest.title,
-        quest.description ?? '',
-        quest.reminderTime ?? '',
-        quest.isActive ? 'Yes' : 'No',
+        quest.category,
+        quest.status.name,
         _formatDateTime(quest.createdAt),
-        quest.order.toString(),
+        quest.estimatedMinutes.toString(),
+        quest.difficulty ?? '',
+        quest.location ?? '',
       ]);
     }
 
@@ -115,7 +117,7 @@ class ExportService {
 
   /// データをJSONエクスポート
   Future<File> exportToJSON({
-    required List<MiniQuest> quests,
+    required List<Quest> quests,
     required List<QuestLog> logs,
     Map<String, dynamic>? metadata,
   }) async {
@@ -123,8 +125,8 @@ class ExportService {
       'exportedAt': DateTime.now().toIso8601String(),
       'version': '1.0',
       'metadata': metadata ?? {},
-      'quests': quests.map((q) => q.toJson()).toList(),
-      'logs': logs.map((l) => l.toJson()).toList(),
+      'quests': quests.map((q) => _questToJson(q)).toList(),
+      'logs': logs.map((l) => _questLogToJson(l)).toList(),
     };
 
     final jsonString = const JsonEncoder.withIndent('  ').convert(data);
@@ -138,13 +140,13 @@ class ExportService {
 
       final quests =
           (data['quests'] as List?)
-              ?.map((q) => MiniQuest.fromJson(q as Map<String, dynamic>))
+              ?.map((q) => _questFromJson(q as Map<String, dynamic>))
               .toList() ??
           [];
 
       final logs =
           (data['logs'] as List?)
-              ?.map((l) => QuestLog.fromJson(l as Map<String, dynamic>))
+              ?.map((l) => _questLogFromJson(l as Map<String, dynamic>))
               .toList() ??
           [];
 
@@ -179,18 +181,18 @@ class ExportService {
   }) async {
     final period1Logs =
         allLogs.where((log) {
-          return log.date.isAfter(
+          return log.ts.isAfter(
                 period1Start.subtract(const Duration(days: 1)),
               ) &&
-              log.date.isBefore(period1End.add(const Duration(days: 1)));
+              log.ts.isBefore(period1End.add(const Duration(days: 1)));
         }).toList();
 
     final period2Logs =
         allLogs.where((log) {
-          return log.date.isAfter(
+          return log.ts.isAfter(
                 period2Start.subtract(const Duration(days: 1)),
               ) &&
-              log.date.isBefore(period2End.add(const Duration(days: 1)));
+              log.ts.isBefore(period2End.add(const Duration(days: 1)));
         }).toList();
 
     final rows = <List<String>>[];
@@ -207,8 +209,9 @@ class ExportService {
     ]);
 
     // 総完了数
-    final p1Completed = period1Logs.where((l) => l.completed).length;
-    final p2Completed = period2Logs.where((l) => l.completed).length;
+    // Assuming logs represent completion
+    final p1Completed = period1Logs.length;
+    final p2Completed = period2Logs.length;
     final completedChange = p2Completed - p1Completed;
     final completedChangePercent =
         p1Completed > 0 ? (completedChange / p1Completed * 100) : 0.0;
@@ -219,25 +222,6 @@ class ExportService {
       p2Completed.toString(),
       completedChange.toString(),
       '${completedChangePercent.toStringAsFixed(1)}%',
-    ]);
-
-    // 平均完了率
-    final p1Rate =
-        period1Logs.isEmpty
-            ? 0.0
-            : period1Logs.where((l) => l.completed).length / period1Logs.length;
-    final p2Rate =
-        period2Logs.isEmpty
-            ? 0.0
-            : period2Logs.where((l) => l.completed).length / period2Logs.length;
-    final rateChange = (p2Rate - p1Rate) * 100;
-
-    rows.add([
-      'Completion Rate',
-      '${(p1Rate * 100).toStringAsFixed(1)}%',
-      '${(p2Rate * 100).toStringAsFixed(1)}%',
-      '${rateChange.toStringAsFixed(1)}%',
-      '',
     ]);
 
     // 日次平均
@@ -281,11 +265,70 @@ class ExportService {
     final now = DateTime.now();
     return '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}_${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}';
   }
+
+  // JSON Helpers
+  Map<String, dynamic> _questToJson(Quest quest) {
+    return {
+      'id': quest.id,
+      'owner': quest.owner,
+      'title': quest.title,
+      'category': quest.category,
+      'estimatedMinutes': quest.estimatedMinutes,
+      'difficulty': quest.difficulty,
+      'location': quest.location,
+      'iconKey': quest.iconKey,
+      'status': quest.status.name,
+      'createdAt': quest.createdAt.toIso8601String(),
+      'deletedAt': quest.deletedAt?.toIso8601String(),
+    };
+  }
+
+  Quest _questFromJson(Map<String, dynamic> json) {
+    final quest = Quest()
+      ..id = json['id'] as int
+      ..owner = json['owner'] as String
+      ..title = json['title'] as String
+      ..category = json['category'] as String
+      ..estimatedMinutes = json['estimatedMinutes'] as int
+      ..difficulty = json['difficulty'] as String?
+      ..location = json['location'] as String?
+      ..iconKey = json['iconKey'] as String?
+      ..status = QuestStatus.values.firstWhere((e) => e.name == json['status'])
+      ..createdAt = DateTime.parse(json['createdAt'] as String);
+
+    if (json['deletedAt'] != null) {
+      quest.deletedAt = DateTime.parse(json['deletedAt'] as String);
+    }
+    return quest;
+  }
+
+  Map<String, dynamic> _questLogToJson(QuestLog log) {
+    return {
+      'id': log.id,
+      'uid': log.uid,
+      'questId': log.questId,
+      'ts': log.ts.toIso8601String(),
+      'proofType': log.proofType.name,
+      'proofValue': log.proofValue,
+      'synced': log.synced,
+    };
+  }
+
+  QuestLog _questLogFromJson(Map<String, dynamic> json) {
+    return QuestLog()
+      ..id = json['id'] as int
+      ..uid = json['uid'] as String
+      ..questId = json['questId'] as int
+      ..ts = DateTime.parse(json['ts'] as String)
+      ..proofType = ProofType.values.firstWhere((e) => e.name == json['proofType'])
+      ..proofValue = json['proofValue'] as String?
+      ..synced = json['synced'] as bool;
+  }
 }
 
 /// インポート結果
 class ImportResult {
-  final List<MiniQuest> quests;
+  final List<Quest> quests;
   final List<QuestLog> logs;
   final Map<String, dynamic>? metadata;
   final bool success;

@@ -12,7 +12,6 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:miinq_integrations/miinq_integrations.dart';
 import 'package:minq/config/stripe_config.dart';
 import 'package:minq/core/challenges/challenge_service.dart';
 import 'package:minq/core/export/data_export_service.dart';

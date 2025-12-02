@@ -45,8 +45,8 @@ class NicknameValidator {
     } catch (e, stack) {
       AppLogger().error(
         'Failed to validate nickname',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return NicknameValidationResult.error('検証中にエラーが発生しました');
     }
@@ -68,7 +68,9 @@ class NicknameValidator {
 
   /// ニックネームを正規化（大文字小文字、全角半角を統一）
   String _normalize(String nickname) {
-    return nickname.toLowerCase().replaceAll(RegExp(r'[Ａ-Ｚａ-ｚ０-９]'), (match) {
+    return nickname.toLowerCase().replaceAllMapped(RegExp(r'[Ａ-Ｚａ-ｚ０-９]'), (
+      match,
+    ) {
       // 全角英数字を半角に変換
       final char = match.group(0)!;
       return String.fromCharCode(char.codeUnitAt(0) - 0xFEE0);

@@ -5,6 +5,8 @@ part 'challenge.g.dart';
 
 @freezed
 class Challenge with _$Challenge {
+  const Challenge._();
+
   const factory Challenge({
     required String id,
     required String name,
@@ -17,4 +19,10 @@ class Challenge with _$Challenge {
 
   factory Challenge.fromJson(Map<String, dynamic> json) =>
       _$ChallengeFromJson(json);
+
+  // Aliases for compatibility
+  String get title => name;
+  int get targetValue => goal;
+  int get rewardPoints => 100; // Default
+  // currentProgress is not here, should be handled by UI or wrapper
 }
