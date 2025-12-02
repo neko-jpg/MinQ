@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
@@ -82,7 +83,7 @@ class CrashlyticsService {
 
   /// テストクラッシュを送信
   Future<void> testCrash() async {
-    await _crashlytics.crash();
+    _crashlytics.crash();
   }
 }
 
@@ -169,11 +170,4 @@ class ErrorHandler {
       fatal: false,
     );
   }
-}
-
-class PlatformDispatcher {
-  static final instance = PlatformDispatcher._();
-  PlatformDispatcher._();
-  
-  bool Function(Object, StackTrace)? onError;
 }

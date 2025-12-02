@@ -157,16 +157,16 @@ class _LogCard extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    _ProofTypeChip(proofType: log.proofType),
+                    _ProofTypeChip(proofType: log.proofType.name),
                   ],
                 ),
-                if (log.proofType == ProofType.photo.name &&
-                    log.proofValue.isNotEmpty) ...[
+                if (log.proofType == ProofType.photo &&
+                    (log.proofValue?.isNotEmpty ?? false)) ...[
                   SizedBox(height: tokens.spacing(3)),
                   ClipRRect(
                     borderRadius: tokens.cornerMedium(),
                     child: Image.network(
-                      log.proofValue,
+                      log.proofValue!,
                       height: 120,
                       width: double.infinity,
                       fit: BoxFit.cover,

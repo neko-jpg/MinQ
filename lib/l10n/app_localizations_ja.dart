@@ -434,4 +434,52 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get pairGoalProductivity => '生産性';
+
+  @override
+  String get homeDataLoadError => 'ホームデータの取得に失敗しました';
+
+  @override
+  String get checkConnection => '通信状態を確認して再度お試しください。';
+
+  @override
+  String get reload => '再読み込み';
+
+  @override
+  String get welcomeHome => 'Welcome Home';
+
+  @override
+  String get welcomeHomeSubtitle => '今日のフォーカスとMiniQuestをチェックして、一日のスタートを切りましょう。';
+
+  @override
+  String get todaysFocus => 'Today’s Focus';
+
+  @override
+  String get aiLearningHabits => 'AIがあなたの習慣を学習中です';
+
+  @override
+  String get createMiniQuestPrompt => 'MiniQuestを作成して取り組むと、ここに今日のおすすめが表示されます。';
+
+  @override
+  String get createMiniQuest => 'MiniQuestを作成';
+
+  @override
+  String get noMiniQuestsTitle => 'MiniQuestはまだありません';
+
+  @override
+  String get noMiniQuestsMessage => 'まずは1件MiniQuestを作成して、習慣づくりを始めましょう。';
+
+  @override
+  String get yourMiniQuests => 'Your Mini-Quests';
+
+  @override
+  String get viewAll => '一覧を見る';
+
+  @override
+  String get weeklyStreak => 'Weekly Streak';
+
+  @override
+  String get offlineMode => 'オフラインモードです';
+
+  @override
+  String get reconnect => '再接続';
 }

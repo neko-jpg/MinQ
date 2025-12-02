@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minq/presentation/theme/spacing_system.dart';
-import 'package:minq/presentation/theme/typography_system.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// ライセンス表示画面
 class LicensesScreen extends ConsumerWidget {
@@ -10,6 +9,8 @@ class LicensesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+
     return Scaffold(
       appBar: AppBar(title: const Text('オープンソースライセンス')),
       body: FutureBuilder<LicenseData>(
@@ -25,8 +26,11 @@ class LicensesScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  SizedBox(height: AppSpacing.md),
-                  Text('ライセンス情報の読み込みに失敗しました', style: AppTypography.body),
+                  SizedBox(height: tokens.spacing(4)),
+                  Text(
+                    'ライセンス情報の読み込みに失敗しました',
+                    style: tokens.bodyMedium.copyWith(color: tokens.textMuted),
+                  ),
                 ],
               ),
             );
@@ -35,10 +39,10 @@ class LicensesScreen extends ConsumerWidget {
           final licenseData = snapshot.data!;
 
           return ListView(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(tokens.spacing(4)),
             children: [
               _buildHeader(context, licenseData),
-              SizedBox(height: AppSpacing.lg),
+              SizedBox(height: tokens.spacing(6)),
               _buildPackageList(context, licenseData),
             ],
           );
@@ -48,17 +52,21 @@ class LicensesScreen extends ConsumerWidget {
   }
 
   Widget _buildHeader(BuildContext context, LicenseData data) {
+    final tokens = context.tokens;
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(tokens.spacing(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('このアプリは以下のオープンソースソフトウェアを使用しています', style: AppTypography.body),
-            SizedBox(height: AppSpacing.sm),
+            Text(
+              'このアプリは以下のオープンソースソフトウェアを使用しています',
+              style: tokens.bodyMedium.copyWith(color: tokens.textPrimary),
+            ),
+            SizedBox(height: tokens.spacing(2)),
             Text(
               '合計 ${data.packages.length} パッケージ',
-              style: AppTypography.caption.copyWith(color: Colors.grey),
+              style: tokens.bodySmall.copyWith(color: tokens.textMuted),
             ),
           ],
         ),
@@ -67,26 +75,37 @@ class LicensesScreen extends ConsumerWidget {
   }
 
   Widget _buildPackageList(BuildContext context, LicenseData data) {
+    final tokens = context.tokens;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('パッケージ一覧', style: AppTypography.h2),
-        SizedBox(height: AppSpacing.md),
+        Text(
+          'パッケージ一覧',
+          style: tokens.titleLarge.copyWith(
+            color: tokens.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: tokens.spacing(4)),
         ...data.packages.map((package) => _buildPackageCard(context, package)),
       ],
     );
   }
 
   Widget _buildPackageCard(BuildContext context, LicenseEntry entry) {
+    final tokens = context.tokens;
     return Card(
-      margin: EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: EdgeInsets.only(bottom: tokens.spacing(2)),
       child: ListTile(
-        title: Text(entry.packages.join(', '), style: AppTypography.h4),
+        title: Text(
+          entry.packages.join(', '),
+          style: tokens.titleMedium.copyWith(color: tokens.textPrimary),
+        ),
         subtitle:
             entry.paragraphs.isNotEmpty
                 ? Text(
                   _getLicenseType(entry.paragraphs.first.text),
-                  style: AppTypography.caption,
+                  style: tokens.bodySmall.copyWith(color: tokens.textMuted),
                 )
                 : null,
         trailing: const Icon(Icons.chevron_right),
@@ -98,6 +117,7 @@ class LicensesScreen extends ConsumerWidget {
   }
 
   void _showLicenseDetail(BuildContext context, LicenseEntry entry) {
+    final tokens = context.tokens;
     showDialog(
       context: context,
       builder:
@@ -109,10 +129,12 @@ class LicensesScreen extends ConsumerWidget {
                 children:
                     entry.paragraphs.map((paragraph) {
                       return Padding(
-                        padding: EdgeInsets.only(bottom: AppSpacing.sm),
+                        padding: EdgeInsets.only(bottom: tokens.spacing(2)),
                         child: Text(
                           paragraph.text,
-                          style: AppTypography.bodySmall,
+                          style: tokens.bodySmall.copyWith(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                       );
                     }).toList(),

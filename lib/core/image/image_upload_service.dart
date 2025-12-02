@@ -55,19 +55,18 @@ class ImageUploadService {
     List<CropAspectRatioPreset>? aspectRatioPresets,
   }) async {
     try {
+      final presets = aspectRatioPresets ??
+          [
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9,
+          ];
+
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: imageFile.path,
         aspectRatio: aspectRatio,
-        cropStyle: cropStyle,
-        aspectRatioPresets:
-            aspectRatioPresets ??
-            [
-              CropAspectRatioPreset.square,
-              CropAspectRatioPreset.ratio3x2,
-              CropAspectRatioPreset.original,
-              CropAspectRatioPreset.ratio4x3,
-              CropAspectRatioPreset.ratio16x9,
-            ],
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: '画像をクロップ',
@@ -75,8 +74,15 @@ class ImageUploadService {
             toolbarWidgetColor: ColorTokens.light.onPrimary,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false,
+            cropStyle: cropStyle,
+            aspectRatioPresets: presets,
           ),
-          IOSUiSettings(title: '画像をクロップ', minimumAspectRatio: 1.0),
+          IOSUiSettings(
+            title: '画像をクロップ',
+            minimumAspectRatio: 1.0,
+            cropStyle: cropStyle,
+            aspectRatioPresets: presets,
+          ),
         ],
       );
 

@@ -6,6 +6,7 @@ import 'package:minq/data/providers.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
 import 'package:minq/presentation/common/minq_buttons.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
+import 'package:minq/presentation/widgets/streak_protection_widget.dart';
 
 class StreakRecoveryScreen extends ConsumerStatefulWidget {
   const StreakRecoveryScreen({super.key, required this.questId});
@@ -244,7 +245,6 @@ class _RecoveryTabState extends ConsumerState<_RecoveryTab> {
                     label: 'ストリークを回復する',
                     icon: Icons.restore,
                     onPressed: _isRecovering ? null : _recoverStreak,
-                    isLoading: _isRecovering,
                   ),
                 ],
               ),

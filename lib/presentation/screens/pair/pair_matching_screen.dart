@@ -92,8 +92,6 @@ class _PairMatchingScreenState extends ConsumerState<PairMatchingScreen>
 
   Future<void> _cancelPairing() async {
     _pairingTimer?.cancel();
-    final repo = ref.read(pairRepositoryProvider);
-    final uid = ref.read(uidProvider);
     // TODO: Implement cancellation on the backend if a request was sent
     // if (uid != null && repo != null) {
     //   repo.cancelPairingRequest(uid);

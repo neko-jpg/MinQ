@@ -375,6 +375,7 @@ class _RingMetric {
     required this.value,
     required this.unit,
     required this.progress,
+    this.delta,
   });
 
   final String label;
@@ -546,7 +547,7 @@ Widget _buildWeeklyProgressCard(
   }
 
   final averageMinutes =
-      weeklyCompletions > 0 ? totalMinutes / weeklyCompletions : 0;
+      weeklyCompletions > 0 ? totalMinutes / weeklyCompletions : 0.0;
   const weeklyGoal = 7; // 週7日の目標
   const dailyGoalMinutes = 60; // 1日60分の目標
 
@@ -1373,6 +1374,7 @@ Future<void> _exportStatsData(BuildContext context, WidgetRef ref) async {
     final statsData = await ref.read(statsDataProvider.future);
 
     // CSV形式でエクスポート（簡易実装）
+    // ignore: unused_local_variable
     final csvData = _generateCSVData(statsData);
 
     if (context.mounted) {

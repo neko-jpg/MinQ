@@ -149,5 +149,21 @@
   "pairGoalFitness": "フィットネス",
   "pairGoalLearning": "学習",
   "pairGoalWellbeing": "ウェルビーイング",
-  "pairGoalProductivity": "生産性"
+  "pairGoalProductivity": "生産性",
+  "homeDataLoadError": "Failed to load data",
+  "checkConnection": "Please check your connection",
+  "reload": "Reload",
+  "welcomeHome": "Welcome home",
+  "welcomeHomeSubtitle": "Let's build good habits together",
+  "todaysFocus": "Today's Focus",
+  "aiLearningHabits": "Learning your habits...",
+  "createMiniQuestPrompt": "Create a mini quest to start",
+  "createMiniQuest": "Create Mini Quest",
+  "noMiniQuestsTitle": "No Mini Quests",
+  "noMiniQuestsMessage": "You haven't created any quests yet",
+  "yourMiniQuests": "Your Mini Quests",
+  "viewAll": "View All",
+  "weeklyStreak": "Weekly Streak",
+  "offlineMode": "Offline Mode",
+  "reconnect": "Reconnect"
 }

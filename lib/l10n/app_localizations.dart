@@ -895,6 +895,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'生産性'**
   String get pairGoalProductivity;
+
+  /// No description provided for @homeDataLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load data'**
+  String get homeDataLoadError;
+
+  /// No description provided for @checkConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your connection'**
+  String get checkConnection;
+
+  /// No description provided for @reload.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload'**
+  String get reload;
+
+  /// No description provided for @welcomeHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome home'**
+  String get welcomeHome;
+
+  /// No description provided for @welcomeHomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s build good habits together'**
+  String get welcomeHomeSubtitle;
+
+  /// No description provided for @todaysFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Focus'**
+  String get todaysFocus;
+
+  /// No description provided for @aiLearningHabits.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning your habits...'**
+  String get aiLearningHabits;
+
+  /// No description provided for @createMiniQuestPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a mini quest to start'**
+  String get createMiniQuestPrompt;
+
+  /// No description provided for @createMiniQuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Mini Quest'**
+  String get createMiniQuest;
+
+  /// No description provided for @noMiniQuestsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Mini Quests'**
+  String get noMiniQuestsTitle;
+
+  /// No description provided for @noMiniQuestsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t created any quests yet'**
+  String get noMiniQuestsMessage;
+
+  /// No description provided for @yourMiniQuests.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Mini Quests'**
+  String get yourMiniQuests;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @weeklyStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Streak'**
+  String get weeklyStreak;
+
+  /// No description provided for @offlineMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline Mode'**
+  String get offlineMode;
+
+  /// No description provided for @reconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect'**
+  String get reconnect;
 }
 
 class _AppLocalizationsDelegate

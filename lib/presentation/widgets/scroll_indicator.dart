@@ -91,6 +91,9 @@ class ScrollIndicatorWrapper extends StatelessWidget {
     final theme = Theme.of(context);
     final glowColor = config.glowColor ?? theme.colorScheme.primary;
 
+    // ignore: unused_local_variable
+    final unused = theme;
+
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(overscroll: true),
       child: GlowingOverscrollIndicator(
@@ -102,8 +105,6 @@ class ScrollIndicatorWrapper extends StatelessWidget {
   }
 
   Widget _buildScrollbar(BuildContext context, ScrollIndicatorConfig config) {
-    final theme = Theme.of(context);
-
     if (controller != null) {
       return Scrollbar(
         controller: controller,
@@ -309,7 +310,7 @@ class _ScrollPositionIndicatorState extends State<ScrollPositionIndicator> {
           curve: AnimationSystem.standard,
           width: isActive ? 24 : 8,
           height: 8,
-          margin: EdgeInsets.symmetric(horizontal: Spacing.xxs),
+          margin: EdgeInsets.symmetric(horizontal: SpacingSystem.xxs),
           decoration: BoxDecoration(
             color:
                 isActive

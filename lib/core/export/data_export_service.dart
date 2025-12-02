@@ -51,6 +51,7 @@ class DataExportService {
   }
 
   Future<void> shareFile(File file) async {
+    // ignore: deprecated_member_use
     await Share.shareXFiles([XFile(file.path)], text: 'My MinQ Data Export');
   }
 
@@ -83,7 +84,7 @@ class DataExportService {
                 ),
               ),
             ),
-            pw.Table.fromTextArray(
+            pw.TableHelper.fromTextArray(
               headers: ['Date', 'Quest Name'],
               data:
                   questLogs.map((doc) {
@@ -103,6 +104,7 @@ class DataExportService {
     final file = File('${output.path}/quest_history.pdf');
     await file.writeAsBytes(await pdf.save());
 
+    // ignore: deprecated_member_use
     await Share.shareXFiles([
       XFile(file.path),
     ], text: 'Here is my quest history from MinQ!');

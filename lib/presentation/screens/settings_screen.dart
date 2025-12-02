@@ -9,6 +9,7 @@ import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/l10n/app_localizations.dart';
 import 'package:minq/presentation/common/feedback/feedback_messenger.dart';
+import 'package:minq/presentation/common/policy_documents.dart';
 import 'package:minq/presentation/routing/app_router.dart';
 import 'package:minq/presentation/theme/minq_theme.dart';
 
@@ -21,6 +22,19 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isExporting = false;
+  bool _developerOptionsUnlocked = false;
+  int _versionTapCount = 0;
+
+  void _handleVersionTap(BuildContext context) {
+    setState(() {
+      _versionTapCount++;
+      if (_versionTapCount >= 7) {
+        _developerOptionsUnlocked = true;
+        _versionTapCount = 0;
+        FeedbackMessenger.showSuccessToast(context, '開発者オプションが有効になりました');
+      }
+    });
+  }
 
   Future<void> _showSoundProfileSheet(
     BuildContext context,
@@ -299,26 +313,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     () =>
                         navigation.goToStreakRecovery(1), // TODO: 適切なquestIdを渡す
               ),
-              _SettingsTile(
-                title: 'イベント',
-                subtitle: '期間限定チャレンジと季節イベント',
-                onTap: navigation.goToEvents,
-              ),
-              _SettingsTile(
-                title: 'ライブアクティビティ',
-                subtitle: 'リアルタイム活動表示設定',
-                onTap: navigation.goToLiveActivitySettings,
-              ),
-              _SettingsTile(
-                title: 'ハビットバトル',
-                subtitle: '習慣継続で対戦',
-                onTap: navigation.goToBattle,
-              ),
-              _SettingsTile(
-                title: 'ハビットコミュニティ',
-                subtitle: 'ギルドで仲間と協力',
-                onTap: navigation.goToGuild,
-              ),
               selectedSoundProfile.when(
                 data:
                     (profile) => _SettingsTile(
@@ -370,21 +364,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ],
           ),
 
-          _SettingsSection(
-            title: 'サポート',
-            tiles: [
-              _SettingsTile(
-                title: 'ヘルプセンター',
-                subtitle: 'よくある質問と使い方ガイド',
-                onTap: navigation.goToHelpCenter,
-              ),
-              _SettingsTile(
-                title: 'お問い合わせ',
-                subtitle: 'バグ報告や機能要望はこちら',
-                onTap: navigation.goToBugReport,
-              ),
-            ],
-          ),
+          // _SettingsSection(
+          //   title: 'サポート',
+          //   tiles: [
+          //     _SettingsTile(
+          //       title: 'ヘルプセンター',
+          //       subtitle: 'よくある質問と使い方ガイド',
+          //       onTap: navigation.goToHelpCenter,
+          //     ),
+          //     _SettingsTile(
+          //       title: 'お問い合わせ',
+          //       subtitle: 'バグ報告や機能要望はこちら',
+          //       onTap: navigation.goToBugReport,
+          //     ),
+          //   ],
+          // ),
           _SettingsSection(
             title: l10n.settingsSectionAbout,
             tiles: [

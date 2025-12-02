@@ -204,7 +204,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
         color: Colors.transparent,
         child: Container(
           width: 300,
-          padding: EdgeInsets.all(Spacing.md),
+          padding: EdgeInsets.all(SpacingSystem.md),
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
@@ -225,7 +225,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 children: [
                   if (step.icon != null) ...[
                     Icon(step.icon, color: theme.colorScheme.primary, size: 24),
-                    SizedBox(width: Spacing.sm),
+                    SizedBox(width: SpacingSystem.sm),
                   ],
                   Expanded(
                     child: Text(
@@ -238,12 +238,12 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 ],
               ),
 
-              SizedBox(height: Spacing.sm),
+              SizedBox(height: SpacingSystem.sm),
 
               // 説明
               Text(step.description, style: theme.textTheme.bodyMedium),
 
-              SizedBox(height: Spacing.md),
+              SizedBox(height: SpacingSystem.md),
 
               // 進捗インジケータ
               Row(
@@ -252,7 +252,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                   (index) => Container(
                     width: 8,
                     height: 8,
-                    margin: EdgeInsets.only(right: Spacing.xxs),
+                    margin: EdgeInsets.only(right: SpacingSystem.xxs),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color:
@@ -264,7 +264,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 ),
               ),
 
-              SizedBox(height: Spacing.md),
+              SizedBox(height: SpacingSystem.md),
 
               // ボタン
               Row(
@@ -404,7 +404,7 @@ class CoachMark extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: EdgeInsets.all(Spacing.sm),
+      padding: EdgeInsets.all(SpacingSystem.sm),
       decoration: BoxDecoration(
         color: theme.colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(8),
@@ -424,7 +424,7 @@ class CoachMark extends StatelessWidget {
             color: theme.colorScheme.onPrimaryContainer,
             size: 20,
           ),
-          SizedBox(width: Spacing.xs),
+          SizedBox(width: SpacingSystem.xs),
           Flexible(
             child: Text(
               message,

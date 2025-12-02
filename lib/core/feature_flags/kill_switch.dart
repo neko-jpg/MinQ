@@ -1,4 +1,5 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/material.dart';
 import 'package:minq/core/logging/app_logger.dart';
 
 /// Feature Flag Kill Switch
@@ -21,7 +22,7 @@ class KillSwitch {
 
       return enabled;
     } catch (e, stack) {
-      _logger.error('Kill switch check failed', error: e, stackTrace: stack);
+      _logger.error('Kill switch check failed', e, stack);
       // エラー時はデフォルトで有効
       return true;
     }
@@ -55,7 +56,7 @@ class KillSwitch {
 
       return defaultValue;
     } catch (e, stack) {
-      _logger.error('Feature config fetch failed', error: e, stackTrace: stack);
+      _logger.error('Feature config fetch failed', e, stack);
       return defaultValue;
     }
   }
@@ -78,8 +79,8 @@ class KillSwitch {
     } catch (e, stack) {
       _logger.error(
         'Failed to get all feature flags',
-        error: e,
-        stackTrace: stack,
+        e,
+        stack,
       );
       return {};
     }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minq/presentation/theme/app_theme.dart';
+import 'package:minq/presentation/theme/minq_theme.dart';
 
 /// アプリ内アンケートウィジェット
 class SurveyWidget extends StatefulWidget {
@@ -57,13 +57,13 @@ class _SurveyWidgetState extends State<SurveyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final tokens = MinqTheme.of(context);
 
     return Container(
-      padding: EdgeInsets.all(tokens.spacing.lg),
+      padding: EdgeInsets.all(tokens.spaceLG),
       decoration: BoxDecoration(
         color: tokens.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.xl),
+        borderRadius: BorderRadius.circular(tokens.radiusXLarge),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -78,16 +78,16 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                   children: [
                     Text(
                       widget.survey.title,
-                      style: tokens.typography.h3.copyWith(
+                      style: tokens.titleLarge.copyWith(
                         color: tokens.textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     if (widget.survey.description != null) ...[
-                      SizedBox(height: tokens.spacing.xs),
+                      SizedBox(height: tokens.spaceBase),
                       Text(
                         widget.survey.description!,
-                        style: tokens.typography.caption.copyWith(
+                        style: tokens.labelSmall.copyWith(
                           color: tokens.textSecondary,
                         ),
                       ),
@@ -102,25 +102,25 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                 ),
             ],
           ),
-          SizedBox(height: tokens.spacing.lg),
+          SizedBox(height: tokens.spaceLG),
           // 進捗インジケーター
           LinearProgressIndicator(
             value: (_currentQuestionIndex + 1) / widget.survey.questions.length,
             backgroundColor: tokens.background,
-            valueColor: AlwaysStoppedAnimation<Color>(tokens.primary),
+            valueColor: AlwaysStoppedAnimation<Color>(tokens.brandPrimary),
           ),
-          SizedBox(height: tokens.spacing.xs),
+          SizedBox(height: tokens.spaceBase),
           Text(
             '質問 ${_currentQuestionIndex + 1} / ${widget.survey.questions.length}',
-            style: tokens.typography.caption.copyWith(
+            style: tokens.labelSmall.copyWith(
               color: tokens.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spaceXL),
           // 質問
           _buildQuestion(_currentQuestion, tokens),
-          SizedBox(height: tokens.spacing.xl),
+          SizedBox(height: tokens.spaceXL),
           // ナビゲーションボタン
           Row(
             children: [
@@ -131,7 +131,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                     child: const Text('戻る'),
                   ),
                 ),
-              if (_currentQuestionIndex > 0) SizedBox(width: tokens.spacing.md),
+              if (_currentQuestionIndex > 0) SizedBox(width: tokens.spaceMD),
               Expanded(
                 child: ElevatedButton(
                   onPressed: _canProceed ? _nextQuestion : null,
@@ -151,7 +151,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
       children: [
         Text(
           question.text,
-          style: tokens.typography.body.copyWith(
+          style: tokens.bodyMedium.copyWith(
             color: tokens.textPrimary,
             fontWeight: FontWeight.w600,
           ),
@@ -159,9 +159,9 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         if (question.isRequired)
           Text(
             ' *必須',
-            style: tokens.typography.caption.copyWith(color: tokens.error),
+            style: tokens.labelSmall.copyWith(color: tokens.accentError),
           ),
-        SizedBox(height: tokens.spacing.md),
+        SizedBox(height: tokens.spaceMD),
         _buildQuestionInput(question, tokens),
       ],
     );
@@ -186,24 +186,24 @@ class _SurveyWidgetState extends State<SurveyWidget> {
           question.options!.map((option) {
             final isSelected = _answers[question.id] == option;
             return Padding(
-              padding: EdgeInsets.only(bottom: tokens.spacing.sm),
+              padding: EdgeInsets.only(bottom: tokens.spaceSM),
               child: InkWell(
                 onTap: () {
                   setState(() {
                     _answers[question.id] = option;
                   });
                 },
-                borderRadius: BorderRadius.circular(tokens.radius.md),
+                borderRadius: BorderRadius.circular(tokens.radiusMedium),
                 child: Container(
-                  padding: EdgeInsets.all(tokens.spacing.md),
+                  padding: EdgeInsets.all(tokens.spaceMD),
                   decoration: BoxDecoration(
                     color:
                         isSelected
-                            ? tokens.primary.withOpacity(0.1)
+                            ? tokens.brandPrimary.withOpacity(0.1)
                             : tokens.background,
-                    borderRadius: BorderRadius.circular(tokens.radius.md),
+                    borderRadius: BorderRadius.circular(tokens.radiusMedium),
                     border: Border.all(
-                      color: isSelected ? tokens.primary : tokens.border,
+                      color: isSelected ? tokens.brandPrimary : tokens.border,
                       width: isSelected ? 2 : 1,
                     ),
                   ),
@@ -214,13 +214,13 @@ class _SurveyWidgetState extends State<SurveyWidget> {
                             ? Icons.radio_button_checked
                             : Icons.radio_button_unchecked,
                         color:
-                            isSelected ? tokens.primary : tokens.textSecondary,
+                            isSelected ? tokens.brandPrimary : tokens.textSecondary,
                       ),
-                      SizedBox(width: tokens.spacing.sm),
+                      SizedBox(width: tokens.spaceSM),
                       Expanded(
                         child: Text(
                           option,
-                          style: tokens.typography.body.copyWith(
+                          style: tokens.bodyMedium.copyWith(
                             color: tokens.textPrimary,
                           ),
                         ),
@@ -253,16 +253,16 @@ class _SurveyWidgetState extends State<SurveyWidget> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: isSelected ? tokens.primary : tokens.background,
+              color: isSelected ? tokens.brandPrimary : tokens.background,
               shape: BoxShape.circle,
               border: Border.all(
-                color: isSelected ? tokens.primary : tokens.border,
+                color: isSelected ? tokens.brandPrimary : tokens.border,
               ),
             ),
             child: Center(
               child: Text(
                 rating.toString(),
-                style: tokens.typography.body.copyWith(
+                style: tokens.bodyMedium.copyWith(
                   color: isSelected ? Colors.white : tokens.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
@@ -279,7 +279,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
       decoration: InputDecoration(
         hintText: '回答を入力してください',
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.md),
+          borderRadius: BorderRadius.circular(tokens.radiusMedium),
         ),
       ),
       maxLines: 3,
@@ -295,7 +295,7 @@ class _SurveyWidgetState extends State<SurveyWidget> {
     return Row(
       children: [
         Expanded(child: _buildYesNoButton('はい', true, tokens)),
-        SizedBox(width: tokens.spacing.md),
+        SizedBox(width: tokens.spaceMD),
         Expanded(child: _buildYesNoButton('いいえ', false, tokens)),
       ],
     );
@@ -310,12 +310,12 @@ class _SurveyWidgetState extends State<SurveyWidget> {
         });
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? tokens.primary : tokens.surface,
+        backgroundColor: isSelected ? tokens.brandPrimary : tokens.surface,
         foregroundColor: isSelected ? Colors.white : tokens.textPrimary,
-        padding: EdgeInsets.symmetric(vertical: tokens.spacing.md),
+        padding: EdgeInsets.symmetric(vertical: tokens.spaceMD),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.radius.md),
-          side: BorderSide(color: isSelected ? tokens.primary : tokens.border),
+          borderRadius: BorderRadius.circular(tokens.radiusMedium),
+          side: BorderSide(color: isSelected ? tokens.brandPrimary : tokens.border),
         ),
       ),
       child: Text(label),

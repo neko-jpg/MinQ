@@ -22,7 +22,6 @@ import 'package:minq/core/logging/app_logger.dart';
 import 'package:minq/core/network/network_status_service.dart';
 import 'package:minq/core/notifications/re_engagement_service.dart';
 import 'package:minq/core/reminders/multiple_reminder_service.dart';
-import 'package:minq/core/sharing/ai_share_banner_service.dart';
 import 'package:minq/core/sharing/ogp_image_generator.dart';
 import 'package:minq/core/sharing/share_service.dart';
 import 'package:minq/data/repositories/community_board_repository.dart';
@@ -60,7 +59,6 @@ import 'package:minq/domain/notification/notification_sound_profile.dart';
 import 'package:minq/domain/pair/pair.dart' as minq_pair;
 import 'package:minq/domain/quest/quest.dart';
 import 'package:minq/domain/recommendation/daily_focus_service.dart';
-import 'package:minq/domain/recommendation/habit_ai_suggestion_service.dart';
 import 'package:minq/domain/user/user.dart' as minq_user;
 import 'package:speech_to_text/speech_to_text.dart';
 
@@ -220,6 +218,13 @@ final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
   return ConnectivityService();
 });
 
+final isOnlineProvider = StreamProvider<bool>((ref) {
+  return ref
+      .watch(connectivityServiceProvider)
+      .onStatusChanged
+      .map((status) => status == ConnectivityStatus.online);
+});
+
 final crashRecoveryStoreProvider = Provider<CrashRecoveryStore>((ref) {
   throw StateError('CrashRecoveryStore is not initialised');
 });
@@ -252,15 +257,9 @@ final ogpImageGeneratorProvider = Provider<OgpImageGenerator>((ref) {
   return OgpImageGenerator(ref.watch(appLoggerProvider));
 });
 
-// TODO: Fix integrations package
-final aiShareBannerServiceProvider = Provider<AIShareBannerService>((ref) {
-  return AIShareBannerService(generator: const AIBannerGenerator());
-});
-
 final shareServiceProvider = Provider<ShareService>((ref) {
   return ShareService(
     ogpGenerator: ref.watch(ogpImageGeneratorProvider),
-    aiBannerService: ref.watch(aiShareBannerServiceProvider),
   );
 });
 
@@ -697,12 +696,6 @@ final recentLogsProvider = FutureProvider<List<QuestLog>>((ref) async {
   return logs.take(30).toList();
 });
 
-final habitAiSuggestionServiceProvider = Provider<HabitAiSuggestionService>((
-  ref,
-) {
-  return HabitAiSuggestionService();
-});
-
 // UID provider removed - already exists above
 
 // Network status provider
@@ -714,19 +707,6 @@ final dailyFocusServiceProvider = Provider<DailyFocusService>(
   (ref) => DailyFocusService(),
 );
 
-final habitAiSuggestionsProvider = FutureProvider<List<HabitAiSuggestion>>((
-  ref,
-) async {
-  await _ensureStartup(ref);
-  final logs = await ref.watch(recentLogsProvider.future);
-  final quests = await ref.watch(userQuestsProvider.future);
-  final service = ref.watch(habitAiSuggestionServiceProvider);
-  return await service.generateSuggestions(
-    userQuests: quests,
-    logs: logs,
-    now: DateTime.now(),
-  );
-});
 final heatmapDataProvider = FutureProvider<Map<DateTime, int>>((ref) async {
   await _ensureStartup(ref);
   final user = await ref.watch(localUserProvider.future);
